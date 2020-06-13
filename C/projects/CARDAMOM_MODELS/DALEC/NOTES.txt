@@ -1,0 +1,6 @@
+DALEC 803 copied from DALEC 804: 
+See versions pre-Jun 15 2018 for separate versions AND for older model versions.
+Older models will need to be upgraded to new system 
+
+DALEC 1004, 1005: testing "PARS_STACK" approach
+

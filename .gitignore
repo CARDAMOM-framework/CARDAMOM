@@ -1,0 +1,11 @@
+*~
+.DS_Store
+*.exe
+*.exe.*
+*.swp
+*.swp.*
+*.out
+*.out.*
+DUMPFILES
+MATLAB/startup.m
+MATLAB/CARDAMOM_DISK/*
