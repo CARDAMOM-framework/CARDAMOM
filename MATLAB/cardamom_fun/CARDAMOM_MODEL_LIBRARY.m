@@ -53,13 +53,15 @@ D=importdata(filename);
 %line0=find(strcmp(D,sprintf('/*ID%dMA*/',ID)));
 
 
-for n=1:size(D);
+for n=1:size(D,1);
     %reading strings that read as follows
     %DATA->nopools=7;
     if strncmp(D{n},'DALECmodel.no',12)
+        %E.g. evaluates  'DALECmodel.nopools=7;'
     eval(D{n}(1:find(D{n}==';',1)));
     end
 end
+
 
 
 %Overwriting with stack file
@@ -69,10 +71,6 @@ for n=1:size(D);
     eval(D{n});
 end
 
-
-for f=fieldnames(DALECmodel)';
-            MA.(f{1})=DALECmodel.(f{1});
-end
 
 
 
@@ -118,6 +116,14 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',
  MA.parname=parname;
  
 end
+
+
+%Store fields regardless
+for f=fieldnames(DALECmodel)';
+            MA.(f{1})=DALECmodel.(f{1});
+end
+
+
  
  
  
