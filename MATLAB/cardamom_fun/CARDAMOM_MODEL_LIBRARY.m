@@ -13,7 +13,7 @@ function MA=CARDAMOM_MODEL_LIBRARY(ID,MA,reread)
 %Example: 
 %   MA=CARDAMOM_MODEL_LIBRARY(2);
 %
-%Last modified by A.A. Bloom 2018/02/11 
+%Last modified by A.A. Bloom 2020 June 17
 Cpath=getenv('CARDAMOM_C_PATH');
 
 %C script

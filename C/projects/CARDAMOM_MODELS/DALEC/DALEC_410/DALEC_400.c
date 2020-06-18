@@ -7,7 +7,7 @@
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
 
-int DALEC_812(DATA DATA, double const *pars)
+int DALEC_410(DATA DATA, double const *pars)
 {
 
 double gpppars[11],pi;
@@ -25,8 +25,6 @@ gpppars[9]=1.0;
 gpppars[10]=pi;
 
 double deltat=DATA.deltat;
-int nr=DATA.nodays;
-
 
  double constants[10]={pars[10],0.0156935,4.22273,208.868,0.0453194,0.37836,7.19298, 0.011136,2.1001,0.789798};
 
@@ -36,6 +34,8 @@ double *POOLS=DATA.M_POOLS;
 double *LAI=DATA.M_LAI;
 double *NEE=DATA.M_NEE;
 
+
+
   /*assigning values to pools*/
   /*L,F,R,W,Lit,SOM*/
   POOLS[0]=pars[17];
@@ -44,21 +44,17 @@ double *NEE=DATA.M_NEE;
   POOLS[3]=pars[20];
   POOLS[4]=pars[21];
   POOLS[5]=pars[22];
-  /*water pool*/
 
-POOLS[6]=pars[26];
 
 
 /* NOTES FOR POOLS AND FLUXES
-DATA.MET[:,0]: projday
-DATA.MET[:,1]: mintemp
-DATA.MET[:,2]: maxtemp
-DATA.MET[:,3]: rad
-DATA.MET[:,4]: co2
-DATA.MET[:,5]: yearday
-DATA.MET[:,6]: burned area
-DATA.MET[:,7]: VPD
-DATA.MET[:,8]: precipitation
+MET[:,0]: projday
+MET[:,1]: mintemp
+MET[:,2]: maxtemp
+MET[:,3]: rad
+MET[:,4]: co2
+MET[:,5]: yearday
+
 
 
   POOLS[0,0]=pars(8);Lab
@@ -89,8 +85,6 @@ DATA.MET[:,8]: precipitation
 	16. Fires (total)
 	17-22. Fires (C pools to atmosphere)
 	23-27. Fires (C pool transfers)
-	28. ET
-	29. Runoff
 */
 
 
@@ -103,32 +97,23 @@ double wl=pars[13]*sqrt(2)/2;
 
 /*factor*/
 double ff=(log(pars[4])-log(pars[4]-1))/2;
-/*double fl=(log(1.001)-log(0.001))/2;*/
-double fl=(log(pars[31])-log(pars[31]-1))/2;
+double fl=(log(1.001)-log(0.001))/2;
 
 
 
 
 /*additional offset*/
 double osf=offset(pars[4],wf);
-double osl=offset(pars[31],wl);
+double osl=offset(1.001,wl);
 
 
 /*scaling to biyearly sine curve*/
 double sf=365.25/pi;
 
 /*Combustion factors*/
-double CF[6];
-CF[0]=pars[28];
-CF[1]=pars[27];
-CF[2]=pars[28];
-CF[3]=pars[28];
-CF[4]=pars[27]/2+pars[28]/2;
-CF[5]=pars[29];
-
-
+double CF[6]={0.1,0.9,0.1,0.1,0.5,0.01};
 /*resilience factor*/
-
+double rfac=0.5;
 
 /*number of MET drivers*/
 int nomet=((DALEC *)DATA.MODEL)->nomet;
@@ -138,6 +123,8 @@ int nopools=((DALEC *)DATA.MODEL)->nopools;
 
 /*number of DALEC fluxes to store*/
 int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
+
+int nr=DATA.nodays;
 
 
 /*repeating loop for each timestep*/
@@ -165,13 +152,10 @@ gpppars[7]=DATA.MET[m+3];
 
 
 
-/*GPP*/
-FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
-/*Evapotranspiration (VPD = DATA.MET[m+7])*/
-FLUXES[f+28]=FLUXES[f+0]*sqrt(DATA.MET[m+7])/pars[23];
+
+FLUXES[f+0]=ACM(gpppars,constants);
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
-/* x (1 + a* P/P0)/(1+a)*/
-FLUXES[f+1]=exp(pars[9]*(DATA.MET[m+2]*0.5+DATA.MET[m+1]*0.5-DATA.meantemp))*((DATA.MET[m+8]/DATA.meanprec-1)*pars[32]+1);
+FLUXES[f+1]=exp(pars[9]*0.5*(DATA.MET[m+2]+DATA.MET[m+1]));
 /*respiration auto*/
 FLUXES[f+2]=pars[1]*FLUXES[f+0];
 /*leaf production*/
@@ -207,18 +191,8 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
         POOLS[nxp+1] = POOLS[p+1] + (FLUXES[f+3] - FLUXES[f+9] + FLUXES[f+7])*deltat;
         POOLS[nxp+2] = POOLS[p+2] + (FLUXES[f+5] - FLUXES[f+11])*deltat;
         POOLS[nxp+3] = POOLS[p+3] +  (FLUXES[f+6] - FLUXES[f+10])*deltat;
-        POOLS[nxp+4] = POOLS[p+4] + (FLUXES[f+9] + FLUXES[f+11] - FLUXES[f+12] - FLUXES[f+14])*deltat; 
-        POOLS[nxp+5]= POOLS[p+5]+ (FLUXES[f+14] - FLUXES[f+13]+FLUXES[f+10])*deltat;                    
-/*Water pool = Water pool - runoff + prec (mm/day) - ET*/
-	/*printf("%2.1f\n",POOLS[p+6]);*/
-	/*runoff*/
-	FLUXES[f+29]=pow(POOLS[p+6],2)/pars[24]/deltat;
-	/*Maximum water loss at W = pars[24]/2;*/
-	if (POOLS[p+6]>pars[24]/2){FLUXES[f+29]=(POOLS[p+6]-pars[24]/4)/deltat;}
-
-	POOLS[nxp+6]=POOLS[p+6]-FLUXES[f+29]*deltat + DATA.MET[m+8]*deltat - FLUXES[f+28]*deltat;
-
-		
+        POOLS[nxp+4] = POOLS[p+4] + (FLUXES[f+9] + FLUXES[f+11] - FLUXES[f+12] - FLUXES[f+14])*deltat;        
+        POOLS[nxp+5]= POOLS[p+5]+ (FLUXES[f+14] - FLUXES[f+13]+FLUXES[f+10])*deltat;                                
 
 	/*total pool transfers - WITH FIRES*/
 	/*first fluxes*/
@@ -229,7 +203,7 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 	/*Calculating all fire transfers (1. combustion, and 2. litter transfer)*/
 	/*note: all fluxes are in gC m-2 day-1*/
 	for (nn=0;nn<6;nn++){FLUXES[f+17+nn] = POOLS[nxp+nn]*DATA.MET[m+6]*CF[nn]/deltat;}
-	for (nn=0;nn<4;nn++){FLUXES[f+23+nn] = POOLS[nxp+nn]*DATA.MET[m+6]*(1-CF[nn])*(1-pars[30])/deltat;}
+	for (nn=0;nn<5;nn++){FLUXES[f+23+nn] = POOLS[nxp+nn]*DATA.MET[m+6]*(1-CF[nn])*(1-rfac)/deltat;}
 
 	/*Adding all fire pool transfers here*/
 	/*live C pools*/	
