@@ -52,16 +52,8 @@ EDCSETUP(*DATA,&DALECmodel.EDCD);
 
 DALECmodel.nopars=0;
 DATA->nopars=0;
-DATA->parmin=NULL; 
-/*calloc(DATA->nopars,sizeof(double));*/
-DATA->parmax=NULL;
-DATA->parname=NULL;
-/*calloc(DATA->nopars,sizeof(double));*/
 
-/*allocate zero-size memory, for realloc later*/
-DATA->parmin=calloc(DATA->nopars,sizeof(double));
-DATA->parmax=calloc(DATA->nopars,sizeof(double));
-
+INITIALIZE_PARAMETER_FIELDS(DATA);
 
 /*Mount DALEC 1004 module parameters*/
 MOUNT_DALEC_1004_PARS(DATA);DALECmodel.nopars=DATA->nopars;

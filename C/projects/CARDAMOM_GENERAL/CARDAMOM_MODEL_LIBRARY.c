@@ -1,3 +1,14 @@
+#pragma once
+
+int INITIALIZE_PARAMETER_FIELDS(DATA *DATA){
+/*initializing parmin and parmax fields*/
+DATA->parmin=NULL;
+DATA->parmax=NULL;
+DATA->parname=NULL;
+DATA->parmin=calloc(DATA->nopars,sizeof(double));
+DATA->parmax=calloc(DATA->nopars,sizeof(double));
+DATA->parname=calloc(DATA->nopars,sizeof(char *));
+return 0;}
 
 #include "ADD_PARAMETER_TO_STACK.c"
 #include "WRITE_MODEL_STACKS_TO_FILE.c"
@@ -31,13 +42,6 @@
 /*General note: The code IDxMA (where x is the model ID) is kept above the model attribute
 line. The reason for this is to ensure that Matlab can easily access this code*/
 
-int INITIALIZE_PARAMETER_FIELDS(DATA *DATA){
-
-/*initializing parmin and parmax fields*/
-DATA->parmin=calloc(DATA->nopars,sizeof(double));
-DATA->parmax=calloc(DATA->nopars,sizeof(double));
-
-return 0;}
 
 
 int CARDAMOM_MODEL_LIBRARY(DATA *DATA){
@@ -68,6 +72,7 @@ else if (DATA->ID==1003  ){MODEL_INFO_1003(DATA);}
 else if (DATA->ID==1010  ){MODEL_INFO_1010(DATA);}
 else if (DATA->ID==1200  ){MODEL_INFO_1200(DATA);}
 else {status=1;}
+
 
 
 return status;}
