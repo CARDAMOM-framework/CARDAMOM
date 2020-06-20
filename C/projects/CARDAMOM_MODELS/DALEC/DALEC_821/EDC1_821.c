@@ -13,6 +13,9 @@ int EDC1_821(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 15. Foliage CF> wood CF & Foliage CF > Soil CF 
 */
 
+/* Additional EDC1 on the ratio of Jmax/Vmax for ID 821 by gquetin 04/07/2020*/
+/*17. Jmax/Vmax > .8 and Jmax/Vmax < 1.25*/
+
 
 
 double meantemp=DATA.meantemp;
@@ -79,6 +82,9 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[15-1]==1)
 /*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[16-1]==1)) & (pars[24]<pars[25])){EDC=0;EDCD->PASSFAIL[16-1]=0;}
 */
 
+/*EDC CHECK NO 17*/ 
+/*Jmax and Vmax related to each other, by G. Quetin 04.07.2020*/
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[1-1]==1)) & ((pars[34]/pars[35]< .8) || (pars[34]/pars[35]> 1.25))){EDC=0;EDCD->PASSFAIL[1-1]=0;}
 
 /*Add any generalisations derivable from EDC2 (post-run checks) here*/
 /*Note: these must be tested to ensure that DALEC2 run is NOT needed */
