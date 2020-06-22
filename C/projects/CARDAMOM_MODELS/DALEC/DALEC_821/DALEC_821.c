@@ -164,11 +164,14 @@ met_list[4]=DATA.MET[m+7]; /*VPD*/
 
 double psfc=1013.25; /*hPa*/
 
+
+double *BALDOCCHI_ANALYTICAL_OUTPUT = BALDOCCHI_ANALYTICAL(met_list,var_list);
+
 /*GPP*/
-FLUXES[f+0]=BALDOCCHI_ANALYTICAL(met_list,var_list)[0]*fmin(POOLS[p+6]/pars[23],1);
+FLUXES[f+0]=BALDOCCHI_ANALYTICAL_OUTPUT[0]*fmin(POOLS[p+6]/pars[23],1);
 /*Evapotranspiration (VPD = DATA.MET[m+7])*/
 //FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/BALDOCCHI_ANALYTICAL(met_list,var_list)[1];
-FLUXES[f+28]=DATA.MET[m+7]*BALDOCCHI_ANALYTICAL(met_list,var_list)[1]/psfc*fmin(POOLS[p+6]/pars[23],1);
+FLUXES[f+28]=DATA.MET[m+7]*BALDOCCHI_ANALYTICAL_OUTPUT[1]/psfc*fmin(POOLS[p+6]/pars[23],1);
 
 /*calculate water use efficiency*/
 double WUE=FLUXES[f+0]/FLUXES[f+28];

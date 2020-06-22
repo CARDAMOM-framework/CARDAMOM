@@ -35,8 +35,8 @@ DALECmodel.edc2=EDC2_821;
 /*Initialize parameter fields*/
 /*initializing parmin and parmax fields*/
 /*Currently assigned to "DATA", since MCMC needs info separately*/
-INITIALIZE_PARAMETER_FIELDS(DATA);
-
+DATA->parmin=calloc(DATA->nopars,sizeof(double));
+DATA->parmax=calloc(DATA->nopars,sizeof(double));
 PARS_INFO_821(DATA);
 
 
