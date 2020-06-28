@@ -14,10 +14,12 @@ function CARFIELDS=CARDAMOM_PROJECT_OUTPUTS_beta(PXI,FIELDS)
 %Functions on n x m array
 %FIELDS(n).stats(s).name
 %FIELDS(n).stats(s).func; %default = percentiles, mean, stdes
+
+
 defval('writetofile',0);
-for f=1:numel(FIELDS)
+for f=1:numel(FIELDS) 
     %Defaults
-    if isfield(FIELDS,'stats')==0 | isempty(FIELDS(f).stats);
+    if  isstruct(FIELDS) & (isfield(FIELDS,'stats')==0 | isempty(FIELDS(f).stats))
         FIELDS(f).stats(1).func=@(M) percentile(M,5);
         FIELDS(f).stats(2).func=@(M) percentile(M,25);
         FIELDS(f).stats(3).func=@(M) percentile(M,50);
@@ -40,6 +42,10 @@ end
 %
 %OUTPUTS
 
+if isstr(FIELDS);
+    fname=FIELDS;clear FIELDS;
+    FIELDS(1).name=fname;
+end
 
 %Step 0. Global definitions
 px=find(PXI.lat>=-90 & PXI.lat<=90);
