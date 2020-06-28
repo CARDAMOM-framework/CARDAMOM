@@ -47,7 +47,10 @@ if OPT.STORE==1 & isstruct(CBF);warning('"STORE" option will be ignored as no .c
 
 
 
-channel=1;%NOTE: this option is not available yet%If running in parallel, make sure to run on separate "channel"
+%channel=1;%NOTE: this option is not available yet%If running in parallel, make sure to run on separate "channel"
+%Now ensuring no clashes by (a) unique file id with date, and (b) deleting
+%files when done
+channel=datestr(now,'yyyy-mm-dd-HH:MM:SS:FFF');
 
 if OPT.compile==1
 CARDAMOM_COMPILE(OPT.Cpath);
@@ -61,7 +64,7 @@ if iscell(CBF);CBF=CBF{1};end
 if isstruct(CBF)
     %Here MD is a CARDAMOM data structure and PARS is a NxM array with N
     %samples of M parameters
-cbffile=sprintf('%s/tempcardametfile%i.cbf',Dpath,channel);
+cbffile=sprintf('%s/tempcardametfile%s.cbf',Dpath,channel);
 %writing parameters to file
 %writing met drivers to file
 CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,cbffile);
@@ -124,11 +127,11 @@ if isempty(PARS);PARS=sprintf('%s/tempcardaparfile%i.bin',Dpath,channel);disp('*
 %enter exact compilation code HERE:
 
 if OPT.STORE==0
-fluxfile=sprintf('%s/tempcardafluxfile%i.bin',Dpath,channel);
-poolfile=sprintf('%s/tempcardapoolfile%i.bin',Dpath,channel);
-edcdfile=sprintf('%s/tempcardaedcdfile%i.bin',Dpath,channel);
-probfile=sprintf('%s/tempcardaprobfile%i.bin',Dpath,channel);
-parfile=sprintf('%s/tempcardaparfile%i.bin',Dpath,channel);
+fluxfile=sprintf('%s/tempcardafluxfile%s.bin',Dpath,channel);
+poolfile=sprintf('%s/tempcardapoolfile%s.bin',Dpath,channel);
+edcdfile=sprintf('%s/tempcardaedcdfile%s.bin',Dpath,channel);
+probfile=sprintf('%s/tempcardaprobfile%s.bin',Dpath,channel);
+parfile=sprintf('%s/tempcardaparfile%s.bin',Dpath,channel);
 
 else
     %unique identifier based on name,location and creation date of file
@@ -405,6 +408,14 @@ end
 
 
  CBR.run_mode='forward';        
+ 
+ 
+ 
+ 
+ if OPT.STORE==0
+delete(sprintf('%s/tempcar*%s*',Dpath,channel));
+ end
+
 
 end
 
