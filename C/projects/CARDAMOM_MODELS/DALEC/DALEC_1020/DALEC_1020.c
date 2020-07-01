@@ -45,9 +45,10 @@ double *NEE=DATA.M_NEE;
   POOLS[4]=pars[21];
   POOLS[5]=pars[22];
   /*water pool*/
-
-POOLS[6]=pars[26];
-POOLS[7]=pars[35];
+  POOLS[6]=pars[26];
+  POOLS[7]=pars[35];
+  /*LAI module variables*/
+  POOLS[8]=pars[36];
 
 
 /* NOTES FOR POOLS AND FLUXES
@@ -212,7 +213,8 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
         POOLS[nxp+2] = POOLS[p+2] + (FLUXES[f+5] - FLUXES[f+11])*deltat;
         POOLS[nxp+3] = POOLS[p+3] +  (FLUXES[f+6] - FLUXES[f+10])*deltat;
         POOLS[nxp+4] = POOLS[p+4] + (FLUXES[f+9] + FLUXES[f+11] - FLUXES[f+12] - FLUXES[f+14])*deltat; 
-        POOLS[nxp+5]= POOLS[p+5]+ (FLUXES[f+14] - FLUXES[f+13]+FLUXES[f+10])*deltat;                    
+        POOLS[nxp+5]= POOLS[p+5]+ (FLUXES[f+14] - FLUXES[f+13]+FLUXES[f+10])*deltat;     
+        POOLS[nxp+8]= LAI[n];               
 /*Water pool = Water pool - runoff + prec (mm/day) - ET*/
 	/*printf("%2.1f\n",POOLS[p+6]);*/
 	/*PAW total runoff*/
