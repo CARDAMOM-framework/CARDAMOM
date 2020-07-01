@@ -159,6 +159,9 @@ CARDADATA->parmax[34]=100000;
 CARDADATA->parmin[35]=1;
 CARDADATA->parmax[35]=10000;
 
+/*Initial LAI*/
+CARDADATA->parmin[36]=0.001;
+CARDADATA->parmax[36]=10;
 
 return 0;
 

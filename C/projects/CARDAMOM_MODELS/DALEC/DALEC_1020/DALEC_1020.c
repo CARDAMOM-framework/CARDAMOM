@@ -2,6 +2,7 @@
 #include "../../../DALEC_CODE/DALEC_ALL/ACM.c"
 #include "../../../DALEC_CODE/DALEC_ALL/offset.c"
 #include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
+#include "../../../DALEC_CODE/DALEC_ALL/LAI_KNORR.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
@@ -152,7 +153,9 @@ f=nofluxes*n;
 
 
 /*LAI*/
+LAI[n]=LAI_KNORR()[0];
 LAI[n]=POOLS[p+1]/pars[16]; 
+//printf("LAI (t=%d) = %f\n", n, LAI[n]);
 
 /*POOLS[p+8]=erf(((DATA.MET[m+1]+DATA.MET[m+2])/2 - pars[36])/pars[37]);*/
 
