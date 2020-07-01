@@ -93,8 +93,6 @@ DATA.MET[:,8]: precipitation
 	29. Runoff
 */
 
-
-
 /*constants for exponents of leaffall and labrelease factors*/
 /*width*/
 double wf=pars[15]*sqrt(2)/2;
@@ -155,6 +153,9 @@ f=nofluxes*n;
 
 /*LAI*/
 LAI[n]=POOLS[p+1]/pars[16]; 
+
+/*POOLS[p+8]=erf(((DATA.MET[m+1]+DATA.MET[m+2])/2 - pars[36])/pars[37]);*/
+
 /*GPP*/
 gpppars[0]=LAI[n];
 gpppars[1]=DATA.MET[m+2];
