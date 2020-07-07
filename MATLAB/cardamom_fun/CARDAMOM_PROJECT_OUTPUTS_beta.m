@@ -1,4 +1,4 @@
-function CARFIELDS=CARDAMOM_PROJECT_OUTPUTS_beta(PXI,FIELDS)
+function CARFIELDS=CARDAMOM_PROJECT_OUTPUTS_beta(PXI,FIELDS,OPT)
 
 %Functionality: uses PXI and FIELDS structure
 %
@@ -6,7 +6,7 @@ function CARFIELDS=CARDAMOM_PROJECT_OUTPUTS_beta(PXI,FIELDS)
 %
 %Required
 %FIELDS(n).name='GPP_monthly'
-%FIELDS(n).func=@(CBR,cbffile) mean(CBR.GPP); 
+%FIELDS(n).func=@(CBR,cbffile) mean(CBR.GPP,2); 
 %
 %
 %Optional
@@ -14,6 +14,13 @@ function CARFIELDS=CARDAMOM_PROJECT_OUTPUTS_beta(PXI,FIELDS)
 %Functions on n x m array
 %FIELDS(n).stats(s).name
 %FIELDS(n).stats(s).func; %default = percentiles, mean, stdes
+
+
+defval('OPT',[])
+
+if isempty(OPT) | isfield(OPT,'STORE')==0; OPT.STORE=1;end
+    
+
 
 
 defval('writetofile',0);
@@ -61,16 +68,21 @@ else
 
 crmopt.MODEL.ID=PXI.ID;
 crmopt.MODEL.MA=CARDAMOM_MODEL_LIBRARY(PXI.ID);
-crmopt.STORE=1;%flag to store outputs
+crmopt.STORE=OPT.STORE;%flag to store outputs
 crmopt.compile=0;
 
     %Step 1. Check if files exist or need overwriting 
+    ow=0;
 for f=1:numel(FIELDS);
 
     
     filenames{f}=[output_path,'/',FIELDS(f).name,'.mat'];
+    
         
-    if isfield(FIELDS,'overwrite') & FIELDS(f).overwrite==1 ;fstatus(f)=0;else;    fstatus(f)=isfile(filenames{f});end
+    if isfield(FIELDS,'overwrite') & FIELDS(f).overwrite==1;fstatus(f)=0 ;
+        if isfile(filenames{f})==1;ow=1;disp(sprintf('About to overwrite %s...',filenames{f}));pause(1);end
+        
+        ;else;    fstatus(f)=isfile(filenames{f});end
     
     
          F{f}=matfile(filenames{f},'Writable',true);
@@ -78,8 +90,7 @@ for f=1:numel(FIELDS);
    
 end
 
-
-
+if ow==1;for n=10:-1:1;disp(sprintf('Overwriting files in %i seconds',n));pause(1);end;end
 
 
 %Step 2. Populate missing files
