@@ -24,9 +24,14 @@ dcdb=(MODEL([Aposterior,Bposterior+Bposterior*0.001]) - Cposterior)./(Bposterior
 
 %Step 6, make plots
 figure(1);clf
-subplot(2,3,1);plot(Aposterior,Cposterior,'.');xlabel('A');ylabel('C');
-subplot(2,3,2);plot(Bposterior,Cposterior,'.');xlabel('B');ylabel('C');
-subplot(2,3,3);plot(Aposterior,Bposterior,'.');xlabel('A');ylabel('B');
 
-subplot(2,3,4);hist(dcda);xlabel('dC/dA');
-subplot(2,3,5);hist(dcdb);xlabel('dC/dB');
+subplot(3,3,1);hist(Aposterior);xlabel('A');
+subplot(3,3,2);hist(Bposterior);xlabel('B');
+subplot(3,3,3);hist(Cposterior);xlabel('C');
+
+subplot(3,3,4);plot(Aposterior,Cposterior,'.');xlabel('A');ylabel('C');
+subplot(3,3,5);plot(Bposterior,Cposterior,'.');xlabel('B');ylabel('C');
+subplot(3,3,6);plot(Aposterior,Bposterior,'.');xlabel('A');ylabel('B');
+
+subplot(3,3,7);hist(dcda);xlabel('dC/dA');
+subplot(3,3,8);hist(dcdb);xlabel('dC/dB');
