@@ -6,11 +6,19 @@ function aperc=percentile(a,perc,pdim)
 
 defval('pdim',1)
 %flipping for simplicity
+
+
 if size(a,1)==1 & ndims(a)==2;a=a';end
 
 aperc=perc*0;
+
+%removing non-finite
+a=a(isfinite(a));
+
 la=size(a,pdim)-1;
 a=sort(a,pdim);
+
+
 
 dimstr='';
 for n=1:ndims(a)
