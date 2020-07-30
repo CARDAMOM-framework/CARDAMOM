@@ -14,6 +14,9 @@ fname='CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE_beta.nc.cbf';delete(fname)
 
 %Global attributes
 nccreate(fname,'ID'); ncwrite(fname,'ID',CBF.ID)
+nccreate(fname,'LAT'); ncwrite(fname,'LAT',CBF.LAT)
+nccreate(fname,'EDC'); ncwrite(fname,'EDC',CBF.EDC)
+nccreate(fname,'MCMC_ID'); ncwrite(fname,'MCMC_ID',int(119))
 
 
 %Caveat = for some reason, matlab wants variable created before making
