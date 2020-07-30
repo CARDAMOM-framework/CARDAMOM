@@ -20,7 +20,7 @@ defval('OPT',[])
 
 if isempty(OPT) | isfield(OPT,'STORE')==0; OPT.STORE=1;end
     
-
+if isfield(OPT,'matfile')==0;OPT.matfile=1;end
 
 
 defval('writetofile',0);
@@ -84,8 +84,12 @@ for f=1:numel(FIELDS);
         
         ;else;    fstatus(f)=isfile(filenames{f});end
     
-    
+    if OPT.matfile==1;
          F{f}=matfile(filenames{f},'Writable',true);
+    elseif OPT.matfile==0 & fstatus(f)==1
+        load(filenames{f})
+        
+    end
 
    
 end
@@ -131,7 +135,11 @@ for p=px;%1:numel(PXI.lon);
                 sname=FIELDS(f).stats(s).name;
                 if p==px(1);
                     %E.g F.mean 
+                    if ndims(carout_stats)==2 & min(size(carout_stats))==1
                     F{f}.(sname)=zeros(size(PXI.pixelidmap,1),size(PXI.pixelidmap,2),numel(carout_stats));
+                    elseif ndims(carout_stats)>=2 & min(size(carout_stats))>1
+                    F{f}.(sname)=zeros([size(PXI.pixelidmap,1),size(PXI.pixelidmap,2),size(carout_stats)]);
+                    end
                 end
                 
                 
@@ -143,7 +151,12 @@ for p=px;%1:numel(PXI.lon);
 
                     case 2
                                             F{f}.(sname)(PXI.r(p),PXI.c(p))=carout_stats;
-                        
+                    case 4
+                        F{f}.(sname)(PXI.r(p),PXI.c(p),1:size(carout_stats,1),1:size(carout_stats,2))=permute(carout_stats,[3,4,1,2]);
+                   case 5
+                        F{f}.(sname)(PXI.r(p),PXI.c(p),1:size(carout_stats,1),1:size(carout_stats,2),1:size(carout_stats,3))=permute(carout_stats,[4,5,1,2,3]);
+                   case 6
+                        F{f}.(sname)(PXI.r(p),PXI.c(p),1:size(carout_stats,1),1:size(carout_stats,2),1:size(carout_stats,3),1:size(carout_stats,4))=permute(carout_stats,[5,6,1,2,3,4]);
                 end
                 
                     
@@ -151,13 +164,21 @@ for p=px;%1:numel(PXI.lon);
             end
                 
 
-            end
+            
             
 
     
             
-    end
 
+    if OPT.matfile==0 & (mod(p,30)==5 | p==px(end))
+        disp(['Saving here ... ',filenames{f}])
+        Fstruct=F{f};
+        save(filenames{f},'Fstruct','-v7.3')
+        disp('..Done...')
+    end
+    
+            end
+            
 end
 
 %     
@@ -167,17 +188,21 @@ end
 % end
 
 
-
-    
+end
     
 %Step 3. Read all files
 for f=1:numel(FIELDS)
+    if OPT.matfile==1
+
         CARFIELDS.(FIELDS(f).name)=matfile(filenames{f},'Writable',false);
+    else
+         CARFIELDS.(FIELDS(f).name)=load(filenames{f},'Fstruct');
+    end
 end
 
 
 
-end
+
 
 
 
