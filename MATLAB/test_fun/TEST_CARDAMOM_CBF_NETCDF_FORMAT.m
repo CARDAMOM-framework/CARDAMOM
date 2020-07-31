@@ -44,6 +44,7 @@ ncwriteatt(fname,'GPP','gppabs',CBF.OBSUNC.GPP.gppabs)
 ncwriteatt(fname,'GPP','obs_unc_threshold',CBF.OBSUNC.GPP.obs_unc_threshold)
 ncwriteatt(fname,'GPP','gppabs_info',CBF.OBSUNC.GPP.gppabs_info)
 ncwriteatt(fname,'GPP','info',CBF.OBSUNC.GPP.info)
+ncwriteatt(fname,'GPP','uncertainty factors',CBF.OBSinfo.uncertainty_factors)
 
 %global attributes
 nccreate(fname,'CH4','Dimensions',{'ch4time',numel(CBF.OBS.CH4)});
@@ -64,7 +65,7 @@ ncwrite(fname,'LAI',CBF.OBS.LAI);
 %Variable attributes
 ncwriteatt(fname,'LAI','Description','Leaf Area Index')
 ncwriteatt(fname,'LAI','LAI data requirement',CBF.OBSinfo.LAI)
-ncwriteatt(fname,'LAI','LAI uncertainty factors',CBF.OBSinfo.uncertainty_factors)
+ncwriteatt(fname,'LAI','uncertainty factors',CBF.OBSinfo.uncertainty_factors)
 % maybe needed these three fields later
 % ncwriteatt(fname,'LAI','Uncertainty',CBF.OBSUNC.LAI.unc) 
 % ncwriteatt(fname,'LAI','Annual Uncertainty',CBF.OBSUNC.LAI.annual_unc)
