@@ -7,7 +7,7 @@ CBF=CARDAMOM_READ_BINARY_FILEFORMAT('CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE
 
 fname='CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE_beta.nc.cbf';delete(fname)
 
-
+%*******Write CBF structure fields to .nc file**********
 
 %Setting/testing convention here: pass global "attributes" as variables,
 %unless completely self-explanatory...
