@@ -48,8 +48,10 @@ CARDADATA->parmin[8]=0.0000001;
 CARDADATA->parmax[8]=0.001;
 
 /*Temp factor* = Q10 = 1.2-1.6*/
-CARDADATA->parmin[9]=0.018;
-CARDADATA->parmax[9]=0.08;
+//CARDADATA->parmin[9]=0.018;
+//CARDADATA->parmax[9]=0.08;
+CARDADATA->parmin[9]=1.2;
+CARDADATA->parmax[9]=2;
 
 /*Canopy Efficiency*/
 CARDADATA->parmin[10]=5;
@@ -180,7 +182,7 @@ CARDADATA->parmin[40]=0.001;
 CARDADATA->parmax[40]=0.9;
 
 /*jc Q10ch4 Q10 for CH4 production  */
-CARDADATA->parmin[41]=0.01;
+CARDADATA->parmin[41]=1.0;
 CARDADATA->parmax[41]=3.0;
 
 
