@@ -26,7 +26,11 @@ nccreate(fname,'GPP','Dimensions',{'time',numel(CBF.OBS.GPP)});
 ncwrite(fname,'GPP',CBF.OBS.GPP);
 %Variable attributes
 ncwriteatt(fname,'GPP','Description','Gross Primary Productivity')
-
+ncwriteatt(fname,'GPP','Uncertainty',CBF.OBSUNC.GPP.unc)
+ncwriteatt(fname,'GPP','Annual Uncertainty',CBF.OBSUNC.GPP.annual_unc)
+%...
+%...
+%...
 
 
 
