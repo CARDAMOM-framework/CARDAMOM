@@ -3,7 +3,7 @@ function CBROUT=cardamomfun_combine_parameter_chains(CBR)
 %
 %Last shared on Nov 27, 2019
 
-CBR=rmfield(CBR,'chainid');
+if isfield(CBR,'chainid');disp('Note: deleting existing "chainid" field');    CBR=rmfield(CBR,'chainid');end
 
 fieldnames=fields(CBR(1,1));
 CBROUT=CBR(1);
