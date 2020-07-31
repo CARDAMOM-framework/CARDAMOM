@@ -20,7 +20,7 @@ nccreate(fname,'MCMC_ID'); ncwrite(fname,'MCMC_ID',int(119))
 nccreate(fname,'nodays'); ncwrite(fname,'nodays',CBF.nodays)
 nccreate(fname,'nomet'); ncwrite(fname,'nomet',CBF.nomet)
 nccreate(fname,'EDCDIAG'); ncwrite(fname,'EDCDIAG',CBF.EDCDIAG)
-nccreate(fname,'rc_random_search'); ncwrite(fname,'rc_random_search',rc_random_search.nodays)
+nccreate(fname,'rc_random_search'); ncwrite(fname,'rc_random_search',double(CBF.rc_random_search))
 
 %Caveat = for some reason, matlab wants variable created before making
 %global attributes
