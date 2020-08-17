@@ -461,8 +461,10 @@ end
 function D= drainage(DATA,PARS,STATES,t);
 
 
-        
+        %Excess moisture above field capacity
     SMdelta = max(STATES.SM(t+1,:) - DATA.FUNC.psi2moi(PARS.psifield,PARS.psiporosity,PARS.psi_b),0);
+    %Drainage calculated as (1 - (Psi_porisity - Psi(t))./(Psi_porisity - Psi_field))) * SMexcess/2
+    
     D=(1- (PARS.psiporosity-min(max(STATES.PSI(t,:),PARS.psifield),PARS.psiporosity))./(PARS.psiporosity-PARS.psifield)).*(SMdelta)/2;
 
     
