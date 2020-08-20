@@ -1,5 +1,10 @@
 % Step 1. Read CBF file
 CBF=CARDAMOM_READ_BINARY_FILEFORMAT('CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbf');
+%Dimensions
+%nopars
+%nodays
+nodays=CBF.nodays;
+
 
 
 %Step 2. write as netcdf file
@@ -17,12 +22,22 @@ nccreate(fname,'ID'); ncwrite(fname,'ID',CBF.ID)
 nccreate(fname,'LAT'); ncwrite(fname,'LAT',CBF.LAT)
 nccreate(fname,'EDC'); ncwrite(fname,'EDC',CBF.EDC)
 % nccreate(fname,'MCMC_ID'); ncwrite(fname,'MCMC_ID',int(119)) %Undefined function 'int' for input arguments of type 'double'.
-nccreate(fname,'nodays'); ncwrite(fname,'nodays',CBF.nodays)
-nccreate(fname,'nomet'); ncwrite(fname,'nomet',CBF.nomet)
+nccreate(fname,'nodays'); ncwrite(fname,'nodays',nodays)
+%nccreate(fname,'nomet'); ncwrite(fname,'nomet',CBF.nomet)
+
+%*********write CBF met***********
+nccreate(fname,'PARPRIORS','Dimensions',{'nodays', nodays}); 
+nccreate(fname,'PARPRIORS','Dimensions',{'nodays', nodays}); 
+nccreate(fname,'PARPRIORS','Dimensions',{'nodays', nodays}); 
+nccreate(fname,'PARPRIORS','Dimensions',{'nodays', nodays}); 
+
+
+
+
 nccreate(fname,'EDCDIAG'); ncwrite(fname,'EDCDIAG',CBF.EDCDIAG)
 nccreate(fname,'rc_random_search'); ncwrite(fname,'rc_random_search',double(CBF.rc_random_search))
 
-nccreate(fname,'PARPRIORS','Dimensions',{'nopars',numel(CBF.PARPRIORS)}); 
+nccreate(fname,'PARPRIORS','Dimensions',{'nopars', nodays}); 
 ncwrite(fname,'PARPRIORS',CBF.PARPRIORS)
 nccreate(fname,'PARPRIORUNC','Dimensions',{'nopars',numel(CBF.PARPRIORUNC)});
 ncwrite(fname,'PARPRIORUNC',CBF.PARPRIORUNC)
@@ -47,7 +62,7 @@ ncwriteatt(fname,'GPP','info',CBF.OBSUNC.GPP.info)
 ncwriteatt(fname,'GPP','uncertainty factors',CBF.OBSinfo.uncertainty_factors)
 
 %global attributes
-nccreate(fname,'CH4','Dimensions',{'ch4time',numel(CBF.OBS.CH4)});
+nccreate(fname,'CH4','Dimensions',{'time',numel(CBF.OBS.CH4)});
 %Writing variable 
 %----- ncwrite(fname,'CH4',CBF.OBS.CH4); %Variable data must not be empty.
 %Variable attributes
@@ -57,7 +72,7 @@ ncwriteatt(fname,'CH4','Annual Uncertainty',CBF.OBSUNC.CH4.annual_unc)
 ncwriteatt(fname,'CH4','info',CBF.OBSUNC.CH4.info)
 ncwriteatt(fname,'CH4','obs_unc_threshold',CBF.OBSUNC.CH4.obs_unc_threshold)
 
-
+%**********LAI******************
 %global attributes
 nccreate(fname,'LAI','Dimensions',{'time',numel(CBF.OBS.LAI)});
 %Writing variable 
@@ -74,6 +89,8 @@ ncwriteatt(fname,'LAI','uncertainty factors',CBF.OBSinfo.uncertainty_factors)
 %...
 %...
 %...
+
+%********
 
 
 
