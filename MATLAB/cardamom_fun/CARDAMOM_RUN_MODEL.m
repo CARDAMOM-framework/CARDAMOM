@@ -47,7 +47,10 @@ if OPT.STORE==1 & isstruct(CBF);warning('"STORE" option will be ignored as no .c
 
 
 
-channel=1;%NOTE: this option is not available yet%If running in parallel, make sure to run on separate "channel"
+%channel=1;%NOTE: this option is not available yet%If running in parallel, make sure to run on separate "channel"
+%Now ensuring no clashes by (a) unique file id with date, and (b) deleting
+%files when done
+channel=datestr(now,'yyyy-mm-dd-HH:MM:SS:FFF');
 
 if OPT.compile==1
 CARDAMOM_COMPILE(OPT.Cpath);
@@ -61,7 +64,7 @@ if iscell(CBF);CBF=CBF{1};end
 if isstruct(CBF)
     %Here MD is a CARDAMOM data structure and PARS is a NxM array with N
     %samples of M parameters
-cbffile=sprintf('%s/tempcardametfile%i.cbf',Dpath,channel);
+cbffile=sprintf('%s/tempcardametfile%s.cbf',Dpath,channel);
 %writing parameters to file
 %writing met drivers to file
 CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,cbffile);
@@ -124,11 +127,11 @@ if isempty(PARS);PARS=sprintf('%s/tempcardaparfile%i.bin',Dpath,channel);disp('*
 %enter exact compilation code HERE:
 
 if OPT.STORE==0
-fluxfile=sprintf('%s/tempcardafluxfile%i.bin',Dpath,channel);
-poolfile=sprintf('%s/tempcardapoolfile%i.bin',Dpath,channel);
-edcdfile=sprintf('%s/tempcardaedcdfile%i.bin',Dpath,channel);
-probfile=sprintf('%s/tempcardaprobfile%i.bin',Dpath,channel);
-parfile=sprintf('%s/tempcardaparfile%i.bin',Dpath,channel);
+fluxfile=sprintf('%s/tempcardafluxfile%s.bin',Dpath,channel);
+poolfile=sprintf('%s/tempcardapoolfile%s.bin',Dpath,channel);
+edcdfile=sprintf('%s/tempcardaedcdfile%s.bin',Dpath,channel);
+probfile=sprintf('%s/tempcardaprobfile%s.bin',Dpath,channel);
+parfile=sprintf('%s/tempcardaparfile%s.bin',Dpath,channel);
 
 else
     %unique identifier based on name,location and creation date of file
@@ -252,7 +255,7 @@ if OPT.extended==1
     
   %Water stress
   if size(CBR.POOLS,3)>6
-      if OPT.MODEL.ID<=8 | OPT.MODEL.ID==801 | OPT.MODEL.ID==802 | OPT.MODEL.ID==803  | OPT.MODEL.ID==804  | OPT.MODEL.ID==805   | OPT.MODEL.ID==806   | OPT.MODEL.ID==807   | OPT.MODEL.ID==808    | OPT.MODEL.ID==809 | OPT.MODEL.ID==810 | OPT.MODEL.ID==811| OPT.MODEL.ID==812 | OPT.MODEL.ID==10  | OPT.MODEL.ID==1000
+      if OPT.MODEL.ID<=8 | OPT.MODEL.ID==801 | OPT.MODEL.ID==802 | OPT.MODEL.ID==803  | OPT.MODEL.ID==804  | OPT.MODEL.ID==805   | OPT.MODEL.ID==806   | OPT.MODEL.ID==807   | OPT.MODEL.ID==808    | OPT.MODEL.ID==809 | OPT.MODEL.ID==810 | OPT.MODEL.ID==811 | OPT.MODEL.ID==812 | OPT.MODEL.ID==813 | OPT.MODEL.ID==10  | OPT.MODEL.ID==1000 | OPT.MODEL.ID==1002
     CBR.H2OSTRESS=min([PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);
       elseif OPT.MODEL.ID==9
           CBR.H2OSTRESS=1-exp(-[PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]));
@@ -296,7 +299,7 @@ end
 
 
 
-if OPT.MODEL.ID==1000;
+if OPT.MODEL.ID==1000 | OPT.MODEL.ID==1002;
     %Accounting for time offset
     CBR.EWT=[CBR.PARS(:,27), CBR.POOLS(:,:,7)]+[CBR.PARS(:,36),CBR.POOLS(:,:,8)];
     CBR.EWT=CBR.EWT(:,2:end)/2+CBR.EWT(:,1:end-1)/2;
@@ -309,7 +312,7 @@ if OPT.MODEL.ID==1000;
     %Wrong: CBR.RO=CBR.FLUXES(:,:,30)-CBR.FLUXES(:,:,31)+CBR.FLUXES(:,:,32);
     CBR.RO=CBR.FLUXES(:,:,30)+CBR.FLUXES(:,:,32);
     
-elseif OPT.MODEL.ID==811 | OPT.MODEL.ID==812;
+elseif OPT.MODEL.ID==811 | OPT.MODEL.ID==812 | OPT.MODEL.ID==813
     %Plant-available EWT
     CBR.EWT=[CBR.PARS(:,27), CBR.POOLS(:,:,7)];
     CBR.EWT=CBR.EWT(:,2:end)/2+CBR.EWT(:,1:end-1)/2;
@@ -327,7 +330,7 @@ end
     
 
 
-if OPT.MODEL.ID==811 ||  OPT.MODEL.ID==809 || OPT.MODEL.ID==1000 || OPT.MODEL.ID==812;
+if OPT.MODEL.ID==811 ||  OPT.MODEL.ID==809 || OPT.MODEL.ID==1000 || OPT.MODEL.ID==1002 || OPT.MODEL.ID==812 || OPT.MODEL.ID==813;
 
     %export ET 
     CBR.ET=CBR.FLUXES(:,:,29);
@@ -405,6 +408,14 @@ end
 
 
  CBR.run_mode='forward';        
+ 
+ 
+ 
+ 
+ if OPT.STORE==0
+delete(sprintf('%s/tempcar*%s*',Dpath,channel));
+ end
+
 
 end
 

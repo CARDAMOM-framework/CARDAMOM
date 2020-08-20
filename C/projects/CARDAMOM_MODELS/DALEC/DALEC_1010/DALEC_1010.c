@@ -209,7 +209,10 @@ gpppars[7]=DATA.MET[m+3];
     //   }
     /* fT Temperature factor on respiration */
     // fT = fmin(1,exp(pars[9]*(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-DATA.meantemp)));
-    fT = exp(pars[9]*(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-DATA.meantemp));
+    //arrhenius
+    //fT = exp(pars[9]*(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-DATA.meantemp)); 
+    //Q10
+    fT = pow(pars[9],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-DATA.meantemp)/10); 
     //fT = pow(pars[9],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-DATA.meantemp)/10);
     /* fV Volumetric factor seperating aerobic and anaerobic respiration */
     /* statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs) */
@@ -248,7 +251,7 @@ FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
 FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
-FLUXES[f+1]=exp(pars[9]*(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-DATA.meantemp))*((DATA.MET[m+8]/DATA.meanprec-1)*pars[32]+1);
+FLUXES[f+1]=pow(pars[9],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-DATA.meantemp)/10)*((DATA.MET[m+8]/DATA.meanprec-1)*pars[32]+1);
 /*respiration auto*/
 FLUXES[f+2]=pars[1]*FLUXES[f+0];
 /*leaf production*/
@@ -282,9 +285,11 @@ FLUXES[f+32] = POOLS[p+4]*(1-pow(1-fW*fT*fV*pars[8-1],deltat))/deltat;
 /*33 aerobic Rh from SOM*/
 FLUXES[f+33] = POOLS[p+5]*(1-pow(1-fW*fT*fV*pars[9-1],deltat))/deltat;
 /*34 anaerobic Rh from litter*/
-FLUXES[f+34] = POOLS[p+4]*(1-pow(1-1*fT*(1-fV)*pars[8-1],deltat))/deltat;
+//FLUXES[f+34] = POOLS[p+4]*(1-pow(1-1*fT*(1-fV)*pars[8-1],deltat))/deltat;
+FLUXES[f+34] = POOLS[p+4]*(1-pow(1-1*fT*(1-fV)*fwc*pars[8-1],deltat))/deltat;
 /*35 anaerobic Rh from SOM*/
-FLUXES[f+35] = POOLS[p+5]*(1-pow(1-1*fT*(1-fV)*pars[9-1],deltat))/deltat;
+//FLUXES[f+35] = POOLS[p+5]*(1-pow(1-1*fT*(1-fV)*pars[9-1],deltat))/deltat;
+FLUXES[f+35] = POOLS[p+5]*(1-pow(1-1*fT*(1-fV)*fwc*pars[9-1],deltat))/deltat;
 /*36 Rh_CO2*/
 FLUXES[f+36] = (FLUXES[f+32]+FLUXES[f+33])*1+(FLUXES[f+34]+FLUXES[f+35])*(1-fCH4);
 /*37 Rh_CH4*/

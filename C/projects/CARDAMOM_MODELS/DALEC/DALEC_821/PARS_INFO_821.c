@@ -140,24 +140,24 @@ CARDADATA->parmin[30]=0.01;
 CARDADATA->parmax[30]=1;
 
 /* ball-berry slope m [unitless]*/
-CARDADATA->parmin[31]=.01;
+CARDADATA->parmin[31]=2; //Olsen et al. 2010
 CARDADATA->parmax[31]=30;//50;
 
 /* ball-berry intercept b [mol m^-2 s^-1]*/
-CARDADATA->parmin[32]=0.0000001;
+CARDADATA->parmin[32]=0.001; //Olsen et al. 2010
 CARDADATA->parmax[32]=0.1;//1;
 
-/* leaf boundary layer conductance gb [mol m^-2 s^-1]*/
-CARDADATA->parmin[33]=0.01;
+/* leaf boundary layer conductance gb,CO2 [mol m^-2 s^-1]*/
+CARDADATA->parmin[33]=0.4; //Martin et al. 1999
 CARDADATA->parmax[33]=10;
 
 /* Jmax [umol m^-2 s^-1]*/
-CARDADATA->parmin[34]=1;//10;
-CARDADATA->parmax[34]=600;//500;
+CARDADATA->parmin[34]=20;//10; Walker et al. 2014
+CARDADATA->parmax[34]=400;//500;
 
 /* Vmax [umol m^-2 s^-1]*/
-CARDADATA->parmin[35]=1;//10;
-CARDADATA->parmax[35]=600;//200;
+CARDADATA->parmin[35]=10;//10; Walker et al. 2014
+CARDADATA->parmax[35]=400;//200;
 
 /*IWUE: GPP*VPD/ET: gC/kgH2o *hPa*/
 //CARDADATA->parmin[36]=10;

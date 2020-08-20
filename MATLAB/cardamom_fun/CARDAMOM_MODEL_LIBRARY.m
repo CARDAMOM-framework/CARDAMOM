@@ -13,7 +13,7 @@ function MA=CARDAMOM_MODEL_LIBRARY(ID,MA,reread)
 %Example: 
 %   MA=CARDAMOM_MODEL_LIBRARY(2);
 %
-%Last modified by A.A. Bloom 2018/02/11 
+%Last modified by A.A. Bloom 2020 June 17
 Cpath=getenv('CARDAMOM_C_PATH');
 
 %C script
@@ -45,7 +45,7 @@ dumpfiledir=dir(dumpfile);
 if isempty(dir(dumpfile)) | reread==1 | dumpfiledir.datenum<filedir.datenum
     disp('Re-reading file...');
 
-D=importdata(filename);
+D=importdata(filename,'');
 
 
 %searching for model attribute" line zero"
@@ -82,7 +82,9 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',
 %repeat the same with model parameter value ranges
 %TO DO: need to set these up for other models too
 
- D=importdata(parfilename);
+
+ D=importdata(parfilename,'');
+
  pn=1;
  for n=1:size(D,1)
      linestr=D{n};
