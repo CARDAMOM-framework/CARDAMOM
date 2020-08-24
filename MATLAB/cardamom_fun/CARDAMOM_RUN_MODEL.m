@@ -299,7 +299,7 @@ end
 
 
 
-if any(ismember([1000,1001,1002,1003],OPT.MODEL.ID);
+if any(ismember([1000,1001,1002,1003],OPT.MODEL.ID))
     %Accounting for time offset
     CBR.EWT=[CBR.PARS(:,27), CBR.POOLS(:,:,7)]+[CBR.PARS(:,36),CBR.POOLS(:,:,8)];
     CBR.EWT=CBR.EWT(:,2:end)/2+CBR.EWT(:,1:end-1)/2;
@@ -315,7 +315,7 @@ if any(ismember([1000,1001,1002,1003],OPT.MODEL.ID);
     elseif OPT.MODEL.ID==1000 | OPT.MODEL.ID==1002;
         CBR.RO=CBR.FLUXES(:,:,30)+CBR.FLUXES(:,:,32);
     
-elseif any(ismember([811,812,813],OPT.MODEL.ID) 
+elseif any(ismember([811,812,813],OPT.MODEL.ID)) 
     %Plant-available EWT
     CBR.EWT=[CBR.PARS(:,27), CBR.POOLS(:,:,7)];
     CBR.EWT=CBR.EWT(:,2:end)/2+CBR.EWT(:,1:end-1)/2;
@@ -333,7 +333,7 @@ end
     
 
 
-if any(ismember([809,811,812,813,1000,1001,1002,1003],OPT.MODEL.ID)
+if any(ismember([809,811,812,813,1000,1001,1002,1003],OPT.MODEL.ID))
 
     %export ET 
     CBR.ET=CBR.FLUXES(:,:,29);
