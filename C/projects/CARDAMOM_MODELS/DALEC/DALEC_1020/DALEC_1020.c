@@ -154,7 +154,7 @@ f=nofluxes*n;
 
 
 /*LAI*/
-LAI[n]=LAI_KNORR()[0];
+// LAI[n]=LAI_KNORR()[0];
 LAI[n]=POOLS[p+1]/pars[16]; 
 //printf("LAI (t=%d) = %f\n", n, LAI[n]);
 
