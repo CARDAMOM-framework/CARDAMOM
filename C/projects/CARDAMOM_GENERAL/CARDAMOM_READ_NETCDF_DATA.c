@@ -1,12 +1,12 @@
 //This file was moddified from CARDAMOM_READ_BINARY_DATA.c
 //it attepts to read in a netcdf file and store it
+//Note that a loit of this is lifted directly from https://www.unidata.ucar.edu/software/netcdf/docs/simple_nc4_rd_8c-example.html
 //TODO: Work on integrating this with the rest of CARDAMOM using CARDAMOM_RUN_MODEL.m
 
 
 
 /*INCLUDING THE PARAMETER_INFO structure*/
 /*Note: it remains unclear as to where this structure should be defined*/
-// TODO: put in include guards
 
 #pragma once
 #include "../../auxi_fun/filediag.c"
@@ -16,9 +16,85 @@
 #include "memory.h"
 #include "CARDAMOM_DATA_STRUCTURE.c"
 
+#include <netcdf.h>
 
 
 #include "CARDAMOM_MODEL_LIBRARY.c"
+
+
+
+
+/* Handle errors by printing an error message and exiting with a
+ * non-zero status. */
+#define ERRCODE 2
+#define ERR(e) {printf("Error in $s at $d: %s\n", __FILE__, __LINE__, nc_strerror(e)); exit(ERRCODE);}
+
+
+
+
+/////!!!!!!!!!!!!!!!!TODO: Implement manditory default values, and code to manage when values are in fact required.
+
+/*
+ * Function:  ncdf_read_int_attr
+ * --------------------
+ * Attempts to read a single int that is stored under a particular name in the netCDF file's attributes
+ *
+ *  ncid: netCDF file ID to pull the data from. This is the id given by nc_open after the netCDF file is opened
+ *  context: this is the context in which the attribute was stored. Can be a variable name, or '/' if it is a global attribute
+ *  attrName: This is the name of the attibute to read
+ *  default: the default value to use if the requested attribute does not exsist
+ *
+ *  returns: the int attribute read, or default if the requested attribute does not exsist.
+ *   if there is an error, the program exits after displaying a message.
+ */
+int ncdf_read_int_attr(int ncid, const char* context, const char * attrName, int default ){
+	int attrResult;
+	int varID=NC_GLOBAL;
+	if ((context != NULL) && (context[0] != '/')){
+		//Attempt to locate the id of the approprate variable
+		if ((retval = nc_inq_varid(ncid, context, &varID))){
+			//The failure was in locating the context, not the arttr
+			ERR(retval);
+		}
+	}
+	if ((retval = nc_get_att_int(ncid, varID, attrName, &attrResult))){
+		if (retval ==NC_ENOTATT ){
+			return default;
+		}
+		ERR(retval);
+	}
+	return attrResult;
+}
+/*
+ * Function:  ncdf_read_double_attr
+ * --------------------
+ * Attempts to read a single double that is stored under a particular name in the netCDF file's attributes
+ *
+ *  ncid: netCDF file ID to pull the data from. This is the id given by nc_open after the netCDF file is opened
+ *  context: this is the context in which the attribute was stored. Can be a variable name, or '/' if it is a global attribute
+ *  attrName: This is the name of the attibute to read
+ *  default: the default value to use if the requested attribute does not exsist
+ *
+ *  returns: the double attribute read. if there is an error, the program exits after displaying a message.
+ */
+double ncdf_read_double_attr(int ncid, const char* context, const char * attrName, double default ){
+	double attrResult;
+	int varID=NC_GLOBAL;
+	if ((context != NULL) && (context[0] != '/')){
+		//Attempt to locate the id of the approprate variable
+		if ((retval = nc_inq_varid(ncid, context, &varID))){
+			//The failure was in locating the context, not the arttr
+			ERR(retval);
+		}
+	}
+	if ((retval = nc_get_att_double(ncid, varID, attrName, &attrResult))){
+		if (retval ==NC_ENOTATT ){
+			return default;
+		}
+		ERR(retval);
+	}
+	return attrResult;
+}
 
 
 
@@ -53,9 +129,6 @@ return 0;}
  * filename: The path of the file to be read
  * DATA: The DATA struct to read the data into
  *
- *  returns: the approximate value of pi obtained by suming the first n terms
- *           in the above series
- *           returns zero on error (if n is non-positive)
  *
  *	NOTE: if you intend to modify what is read in when reading a netCDF file,
  *  You MUST edit both this method, and the DATA struct in CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_DATA_STRUCTURE.c
@@ -75,45 +148,48 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,DATA *DATA)
 
 
 
-
-FILE *fid=fopen(filename,"rb");
-filediag(fid,filename);
+/* Open the file. NC_NOWRITE tells netCDF we want read-only access
+	 * to the file.*/
+int ncid, retval;
+if ((retval = nc_open(filename, NC_NOWRITE, &ncid))){
+	ERR(retval);
+}
 
 /*READING STATIC DATA*/
+printf("we got to the netcdf reading part! Killing self!");
+exit(1);
 
-double statdat[100];
-/*reading 1-100*/
-fread(statdat,sizeof(double),100,fid);
+
+
 /*DALEC model run info*/
-DATA->ID=(int)statdat[0];
-DATA->LAT=statdat[1];
-DATA->nodays=(int)statdat[2];
-DATA->nomet=(int)statdat[3];
-DATA->noobs=(int)statdat[4];
-DATA->EDC=(int)statdat[5];
-DATA->EDCDIAG=(int)statdat[6];
-DATA->gppabs=(int)statdat[7];
+DATA->ID=ncdf_read_int_attr(ncid, NC_GLOBAL, "ID" ,0);
+DATA->LAT=ncdf_read_double_attr(ncid, NC_GLOBAL, "LAT", 0.0);
+DATA->nodays=ncdf_read_int_attr(ncid, NC_GLOBAL, "nodays", 0);
+DATA->nomet=ncdf_read_int_attr(ncid, NC_GLOBAL, "nomet", 0);
+DATA->noobs=ncdf_read_int_attr(ncid, NC_GLOBAL, "noobs", 0);
+DATA->EDC=ncdf_read_int_attr(ncid, NC_GLOBAL, "EDC", 0);
+DATA->EDCDIAG=ncdf_read_int_attr(ncid, NC_GLOBAL, "EDCDIAG", 0 );
+DATA->gppabs=ncdf_read_int_attr(ncid, NC_GLOBAL, "gppabs", 0 );
 /*DALEC MCMC run info*/
 /*set to 1 for (a) few and (b) well constrained priors, otherwise 0*/
 /*binary file mcmc options (need to add all options HERE except inout files)*/
-DATA->edc_random_search=(int)statdat[10];
-DATA->gppiav=(int)statdat[11];
-DATA->laiiav=(int)statdat[12];
-DATA->nee_annual_unc=statdat[13];
-DATA->et_annual_unc=statdat[14];
-DATA->nee_obs_unc=statdat[15];if (statdat[15]<0){DATA->nee_obs_unc=0.5;}
-DATA->et_obs_unc=statdat[16];if (statdat[16]<0){DATA->et_obs_unc=2;}
-DATA->ewt_annual_unc=statdat[17];
-DATA->ewt_obs_unc=statdat[18];if (statdat[18]<0){DATA->ewt_obs_unc=50;}
-DATA->gpp_annual_unc=statdat[19];
-DATA->gpp_obs_unc=statdat[20];if (statdat[20]<0){DATA->gpp_obs_unc=2;}
-DATA->et_obs_threshold=statdat[21]; if (statdat[21]<0){DATA->et_obs_threshold=0;}
-DATA->gpp_obs_threshold=statdat[22]; if (statdat[22]<0){DATA->gpp_obs_threshold=0;}
-DATA->ch4iav=(int)statdat[23];  /*shuang*/
-DATA->ch4_annual_unc=statdat[24];  /*shuang*/
-DATA->ch4_obs_unc=statdat[25];if (statdat[25]<0){DATA->ch4_obs_unc=0.5;}  /*shuang*/
-DATA->ch4_obs_threshold=statdat[26]; if (statdat[26]<0){DATA->ch4_obs_threshold=0;}  /*shuang*/
-
+DATA->edc_random_search=ncdf_read_int_attr(ncid, NC_GLOBAL, "edc_random_search", 0 );
+DATA->gppiav=ncdf_read_int_attr(ncid, NC_GLOBAL, "gppiav", 0 );
+DATA->laiiav=ncdf_read_int_attr(ncid, NC_GLOBAL, "laiiav", 0 );
+DATA->nee_annual_unc=ncdf_read_double_attr(ncid, NC_GLOBAL, "nee_annual_unc", 0.0 );
+DATA->et_annual_unc=ncdf_read_double_attr(ncid, NC_GLOBAL, "et_annual_unc", 0.0 );
+DATA->nee_obs_unc=ncdf_read_double_attr(ncid, NC_GLOBAL, "nee_obs_unc", 0.5 );
+DATA->et_obs_unc=ncdf_read_double_attr(ncid, NC_GLOBAL, "et_obs_unc", 2.0 );
+DATA->ewt_annual_unc=ncdf_read_double_attr(ncid, NC_GLOBAL, "ewt_annual_unc", 0.0);
+DATA->ewt_obs_unc=ncdf_read_double_attr(ncid, NC_GLOBAL, "ewt_obs_unc", 0.0);
+DATA->gpp_annual_unc=ncdf_read_double_attr(ncid, NC_GLOBAL, "gpp_annual_unc", 0.0);
+DATA->gpp_obs_unc=ncdf_read_double_attr(ncid, NC_GLOBAL, "gpp_obs_unc", 2.0);
+DATA->et_obs_threshold=ncdf_read_double_attr(ncid, NC_GLOBAL, "et_obs_threshold", 0.0);
+DATA->gpp_obs_threshold=ncdf_read_double_attr(ncid, NC_GLOBAL, "gpp_obs_threshold", 0.0);
+DATA->ch4iav=ncdf_read_int_attr(ncid, NC_GLOBAL, "ch4iav", 0); /*shuang*/
+DATA->ch4_annual_unc=ncdf_read_double_attr(ncid, NC_GLOBAL, "ch4_annual_unc", 0.0);  /*shuang*/
+DATA->ch4_obs_unc=ncdf_read_double_attr(ncid, NC_GLOBAL, "ch4_obs_unc", 0.5); /*shuang*/
+DATA->ch4_obs_threshold=ncdf_read_double_attr(ncid, NC_GLOBAL, "ch4_obs_threshold", 0.0); /*shuang*/
 
 /*UP TO USER to read data and allocate it to DATA structure*/
 double parpriors[50],parpriorunc[50],otherpriors[50],otherpriorunc[50];
