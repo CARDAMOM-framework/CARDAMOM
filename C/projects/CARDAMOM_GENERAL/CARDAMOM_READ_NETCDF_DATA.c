@@ -32,7 +32,6 @@
 
 
 
-/////!!!!!!!!!!!!!!!!TODO: Implement manditory default values, and code to manage when values are in fact required.
 
 /*
  * Function:  ncdf_read_int_attr
@@ -95,6 +94,105 @@ double ncdf_read_double_attr(int ncid, const char* context, const char * attrNam
 	}
 	return attrResult;
 }
+
+
+
+
+
+/*
+ * Function:  ncfd_get_var_info
+ * --------------------
+ *  Helper method that Attempts to read the length and varID of a 1 dimensional variable that is stored under a particular name in the netCDF file's variables
+ *
+ *  ncid: netCDF file ID to pull the data from. This is the id given by nc_open after the netCDF file is opened
+ *  varName: This is the name of the variable to read
+ *  arrayLen: pointer where the total length in number of elements of the resulting array will be written (NOT MEMORY SIZE)
+ *  varID: Pointer to where the varID of the requested var will be written
+ *
+ *  returns: None
+ *   if there is an error, the program exits after displaying a message.
+ */
+
+
+void ncfd_get_var_info(int ncid, const char * varName, size_t * arrayLen, int * varID) {
+	int numberOfDims;
+	int dimensionID;
+	//Attempt to locate the id of the approprate variable
+	if ((retval = nc_inq_varid(ncid, varName, varID))){
+		ERR(retval);
+	}
+	//check to make sure the variable has only one dim (Critial to assure well-defined behavior for all other ncdf function calls!!!)
+	if ((retval = nc_inq_varndims(ncid, *varID, &numberOfDims))){
+		ERR(retval);
+	}
+	if (numberOfDims>1 || numberOfDims<0){
+		printf("Error in $s at $d while trying to read var $s: CARDAMOM netCDF only supports 1 and 0 dimensional variables, but var has $d dimensions.\n", __FILE__, __LINE__, varName,numberOfDims);
+		exit(1);
+	}
+	//begin work in preperation for allocating the array where the variable data will be stored.
+	if (numberOfDims==0){
+		//special case, var is a scalar, so we know the length of the array is 1
+		*arrayLen=1;
+	}
+	if ((retval = nc_inq_vardimid(ncid, *varID, &dimensionID))){
+		ERR(retval);
+	}
+	if ((retval = nc_inq_dimlen(ncid, dimensionID, arrayLen))){
+		ERR(retval);
+	}
+}
+
+
+
+/*
+ * Function:  ncdf_read_int_var
+ * --------------------
+ * Attempts to read a 1 dimensional int variable that is stored under a particular name in the netCDF file's variables
+ *
+ *  ncid: netCDF file ID to pull the data from. This is the id given by nc_open after the netCDF file is opened
+ *  varName: This is the name of the variable to read
+ *  arrayLen: pointer where the total length in number of elements of the resulting array will be written (NOT MEMORY SIZE)
+ *
+ *  returns: an array of all the values of the variable,
+ *   if there is an error, the program exits after displaying a message.
+ */
+  int * ncdf_read_int_var(int ncid, const char * varName, size_t * arrayLen ){
+	int varID;
+	ncfd_get_var_info(ncid, varName, arrayLen, &varID)
+	//allocate the actual array we will be returning
+	int * resultArray= (int*)calloc(*arrayLen, sizeof(int));
+
+	if ((retval = nc_get_var_int(ncid, varID, resultArray))){
+		ERR(retval);
+	}
+	return resultArray;
+}
+
+/*
+ * Function:  ncdf_read_double_var
+ * --------------------
+ * Attempts to read a 1 dimensional double variable that is stored under a particular name in the netCDF file's variables
+ *
+ *  ncid: netCDF file ID to pull the data from. This is the id given by nc_open after the netCDF file is opened
+ *  varName: This is the name of the variable to read
+ *  arrayLen: pointer where the total length in number of elements of the resulting array will be written (NOT MEMORY SIZE)
+ *
+ *  returns: an array of all the values of the variable,
+ *   if there is an error, the program exits after displaying a message.
+ */
+  double * ncdf_read_double_var(int ncid, const char * varName, size_t * arrayLen ){
+	int varID;
+	ncfd_get_var_info(ncid, varName, arrayLen, &varID)
+	//allocate the actual array we will be returning
+	int * resultArray= (int*)calloc(*arrayLen, sizeof(double));
+
+	if ((retval = nc_get_var_double(ncid, varID, resultArray))){
+		ERR(retval);
+	}
+	return resultArray;
+}
+
+
 
 
 
