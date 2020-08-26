@@ -3,8 +3,10 @@ CBF=CARDAMOM_READ_BINARY_FILEFORMAT('CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE
 %Dimensions
 %nopars
 %nodays
-nodays=CBF.nodays;
-
+%Number of timesteps
+nodays=size(CBF.MET,1);
+%Number of met fields
+nomet=size(CBF.MET,2);
 
 
 %Step 2. write as netcdf file
@@ -26,10 +28,7 @@ nccreate(fname,'nodays'); ncwrite(fname,'nodays',nodays)
 %nccreate(fname,'nomet'); ncwrite(fname,'nomet',CBF.nomet)
 
 %*********write CBF met***********
-nccreate(fname,'PARPRIORS','Dimensions',{'nodays', nodays}); 
-nccreate(fname,'PARPRIORS','Dimensions',{'nodays', nodays}); 
-nccreate(fname,'PARPRIORS','Dimensions',{'nodays', nodays}); 
-nccreate(fname,'PARPRIORS','Dimensions',{'nodays', nodays}); 
+nccreate(fname,'MET','Dimensions',{'nodays', nodays,'nomet',nomet}); ncwrite(fname,'MET',CBF.MET);
 
 
 
