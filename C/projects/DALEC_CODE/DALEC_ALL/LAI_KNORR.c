@@ -1,6 +1,6 @@
 #pragma once
 /* Leaf Phenology Model of Knorr et al. (2010, doi: 10.1029/2009JG001119)*/
-double* LAI_KNORR()
+double* LAI_KNORR(double const *met_list, double const *var_list)
 {
   /*double gc=0,pp=0,qq=0,ci=0,e0=0,mult=0,dayl=0,cps=0,dec=0;*/
   //double gc,pp,qq,ci,e0,mult,dayl,cps,dec,GPP;
@@ -64,6 +64,27 @@ gpppars[7]=DATA.MET[m+3];
 
   //cps=(double)e0*pars[7]*gc*(pars[4]-ci)/(e0*pars[7]+gc*(pars[4]-ci));
   //GPP=cps*(consts[1]*dayl+consts[4]);
+
+  /*initialize intermediate variables*/
+  double n;
+  double mintemp, maxtemp, meantemp;
+  double T_init, T_phi, T_r;
+
+  mintemp=(double)met_list[0];
+  maxtemp=(double)met_list[1];
+  meantemp=(double)(met_list[1] - met_list[0])/2.0;
+  n=(double)var_list[0];
+
+  T_init=(double)0.0;
+  T_phi=(double)var_list[3];
+  T_r=(double)var_list[4];
+
+  /* Initialization: only run this on the first time step! */
+  if (n==0){T_init=T_phi+3*T_r;}
+  /* cumulative normal distribution function (derived from the c-function erfc) */
+  // T_deviation=(T-T_phi)/T_r
+  // f_T=0.5*erfc(-T_deviation*sqrt(0.5))
+
   static double return_arr[2];
   return_arr[0] = 5.0;
   return_arr[1] = 10.0;
