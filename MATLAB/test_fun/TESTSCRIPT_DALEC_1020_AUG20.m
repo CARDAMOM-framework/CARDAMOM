@@ -10,3 +10,8 @@ MD=CARDAMOM_MODEL_LIBRARY(1020,[],1);
 
 %Trying out MDF
 CBR=CARDAMOM_RUN_MDF(CBF);
+
+%For seg fault: "CARDAMOM_VALGRIND.m" (i) recompiles in debug mode, and (ii) returns extra seg fault info, and provides
+%(somewhat) less cryptic error messages.
+%
+%CARDAMOM_VALGRIND(CBF);
