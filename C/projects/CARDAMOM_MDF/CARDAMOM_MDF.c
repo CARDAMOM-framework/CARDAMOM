@@ -52,7 +52,7 @@ int OK;
 /*SETTING number of command line inputs as char in CLA[0]*/
 sprintf(CLA[0],"%d",argc-1);
 /*declaring CARDAMOM Binary Format (.cbf) file*/
-char CBFfile[200];
+char CBFfile[1000];
 /*setting default filename*/
 /*this mode can be routinely used for testing*/
 if (argc-1<1){strcpy(CBFfile,"MCMC_SETUP/TEST_BINARY_DATASET.cbf");}

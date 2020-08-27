@@ -171,7 +171,7 @@ FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
 FLUXES[f+28]=FLUXES[f+0]*sqrt(DATA.MET[m+7])/pars[23];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
-FLUXES[f+1]=exp(pars[9]*0.5*(DATA.MET[m+2]+DATA.MET[m+1]-DATA.meantemp))*((DATA.MET[m+8]/DATA.meanprec-1)*pars[32]+1);
+FLUXES[f+1]=exp(pars[9]*(DATA.MET[m+2]*0.5+DATA.MET[m+1]*0.5-DATA.meantemp))*((DATA.MET[m+8]/DATA.meanprec-1)*pars[32]+1);
 /*respiration auto*/
 FLUXES[f+2]=pars[1]*FLUXES[f+0];
 /*leaf production*/

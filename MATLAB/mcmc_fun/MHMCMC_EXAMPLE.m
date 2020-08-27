@@ -232,6 +232,13 @@ ylim([10,55])
 
 %Making histograms based on parameter (p1 and p2) samples
 %Parameters probability density function (based on latter-half of parameter samples)
+%
+%Note: 
+%- log-transform (log10()) and corresponding re-labeling of xticks in code below is only for plotting & visualization purposes
+%- Actual parameter values are PARSOUT(:,1) and PARSOUT(:,2) 
+%- Log-transform step can be very useful for vizualizing parameters spannign one or more orders of magnitude
+%
+%
 %Parameter 1
 subplot(2,2,1);set(gca,'FontSize',7);
 hist(log10(PARSOUT(:,1)))
@@ -243,6 +250,7 @@ subplot(2,2,2);set(gca,'FontSize',7);hist(log10(PARSOUT(:,2)-1))
 set(gca,'xticklabel',round((10.^(get(gca,'xtick'))+1)*10)/10)
 xlabel('Parameter 2 (p2)');ylabel('Probability density')
 set(gca,'ytick',[]);
+
 
 
 

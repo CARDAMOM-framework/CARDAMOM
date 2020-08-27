@@ -1,4 +1,4 @@
-function cardamomfun_convergence_tests(A1,A2,A3)
+function gr=cardamomfun_convergence_tests(A1,A2,A3)
 %
 
 %CASE 1: code recognizes CBF and CBR structure
@@ -13,8 +13,7 @@ function cardamomfun_convergence_tests(A1,A2,A3)
 % CBR=cardamomfun_combine_parameter_chains(CBR);
 % [gr]=cardamomfun_convergence_tests(CBF,CBR,[1,1,1])
 %
-%Code last updated/shared by anthony bloom on Tue Apr 9 (2019?) @ 10.17am
-%Last shared on Nov 27 2019
+%Last updated by Anthony Bloom (07/10/2020)
 
 if isstruct(A1) & isfield(A1,'MET')==1
     CBF=A1;

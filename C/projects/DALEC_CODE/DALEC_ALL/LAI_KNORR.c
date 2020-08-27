@@ -1,9 +1,9 @@
 #pragma once
 /* Leaf Phenology Model of Knorr et al. (2010, doi: 10.1029/2009JG001119)*/
-double ACM(double const *pars, double const *consts)
+double* LAI_KNORR(double const *met_list, double const *var_list)
 {
   /*double gc=0,pp=0,qq=0,ci=0,e0=0,mult=0,dayl=0,cps=0,dec=0;*/
-  double gc,pp,qq,ci,e0,mult,dayl,cps,dec,GPP;
+  //double gc,pp,qq,ci,e0,mult,dayl,cps,dec,GPP;
 /*Notes: DALEC code passes the following *consts and *pars pointers:
  double constants[10]={pars[10],0.0156935,4.22273,208.868,0.0453194,0.37836,7.19298, 0.011136,2.1001,0.789798};
 pars terms:
@@ -36,33 +36,63 @@ gpppars[7]=DATA.MET[m+3];
 */
 
 
-  /*pars= &pars;  
- *   consts= &consts;
- *   */
-  /* only run this on the first time step! */
-  T_init=T_phi+3*T_r
+ /* Initialization: only run this on the first time step! */
+  //T_init=T_phi+3*T_r
   /* cumulative normal distribution function (derived from the c-function erfc) */
-  T_deviation=(T-T_phi)/T_r
-  f_T=0.5*erfc(-T_deviation*sqrt(0.5))
+  //T_deviation=(T-T_phi)/T_r
+  //f_T=0.5*erfc(-T_deviation*sqrt(0.5))
+
+  // // Exponentially declining memory of temperature
+  // T      = exp(- 1 / m.τ_m)*aux.T + m.T_air(t) * (1 - exp(- 1 / m.τ_m))
+  // // Updating f (fraction of plants in active growth state) using a cumulative normal distribution function, one for temperature and one for sunlight duration
+  // f_T    = cdf(Normal(), (aux.T - m.T_phi)/m.T_r)
+  // f_td   = cdf(Normal(), (m.t_d(t) - m.t_c)/m.t_r)
+  // f      = aux.f_T * aux.f_td
+  // r      = m.ξ * aux.f + (1 - aux.f)*m.k_L
+  // // Compute water-limited maximum LAI
+  // aux.Λ_W    = m.PASM(t) * state.Λ / m.τ_W / MaxExponentialSmooth(m.E(t), 1e-3, 2e-2)
+  // aux.Λ_tilde_max = MinQuadraticSmooth(m.Λ_max, aux.Λ_W, 0.99)
+  // // Exponentially declining memory of water limitation
+  // aux.Λ_max_memory  = exp(- 1 / m.τ_s)*aux.Λ_max_memory + aux.Λ_tilde_max * (1 - exp(- 1 / m.τ_s))
+  // aux.Λ_lim  = m.ξ * aux.Λ_max_memory * aux.f / aux.r
+  
+  // senescencephaseflag = aux.Λ_lim < state.Λ
+  
+  // aux.Λ_sources = state.Λ/m.τ_L + m.ξ * (aux.Λ_max_memory - state.Λ) * aux.f
+  // aux.Λ_sinks = state.Λ * m.k_L * (1.0 - aux.f) + state.Λ/m.τ_L
 
 
-  gc=(double)pow(fabs(pars[8]),consts[9])/(consts[5] * pars[9] + 0.5 * ( pars[1]- pars[2]));
-  pp=(double)pars[0]*pars[3]/gc*consts[0]*exp(consts[7]*pars[1]);
-  qq=(double)consts[2]-consts[3];
-  ci=(double)0.5*(pars[4]+qq-pp+pow(pow(pars[4]+qq-pp,2)-4*(pars[4]*qq-pp*consts[2]),0.5));
-  e0=(double)consts[6]*pow(pars[0],2)/(pow(pars[0],2)+consts[8]);
-  dec=(double)-23.4*cos((360.*(pars[5]+10.)/365.)*pars[10]/180.)*pars[10]/180.;
-  mult=(double)tan(pars[6]*pars[10]/180)*tan(dec);
-  if (mult>=1){ 
-   dayl=24.;}  
-  else if(mult<=-1)
-  dayl=0.;
-  else{
-  dayl=(double)24.*acos(-mult) / pars[10];}
+  //cps=(double)e0*pars[7]*gc*(pars[4]-ci)/(e0*pars[7]+gc*(pars[4]-ci));
+  //GPP=cps*(consts[1]*dayl+consts[4]);
 
+  /*initialize intermediate variables*/
+  double n;
+  double meantemp;
+  double T_init, T_phi, T_r;
+  double T, T_memory, T_deviation, f_T, tau_m;
 
-  cps=(double)e0*pars[7]*gc*(pars[4]-ci)/(e0*pars[7]+gc*(pars[4]-ci));
-  GPP=cps*(consts[1]*dayl+consts[4]);
-  return GPP;
+  meantemp=(double)met_list[0];
+  n=(double)var_list[0];
+  tau_m=(double)30.0;
+
+  T_init=(double)0.0;
+  T_phi=(double)var_list[3];
+  T_r=(double)var_list[4];
+  T_memory=(double)var_list[5];
+
+  /* Initialization: only run this on the first time step! */
+  if (n==0){printf("> in LAI_KNORR: T_memory = %2.1f\n",T_memory);}
+  // if (n==0){T_memory=T_phi+3*T_r;}   /* set the temperature memory to be high so that we start in growth phase */
+  // Exponentially declining memory of temperature
+  T      = exp(- 1 / tau_m)*T_memory + meantemp * (1 - exp(- 1 / tau_m));
+  /* cumulative normal distribution function (derived from the c-function erfc) */
+  T_deviation=(T-T_phi)/T_r;
+  // f_T    =0.5*erfc(-T_deviation*sqrt(0.5))
+
+  static double return_arr[3];
+  return_arr[0] = 5.0;
+  return_arr[1] = 10.0;
+  return_arr[2] = T;
+  return return_arr;
 }
 

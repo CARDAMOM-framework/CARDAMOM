@@ -13,9 +13,9 @@ int MODEL_INFO_1020(DATA * DATA){
 static DALEC DALECmodel;
 
 /*Step 2: Fill structure with model-specific info*/
-DALECmodel.nopools=9;
+DALECmodel.nopools=10;
 DALECmodel.nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel.nopars=36;
+DALECmodel.nopars=39;
 DALECmodel.nofluxes=32;
 
 /*Short-term: copy quantities into DATA structure to reduce dependencies in CARDAMOM_MODEL_LIBRARY.c*/
@@ -37,6 +37,9 @@ DALECmodel.edc2=EDC2_1020;
 /*Currently assigned to "DATA", since MCMC needs info separately*/
 DATA->parmin=calloc(DATA->nopars,sizeof(double));
 DATA->parmax=calloc(DATA->nopars,sizeof(double));
+
+INITIALIZE_PARAMETER_FIELDS(DATA);
+
 PARS_INFO_1020(DATA);
 
 oksofar("about to declare EDCD");

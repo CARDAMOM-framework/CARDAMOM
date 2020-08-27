@@ -17,8 +17,8 @@ int main(int argc, char *files[])
 int n, nn;
 
 /*storing command line inputs as 2 files*/
-char metfile[200];strcpy(metfile,files[1]);
-char parfile[200];strcpy(parfile,files[2]);
+char metfile[1000];strcpy(metfile,files[1]);
+char parfile[1000];strcpy(parfile,files[2]);
 
 
 
@@ -73,10 +73,10 @@ double *pars=calloc(CARDADATA.nopars,sizeof(double));
 /*note - these should be input at command line as variables*/
 
 
-char fluxfile[500];
-char poolfile[500];
-char edcdfile[500];
-char probfile[500];
+char fluxfile[1000];
+char poolfile[1000];
+char edcdfile[1000];
+char probfile[1000];
 
 if (argc-1>2){
 strcpy(fluxfile,files[3]);

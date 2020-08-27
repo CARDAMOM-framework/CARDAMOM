@@ -4,7 +4,7 @@
 #include "EDC1_1000.c"
 #include "EDC2_1000.c"
 #include "../../../DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
-
+#include "../../../CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c"
 
 int MODEL_INFO_1000(DATA * DATA){
 
@@ -35,8 +35,13 @@ DALECmodel.edc2=EDC2_1000;
 /*Initialize parameter fields*/
 /*initializing parmin and parmax fields*/
 /*Currently assigned to "DATA", since MCMC needs info separately*/
+
+/*
 DATA->parmin=calloc(DATA->nopars,sizeof(double));
 DATA->parmax=calloc(DATA->nopars,sizeof(double));
+*/
+INITIALIZE_PARAMETER_FIELDS(DATA);
+
 PARS_INFO_1000(DATA);
 
 oksofar("about to declare EDCD");

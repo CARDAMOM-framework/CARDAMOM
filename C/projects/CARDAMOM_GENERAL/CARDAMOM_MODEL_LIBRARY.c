@@ -1,3 +1,14 @@
+#pragma once
+
+int INITIALIZE_PARAMETER_FIELDS(DATA *DATA){
+/*initializing parmin and parmax fields*/
+DATA->parmin=NULL;
+DATA->parmax=NULL;
+DATA->parname=NULL;
+DATA->parmin=calloc(DATA->nopars,sizeof(double));
+DATA->parmax=calloc(DATA->nopars,sizeof(double));
+DATA->parname=calloc(DATA->nopars,sizeof(char *));
+return 0;}
 
 #include "ADD_PARAMETER_TO_STACK.c"
 #include "WRITE_MODEL_STACKS_TO_FILE.c"
@@ -22,6 +33,7 @@
 #include "../CARDAMOM_MODELS/DALEC/DALEC_840/MODEL_INFO_840.c"
 #include "../CARDAMOM_MODELS/DALEC/DALEC_1200/MODEL_INFO_1200.c"
 #include "../CARDAMOM_MODELS/DALEC/DALEC_1000/MODEL_INFO_1000.c"
+#include "../CARDAMOM_MODELS/DALEC/DALEC_1002/MODEL_INFO_1002.c"
 #include "../CARDAMOM_MODELS/DALEC/DALEC_1003/MODEL_INFO_1003.c"
 #include "../CARDAMOM_MODELS/DALEC/DALEC_1004/MODEL_INFO_1004.c"
 #include "../CARDAMOM_MODELS/DALEC/DALEC_1010/MODEL_INFO_1010.c"
@@ -32,13 +44,6 @@
 /*General note: The code IDxMA (where x is the model ID) is kept above the model attribute
 line. The reason for this is to ensure that Matlab can easily access this code*/
 
-int INITIALIZE_PARAMETER_FIELDS(DATA *DATA){
-
-/*initializing parmin and parmax fields*/
-DATA->parmin=calloc(DATA->nopars,sizeof(double));
-DATA->parmax=calloc(DATA->nopars,sizeof(double));
-
-return 0;}
 
 
 int CARDAMOM_MODEL_LIBRARY(DATA *DATA){
@@ -64,12 +69,14 @@ else if (DATA->ID==830  ){MODEL_INFO_830(DATA);}
 else if (DATA->ID==831  ){MODEL_INFO_831(DATA);}
 else if (DATA->ID==840  ){MODEL_INFO_840(DATA);}
 else if (DATA->ID==1000  ){MODEL_INFO_1000(DATA);}
+else if (DATA->ID==1002  ){MODEL_INFO_1002(DATA);}
 else if (DATA->ID==1004  ){MODEL_INFO_1004(DATA);}
 else if (DATA->ID==1003  ){MODEL_INFO_1003(DATA);}
 else if (DATA->ID==1010  ){MODEL_INFO_1010(DATA);}
 else if (DATA->ID==1020  ){MODEL_INFO_1020(DATA);}
 else if (DATA->ID==1200  ){MODEL_INFO_1200(DATA);}
 else {status=1;}
+
 
 
 return status;}

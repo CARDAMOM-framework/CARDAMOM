@@ -61,6 +61,17 @@ switch projname
    case 'GCRUN_APR20_TDLE_5'
     PXI=GCRUN_APR20_TDLE(5,[],repeat); %Constrained by land-surface and atmospheric  datasets (s3x3 NEE); ID.812, now spans 2001-2015
 
+    case 'GCRUN_JUN20_TDLE'
+    PXI=GCRUN_JUN20_TDLE(1,[],repeat); %Constrained by land-surface and atmospheric  datasets (s3x3 NEE); ID.813, now spans 2001-2015
+   case 'GCRUN_JUN20_TDLE_4'
+    PXI=GCRUN_JUN20_TDLE(4,[],repeat); %Constrained by land-surface and atmospheric  datasets (s3x3 NEE); ID.813. 2010-2013 NBE mean = 0
+   case 'GCRUN_JUN20_TDLE_5'
+    PXI=GCRUN_JUN20_TDLE(5,[],repeat); %Constrained by land-surface and atmospheric  datasets (s3x3 NEE); ID.812, now spans 2001-2015
+
+    
+    
+    
+    
     
     
     %Lagged effect of 2015 fluxes
@@ -514,6 +525,141 @@ PXI=create_gcrun_cbf_files(PXI,MASK,repeat);
 
 
 end
+
+
+
+function PXI=GCRUN_JUN20_TDLE(opt,runname,repeat);
+%CONTINUE FROM HERE
+
+%Details: This is the same as MAY18_3 (RUN 20 in NOV17)
+%However, uncertainties here are set as 1/12 and 0.5 for annual & seasonal
+%fluxes
+%Step 1. Load drivers 
+%See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
+%TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
+%Better to start with a template of RUN29 just in case
+%
+%
+%includes a "smooth" option (s3x3);
+
+
+%Turn into hydrological CBF file here
+%TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
+%Step 3. define gridcells
+
+
+
+%only 
+%metidx and obsidx
+% index writing at end of CBD definition
+%(move MET to later on)
+%idx=109:180;
+
+
+% tidx={1:180,109:180,109:180,109:180};
+% tnbeidx={[],[],109:156,109:144};
+% tbbidx={1:15,10:15,10:15,10:15};%,10:15,10:15,10:15};
+% RO.sifopt=[1,1,2,2];
+% RO.bbopt=[2,1,2,2];
+% RO.bbunc=[-0.2,1.5,-0.2,-0.2];
+% RO.gppopt=[1,1,0,0];
+% RO.oco2=[0,0,0,1];
+%     
+
+
+%OPTIONS
+%opt = 1: standard
+%opt = 5: with ID=812 (iWUE)
+
+RO.tidx=1:180;%Index of timesteps 
+
+if opt==3;
+    RO.tnbeidx=[];
+else
+    RO.tnbeidx=109:156;
+end
+
+RO.tbbidx=1:15;
+%Options are temporary: 
+%Remove once done replicating runs
+%SIF options
+% 0 = no sif data
+% 1 = GOSAT sif data
+% 2 = GOME2 data
+RO.sifopt=1;
+%BB opt:
+%0 = no bb data
+%1 = GFEDv4s constraint
+%2 = top-down CO constraint
+RO.bbopt=2;
+%BB uncertainty
+%+ve = log; -ve = abs
+RO.bbunc=-0.2;
+%Mean GPP constraint
+%0. No mean GPP 
+%1. Fluxcom GPP
+RO.gppopt=0;
+%OCO-2 options( 1 or 0)
+%ri ==1 | ri==8 | ri==9 | ri==10 | ri==11  | ri==12 | ri==13  | ri==14 | ri==15  | ri==21
+RO.oco2=0;
+
+%NBE uncertainty mode
+%For global uncertainty, provide two values
+%For CMS-Flux uncertainty, set to CMS-Flux
+if opt==2;
+    RO.nbeunc = [2,0.05];
+else
+    RO.nbeunc = [2,0.02];
+end
+
+ defval('runname','');
+  defval('s3x3',0);s3x3=1;
+  RO.nbe_s3x3=s3x3;
+  RO.nbe_product='b73';
+  
+  if opt==4;
+      RO.nbezero=1;
+  else
+      RO.nbezero=0;
+  end
+
+%PXI options
+PXI.RO=RO;
+switch opt
+    case 1
+    PXI.run_details='GCRUN_JUN20_TDLE: 2010-2015 run with CMS (2010-2013) and LS constraints (based on NOV17 run 20), and prescribed NBE unc';
+    PXI.run_name=['GCRUN_JUN20_TDLE',runname];
+    PXI.analysis='GCRUN_JUN20_TDLE';
+    
+    case 4
+    PXI.run_details='GCRUN_JUN20_TDLE_4: Same as GCRUN_JUL19_TDLE but with NBEmean = 0';
+    PXI.run_name=['GCRUN_JUN20_TDLE_4',runname];
+    PXI.analysis='GCRUN_JUN20_TDLE_4';
+    
+    
+    case 5
+    PXI.run_details='GCRUN_JUN20_TDLE_5: 2010-2015 run with CMS (2010-2013) with CBR.ID=812 and LS constraints (based on NOV17 run 20), and prescribed NBE unc';
+    PXI.run_name=['GCRUN_JUN20_TDLE_5',runname];
+    PXI.analysis='GCRUN_JUN20_TDLE_5';
+end
+
+if opt==5
+    PXI.ID=812;
+else
+PXI.ID=813;
+end
+
+
+%MASK
+GC=GEOSChem_xygrids;
+MASK=abs(GC.y)<=30;
+
+%Create and summarize PXI, based on available options
+PXI=create_gcrun_cbf_files(PXI,MASK,repeat);
+
+
+end
+
 
 
 
