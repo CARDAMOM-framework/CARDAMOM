@@ -1,7 +1,7 @@
 %Notes: https://www.unidata.ucar.edu/software/netcdf/docs/netcdf_data_set_components.html
 
 %- Scalar variables don't need dimension definitions
-function fname=TEST_CARDAMOM_CBF_NETCDF_FORMAT(CBF)
+function fname=TEST_CARDAMOM_CBF_NETCDF_FORMAT(CBF,fname)
 
 if nargin==0
 % Step 1. Read CBF file
@@ -18,8 +18,12 @@ nomet=size(CBF.MET,2);
 
 %Step 2. write as netcdf file
 
-
+if nargin<2
 fname='CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE_beta.nc.cbf';delete(fname)
+end
+
+
+    if isempty(dir(fname));warning(sprintf('%s\nFile exists',fname));end
 
 
 
