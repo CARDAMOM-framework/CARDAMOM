@@ -89,7 +89,8 @@ for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<nodays;n++){FT[f]+=FLUXES[n*nofluxes
 double PREC=0;
 for (n=0;n<nodays;n++){PREC+=MET[n*nomet+8];}
 
-
+/*Kludge Flag: number of C and H2O pools confronted by EDC steady state proximity defined here*/ 
+/*These are gross input/output fluxes for all C and H2O states*/ 
 double Fin[8];
 double Fout[8];
 double Pstart;
@@ -137,8 +138,9 @@ Fout[7]=FT[31];
 double Rm, Rs;
 
 
-
-for (n=0;n<nopools;n++){
+/*Kludge Flag: Not the most elegant way of dealing with this*/
+/*This loop only applies to C and H2O pools*/
+for (n=0;n<8;n++){
 /*start and end pools*/
 Pstart=POOLS[n];
 Pend=POOLS[nopools*nodays+n];
@@ -180,9 +182,11 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[15-1]==1)
 /*Additional faults can be stored in positions 35-40*/
 
 /*PRIOR RANGES - ALL POOLS MUST CONFORM*/
-int pidx[]={17,18,19,20,21,22,26,35};
+/*Last H2O pool was removed in formulation on ID=1000*/
+int pidx[]={17,18,19,20,21,22,26};
 
-for (n=0;n<nopools-1;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;}}
+/*Kludge Flag: loop only applicable to pidx indices*/
+for (n=0;n<7;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;}}
 
 
 int PEDC;
