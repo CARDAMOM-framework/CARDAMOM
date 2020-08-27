@@ -10,7 +10,7 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 int DALEC_1020(DATA DATA, double const *pars)
 {
 
-double gpppars[11],pi,lai_met_list[2],lai_var_list[5];
+double gpppars[11],pi,lai_met_list[1],lai_var_list[6];
 /*C-pools, fluxes, meteorology indices*/
 int p,f,m,nxp, i;
 int n=0,nn=0;
@@ -48,7 +48,8 @@ double *NEE=DATA.M_NEE;
   POOLS[6]=pars[26];
   POOLS[7]=pars[35];
   /*LAI module variables*/
-  POOLS[8]=pars[36];
+  POOLS[8]=pars[36];  /* LAI */
+  POOLS[9]=pars[37]+3*pars[38];      /* LAI temperature memory */
 
 
 /* NOTES FOR POOLS AND FLUXES
@@ -154,14 +155,17 @@ f=nofluxes*n;
 
 
 /*LAI*/
-lai_met_list[0]=DATA.MET[m+1]; /*mintemp, deg C*/
-lai_met_list[1]=DATA.MET[m+2]; /*maxtemp, deg C*/
+lai_met_list[0]=(DATA.MET[m+2] - DATA.MET[m+1])/2.0; /* meantemp, deg C*/
 lai_var_list[0]=n; /*time step of model run*/
 lai_var_list[1]=pars[36]; /*initial LAI parameter*/
-lai_var_list[2]=POOLS[8]; /*current LAI*/
+lai_var_list[2]=POOLS[p+8]; /*current LAI*/
 lai_var_list[3]=pars[37]; /*T_phi*/
 lai_var_list[4]=pars[38]; /*T_r*/
+lai_var_list[5]=POOLS[p+9]; /*T_memory (from previous timestep*/
+// Run LAI module
+// LAI[n]=LAI_KNORR(lai_met_list, lai_var_list)[0];
 LAI[n]=LAI_KNORR(lai_met_list, lai_var_list)[0];
+
 LAI[n]=POOLS[p+1]/pars[16]; 
 //printf("LAI (t=%d) = %f\n", n, LAI[n]);
 
@@ -221,7 +225,8 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
         POOLS[nxp+3] = POOLS[p+3] +  (FLUXES[f+6] - FLUXES[f+10])*deltat;
         POOLS[nxp+4] = POOLS[p+4] + (FLUXES[f+9] + FLUXES[f+11] - FLUXES[f+12] - FLUXES[f+14])*deltat; 
         POOLS[nxp+5]= POOLS[p+5]+ (FLUXES[f+14] - FLUXES[f+13]+FLUXES[f+10])*deltat;     
-        POOLS[nxp+8]= LAI[n];               
+        POOLS[nxp+8] = LAI[n];     
+        POOLS[nxp+9] = LAI[n]; /* LAI_KNORR(lai_met_list, lai_var_list)[2]; */
 /*Water pool = Water pool - runoff + prec (mm/day) - ET*/
 	/*printf("%2.1f\n",POOLS[p+6]);*/
 	/*PAW total runoff*/
