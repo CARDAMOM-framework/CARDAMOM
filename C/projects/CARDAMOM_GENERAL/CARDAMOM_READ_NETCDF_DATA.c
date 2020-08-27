@@ -192,6 +192,73 @@ void ncfd_get_var_info(int ncid, const char * varName, size_t * arrayLen, int * 
 	return resultArray;
 }
 
+/*
+ * Function:  ncdf_read_single_int_var
+ * --------------------
+ * Attempts to read a 1 dimensional int variable that is stored under a particular name in the netCDF file's variables
+ *
+ *  ncid: netCDF file ID to pull the data from. This is the id given by nc_open after the netCDF file is opened
+ *  varName: This is the name of the variable to read
+ *  default: default value to return if the requested variable does not exsist
+ *
+ *  returns: the value of the variable,
+ *   if there is an error, the program exits after displaying a message.
+ */
+  int ncdf_read_single_int_var(int ncid, const char * varName, int default){
+	int varID;
+	int result;
+	if ((retval = nc_inq_varid(ncid, varName, &varID))){
+		if (retval ==NC_ENOTVAR ){
+			return default;
+		}
+	}
+	size_t arrayLen;
+	ncfd_get_var_info(ncid, varName, &arrayLen, &varID)
+	//No need to allocate an array, just check the size and die if it is wrong
+	if (arrayLen>1){
+		printf("Error in $s at $d while trying to read var $s: ncdf_read_single_int_var only supports one value, but var has $d values.\n", __FILE__, __LINE__, varName,numberOfDims,arrayLen);
+		exit(1);
+	}
+
+	if ((retval = nc_get_var_int(ncid, varID, &result))){
+		ERR(retval);
+	}
+	return result;
+}
+
+/*
+ * Function:  ncdf_read_single_double_var
+ * --------------------
+ * Attempts to read a scalar double variable that is stored under a particular name in the netCDF file's variables
+ *
+ *  ncid: netCDF file ID to pull the data from. This is the id given by nc_open after the netCDF file is opened
+ *  varName: This is the name of the variable to read
+ *  default: default value to return if the requested variable does not exsist
+ *
+ *  returns: the value of the variable,
+ *   if there is an error, the program exits after displaying a message.
+ */
+  double ncdf_read_single_double_var(int ncid, const char * varName, double default ){
+	int varID;
+	double result;
+	if ((retval = nc_inq_varid(ncid, varName, &varID))){
+		if (retval ==NC_ENOTVAR ){
+			return default;
+		}
+	}
+	size_t arrayLen;
+	ncfd_get_var_info(ncid, varName, &arrayLen, &varID)
+	//No need to allocate an array, just check the size and die if it is wrong
+	if (arrayLen>1){
+		printf("Error in $s at $d while trying to read var $s: ncdf_read_single_double_var only supports one value, but var has $d values.\n", __FILE__, __LINE__, varName,numberOfDims,arrayLen);
+		exit(1);
+	}
+	if ((retval = nc_get_var_double(ncid, varID, &result))){
+		ERR(retval);
+	}
+	return result;
+}
+
 
 
 
