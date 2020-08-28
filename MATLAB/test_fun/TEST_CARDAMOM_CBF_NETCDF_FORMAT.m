@@ -109,7 +109,7 @@ ncwriteatt(fname,'LAI','Description','Leaf Area Index')
 
 %********NBE*****************
 
-nccreate(fname,'NBE');%,'Dimensions',{'time',nodays});
+nccreate(fname,'NBE','Dimensions',{'time',nodays},'FillValue',-9999);
 %Writing variable 
 ncwrite_if_exists(fname,'NBE',CBF.OBS.NBE);
 %Variable attributes
@@ -199,7 +199,7 @@ ncwriteatt(fname,'CH4','obs_unc_threshold',CBF.OBSUNC.CH4.obs_unc_threshold)
 %nccreate(fname,'nomet'); ncwrite(fname,'nomet',CBF.nomet)
 
 %*********write CBF met***********
-nccreate(fname,'MET','Dimensions',{'nodays', nodays,'nomet',nomet}); 
+nccreate(fname,'MET','Dimensions',{'time', nodays,'nomet',nomet}); 
 
 ncwrite(fname,'MET',CBF.MET);
 

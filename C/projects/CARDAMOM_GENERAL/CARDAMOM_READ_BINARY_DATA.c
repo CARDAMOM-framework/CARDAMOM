@@ -142,6 +142,7 @@ DATA->M_leo[0]=1.0/0.0;
 DATA->M_PARS=calloc(DATA->nopars,sizeof(double));
 
 
+
 /*READING TEMPORAL DATA*/
 /*For re-use of DATA structure (presumably), the data is only re-read if the fields are set to zero (or initialized)*/
 /*Currently not sure why this is here: however, this is harmless*/
@@ -160,6 +161,13 @@ if (DATA->BAND4==0){DATA->BAND4=calloc(DATA->nodays,sizeof(double));}
 if (DATA->SOM==0){DATA->SOM=calloc(DATA->nodays,sizeof(double));}
 if (DATA->NEEunc==0){DATA->NEEunc=calloc(DATA->nodays,sizeof(double));}
 if (DATA->CH4==0){DATA->CH4=calloc(DATA->nodays,sizeof(double));}
+
+/*What happens:
+- DATA->EWT is populated with 1XN values IF values exist in netcf 
+- DATA->EWT is populated with 1XN -9999 values IF either (a) that's what's already there OR (b) single (scaler) fill value is in place of 1XN array (i.e. netcdf "empty" field), OR (c) field doesn't exist */
+/*N - number of points*/
+
+
 
 DATA->ngpp=0;
 DATA->nlai=0;
