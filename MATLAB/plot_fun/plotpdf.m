@@ -20,6 +20,8 @@ defval('nobins',100);
 defval('col',rand(1,3)*0.9)
 defval('weights',1)
 
+if minb>maxb;warning('Swapping min and max values');mx=minb;minb=maxb;maxb=mx;end
+
 res=(maxb-minb)/nobins;
 % probint/res./numel(values)
 
