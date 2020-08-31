@@ -226,7 +226,7 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
         POOLS[nxp+4] = POOLS[p+4] + (FLUXES[f+9] + FLUXES[f+11] - FLUXES[f+12] - FLUXES[f+14])*deltat; 
         POOLS[nxp+5]= POOLS[p+5]+ (FLUXES[f+14] - FLUXES[f+13]+FLUXES[f+10])*deltat;     
         POOLS[nxp+8] = LAI[n];     
-        POOLS[nxp+9] = LAI[n]; /* LAI_KNORR(lai_met_list, lai_var_list)[2]; */
+        POOLS[nxp+9] = LAI_KNORR(lai_met_list, lai_var_list)[2];
 /*Water pool = Water pool - runoff + prec (mm/day) - ET*/
 	/*printf("%2.1f\n",POOLS[p+6]);*/
 	/*PAW total runoff*/

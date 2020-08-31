@@ -73,7 +73,7 @@ gpppars[7]=DATA.MET[m+3];
 
   meantemp=(double)met_list[0];
   n=(double)var_list[0];
-  tau_m=(double)30.0;
+  tau_m=(double)1.0;
 
   T_init=(double)0.0;
   T_phi=(double)var_list[3];
