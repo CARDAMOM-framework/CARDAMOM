@@ -85,14 +85,15 @@ gpppars[7]=DATA.MET[m+3];
   // if (n==0){T_memory=T_phi+3*T_r;}   /* set the temperature memory to be high so that we start in growth phase */
   // Exponentially declining memory of temperature
   T      = exp(- 1 / tau_m)*T_memory + meantemp * (1 - exp(- 1 / tau_m));
-  /* cumulative normal distribution function (derived from the c-function erfc) */
   T_deviation=(T-T_phi)/T_r;
-  // f_T    =0.5*erfc(-T_deviation*sqrt(0.5))
+  /* cumulative normal distribution function (derived from the intrinsic c-function erfc) */
+  f_T    =0.5*erfc(-T_deviation*sqrt(0.5));
 
-  static double return_arr[3];
+  static double return_arr[4];
   return_arr[0] = 5.0;
   return_arr[1] = 10.0;
   return_arr[2] = T;
+  return_arr[3] = f_T;
   return return_arr;
 }
 

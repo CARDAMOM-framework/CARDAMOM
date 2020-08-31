@@ -50,6 +50,7 @@ double *NEE=DATA.M_NEE;
   /*LAI module variables*/
   POOLS[8]=pars[36];  /* LAI */
   POOLS[9]=pars[37]+3*pars[38];      /* LAI temperature memory */
+  POOLS[10]=1.0;
 
 
 /* NOTES FOR POOLS AND FLUXES
@@ -227,6 +228,7 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
         POOLS[nxp+5]= POOLS[p+5]+ (FLUXES[f+14] - FLUXES[f+13]+FLUXES[f+10])*deltat;     
         POOLS[nxp+8] = LAI[n];     
         POOLS[nxp+9] = LAI_KNORR(lai_met_list, lai_var_list)[2];
+        POOLS[nxp+10] = LAI_KNORR(lai_met_list, lai_var_list)[3];
 /*Water pool = Water pool - runoff + prec (mm/day) - ET*/
 	/*printf("%2.1f\n",POOLS[p+6]);*/
 	/*PAW total runoff*/
