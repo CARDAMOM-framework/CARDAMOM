@@ -10,7 +10,7 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 int DALEC_1020(DATA DATA, double const *pars)
 {
 
-double gpppars[11],pi,lai_met_list[1],lai_var_list[6];
+double gpppars[11],pi,lai_met_list[1],lai_var_list[9];
 /*C-pools, fluxes, meteorology indices*/
 int p,f,m,nxp, i;
 int n=0,nn=0;
@@ -50,7 +50,6 @@ double *NEE=DATA.M_NEE;
   /*LAI module variables*/
   POOLS[8]=pars[36];  /* LAI */
   POOLS[9]=pars[37]+3*pars[38];      /* LAI temperature memory */
-  POOLS[10]=1.0;
 
 
 /* NOTES FOR POOLS AND FLUXES
@@ -162,7 +161,10 @@ lai_var_list[1]=pars[36]; /*initial LAI parameter*/
 lai_var_list[2]=POOLS[p+8]; /*current LAI*/
 lai_var_list[3]=pars[37]; /*T_phi*/
 lai_var_list[4]=pars[38]; /*T_r*/
-lai_var_list[5]=POOLS[p+9]; /*T_memory (from previous timestep*/
+lai_var_list[5]=POOLS[p+9]; /*T_memory (from previous timestep)*/
+lai_var_list[6]=pars[39]; /*tau_m*/
+lai_var_list[7]=pars[40]; /*plgr*/
+lai_var_list[8]=pars[41]; /*k_L*/
 // Run LAI module
 // LAI[n]=LAI_KNORR(lai_met_list, lai_var_list)[0];
 LAI[n]=LAI_KNORR(lai_met_list, lai_var_list)[0];

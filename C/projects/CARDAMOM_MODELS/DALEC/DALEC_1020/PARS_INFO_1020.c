@@ -171,6 +171,18 @@ CARDADATA->parmax[37]=20;
 CARDADATA->parmin[38]=1;
 CARDADATA->parmax[38]=2;
 
+/*Averaging period for temperature growth trigger T (time units of model), usually kept constant*/
+CARDADATA->parmin[39]=1.0;
+CARDADATA->parmax[39]=1.0;
+
+/*LAI linear growth constant (inverse of model time units; e.g. days-1 or months-1)*/
+CARDADATA->parmin[40]=0.2;
+CARDADATA->parmax[40]=0.2;
+
+/*Inverse of leaf longevity during senescence period (inverse of model time units; e.g. days-1 or months-1)*/
+CARDADATA->parmin[41]=0.05;
+CARDADATA->parmax[41]=0.05;
+
 return 0;
 
 }

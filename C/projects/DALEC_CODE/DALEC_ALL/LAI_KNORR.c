@@ -70,30 +70,37 @@ gpppars[7]=DATA.MET[m+3];
   double meantemp;
   double T_init, T_phi, T_r;
   double T, T_memory, T_deviation, f_T, tau_m;
+  double plgr, k_L;
+  double f, r;
 
   meantemp=(double)met_list[0];
   n=(double)var_list[0];
-  tau_m=(double)1.0;
+  tau_m=(double)var_list[6];
 
   T_init=(double)0.0;
   T_phi=(double)var_list[3];
   T_r=(double)var_list[4];
   T_memory=(double)var_list[5];
+  plgr=(double)var_list[7];
+  k_L=(double)var_list[8];
 
   /* Initialization: only run this on the first time step! */
-  if (n==0){printf("> in LAI_KNORR: T_memory = %2.1f\n",T_memory);}
+  // if (n==0){printf("> in LAI_KNORR: T_memory = %2.1f\n",T_memory);}
   // if (n==0){T_memory=T_phi+3*T_r;}   /* set the temperature memory to be high so that we start in growth phase */
   // Exponentially declining memory of temperature
   T      = exp(- 1 / tau_m)*T_memory + meantemp * (1 - exp(- 1 / tau_m));
   T_deviation=(T-T_phi)/T_r;
   /* cumulative normal distribution function (derived from the intrinsic c-function erfc) */
-  f_T    =0.5*erfc(-T_deviation*sqrt(0.5));
+  f_T    = 0.5*erfc(-T_deviation*sqrt(0.5));
+
+  f      = f_T;   /* also multiply by the day-length fraction here when thats ready */
+  r      = plgr * f + (1 - f)*k_L;
 
   static double return_arr[4];
   return_arr[0] = 5.0;
   return_arr[1] = 10.0;
   return_arr[2] = T;
-  return_arr[3] = f_T;
+  return_arr[3] = r;
   return return_arr;
 }
 
