@@ -155,7 +155,7 @@ f=nofluxes*n;
 
 
 /*LAI*/
-lai_met_list[0]=(DATA.MET[m+2] - DATA.MET[m+1])/2.0; /* meantemp, deg C*/
+lai_met_list[0]=(DATA.MET[m+2] + DATA.MET[m+1])/2.0; /* meantemp, deg C*/
 lai_var_list[0]=n; /*time step of model run*/
 lai_var_list[1]=pars[36]; /*initial LAI parameter*/
 lai_var_list[2]=POOLS[p+8]; /*current LAI*/

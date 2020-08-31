@@ -164,8 +164,8 @@ CARDADATA->parmin[36]=0.001;
 CARDADATA->parmax[36]=10;
 
 /*Mean temperature at leaf onset (T_phi)*/
-CARDADATA->parmin[37]=10;
-CARDADATA->parmax[37]=12;
+CARDADATA->parmin[37]=18;
+CARDADATA->parmax[37]=20;
 
 /*Spatial range of mean temperature at leaf onset (T_r)*/
 CARDADATA->parmin[38]=1;
