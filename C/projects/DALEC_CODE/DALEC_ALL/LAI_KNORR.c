@@ -1,4 +1,5 @@
 #pragma once
+#include "./LAI_KNORR_funcs.c"
 /* Leaf Phenology Model of Knorr et al. (2010, doi: 10.1029/2009JG001119)*/
 double* LAI_KNORR(double const *met_list, double const *var_list)
 {
@@ -72,6 +73,7 @@ gpppars[7]=DATA.MET[m+3];
   double T, T_memory, T_deviation, f_T, tau_m;
   double plgr, k_L;
   double f, r;
+  double test;
 
   meantemp=(double)met_list[0];
   n=(double)var_list[0];
@@ -95,6 +97,9 @@ gpppars[7]=DATA.MET[m+3];
 
   f      = f_T;   /* also multiply by the day-length fraction here when thats ready */
   r      = plgr * f + (1 - f)*k_L;
+
+  test   = MinQuadraticSmooth(5.0, 4.5, 0.99);
+  if (n==0){printf("> in LAI_KNORR: test = %2.2f\n",test);}
 
   static double return_arr[4];
   return_arr[0] = 5.0;
