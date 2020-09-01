@@ -164,12 +164,12 @@ CARDADATA->parmin[36]=0.001;
 CARDADATA->parmax[36]=10;
 
 /*Mean temperature at leaf onset (T_phi)*/
-CARDADATA->parmin[37]=18;
-CARDADATA->parmax[37]=20;
+CARDADATA->parmin[37]=23.0;
+CARDADATA->parmax[37]=23.1;
 
 /*Spatial range of mean temperature at leaf onset (T_r)*/
-CARDADATA->parmin[38]=1;
-CARDADATA->parmax[38]=2;
+CARDADATA->parmin[38]=0.9;
+CARDADATA->parmax[38]=1.0;
 
 /*Averaging period for temperature growth trigger T (time units of model), usually kept constant*/
 CARDADATA->parmin[39]=1.0;
@@ -187,9 +187,9 @@ CARDADATA->parmax[41]=0.05;
 CARDADATA->parmin[42]=5.0;
 CARDADATA->parmax[42]=5.0;
 
-/*Target survival time for LAI under water-deficit conditions (days)*/
-CARDADATA->parmin[43]=0.1;
-CARDADATA->parmax[43]=0.1;
+// /*Target survival time for LAI under water-deficit conditions (days)*/
+// CARDADATA->parmin[43]=0.1;
+// CARDADATA->parmax[43]=0.1;
 
 return 0;
 

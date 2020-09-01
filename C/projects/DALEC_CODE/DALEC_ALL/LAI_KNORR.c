@@ -77,6 +77,7 @@ gpppars[7]=DATA.MET[m+3];
   double lambda, lambda_W, lambda_tilde_max, lambda_max;
   double dlambdadt, lambda_lim, laim, lambda_max_memory;
   double tau_W, tau_s;
+  double lambda_next;
 
   meantemp=(double)met_list[0];
   n=(double)var_list[0];
@@ -92,7 +93,7 @@ gpppars[7]=DATA.MET[m+3];
   E=(double)10.0;
   tau_W=(double)var_list[10];
   lambda_max=(double)var_list[9];
-  lambda_max_memory=(double)5.0;  //TIME-DEPENDENT I.E. SAVE IN MEMORY
+  lambda_max_memory=(double)var_list[11];  //TIME-DEPENDENT I.E. SAVE IN MEMORY
   tau_s=(double)1.0;
 
   /* Initialization: only run this on the first time step! */
@@ -120,15 +121,17 @@ gpppars[7]=DATA.MET[m+3];
   /* update LAI water/structural memory using an exponentially declining memory of water/structural limitation over the time period tau_s */
   laim = exp(- 1.0 / tau_s)*lambda_max_memory + lambda_tilde_max * (1.0 - exp(- 1.0 / tau_s));
   
-  lambda_lim = plgr * laim * f / r;
+  lambda_lim = MaxExponentialSmooth(plgr * laim * f / r, 1e-9, 5e-3);
 
   dlambdadt = r*(lambda_lim - lambda);
 
+  lambda_next = lambda_lim - (lambda_lim - lambda)*exp(-r);
+
   static double return_arr[4];
-  return_arr[0] = 5.0;
-  return_arr[1] = lambda;
-  return_arr[2] = lambda_lim;
-  return_arr[3] = dlambdadt;
+  return_arr[0] = lambda_next;
+  return_arr[1] = T;
+  return_arr[2] = laim;
+  return_arr[3] = lambda_lim;
   return return_arr;
 }
 
