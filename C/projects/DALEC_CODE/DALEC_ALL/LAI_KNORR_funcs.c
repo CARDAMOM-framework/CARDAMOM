@@ -1,5 +1,6 @@
 #pragma once
 /* Functions to support the Leaf Phenology Model of Knorr et al. (2010, doi: 10.1029/2009JG001119)*/
+//
 // Minimum function with quadratic transition (smoothed) between two values. Example:
 // x  = (double)0.1;
 // y  = (double)1e-6;
@@ -17,3 +18,22 @@ double MinQuadraticSmooth(double const x, double const y, double const eta)
   mins = (x + y - sqrt(z)) / (2.0*eta);
   return mins;
 }
+
+
+// Maximum function with exponential transition (smoothed) between two values. Example:
+/* x  = first value */
+/* y  = second value */
+/* x0 = degree of smoothing */
+double MaxExponentialSmooth(double const x, double const y, double const x0)
+{
+  double maxx;
+
+  if (x >= (y-x0)) {
+    maxx = x + x0*exp(-(x-y)/x0 - 1.0);  // statements to be executed if the test expression is true
+  }
+  else {
+    maxx = y;  // statements to be executed if the test expression is false
+  }
+  return maxx;
+}
+

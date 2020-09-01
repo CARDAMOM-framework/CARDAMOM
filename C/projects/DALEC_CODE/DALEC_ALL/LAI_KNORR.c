@@ -99,7 +99,9 @@ gpppars[7]=DATA.MET[m+3];
   r      = plgr * f + (1 - f)*k_L;
 
   test   = MinQuadraticSmooth(5.0, 4.5, 0.99);
-  if (n==0){printf("> in LAI_KNORR: test = %2.2f\n",test);}
+  if (n==0){printf("> in LAI_KNORR: test min = %2.2f\n",test);}
+  test   = MaxExponentialSmooth(5.0, 4.0, 3.0);
+  if (n==0){printf("> in LAI_KNORR: test max = %2.2f\n",test);}
 
   static double return_arr[4];
   return_arr[0] = 5.0;
