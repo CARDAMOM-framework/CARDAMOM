@@ -75,7 +75,8 @@ gpppars[7]=DATA.MET[m+3];
   double f, r;
   double pasm, E;
   double lambda, lambda_W, lambda_tilde_max, lambda_max;
-  double tau_W;
+  double laim, lambda_max_memory;
+  double tau_W, tau_s;
 
   meantemp=(double)met_list[0];
   n=(double)var_list[0];
@@ -91,8 +92,14 @@ gpppars[7]=DATA.MET[m+3];
   E=(double)10.0;
   tau_W=(double)10.0;
   lambda_max=(double)var_list[9];
+  lambda_max_memory=(double)5.0;  //TIME-DEPENDENT I.E. SAVE IN MEMORY
+  tau_s=(double)1.0;
 
   /* Initialization: only run this on the first time step! */
+  if (n==0) {
+    lambda_max_memory=lambda_max;
+    laim=lambda_max_memory;
+  }
   // if (n==0){printf("> in LAI_KNORR: T_memory = %2.1f\n",T_memory);}
   // if (n==0){T_memory=T_phi+3*T_r;}   /* set the temperature memory to be high so that we start in growth phase */
   // Exponentially declining memory of temperature
@@ -110,12 +117,15 @@ gpppars[7]=DATA.MET[m+3];
   // if (n==0){printf("> in LAI_KNORR: lambda = %2.2f\n",lambda);}
   // if (n==0){printf("> in LAI_KNORR: lambda_W = %2.2f\n",lambda_W);}
   // if (n==0){printf("> in LAI_KNORR: lambda_tilde_max = %2.2f\n",lambda_tilde_max);}
+  /* update LAI water/structural memory using an exponentially declining memory of water/structural limitation over the time period tau_s */
+  laim = exp(- 1.0 / tau_s)*lambda_max_memory + lambda_tilde_max * (1.0 - exp(- 1.0 / tau_s));
+  
 
   static double return_arr[4];
   return_arr[0] = 5.0;
   return_arr[1] = 10.0;
-  return_arr[2] = T;
-  return_arr[3] = r;
+  return_arr[2] = lambda_max_memory;
+  return_arr[3] = laim;
   return return_arr;
 }
 

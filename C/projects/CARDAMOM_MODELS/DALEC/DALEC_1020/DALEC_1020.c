@@ -49,7 +49,7 @@ double *NEE=DATA.M_NEE;
   POOLS[7]=pars[35];
   /*LAI module variables*/
   POOLS[8]=pars[36];  /* LAI */
-  POOLS[9]=pars[37]+3*pars[38];      /* LAI temperature memory */
+  POOLS[9]=pars[37]+3*pars[38];
 
 
 /* NOTES FOR POOLS AND FLUXES
