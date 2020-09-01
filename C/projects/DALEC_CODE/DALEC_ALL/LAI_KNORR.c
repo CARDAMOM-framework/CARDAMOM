@@ -75,7 +75,7 @@ gpppars[7]=DATA.MET[m+3];
   double f, r;
   double pasm, E;
   double lambda, lambda_W, lambda_tilde_max, lambda_max;
-  double laim, lambda_max_memory;
+  double dlambdadt, lambda_lim, laim, lambda_max_memory;
   double tau_W, tau_s;
 
   meantemp=(double)met_list[0];
@@ -90,7 +90,7 @@ gpppars[7]=DATA.MET[m+3];
   k_L=(double)var_list[8];
   pasm=(double)50.0;
   E=(double)10.0;
-  tau_W=(double)10.0;
+  tau_W=(double)0.01;
   lambda_max=(double)var_list[9];
   lambda_max_memory=(double)5.0;  //TIME-DEPENDENT I.E. SAVE IN MEMORY
   tau_s=(double)1.0;
@@ -120,12 +120,15 @@ gpppars[7]=DATA.MET[m+3];
   /* update LAI water/structural memory using an exponentially declining memory of water/structural limitation over the time period tau_s */
   laim = exp(- 1.0 / tau_s)*lambda_max_memory + lambda_tilde_max * (1.0 - exp(- 1.0 / tau_s));
   
+  lambda_lim = plgr * laim * f / r;
+
+  dlambdadt = r*(lambda_lim - lambda);
 
   static double return_arr[4];
   return_arr[0] = 5.0;
-  return_arr[1] = 10.0;
-  return_arr[2] = lambda_max_memory;
-  return_arr[3] = laim;
+  return_arr[1] = lambda;
+  return_arr[2] = lambda_lim;
+  return_arr[3] = dlambdadt;
   return return_arr;
 }
 
