@@ -73,18 +73,24 @@ gpppars[7]=DATA.MET[m+3];
   double T, T_memory, T_deviation, f_T, tau_m;
   double plgr, k_L;
   double f, r;
-  double test;
+  double pasm, E;
+  double lambda, lambda_W, lambda_tilde_max, lambda_max;
+  double tau_W;
 
   meantemp=(double)met_list[0];
   n=(double)var_list[0];
-  tau_m=(double)var_list[6];
-
+  lambda=(double)var_list[2];
   T_init=(double)0.0;
   T_phi=(double)var_list[3];
   T_r=(double)var_list[4];
   T_memory=(double)var_list[5];
+  tau_m=(double)var_list[6];
   plgr=(double)var_list[7];
   k_L=(double)var_list[8];
+  pasm=(double)50.0;
+  E=(double)10.0;
+  tau_W=(double)10.0;
+  lambda_max=(double)6.0;
 
   /* Initialization: only run this on the first time step! */
   // if (n==0){printf("> in LAI_KNORR: T_memory = %2.1f\n",T_memory);}
@@ -98,10 +104,12 @@ gpppars[7]=DATA.MET[m+3];
   f      = f_T;   /* also multiply by the day-length fraction here when thats ready */
   r      = plgr * f + (1 - f)*k_L;
 
-  test   = MinQuadraticSmooth(5.0, 4.5, 0.99);
-  if (n==0){printf("> in LAI_KNORR: test min = %2.2f\n",test);}
-  test   = MaxExponentialSmooth(5.0, 4.0, 3.0);
-  if (n==0){printf("> in LAI_KNORR: test max = %2.2f\n",test);}
+  /* compute water-limited maximum LAI */
+  lambda_W    = pasm * lambda / tau_W / MaxExponentialSmooth(E, 1e-3, 2e-2);
+  lambda_tilde_max = MinQuadraticSmooth(lambda_max, lambda_W, 0.99);
+  if (n==0){printf("> in LAI_KNORR: lambda = %2.2f\n",lambda);}
+  if (n==0){printf("> in LAI_KNORR: lambda_W = %2.2f\n",lambda_W);}
+  if (n==0){printf("> in LAI_KNORR: lambda_tilde_max = %2.2f\n",lambda_tilde_max);}
 
   static double return_arr[4];
   return_arr[0] = 5.0;
