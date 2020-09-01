@@ -183,6 +183,10 @@ CARDADATA->parmax[40]=0.2;
 CARDADATA->parmin[41]=0.05;
 CARDADATA->parmax[41]=0.05;
 
+/*Intrinsic maximum LAI (m^2 m^-2)*/
+CARDADATA->parmin[42]=5.0;
+CARDADATA->parmax[42]=5.0;
+
 return 0;
 
 }

@@ -90,7 +90,7 @@ gpppars[7]=DATA.MET[m+3];
   pasm=(double)50.0;
   E=(double)10.0;
   tau_W=(double)10.0;
-  lambda_max=(double)6.0;
+  lambda_max=(double)var_list[9];
 
   /* Initialization: only run this on the first time step! */
   // if (n==0){printf("> in LAI_KNORR: T_memory = %2.1f\n",T_memory);}
@@ -107,9 +107,9 @@ gpppars[7]=DATA.MET[m+3];
   /* compute water-limited maximum LAI */
   lambda_W    = pasm * lambda / tau_W / MaxExponentialSmooth(E, 1e-3, 2e-2);
   lambda_tilde_max = MinQuadraticSmooth(lambda_max, lambda_W, 0.99);
-  if (n==0){printf("> in LAI_KNORR: lambda = %2.2f\n",lambda);}
-  if (n==0){printf("> in LAI_KNORR: lambda_W = %2.2f\n",lambda_W);}
-  if (n==0){printf("> in LAI_KNORR: lambda_tilde_max = %2.2f\n",lambda_tilde_max);}
+  // if (n==0){printf("> in LAI_KNORR: lambda = %2.2f\n",lambda);}
+  // if (n==0){printf("> in LAI_KNORR: lambda_W = %2.2f\n",lambda_W);}
+  // if (n==0){printf("> in LAI_KNORR: lambda_tilde_max = %2.2f\n",lambda_tilde_max);}
 
   static double return_arr[4];
   return_arr[0] = 5.0;
