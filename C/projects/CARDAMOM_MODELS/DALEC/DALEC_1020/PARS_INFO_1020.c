@@ -187,6 +187,10 @@ CARDADATA->parmax[41]=0.05;
 CARDADATA->parmin[42]=5.0;
 CARDADATA->parmax[42]=5.0;
 
+/*Target survival time for LAI under water-deficit conditions (days)*/
+CARDADATA->parmin[43]=0.1;
+CARDADATA->parmax[43]=0.1;
+
 return 0;
 
 }
