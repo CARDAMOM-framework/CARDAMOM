@@ -37,3 +37,31 @@ double MaxExponentialSmooth(double const x, double const y, double const x0)
   return maxx;
 }
 
+// Day length function - hours of sunlight per day //
+double ComputeDaylightHours(double const *pars)
+{
+  /*double mult=0,dayl=0,dec=0;*/
+  double mult,dayl,dec;
+/*Notes: DALEC code passes the following *pars pointers:
+constant pars terms
+pars[0]=latitude;
+pars[1]=day of year;
+pars[2]=pi;
+*/
+
+
+  /*pars= &pars;  
+ *   consts= &consts;
+ *   */
+  dec=(double)-23.4*cos((360.*(pars[1]+10.)/365.)*pars[2]/180.)*pars[2]/180.;
+  mult=(double)tan(pars[0]*pars[2]/180)*tan(dec);
+  if (mult>=1){ 
+   dayl=24.;}  
+  else if(mult<=-1)
+  dayl=0.;
+  else{
+  dayl=(double)24.*acos(-mult) / pars[2];}
+
+  return dayl;
+}
+
