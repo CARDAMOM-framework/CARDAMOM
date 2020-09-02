@@ -73,8 +73,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   /* fraction of plants above daylength threshold: using cumulative normal distribution function (derived from the intrinsic c-function erfc) */
   f_d    = 0.5*erfc(-td_deviation*sqrt(0.5));  
 
-  /* fraction of plants above temperature + daylength threshold */
-  /* also multiply by the day-length fraction here when thats ready */
+  /* fraction of plants above temperature and daylength thresholds */
   f      = f_T * f_d;
   /* compute current growth rate */
   r      = plgr * f + (1 - f)*k_L;
