@@ -53,6 +53,7 @@ double *NEE=DATA.M_NEE;
   POOLS[10]=pars[37]+3*pars[38];  /* LAI temperature memory (KNORR) */
   POOLS[11]=pars[42];  /* LAI water/structural memory (KNORR) */
   POOLS[12]=0.0;  /* LAI rate of change (KNORR) */
+  POOLS[13]=pars[18];  /* foliar carbon pool (KNORR) */
 
 
 /* NOTES FOR POOLS AND FLUXES
@@ -130,6 +131,8 @@ CF[3]=pars[28];
 CF[4]=pars[27]/2+pars[28]/2;
 CF[5]=pars[29];
 
+/*foliar carbon transfer intermediate variables*/
+double netCeffect, nominalClosses;
 
 /*resilience factor*/
 
@@ -263,6 +266,10 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
         POOLS[nxp+10] = LAI_KNORR(lai_met_list, lai_var_list)[1];
         POOLS[nxp+11] = LAI_KNORR(lai_met_list, lai_var_list)[2];
         POOLS[nxp+12] = LAI_KNORR(lai_met_list, lai_var_list)[3];
+        netCeffect = fmin(POOLS[p+12]*pars[16] + POOLS[p+13]/pars[46], POOLS[p+0]);
+        nominalClosses = POOLS[p+13]/pars[46];
+        POOLS[nxp+13] = POOLS[p+13] + (netCeffect - nominalClosses)*deltat;
+
 /*Water pool = Water pool - runoff + prec (mm/day) - ET*/
 	/*printf("%2.1f\n",POOLS[p+6]);*/
 	/*PAW total runoff*/

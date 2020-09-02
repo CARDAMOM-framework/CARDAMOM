@@ -199,6 +199,10 @@ CARDADATA->parmax[44]=13.0;
 CARDADATA->parmin[45]=0.5;
 CARDADATA->parmax[45]=1.0;
 
+/*Foliar carbon turnover rate*/
+CARDADATA->parmin[46]=0.5;
+CARDADATA->parmax[46]=1.0;
+
 return 0;
 
 }
