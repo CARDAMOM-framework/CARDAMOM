@@ -21,6 +21,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   double daylength;
   double n;
   double meantemp;
+  double t_c, t_r, f_d, td_deviation;
   double T_init, T_phi, T_r;
   double T, T_memory, T_deviation, f_T, tau_m;
   double plgr, k_L;
@@ -47,6 +48,8 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   tau_W=(double)var_list[10];
   lambda_max_memory=(double)var_list[11];  //TIME-DEPENDENT I.E. SAVE IN MEMORY
   tau_s=(double)1.0;
+  t_c=(double)var_list[15];
+  t_r=(double)var_list[16];
 
   /* Initialization: only run this on the first time step! */
   if (n==0) {
@@ -66,10 +69,13 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   daylengthpars[1]=var_list[13];  /* day of year */
   daylengthpars[2]=var_list[14];  /* pi */
   daylength = ComputeDaylightHours(daylengthpars);
+  td_deviation = (daylength-t_c)/t_r;
+  /* fraction of plants above daylength threshold: using cumulative normal distribution function (derived from the intrinsic c-function erfc) */
+  f_d    = 0.5*erfc(-td_deviation*sqrt(0.5));  
 
   /* fraction of plants above temperature + daylength threshold */
   /* also multiply by the day-length fraction here when thats ready */
-  f      = f_T;
+  f      = f_T * f_d;
   /* compute current growth rate */
   r      = plgr * f + (1 - f)*k_L;
 
@@ -90,7 +96,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   return_arr[0] = lambda_next;
   return_arr[1] = T;
   return_arr[2] = laim;
-  return_arr[3] = daylength; //dlambdadt;
+  return_arr[3] = dlambdadt;
   return return_arr;
 }
 

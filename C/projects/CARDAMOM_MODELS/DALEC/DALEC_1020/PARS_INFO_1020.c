@@ -191,6 +191,14 @@ CARDADATA->parmax[42]=5.0;
 // CARDADATA->parmin[43]=0.1;
 // CARDADATA->parmax[43]=0.1;
 
+/*Mean daylength at leaf shedding (t_c; in units of hours sunlight per day)*/
+CARDADATA->parmin[43]=12.0;
+CARDADATA->parmax[43]=12.0;
+
+/*Spatial range of mean daylength at leaf shedding (t_r)*/
+CARDADATA->parmin[44]=0.9;
+CARDADATA->parmax[44]=1.0;
+
 return 0;
 
 }

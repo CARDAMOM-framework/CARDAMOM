@@ -10,7 +10,7 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 int DALEC_1020(DATA DATA, double const *pars)
 {
 
-double gpppars[11],pi,lai_met_list[1],lai_var_list[15];
+double gpppars[11],pi,lai_met_list[1],lai_var_list[17];
 /*C-pools, fluxes, meteorology indices*/
 int p,f,m,nxp, i;
 int n=0,nn=0;
@@ -174,6 +174,8 @@ lai_var_list[11]=POOLS[p+11]; /* water/structuralmemory (from previous timestep)
 lai_var_list[12]=DATA.LAT; /*latitude*/
 lai_var_list[13]=DATA.MET[m+5]; /*day of year*/
 lai_var_list[14]=pi; /*pi*/
+lai_var_list[15]=pars[43]; /*t_c*/
+lai_var_list[16]=pars[44]; /*t_r*/
 // Run LAI module
 // LAI[n]=LAI_KNORR(lai_met_list, lai_var_list)[0];
 LAI[n]=LAI_KNORR(lai_met_list, lai_var_list)[0];
