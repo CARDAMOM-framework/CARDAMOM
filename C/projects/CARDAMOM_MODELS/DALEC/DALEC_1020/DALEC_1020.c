@@ -169,13 +169,13 @@ lai_var_list[6]=pars[39]; /*tau_m*/
 lai_var_list[7]=pars[40]; /*plgr*/
 lai_var_list[8]=pars[41]; /*k_L*/
 lai_var_list[9]=pars[42]; /*lambda_max*/
-lai_var_list[10]=0.1; //pars[43]; /*tau_W*/
+lai_var_list[10]=pars[43]; /*tau_W*/
 lai_var_list[11]=POOLS[p+11]; /* water/structuralmemory (from previous timestep) */
 lai_var_list[12]=DATA.LAT; /*latitude*/
 lai_var_list[13]=DATA.MET[m+5]; /*day of year*/
 lai_var_list[14]=pi; /*pi*/
-lai_var_list[15]=pars[43]; /*t_c*/
-lai_var_list[16]=pars[44]; /*t_r*/
+lai_var_list[15]=pars[44]; /*t_c*/
+lai_var_list[16]=pars[45]; /*t_r*/
 // Run LAI module
 // LAI[n]=LAI_KNORR(lai_met_list, lai_var_list)[0];
 LAI[n]=LAI_KNORR(lai_met_list, lai_var_list)[0];
