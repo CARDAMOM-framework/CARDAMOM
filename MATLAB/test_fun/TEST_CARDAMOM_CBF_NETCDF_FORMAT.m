@@ -89,6 +89,7 @@ ncwrite_if_exists(fname,'GPP',CBF.OBS.GPP);
 ncwriteatt(fname,'GPP','Description','Gross Primary Productivity')
 ncwriteatt(fname,'GPP','info',CBF.OBSUNC.GPP.info)
 ncwriteatt(fname,'GPP','gppabs_info',CBF.OBSUNC.GPP.gppabs_info)
+%Endless list, up to users to decide what goes here (e.g. source data?)
 %Same as standard CBF variables
 ncwriteatt(fname,'GPP','Uncertainty',CBF.OBSUNC.GPP.unc)
 ncwriteatt(fname,'GPP','Annual Uncertainty',CBF.OBSUNC.GPP.annual_unc)

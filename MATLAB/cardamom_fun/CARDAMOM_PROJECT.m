@@ -1567,12 +1567,14 @@ PXI.RO=RO;
 PXI.run_details='GCRUN_AUG20: 2010-2017 and LS constraints';
 PXI.ID=813;
 PXI.run_name=['GCRUN_AUG20_CMS_PRIOR'];
-PXI.analysis='GCRUN_AUG20';%Indicates which folder these go in.
+PXI.analysis='GCRUN_AUG20_CMS_PRIOR';%Indicates which folder these go in.
 
 %Create and summarize PXI, based on available options
 repeat=1;
 if repeat==1
-PXI=create_gcrun_cbf_files(PXI);
+    OPT.gcdriobs='era5';
+
+PXI=create_gcrun_cbf_files(PXI,[],OPT);
 end
 
 % %Step 2. determine output status
@@ -1583,11 +1585,21 @@ PXI=cardamom_pixel_output_summary(PXI);
 
 end
 
-function PXI=create_gcrun_cbf_files(PXI,MASK,repeat)
+function PXI=create_gcrun_cbf_files(PXI,MASK,OPT)
 
-if nargin<3;repeat=0;end
+if nargin<3;OPT.repeat=0;end
+if isstruct(OPT)==0;OPT.repeat=OPT;end
+if isfield(OPT,'gcdriobs')==0;OPT.gcdriobs='erai';end
+if isfield(OPT,'repeat')==0;OPT.repeat=0;end
+
 %Load gridded drivers and observations
+switch OPT.gcdriobs
+    case 'erai'
 repeatdriobs=0;GCDRIOBS=READ_GRID_GC_4x5_DRIVERS_OBS(repeatdriobs);
+    case 'era5'
+        GCDRIOBS=READ_GRID_GC_4x5_DRIVERS_OBS_ERA5;
+end
+        
 
 [~,LSFRAC]=loadlandseamask('4x5');
 GCLSMASK=LSFRAC>0.1;%Test with ALL regions
@@ -1662,7 +1674,7 @@ PXI.dates=datenum('01/01/2001')+[365.25/24+(tidx(1)-1)*365.25/12:365.25/12:+(tid
 %(a) file does not exist, or
 %(b) remakecbf==1
 
-remake_cbf=repeat;
+remake_cbf=OPT.repeat;
 
 %
 for n=1:numel(row);
@@ -2507,7 +2519,7 @@ defval('repeat',0);
 %Dumpfile and stuff here
 %GCDRIOBS 
 %dumpfilename='DUMPFILES/PROJSCRIPT_CARDAMOM_CMS_GC4x5_DRIOBS_NOV18.mat';
-dumpfilename='DUMPFILES/PROJSCRIPT_CARDAMOM_CMS_GC4x5_DRIOBS_AUG20.mat';
+dumpfilename='DUMPFILES/PROJSCRIPT_CARDAMOM_CMS_GC4x5_DRIOBS_ERA5_AUG20.mat';
 
 if isempty(dir(dumpfilename))==0 && repeat==1;delete(dumpfilename);end
 
@@ -2565,19 +2577,19 @@ end
 
 if matfilecontains(GCDRIOBS,'vpd')==0 || repeat==1;
 ET2M=quickload('DATASCRIPT_READ_ERA5_MONTHLY_AUG20(''t2m'',0.5,2001:2019)');
-GCDRIOBS.mintemp=indeks(GEOSChem_regular_grid_to_GC(ET2M.datamin),[':,:,',metobsidx_str_erai]);
-GCDRIOBS.maxtemp=indeks(GEOSChem_regular_grid_to_GC(ET2M.datamax),[':,:,',metobsidx_str_erai]);
+GCDRIOBS.mintemp=indeks(GEOSChem_regular_grid_to_GC(ET2M.datamin),[':,:,',metobsidx_str]);
+GCDRIOBS.maxtemp=indeks(GEOSChem_regular_grid_to_GC(ET2M.datamax),[':,:,',metobsidx_str]);
 
-ED2M=quickload('DATASCRIPT_READ_ERAI_MONTHLY_JUL18(''d2m'',0.5)');
-GCDRIOBS.vpd=GEOSChem_regular_grid_to_GC(indeks(SCIFUN_H2O_SATURATION_PRESSURE(ET2M.datamax),[':,:,',metobsidx_str_erai]) - indeks(SCIFUN_H2O_SATURATION_PRESSURE(ED2M.datamax),[':,:,',metobsidx_str_erai]))*10;
+ED2M=quickload('DATASCRIPT_READ_ERA5_MONTHLY_AUG20(''d2m'',0.5,2001:2019)');
+GCDRIOBS.vpd=GEOSChem_regular_grid_to_GC(indeks(SCIFUN_H2O_SATURATION_PRESSURE(ET2M.datamax),[':,:,',metobsidx_str]) - indeks(SCIFUN_H2O_SATURATION_PRESSURE(ED2M.datamax),[':,:,',metobsidx_str]))*10;
 
 clear E*2M ;
 end
 
 
 if matfilecontains(GCDRIOBS,'srad')==0 || repeat==1;
-ESRAD=quickload('DATASCRIPT_READ_ERAI_MONTHLY_JUL18(''srad'',0.5)');
-GCDRIOBS.srad=indeks(GEOSChem_regular_grid_to_GC(ESRAD.data),[':,:,',metobsidx_str_erai]);
+ESRAD=quickload('DATASCRIPT_READ_ERA5_MONTHLY_AUG20(''ssrd'',0.5,2001:2019)');
+GCDRIOBS.srad=indeks(GEOSChem_regular_grid_to_GC(ESRAD.data),[':,:,',metobsidx_str]);
 clear ESRAD;
 end
 
@@ -2613,18 +2625,20 @@ end
  GBA(M4D==0)=NaN;GBA(isnan(GBA) & M4D)=0;
  GCE(M4D==0)=NaN;GCE(isnan(GCE) & M4D)=0;
  %Ensures land fire-free regions = 0 but sea regions are = NaN
- GCDRIOBS.BA=indeks(GEOSChem_regular_grid_to_GC(GBA),[':,:,',metobsidx_str_erai]);
- GCDRIOBS.FireC=indeks(GEOSChem_regular_grid_to_GC(GCE),[':,:,',metobsidx_str_erai])*12/365.25;%g species/m2/month
+ GCDRIOBS.BA=indeks(GEOSChem_regular_grid_to_GC(GBA),[':,:,',metobsidx_str]);
+ GCDRIOBS.FireC=indeks(GEOSChem_regular_grid_to_GC(GCE),[':,:,',metobsidx_str])*12/365.25;%g species/m2/month
  %nantotal(nanmean(GCDRIOBS.FireC,3).*GC.area)*365.25/1e15
 
- disp('GFEDv4s beta does not provide 2017-18 burned area');
+ disp('GFEDv4s beta does not provide 2017-19 burned area');
  disp('Using GFEDv4s 2001-2016 BA/Emissions ratio')
- for m=1:24
-     BA17(:,:,m)=sum(GCDRIOBS.BA(:,:,m:12:end-24),3)./sum(GCDRIOBS.FireC(:,:,m:12:end-24),3).*GCDRIOBS.FireC(:,:,end-24+m);
+ idx16=16*12;
+ 
+ for m=1:36
+     BAextra(:,:,m)=sum(GCDRIOBS.BA(:,:,m:12:idx16),3)./sum(GCDRIOBS.FireC(:,:,m:12:idx16),3).*GCDRIOBS.FireC(:,:,idx16+m);
  end
  %storing and replacing NaNs with zeros (Nans occur when 2010-2016 fires
  %are zero)
-GCDRIOBS.BA(:,:,end-23:end)= BA17;
+GCDRIOBS.BA(:,:,idx16+1:end)= BAextra;
 GCDRIOBS.BA=nan2zero(GCDRIOBS.BA);
 %OLD CODE: used GFEDv4 BA data
 % GBA0=quickload('DATASCRIPT_READ_GFED4_BA_DATA_OCT15(1)');
@@ -2702,7 +2716,9 @@ GCDRIOBS.BBCO=GCDRIOBS.BBCO./repmat(LSFRAC,[1,1,size(GCDRIOBS.BBCO,3)]);
 end
 %Convert to gC/m2/d
 % GCDRIOBS.BBGFED=GFEDCannual4x5*12/365.25;
-if matfilecontains(GCDRIOBS,'SIF')==0 || matfilecontains(GCDRIOBS,'SIFgome2')==0 || matfilecontains(GCDRIOBS,'SIFfluxsat')==0 || repeat==1
+repeatallsif=0;
+if matfilecontains(GCDRIOBS,'SIF')==0 || matfilecontains(GCDRIOBS,'SIFgome2')==0 || matfilecontains(GCDRIOBS,'SIFfluxsat')==0 || repeat==1 || repeatallsif==1
+
 
 %Load GOSAT and GOME2 SIF datasets
 GOSAT=quickload('DATASCRIPT_READ_GOSAT_FLUORESCENCE(''4x5'')');
@@ -2719,8 +2735,11 @@ FLUXSAT=quickload('DATASCRIPT_READ_FLUXSAT_SIF_GPP');
 %2001-2018
 %SIFfluxsat already normalized by unit land
 %GCDRIOBS.SIFfluxsat(1:46,1:72,1:216)=FLUXSAT.data./repmat(LSFRAC,[1,1,size(FLUXSAT,3)]);
+SIFfluxsat(1:46,1:72,1:metobsidx(end))=NaN;
+%Only including 2007-2018
+SIFfluxsat(1:46,1:72,73:216)=FLUXSAT.data(:,:,73:216);
 
-GCDRIOBS.SIFfluxsat(1:46,1:72,1:216)=FLUXSAT.data;
+GCDRIOBS.SIFfluxsat=SIFfluxsat;
 
 GCDRIOBS.SIF=SIFgosat;
 GCDRIOBS.SIFgome2=SIFgome2;
@@ -2801,8 +2820,9 @@ end
 
 repeatmlco2=1;
 if matfilecontains(GCDRIOBS,'NBE')==0 || repeat==1 || repeatmlco2==1;
-MLCO2=DATASCRIPT_READ_NOAA_MAUNA_LOA_CO2_OCT19;
-GCDRIOBS.CO2=MLCO2.data(MLCO2.year>=YEARS(1) & MLCO2.year<=YEARS(end));
+%MLCO2=DATASCRIPT_READ_NOAA_MAUNA_LOA_CO2_OCT19;
+NOAACO2=DATASCRIPT_READ_NOAA_GLOBAL_CO2_AUG20;
+GCDRIOBS.CO2=NOAACO2.data(NOAACO2.year>=YEARS(1) & NOAACO2.year<=YEARS(end));
 end
 
     GCDRIOBS=matfile(dumpfilename,'Writable',false);
