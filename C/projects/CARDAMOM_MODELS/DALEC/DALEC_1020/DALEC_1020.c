@@ -160,6 +160,8 @@ f=nofluxes*n;
   evapotranspiration and soil water for use in the LAI_KNORR module */
 if (n==0){
   LAI[n]=POOLS[p+1]/pars[16];
+  // lai_var_list[2]=LAI[n];
+  lai_var_list[2]=pars[36];
   /*GPP*/
   gpppars[0]=LAI[n];
   gpppars[1]=DATA.MET[m+2];
@@ -175,21 +177,20 @@ if (n==0){
   /*Plant-available water*/
   POOLS[p+6]=pars[26];
   lai_var_list[17]=POOLS[p+6];
+  lai_var_list[5]=POOLS[10];
+  lai_var_list[11]=POOLS[11];
 }
 
 lai_met_list[0]=(DATA.MET[m+2] + DATA.MET[m+1])/2.0; /* meantemp, deg C*/
 lai_var_list[0]=n; /*current timestep index of model run*/
 lai_var_list[1]=pars[36]; /*initial LAI parameter*/
-// lai_var_list[2]=POOLS[p+9]; /*current LAI (from previous timestep)*/
 lai_var_list[3]=pars[37]; /*T_phi*/
 lai_var_list[4]=pars[38]; /*T_r*/
-lai_var_list[5]=POOLS[p+10]; /*T_memory (from previous timestep)*/
 lai_var_list[6]=pars[39]; /*tau_m*/
 lai_var_list[7]=pars[40]; /*plgr*/
 lai_var_list[8]=pars[41]; /*k_L*/
 lai_var_list[9]=pars[42]; /*lambda_max*/
 lai_var_list[10]=pars[43]; /*tau_W*/
-lai_var_list[11]=POOLS[p+11]; /* water/structuralmemory (from previous timestep) */
 lai_var_list[12]=DATA.LAT; /*latitude*/
 lai_var_list[13]=DATA.MET[m+5]; /*day of year*/
 lai_var_list[14]=pi; /*pi*/
@@ -311,9 +312,17 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 	/*Net ecosystem exchange + Fires*/
 	NEE[n]=-FLUXES[f+0]+FLUXES[f+2]+FLUXES[f+12]+FLUXES[f+13]+FLUXES[f+16];
 
-  /*Update plant-available water and evapotranspiration variables for input to next iteration of LAI_KNORR*/
+  /*Update variables for LAI_KNORR to be used in next iteration*/
+  /*plant-available water*/
   lai_var_list[17]=POOLS[nxp+6]; /*pasm = PAW*/
+  /*evapotranspiration variables*/
   lai_var_list[18]=FLUXES[f+28]; /*ET*/
+  /*current LAI*/
+  lai_var_list[2]=POOLS[nxp+9];
+  /*temperature memory*/
+  lai_var_list[5]=POOLS[nxp+10];
+  /*water/structural memory*/
+  lai_var_list[11]=POOLS[nxp+11];
 
 }
 

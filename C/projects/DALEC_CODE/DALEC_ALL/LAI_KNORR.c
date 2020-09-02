@@ -79,8 +79,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   r      = plgr * f + (1 - f)*k_L;
 
   /* compute water-limited maximum LAI */
-  // lambda_W    = (pasm * lambda) / (tau_W * MaxExponentialSmooth(ET, 1e-3, 2e-2));
-  lambda_W    = (pasm * lambda) / (tau_W * ET);
+  lambda_W    = (pasm * lambda) / (tau_W * MaxExponentialSmooth(ET, 1e-3, 2e-2));
   /* compute smoothed maximum LAI */
   lambda_tilde_max = MinQuadraticSmooth(lambda_max, lambda_W, 0.99);
   /* update LAI water/structural memory using an exponentially declining memory of water/structural limitation over the time period tau_s */
@@ -95,8 +94,8 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   static double return_arr[4];
   return_arr[0] = lambda_next;
   return_arr[1] = T;
-  return_arr[2] = pasm;
-  return_arr[3] = ET;
+  return_arr[2] = laim;
+  return_arr[3] = dlambdadt;
   return return_arr;
 }
 
