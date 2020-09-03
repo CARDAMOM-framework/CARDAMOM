@@ -23,13 +23,7 @@ char parfile[200];strcpy(parfile,files[2]);
 
 
 /*declaring data structure*/
-DATA CARDADATA;
-
-/*if (&CARDADATA==0){printf("CARDADATA not assigned, expect error!\n");}
-*//*Initialize data structure*/
-int OK;
-OK=INITIALIZE_DATA_STRUCT(&CARDADATA);
-okcheck(OK,"CHECK: DATA structure successfully initialized");
+NETCDF_DATA CARDADATA;
 
 /*step 1 - read the met file & initialize model fields here*/
 /*NOTE: metfile contains information on which CARDAMOM model is being run*/
