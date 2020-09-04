@@ -272,7 +272,8 @@ MCH4 = WETLAND_CH4_MODEL(DATA,pars);
 %P = exp(-0.5*(sum((Model - Obs).^2./Unc.^2)));
 %See Bloom et al., 2015 and Ziehn et al., 2012 (and references therein) for
 %details.
-P = -0.5*(sum((MCH4-DATA.obs).^2/DATA.obsunc.^2));
+%Correction made on Sep 3, 2020
+P = -0.5*(sum((MCH4-DATA.obs).^2./DATA.obsunc.^2));
 end
 
 %Model function

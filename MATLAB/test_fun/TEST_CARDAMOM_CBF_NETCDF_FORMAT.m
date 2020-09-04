@@ -82,7 +82,7 @@ ncwriteatt(fname,'Mean GPP','Uncertainty Type','absolute');
 
 %********GPP*****************
 
-nccreate(fname,'GPP','Dimensions',{'time',nodays});
+nccreate(fname,'GPP','Dimensions',{'time',nodays},'FillValue',-9999);
 %Writing variable 
 ncwrite_if_exists(fname,'GPP',CBF.OBS.GPP);
 %Variable attributes
@@ -124,7 +124,7 @@ ncwriteatt(fname,'NBE','Annual Uncertainty',CBF.OBSUNC.NBE.annual_unc)
 
 %********ABGB*****************
 
-nccreate(fname,'ABGB');%,'Dimensions',{'time',nodays});
+nccreate(fname,'ABGB','Dimensions',{'time',nodays},'FillValue',-9999);%,'Dimensions',{'time',nodays});
 %Writing variable 
 ncwrite_if_exists(fname,'ABGB',CBF.OBS.ABGB);
 %Variable attributes
@@ -137,7 +137,7 @@ ncwriteatt(fname,'ABGB','Uncertainty',CBF.OBSUNC.ABGB.unc);
 
 %********ET*****************
 
-nccreate(fname,'ET');%,'Dimensions',{'time',nodays});
+nccreate(fname,'ET','Dimensions',{'time',nodays},'FillValue',-9999);%,'Dimensions',{'time',nodays});
 %Writing variable 
 ncwrite_if_exists(fname,'ET',CBF.OBS.ET);
 %Variable attributes
@@ -151,7 +151,7 @@ ncwriteatt(fname,'ET','Uncertainty Threshold',CBF.OBSUNC.ET.obs_unc_threshold);
 
 %********EWT*****************
 
-nccreate(fname,'EWT');%,'Dimensions',{'time',nodays});
+nccreate(fname,'EWT','Dimensions',{'time',nodays},'FillValue',-9999);%,'Dimensions',{'time',nodays});
 %Writing variable 
 ncwrite_if_exists(fname,'EWT',CBF.OBS.EWT);
 %Variable attributes
@@ -164,7 +164,7 @@ ncwriteatt(fname,'EWT','Annual Uncertainty',CBF.OBSUNC.EWT.annual_unc)
 
 %********SOM*****************
 
-nccreate(fname,'SOM');%,'Dimensions',{'time',nodays});
+nccreate(fname,'SOM','Dimensions',{'time',nodays},'FillValue',-9999);%,'Dimensions',{'time',nodays});
 %Writing variable 
 ncwrite_if_exists(fname,'SOM',CBF.OBS.SOM);
 %Variable attributes
@@ -178,7 +178,7 @@ ncwriteatt(fname,'SOM','Uncertainty',CBF.OBSUNC.SOM.unc);
 
 
 %global attributes
-nccreate(fname,'CH4');
+nccreate(fname,'CH4','Dimensions',{'time',nodays},'FillValue',-9999);
 %Writing variable 
 %----- ncwrite(fname,'CH4',CBF.OBS.CH4); %Variable data must not be empty.
 ncwrite_if_exists(fname,'CH4',CBF.OBS.CH4)
@@ -201,8 +201,29 @@ ncwriteatt(fname,'CH4','obs_unc_threshold',CBF.OBSUNC.CH4.obs_unc_threshold)
 
 %*********write CBF met***********
 nccreate(fname,'MET','Dimensions',{'time', nodays,'nomet',nomet}); 
+nccreate(fname,'TIME_INDEX','Dimensions',{'time', nodays},'FillValue',-9999);
+nccreate(fname,'T2M_MIN','Dimensions',{'time', nodays},'FillValue',-9999); 
+nccreate(fname,'T2M_MAX','Dimensions',{'time', nodays},'FillValue',-9999);
+nccreate(fname,'SSRD','Dimensions',{'time', nodays},'FillValue',-9999); 
+nccreate(fname,'CO2','Dimensions',{'time', nodays},'FillValue',-9999); 
+nccreate(fname,'DOY','Dimensions',{'time', nodays},'FillValue',-9999);
+nccreate(fname,'BURNED_AREA','Dimensions',{'time', nodays},'FillValue',-9999);
+nccreate(fname,'VPD','Dimensions',{'time',nodays},'FillValue',-9999);
+nccreate(fname,'TOTAL_PREC','Dimensions',{'time', nodays},'FillValue',-9999);
+
+
 
 ncwrite(fname,'MET',CBF.MET);
+ncwrite_if_exists(fname,'TIME_INDEX',CBF.MET(:,1))
+ncwrite_if_exists(fname,'T2M_MIN',CBF.MET(:,2))
+ncwrite_if_exists(fname,'T2M_MAX',CBF.MET(:,3))
+ncwrite_if_exists(fname,'SSRD',CBF.MET(:,4))
+ncwrite_if_exists(fname,'CO2',CBF.MET(:,5))
+ncwrite_if_exists(fname,'DOY',CBF.MET(:,6))
+ncwrite_if_exists(fname,'BURNED_AREA',CBF.MET(:,7))
+ncwrite_if_exists(fname,'TOTAL_PREC',CBF.MET(:,8))
+ncwrite_if_exists(fname,'TOTAL_PREC',CBF.MET(:,9))
+
 
 
 nccreate(fname,'EDCDIAG'); 
