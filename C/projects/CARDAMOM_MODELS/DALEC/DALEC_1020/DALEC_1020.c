@@ -10,7 +10,7 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 int DALEC_1020(DATA DATA, double const *pars)
 {
 
-double gpppars[11],pi,lai_met_list[1],lai_var_list[19];
+double gpppars[11],pi,lai_met_list[1],lai_var_list[20];
 /*C-pools, fluxes, meteorology indices*/
 int p,f,m,nxp, i;
 int n=0,nn=0;
@@ -49,11 +49,11 @@ double *NEE=DATA.M_NEE;
   POOLS[7]=pars[35];
   /*LAI module variables*/
   POOLS[8]=pars[36];  /* LAI */
-  POOLS[9]=pars[36];  /* LAI (KNORR) */
-  POOLS[10]=pars[37]+3*pars[38];  /* LAI temperature memory (KNORR) */
-  POOLS[11]=pars[42];  /* LAI water/structural memory (KNORR) */
-  POOLS[12]=0.0;  /* LAI rate of change (KNORR) */
-  POOLS[13]=pars[18];  /* foliar carbon pool (KNORR) */
+  // POOLS[9]=pars[36];  /* LAI (KNORR) */
+  // POOLS[10]=pars[37]+3*pars[38];  /* LAI temperature memory (KNORR) */
+  // POOLS[11]=pars[42];  /* LAI water/structural memory (KNORR) */
+  // POOLS[12]=0.0;  /* LAI rate of change (KNORR) */
+  POOLS[9]=pars[18];  /* foliar carbon pool (KNORR) */
 
 
 /* NOTES FOR POOLS AND FLUXES
@@ -166,7 +166,8 @@ if (n==0){
   // lai_var_list[2]=LAI[n];
   lai_var_list[2]=pars[36];
   /*GPP*/
-  gpppars[0]=LAI[n];
+  // gpppars[0]=LAI[n];
+  gpppars[0]=pars[36];
   gpppars[1]=DATA.MET[m+2];
   gpppars[2]=DATA.MET[m+1];
   gpppars[4]=DATA.MET[m+4];
@@ -186,6 +187,7 @@ if (n==0){
 
 lai_met_list[0]=(DATA.MET[m+2] + DATA.MET[m+1])/2.0; /* meantemp, deg C*/
 lai_var_list[0]=n; /*current timestep index of model run*/
+lai_var_list[19]=deltat; /*time increment of model run*/
 lai_var_list[1]=pars[36]; /*initial LAI parameter*/
 lai_var_list[3]=pars[37]; /*T_phi*/
 lai_var_list[4]=pars[38]; /*T_r*/
@@ -201,6 +203,10 @@ lai_var_list[15]=pars[44]; /*t_c*/
 lai_var_list[16]=pars[45]; /*t_r*/
 // Run LAI module
 LAI[n]=LAI_KNORR(lai_met_list, lai_var_list)[0];
+FLUXES[f+34] = LAI_KNORR(lai_met_list, lai_var_list)[0];  // LAI (environmental target)
+FLUXES[f+35] = LAI_KNORR(lai_met_list, lai_var_list)[1];  // T_memory
+FLUXES[f+36] = LAI_KNORR(lai_met_list, lai_var_list)[2];  // lambda_max_memory
+FLUXES[f+37] = LAI_KNORR(lai_met_list, lai_var_list)[3]/deltat;  // dlambda/dt (units: LAI per day)
 
 LAI[n]=POOLS[p+1]/pars[16]; 
 //printf("LAI (t=%d) = %f\n", n, LAI[n]);
@@ -209,7 +215,8 @@ LAI[n]=POOLS[p+1]/pars[16];
 
 
 /*GPP*/
-  gpppars[0]=LAI[n];
+  // gpppars[0]=LAI[n];
+  gpppars[0]=FLUXES[f+34];
   gpppars[1]=DATA.MET[m+2];
   gpppars[2]=DATA.MET[m+1];
   gpppars[4]=DATA.MET[m+4];
@@ -226,10 +233,44 @@ FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23];
 FLUXES[f+1]=exp(pars[9]*0.5*(DATA.MET[m+2]+DATA.MET[m+1]-DATA.meantemp))*((DATA.MET[m+8]/DATA.meanprec-1)*pars[32]+1);
 /*respiration auto*/
 FLUXES[f+2]=pars[1]*FLUXES[f+0];
+
+/*requested carbon from labile to foliar (governed by LAI_KNORR)*/
+/* The net input to Cfoliar equals the LAI rate of change plus whats required for steady-state maintenance, but */
+/* if this exceeds the available labile C, then only take whats available. */
+/* Thus, for the flux from the labile C into foliar C pool, take the net input if its positive, or zero if its negative */
+/* i.e. if that canopy is actively growing, labile C goes into foliar C, but if not labile C into foliar C equals zero. */
+/* if labile C is available, take all that is requested by LAI_KNORR rate of change (plus whats required for steady-state maintenance)*/
+/* if labile C is not available, only take what is available and downscale LAI_KNORR rate of change */
+/* if labile C is not available, only take what is available and downscale LAI_KNORR rate of change */
+/* -> F = max( min( dLAI/dt * LMCA  +  Cfoliar / tau_Cfoliar, Clabile), 0) */
+// FLUXES[f+32]=fmax(fmin(POOLS[p+12]*pars[16] + POOLS[p+13]/pars[46], POOLS[p+0]), 0);
+// FLUXES[f+32]=fmax(fmin(FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46], POOLS[p+0]), 0);
+FLUXES[f+32]=fmax(fmin(FLUXES[f+37]*pars[16], POOLS[p+0]), 0);
+/*foliar to litter carbon flux(governed by LAI_KNORR)*/
+// FLUXES[f+33]=fmin(fmin(FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46], POOLS[p+0]), 0) + POOLS[p+1]/pars[46];
+FLUXES[f+33]=fmin(-fmin(FLUXES[f+37]*pars[16], POOLS[p+0]), 0);
+
+// if (n<3){
+// 	printf("> in DALEC: n=%d\n", n);
+// 	printf(">  f = %d, p = %d, nxp=%d\n",f,p,nxp);
+// 	printf(">  POOLS[p+0] = %2.1f\n",POOLS[p+0]);
+// 	printf(">  POOLS[p+1] = %2.1f\n",POOLS[p+1]);
+// 	printf(">  FLUXES[f+37]*pars[16]/deltat = %2.4f\n",FLUXES[f+37]*pars[16]/deltat);
+// 	printf(">  POOLS[p+1]/pars[46] = %2.4f\n",POOLS[p+1]/pars[46]);
+// 	printf(">  fmin(FLUXES[f+37]*pars[16]/deltat + POOLS[p+1]/pars[46], POOLS[p+0]) = %2.4f\n", fmin(FLUXES[f+37]*pars[16]/deltat + POOLS[p+1]/pars[46], POOLS[p+0]));
+// 	printf(">  fmax(fmin(xx)) = %2.4f\n", FLUXES[f+32]);
+
+// 	}
+// FLUXES[f+33]=fmin(fmin(FLUXES[f+37]*pars[16], POOLS[p+0]), 0.0);
+/* if target carbon supply for LAI exceeds labile C, we down-scale the LAI incremente (dlambda/dt) */
+// if (FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46] > POOLS[p+0]){
+//   FLUXES[f+37]=POOLS[p+0];
+// }
 /*leaf production*/
-FLUXES[f+3]=(FLUXES[f+0]-FLUXES[f+2])*pars[2];
+// FLUXES[f+3]=(FLUXES[f+0]-FLUXES[f+2])*pars[2];
+FLUXES[f+3] = FLUXES[f+32];
 /*labile production*/
-FLUXES[f+4] = (FLUXES[f+0]-FLUXES[f+2]-FLUXES[f+3])*pars[13-1];              
+FLUXES[f+4] = (FLUXES[f+0]-FLUXES[f+2])*pars[13-1];
 /*root production*/        
 FLUXES[f+5] = (FLUXES[f+0]-FLUXES[f+2]-FLUXES[f+3]-FLUXES[f+4])*pars[4-1];            
 /*wood production*/       
@@ -239,9 +280,11 @@ FLUXES[f+8] = (2/sqrt(pi))*(ff/wf)*exp(-pow(sin((DATA.MET[m+0]-pars[14]+osf)/sf)
 /*Labrelease factor*/
 FLUXES[f+15]=(2/sqrt(pi))*(fl/wl)*exp(-pow(sin((DATA.MET[m+0]-pars[11]+osl)/sf)*sf/wl,2));
 /*labile release - re-arrange order in next versions*/
-FLUXES[f+7] = POOLS[p+0]*(1-pow(1-FLUXES[f+15],deltat))/deltat;
+// FLUXES[f+7] = POOLS[p+0]*(1-pow(1-FLUXES[f+15],deltat))/deltat;
+FLUXES[f+7] = FLUXES[f+32];
 /*leaf litter production*/       
-FLUXES[f+9] = POOLS[p+1]*(1-pow(1-FLUXES[f+8],deltat))/deltat;
+// FLUXES[f+9] = POOLS[p+1]*(1-pow(1-FLUXES[f+8],deltat))/deltat;
+FLUXES[f+9] = FLUXES[f+33];
 /*wood litter production*/       
 FLUXES[f+10] = POOLS[p+3]*(1-pow(1-pars[6-1],deltat))/deltat;
 /*root litter production*/
@@ -256,19 +299,15 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 /*total pool transfers (no fires yet)*/
 
         POOLS[nxp+0] = POOLS[p+0] + (FLUXES[f+4]-FLUXES[f+7])*deltat;
-        POOLS[nxp+1] = POOLS[p+1] + (FLUXES[f+3] - FLUXES[f+9] + FLUXES[f+7])*deltat;
+        POOLS[nxp+1] = POOLS[p+1] + (FLUXES[f+3] - FLUXES[f+9])*deltat;
         POOLS[nxp+2] = POOLS[p+2] + (FLUXES[f+5] - FLUXES[f+11])*deltat;
         POOLS[nxp+3] = POOLS[p+3] +  (FLUXES[f+6] - FLUXES[f+10])*deltat;
         POOLS[nxp+4] = POOLS[p+4] + (FLUXES[f+9] + FLUXES[f+11] - FLUXES[f+12] - FLUXES[f+14])*deltat; 
         POOLS[nxp+5]= POOLS[p+5]+ (FLUXES[f+14] - FLUXES[f+13]+FLUXES[f+10])*deltat;     
         POOLS[nxp+8] = LAI[n];     
-        POOLS[nxp+9] = LAI_KNORR(lai_met_list, lai_var_list)[0];
-        POOLS[nxp+10] = LAI_KNORR(lai_met_list, lai_var_list)[1];
-        POOLS[nxp+11] = LAI_KNORR(lai_met_list, lai_var_list)[2];
-        POOLS[nxp+12] = LAI_KNORR(lai_met_list, lai_var_list)[3];
-        netCeffect = fmin(POOLS[p+12]*pars[16] + POOLS[p+13]/pars[46], POOLS[p+0]);
-        nominalClosses = POOLS[p+13]/pars[46];
-        POOLS[nxp+13] = POOLS[p+13] + (netCeffect - nominalClosses)*deltat;
+        netCeffect = fmin(FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46], POOLS[p+0]);
+        nominalClosses = POOLS[p+1]/pars[46];
+        POOLS[nxp+9] = POOLS[p+9] + (netCeffect - nominalClosses)*deltat;
 
 /*Water pool = Water pool - runoff + prec (mm/day) - ET*/
 	/*printf("%2.1f\n",POOLS[p+6]);*/
@@ -325,11 +364,11 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
   /*evapotranspiration variables*/
   lai_var_list[18]=FLUXES[f+28]; /*ET*/
   /*current LAI*/
-  lai_var_list[2]=POOLS[nxp+9];
+  lai_var_list[2]=FLUXES[f+34];//POOLS[nxp+9];
   /*temperature memory*/
-  lai_var_list[5]=POOLS[nxp+10];
+  lai_var_list[5]=FLUXES[f+35];//POOLS[nxp+10];
   /*water/structural memory*/
-  lai_var_list[11]=POOLS[nxp+11];
+  lai_var_list[11]=FLUXES[f+36];//POOLS[nxp+11];
 
 }
 

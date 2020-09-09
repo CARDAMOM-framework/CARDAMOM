@@ -16,7 +16,7 @@ static DALEC DALECmodel;
 DALECmodel.nopools=14;
 DALECmodel.nomet=9;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel.nopars=47;
-DALECmodel.nofluxes=32;
+DALECmodel.nofluxes=38;
 
 /*Short-term: copy quantities into DATA structure to reduce dependencies in CARDAMOM_MODEL_LIBRARY.c*/
 /*Long-term: remove dependencies on DATA.nofluxes... etc. in CARDAMOM_READ_BINARY_DATA and DALEC_ALL_LIKELIHOOD.c*/
