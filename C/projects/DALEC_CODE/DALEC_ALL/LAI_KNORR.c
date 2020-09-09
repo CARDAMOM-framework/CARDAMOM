@@ -19,7 +19,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   /*initialize intermediate variables*/
   double daylengthpars[3];
   double daylength;
-  double n;
+  double n, deltat;
   double meantemp;
   double t_c, t_r, f_d, td_deviation;
   double T_init, T_phi, T_r;
@@ -34,6 +34,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
 
   meantemp=(double)met_list[0];
   n=(double)var_list[0];
+  deltat=(double)var_list[19];
   lambda=(double)var_list[2];
   T_init=(double)0.0;
   T_phi=(double)var_list[3];
@@ -87,9 +88,11 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   
   lambda_lim = MaxExponentialSmooth(plgr * laim * f / r, 1e-9, 5e-3);
 
-  dlambdadt = r*(lambda_lim - lambda);
+  // dlambdadt = r*(lambda_lim - lambda);
 
-  lambda_next = lambda_lim - (lambda_lim - lambda)*exp(-r);
+  lambda_next = lambda_lim - (lambda_lim - lambda)*exp(-r*deltat);
+
+  dlambdadt = lambda_next - lambda;
 
   static double return_arr[4];
   return_arr[0] = lambda_next;
