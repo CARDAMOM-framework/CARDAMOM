@@ -243,24 +243,9 @@ FLUXES[f+2]=pars[1]*FLUXES[f+0];
 /* if labile C is not available, only take what is available and downscale LAI_KNORR rate of change */
 /* if labile C is not available, only take what is available and downscale LAI_KNORR rate of change */
 /* -> F = max( min( dLAI/dt * LMCA  +  Cfoliar / tau_Cfoliar, Clabile), 0) */
-// FLUXES[f+32]=fmax(fmin(POOLS[p+12]*pars[16] + POOLS[p+13]/pars[46], POOLS[p+0]), 0);
-// FLUXES[f+32]=fmax(fmin(FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46], POOLS[p+0]), 0);
-FLUXES[f+32]=fmax(fmin(FLUXES[f+37]*pars[16], POOLS[p+0]/deltat), 0);
+FLUXES[f+32]=fmax(fmin(FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46], POOLS[p+0]/deltat), 0);
 /*foliar to litter carbon flux(governed by LAI_KNORR)*/
-// FLUXES[f+33]=fmin(fmin(FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46], POOLS[p+0]), 0) + POOLS[p+1]/pars[46];
-FLUXES[f+33]=-fmin(fmin(FLUXES[f+37]*pars[16], POOLS[p+0]/deltat), 0);
-// if (n<3){
-// 	printf("> in DALEC: n=%d\n", n);
-// 	printf(">  f = %d, p = %d, nxp=%d\n",f,p,nxp);
-// 	printf(">  POOLS[p+0] = %2.1f\n",POOLS[p+0]);
-// 	printf(">  POOLS[p+1] = %2.1f\n",POOLS[p+1]);
-// 	printf(">  FLUXES[f+37]*pars[16]/deltat = %2.4f\n",FLUXES[f+37]*pars[16]/deltat);
-// 	printf(">  POOLS[p+1]/pars[46] = %2.4f\n",POOLS[p+1]/pars[46]);
-// 	printf(">  fmin(FLUXES[f+37]*pars[16]/deltat + POOLS[p+1]/pars[46], POOLS[p+0]) = %2.4f\n", fmin(FLUXES[f+37]*pars[16]/deltat + POOLS[p+1]/pars[46], POOLS[p+0]));
-// 	printf(">  fmax(fmin(xx)) = %2.4f\n", FLUXES[f+32]);
-
-// 	}
-// FLUXES[f+33]=fmin(fmin(FLUXES[f+37]*pars[16], POOLS[p+0]), 0.0);
+FLUXES[f+33]=-fmin(fmin(FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46], POOLS[p+0]/deltat), 0) + POOLS[p+1]/pars[46];
 /* if target carbon supply for LAI exceeds labile C, we down-scale the LAI incremente (dlambda/dt) */
 // if (FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46] > POOLS[p+0]){
 //   FLUXES[f+37]=POOLS[p+0];
