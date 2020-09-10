@@ -245,11 +245,10 @@ FLUXES[f+2]=pars[1]*FLUXES[f+0];
 /* -> F = max( min( dLAI/dt * LMCA  +  Cfoliar / tau_Cfoliar, Clabile), 0) */
 // FLUXES[f+32]=fmax(fmin(POOLS[p+12]*pars[16] + POOLS[p+13]/pars[46], POOLS[p+0]), 0);
 // FLUXES[f+32]=fmax(fmin(FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46], POOLS[p+0]), 0);
-FLUXES[f+32]=fmax(fmin(FLUXES[f+37]*pars[16], POOLS[p+0]), 0);
+FLUXES[f+32]=fmax(fmin(FLUXES[f+37]*pars[16], POOLS[p+0]/deltat), 0);
 /*foliar to litter carbon flux(governed by LAI_KNORR)*/
 // FLUXES[f+33]=fmin(fmin(FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46], POOLS[p+0]), 0) + POOLS[p+1]/pars[46];
-FLUXES[f+33]=fmin(-fmin(FLUXES[f+37]*pars[16], POOLS[p+0]), 0);
-
+FLUXES[f+33]=-fmin(fmin(FLUXES[f+37]*pars[16], POOLS[p+0]/deltat), 0);
 // if (n<3){
 // 	printf("> in DALEC: n=%d\n", n);
 // 	printf(">  f = %d, p = %d, nxp=%d\n",f,p,nxp);
