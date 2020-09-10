@@ -19,7 +19,7 @@ nomet=size(CBF.MET,2);
 %Step 2. write as netcdf file
 
 if nargin<2
-fname='CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE_beta.nc.cbf';delete(fname)
+fname='CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE_beta_v2.nc.cbf';delete(fname)
 end
 
 
@@ -82,13 +82,14 @@ ncwriteatt(fname,'Mean GPP','Uncertainty Type','absolute');
 
 %********GPP*****************
 
-nccreate(fname,'GPP','Dimensions',{'time',nodays});
+nccreate(fname,'GPP','Dimensions',{'time',nodays},'FillValue',-9999);
 %Writing variable 
 ncwrite_if_exists(fname,'GPP',CBF.OBS.GPP);
 %Variable attributes
 ncwriteatt(fname,'GPP','Description','Gross Primary Productivity')
 ncwriteatt(fname,'GPP','info',CBF.OBSUNC.GPP.info)
 ncwriteatt(fname,'GPP','gppabs_info',CBF.OBSUNC.GPP.gppabs_info)
+%Endless list, up to users to decide what goes here (e.g. source data?)
 %Same as standard CBF variables
 ncwriteatt(fname,'GPP','Uncertainty',CBF.OBSUNC.GPP.unc)
 ncwriteatt(fname,'GPP','Annual Uncertainty',CBF.OBSUNC.GPP.annual_unc)
@@ -109,7 +110,7 @@ ncwriteatt(fname,'LAI','Description','Leaf Area Index')
 
 %********NBE*****************
 
-nccreate(fname,'NBE');%,'Dimensions',{'time',nodays});
+nccreate(fname,'NBE','Dimensions',{'time',nodays},'FillValue',-9999);
 %Writing variable 
 ncwrite_if_exists(fname,'NBE',CBF.OBS.NBE);
 %Variable attributes
@@ -123,7 +124,7 @@ ncwriteatt(fname,'NBE','Annual Uncertainty',CBF.OBSUNC.NBE.annual_unc)
 
 %********ABGB*****************
 
-nccreate(fname,'ABGB');%,'Dimensions',{'time',nodays});
+nccreate(fname,'ABGB','Dimensions',{'time',nodays},'FillValue',-9999);%,'Dimensions',{'time',nodays});
 %Writing variable 
 ncwrite_if_exists(fname,'ABGB',CBF.OBS.ABGB);
 %Variable attributes
@@ -136,7 +137,7 @@ ncwriteatt(fname,'ABGB','Uncertainty',CBF.OBSUNC.ABGB.unc);
 
 %********ET*****************
 
-nccreate(fname,'ET');%,'Dimensions',{'time',nodays});
+nccreate(fname,'ET','Dimensions',{'time',nodays},'FillValue',-9999);%,'Dimensions',{'time',nodays});
 %Writing variable 
 ncwrite_if_exists(fname,'ET',CBF.OBS.ET);
 %Variable attributes
@@ -150,7 +151,7 @@ ncwriteatt(fname,'ET','Uncertainty Threshold',CBF.OBSUNC.ET.obs_unc_threshold);
 
 %********EWT*****************
 
-nccreate(fname,'EWT');%,'Dimensions',{'time',nodays});
+nccreate(fname,'EWT','Dimensions',{'time',nodays},'FillValue',-9999);%,'Dimensions',{'time',nodays});
 %Writing variable 
 ncwrite_if_exists(fname,'EWT',CBF.OBS.EWT);
 %Variable attributes
@@ -163,7 +164,7 @@ ncwriteatt(fname,'EWT','Annual Uncertainty',CBF.OBSUNC.EWT.annual_unc)
 
 %********SOM*****************
 
-nccreate(fname,'SOM');%,'Dimensions',{'time',nodays});
+nccreate(fname,'SOM','Dimensions',{'time',nodays},'FillValue',-9999);%,'Dimensions',{'time',nodays});
 %Writing variable 
 ncwrite_if_exists(fname,'SOM',CBF.OBS.SOM);
 %Variable attributes
@@ -177,7 +178,7 @@ ncwriteatt(fname,'SOM','Uncertainty',CBF.OBSUNC.SOM.unc);
 
 
 %global attributes
-nccreate(fname,'CH4');
+nccreate(fname,'CH4','Dimensions',{'time',nodays},'FillValue',-9999);
 %Writing variable 
 %----- ncwrite(fname,'CH4',CBF.OBS.CH4); %Variable data must not be empty.
 ncwrite_if_exists(fname,'CH4',CBF.OBS.CH4)
@@ -199,9 +200,32 @@ ncwriteatt(fname,'CH4','obs_unc_threshold',CBF.OBSUNC.CH4.obs_unc_threshold)
 %nccreate(fname,'nomet'); ncwrite(fname,'nomet',CBF.nomet)
 
 %*********write CBF met***********
-nccreate(fname,'MET','Dimensions',{'nodays', nodays,'nomet',nomet}); 
+%nccreate(fname,'MET','Dimensions',{'time', nodays,'nomet',nomet}); 
 
-ncwrite(fname,'MET',CBF.MET);
+nccreate(fname,'TIME_INDEX','Dimensions',{'time', nodays},'FillValue',-9999);
+nccreate(fname,'T2M_MIN','Dimensions',{'time', nodays},'FillValue',-9999); 
+nccreate(fname,'T2M_MAX','Dimensions',{'time', nodays},'FillValue',-9999);
+nccreate(fname,'SSRD','Dimensions',{'time', nodays},'FillValue',-9999); 
+nccreate(fname,'CO2','Dimensions',{'time', nodays},'FillValue',-9999); 
+nccreate(fname,'DOY','Dimensions',{'time', nodays},'FillValue',-9999);
+nccreate(fname,'BURNED_AREA','Dimensions',{'time', nodays},'FillValue',-9999);
+nccreate(fname,'VPD','Dimensions',{'time',nodays},'FillValue',-9999);
+nccreate(fname,'TOTAL_PREC','Dimensions',{'time', nodays},'FillValue',-9999);
+
+
+
+%ncwrite(fname,'MET',CBF.MET);
+METVNAME={'TIME_INDEX','T2M_MIN','T2M_MAX','SSRD','CO2','DOY','BURNED_AREA','VPD','TOTAL_PREC'};
+METINFO={'Time index','Mean daily min. temperature','Mean daily max. temperature','Global radiation','Atmospheric CO2','Day of year','Burned area','VPD','Total precipitation'};
+METUNITS={'Days','deg C','deg C','MJ/m2/d','ppm','Days','m2/m2','hPA','mm/day'};
+
+for n=1:9;
+ncwrite(fname,METVNAME{n},CBF.MET(:,n));
+ncwriteatt(fname,METVNAME{n},'reference mean',mean(CBF.MET(:,n)));
+ncwriteatt(fname,METVNAME{n},'info',METINFO{n});
+ncwriteatt(fname,METVNAME{n},'units',METUNITS{n});
+end
+
 
 
 nccreate(fname,'EDCDIAG'); 
