@@ -19,7 +19,7 @@ nomet=size(CBF.MET,2);
 %Step 2. write as netcdf file
 
 if nargin<2
-fname='CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE_beta.nc.cbf';delete(fname)
+fname='CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE_beta_v2.nc.cbf';delete(fname)
 end
 
 
@@ -200,7 +200,8 @@ ncwriteatt(fname,'CH4','obs_unc_threshold',CBF.OBSUNC.CH4.obs_unc_threshold)
 %nccreate(fname,'nomet'); ncwrite(fname,'nomet',CBF.nomet)
 
 %*********write CBF met***********
-nccreate(fname,'MET','Dimensions',{'time', nodays,'nomet',nomet}); 
+%nccreate(fname,'MET','Dimensions',{'time', nodays,'nomet',nomet}); 
+
 nccreate(fname,'TIME_INDEX','Dimensions',{'time', nodays},'FillValue',-9999);
 nccreate(fname,'T2M_MIN','Dimensions',{'time', nodays},'FillValue',-9999); 
 nccreate(fname,'T2M_MAX','Dimensions',{'time', nodays},'FillValue',-9999);
@@ -213,16 +214,17 @@ nccreate(fname,'TOTAL_PREC','Dimensions',{'time', nodays},'FillValue',-9999);
 
 
 
-ncwrite(fname,'MET',CBF.MET);
-ncwrite_if_exists(fname,'TIME_INDEX',CBF.MET(:,1))
-ncwrite_if_exists(fname,'T2M_MIN',CBF.MET(:,2))
-ncwrite_if_exists(fname,'T2M_MAX',CBF.MET(:,3))
-ncwrite_if_exists(fname,'SSRD',CBF.MET(:,4))
-ncwrite_if_exists(fname,'CO2',CBF.MET(:,5))
-ncwrite_if_exists(fname,'DOY',CBF.MET(:,6))
-ncwrite_if_exists(fname,'BURNED_AREA',CBF.MET(:,7))
-ncwrite_if_exists(fname,'TOTAL_PREC',CBF.MET(:,8))
-ncwrite_if_exists(fname,'TOTAL_PREC',CBF.MET(:,9))
+%ncwrite(fname,'MET',CBF.MET);
+METVNAME={'TIME_INDEX','T2M_MIN','T2M_MAX','SSRD','CO2','DOY','BURNED_AREA','VPD','TOTAL_PREC'};
+METINFO={'Time index','Mean daily min. temperature','Mean daily max. temperature','Global radiation','Atmospheric CO2','Day of year','Burned area','VPD','Total precipitation'};
+METUNITS={'Days','deg C','deg C','MJ/m2/d','ppm','Days','m2/m2','hPA','mm/day'};
+
+for n=1:9;
+ncwrite(fname,METVNAME{n},CBF.MET(:,n));
+ncwriteatt(fname,METVNAME{n},'reference mean',mean(CBF.MET(:,n)));
+ncwriteatt(fname,METVNAME{n},'info',METINFO{n});
+ncwriteatt(fname,METVNAME{n},'units',METUNITS{n});
+end
 
 
 

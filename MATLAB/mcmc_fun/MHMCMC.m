@@ -48,7 +48,7 @@ function MCMC=MHMCMC(DATA,MLF,PARS,MCO)
 if nargin<4; MCO=[];end
 %silent code
 if isfield(MCO,'silent')==0;MCO.silent=0;end
-%metropolis hastings algorithm
+%metropolis hastings algorithm; setting to zero is greedy mcmc
 if isfield(MCO,'MH')==0;MCO.MH=1;end
 %number of samples
 if isfield(MCO,'nout')==0;MCO.nout=1000;end
@@ -67,7 +67,9 @@ if isfield(MCO,'printrate')==0;MCO.printrate=10;end
 %Graphical display of MCMC
 if isfield(MCO,'graphical')==0;MCO.graphical=0;end
 
+if isfield(MCO,'initial_covariance')==0;MCO.initial_covariance=[];end
 
+if isfield(MCO,'preadaptphase')==0;MCO.preadaptphase=0;end
 
 %If no initial parameter vector (PARS.init) was prescribed, random
 %parameters within prescribed parameter range are chosen
@@ -102,8 +104,19 @@ Nsamplesout=floor(MCO.nout/MCO.samplerate);
 Npars=numel(pars0);
 
 %Step 
+if isempty(MCO.initial_covariance)
 STEP.covariance=zeros(Npars);
 STEP.cholesky=zeros(Npars);
+
+else
+    STEP.covariance=MCO.initial_covariance;
+     STEP.cholesky=chol(STEP.covariance*2.38^2/Npars);
+    
+   
+end
+    
+%COV samples set to zero until adaptive phase is initiated
+    STEP.covsamples=0;
 
 %declaring local parameter sample array
 PARSALL=repmat(pars0*0,[Nsamples,1]);
@@ -117,6 +130,8 @@ PROBout=zeros(1,Nsamplesout)*NaN;
 n=0;
 local_acc=0;
 runcount=0;
+%Count of unique parameters
+ucount=0;
 
 
 %provision: loop can only run 5 times more than samples required (otherwise
@@ -144,7 +159,7 @@ for n=1:MCO.nout;
     
    %Accept-Reject based on probability ratio and random number
    %(see Ziehn et al., 2012)
-    if P-P0>log(rand(1))^MCO.MH
+    if P-P0>log(rand(1)^MCO.MH)
          %local loop constant
         local_acc=local_acc+1;
         
@@ -166,11 +181,15 @@ for n=1:MCO.nout;
 
         end
         
+        
+        
     if mod(n,MCO.nadapt)==0
         Nssamples=n/MCO.nadapt;
     %Accumulate parameters
     PARSALL(Nssamples,:)=pars0;
-  
+    %Unique count
+    if  Nssamples==1 | total(PARSALL(Nssamples,:) - PARSALL(Nssamples-1,:))~=0; ucount=ucount+1;end
+
 
     %Adjust step size, re-setting acceptance count and displaying
     %performance
@@ -180,15 +199,15 @@ for n=1:MCO.nout;
         disp(['Accepted ',num2str(n),' solutions'])
         disp(['(Log) Probability = ',num2str(P0)])
         disp(['mean step size = ',num2str(sqrt(mean(diag(STEP.covariance))))])
-        if Nssamples<10*Npars;   disp(sprintf('%2.2f%% of samples aquired for covariance sampler...',Nssamples/10/Npars*100));end
+        if ucount<Npars*3;   fprintf('%2.2f%% of samples aquired for covariance sampler...\n',ucount/Npars/3*100);end
     end
         
     
         %Adjusting step size for optimal MHMCMC performance
-        inccov=1;
-        if n<MCO.nout/2  & Nssamples>10*Npars;     
+
+        if n<MCO.nout/2 & ucount>Npars*3;% & (Nssamples>10*Npars) & n>MCO.preadaptphase
             %If cov is empty
-            if STEP.covariance(1,1)==0 | inccov==0
+            if STEP.covsamples==0
                 STEP.covariance=cov(pars2norm(PARS,PARSALL(floor(Nssamples/2)+1:Nssamples,:)));
                 STEP.runmean=mean(pars2norm(PARS,PARSALL(floor(Nssamples/2)+1:Nssamples,:)));
                 STEP.covsamples=Nssamples-floor(Nssamples/2);
