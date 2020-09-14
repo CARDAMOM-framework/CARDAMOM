@@ -163,10 +163,8 @@ f=nofluxes*n;
   evapotranspiration and soil water for use in the LAI_KNORR module */
 if (n==0){
   LAI[n]=POOLS[p+1]/pars[16];
-  // lai_var_list[2]=LAI[n];
   lai_var_list[2]=pars[36];
   /*GPP*/
-  // gpppars[0]=LAI[n];
   gpppars[0]=pars[36];
   gpppars[1]=DATA.MET[m+2];
   gpppars[2]=DATA.MET[m+1];
@@ -177,12 +175,16 @@ if (n==0){
   FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
   /*Evapotranspiration (VPD = DATA.MET[m+7])*/
   FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23];
+  /*Put this evapotranspiration flux into the LAI_KNORR input list*/
   lai_var_list[18]=FLUXES[f+28];
   /*Plant-available water*/
   POOLS[p+6]=pars[26];
+  /*Put this plant-available soil water into the LAI_KNORR input list*/
   lai_var_list[17]=POOLS[p+6];
-  lai_var_list[5]=POOLS[10];
-  lai_var_list[11]=POOLS[11];
+  /*Initialize phenology memory of air-temperature */
+  lai_var_list[5]=pars[37]+3*pars[38];
+  /*Initialize phenology memory of water/structural limitation */
+  lai_var_list[11]=pars[42];
 }
 
 lai_met_list[0]=(DATA.MET[m+2] + DATA.MET[m+1])/2.0; /* meantemp, deg C*/
@@ -201,7 +203,7 @@ lai_var_list[13]=DATA.MET[m+5]; /*day of year*/
 lai_var_list[14]=pi; /*pi*/
 lai_var_list[15]=pars[44]; /*t_c*/
 lai_var_list[16]=pars[45]; /*t_r*/
-// Run LAI module
+// Run KNORR LAI module
 LAI[n]=LAI_KNORR(lai_met_list, lai_var_list)[0];
 FLUXES[f+34] = LAI_KNORR(lai_met_list, lai_var_list)[0];  // LAI (environmental target)
 FLUXES[f+35] = LAI_KNORR(lai_met_list, lai_var_list)[1];  // T_memory
@@ -209,13 +211,8 @@ FLUXES[f+36] = LAI_KNORR(lai_met_list, lai_var_list)[2];  // lambda_max_memory
 FLUXES[f+37] = LAI_KNORR(lai_met_list, lai_var_list)[3]/deltat;  // dlambda/dt (units: LAI per day)
 
 LAI[n]=POOLS[p+1]/pars[16]; 
-//printf("LAI (t=%d) = %f\n", n, LAI[n]);
-
-/*POOLS[p+8]=erf(((DATA.MET[m+1]+DATA.MET[m+2])/2 - pars[36])/pars[37]);*/
-
 
 /*GPP*/
-  // gpppars[0]=LAI[n];
   gpppars[0]=FLUXES[f+34];
   gpppars[1]=DATA.MET[m+2];
   gpppars[2]=DATA.MET[m+1];
