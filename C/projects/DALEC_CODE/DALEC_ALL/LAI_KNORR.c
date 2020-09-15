@@ -40,7 +40,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   T_phi=(double)var_list[3];
   T_r=(double)var_list[4];
   T_memory=(double)var_list[5];
-  tau_m=(double)var_list[6];
+  tau_m=(double)1.0; //var_list[6];
   plgr=(double)var_list[7];
   k_L=(double)var_list[8];
   pasm=(double)var_list[17];
