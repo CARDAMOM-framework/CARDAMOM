@@ -133,6 +133,7 @@ CF[5]=pars[29];
 
 /*foliar carbon transfer intermediate variables*/
 double netCeffect, nominalClosses;
+double LAIClimdiff, FCdiff, LAIdiff;
 
 /*resilience factor*/
 
@@ -210,6 +211,27 @@ FLUXES[f+35] = LAI_KNORR(lai_met_list, lai_var_list)[1];  // T_memory
 FLUXES[f+36] = LAI_KNORR(lai_met_list, lai_var_list)[2];  // lambda_max_memory
 FLUXES[f+37] = LAI_KNORR(lai_met_list, lai_var_list)[3]/deltat;  // dlambda/dt (units: LAI per day)
 
+/* if target LAI change (in units of carbon flux) exceeds the available carbon from labile pool, we down-scale the 
+LAI increment (dlambda/dt) and the KNORR LAI */
+if (FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46] > POOLS[p+0]/deltat){
+  /* flag for carbon availability limitation (1 = labile C limits LAI growth) */
+  FLUXES[f+38]=1.0;
+  /* down-scale LAI by the difference between what is requested and what is available */
+  /* - we compute the difference between the KNORR LAI rate of change (in C-flux units) and 
+       what is available from C-labile. This is in g C m-2 d-1.
+     - then we need to compute how much LAI should be down-scaled by, so we compute the LAI 
+       per model timestep */
+  FCdiff = (FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46]) - POOLS[p+0]/deltat;
+  LAIdiff = (FCdiff*deltat)/pars[16];
+  FLUXES[f+34] = FLUXES[f+34] - LAIdiff;
+  /* set dlambdadt to be available carbon in C-labile, divided by LMCA to get it back into LAI units*/
+  FLUXES[f+37]=(POOLS[p+0]/deltat)/pars[16];
+}
+else {
+	/* flag for carbon availability limitation (1 = labile C limits LAI growth) */
+	FLUXES[f+38]=0.0;
+}
+
 LAI[n]=POOLS[p+1]/pars[16]; 
 
 /*GPP*/
@@ -239,14 +261,10 @@ FLUXES[f+2]=pars[1]*FLUXES[f+0];
 /* if labile C is available, take all that is requested by LAI_KNORR rate of change (plus whats required for steady-state maintenance)*/
 /* if labile C is not available, only take what is available and downscale LAI_KNORR rate of change */
 /* if labile C is not available, only take what is available and downscale LAI_KNORR rate of change */
-/* -> F = max( min( dLAI/dt * LMCA  +  Cfoliar / tau_Cfoliar, Clabile), 0) */
+/* -> F = max( min( dLAI/dt * LMCA  +  Cfoliar / tau_Cfoliar, Clabile/deltat), 0) */
 FLUXES[f+32]=fmax(fmin(FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46], POOLS[p+0]/deltat), 0);
 /*foliar to litter carbon flux(governed by LAI_KNORR)*/
 FLUXES[f+33]=-fmin(fmin(FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46], POOLS[p+0]/deltat), 0) + POOLS[p+1]/pars[46];
-/* if target carbon supply for LAI exceeds labile C, we down-scale the LAI incremente (dlambda/dt) */
-// if (FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46] > POOLS[p+0]){
-//   FLUXES[f+37]=POOLS[p+0];
-// }
 /*leaf production*/
 // FLUXES[f+3]=(FLUXES[f+0]-FLUXES[f+2])*pars[2];
 FLUXES[f+3] = FLUXES[f+32];
