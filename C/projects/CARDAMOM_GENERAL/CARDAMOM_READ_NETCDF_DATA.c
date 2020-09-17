@@ -1,12 +1,6 @@
 //This file was moddified from CARDAMOM_READ_BINARY_DATA.c
 //it attepts to read in a netcdf file and store it
-//Note that a loit of this is lifted directly from https://www.unidata.ucar.edu/software/netcdf/docs/simple_nc4_rd_8c-example.html
-//TODO: Work on integrating this with the rest of CARDAMOM using CARDAMOM_RUN_MODEL.m
-
-
-
-/*INCLUDING THE PARAMETER_INFO structure*/
-/*Note: it remains unclear as to where this structure should be defined*/
+//Note that a lot of this is derived from https://www.unidata.ucar.edu/software/netcdf/docs/simple_nc4_rd_8c-example.html
 
 #pragma once
 #include "../../auxi_fun/filediag.c"
@@ -18,6 +12,18 @@
 #include "CARDAMOM_NETCDF_DATA_STRUCTURE.c"
 
 #include <netcdf.h>
+
+
+#define DEFAULT_DOUBLE_VAL -9999.0
+#define DEFAULT_INT_VAL -9999
+
+
+//NOTE ABOUT THIS MACRO:
+//If set to 1, netCDF methods will continue to run and return with default values if they fail to find the requested variable or attribute
+//if set to 0, they will instantly die on failing to find any variable or attribute
+//This is meant as a debugging tool more than anything else, and can be used with a "fully complete" netcdf cardamom file containing every variable in order to check if there were typeos in the c code.
+//In the production enviroment, this should always be set to 1
+#define ALLOW_DEFAULTS 0
 
 
 //#include "CARDAMOM_MODEL_LIBRARY.c"
@@ -42,25 +48,29 @@
  *  ncid: netCDF file ID to pull the data from. This is the id given by nc_open after the netCDF file is opened
  *  context: this is the context in which the attribute was stored. Can be a variable name, or '/' if it is a global attribute
  *  attrName: This is the name of the attibute to read
- *  defaultVal: the default value to use if the requested attribute does not exsist
  *
- *  returns: the int attribute read, or defaultVal if the requested attribute does not exsist.
+ *  returns: the int attribute read, or DEFAULT_INT_VAL if the requested attribute does not exsist.
  *   if there is an error, the program exits after displaying a message.
  */
-int ncdf_read_int_attr(int ncid, const char* context, const char * attrName, int defaultVal ){
+int ncdf_read_int_attr(int ncid, const char* context, const char * attrName){
 	int retval =0; //Return value variable for NCDF calls.
 	int attrResult;
 	int varID=NC_GLOBAL;
 	if ((context != NULL) && (context[0] != '/')){
 		//Attempt to locate the id of the approprate variable
 		if ((retval = nc_inq_varid(ncid, context, &varID))){
+			if (retval ==NC_ENOTVAR && ALLOW_DEFAULTS){
+				//we failed to find the context (and so we never even looked for the attribute!)
+				//we will return the default double value
+				return DEFAULT_INT_VAL;
+			}
 			//The failure was in locating the context, not the arttr
 			ERR(retval);
 		}
 	}
 	if ((retval = nc_get_att_int(ncid, varID, attrName, &attrResult))){
-		if (retval ==NC_ENOTATT ){
-			return defaultVal;
+		if (retval ==NC_ENOTATT && ALLOW_DEFAULTS ){
+			return DEFAULT_INT_VAL;
 		}
 		ERR(retval);
 	}
@@ -74,24 +84,29 @@ int ncdf_read_int_attr(int ncid, const char* context, const char * attrName, int
  *  ncid: netCDF file ID to pull the data from. This is the id given by nc_open after the netCDF file is opened
  *  context: this is the context in which the attribute was stored. Can be a variable name, or '/' if it is a global attribute
  *  attrName: This is the name of the attibute to read
- *  defaultVal: the default value to use if the requested attribute does not exsist
  *
  *  returns: the double attribute read. if there is an error, the program exits after displaying a message.
  */
-double ncdf_read_double_attr(int ncid, const char* context, const char * attrName, double defaultVal ){
+double ncdf_read_double_attr(int ncid, const char* context, const char * attrName ){
   int retval =0; //Return value variable for NCDF calls.
 	double attrResult;
 	int varID=NC_GLOBAL;
 	if ((context != NULL) && (context[0] != '/')){
 		//Attempt to locate the id of the approprate variable
 		if ((retval = nc_inq_varid(ncid, context, &varID))){
-			//The failure was in locating the context, not the arttr
+			if (retval ==NC_ENOTVAR && ALLOW_DEFAULTS){
+				//we failed to find the context (and so we never even looked for the attribute!)
+				//we will return the default double value
+				return DEFAULT_DOUBLE_VAL;
+			}
+			//Note that The failure was in locating the context, not the attr
 			ERR(retval);
 		}
 	}
 	if ((retval = nc_get_att_double(ncid, varID, attrName, &attrResult))){
-		if (retval ==NC_ENOTATT ){
-			return defaultVal;
+		if (retval ==NC_ENOTATT && ALLOW_DEFAULTS){
+			//we failed to find the attribute, so we should return the default double value
+			return DEFAULT_DOUBLE_VAL;
 		}
 		ERR(retval);
 	}
@@ -112,18 +127,26 @@ double ncdf_read_double_attr(int ncid, const char* context, const char * attrNam
  *  arrayLen: pointer where the total length in number of elements of the resulting array will be written (NOT MEMORY SIZE)
  *  varID: Pointer to where the varID of the requested var will be written
  *
- *  returns: None
+ *  returns: 0 if the variable does not exsist (and the macro ALLOW_DEFAULTS is set), 1 if we found the variable and functioned normally
  *   if there is an error, the program exits after displaying a message.
  */
 
 
-void ncfd_get_var_info(int ncid, const char * varName, size_t * arrayLen, int * varID) {
+int ncfd_get_var_info(int ncid, const char * varName, size_t * arrayLen, int * varID) {
   int retval =0; //Return value variable for NCDF calls.
 	int numberOfDims;
 	int dimensionID;
 	//Attempt to locate the id of the approprate variable
 	if ((retval = nc_inq_varid(ncid, varName, varID))){
-		ERR(retval);
+		//Test if the variable just does not exsist, and if we are allowed to just give a default.
+		if (retval ==NC_ENOTVAR && ALLOW_DEFAULTS){
+			//We did not find anything, but this is still a valid result. Make sure everything is set.
+			*arrayLen = 0;
+			*varID=-1;
+			return 0; //Return false to note our failure to find something
+		}else{
+		ERR(retval); //Die. either we did not find anything and that was marked as unacceptable in the macro ALLOW_DEFAULTS, or something else wrong happened.
+		}
 	}
 	//check to make sure the variable has only one dim (Critial to assure well-defined behavior for all other ncdf function calls!!!)
 	if ((retval = nc_inq_varndims(ncid, *varID, &numberOfDims))){
@@ -144,6 +167,8 @@ void ncfd_get_var_info(int ncid, const char * varName, size_t * arrayLen, int * 
 	if ((retval = nc_inq_dimlen(ncid, dimensionID, arrayLen))){
 		ERR(retval);
 	}
+	//If we got here, we were sucessful, so return true
+	return 1;
 }
 
 
@@ -163,7 +188,10 @@ void ncfd_get_var_info(int ncid, const char * varName, size_t * arrayLen, int * 
 int * ncdf_read_int_var(int ncid, const char * varName, size_t * arrayLen ){
 	int retval =0; //Return value variable for NCDF calls.
 	int varID;
-	ncfd_get_var_info(ncid, varName, arrayLen, &varID);
+	if ( !ncfd_get_var_info(ncid, varName, arrayLen, &varID)){
+		//Return a null pointer due to no content
+		return NULL;
+	}
 	//allocate the actual array we will be returning
 	int * resultArray= (int*)calloc(*arrayLen, sizeof(int));
 
@@ -188,7 +216,10 @@ int * ncdf_read_int_var(int ncid, const char * varName, size_t * arrayLen ){
 double * ncdf_read_double_var(int ncid, const char * varName, size_t * arrayLen ){
 	int retval =0; //Return value variable for NCDF calls.
 	int varID;
-	ncfd_get_var_info(ncid, varName, arrayLen, &varID);
+	if ( !ncfd_get_var_info(ncid, varName, arrayLen, &varID)){
+		//Return a null pointer due to no content
+		return NULL;
+	}
 	//allocate the actual array we will be returning
 	double * resultArray= (double*)calloc(*arrayLen, sizeof(double));
 
@@ -270,18 +301,17 @@ double ** ncdf_read_double_2D(int ncid, const char * varName, size_t * dimLen ){
  *
  *  ncid: netCDF file ID to pull the data from. This is the id given by nc_open after the netCDF file is opened
  *  varName: This is the name of the variable to read
- *  defaultVal: default value to return if the requested variable does not exsist
  *
  *  returns: the value of the variable,
  *   if there is an error, the program exits after displaying a message.
  */
-int ncdf_read_single_int_var(int ncid, const char * varName, int defaultVal){
+int ncdf_read_single_int_var(int ncid, const char * varName){
 	int retval =0; //Return value variable for NCDF calls.
 	int varID;
 	int result;
 	if ((retval = nc_inq_varid(ncid, varName, &varID))){
-		if (retval ==NC_ENOTVAR ){
-			return defaultVal;
+		if (retval ==NC_ENOTVAR && ALLOW_DEFAULTS ){
+			return DEFAULT_INT_VAL;
 		}
 	}
 	size_t arrayLen;
@@ -306,18 +336,17 @@ int ncdf_read_single_int_var(int ncid, const char * varName, int defaultVal){
  *
  *  ncid: netCDF file ID to pull the data from. This is the id given by nc_open after the netCDF file is opened
  *  varName: This is the name of the variable to read
- *  defaultVal: default value to return if the requested variable does not exsist
  *
  *  returns: the value of the variable,
  *   if there is an error, the program exits after displaying a message.
  */
-double ncdf_read_single_double_var(int ncid, const char * varName, double defaultVal ){
+double ncdf_read_single_double_var(int ncid, const char * varName ){
 	int retval =0; //Return value variable for NCDF calls.
 	int varID;
 	double result;
 	if ((retval = nc_inq_varid(ncid, varName, &varID))){
-		if (retval ==NC_ENOTVAR ){
-			return defaultVal;
+		if (retval ==NC_ENOTVAR && ALLOW_DEFAULTS ){
+			return DEFAULT_DOUBLE_VAL;
 		}
 	}
 	size_t arrayLen;
@@ -356,8 +385,87 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
  		ERR(retval);
  	}
 
-	DATA->ABGB=ncdf_read_single_double_var(ncid, "ABGB", -9999.0);
-	DATA->CH4=ncdf_read_single_double_var(ncid, "CH4", -9999.0);
+	DATA->ABGB.values=ncdf_read_double_var(ncid, "ABGB", &(DATA->ABGB.length));
+
+  DATA->BURNED_AREA.values=ncdf_read_double_var(ncid, "BURNED_AREA", &(DATA->BURNED_AREA.length));
+		DATA->BURNED_AREA.reference_mean=ncdf_read_double_attr(ncid, "BURNED_AREA","reference_mean");
+
+
+	DATA->CH4.values=ncdf_read_double_var(ncid, "CH4", &(DATA->CH4.length));
+		DATA->CH4.Uncertainty=ncdf_read_double_attr(ncid, "CH4","Uncertainty");
+		DATA->CH4.Annual_Uncertainty=ncdf_read_double_attr(ncid, "CH4","Annual_Uncertainty");
+		DATA->CH4.obs_unc_threshold=ncdf_read_double_attr(ncid, "CH4","obs_unc_threshold");
+
+
+	DATA->CO2.values=ncdf_read_double_var(ncid, "CO2", &(DATA->CO2.length));
+		DATA->CO2.reference_mean=ncdf_read_double_attr(ncid, "CO2","reference_mean");
+
+	DATA->DOY.values=ncdf_read_double_var(ncid, "DOY", &(DATA->DOY.length));
+		DATA->DOY.reference_mean=ncdf_read_double_attr(ncid, "DOY","reference_mean");
+
+	DATA->EDC=ncdf_read_single_double_var(ncid, "EDC", DEFAULT_DOUBLE_VAL )
+
+	DATA->EDCDIAG=ncdf_read_single_double_var(ncid, "EDCDIAG", DEFAULT_DOUBLE_VAL )
+
+	DATA->ET.values=ncdf_read_double_var(ncid, "ET", &(DATA->ET.length));
+		DATA->ET.Uncertainty=ncdf_read_double_attr(ncid, "ET","Uncertainty");
+		DATA->ET.Annual_Uncertainty=ncdf_read_double_attr(ncid, "ET","Annual_Uncertainty");
+		DATA->ET.Uncertainty_Threshold=ncdf_read_double_attr(ncid, "ET","Uncertainty_Threshold");
+
+	DATA->EWT.values=ncdf_read_double_var(ncid, "EWT", &(DATA->EWT.length));
+		DATA->EWT.Uncertainty=ncdf_read_double_attr(ncid, "EWT","Uncertainty");
+		DATA->EWT.Annual_Uncertainty=ncdf_read_double_attr(ncid, "EWT","Annual_Uncertainty");
+
+	DATA->GPP.values=ncdf_read_double_var(ncid, "GPP", &(DATA->GPP.length));
+		DATA->GPP.Uncertainty=ncdf_read_double_attr(ncid, "GPP","Uncertainty");
+		DATA->GPP.Annual_Uncertainty=ncdf_read_double_attr(ncid, "GPP","Annual_Uncertainty");
+		DATA->GPP.gppabs=ncdf_read_double_attr(ncid, "GPP","gppabs");
+		DATA->GPP.obs_unc_threshold=ncdf_read_double_attr(ncid, "GPP","obs_unc_threshold");
+
+	DATA->ID=ncdf_read_single_double_var(ncid, "ID", DEFAULT_DOUBLE_VAL )
+
+	DATA->LAI.values=ncdf_read_double_var(ncid, "LAI", &(DATA->LAI.length));
+
+	DATA->LAT=ncdf_read_single_double_var(ncid, "LAT", DEFAULT_DOUBLE_VAL )
+
+	DATA->Mean_Biomass.values=ncdf_read_double_var(ncid, "Mean_Biomass", &(DATA->Mean_Biomass.length));
+		DATA->Mean_Biomass.Uncertainty=ncdf_read_double_attr(ncid, "Mean_Biomass","Uncertainty");
+
+	DATA->Mean_Fire.values=ncdf_read_double_var(ncid, "Mean_Fire", &(DATA->Mean_Fire.length));
+		DATA->Mean_Fire.Uncertainty=ncdf_read_double_attr(ncid, "Mean_Fire","Uncertainty");
+
+	DATA->mean_GPP.values=ncdf_read_double_var(ncid, "mean_GPP", &(DATA->mean_GPP.length));
+		DATA->mean_GPP.Uncertainty=ncdf_read_double_attr(ncid, "mean_GPP","Uncertainty");
+
+	DATA->mean_LAI.values=ncdf_read_double_var(ncid, "mean_LAI", &(DATA->mean_LAI.length));
+		DATA->mean_LAI.Uncertainty=ncdf_read_double_attr(ncid, "mean_LAI","Uncertainty");
+
+	DATA->CH4.values=ncdf_read_double_var(ncid, "CH4", &(DATA->CH4.length));
+		DATA->CH4.Uncertainty=ncdf_read_double_attr(ncid, "CH4","Uncertainty");
+		DATA->CH4.Annual_Uncertainty=ncdf_read_double_attr(ncid, "CH4","Annual_Uncertainty");
+
+	DATA->NBE.values=ncdf_read_double_var(ncid, "NBE", &(DATA->NBE.length));
+		DATA->NBE.Seasonal_Uncertainty=ncdf_read_double_attr(ncid, "NBE","Seasonal_Uncertainty");
+		DATA->NBE.Annual_Uncertainty=ncdf_read_double_attr(ncid, "NBE","Annual_Uncertainty");
+
+	DATA->SSRD.values=ncdf_read_double_var(ncid, "SSRD", &(DATA->SSRD.length));
+		DATA->SSRD.reference_mean=ncdf_read_double_attr(ncid, "SSRD","reference_mean");
+
+	DATA->T2M_MAX.values=ncdf_read_double_var(ncid, "T2M_MAX", &(DATA->T2M_MAX.length));
+		DATA->T2M_MAX.reference_mean=ncdf_read_double_attr(ncid, "T2M_MAX","reference_mean");
+
+	DATA->T2M_MIN.values=ncdf_read_double_var(ncid, "T2M_MIN", &(DATA->T2M_MIN.length));
+		DATA->T2M_MIN.reference_mean=ncdf_read_double_attr(ncid, "T2M_MIN","reference_mean");
+
+	DATA->TIME_INDEX.values=ncdf_read_double_var(ncid, "TIME_INDEX", &(DATA->TIME_INDEX.length));
+		DATA->TIME_INDEX.reference_mean=ncdf_read_double_attr(ncid, "TIME_INDEX","reference_mean");
+
+	DATA->TOTAL_PREC.values=ncdf_read_double_var(ncid, "TOTAL_PREC", &(DATA->TOTAL_PREC.length));
+		DATA->TOTAL_PREC.reference_mean=ncdf_read_double_attr(ncid, "TOTAL_PREC","reference_mean");
+
+	DATA->VPD.values=ncdf_read_double_var(ncid, "VPD", &(DATA->VPD.length));
+		DATA->VPD.reference_mean=ncdf_read_double_attr(ncid, "VPD","reference_mean");
+/*
 	DATA->EDC=ncdf_read_single_double_var(ncid, "EDC", -9999.0);
 	DATA->EDCDIAG=ncdf_read_single_double_var(ncid, "EDCDIAG", -9999.0);
 	DATA->ET=ncdf_read_single_double_var(ncid, "ET", -9999.0);
@@ -371,7 +479,7 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 
 	DATA->ID=ncdf_read_single_double_var(ncid, "ID", -9999.0);
 	DATA->LAI.values=ncdf_read_double_var(ncid, "LAI", &(DATA->LAI.length));
-
+*/
 
 	return 0;
 }

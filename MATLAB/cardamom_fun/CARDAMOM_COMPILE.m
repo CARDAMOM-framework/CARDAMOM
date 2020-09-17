@@ -6,6 +6,16 @@ if nargin==0 | isempty(Cpath);
     Cpath=getenv('CARDAMOM_C_PATH');
 end
 
+%Attempt to get the path to the user's nc-config executable
+%Try to use the system one, if the user has not set the location
+NCConfigPath=getenv('CARDAMOM_NC_CONFIG_PATH');
+if isempty(NCConfigPath);
+   [returnVal,NCConfigPath]=unix('which nc-config');
+   if returnVal ~= 0;
+       disp('can''t locate nc-config. Consider setting the enviroment variable CARDAMOM_NC_CONFIG_PATH ')
+   end
+end
+
 if nargin<2
         opt=1;
 end
@@ -23,7 +33,9 @@ if opt==2
     %gcc /Users/abloom/EDI/C/projects/CARDAMOM_MDF/CARDAMOM_MDF.c -g -o /Users/abloom/EDI/C/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe -lm
 compile_command_run_model_debug=sprintf('gcc %s/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.c -g -o %s/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL_debug.exe -lm',Cpath,Cpath);
 compile_command_run_mdf_debug=sprintf('gcc %s/projects/CARDAMOM_MDF/CARDAMOM_MDF.c -g -ggdb3 -o %s/projects/CARDAMOM_MDF/CARDAMOM_MDF_debug.exe -lm',Cpath,Cpath);
-compile_command_run_ncdf_test=sprintf('gcc %s/projects/CARDAMOM_GENERAL/CARDAMOM_NCDF_TESTS.c -g -o %s/projects/CARDAMOM_GENERAL/CARDAMOM_NCDF_TESTS.exe -lm',Cpath,Cpath);
+
+[~,netCDFLibFlags]=unix(sprintf('%s --libs --static', NCConfigPath));
+compile_command_run_ncdf_test=sprintf('gcc %s/projects/CARDAMOM_GENERAL/CARDAMOM_NCDF_TESTS.c -g -o %s/projects/CARDAMOM_GENERAL/CARDAMOM_NCDF_TESTS.exe -lm %s',Cpath,Cpath, netCDFLibFlags);
 
 
 cpd(1)=unix(compile_command_run_model_debug);
