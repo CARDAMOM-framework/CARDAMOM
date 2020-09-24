@@ -165,6 +165,8 @@ int ncfd_get_var_info(int ncid, const char * varName, size_t * arrayLen, int * v
 	if (numberOfDims==0){
 		//special case, var is a scalar, so we know the length of the array is 1
 		*arrayLen=1;
+		//No need to inspect dimensions or anything else, we have a scalar
+		return 1;
 	}
 	if ((retval = nc_inq_vardimid(ncid, *varID, &dimensionID))){
 		ERR_VAR(retval, varName);
@@ -452,11 +454,11 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 	DATA->Mean_Fire.values=ncdf_read_double_var(ncid, "Mean_Fire", &(DATA->Mean_Fire.length));
 		DATA->Mean_Fire.Uncertainty=ncdf_read_double_attr(ncid, "Mean_Fire","Uncertainty");
 
-	DATA->mean_GPP.values=ncdf_read_double_var(ncid, "mean_GPP", &(DATA->mean_GPP.length));
-		DATA->mean_GPP.Uncertainty=ncdf_read_double_attr(ncid, "mean_GPP","Uncertainty");
+	DATA->Mean_GPP.values=ncdf_read_double_var(ncid, "Mean_GPP", &(DATA->Mean_GPP.length));
+		DATA->Mean_GPP.Uncertainty=ncdf_read_double_attr(ncid, "Mean_GPP","Uncertainty");
 
-	DATA->mean_LAI.values=ncdf_read_double_var(ncid, "mean_LAI", &(DATA->mean_LAI.length));
-		DATA->mean_LAI.Uncertainty=ncdf_read_double_attr(ncid, "mean_LAI","Uncertainty");
+	DATA->Mean_LAI.values=ncdf_read_double_var(ncid, "Mean_LAI", &(DATA->Mean_LAI.length));
+		DATA->Mean_LAI.Uncertainty=ncdf_read_double_attr(ncid, "Mean_LAI","Uncertainty");
 
 	DATA->CH4.values=ncdf_read_double_var(ncid, "CH4", &(DATA->CH4.length));
 		DATA->CH4.Uncertainty=ncdf_read_double_attr(ncid, "CH4","Uncertainty");
