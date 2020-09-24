@@ -12,7 +12,7 @@ NCConfigPath=getenv('CARDAMOM_NC_CONFIG_PATH');
 if isempty(NCConfigPath);
    [returnVal,NCConfigPath]=unix('which nc-config');
    if returnVal ~= 0;
-       disp('can''t locate nc-config. Consider setting the enviroment variable CARDAMOM_NC_CONFIG_PATH ')
+       disp('can''t locate nc-config. Consider setting the enviroment variable CARDAMOM_NC_CONFIG_PATH ');
    end
 end
 

@@ -29,8 +29,8 @@ switch projname
     case 'GCRUN_NOV18_CMS_PRIOR_V1'
     PXI=GCRUN_NOV18_CMS_PRIOR_V1;%Land-surface constrained run for CMS-Flux prior
     
-        case 'GCRUN_AUG20_CMS_PRIOR'
-    PXI=GCRUN_AUG20_CMS_PRIOR;
+        case 'GCRUN_SEP20_CMS_PRIOR'
+    PXI=GCRUN_SEP20_CMS_PRIOR;
     %******CONTINUE FROM HERE*****
     %PXI=GCRUN_DEC18_TDLE was only copy-pasted from PROJSCRIPT_CARDAMOM_CMS_JUL18
         case 'GCRUN_MAR19_CMS_PRIOR_V1'
@@ -1518,7 +1518,7 @@ PXI=cardamom_pixel_output_summary(PXI);
 end
 
 %GCRUN routines
-function PXI=GCRUN_AUG20_CMS_PRIOR
+function PXI=GCRUN_SEP20_CMS_PRIOR
 %Step 1. 
 %CMS-Flux prior fluxes, describe here
 %No atmosphere
@@ -1564,22 +1564,22 @@ RO.nbeunc = [0,0];
 
 %PXI options
 PXI.RO=RO;
-PXI.run_details='GCRUN_AUG20: 2010-2017 and LS constraints';
+PXI.run_details='GCRUN_SEP20: 2001-2019 and LS constraints';
 PXI.ID=813;
-PXI.run_name=['GCRUN_AUG20_CMS_PRIOR'];
-PXI.analysis='GCRUN_AUG20_CMS_PRIOR';%Indicates which folder these go in.
+PXI.run_name=['GCRUN_SEP20_CMS_PRIOR'];
+PXI.analysis='GCRUN_SEP20_CMS_PRIOR';%Indicates which folder these go in.
 
 %Create and summarize PXI, based on available options
-repeat=1;
-if repeat==1
+OPT.repeat=0; 
     OPT.gcdriobs='era5';
+    OPT.funcs{1}='CBF.PARPRIORS(11)=-9999;';
 
 PXI=create_gcrun_cbf_files(PXI,[],OPT);
-end
 
 % %Step 2. determine output status
 PXI=cardamom_pixel_output_summary(PXI);
 % 
+
 
 
 
@@ -1875,6 +1875,15 @@ CBF.OBS.NBE(1:N)=-9999;
         CBF.OBS.NBE(CBF.OBS.NBE>-9999)=normvec(CBF.OBS.NBE(CBF.OBS.NBE>-9999),3);
     end
         
+    
+    
+    %User-defined functions
+    if isfield(OPT,'funcs') & numel(OPT.funcs)>0;
+        for nf=1:numel(OPT.funcs)
+        eval(OPT.funcs{nf})
+        end
+    end
+    
     
     %writetofile
     CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,PXI.cbffilename{n,1});

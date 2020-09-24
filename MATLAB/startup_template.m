@@ -10,4 +10,6 @@ setenv('CARDAMOM_DATA_PATH','CARDAMOM/DATA');
 %****CARDAMOM matlab directory****
 addpath(genpath('CARDAMOM/MATLAB/'));savepath
 
-
+%To figure this one out, type "which nc-config" on terminal window, and
+%replace "/usr/local/bin/nc-config" IN CASE VALUE IS DIFFERENT.
+setenv('CARDAMOM_NC_CONFIG_PATH','/usr/local/bin/nc-config');
