@@ -32,9 +32,14 @@
 
 
 /* Handle errors by printing an error message and exiting with a
- * non-zero status. */
+ * non-zero status.*/
+
 #define ERRCODE 2
 #define ERR(e) {printf("Error in %s at %d: %s\n", __FILE__, __LINE__, nc_strerror(e)); exit(ERRCODE);}
+//Helper for errors in variable-getting methods
+#define ERR_VAR(e, var) {printf("Error in %s at %d with variable \"%s\": %s\n", __FILE__, __LINE__, var, nc_strerror(e)); exit(ERRCODE);}
+//Helper for errors in attribute-getting methods
+#define ERR_ATTR_AND_CONTEXT(e, attr, context, varID) {printf("Error in %s at %d with attribute \"%s\" in the context \"%s\" (%d):  %s\n", __FILE__, __LINE__, attr,context,varID, nc_strerror(e)); exit(ERRCODE);}
 
 
 
@@ -65,14 +70,14 @@ int ncdf_read_int_attr(int ncid, const char* context, const char * attrName){
 				return DEFAULT_INT_VAL;
 			}
 			//The failure was in locating the context, not the arttr
-			ERR(retval);
+			ERR_ATTR_AND_CONTEXT(retval,attrName, context,varID );
 		}
 	}
 	if ((retval = nc_get_att_int(ncid, varID, attrName, &attrResult))){
 		if (retval ==NC_ENOTATT && ALLOW_DEFAULTS ){
 			return DEFAULT_INT_VAL;
 		}
-		ERR(retval);
+		ERR_ATTR_AND_CONTEXT(retval,attrName, context, varID);
 	}
 	return attrResult;
 }
@@ -100,7 +105,7 @@ double ncdf_read_double_attr(int ncid, const char* context, const char * attrNam
 				return DEFAULT_DOUBLE_VAL;
 			}
 			//Note that The failure was in locating the context, not the attr
-			ERR(retval);
+			ERR_ATTR_AND_CONTEXT(retval,attrName, context,varID );
 		}
 	}
 	if ((retval = nc_get_att_double(ncid, varID, attrName, &attrResult))){
@@ -108,7 +113,7 @@ double ncdf_read_double_attr(int ncid, const char* context, const char * attrNam
 			//we failed to find the attribute, so we should return the default double value
 			return DEFAULT_DOUBLE_VAL;
 		}
-		ERR(retval);
+		ERR_ATTR_AND_CONTEXT(retval,attrName, context,varID);
 	}
 	return attrResult;
 }
@@ -145,12 +150,12 @@ int ncfd_get_var_info(int ncid, const char * varName, size_t * arrayLen, int * v
 			*varID=-1;
 			return 0; //Return false to note our failure to find something
 		}else{
-		ERR(retval); //Die. either we did not find anything and that was marked as unacceptable in the macro ALLOW_DEFAULTS, or something else wrong happened.
+		ERR_VAR(retval, varName); //Die. either we did not find anything and that was marked as unacceptable in the macro ALLOW_DEFAULTS, or something else wrong happened.
 		}
 	}
 	//check to make sure the variable has only one dim (Critial to assure well-defined behavior for all other ncdf function calls!!!)
 	if ((retval = nc_inq_varndims(ncid, *varID, &numberOfDims))){
-		ERR(retval);
+		ERR_VAR(retval, varName);
 	}
 	if (numberOfDims>1 || numberOfDims<0){
 		printf("Error in %s at %d while trying to read var %s: CARDAMOM ncfd_get_var_info only supports 1 and 0 dimensional variables, but var has %d dimensions.\n", __FILE__, __LINE__, varName,numberOfDims);
@@ -162,10 +167,10 @@ int ncfd_get_var_info(int ncid, const char * varName, size_t * arrayLen, int * v
 		*arrayLen=1;
 	}
 	if ((retval = nc_inq_vardimid(ncid, *varID, &dimensionID))){
-		ERR(retval);
+		ERR_VAR(retval, varName);
 	}
 	if ((retval = nc_inq_dimlen(ncid, dimensionID, arrayLen))){
-		ERR(retval);
+		ERR_VAR(retval, varName);
 	}
 	//If we got here, we were sucessful, so return true
 	return 1;
@@ -196,7 +201,7 @@ int * ncdf_read_int_var(int ncid, const char * varName, size_t * arrayLen ){
 	int * resultArray= (int*)calloc(*arrayLen, sizeof(int));
 
 	if ((retval = nc_get_var_int(ncid, varID, resultArray))){
-		ERR(retval);
+		ERR_VAR(retval, varName);
 	}
 	return resultArray;
 }
@@ -224,7 +229,7 @@ double * ncdf_read_double_var(int ncid, const char * varName, size_t * arrayLen 
 	double * resultArray= (double*)calloc(*arrayLen, sizeof(double));
 
 	if ((retval = nc_get_var_double(ncid, varID, resultArray))){
-		ERR(retval);
+		ERR_VAR(retval, varName);
 	}
 	return resultArray;
 }
@@ -243,6 +248,7 @@ double * ncdf_read_double_var(int ncid, const char * varName, size_t * arrayLen 
  							Note: this memory MUST be allocated allready, and should be of type size_t[2].
  *
  *  returns: a 2D array of all the values of the variable, represented by an array of pointers to arrays. (IE, a double**, or double[][])
+ *   if the requested var does not exsist (and ALLOW_DEFAULTS is set), the return value will be
  *   if there is an error, the program exits after displaying a message.
  */
 double ** ncdf_read_double_2D(int ncid, const char * varName, size_t * dimLen ){
@@ -252,11 +258,19 @@ double ** ncdf_read_double_2D(int ncid, const char * varName, size_t * dimLen ){
 	int dimensionIDs[2] = {-1,-1}; //array where we store the dimensionIDs. default to -1
 	//Attempt to locate the id of the approprate variable
 	if ((retval = nc_inq_varid(ncid, varName, &varID))){
-		ERR(retval);
+		//Test if the variable just does not exsist, and if we are allowed to just give a default.
+		if (retval ==NC_ENOTVAR && ALLOW_DEFAULTS){
+			//We did not find anything, but this is still a valid result. Make sure lengths are set to 0
+			dimLen[0]=0;
+			dimLen[1]=0;
+			return NULL; //Return null to mark failure
+		}else{
+		ERR_VAR(retval, varName); //Die. either we did not find anything and that was marked as unacceptable in the macro ALLOW_DEFAULTS, or something else wrong happened.
+		}
 	}
 	//check to make sure the variable has only one dim (Critial to assure well-defined behavior for all other ncdf function calls!!!)
 	if ((retval = nc_inq_varndims(ncid, varID, &numberOfDims))){
-		ERR(retval);
+		ERR_VAR(retval, varName);
 	}
 	if (numberOfDims!=2){
 		printf("Error in %s at %d while trying to read var %s: CARDAMOM netCDF was trying to read 2D var, but var has %d dimensions.\n", __FILE__, __LINE__, varName,numberOfDims);
@@ -264,15 +278,15 @@ double ** ncdf_read_double_2D(int ncid, const char * varName, size_t * dimLen ){
 	}
 	//Now store all the dimensionIDs (There should be 2)
 	if ((retval = nc_inq_vardimid(ncid, varID, dimensionIDs))){
-		ERR(retval);
+		ERR_VAR(retval, varName);
 	}
 	//Dim 1
 	if ((retval = nc_inq_dimlen(ncid, dimensionIDs[0], dimLen))){
-		ERR(retval);
+		ERR_VAR(retval, varName);
 	}
 	//Dim 2
 	if ((retval = nc_inq_dimlen(ncid, dimensionIDs[1], dimLen+1))){ //Beware, dimLen+1 is pointer arithmatic, NOT normal addition
-		ERR(retval);
+		ERR_VAR(retval, varName);
 	}
 
 	size_t startIndexes[2] = {0,0}; //This is just the indexes we want to start at, which we pass to nc_get_vara. We will begin at 0,0, and increment only the first dim
@@ -284,7 +298,7 @@ double ** ncdf_read_double_2D(int ncid, const char * varName, size_t * dimLen ){
 		//Allocate and populate the child arrays that hold the data
 		resultArray[idx] = (double*)calloc(dimLen[1], sizeof(double));
 		if ((retval = nc_get_vara(ncid, varID, startIndexes, readCount, resultArray[idx] ))){
-					ERR(retval);
+			ERR_VAR(retval, varName);
 		}
 	}
 	return resultArray;
@@ -312,6 +326,8 @@ int ncdf_read_single_int_var(int ncid, const char * varName){
 	if ((retval = nc_inq_varid(ncid, varName, &varID))){
 		if (retval ==NC_ENOTVAR && ALLOW_DEFAULTS ){
 			return DEFAULT_INT_VAL;
+		}else{
+			ERR_VAR(retval, varName);
 		}
 	}
 	size_t arrayLen;
@@ -323,7 +339,7 @@ int ncdf_read_single_int_var(int ncid, const char * varName){
 	}
 
 	if ((retval = nc_get_var_int(ncid, varID, &result))){
-		ERR(retval);
+		ERR_VAR(retval, varName);
 	}
 	return result;
 }
@@ -347,6 +363,8 @@ double ncdf_read_single_double_var(int ncid, const char * varName ){
 	if ((retval = nc_inq_varid(ncid, varName, &varID))){
 		if (retval ==NC_ENOTVAR && ALLOW_DEFAULTS ){
 			return DEFAULT_DOUBLE_VAL;
+		}else{
+			ERR_VAR(retval, varName);
 		}
 	}
 	size_t arrayLen;
@@ -357,7 +375,7 @@ double ncdf_read_single_double_var(int ncid, const char * varName ){
 		exit(1);
 	}
 	if ((retval = nc_get_var_double(ncid, varID, &result))){
-		ERR(retval);
+		ERR_VAR(retval, varName);
 	}
 	return result;
 }
@@ -403,9 +421,9 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 	DATA->DOY.values=ncdf_read_double_var(ncid, "DOY", &(DATA->DOY.length));
 		DATA->DOY.reference_mean=ncdf_read_double_attr(ncid, "DOY","reference_mean");
 
-	DATA->EDC=ncdf_read_single_double_var(ncid, "EDC", DEFAULT_DOUBLE_VAL )
+	DATA->EDC=ncdf_read_single_double_var(ncid, "EDC");
 
-	DATA->EDCDIAG=ncdf_read_single_double_var(ncid, "EDCDIAG", DEFAULT_DOUBLE_VAL )
+	DATA->EDCDIAG=ncdf_read_single_double_var(ncid, "EDCDIAG");
 
 	DATA->ET.values=ncdf_read_double_var(ncid, "ET", &(DATA->ET.length));
 		DATA->ET.Uncertainty=ncdf_read_double_attr(ncid, "ET","Uncertainty");
@@ -422,11 +440,11 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 		DATA->GPP.gppabs=ncdf_read_double_attr(ncid, "GPP","gppabs");
 		DATA->GPP.obs_unc_threshold=ncdf_read_double_attr(ncid, "GPP","obs_unc_threshold");
 
-	DATA->ID=ncdf_read_single_double_var(ncid, "ID", DEFAULT_DOUBLE_VAL )
+	DATA->ID=ncdf_read_single_double_var(ncid, "ID" );
 
 	DATA->LAI.values=ncdf_read_double_var(ncid, "LAI", &(DATA->LAI.length));
 
-	DATA->LAT=ncdf_read_single_double_var(ncid, "LAT", DEFAULT_DOUBLE_VAL )
+	DATA->LAT=ncdf_read_single_double_var(ncid, "LAT" );
 
 	DATA->Mean_Biomass.values=ncdf_read_double_var(ncid, "Mean_Biomass", &(DATA->Mean_Biomass.length));
 		DATA->Mean_Biomass.Uncertainty=ncdf_read_double_attr(ncid, "Mean_Biomass","Uncertainty");

@@ -11,7 +11,7 @@ size_t length; //Set to 0 if not present
 typedef struct ONE_DIM_VAR_WITH_UNCERTAINTY_STRUCT{
 double* values; //NULL if not present
 size_t length; //Set to 0 if not present
-double uncertainty;
+double Uncertainty;
 }ONE_DIM_VAR_WITH_UNCERTAINTY_STRUCT;
 
 //This is a generic struct for a 2D var
