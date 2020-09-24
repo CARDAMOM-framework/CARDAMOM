@@ -17,7 +17,7 @@ double Uncertainty;
 //This is a generic struct for a 2D var
 typedef struct TWO_DIM_VAR_STRUCT{
 double** values;
-size_t* dimensions; //NOTE: This is NOT a length per row, but a length per dimension. This means this array will ALLWAYS have 2 elements for a 2D array.
+size_t dimensions[2]; //NOTE: This is NOT a length per row, but a length per dimension. This means this array will ALLWAYS have 2 elements for a 2D array.
 }TWO_DIM_VAR_STRUCT;
 
 

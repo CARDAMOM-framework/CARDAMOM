@@ -34,7 +34,7 @@ if opt==2
 compile_command_run_model_debug=sprintf('gcc %s/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.c -g -o %s/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL_debug.exe -lm',Cpath,Cpath);
 compile_command_run_mdf_debug=sprintf('gcc %s/projects/CARDAMOM_MDF/CARDAMOM_MDF.c -g -ggdb3 -o %s/projects/CARDAMOM_MDF/CARDAMOM_MDF_debug.exe -lm',Cpath,Cpath);
 
-[~,netCDFLibFlags]=unix(sprintf('%s --libs --static', NCConfigPath));
+[~,netCDFLibFlags]=unix(sprintf('%s --libs', NCConfigPath));
 compile_command_run_ncdf_test=sprintf('gcc %s/projects/CARDAMOM_GENERAL/CARDAMOM_NCDF_TESTS.c -g -o %s/projects/CARDAMOM_GENERAL/CARDAMOM_NCDF_TESTS.exe -lm %s',Cpath,Cpath, netCDFLibFlags);
 
 
