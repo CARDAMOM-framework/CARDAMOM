@@ -158,6 +158,7 @@ f=nofluxes*n;
 /* for the first iteration we compute an initial value of
   evapotranspiration and soil water for use in the LAI_KNORR module */
 if (n==0){
+  printf("deltat = %2.7f\n",deltat);
   LAI[n]=POOLS[p+1]/pars[16];
   lai_var_list[2]=pars[36];
   /*GPP*/
@@ -206,9 +207,13 @@ FLUXES[f+35] = LAI_KNORR(lai_met_list, lai_var_list)[1];  // T_memory
 FLUXES[f+36] = LAI_KNORR(lai_met_list, lai_var_list)[2];  // lambda_max_memory
 FLUXES[f+37] = LAI_KNORR(lai_met_list, lai_var_list)[3]/deltat;  // dlambda/dt (units: LAI per day)
 
+/*Calculate dynamic leaf mass carbon per area (LMCA) */
+FLUXES[f+40] = POOLS[p+1]/FLUXES[f+34];
+// FLUXES[f+40] = pars[16];
+
 /* if target LAI change (in units of carbon flux) exceeds the available carbon from labile pool, we down-scale the 
 LAI increment (dlambda/dt) and the KNORR LAI */
-if (FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46] > POOLS[p+0]/deltat){
+if (FLUXES[f+37]*FLUXES[f+40] + POOLS[p+1]/pars[46] > POOLS[p+0]/deltat){
   /* flag for carbon availability limitation (1 = labile C limits LAI growth) */
   FLUXES[f+38]=1.0;
   /* down-scale LAI by the difference between what is requested and what is available */
@@ -216,16 +221,19 @@ if (FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46] > POOLS[p+0]/deltat){
        what is available from C-labile. This is in g C m-2 d-1.
      - then we need to compute how much LAI should be down-scaled by, so we compute the LAI 
        per model timestep */
-  FCdiff = (FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46]) - POOLS[p+0]/deltat;
-  LAIdiff = (FCdiff*deltat)/pars[16];
+  FCdiff = (FLUXES[f+37]*FLUXES[f+40] + POOLS[p+1]/pars[46]) - POOLS[p+0]/deltat;
+  LAIdiff = (FCdiff*deltat)/FLUXES[f+40];
   FLUXES[f+34] = FLUXES[f+34] - LAIdiff;
   /* set dlambdadt to be available carbon in C-labile, divided by LMCA to get it back into LAI units*/
-  FLUXES[f+37]=(POOLS[p+0]/deltat)/pars[16];
+  FLUXES[f+37]=(POOLS[p+0]/deltat)/FLUXES[f+40];
 }
 else {
 	/* flag for carbon availability limitation (1 = labile C limits LAI growth) */
 	FLUXES[f+38]=0.0;
 }
+/*Update dynamic leaf mass carbon per area (LMCA) after accounting for potential C-labile limitation */
+FLUXES[f+40] = POOLS[p+1]/FLUXES[f+34];
+// FLUXES[f+40] = pars[16];
 
 LAI[n]=POOLS[p+1]/pars[16]; 
 
@@ -257,9 +265,9 @@ FLUXES[f+2]=pars[1]*FLUXES[f+0];
 /* if labile C is not available, only take what is available and downscale LAI_KNORR rate of change */
 /* if labile C is not available, only take what is available and downscale LAI_KNORR rate of change */
 /* -> F = max( min( dLAI/dt * LMCA  +  Cfoliar / tau_Cfoliar, Clabile/deltat), 0) */
-FLUXES[f+32]=fmax(fmin(FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46], POOLS[p+0]/deltat), 0);
+FLUXES[f+32]=fmax(fmin(FLUXES[f+37]*FLUXES[f+40] + POOLS[p+1]/pars[46], POOLS[p+0]/deltat), 0);
 /*foliar to litter carbon flux(governed by LAI_KNORR)*/
-FLUXES[f+33]=-fmin(fmin(FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46], POOLS[p+0]/deltat), 0) + POOLS[p+1]/pars[46];
+FLUXES[f+33]=-fmin(fmin(FLUXES[f+37]*FLUXES[f+40] + POOLS[p+1]/pars[46], POOLS[p+0]/deltat), 0) + POOLS[p+1]/pars[46];
 /*leaf production*/
 // FLUXES[f+3]=(FLUXES[f+0]-FLUXES[f+2])*pars[2];
 FLUXES[f+3] = FLUXES[f+32];
@@ -349,6 +357,17 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 	/*Net ecosystem exchange + Fires*/
 	NEE[n]=-FLUXES[f+0]+FLUXES[f+2]+FLUXES[f+12]+FLUXES[f+13]+FLUXES[f+16];
 
+	/*Fraction of C-foliar lost due to fires*/
+    FLUXES[f+41] = DATA.MET[m+6]*(CF[1] + (1-CF[1])*(1-pars[30]));
+	/*Calculate LAI (lambda) lost due to fire
+	  - we lose the same fraction of LAI as we do C-foliar 
+	  - FE_\Lambda^{(t+1)} = \Lambda^{(t+1)'} * BA ( k_{factor(i)} + (1 - k_{factor(i)}) r )*/
+	FLUXES[f+39] = FLUXES[f+34]*DATA.MET[m+6]*(CF[1] + (1-CF[1])*(1-pars[30]));
+	/*Subtract fire loss LAI from current LAI*/
+	FLUXES[f+34] = FLUXES[f+34] - FLUXES[f+39];
+    /*Update dynamic leaf mass carbon per area (LMCA)*/
+    FLUXES[f+40] = POOLS[nxp+1]/FLUXES[f+34];
+    // FLUXES[f+40] = pars[16];
   /*Update variables for LAI_KNORR to be used in next iteration*/
   /*plant-available water*/
   lai_var_list[17]=POOLS[nxp+6]; /*pasm = PAW*/
