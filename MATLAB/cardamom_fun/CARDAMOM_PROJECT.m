@@ -33,6 +33,8 @@ switch projname
     PXI=GCRUN_SEP20_CMS_PRIOR;
         case 'GCRUN_SEP20_CMS_PRIOR_V2'
     PXI=GCRUN_SEP20_CMS_PRIOR_V2;
+            case 'GCRUN_SEP20_CMS_PRIOR_V3'
+    PXI=GCRUN_SEP20_CMS_PRIOR_V3;
     %******CONTINUE FROM HERE*****
     %PXI=GCRUN_DEC18_TDLE was only copy-pasted from PROJSCRIPT_CARDAMOM_CMS_JUL18
         case 'GCRUN_MAR19_CMS_PRIOR_V1'
@@ -1588,6 +1590,76 @@ PXI=cardamom_pixel_output_summary(PXI);
 
 
 end
+
+%GCRUN routines
+function PXI=GCRUN_SEP20_CMS_PRIOR_V3
+%Step 1. 
+%CMS-Flux prior fluxes, describe here
+%No atmosphere
+%LS constraints = GFEDv4s fire emissions, FLUXCOM GPP
+
+
+RO.tidx=1:228;%Index of timesteps 
+RO.tnbeidx=[];% no atmospheric data
+RO.tbbidx=[];
+%Options are temporary: 
+%Remove once done replicating runs
+%SIF options
+% 0 = no sif data
+% 1 = GOSAT sif data
+% 2 = GOME2 data
+% 3 = FLUXSAT data
+RO.sifopt=3;
+%BB opt:
+%0 = no bb data
+%1 = GFEDv4s constraint
+%2 = top-down CO constraint
+RO.bbopt=1;
+%BB uncertainty
+%+ve = log; -ve = abs
+RO.bbunc=-0.2;
+%Mean GPP constraint
+%0. No mean GPP 
+%1. Fluxcom GPP
+RO.gppopt=0;
+%OCO-2 options( 1 or 0)
+%ri ==1 | ri==8 | ri==9 | ri==10 | ri==11  | ri==12 | ri==13  | ri==14 | ri==15  | ri==21
+RO.oco2=0;
+
+%NBE uncertainty mode
+%For global uncertainty, provide two values
+%For CMS-Flux uncertainty, set to CMS-Flux
+RO.nbeunc = [0,0];
+ defval('runname','');
+  defval('s3x3',0);
+  RO.nbe_s3x3=s3x3;
+  
+  RO.mco=[1e6 0 5e2 0.0005];
+
+%PXI options
+PXI.RO=RO;
+PXI.run_details='GCRUN_SEP20: 2001-2019 and LS constraints';
+PXI.ID=813;
+PXI.run_name=['GCRUN_SEP20_CMS_PRIOR_V3'];
+PXI.analysis=PXI.run_name;%Indicates which folder these go in.
+
+%Create and summarize PXI, based on available options
+OPT.repeat=0; 
+    OPT.gcdriobs='era5';
+    OPT.funcs{1}='CBF.PARPRIORS(11)=-9999;';
+    OPT.funcs{2}='if isempty(CBF.OBS.GPP)==0 & max(CBF.OBS.GPP)>-9999; CBF.OBSUNC.GPP.obs_unc_threshold=max(CBF.OBS.GPP)/10;end';
+
+PXI=create_gcrun_cbf_files(PXI,[],OPT);
+
+% %Step 2. determine output status
+PXI=cardamom_pixel_output_summary(PXI);
+% 
+
+
+
+
+end
+
 
 %GCRUN routines
 function PXI=GCRUN_SEP20_CMS_PRIOR
