@@ -2,24 +2,8 @@
 #include "math.h"
 #include <stdio.h>
 #include "CARDAMOM_READ_BINARY_DATA.c"
-#include "CARDAMOM_READ_NETCDF_DATA.c"
 
 /*syntax CARDAMOM_READ_BINARY_CARDADATA(char *filename,CARDADATA *CARDADATA)*/
-
-//Helper method, primarily for use identifying file extensions. Adapted from https://stackoverflow.com/questions/744766/how-to-compare-ends-of-strings-in-c for ease and edge case management
-int StringEndsWith(const char *str, const char *suffix)
-{
-    if (!str || !suffix)
-        return 0;
-    size_t lenstr = strlen(str);
-    size_t lensuffix = strlen(suffix);
-    if (lensuffix >  lenstr)
-        return 0;
-    return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
-}
-
-
-
 
 /* the gateway function */
 /*NOTE: this function can be used with any valid model ID (stored in CARDADATA.ID)*/
@@ -33,11 +17,6 @@ int n, nn;
 char metfile[1000];strcpy(metfile,files[1]);
 char parfile[1000];strcpy(parfile,files[2]);
 
-//This determines if we are dealing with netCDF files, or traditional cardamom files. By default, we assume the older binary format
-int metIsCDF =0;
-if (StringEndsWith(metfile, ".nc.cbf")) {
-  metIsCDF=1;
-}
 
 
 /*declaring data structure*/
@@ -55,13 +34,10 @@ okcheck(OK,"CHECK: DATA structure successfully initialized");
 /*NOTE: parameter minimum and maximum values also loaded as a function of CARDADATA.ID by
 the CARDAMOM_MODEL_LIBRARY.c function*/
 
-if (metIsCDF){
-  //Data file is of the newer NetCDF format
-  CARDAMOM_READ_NETCDF_DATA(metfile, &(CARDADATA.ncdf_data));
-}else{
-  //parse the data file as the older binary format
-  CARDAMOM_READ_BINARY_DATA(metfile,&CARDADATA);
-}
+
+CARDAMOM_READ_BINARY_DATA(metfile,&CARDADATA);
+
+//CARDAMOM_READ_NETCDF_DATA("DEFAULT/FILE/NETCDF", &(CARDADATA.ncdf_data));
 
 
 /*step 2 - read (first time) parameter file here*/
