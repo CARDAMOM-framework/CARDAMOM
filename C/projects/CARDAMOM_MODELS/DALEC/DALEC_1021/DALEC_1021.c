@@ -159,8 +159,8 @@ f=nofluxes*n;
 /* for the first iteration we compute an initial value of
   evapotranspiration and soil water for use in the LAI_KNORR module */
 if (n==0){
-  printf("deltat = %2.7f\n",deltat);
-  LAI[n]=POOLS[p+1]/pars[16];
+  /*printf("deltat = %2.7f\n",deltat);
+  */LAI[n]=POOLS[p+1]/pars[16];
   lai_var_list[2]=pars[36];
   /*GPP*/
   gpppars[0]=pars[36];
