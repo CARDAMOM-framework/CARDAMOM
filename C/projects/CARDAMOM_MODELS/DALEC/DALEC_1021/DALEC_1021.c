@@ -209,9 +209,9 @@ FLUXES[f+36] = LAI_KNORR(lai_met_list, lai_var_list)[2];  // lambda_max_memory
 FLUXES[f+37] = LAI_KNORR(lai_met_list, lai_var_list)[3]/deltat;  // dlambda/dt (units: LAI per day)
 
 /*Calculate the initial foliar carbon pool*/
-if (n==0){
-  POOLS[p+1]=FLUXES[f+34]*pars[16];
-}
+// if (n==0){
+  // POOLS[p+1]=FLUXES[f+34]*pars[16];
+// }
 
 /* if target LAI change (in units of carbon flux) exceeds the available carbon from labile pool, we down-scale the 
 LAI increment (dlambda/dt) and the KNORR LAI */
@@ -294,8 +294,8 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 /*total pool transfers (no fires yet)*/
 
         POOLS[nxp+0] = POOLS[p+0] + (FLUXES[f+4]-FLUXES[f+7])*deltat;
-        // POOLS[nxp+1] = POOLS[p+1] + (FLUXES[f+3] - FLUXES[f+9])*deltat;
-        POOLS[nxp+1] = FLUXES[f+34]*pars[16];
+        POOLS[nxp+1] = POOLS[p+1] + (FLUXES[f+3] - FLUXES[f+9])*deltat;
+        // POOLS[nxp+1] = FLUXES[f+34]*pars[16];
         POOLS[nxp+2] = POOLS[p+2] + (FLUXES[f+5] - FLUXES[f+11])*deltat;
         POOLS[nxp+3] = POOLS[p+3] +  (FLUXES[f+6] - FLUXES[f+10])*deltat;
         POOLS[nxp+4] = POOLS[p+4] + (FLUXES[f+9] + FLUXES[f+11] - FLUXES[f+12] - FLUXES[f+14])*deltat; 
