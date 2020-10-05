@@ -314,6 +314,7 @@ if any(ismember([1000,1001,1002,1003],OPT.MODEL.ID))
         CBR.RO=CBR.FLUXES(:,:,30)+CBR.FLUXES(:,:,32)+CBR.FLUXES(:,:,33);
     elseif OPT.MODEL.ID==1000 | OPT.MODEL.ID==1002;
         CBR.RO=CBR.FLUXES(:,:,30)+CBR.FLUXES(:,:,32);
+    end
     
 elseif any(ismember([811,812,813],OPT.MODEL.ID)) 
     %Plant-available EWT
@@ -327,11 +328,6 @@ end
     
     
     
-    
-    
-    
-    
-
 
 if any(ismember([809,811,812,813,1000,1001,1002,1003],OPT.MODEL.ID))
 
@@ -340,6 +336,8 @@ if any(ismember([809,811,812,813,1000,1001,1002,1003],OPT.MODEL.ID))
 
     
 end
+
+
     %Export fire C emissions
     CBR.FIR=CBR.FLUXES(:,:,17);
     %Export respiration
@@ -421,7 +419,7 @@ delete(sprintf('%s/tempcar*%s*',Dpath,channel));
 
 
 end
-
+`
 
 
 
