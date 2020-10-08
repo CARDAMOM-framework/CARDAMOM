@@ -20,9 +20,10 @@ end
 %be appended to all compiler commands for our code!
 [returnVal,netCDFLibFlags]=unix(sprintf('%s --libs', NCConfigPath));
 if returnVal ==127
-    disp('ERROR: can''t locate nc-config. Consider setting the enviroment variable CARDAMOM_NC_CONFIG_PATH ');
+    error('ERROR: can''t locate nc-config. Consider setting the enviroment variable CARDAMOM_NC_CONFIG_PATH ');
 elseif returnVal ~= 0
-    disp('ERROR: non-zero return value from nc-config! Check you NetCDF lib install, and maybe run nc-config yourself!');
+    error('ERROR: non-zero return value from nc-config! Check you NetCDF lib install, and maybe run nc-config yourself!');
+    
 end
 
 if nargin<2
