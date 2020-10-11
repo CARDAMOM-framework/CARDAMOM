@@ -64,9 +64,30 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 	}
 
 	if (fileIsCDF){
-	  //Data file is of the newer NetCDF format
+	  //Step 1.Data file is of the newer NetCDF format
 	  CARDAMOM_READ_NETCDF_DATA(filename, &(DATA->ncdf_data));
+
+	//Step 3. Cast into existing data structure
+	DATA->ID=DATA->ncdf_data.ID;
+	DATA->LAT=DATA->ncdf_data.LAT;
+	/*
+	DATA->nodays=(int)statdat[2];
+        DATA->nomet=(int)statdat[3];
+        DATA->noobs=(int)statdat[4];
+        DATA->EDC=(int)statdat[5];
+        DATA->EDCDIAG=(int)statdat[6];
+        DATA->gppabs=(int)statdat[7];
+	CONTINUE FROM HERE*/
+
+
+
+
 		return 0;
+
+
+
+
+
 	}
 
 		  //parse the data file as the older binary format
@@ -81,7 +102,7 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 	/*TEMPORAL DRIVERS & DATA: 301-end*/
 
 
-
+if (fileIsCDF==0){
 
 	FILE *fid=fopen(filename,"rb");
 	filediag(fid,filename);
@@ -342,6 +363,10 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 
 	free(metline);
 	free(obsline);
+
+}
+
+
 
 
 return 0;
