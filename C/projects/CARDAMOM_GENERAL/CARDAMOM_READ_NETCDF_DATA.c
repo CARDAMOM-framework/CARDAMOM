@@ -468,6 +468,10 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 		DATA->NBE.Seasonal_Uncertainty=ncdf_read_double_attr(ncid, "NBE","Seasonal_Uncertainty");
 		DATA->NBE.Annual_Uncertainty=ncdf_read_double_attr(ncid, "NBE","Annual_Uncertainty");
 
+	DATA->PARPRIORS.values=ncdf_read_double_var(ncid, "PARPRIORS", &(DATA->PARPRIORS.length));
+
+	DATA->PARPRIORUNC.values=ncdf_read_double_var(ncid, "PARPRIORUNC", &(DATA->PARPRIORUNC.length));
+
 	DATA->SSRD.values=ncdf_read_double_var(ncid, "SSRD", &(DATA->SSRD.length));
 		DATA->SSRD.reference_mean=ncdf_read_double_attr(ncid, "SSRD","reference_mean");
 
