@@ -207,6 +207,8 @@ FLUXES[f+34] = LAI_KNORR(lai_met_list, lai_var_list)[0];  // LAI (environmental 
 FLUXES[f+35] = LAI_KNORR(lai_met_list, lai_var_list)[1];  // T_memory
 FLUXES[f+36] = LAI_KNORR(lai_met_list, lai_var_list)[2];  // lambda_max_memory
 FLUXES[f+37] = LAI_KNORR(lai_met_list, lai_var_list)[3]/deltat;  // dlambda/dt (units: LAI per day)
+FLUXES[f+42] = LAI_KNORR(lai_met_list, lai_var_list)[4];  // fraction of plants above temperature threshold
+FLUXES[f+43] = LAI_KNORR(lai_met_list, lai_var_list)[5];  // fraction of plants above day length threshold
 
 /*Calculate the initial foliar carbon pool*/
 // if (n==0){

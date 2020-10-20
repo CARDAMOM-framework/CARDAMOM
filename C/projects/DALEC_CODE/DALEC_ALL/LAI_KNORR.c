@@ -94,11 +94,13 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
 
   dlambdadt = lambda_next - lambda;
 
-  static double return_arr[4];
+  static double return_arr[6];
   return_arr[0] = lambda_next;
   return_arr[1] = T;
   return_arr[2] = laim;
   return_arr[3] = dlambdadt;
+  return_arr[4] = f_T;
+  return_arr[5] = f_d;
   return return_arr;
 }
 
