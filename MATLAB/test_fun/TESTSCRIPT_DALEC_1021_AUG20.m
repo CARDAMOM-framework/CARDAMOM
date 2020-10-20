@@ -1,6 +1,7 @@
 
 %Loading generic CBF file
-CBF=CARDAMOM_READ_BINARY_FILEFORMAT('CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbf');
+% CBF=CARDAMOM_READ_BINARY_FILEFORMAT('CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbf');
+CBF=CARDAMOM_READ_BINARY_FILEFORMAT('/Users/jnorton/Models/CARDAMOM_2.1.6c/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbf');
 
 %Changing ID
 CBF.ID=1021;
@@ -55,15 +56,35 @@ for s=1:6;
 end
 
 
-
-
 %Make figure
 figure(1);clf
-subplot(2,1,1);
+subplot(1,1,1);
 plotmultilines(CBR.LAI); hold on
 ph=plot(CBF.OBS.LAI(2:end),'r','LineWidth',2);
 legend(ph,'MODIS LAI');
 ylabel('LAI [m2/m2]')
 xlabel('Months');
-subplot(2,2,3);hist(CBR.PARS(:,43));title(MD.parname{43});ylabel('Frequency')
+%subplot(2,2,3);hist(CBR.PARS(:,43));title(MD.parname{43});ylabel('Frequency')
+
+
+fancy_labels = {'Initial LAI', '$T_{\phi}$', '$T_r$', '$T_{\phi}$ averaging period', ... 
+    '$\xi$', '$k_L$', '$\hat{\Lambda}$', '$\tau_W$', '$t_c$', '$t_r$', '$tau_{foliar}$'};
+fancy_labels_units = {'(m2 m$^{-2}$)', '($^{\circ}$C)', '($^{\circ}$C)', '(months)', ...
+    '(days$^{-1}$)', '(days$^{-1}$)', 'm$^2$ m$^{-2}$)', '(days)', '(hrs day$^{-1}$)', '(hrs day$^{-1}$)', '(days)'};
+
+%Make figure
+npars_knorr=11;
+figure(3);clf
+for s=1:npars_knorr;
+    subplot(3,4,s);
+    %hist(CBR.PARS(:,s+36));title(MD.parname{s+36});ylabel('Frequency')
+    hist(CBR.PARS(:,s+36));title([fancy_labels{s}, ' ', fancy_labels_units{s}], 'Interpreter', 'latex');ylabel('Frequency')
+end
+
+% figure(1);clf
+% subplot(2,2,1);hist(CBR.PARS(:,37));title(MD.parname{37});ylabel('Frequency')
+% subplot(2,2,2);hist(CBR.PARS(:,38));title(MD.parname{38});ylabel('Frequency')
+% legend(ph,'MODIS LAI');
+% ylabel('LAI [m2/m2]')
+% xlabel('Months');
 

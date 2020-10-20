@@ -246,6 +246,8 @@ if OPT.extended==1
     if OPT.MODEL.ID==101;
         %LMA is par 11
     CBR.LAI=CBR.POOLS(:,:,2)./repmat(PARS(:,11),[1,size(CBR.POOLS(:,:,2),2)]);
+    elseif OPT.MODEL.ID==1021;
+            CBR.LAI=CBR.FLUXES(:,:,35);
     else
         %LMA is par 17
           CBR.LAI=CBR.POOLS(:,:,2)./repmat(PARS(:,17),[1,size(CBR.POOLS(:,:,2),2)]);
