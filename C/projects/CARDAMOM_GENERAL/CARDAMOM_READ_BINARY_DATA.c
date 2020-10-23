@@ -59,31 +59,72 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 {
 	//This determines if we are dealing with netCDF files, or traditional cardamom files. By default, we assume the older binary format
 	int fileIsCDF =0;
-	if (StringEndsWith(filename, ".nc.cbf")) {
+	int testnc=1,n;
+	char *ncfilename="CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE_beta_v2.nc.cbf";
+	if (StringEndsWith(filename, ".nc.cbf") | (testnc==1)){
 	  fileIsCDF=1;
+		if (testnc==0){ncfilename=filename;}
 	}
 
 	if (fileIsCDF){
 	  //Step 1.Data file is of the newer NetCDF format
-	  CARDAMOM_READ_NETCDF_DATA(filename, &(DATA->ncdf_data));
+	  CARDAMOM_READ_NETCDF_DATA(ncfilename, &(DATA->ncdf_data));
 
 	//Step 3. Cast into existing data structure
 	DATA->ID=DATA->ncdf_data.ID;
+	/*Read to get info on NOMET*/
+        CARDAMOM_MODEL_LIBRARY(DATA);
+        /*This will eventually be obsolete*/
+
+        DATA->nomet=((DALEC *)DATA->MODEL)->nomet;
+
 	DATA->LAT=DATA->ncdf_data.LAT;
-	/*
-	DATA->nodays=(int)statdat[2];
-        DATA->nomet=(int)statdat[3];
-        DATA->noobs=(int)statdat[4];
-        DATA->EDC=(int)statdat[5];
-        DATA->EDCDIAG=(int)statdat[6];
-        DATA->gppabs=(int)statdat[7];
-	CONTINUE FROM HERE*/
+	DATA->nodays=DATA->ncdf_data.TIME_INDEX.length;
+	
+	DATA->EDC=DATA->ncdf_data.EDC;
+	DATA->EDCDIAG=DATA->ncdf_data.EDCDIAG;
+
+	DATA->gppabs=DATA->ncdf_data.GPP.gppabs;
+
+	/*soon obsolete, once dependencies removed elsewhere*/
+	DATA->edc_random_search=0;
+        
+	/*GPP iav*/
+        
+/*	
+	DATA->nee_annual_unc=DATA->ncdf_data.NBE.Annual_Uncertainty;
+        DATA->et_annual_unc=DATA->ncdf_data.ET.Annual_Uncertainty;
+        DATA->nee_obs_unc=DATA->ncdf_data.NBE.Seasonal_Uncertainty;
+        DATA->et_obs_unc=DATA->ncdf_data.ET.Seasonal_Uncertainty;
+        DATA->ewt_annual_unc=DATA->ncdf_data.EWT.Annual_Uncertainty;
+        DATA->ewt_obs_unc=DATA->ncdf_data.EWT.Seasonal_Uncertainty;
+        DATA->gpp_annual_unc=DATA->ncdf_data.GPP.Annual_Uncertainty;
+        DATA->gpp_obs_unc=DATA->ncdf_data.GPP.Seasonal_Uncertainty;
+	if (DATA->ncdf_data.GPP.Seasonal_Uncertainty<0){DATA->gpp_obs_unc=2;}
+
+       DATA->et_obs_threshold=statdat[21];
+
+ if (statdat[21]<0){DATA->et_obs_threshold=0;}
+        DATA->gpp_obs_threshold=statdat[22]; if (statdat[22]<0){DATA->gpp_obs_threshold=0;}
+        DATA->ch4iav=(int)statdat[23];  
+        DATA->ch4_annual_unc=statdat[24]; 
+        DATA->ch4_obs_unc=statdat[25];if (statdat[25]<0){DATA->ch4_obs_unc=0.5;}  
+        DATA->ch4_obs_threshold=statdat[26]; if (statdat[26]<0){DATA->ch4_obs_threshold=1e-5;}  */
 
 
+	printf("DATA->LAT = %2.2f\n",DATA->LAT);
+	printf("DATA->ID = %i\n",DATA->ID);
+	
+	for (n=0;n<5;n++){printf("*******\n");}
+	printf("Testing netcdf I/O!!\n");
+	for (n=0;n<5;n++){printf("*******\n");}
+	printf("read netcdf and made it to here!!\n");
+	for (n=0;n<5;n++){printf("*******\n");}
 
+		if (testnc==0){
 
-		return 0;
-
+		return 0;}
+		else {fileIsCDF=0;}
 
 
 
@@ -101,9 +142,9 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 	/*Other priors & uncertainties: 201-300*/
 	/*TEMPORAL DRIVERS & DATA: 301-end*/
 
-
 if (fileIsCDF==0){
 
+printf("About to read cbf binary file...\n");
 	FILE *fid=fopen(filename,"rb");
 	filediag(fid,filename);
 
@@ -163,6 +204,7 @@ if (fileIsCDF==0){
 	?*this allows an initialization of the model output fields (stored in DATA for simplicity)*/
 
 	CARDAMOM_MODEL_LIBRARY(DATA);
+
 
 	/*the following fields (begining by M_) are for storage purposes*/
 	/*data stored in these fields is over-written at each model run*/

@@ -414,7 +414,7 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 	DATA->CH4.values=ncdf_read_double_var(ncid, "CH4", &(DATA->CH4.length));
 		DATA->CH4.Uncertainty=ncdf_read_double_attr(ncid, "CH4","Uncertainty");
 		DATA->CH4.Annual_Uncertainty=ncdf_read_double_attr(ncid, "CH4","Annual_Uncertainty");
-		DATA->CH4.obs_unc_threshold=ncdf_read_double_attr(ncid, "CH4","obs_unc_threshold");
+		DATA->CH4.Uncertainty_Threshold=ncdf_read_double_attr(ncid, "CH4","Uncertainty_Threshold");
 
 
 	DATA->CO2.values=ncdf_read_double_var(ncid, "CO2", &(DATA->CO2.length));
@@ -440,7 +440,7 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 		DATA->GPP.Uncertainty=ncdf_read_double_attr(ncid, "GPP","Uncertainty");
 		DATA->GPP.Annual_Uncertainty=ncdf_read_double_attr(ncid, "GPP","Annual_Uncertainty");
 		DATA->GPP.gppabs=ncdf_read_double_attr(ncid, "GPP","gppabs");
-		DATA->GPP.obs_unc_threshold=ncdf_read_double_attr(ncid, "GPP","obs_unc_threshold");
+		DATA->GPP.Uncertainty_Threshold=ncdf_read_double_attr(ncid, "GPP","Uncertainty_Threshold");
 
 	DATA->ID=ncdf_read_single_double_var(ncid, "ID" );
 

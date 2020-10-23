@@ -35,7 +35,7 @@ double* values; //NULL if not present
 size_t length; //Set to 0 if not present
 double Uncertainty;
 double Annual_Uncertainty;
-double obs_unc_threshold;
+double Uncertainty_Threshold;
 }CH4_STRUCT;
 
 
@@ -73,7 +73,7 @@ size_t length; //Set to 0 if not present
 double Uncertainty;
 double Annual_Uncertainty;
 double gppabs;
-double obs_unc_threshold;
+double Uncertainty_Threshold;
 }GPP_STRUCT;
 
 typedef struct NBE_STRUCT{

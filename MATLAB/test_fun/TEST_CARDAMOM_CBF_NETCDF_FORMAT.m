@@ -107,7 +107,7 @@ ncwriteatt(fname,'GPP','gppabs_info',CBF.OBSUNC.GPP.gppabs_info)
 ncwriteatt(fname,'GPP','Uncertainty',CBF.OBSUNC.GPP.unc)
 ncwriteatt(fname,'GPP','Annual_Uncertainty',CBF.OBSUNC.GPP.annual_unc)
 ncwriteatt(fname,'GPP','gppabs',CBF.OBSUNC.GPP.gppabs)
-ncwriteatt(fname,'GPP','obs_unc_threshold',CBF.OBSUNC.GPP.obs_unc_threshold)
+ncwriteatt(fname,'GPP','Uncertainty_Threshold',CBF.OBSUNC.GPP.obs_unc_threshold)
 
 
 %********LAI*****************
@@ -201,7 +201,7 @@ ncwriteatt(fname,'CH4','info',CBF.OBSUNC.CH4.info)
 %Variable attributes
 ncwriteatt(fname,'CH4','Uncertainty',CBF.OBSUNC.CH4.unc)
 ncwriteatt(fname,'CH4','Annual_Uncertainty',CBF.OBSUNC.CH4.annual_unc)
-ncwriteatt(fname,'CH4','obs_unc_threshold',CBF.OBSUNC.CH4.obs_unc_threshold)
+ncwriteatt(fname,'CH4','Uncertainty_Threshold',CBF.OBSUNC.CH4.obs_unc_threshold)
 
 %**********LAI******************
 
