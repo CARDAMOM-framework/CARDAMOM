@@ -263,7 +263,7 @@ FLUXES[f+32]=fmax(FLUXES[f+37]*pars[16], 0);
 // FLUXES[f+33]=-fmin(fmin(FLUXES[f+37]*FLUXES[f+40] + POOLS[p+1]/pars[46], POOLS[p+0]/deltat), 0) + POOLS[p+1]/pars[46];
 FLUXES[f+33]=-fmin(FLUXES[f+37]*pars[16], 0);
 /*leaf production*/
-FLUXES[f+3] = FLUXES[f+32];
+FLUXES[f+3] = 0;
 /*labile production*/
 FLUXES[f+4] = (FLUXES[f+0]-FLUXES[f+2])*pars[13-1];
 /*root production*/        
@@ -275,10 +275,8 @@ FLUXES[f+8] = (2/sqrt(pi))*(ff/wf)*exp(-pow(sin((DATA.MET[m+0]-pars[14]+osf)/sf)
 /*Labrelease factor*/
 FLUXES[f+15]=(2/sqrt(pi))*(fl/wl)*exp(-pow(sin((DATA.MET[m+0]-pars[11]+osl)/sf)*sf/wl,2));
 /*labile release - re-arrange order in next versions*/
-// FLUXES[f+7] = POOLS[p+0]*(1-pow(1-FLUXES[f+15],deltat))/deltat;
 FLUXES[f+7] = FLUXES[f+32];
-/*leaf litter production*/       
-// FLUXES[f+9] = POOLS[p+1]*(1-pow(1-FLUXES[f+8],deltat))/deltat;
+/*leaf litter production*/
 FLUXES[f+9] = FLUXES[f+33];
 /*wood litter production*/       
 FLUXES[f+10] = POOLS[p+3]*(1-pow(1-pars[6-1],deltat))/deltat;
@@ -294,7 +292,7 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 /*total pool transfers (no fires yet)*/
 
         POOLS[nxp+0] = POOLS[p+0] + (FLUXES[f+4]-FLUXES[f+7])*deltat;
-        POOLS[nxp+1] = POOLS[p+1] + (FLUXES[f+3] - FLUXES[f+9])*deltat;
+        POOLS[nxp+1] = POOLS[p+1] + (FLUXES[f+7] - FLUXES[f+9])*deltat;
         // POOLS[nxp+1] = FLUXES[f+34]*pars[16];
         POOLS[nxp+2] = POOLS[p+2] + (FLUXES[f+5] - FLUXES[f+11])*deltat;
         POOLS[nxp+3] = POOLS[p+3] +  (FLUXES[f+6] - FLUXES[f+10])*deltat;
