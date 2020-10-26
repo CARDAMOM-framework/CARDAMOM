@@ -39,6 +39,7 @@ return 0;}
 #include "../CARDAMOM_MODELS/DALEC/DALEC_1004/MODEL_INFO_1004.c"
 #include "../CARDAMOM_MODELS/DALEC/DALEC_1005/MODEL_INFO_1005.c"
 #include "../CARDAMOM_MODELS/DALEC/DALEC_1010/MODEL_INFO_1010.c"
+#include "../CARDAMOM_MODELS/DALEC/DALEC_1040/MODEL_INFO_1040.c"
 
 /*This function attributes model specific variables based
  * on the ID number stored in DATA->ID*/
@@ -75,6 +76,7 @@ else if (DATA->ID==1002  ){MODEL_INFO_1002(DATA);}
 else if (DATA->ID==1003  ){MODEL_INFO_1003(DATA);}
 else if (DATA->ID==1004  ){MODEL_INFO_1004(DATA);}
 else if (DATA->ID==1005  ){MODEL_INFO_1005(DATA);}
+else if (DATA->ID==1040  ){MODEL_INFO_1040(DATA);}
 else if (DATA->ID==1010  ){MODEL_INFO_1010(DATA);}
 else if (DATA->ID==1200  ){MODEL_INFO_1200(DATA);}
 else {status=1;}
