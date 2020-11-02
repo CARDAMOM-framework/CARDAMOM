@@ -79,7 +79,7 @@ double Uncertainty_Threshold;
 typedef struct NBE_STRUCT{
 double* values; //NULL if not present
 size_t length; //Set to 0 if not present
-double Seasonal_Uncertainty;
+double Uncertainty;
 double Annual_Uncertainty;
 }NBE_STRUCT;
 
@@ -140,6 +140,8 @@ ONE_DIM_VAR_WITH_UNCERTAINTY_STRUCT Mean_LAI;
 NBE_STRUCT NBE;
 ONE_DIM_VAR_STRUCT PARPRIORS;
 ONE_DIM_VAR_STRUCT PARPRIORUNC;
+ONE_DIM_VAR_STRUCT OTHERPRIORS;
+ONE_DIM_VAR_STRUCT OTHERPRIORSUNC;
 ONE_DIM_VAR_WITH_UNCERTAINTY_STRUCT SOM;
 SSRD_STRUCT SSRD;
 T2M_MAX_STRUCT T2M_MAX;

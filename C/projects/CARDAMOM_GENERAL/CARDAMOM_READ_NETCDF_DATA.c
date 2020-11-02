@@ -407,8 +407,6 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 
 	DATA->ABGB.values=ncdf_read_double_var(ncid, "ABGB", &(DATA->ABGB.length));
 
-  DATA->BURNED_AREA.values=ncdf_read_double_var(ncid, "BURNED_AREA", &(DATA->BURNED_AREA.length));
-		DATA->BURNED_AREA.reference_mean=ncdf_read_double_attr(ncid, "BURNED_AREA","reference_mean");
 
 
 	DATA->CH4.values=ncdf_read_double_var(ncid, "CH4", &(DATA->CH4.length));
@@ -417,11 +415,6 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 		DATA->CH4.Uncertainty_Threshold=ncdf_read_double_attr(ncid, "CH4","Uncertainty_Threshold");
 
 
-	DATA->CO2.values=ncdf_read_double_var(ncid, "CO2", &(DATA->CO2.length));
-		DATA->CO2.reference_mean=ncdf_read_double_attr(ncid, "CO2","reference_mean");
-
-	DATA->DOY.values=ncdf_read_double_var(ncid, "DOY", &(DATA->DOY.length));
-		DATA->DOY.reference_mean=ncdf_read_double_attr(ncid, "DOY","reference_mean");
 
 	DATA->EDC=ncdf_read_single_double_var(ncid, "EDC");
 
@@ -464,13 +457,17 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 		DATA->CH4.Uncertainty=ncdf_read_double_attr(ncid, "CH4","Uncertainty");
 		DATA->CH4.Annual_Uncertainty=ncdf_read_double_attr(ncid, "CH4","Annual_Uncertainty");
 
+	DATA->SOM.values=ncdf_read_double_var(ncid, "SOM", &(DATA->SOM.length));
+		DATA->SOM.Uncertainty=ncdf_read_double_attr(ncid, "SOM","Uncertainty");
+
 	DATA->NBE.values=ncdf_read_double_var(ncid, "NBE", &(DATA->NBE.length));
-		DATA->NBE.Seasonal_Uncertainty=ncdf_read_double_attr(ncid, "NBE","Seasonal_Uncertainty");
+		DATA->NBE.Uncertainty=ncdf_read_double_attr(ncid, "NBE","Uncertainty");
 		DATA->NBE.Annual_Uncertainty=ncdf_read_double_attr(ncid, "NBE","Annual_Uncertainty");
 
 	DATA->PARPRIORS.values=ncdf_read_double_var(ncid, "PARPRIORS", &(DATA->PARPRIORS.length));
-
 	DATA->PARPRIORUNC.values=ncdf_read_double_var(ncid, "PARPRIORUNC", &(DATA->PARPRIORUNC.length));
+	DATA->OTHERPRIORS.values=ncdf_read_double_var(ncid, "OTHERPRIORS", &(DATA->OTHERPRIORS.length));
+	DATA->OTHERPRIORSUNC.values=ncdf_read_double_var(ncid, "OTHERPRIORSUNC", &(DATA->OTHERPRIORSUNC.length));
 
 	DATA->SSRD.values=ncdf_read_double_var(ncid, "SSRD", &(DATA->SSRD.length));
 		DATA->SSRD.reference_mean=ncdf_read_double_attr(ncid, "SSRD","reference_mean");
@@ -489,6 +486,16 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 
 	DATA->VPD.values=ncdf_read_double_var(ncid, "VPD", &(DATA->VPD.length));
 		DATA->VPD.reference_mean=ncdf_read_double_attr(ncid, "VPD","reference_mean");
+ 
+	DATA->BURNED_AREA.values=ncdf_read_double_var(ncid, "BURNED_AREA", &(DATA->BURNED_AREA.length));
+                DATA->BURNED_AREA.reference_mean=ncdf_read_double_attr(ncid, "BURNED_AREA","reference_mean");
+	
+	DATA->CO2.values=ncdf_read_double_var(ncid, "CO2", &(DATA->CO2.length));
+		DATA->CO2.reference_mean=ncdf_read_double_attr(ncid, "CO2","reference_mean");
+
+	DATA->DOY.values=ncdf_read_double_var(ncid, "DOY", &(DATA->DOY.length));
+		DATA->DOY.reference_mean=ncdf_read_double_attr(ncid, "DOY","reference_mean");
+
 /*
 	DATA->EDC=ncdf_read_single_double_var(ncid, "EDC", -9999.0);
 	DATA->EDCDIAG=ncdf_read_single_double_var(ncid, "EDCDIAG", -9999.0);

@@ -54,12 +54,84 @@ printf("EDC diagnostics option = %d\n",CDATA->EDCDIAG);
 printf("*****END OF CBF FILE SUMMARY***");
 return 0;}
 
+int DYNAMIC_DATA_MEMORY_ALLOCATION(DATA * DATA){
+	
+	DATA->M_LAI=calloc(DATA->nodays,sizeof(double));
+	DATA->M_GPP=calloc(DATA->nodays,sizeof(double));
+	DATA->M_NEE=calloc(DATA->nodays,sizeof(double));
+
+	printf("DATA->nodays = %i\n", DATA->nodays);
+	printf("DATA->nofluxes = %i\n", DATA->nofluxes);
+	printf("DATA->nopools = %i\n", DATA->nopools);
+	printf("DATA->nomet = %i\n", DATA->nomet);
+
+
+printf("About to declare model memory\n");
+	DATA->M_FLUXES=calloc(DATA->nodays*DATA->nofluxes,sizeof(double));
+	DATA->M_POOLS=calloc((DATA->nodays+1)*DATA->nopools,sizeof(double));
+	int noedc=100, noprob=1;
+	DATA->M_EDCD=calloc(noedc,sizeof(int));
+	DATA->M_P=calloc(noprob,sizeof(double));
+	DATA->M_leo=calloc(1,sizeof(double));
+	DATA->M_leo[0]=1.0/0.0;
+
+	DATA->M_PARS=calloc(DATA->nopars,sizeof(double));
+
+
+
+printf("About to declare obs memory\n");
+	/*READING TEMPORAL DATA*/
+	/*For re-use of DATA structure (presumably), the data is only re-read if the fields are set to zero (or initialized)*/
+	/*Currently not sure why this is here: however, this is harmless*/
+	/*also it is good practice to initialize pointers in C*/
+	if (DATA->MET==0){DATA->MET=calloc(DATA->nomet*DATA->nodays,sizeof(double));}
+	if (DATA->GPP==0){DATA->GPP=calloc(DATA->nodays,sizeof(double));}
+	if (DATA->NEE==0){DATA->NEE=calloc(DATA->nodays,sizeof(double));}
+	if (DATA->LAI==0){DATA->LAI=calloc(DATA->nodays,sizeof(double));}
+	if (DATA->WOO==0){DATA->WOO=calloc(DATA->nodays,sizeof(double));}
+	if (DATA->ET==0){DATA->ET=calloc(DATA->nodays,sizeof(double));}
+	if (DATA->EWT==0){DATA->EWT=calloc(DATA->nodays,sizeof(double));}
+	if (DATA->BAND1==0){DATA->BAND1=calloc(DATA->nodays,sizeof(double));}
+	if (DATA->BAND2==0){DATA->BAND2=calloc(DATA->nodays,sizeof(double));}
+	if (DATA->BAND3==0){DATA->BAND3=calloc(DATA->nodays,sizeof(double));}
+	if (DATA->BAND4==0){DATA->BAND4=calloc(DATA->nodays,sizeof(double));}
+	if (DATA->SOM==0){DATA->SOM=calloc(DATA->nodays,sizeof(double));}
+	if (DATA->NEEunc==0){DATA->NEEunc=calloc(DATA->nodays,sizeof(double));}
+	if (DATA->CH4==0){DATA->CH4=calloc(DATA->nodays,sizeof(double));}
+
+	/*What happens:
+	- DATA->EWT is populated with 1XN values IF values exist in netcf
+	- DATA->EWT is populated with 1XN -9999 values IF either (a) that's what's already there OR (b) single (scaler) fill value is in place of 1XN array (i.e. netcdf "empty" field), OR (c) field doesn't exist */
+	/*N - number of points*/
+
+
+printf("About to declare obs indices\n");
+
+	DATA->ngpp=0;
+	DATA->nlai=0;
+	DATA->nnee=0;
+	DATA->nwoo=0;
+	DATA->net=0;
+	DATA->newt=0;
+	DATA->nband1=0;
+	DATA->nband2=0;
+	DATA->nband3=0;
+	DATA->nband4=0;
+	DATA->nsom=0;
+	DATA->nneeunc=0;
+	DATA->nch4=0; /*shuang*/
+
+
+printf("Done with dynamic memory declaration\n");
+
+return 0;
+};
 
 int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 {
 	//This determines if we are dealing with netCDF files, or traditional cardamom files. By default, we assume the older binary format
 	int fileIsCDF =0;
-	int testnc=1,n;
+	int testnc=0,n,m;
 	char *ncfilename="CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE_beta_v2.nc.cbf";
 	if (StringEndsWith(filename, ".nc.cbf") | (testnc==1)){
 	  fileIsCDF=1;
@@ -89,28 +161,54 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 	/*soon obsolete, once dependencies removed elsewhere*/
 	DATA->edc_random_search=0;
         
-	/*GPP iav*/
-        
-/*	
+	/*GPP,LAI iav were never used*/
+	/*
+        DATA->gppiav=(int)statdat[11];
+        DATA->laiiav=(int)statdat[12];
+        DATA->ch4iav=(int)statdat[23];  
+	*/
+
+		
 	DATA->nee_annual_unc=DATA->ncdf_data.NBE.Annual_Uncertainty;
         DATA->et_annual_unc=DATA->ncdf_data.ET.Annual_Uncertainty;
-        DATA->nee_obs_unc=DATA->ncdf_data.NBE.Seasonal_Uncertainty;
-        DATA->et_obs_unc=DATA->ncdf_data.ET.Seasonal_Uncertainty;
+        DATA->nee_obs_unc=DATA->ncdf_data.NBE.Uncertainty;
+        DATA->et_obs_unc=DATA->ncdf_data.ET.Uncertainty;
         DATA->ewt_annual_unc=DATA->ncdf_data.EWT.Annual_Uncertainty;
-        DATA->ewt_obs_unc=DATA->ncdf_data.EWT.Seasonal_Uncertainty;
+        DATA->ewt_obs_unc=DATA->ncdf_data.EWT.Uncertainty;
         DATA->gpp_annual_unc=DATA->ncdf_data.GPP.Annual_Uncertainty;
-        DATA->gpp_obs_unc=DATA->ncdf_data.GPP.Seasonal_Uncertainty;
-	if (DATA->ncdf_data.GPP.Seasonal_Uncertainty<0){DATA->gpp_obs_unc=2;}
+        DATA->gpp_obs_unc=DATA->ncdf_data.GPP.Uncertainty;
+        DATA->ch4_annual_unc=DATA->ncdf_data.CH4.Annual_Uncertainty;
+        DATA->ch4_obs_unc=DATA->ncdf_data.CH4.Uncertainty;
+	
+	if (DATA->ncdf_data.GPP.Uncertainty<0){DATA->gpp_obs_unc=2;}
+	if (DATA->ncdf_data.CH4.Uncertainty<0){DATA->ch4_obs_unc=0.5;}
 
-       DATA->et_obs_threshold=statdat[21];
+       DATA->et_obs_threshold=DATA->ncdf_data.ET.Uncertainty_Threshold; if (DATA->et_obs_threshold<0){DATA->et_obs_threshold=0;}
+       DATA->gpp_obs_threshold=DATA->ncdf_data.GPP.Uncertainty_Threshold; if (DATA->gpp_obs_threshold<0){DATA->gpp_obs_threshold=0;}
+       DATA->ch4_obs_threshold=DATA->ncdf_data.CH4.Uncertainty_Threshold; if (DATA->ch4_obs_threshold<0){DATA->ch4_obs_threshold=1e-5;}; /*TO ADDRESS: other fields use "0" threshold as default*/
 
- if (statdat[21]<0){DATA->et_obs_threshold=0;}
-        DATA->gpp_obs_threshold=statdat[22]; if (statdat[22]<0){DATA->gpp_obs_threshold=0;}
-        DATA->ch4iav=(int)statdat[23];  
-        DATA->ch4_annual_unc=statdat[24]; 
-        DATA->ch4_obs_unc=statdat[25];if (statdat[25]<0){DATA->ch4_obs_unc=0.5;}  
-        DATA->ch4_obs_threshold=statdat[26]; if (statdat[26]<0){DATA->ch4_obs_threshold=1e-5;}  */
 
+	memcpy(DATA->parpriors,DATA->ncdf_data.PARPRIORS.values,50*sizeof(double));
+	memcpy(DATA->parpriorunc,DATA->ncdf_data.PARPRIORUNC.values,50*sizeof(double));
+	memcpy(DATA->otherpriors,DATA->ncdf_data.OTHERPRIORS.values,50*sizeof(double));
+	memcpy(DATA->otherpriorunc,DATA->ncdf_data.OTHERPRIORSUNC.values,50*sizeof(double));
+
+
+	/*NEXT STEPS: figure out how to ceclafre MET and other memory*/
+	// READ GPP, LAI, etc.:
+
+
+
+
+
+
+	
+
+
+
+	
+
+	
 
 	printf("DATA->LAT = %2.2f\n",DATA->LAT);
 	printf("DATA->ID = %i\n",DATA->ID);
@@ -121,10 +219,7 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 	printf("read netcdf and made it to here!!\n");
 	for (n=0;n<5;n++){printf("*******\n");}
 
-		if (testnc==0){
 
-		return 0;}
-		else {fileIsCDF=0;}
 
 
 
@@ -132,8 +227,6 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 	}
 
 		  //parse the data file as the older binary format
-	/*NOTE: this function reads data as written by DALEC_FLUXCOM_MCMC_PROJECT_SITELEVEL.m
-	 * For any adaptations to this function make sure to keep in sync with matlab function*/
 
 	/*TEMPLATE FOR ALL DALEC MCMC DATA files*/
 	/*Static Elements: 1-100 - use as many as needed*/
@@ -206,69 +299,20 @@ printf("About to read cbf binary file...\n");
 	CARDAMOM_MODEL_LIBRARY(DATA);
 
 
+
+
+
+/*********Memory allocation for dynamic fields, common to both netcdf and cbf formats*******/
+
+
+
 	/*the following fields (begining by M_) are for storage purposes*/
 	/*data stored in these fields is over-written at each model run*/
 	/*Future versions: these should be declared within each model structure
 	or generically declared for model types (e.g. DALEC, etc).*/
 	/*Model-specific quantities (nodays, nofluxes, nopools), will be declared in MODEL_INFO for modularity*/
-	DATA->M_LAI=calloc(DATA->nodays,sizeof(double));
-	DATA->M_GPP=calloc(DATA->nodays,sizeof(double));
-	DATA->M_NEE=calloc(DATA->nodays,sizeof(double));
-
-	printf("DATA->nodays = %i\n", DATA->nodays);
-	printf("DATA->nofluxes = %i\n", DATA->nofluxes);
-
-	DATA->M_FLUXES=calloc(DATA->nodays*DATA->nofluxes,sizeof(double));
-	DATA->M_POOLS=calloc((DATA->nodays+1)*DATA->nopools,sizeof(double));
-	int noedc=100, noprob=1;
-	DATA->M_EDCD=calloc(noedc,sizeof(int));
-	DATA->M_P=calloc(noprob,sizeof(double));
-	DATA->M_leo=calloc(1,sizeof(double));
-	DATA->M_leo[0]=1.0/0.0;
-
-	DATA->M_PARS=calloc(DATA->nopars,sizeof(double));
-
-
-
-	/*READING TEMPORAL DATA*/
-	/*For re-use of DATA structure (presumably), the data is only re-read if the fields are set to zero (or initialized)*/
-	/*Currently not sure why this is here: however, this is harmless*/
-	/*also it is good practice to initialize pointers in C*/
-	if (DATA->MET==0){DATA->MET=calloc(DATA->nomet*DATA->nodays,sizeof(double));}
-	if (DATA->GPP==0){DATA->GPP=calloc(DATA->nodays,sizeof(double));}
-	if (DATA->NEE==0){DATA->NEE=calloc(DATA->nodays,sizeof(double));}
-	if (DATA->LAI==0){DATA->LAI=calloc(DATA->nodays,sizeof(double));}
-	if (DATA->WOO==0){DATA->WOO=calloc(DATA->nodays,sizeof(double));}
-	if (DATA->ET==0){DATA->ET=calloc(DATA->nodays,sizeof(double));}
-	if (DATA->EWT==0){DATA->EWT=calloc(DATA->nodays,sizeof(double));}
-	if (DATA->BAND1==0){DATA->BAND1=calloc(DATA->nodays,sizeof(double));}
-	if (DATA->BAND2==0){DATA->BAND2=calloc(DATA->nodays,sizeof(double));}
-	if (DATA->BAND3==0){DATA->BAND3=calloc(DATA->nodays,sizeof(double));}
-	if (DATA->BAND4==0){DATA->BAND4=calloc(DATA->nodays,sizeof(double));}
-	if (DATA->SOM==0){DATA->SOM=calloc(DATA->nodays,sizeof(double));}
-	if (DATA->NEEunc==0){DATA->NEEunc=calloc(DATA->nodays,sizeof(double));}
-	if (DATA->CH4==0){DATA->CH4=calloc(DATA->nodays,sizeof(double));}
-
-	/*What happens:
-	- DATA->EWT is populated with 1XN values IF values exist in netcf
-	- DATA->EWT is populated with 1XN -9999 values IF either (a) that's what's already there OR (b) single (scaler) fill value is in place of 1XN array (i.e. netcdf "empty" field), OR (c) field doesn't exist */
-	/*N - number of points*/
-
-
-
-	DATA->ngpp=0;
-	DATA->nlai=0;
-	DATA->nnee=0;
-	DATA->nwoo=0;
-	DATA->net=0;
-	DATA->newt=0;
-	DATA->nband1=0;
-	DATA->nband2=0;
-	DATA->nband3=0;
-	DATA->nband4=0;
-	DATA->nsom=0;
-	DATA->nneeunc=0;
-	DATA->nch4=0; /*shuang*/
+	
+	DYNAMIC_DATA_MEMORY_ALLOCATION(DATA);
 
 
 
@@ -327,61 +371,17 @@ printf("About to read cbf binary file...\n");
 
 	}
 
-
-	DATA->deltat=DATA->MET[DATA->nomet]-DATA->MET[0];
-
-
 	fclose(fid);
 
-	if (DATA->ngpp>0){DATA->gpppts=calloc(DATA->ngpp,sizeof(int));}
-	if (DATA->nlai>0){DATA->laipts=calloc(DATA->nlai,sizeof(int));}
-	if (DATA->nnee>0){DATA->neepts=calloc(DATA->nnee,sizeof(int));}
-	if (DATA->nwoo>0){DATA->woopts=calloc(DATA->nwoo,sizeof(int));}
-	if (DATA->net>0){DATA->etpts=calloc(DATA->net,sizeof(int));}
-	if (DATA->newt>0){DATA->ewtpts=calloc(DATA->newt,sizeof(int));}
-	if (DATA->nband1>0){DATA->band1pts=calloc(DATA->nband1,sizeof(int));}
-	if (DATA->nband2>0){DATA->band2pts=calloc(DATA->nband2,sizeof(int));}
-	if (DATA->nband3>0){DATA->band3pts=calloc(DATA->nband3,sizeof(int));}
-	if (DATA->nband4>0){DATA->band4pts=calloc(DATA->nband4,sizeof(int));}
-	if (DATA->nsom>0){DATA->sompts=calloc(DATA->nsom,sizeof(int));}
-	if (DATA->nneeunc>0){DATA->neeuncpts=calloc(DATA->nneeunc,sizeof(int));}
-	if (DATA->nch4>0){DATA->ch4pts=calloc(DATA->nch4,sizeof(int));}       /*shuang*/
 
-	/*Deriving laipts, gpppts, neepts*/
-	int c;
-	c=0;for (n=0;n<DATA->nodays;n++){if (DATA->GPP[n]>-9998){DATA->gpppts[c]=n;c=c+1;}};
-	c=0;for (n=0;n<DATA->nodays;n++){if (DATA->LAI[n]>-9998){DATA->laipts[c]=n;c=c+1;}};
-	c=0;for (n=0;n<DATA->nodays;n++){if (DATA->NEE[n]>-9998){DATA->neepts[c]=n;c=c+1;}};
-	if (DATA->noobs>3){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->WOO[n]>-9998){DATA->woopts[c]=n;c=c+1;}}}
-
-	if (DATA->noobs>4){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->ET[n]>-9998){DATA->etpts[c]=n;c=c+1;}}}
-
-	if (DATA->noobs>5){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->EWT[n]>-9998){DATA->ewtpts[c]=n;c=c+1;}}}
-
-	if (DATA->noobs>6){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->BAND1[n]>-9998){DATA->band1pts[c]=n;c=c+1;}}}
-
-	if (DATA->noobs>7){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->BAND2[n]>-9998){DATA->band2pts[c]=n;c=c+1;}}}
-
-	if (DATA->noobs>8){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->BAND3[n]>-9998){DATA->band3pts[c]=n;c=c+1;}}}
-
-	if (DATA->noobs>9){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->BAND4[n]>-9998){DATA->band4pts[c]=n;c=c+1;}}}
-
-	if (DATA->noobs>10){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->SOM[n]>-9998){DATA->sompts[c]=n;c=c+1;}}}
-
-	/*if (DATA->noobs>11){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->NEEunc[n]>-9998){DATA->neeuncpts[c]=n;c=c+1;}}}*/
-
-	if (DATA->noobs>11){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->CH4[n]>-9998){DATA->ch4pts[c]=n;c=c+1;}}} /*shuang*/
 
 	/*deriving mean temp and mean rad*/
-
 	DATA->meantemp=0;
 	DATA->meanrad=0;
 	DATA->meanprec=0;
-
 	/*2 options:*/
 	/*1. derive mean met values based on "MET" (frfm = DATA->nomet)*/
 	/*2. prescribe user-provided mean met values (frfm = 0)*/
-
 	if (frfm==0){
 	for (n=0;n<DATA->nodays;n++){DATA->meantemp+=0.5*DATA->MET[DATA->nomet*n+1]/(double)DATA->nodays;}
 	for (n=0;n<DATA->nodays;n++){DATA->meantemp+=0.5*DATA->MET[DATA->nomet*n+2]/(double)DATA->nodays;}
@@ -397,16 +397,145 @@ printf("About to read cbf binary file...\n");
 	if (DATA->nomet>6){DATA->meanprec=metline[8];}
 	printf("Using prescribed met reference means\n");
 	}
+	printf("frfm = %i\n",frfm);
 
-	printf("frf = %i\n",frfm);
+
+        free(metline);
+        free(obsline);
+
+/*done reading standard cbf file*/}
+
+
+
+
+/*Placeholder: read netcdf fields here*/
+
+if (fileIsCDF){
+
+printf("***About to do dynamic allocation***\n");
+
+
+	DYNAMIC_DATA_MEMORY_ALLOCATION(DATA);
+
+printf("***Dynamic allocation done!***\n");
+
+
+//memcpy(DATA->parpriors,DATA->ncdf_data.PARPRIORS.values,50*sizeof(double));
+   memcpy(DATA->GPP,DATA->ncdf_data.GPP.values,DATA->nodays*sizeof(double));
+   memcpy(DATA->LAI,DATA->ncdf_data.LAI.values,DATA->nodays*sizeof(double));
+   memcpy(DATA->NEE,DATA->ncdf_data.NBE.values,DATA->nodays*sizeof(double));
+   memcpy(DATA->WOO,DATA->ncdf_data.ABGB.values,DATA->nodays*sizeof(double));
+   memcpy(DATA->ET,DATA->ncdf_data.ET.values,DATA->nodays*sizeof(double));
+   memcpy(DATA->EWT,DATA->ncdf_data.EWT.values,DATA->nodays*sizeof(double));
+   /*memcpy(DATA->BAND1,DATA->ncdf_data.BAND1.values,DATA->nodays*sizeof(double));
+   memcpy(DATA->BAND2,DATA->ncdf_data.BAND2.values,DATA->nodays*sizeof(double));
+   memcpy(DATA->BAND3,DATA->ncdf_data.BAND3.values,DATA->nodays*sizeof(double));
+   memcpy(DATA->BAND4,DATA->ncdf_data.BAND4.values,DATA->nodays*sizeof(double));
+   */
+   memcpy(DATA->SOM,DATA->ncdf_data.SOM.values,DATA->nodays*sizeof(double));
+  // memcpy(DATA->NEEunc,DATA->ncdf_data.NEE.values,DATA.nodays*sizeof(double));
+   memcpy(DATA->CH4,DATA->ncdf_data.CH4.values,DATA->nodays*sizeof(double));
+
+
+
+printf("***Memcopy from netcdf done***\n");
+
+for (n=0;n<DATA->nodays;n++){
+		if (DATA->GPP[n]>-9998){DATA->ngpp=DATA->ngpp+1;}
+                if (DATA->LAI[n]>-9998){DATA->nlai=DATA->nlai+1;}
+                if (DATA->NEE[n]>-9998){DATA->nnee=DATA->nnee+1;}
+                if (DATA->WOO[n]>-9998){DATA->nwoo=DATA->nwoo+1;}
+                if (DATA->ET[n]>-9998){DATA->net=DATA->net+1;}
+                if (DATA->EWT[n]>-9998){DATA->newt=DATA->newt+1;}
+/*              if (DATA->BAND1>-9998){DATA->nband1=DATA->nband1+1;}
+                if (DATA->BAND2>-9998){DATA->nband2=DATA->nband2+1;}
+                if (DATA->BAND3>-9998){DATA->nband3=DATA->nband3+1;}
+                if (DATA->BAND4>-9998){DATA->nband4=DATA->nband4+1;}*/
+                if (DATA->SOM[n]>-9998){DATA->nsom=DATA->nsom+1;}
+                if (DATA->CH4[n]>-9998){DATA->nch4=DATA->nch4+1;}
+/*endofloop*/} 
+
+
+	/*Populate "MET" with 9 fields*/
+	for (n=0;n<DATA->nodays;n++){
+	m=n*DATA->nomet;
+	DATA->MET[m]=DATA->ncdf_data.TIME_INDEX.values[n];
+	DATA->MET[m+1]=DATA->ncdf_data.T2M_MIN.values[n];
+	DATA->MET[m+2]=DATA->ncdf_data.T2M_MAX.values[n];
+	DATA->MET[m+3]=DATA->ncdf_data.SSRD.values[n];
+	DATA->MET[m+4]=DATA->ncdf_data.CO2.values[n];
+	DATA->MET[m+5]=DATA->ncdf_data.DOY.values[n];
+	DATA->MET[m+6]=DATA->ncdf_data.BURNED_AREA.values[n];
+	DATA->MET[m+7]=DATA->ncdf_data.VPD.values[n];
+	DATA->MET[m+8]=DATA->ncdf_data.TOTAL_PREC.values[n];
+
+	}
+
+
+
+/*Populate with mean fields*/
+DATA->meantemp = DATA->ncdf_data.T2M_MAX.reference_mean/2 + DATA->ncdf_data.T2M_MIN.reference_mean/2;
+DATA->meanrad = DATA->ncdf_data.SSRD.reference_mean;
+DATA->meanprec = DATA->ncdf_data.SSRD.reference_mean;
+
+
+
+/*Done reading netcdf*/}
+
+
+
+
+
+	DATA->deltat=DATA->MET[DATA->nomet]-DATA->MET[0];
+
+
+
+	if (DATA->ngpp>0){DATA->gpppts=calloc(DATA->ngpp,sizeof(int));}
+	if (DATA->nlai>0){DATA->laipts=calloc(DATA->nlai,sizeof(int));}
+	if (DATA->nnee>0){DATA->neepts=calloc(DATA->nnee,sizeof(int));}
+	if (DATA->nwoo>0){DATA->woopts=calloc(DATA->nwoo,sizeof(int));}
+	if (DATA->net>0){DATA->etpts=calloc(DATA->net,sizeof(int));}
+	if (DATA->newt>0){DATA->ewtpts=calloc(DATA->newt,sizeof(int));}
+	/*if (DATA->nband1>0){DATA->band1pts=calloc(DATA->nband1,sizeof(int));}
+	if (DATA->nband2>0){DATA->band2pts=calloc(DATA->nband2,sizeof(int));}
+	if (DATA->nband3>0){DATA->band3pts=calloc(DATA->nband3,sizeof(int));}
+	if (DATA->nband4>0){DATA->band4pts=calloc(DATA->nband4,sizeof(int));}
+	*/
+	if (DATA->nsom>0){DATA->sompts=calloc(DATA->nsom,sizeof(int));}
+	if (DATA->nneeunc>0){DATA->neeuncpts=calloc(DATA->nneeunc,sizeof(int));}
+	if (DATA->nch4>0){DATA->ch4pts=calloc(DATA->nch4,sizeof(int));}       /*shuang*/
+
+	/*Deriving laipts, gpppts, neepts*/
+	int c;
+	c=0;for (n=0;n<DATA->nodays;n++){if (DATA->GPP[n]>-9998){DATA->gpppts[c]=n;c=c+1;}};
+	c=0;for (n=0;n<DATA->nodays;n++){if (DATA->LAI[n]>-9998){DATA->laipts[c]=n;c=c+1;}};
+	c=0;for (n=0;n<DATA->nodays;n++){if (DATA->NEE[n]>-9998){DATA->neepts[c]=n;c=c+1;}};
+	if (DATA->noobs>3){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->WOO[n]>-9998){DATA->woopts[c]=n;c=c+1;}}}
+
+	if (DATA->noobs>4){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->ET[n]>-9998){DATA->etpts[c]=n;c=c+1;}}}
+
+	if (DATA->noobs>5){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->EWT[n]>-9998){DATA->ewtpts[c]=n;c=c+1;}}}
+/*
+	if (DATA->noobs>6){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->BAND1[n]>-9998){DATA->band1pts[c]=n;c=c+1;}}}
+
+	if (DATA->noobs>7){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->BAND2[n]>-9998){DATA->band2pts[c]=n;c=c+1;}}}
+
+	if (DATA->noobs>8){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->BAND3[n]>-9998){DATA->band3pts[c]=n;c=c+1;}}}
+
+	if (DATA->noobs>9){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->BAND4[n]>-9998){DATA->band4pts[c]=n;c=c+1;}}}
+*/
+	if (DATA->noobs>10){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->SOM[n]>-9998){DATA->sompts[c]=n;c=c+1;}}}
+
+	/*if (DATA->noobs>11){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->NEEunc[n]>-9998){DATA->neeuncpts[c]=n;c=c+1;}}}*/
+
+	if (DATA->noobs>11){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->CH4[n]>-9998){DATA->ch4pts[c]=n;c=c+1;}}} /*shuang*/
+
 
 
 	CARDAMOM_DATA_CHECKS(DATA);
 
-	free(metline);
-	free(obsline);
 
-}
+
 
 
 
