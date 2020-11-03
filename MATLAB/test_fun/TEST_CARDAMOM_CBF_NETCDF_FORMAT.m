@@ -7,6 +7,13 @@ if nargin==0
 % Step 1. Read CBF file
 CBF=CARDAMOM_READ_BINARY_FILEFORMAT('CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbf');
 end
+
+
+%Guarantees CBF.RAW available (soon to be decomissioned).
+CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,'testnetcdf.cbf')
+CBF=CARDAMOM_READ_BINARY_FILEFORMAT('testnetcdf.cbf');
+
+
 %Dimensions
 %nopars
 %nodays
@@ -23,7 +30,7 @@ fname='CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE_beta_v2.nc.cbf';delete(fname)
 end
 
 
-    if isempty(dir(fname));warning(sprintf('%s\nFile exists',fname));end
+    if isempty(dir(fname))==0;warning(sprintf('%s\nFile exists',fname));end
 
 
 
@@ -61,6 +68,15 @@ nccreate(fname,'PARPRIORS','Dimensions',{'nopars',50});
 ncwrite(fname,'PARPRIORS',CBF.PARPRIORS)
 nccreate(fname,'PARPRIORUNC','Dimensions',{'nopars'});
 ncwrite(fname,'PARPRIORUNC',CBF.PARPRIORUNC)
+
+
+%Adjust number as needed. Not urgent for field to dynamically vary
+nccreate(fname,'OTHERPRIORS','Dimensions',{'nopars',50}); 
+ncwrite(fname,'OTHERPRIORS',CBF.RAW.OTHERPRIORS)
+nccreate(fname,'OTHERPRIORSUNC','Dimensions',{'nopars'});
+ncwrite(fname,'OTHERPRIORSUNC',CBF.RAW.OTHERPRIORSUNC)
+
+
 
 
 %Other obs
@@ -130,7 +146,7 @@ ncwrite_if_exists(fname,'NBE',CBF.OBS.NBE);
 ncwriteatt(fname,'NBE','Description','Net Biospheric Exchange')
 ncwriteatt(fname,'NBE','info',CBF.OBSUNC.NBE.info)
 %Same as standard CBF variables
-ncwriteatt(fname,'NBE','Seasonal_Uncertainty',CBF.OBSUNC.NBE.seasonal_unc)
+ncwriteatt(fname,'NBE','Uncertainty',CBF.OBSUNC.NBE.seasonal_unc)
 ncwriteatt(fname,'NBE','Annual_Uncertainty',CBF.OBSUNC.NBE.annual_unc)
 
 
@@ -224,6 +240,9 @@ nccreate(fname,'DOY','Dimensions',{'time', nodays},'FillValue',-9999);
 nccreate(fname,'BURNED_AREA','Dimensions',{'time', nodays},'FillValue',-9999);
 nccreate(fname,'VPD','Dimensions',{'time',nodays},'FillValue',-9999);
 nccreate(fname,'TOTAL_PREC','Dimensions',{'time', nodays},'FillValue',-9999);
+
+
+
 
 
 
