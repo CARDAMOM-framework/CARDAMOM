@@ -170,8 +170,6 @@ CARDADATA->parmin[37]=0.1;
 CARDADATA->parmax[37]=1000;
 
 
-
-
 return 0;
 
 }

@@ -10,7 +10,7 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 int DALEC_1040(DATA DATA, double const *pars)
 {
 
-double gpppars[11],pi;
+double CE, gpppars[11],pi;
 /*C-pools, fluxes, meteorology indices*/
 int p,f,m,nxp, i;
 int n=0,nn=0;
@@ -164,8 +164,10 @@ gpppars[4]=DATA.MET[m+4];
 gpppars[5]=DATA.MET[m+5];
 gpppars[7]=DATA.MET[m+3];
 
-
-
+/*Canopy efficiency based on maximum canopy efficiency*/
+CE = pars[10] * pars[37]*(1 - exp( - LAI[n]/pars[37]))/LAI[n];
+/*placing in GPP constants*/
+constants[0]=CE;
 /*GPP*/
 FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
 /*Evapotranspiration (VPD = DATA.MET[m+7])*/
