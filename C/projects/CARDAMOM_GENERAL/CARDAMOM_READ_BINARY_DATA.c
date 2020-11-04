@@ -32,26 +32,41 @@ int StringEndsWith(const char *str, const char *suffix)
     return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
 }
 
-int CARDAMOM_DATA_CHECKS(DATA *CDATA){
+int CARDAMOM_DATA_CHECKS(DATA *DATA){
 /*General Checks*/
 printf("***CBF FILE SUMMARY***");
-printf("MODEL ID = %d\n",CDATA->ID);
-printf("No days = %d\n",CDATA->nodays);
-printf("Mean Rad = %f\n",CDATA->meanrad);
-printf("Mean Temp = %f\n",CDATA->meantemp);
-printf("Mean Prec = %f\n",CDATA->meanprec);
-printf("Latitude = %f\n",CDATA->LAT);
-printf("Number of MET drivers%d\n",CDATA->nomet);
-printf("Number of GPP obs. = %d\n",CDATA->ngpp);
-printf("Number of LAI obs. = %d\n",CDATA->nlai);
-printf("Number of NEE obs. = %d\n",CDATA->nnee);
-printf("Number of EWT obs. = %d\n",CDATA->newt); /*shuang*/
-printf("Number of CH4 obs. = %d\n",CDATA->nch4); /*shuang*/
-printf("Number of obs. = %d\n",CDATA->noobs); /*shuang*/
+printf("MODEL ID = %d\n",DATA->ID);
+printf("No days = %d\n",DATA->nodays);
+printf("Mean Rad = %f\n",DATA->meanrad);
+printf("Mean Temp = %f\n",DATA->meantemp);
+printf("Mean Prec = %f\n",DATA->meanprec);
+printf("Latitude = %f\n",DATA->LAT);
+printf("Number of MET drivers%d\n",DATA->nomet);
+printf("Number of GPP obs. = %d\n",DATA->ngpp);
+printf("Number of LAI obs. = %d\n",DATA->nlai);
+printf("Number of NEE obs. = %d\n",DATA->nnee);
+printf("Number of EWT obs. = %d\n",DATA->newt); /*shuang*/
+printf("Number of CH4 obs. = %d\n",DATA->nch4); /*shuang*/
+printf("Number of obs. = %d\n",DATA->noobs); /*shuang*/
 printf("Ecological & Dynamic Constraints options\n");
-printf("EDC likelihood option = %d\n",CDATA->EDC);
-printf("EDC diagnostics option = %d\n",CDATA->EDCDIAG);
+printf("EDC likelihood option = %d\n",DATA->EDC);
+printf("EDC diagnostics option = %d\n",DATA->EDCDIAG);
 printf("*****END OF CBF FILE SUMMARY***");
+
+
+	printf("DATA->nee_annual_unc=%2.2f\n", DATA->nee_annual_unc);
+        printf("DATA->et_annual_unc=%2.2f\n",DATA->et_annual_unc);
+        printf("DATA->nee_obs_unc=%2.2f\n",DATA->nee_obs_unc);
+        printf("DATA->et_obs_unc=%2.2f\n",DATA->et_obs_unc);
+        printf("DATA->ewt_annual_unc=%2.2f\n",DATA->ewt_annual_unc);
+        printf("DATA->ewt_obs_unc=%2.2f\n",DATA->ewt_obs_unc);
+        printf("DATA->gpp_annual_unc=%2.2f\n",DATA->gpp_annual_unc);
+        printf("DATA->gpp_obs_unc%2.2f\n",DATA->gpp_obs_unc);
+        printf("DATA->ch4_annual_unc=%2.2f\n",DATA->ch4_annual_unc);
+        printf("DATA->ch4_obs_unc=%2.2f\n",DATA->ch4_obs_unc);
+
+
+
 return 0;}
 
 int DYNAMIC_DATA_MEMORY_ALLOCATION(DATA * DATA){
@@ -168,6 +183,46 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
         DATA->ch4iav=(int)statdat[23];  
 	*/
 
+
+/*
+
+        DATA->edc_random_search=(int)statdat[10];
+        DATA->gppiav=(int)statdat[11];
+        DATA->laiiav=(int)statdat[12];
+        DATA->nee_annual_unc=statdat[13];
+        DATA->et_annual_unc=statdat[14];
+        DATA->nee_obs_unc=statdat[15];if (statdat[15]<0){DATA->nee_obs_unc=0.5;}
+        DATA->et_obs_unc=statdat[16];if (statdat[16]<0){DATA->et_obs_unc=2;}
+        DATA->ewt_annual_unc=statdat[17];
+        DATA->ewt_obs_unc=statdat[18];if (statdat[18]<0){DATA->ewt_obs_unc=50;}
+        DATA->gpp_annual_unc=statdat[19];
+        DATA->gpp_obs_unc=statdat[20];if (statdat[20]<0){DATA->gpp_obs_unc=2;}
+        DATA->et_obs_threshold=statdat[21]; if (statdat[21]<0){DATA->et_obs_threshold=0;}
+        DATA->gpp_obs_threshold=statdat[22]; if (statdat[22]<0){DATA->gpp_obs_threshold=0;}
+        DATA->ch4iav=(int)statdat[23];  
+        DATA->ch4_annual_unc=statdat[24];  
+        DATA->ch4_obs_unc=statdat[25];if (statdat[25]<0){DATA->ch4_obs_unc=0.5;}  
+        DATA->ch4_obs_threshold=statdat[26]; if (statdat[26]<0){DATA->ch4_obs_threshold=1e-5;}  
+*/
+
+
+
+
+
+	
+	/*Default values*/
+
+	if (DATA->ncdf_data.NBE.Uncertainty<0){DATA->ncdf_data.NBE.Uncertainty=0.5;}
+	if (DATA->ncdf_data.GPP.Uncertainty<0){DATA->ncdf_data.GPP.Uncertainty=2;}
+	if (DATA->ncdf_data.ET.Uncertainty<0){DATA->ncdf_data.ET.Uncertainty=2;}
+	if (DATA->ncdf_data.CH4.Uncertainty<0){DATA->ncdf_data.CH4.Uncertainty=0.5;}
+	if (DATA->ncdf_data.EWT.Uncertainty<0){DATA->ncdf_data.EWT.Uncertainty=50;}
+
+
+ if (DATA->ncdf_data.ET.Uncertainty_Threshold<0){DATA->ncdf_data.ET.Uncertainty_Threshold=0;}
+ if (DATA->ncdf_data.GPP.Uncertainty_Threshold<0){DATA->ncdf_data.GPP.Uncertainty_Threshold=0;}
+if (DATA->ncdf_data.CH4.Uncertainty_Threshold<0){DATA->ncdf_data.CH4.Uncertainty_Threshold=1e-5;}; /*TO ADDRESS: other fields use "0" threshold as default*/
+
 		
 	DATA->nee_annual_unc=DATA->ncdf_data.NBE.Annual_Uncertainty;
         DATA->et_annual_unc=DATA->ncdf_data.ET.Annual_Uncertainty;
@@ -180,12 +235,12 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
         DATA->ch4_annual_unc=DATA->ncdf_data.CH4.Annual_Uncertainty;
         DATA->ch4_obs_unc=DATA->ncdf_data.CH4.Uncertainty;
 	
-	if (DATA->ncdf_data.GPP.Uncertainty<0){DATA->gpp_obs_unc=2;}
-	if (DATA->ncdf_data.CH4.Uncertainty<0){DATA->ch4_obs_unc=0.5;}
 
-       DATA->et_obs_threshold=DATA->ncdf_data.ET.Uncertainty_Threshold; if (DATA->et_obs_threshold<0){DATA->et_obs_threshold=0;}
-       DATA->gpp_obs_threshold=DATA->ncdf_data.GPP.Uncertainty_Threshold; if (DATA->gpp_obs_threshold<0){DATA->gpp_obs_threshold=0;}
-       DATA->ch4_obs_threshold=DATA->ncdf_data.CH4.Uncertainty_Threshold; if (DATA->ch4_obs_threshold<0){DATA->ch4_obs_threshold=1e-5;}; /*TO ADDRESS: other fields use "0" threshold as default*/
+
+
+       DATA->et_obs_threshold=DATA->ncdf_data.ET.Uncertainty_Threshold;
+       DATA->gpp_obs_threshold=DATA->ncdf_data.GPP.Uncertainty_Threshold;
+       DATA->ch4_obs_threshold=DATA->ncdf_data.CH4.Uncertainty_Threshold; 
 
 
 	memcpy(DATA->parpriors,DATA->ncdf_data.PARPRIORS.values,50*sizeof(double));
@@ -476,7 +531,7 @@ for (n=0;n<DATA->nodays;n++){
 /*Populate with mean fields*/
 DATA->meantemp = DATA->ncdf_data.T2M_MAX.reference_mean/2 + DATA->ncdf_data.T2M_MIN.reference_mean/2;
 DATA->meanrad = DATA->ncdf_data.SSRD.reference_mean;
-DATA->meanprec = DATA->ncdf_data.SSRD.reference_mean;
+DATA->meanprec = DATA->ncdf_data.TOTAL_PREC.reference_mean;
 
 
 
