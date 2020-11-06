@@ -286,10 +286,10 @@ FLUXES[f+32] = POOLS[p+4]*(1-pow(1-fW*fT*fV*pars[8-1],deltat))/deltat;
 FLUXES[f+33] = POOLS[p+5]*(1-pow(1-fW*fT*fV*pars[9-1],deltat))/deltat;
 /*34 anaerobic Rh from litter*/
 //FLUXES[f+34] = POOLS[p+4]*(1-pow(1-1*fT*(1-fV)*pars[8-1],deltat))/deltat;
-FLUXES[f+34] = POOLS[p+4]*(1-pow(1-1*fT*(1-fV)*fwc*pars[8-1],deltat))/deltat;
+FLUXES[f+34] = POOLS[p+4]*(1-pow(1-fwc*fT*(1-fV)*pars[8-1],deltat))/deltat;
 /*35 anaerobic Rh from SOM*/
 //FLUXES[f+35] = POOLS[p+5]*(1-pow(1-1*fT*(1-fV)*pars[9-1],deltat))/deltat;
-FLUXES[f+35] = POOLS[p+5]*(1-pow(1-1*fT*(1-fV)*fwc*pars[9-1],deltat))/deltat;
+FLUXES[f+35] = POOLS[p+5]*(1-pow(1-fwc*fT*(1-fV)*pars[9-1],deltat))/deltat;
 /*36 Rh_CO2*/
 FLUXES[f+36] = (FLUXES[f+32]+FLUXES[f+33])*1+(FLUXES[f+34]+FLUXES[f+35])*(1-fCH4);
 /*37 Rh_CH4*/
