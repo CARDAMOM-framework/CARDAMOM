@@ -98,7 +98,11 @@ P=P+DALEC_LIKELIHOOD_NEE(D);
 if (D.ID==1010){
 	P=P+DALEC_LIKELIHOOD_CH4(D);
 	}
-/*shuang*/
+
+	if (D.ID==1011){
+	P=P+DALEC_LIKELIHOOD_CH4(D);
+	}
+/*shuang: 101010 was created for climate sensitivity test Nov2020*/
 
 double mam=0,am=0;
 
