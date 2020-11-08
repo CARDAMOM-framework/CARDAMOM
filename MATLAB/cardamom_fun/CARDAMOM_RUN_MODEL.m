@@ -80,10 +80,15 @@ if ischar(CBF);
     %met file (open for MD structure)
     cbffile=CBF;
     if OPT.MODEL.ID==0;
-   CBF=CARDAMOM_READ_BINARY_FILEFORMAT(cbffile);
+        
+        if strcmp(CBF(end-6:end),'.nc.cbf')==1
+            OPT.MODEL.ID=ncread(CBF,'ID');
+        else
+        CBF=CARDAMOM_READ_BINARY_FILEFORMAT(cbffile);
     %parameter file
     %
         OPT.MODEL.ID=CBF.ID;
+        end
     end
     %MA=CARDAMOM_MODEL_LIBRARY_OLD(CBF);
     %Model substitution:

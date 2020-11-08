@@ -174,7 +174,7 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 	DATA->gppabs=DATA->ncdf_data.GPP.gppabs;
 
 	/*soon obsolete, once dependencies removed elsewhere*/
-	DATA->edc_random_search=0;
+	DATA->edc_random_search=-9999;
         
 	/*GPP,LAI iav were never used*/
 	/*
