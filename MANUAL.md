@@ -2,6 +2,24 @@ This is the collaborative manual
 
 Need to copy in google docs manual
 
+# Submission command line functions
+#### adapted from Jupyter Notebook tutorial: cardamom_tutorial2
+
+### Command line settings
+### From command line:
+/.../CARDAMOM/C/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe /.../cbf/filename.cbf /.../cbr/filename.cbr 100000 0 200 0.001 119 1000
+
+number_iterations = "100000" # Small numbers for test, 100000000 standard run, will take a long time.
+
+printrate = "0" #
+
+samplerate = "200" # Number of output parameters = number_iterations/samplerate, generally use between 500 and 1000 output parameters
+
+minimum_step_size = ".001" # Relates to MCMC, standard is currently .001
+
+mcmcid = "119" # Current default MCMC method is 119
+
+nadapt = "1000" # MCMC setting, standard is 1000
 
 
 
