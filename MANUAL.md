@@ -8,8 +8,8 @@ Need to copy in google docs manual
 # List of Drivers
 
 ## Inputs (Model ID: 811, 821)
-|CARDAMOM Inputs|Units|
-|:-------------|:-------------|
+|CARDAMOM Inputs|Units|Longname|
+|:-------------|:-------------|:-------------|
 |'Time | [Days since Jan 01, 2001]'|
 |'min temp | [C]'|
 |'max temp | [C]'|
@@ -24,8 +24,8 @@ Need to copy in google docs manual
 ## List of Ouputs (Model ID: 811, 821)
 
 ### Pools (gC/m2, kgH2O/m2, instantaneous)
-|CARDAMOM Pools|
-|:--------|
+|CARDAMOM Pools|Longname|
+|:--------|:-------------|
 |'c_labile'|
 |'c_foliar'|
 |'c_root'|
@@ -35,8 +35,8 @@ Need to copy in google docs manual
 |'h2o_forplant'|
 
 ### Fluxes (gC/m2/day, kgH2O/m2/day, mean)
-|CARDAMOM Fluxes|
-|:--------|
+|CARDAMOM Fluxes|Longname|
+|:--------|:-------------|
 |'gppflux'|
 |'decf_tempr'|
 |'gpp_to_autoresp'|
