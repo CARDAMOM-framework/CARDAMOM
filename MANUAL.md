@@ -8,17 +8,17 @@ Need to copy in google docs manual
 # List of Drivers
 
 ## Inputs (Model ID: 811, 821)
-|CARDAMOM Inputs|
-|:-------------|
-|'Time [Days since Jan 01, 2001]'|
-|'min temp [C]'|
-|'max temp [C]'|
-|'Solar irradiance [MJ/m2/day]'|
-|'CO2 [ppm]'|
-|'Day of year'|
-|'Burned area [m2/m2]'|
-|'VPD [hPa]'|
-|'Precip. [mm/day]'|
+|CARDAMOM Inputs|Units|
+|:-------------|:-------------|
+|'Time | [Days since Jan 01, 2001]'|
+|'min temp | [C]'|
+|'max temp | [C]'|
+|'Solar irradiance | [MJ/m2/day]'|
+|'CO2 | [ppm]'|
+|'Day of year'|day|
+|'Burned area | [m2/m2]'|
+|'VPD | [hPa]'|
+|'Precip. | [mm/day]'|
 
 
 ## List of Ouputs (Model ID: 811, 821)
