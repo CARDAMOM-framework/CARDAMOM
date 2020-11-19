@@ -276,283 +276,44 @@ List and brief description of currently supported models
 Can use the COMPLEX effort to document all the models here, including some examples of the figures.
 
 
-Group
-Model ID
-Parent ID(s) if relevant
-Description
-Details (POC)
-Status 
-Low complexity
-101
-
-
-
-3-pool DALEC
-
-
-Tested
-DALEC C only
-400
-
-
-
-
-
-Bloom et al., 2016
-Published
-
-
-
-
-
-
-
-
-
-
-
-
-DALEC C + plant-available water.
-803
-
-
-
-
-
-
-
-
-804
-
-
-
-
-
-
-
-
-805
-
-
-
-
-
-
-
-
-806
-
-
-
-
-
-
-
-
-807
-
-
-
-
-
-
-
-
-808
-
-
-
-
-
-
-
-
-809
-
-
-
-
-
-
-
-
-810
-
-
-Non-binary EDCs
-
-
-Exploratory
-811
-809
-
-
-
-
-Published (Quetin et al., 2020)
-812
-813
-813 with uWUE
-
-
-
-
-813
-811
-811 with Shuang Ma’s temp fix
-
-
-Published (Bloom et al., 2020)
-820
-811
-Climate-sensitive mortality 
-
-
-
-
-821
-
-
-Ball-berry scheme
-
-
-
-
-830
-
-
-
-
-
-
-
-
-831
-
-
-
-
-
-
-
-
-840
-
-
-
-
-
-
-
-
-DALEC + PAW + PUW
-1000
-
-
-
-
-
-
-In prep. 
-1001
-1000
-1000 with max infiltration
-Paul Levine
-
-
-1002
-1000
-1000 with uWUE
-Paul Levine
-
-
-1003
-1000
-1000 with surface runoff proportional to P
-Paul Levine
-
-
-1004
-1000
-Testing new modular parameter definitions
-Anthony Bloom
-In prep.
-1005
-1000
-Boese et al, 2017 (uWUE + rad)
-Paul Levine, Yan Yang
-
-
-1006
-1002
-1002 with max infiltration
-Paul Levine
-
-
-1007
-1005
-1005 with max infiltration
-Paul Levine
-
-
-1008
-1002
-1002 with surface runoff proportional to P
-Paul Levine
-
-
-1009
-1005
-1005 with surface runoff proportional to P
-Paul Levine
-
-
-1010
-
-
-CH4 module
-Ma
-In prep.
-1020
-
-
-
-
-Norton
-In prep.
-1021
-
-
-
-
-Norton
-In prep.
-1040
-1005
-Nutrient model
-Anthony Bloom
-In prep.
-
-
-
-
-
-
-
-
-
-
-
-
-DALEC + FF
-1200
-
-
-
-
-
-
-Exploratory
+| Group                            | Model ID | Parent ID(s) if relevant                   | Description           | Details (POC)                   | Status      |
+|----------------------------------|----------|--------------------------------------------|-----------------------|---------------------------------|-------------|
+| Low complexity                   | 101      |                                            | 3-pool DALEC          |                                 | Tested      |
+| DALEC C only                     | 400      |                                            |                       | Bloom et al., 2016              | Published   |
+|                                  |          |                                            |                       |                                 |             |
+|                                  |          |                                            |                       |                                 |             |
+| DALEC C + plant-available water. | 803      |                                            |                       |                                 |             |
+| 804                              |          |                                            |                       |                                 |             |
+| 805                              |          |                                            |                       |                                 |             |
+| 806                              |          |                                            |                       |                                 |             |
+| 807                              |          |                                            |                       |                                 |             |
+| 808                              |          |                                            |                       |                                 |             |
+| 809                              |          |                                            |                       |                                 |             |
+| 810                              |          | Non-binary EDCs                            |                       | Exploratory                     |             |
+| 811                              | 809      |                                            |                       | Published (Quetin et al., 2020) |             |
+| 812                              | 813      | 813 with uWUE                              |                       |                                 |             |
+| 813                              | 811      | 811 with Shuang Ma’s temp fix              |                       | Published (Bloom et al., 2020)  |             |
+| 820                              | 811      | Climate-sensitive mortality                |                       |                                 |             |
+| 821                              |          | Ball-berry scheme                          |                       |                                 |             |
+| 830                              |          |                                            |                       |                                 |             |
+| 831                              |          |                                            |                       |                                 |             |
+| 840                              |          |                                            |                       |                                 |             |
+| DALEC + PAW + PUW                | 1000     |                                            |                       |                                 | In prep.    |
+| 1001                             | 1000     | 1000 with max infiltration                 | Paul Levine           |                                 |             |
+| 1002                             | 1000     | 1000 with uWUE                             | Paul Levine           |                                 |             |
+| 1003                             | 1000     | 1000 with surface runoff proportional to P | Paul Levine           |                                 |             |
+| 1004                             | 1000     | Testing new modular parameter definitions  | Anthony Bloom         | In prep.                        |             |
+| 1005                             | 1000     | Boese et al, 2017 (uWUE + rad)             | Paul Levine, Yan Yang |                                 |             |
+| 1006                             | 1002     | 1002 with max infiltration                 | Paul Levine           |                                 |             |
+| 1007                             | 1005     | 1005 with max infiltration                 | Paul Levine           |                                 |             |
+| 1008                             | 1002     | 1002 with surface runoff proportional to P | Paul Levine           |                                 |             |
+| 1009                             | 1005     | 1005 with surface runoff proportional to P | Paul Levine           |                                 |             |
+| 1010                             |          | CH4 module                                 | Ma                    | In prep.                        |             |
+| 1020                             |          |                                            | Norton                | In prep.                        |             |
+| 1021                             |          |                                            | Norton                | In prep.                        |             |
+| 1040                             | 1005     | Nutrient model                             | Anthony Bloom         | In prep.                        |             |
+|                                  |          |                                            |                       |                                 |             |
+| DALEC + FF                       | 1200     |                                            |                       |                                 | Exploratory |
 
 
 
