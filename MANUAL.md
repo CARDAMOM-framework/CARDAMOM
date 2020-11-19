@@ -218,7 +218,7 @@ For soil organic c turnover rate, we want equal possibilities for values spannin
 
 Left figures are showing the uniform space distributions; Middle figures are showing the log uniform space distributions, which is used in CARDAMOM MCMC; Right figures are showing the actual uniform space distributions in order to get the middle distribution;
 
-
+![image1](/images/image1_manual.png)
 
 ***Add a new dataset to CARDAMOM DATA structure***
 
