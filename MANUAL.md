@@ -3,7 +3,7 @@
 
 # CARDAMOM community collaborative manual
 
-***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, and others***
+***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, and others***  
 [If you’re making any edits, add your name here!]
 
 ## Table of Contents
@@ -11,41 +11,47 @@
 Get code from Github    2
 Github with Matlab I/O    2
 Running CARDAMOM    3
-Code summary and available platforms    3
-The CBF (CARDAMOM binary file) structure    3
-CARDAMOM_RUN_MDF    4
-Gelman-Rubin convergence criterion    4
-For matlab users    4
-CARDAMOM C user guide    5
-Make a new CBF file (Matlab)    5
-CARDAMOM C developer guide    5l
 
-Intro tips    5
-Make a new model    6
-Add more parameters to the model    6
-Add more pools to the model    7
-Define prior range for parameters and why log transformed prior range is used    7
-Add a new dataset to CARDAMOM DATA structure    8
-Make a new cost function    9
-Switches for EDCs    9
-CARDAMOM model library    10
-“Frequently asked questions” and “frequently encountered issues & solutions”    11
-Frequently asked questions (FAQs)    11
-Frequently encountered issues & solutions (FEIs…?)    12
 
 - [“Installing” CARDAMOM](#-installing--cardamom)
   * [Get code from Github](#get-code-from-github)
   * [Github with Matlab I/O](#github-with-matlab-i-o)
+  
 - [Running CARDAMOM](#running-cardamom)
+  * [Code summary and available platforms]    3
+  * [The CBF (CARDAMOM binary file) structure]    3
+  * [CARDAMOM_RUN_MDF]    4
+  * [Gelman-Rubin convergence criterion]    4
+  * [For matlab users]    4
+  
+- [CARDAMOM C user guide](#cardamom-c-user-guide)    5
+  * [Make a new CBF file (Matlab)]    5
+  
+- [CARDAMOM C developer guide](#cardamom-c-developer-guid)    5l
+  * [Intro tips]    5
+  * [Make a new model]    6
+  * [Add more parameters to the model]    6
+  * [Add more pools to the model]    7
+  * [Define prior range for parameters and why log transformed prior range is used]    7
+  * [Add a new dataset to CARDAMOM DATA structure]    8
+  * [Make a new cost function]    9
+  * [Switches for EDCs]    9
+  
+- [CARDAMOM model library](#cardamom-model-library)]    10
+
+- [“Frequently asked questions” and “frequently encountered issues & solutions”](#faq)    11
+  * [Frequently asked questions (FAQs)]    11
+  * [Frequently encountered issues & solutions (FEIs…?)]    12
+
 
 
 <a name="-installing--cardamom"/>
 ## “Installing” CARDAMOM
 
 ### Get code from Github
-Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework
-Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c
-Click on green “Code” button, and either (a) git clone with ssh (recommended), or (b) use alternative method (e.g. download zip). 
++ Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework
++ Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c
++ Click on green “Code” button, and either (a) git clone with ssh (recommended), or (b) use alternative method (e.g. download zip). 
 
 ### Github with Matlab I/O
 
@@ -53,42 +59,44 @@ Follow these steps *once*. Once you’ve successfully made it to step 6, you can
 Note: PC implementation not supported (but do add notes if you’ve managed to do this!).
 
 
-SOON TO BE REQUIRED: 
-Install homebrew (if you don’t already have it) (https://brew.sh/)
-[DETAILS AS NEEDED]
-Install netcdf library (if you don’t already have it)
-type “brew install netcdf” in terminal window (Mac), see step (1) for installing brew. 
-
-
-Anthony, Alex: setenv('CARDAMOM_NC_CONFIG_PATH','/usr/local/bin/nc-config')
-For PC: no supported solution yet… (Paul: add potential windows solution)
-Git clone repository OR unzip “CARDAMOM-master.zip” file.
-Start matlab
-Set CARDAMOM environmental variables in matlab
-To do this:
-Create or edit existing matlab startup.m file: e.g. type “edit startup.m” in matlab command window to edit new or existing startup file.
-Copy lines from CARDAMOM/MATLAB/startup_template.m into startup.m file, and adapt as instructed in startup_template.m comments.
-Save startup.m
-Make a directory called “DUMPFILES” by typing “mat” in matlab command window
-Tips: 
-Type “pwd” right after starting matlab to find out current working directory
-paths in “startup.m” should either be absolute paths, or relative to current working directory
-to avoid github issues, either (a) the current working directory needs to be outside the “CARDAMOM” folder, or equivalent github cloned folder (recommended), or (b) make a “.gitignore” file and ensure github ignores all user-made files within the “CARDAMOM” folder. 
-Quit & restart matlab 
-Type “which startup” in matlab command window 
-check matlab is pointing at correct startup.m file
-In case you encounter issues, more info here (https://www.mathworks.com/help/matlab/ref/startup.html)
-Run CARDAMOM_DEMO.
-This is a test script to ensure all works well. If you get to the end of the demo script, then you’ve got full CARDAMOM functionality! 
-Type “CARDAMOM_DEMO” in matlab command window
+### SOON TO BE REQUIRED: 
+1. Install homebrew (if you don’t already have it) (https://brew.sh/)
+  [DETAILS AS NEEDED]
+    * Install netcdf library (if you don’t already have it)
+    * type “brew install netcdf” in terminal window (Mac), see step (1) for installing brew. 
+    * Anthony, Alex: setenv('CARDAMOM_NC_CONFIG_PATH','/usr/local/bin/nc-config')
+    * For PC: no supported solution yet… (Paul: add potential windows solution)
+2. Git clone repository OR unzip “CARDAMOM-master.zip” file.
+3. Start matlab
+4. Set CARDAMOM environmental variables in matlab
+    * To do this:
+        - Create or edit existing matlab startup.m file: e.g. type “edit startup.m” in matlab command window to edit new or existing startup file.
+        - Copy lines from CARDAMOM/MATLAB/startup_template.m into startup.m file, and adapt as instructed in startup_template.m comments.
+        - Save startup.m
+        - Make a directory called “DUMPFILES” by typing “mat” in matlab command window
+    * Tips: 
+        - Type “pwd” right after starting matlab to find out current working directory
+        - paths in “startup.m” should either be absolute paths, or relative to current working directory
+        - to avoid github issues, either:
+            + the current working directory needs to be outside the “CARDAMOM” folder, or equivalent github cloned folder (recommended)
+            + (b) make a “.gitignore” file and ensure github ignores all user-made files within the “CARDAMOM” folder. 
+5. Quit & restart matlab 
+6. Type “which startup” in matlab command window 
+    * check matlab is pointing at correct startup.m file
+    * In case you encounter issues, more info here (https://www.mathworks.com/help/matlab/ref/startup.html)
+7. Run CARDAMOM_DEMO.
+    * This is a test script to ensure all works well. If you get to the end of the demo script, then you’ve got full CARDAMOM functionality! 
+    * Type “CARDAMOM_DEMO” in matlab command window
 
     
 What happens when you run CARDAMOM_DEMO: CARDAMOM_DEMO.m will locally compile the CARDAMOM C code (using “gcc” C compiler). CARDAMOM (called from within matlab) will then show some attempts to find a starting point with probability > 0, and will then start accepting/rejecting parameter samples (note: this is a shorter-than-usual run only for demo purposes). The CARDAMOM_DEMO script will then make a figure with some of the retrieved parameter results. Completion of the CARDAMOM script means all components of CARDAMOM are operational.
 
 Notes:
-This works great on macs and (theoretically) on linux. I have no idea what happens on Windows.
-Please report questions and issues encountered in FAQ & FEI section below
-Works with Matlab 2017b and later versions. Compatibility with earlier versions is likely straightforward.
+    * This works great on macs and (theoretically) on linux. I have no idea what happens on Windows.
+    * Please report questions and issues encountered in FAQ & FEI section below
+    * Works with Matlab 2017b and later versions. Compatibility with earlier versions is likely straightforward.
+
+
 
 <a name="running-cardamom"/>
 ## Running CARDAMOM
@@ -120,7 +128,7 @@ CBR=cardamomfun_combine_parameter_chains(CBR);
 [gr]=cardamomfun_convergence_tests(CBF,CBR,[1,1,1])
 
 
-***Saving output at runtime***
+### Saving output at runtime
 
 To have CARDAMOM_RUN_MODEL routine save full output at runtime (to avoid having to run model again for post processing):
 
@@ -138,14 +146,14 @@ Make sure to pass string or cell for cbffilename.
 
 
 
-***The CBF (CARDAMOM binary file) structure (and eventually)***
+### The CBF (CARDAMOM binary file) structure (and eventually)
  
 We will soon transition to nectdf
 
 
 
-
-***CARDAMOM C user guide***
+<a name="cardamom-c-user-guide"/>
+## CARDAMOM C user guide
 Make a new CBF file (Matlab)
 Step 1. Copy an existing CBF structure (CBF=CBFtemplate), OR load an existing file e.g. CBF=CARDAMOM_READ_BINARY_FILEFORMAT(‘cbffile.cbf’));
 
@@ -158,8 +166,8 @@ Step 4. Set “CBF.LAT” to equal local latitude (in degrees)
 Step 5. Add observations from new locations
 Use -9999 for any missing observations in CBF.OBS.* fields.
 
-
-***CARDAMOM C developer guide***
+<a name="cardamom-c-developer-guid"/>
+## CARDAMOM C developer guide
 
 
 Intro tips
@@ -225,7 +233,7 @@ Left figures are showing the uniform space distributions; Middle figures are sho
 
 ![image1](/images/image1_manual.png)
 
-***Add a new dataset to CARDAMOM DATA structure***
+### Add a new dataset to CARDAMOM DATA structure
 
 Example: NBE uncertainty, CH4, etc.
 
@@ -273,8 +281,8 @@ Switches for EDCs
 Switches CBF.OTHERPRIORS (Anthony provide more detail)
 
 
-
-CARDAMOM model library
+<a name="cardamom-model-library"/>
+## CARDAMOM model library
 
 List and brief description of currently supported models
 
@@ -320,12 +328,43 @@ Can use the COMPLEX effort to document all the models here, including some examp
 |                                  |          |                                            |                       |                                 |             |
 | DALEC + FF                       | 1200     |                                            |                       |                                 | Exploratory |
 
+# Summary of Models
+
+|Model ID|Model Name|Description|
+|:--------|:-------------|:---------|
+|DALEC_1000|||
+|DALEC_1003|||
+|DALEC_1004|||
+|DALEC_1004_obs|||
+|DALEC_101|||
+|DALEC_1010|||
+|DALEC_1200|||
+|DALEC_400|||
+|DALEC_410|||
+|DALEC_803|||
+|DALEC_804|||
+|DALEC_805|||
+|DALEC_806|||
+|DALEC_807|||
+|DALEC_808|||
+|DALEC_809|||
+|DALEC_810|||
+|DALEC_811|||
+|DALEC_812|||
+|DALEC_813|||
+|DALEC_820|||
+|DALEC_821|||
+|DALEC_830|||
+|DALEC_831|||
+|DALEC_840|||
 
 
-“Frequently asked questions” and “frequently encountered issues & solutions”
+
+<a name="faq"/>
+## “Frequently asked questions” and “frequently encountered issues & solutions”
 
 
-Frequently asked questions (FAQs)
+### Frequently asked questions (FAQs)
 
 What’s the difference between log-uniform and uniform distributions?
 See here https://en.wikipedia.org/wiki/Reciprocal_distribution, and example for 0.01-100 below:
@@ -343,7 +382,7 @@ Sampling 0.01-100 range with log-uniform distribution
 25% probability for a value between 10-100
 
 
-Frequently encountered issues & solutions (FEIs…?)
+### Frequently encountered issues & solutions (FEIs…?)
 
 CARDAMOM_RUN_MODEL.c
 Error type:
@@ -442,32 +481,3 @@ nadapt = "1000" # MCMC setting, standard is 1000
 |'et'|
 |'runoff'|
 
-# Summary of Models
-
-|Model ID|Model Name|Description|
-|:--------|:-------------|:---------|
-|DALEC_1000|||
-|DALEC_1003|||
-|DALEC_1004|||
-|DALEC_1004_obs|||
-|DALEC_101|||
-|DALEC_1010|||
-|DALEC_1200|||
-|DALEC_400|||
-|DALEC_410|||
-|DALEC_803|||
-|DALEC_804|||
-|DALEC_805|||
-|DALEC_806|||
-|DALEC_807|||
-|DALEC_808|||
-|DALEC_809|||
-|DALEC_810|||
-|DALEC_811|||
-|DALEC_812|||
-|DALEC_813|||
-|DALEC_820|||
-|DALEC_821|||
-|DALEC_830|||
-|DALEC_831|||
-|DALEC_840|||
