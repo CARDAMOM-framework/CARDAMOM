@@ -1,11 +1,12 @@
 
 
-***CARDAMOM community collaborative manual***
 
+# CARDAMOM community collaborative manual
 
-Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, and others [If you’re making any edits, add your name here!]
+***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, and others***
+[If you’re making any edits, add your name here!]
 
-
+## Table of Contents
 “Installing” CARDAMOM    2
 Get code from Github    2
 Github with Matlab I/O    2
@@ -32,17 +33,21 @@ CARDAMOM model library    10
 Frequently asked questions (FAQs)    11
 Frequently encountered issues & solutions (FEIs…?)    12
 
+- [“Installing” CARDAMOM](#-installing--cardamom)
+  * [Get code from Github](#get-code-from-github)
+  * [Github with Matlab I/O](#github-with-matlab-i-o)
+- [Running CARDAMOM](#running-cardamom)
 
 
+<a name="-installing--cardamom"/>
+## “Installing” CARDAMOM
 
-***“Installing” CARDAMOM
-
-***Get code from Github***
+### Get code from Github
 Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework
 Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c
 Click on green “Code” button, and either (a) git clone with ssh (recommended), or (b) use alternative method (e.g. download zip). 
 
-***Github with Matlab I/O***
+### Github with Matlab I/O
 
 Follow these steps *once*. Once you’ve successfully made it to step 6, you can then start matlab and you’re ready to use all CARDAMOM routines without any further action.
 Note: PC implementation not supported (but do add notes if you’ve managed to do this!).
@@ -85,14 +90,14 @@ This works great on macs and (theoretically) on linux. I have no idea what happe
 Please report questions and issues encountered in FAQ & FEI section below
 Works with Matlab 2017b and later versions. Compatibility with earlier versions is likely straightforward.
 
-
-***Running CARDAMOM***
-***Code summary and available platforms***
+<a name="running-cardamom"/>
+## Running CARDAMOM
+### Code summary and available platforms
 
 Currently CARDAMOM wrapper scripts are generally written in matlab and python. Code availability and description across platforms is on a case-by-case basis. We assume (and maybe eventually strive for?) all function names are preserved across matlab/python/other platforms. 
 
 
-***CARDAMOM_RUN_MDF***
+### CARDAMOM_RUN_MDF
 
 CBR = CARDAMOM_RUN_MDF(CBF,MCO) 
 
