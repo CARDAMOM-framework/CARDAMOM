@@ -6,47 +6,42 @@
 ***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, and others***  
 [If you’re making any edits, add your name here!]
 
+
 ## Table of Contents
-“Installing” CARDAMOM    2
-Get code from Github    2
-Github with Matlab I/O    2
-Running CARDAMOM    3
-
-
 - [“Installing” CARDAMOM](#-installing--cardamom)
   * [Get code from Github](#get-code-from-github)
   * [Github with Matlab I/O](#github-with-matlab-i-o)
   
 - [Running CARDAMOM](#running-cardamom)
-  * [Code summary and available platforms]    3
-  * [The CBF (CARDAMOM binary file) structure]    3
-  * [CARDAMOM_RUN_MDF]    4
-  * [Gelman-Rubin convergence criterion]    4
-  * [For matlab users]    4
+  * [Code summary and available platforms]
+  * [The CBF (CARDAMOM binary file) structure]
+  * [CARDAMOM_RUN_MDF]
+  * [Gelman-Rubin convergence criterion]
+  * [For matlab users]
   
-- [CARDAMOM C user guide](#cardamom-c-user-guide)    5
-  * [Make a new CBF file (Matlab)]    5
+- [CARDAMOM C user guide](#cardamom-c-user-guide)
+  * [Make a new CBF file (Matlab)]
   
-- [CARDAMOM C developer guide](#cardamom-c-developer-guid)    5l
-  * [Intro tips]    5
-  * [Make a new model]    6
-  * [Add more parameters to the model]    6
-  * [Add more pools to the model]    7
-  * [Define prior range for parameters and why log transformed prior range is used]    7
-  * [Add a new dataset to CARDAMOM DATA structure]    8
-  * [Make a new cost function]    9
-  * [Switches for EDCs]    9
+- [CARDAMOM C developer guide](#cardamom-c-developer-guid)
+  * [Intro tips]
+  * [Make a new model]
+  * [Add more parameters to the model]
+  * [Add more pools to the model]
+  * [Define prior range for parameters and why log transformed prior range is used]
+  * [Add a new dataset to CARDAMOM DATA structure]
+  * [Make a new cost function]
+  * [Switches for EDCs]
   
-- [CARDAMOM model library](#cardamom-model-library)]    10
+- [CARDAMOM model library](#cardamom-model-library)]
 
-- [“Frequently asked questions” and “frequently encountered issues & solutions”](#faq)    11
-  * [Frequently asked questions (FAQs)]    11
-  * [Frequently encountered issues & solutions (FEIs…?)]    12
+- [“Frequently asked questions” and “frequently encountered issues & solutions”](#faq)
+  * [Frequently asked questions (FAQs)]
+  * [Frequently encountered issues & solutions (FEIs…?)]
 
 
 
-<a name="-installing--cardamom"/>
-## “Installing” CARDAMOM
+
+## “Installing” CARDAMOM <a name="-installing--cardamom"/>
 
 ### Get code from Github
 + Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework
@@ -98,8 +93,8 @@ Notes:
 
 
 
-<a name="running-cardamom"/>
-## Running CARDAMOM
+
+## Running CARDAMOM <a name="running-cardamom"/>
 ### Code summary and available platforms
 
 Currently CARDAMOM wrapper scripts are generally written in matlab and python. Code availability and description across platforms is on a case-by-case basis. We assume (and maybe eventually strive for?) all function names are preserved across matlab/python/other platforms. 
@@ -109,13 +104,13 @@ Currently CARDAMOM wrapper scripts are generally written in matlab and python. C
 
 CBR = CARDAMOM_RUN_MDF(CBF,MCO) 
 
-Recommended MCMC configurations 
-Sample 10^5 iterations (MCO.niterations=1e5;) for code testing purposes (e.g. CARDAMOM_DEMO)
-Sample 10^7 iterations (MCO.niterations=1e7;) for exploratory runs
-Sample 10^8 iterations (MCO.niterations=1e8;) for final (e.g. publication) runs.
+*Recommended MCMC configurations 
+    * Sample 10^5 iterations (MCO.niterations=1e5;) for code testing purposes (e.g. CARDAMOM_DEMO)
+    * Sample 10^7 iterations (MCO.niterations=1e7;) for exploratory runs
+    * Sample 10^8 iterations (MCO.niterations=1e8;) for final (e.g. publication) runs.
 
 
-Gelman-Rubin convergence criterion
+*Gelman-Rubin convergence criterion
 Convergence across all parameters is considered adequate for a Gelman-Rubin convergence criterion of <1.2 or <1.1 across all parameter histograms.
 
 For matlab users
@@ -152,50 +147,50 @@ We will soon transition to nectdf
 
 
 
-<a name="cardamom-c-user-guide"/>
-## CARDAMOM C user guide
-Make a new CBF file (Matlab)
-Step 1. Copy an existing CBF structure (CBF=CBFtemplate), OR load an existing file e.g. CBF=CARDAMOM_READ_BINARY_FILEFORMAT(‘cbffile.cbf’));
 
-Step 2. clear observations CBF=cardamomfun_clear_cbf_obs(CBF);
+## CARDAMOM C user guide <a name="cardamom-c-user-guide"/>
+Make a new CBF file (Matlab). 
+Step 1. Copy an existing CBF structure (CBF=CBFtemplate), OR load an existing file e.g. CBF=CARDAMOM_READ_BINARY_FILEFORMAT(‘cbffile.cbf’));  
 
-Step 3. Replace all CBF.MET with new MET datasets
-Add zeros if there are no fires
-Step 4. Set “CBF.LAT” to equal local latitude (in degrees)
+Step 2. clear observations CBF=cardamomfun_clear_cbf_obs(CBF);  
 
-Step 5. Add observations from new locations
-Use -9999 for any missing observations in CBF.OBS.* fields.
+Step 3. Replace all CBF.MET with new MET datasets. 
+Add zeros if there are no fires. 
+Step 4. Set “CBF.LAT” to equal local latitude (in degrees). 
 
-<a name="cardamom-c-developer-guid"/>
-## CARDAMOM C developer guide
+Step 5. Add observations from new locations. 
+Use -9999 for any missing observations in CBF.OBS.* fields.  
 
 
-Intro tips
-Before doing any of the following, either git branch and/or backup your C code (!!!)
-Regularly & frequently compile (e.g. CARDAMOM_COMPILE) when making any changes.
+## CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/>
 
 
-Make a new model
+Intro tips. 
+Before doing any of the following, either git branch and/or backup your C code (!!!). 
+Regularly & frequently compile (e.g. CARDAMOM_COMPILE) when making any changes.  
 
-Making a new model ID in CARDAMOM (e.g. ID=830), based on original model (e.g. ID=811). To do this:
 
-Step 1. Open C/projects/CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c and create new model identification information (e.g. ID = 830).
+*Make a new model. 
 
-Step 2. make folder in projects/CARDAMOM_MODELS/DALEC/DALEC_830 (if copied, open all files in folder and rename all instances of e.g. ”811" to “830”).
+Making a new model ID in CARDAMOM (e.g. ID=830), based on original model (e.g. ID=811). To do this:  
 
-Tips for step 2
-copy every instance of DALEC_811 and name them DALEC_830 
-You can use “CARDAMOM_COMPILE” in matlab, to see if the code compiles OK.
+Step 1. Open C/projects/CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c and create new model identification information (e.g. ID = 830).  
+
+Step 2. make folder in projects/CARDAMOM_MODELS/DALEC/DALEC_830 (if copied, open all files in folder and rename all instances of e.g. ”811" to “830”).  
+
+Tips for step 2. 
+copy every instance of DALEC_811 and name them DALEC_830. 
+You can use “CARDAMOM_COMPILE” in matlab, to see if the code compiles OK.  
  if the above works without issue, then you should be able to change a CBF.ID value to CBF.ID=830 and the model will run (e.g. with CARDAMOM_RUN_MODEL) without issue!
  Once you’ve successfully replicated CBF.ID=811 to CBF.ID=830, you can then make model structure changes in DALEC_830.c
  Keep using “CARDAMOM_COMPILE” every so often (in matlab, and equivalent function elsewhere) to see if your new code compiles OK.
 
-For matlab users
-Open CARDAMOM_RUN_MODEL.m and add the new model ID to the appropriate “if” statement (e.g. if CBF.ID==1000 || CBF.ID==1001;)
+For matlab users. 
+Open CARDAMOM_RUN_MODEL.m and add the new model ID to the appropriate “if” statement (e.g. if CBF.ID==1000 || CBF.ID==1001;). 
 
 
 
-Add more parameters to the model
+#### Add more parameters to the model. 
 
 Step 1. In the folder titled C/projects/CARDAMOM_MODELS/DALEC/DALEC_*** (where *** is the ID for your new model), open MODEL_INFO_***.c, and change “DALECmodel.nopars” (e.g. from “33” to “35”)
 
@@ -281,8 +276,8 @@ Switches for EDCs
 Switches CBF.OTHERPRIORS (Anthony provide more detail)
 
 
-<a name="cardamom-model-library"/>
-## CARDAMOM model library
+
+## CARDAMOM model library <a name="cardamom-model-library"/>
 
 List and brief description of currently supported models
 
@@ -328,7 +323,7 @@ Can use the COMPLEX effort to document all the models here, including some examp
 |                                  |          |                                            |                       |                                 |             |
 | DALEC + FF                       | 1200     |                                            |                       |                                 | Exploratory |
 
-# Summary of Models
+### Summary of Models
 
 |Model ID|Model Name|Description|
 |:--------|:-------------|:---------|
@@ -360,8 +355,8 @@ Can use the COMPLEX effort to document all the models here, including some examp
 
 
 
-<a name="faq"/>
-## “Frequently asked questions” and “frequently encountered issues & solutions”
+
+## “Frequently asked questions” and “frequently encountered issues & solutions” <a name="faq"/>
 
 
 ### Frequently asked questions (FAQs)
@@ -370,16 +365,16 @@ What’s the difference between log-uniform and uniform distributions?
 See here https://en.wikipedia.org/wiki/Reciprocal_distribution, and example for 0.01-100 below:
 
 Sampling 0.01-100 range with uniform distribution
-~25% probability for a value between 0-25
-~25% probability for a value between 25-50
-~25% probability for a value between 50-75
-~25% probability for a value between 75-100
+    * ~25% probability for a value between 0-25
+    * ~25% probability for a value between 25-50
+    * ~25% probability for a value between 50-75
+    * ~25% probability for a value between 75-100
  
 Sampling 0.01-100 range with log-uniform distribution
-25% probability for a value between 0.01 – 0.1
-25% probability for a value between 0.1-1
-25% probability for a value between 1-10
-25% probability for a value between 10-100
+    * 25% probability for a value between 0.01 – 0.1
+    * 25% probability for a value between 0.1-1
+    * 25% probability for a value between 1-10
+    * 25% probability for a value between 10-100
 
 
 ### Frequently encountered issues & solutions (FEIs…?)
