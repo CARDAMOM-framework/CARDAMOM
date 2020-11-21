@@ -432,33 +432,35 @@ Can use the COMPLEX effort to document all the models here, including some examp
 
 ### Frequently asked questions (FAQs)
 
-What’s the difference between log-uniform and uniform distributions?
-See here https://en.wikipedia.org/wiki/Reciprocal_distribution, and example for 0.01-100 below:
+#### What’s the difference between log-uniform and uniform distributions?
++ See here https://en.wikipedia.org/wiki/Reciprocal_distribution, and example for 0.01-100 below:
 
 Sampling 0.01-100 range with uniform distribution
-    * ~25% probability for a value between 0-25
-    * ~25% probability for a value between 25-50
-    * ~25% probability for a value between 50-75
-    * ~25% probability for a value between 75-100
++ ~25% probability for a value between 0-25
++ ~25% probability for a value between 25-50
++ ~25% probability for a value between 50-75
++ ~25% probability for a value between 75-100
  
 Sampling 0.01-100 range with log-uniform distribution
-    * 25% probability for a value between 0.01 – 0.1
-    * 25% probability for a value between 0.1-1
-    * 25% probability for a value between 1-10
-    * 25% probability for a value between 10-100
++ 25% probability for a value between 0.01 – 0.1
++ 25% probability for a value between 0.1-1
++ 25% probability for a value between 1-10
++ 25% probability for a value between 10-100
 
 
 ### Frequently encountered issues & solutions (FEIs…?)
 
-CARDAMOM_RUN_MODEL.c
-Error type:
+CARDAMOM_RUN_MODEL.c\
+Error type:\
 
-CARDAMOM chain gets stuck on “inf” values or “nan” values
-Check for zero values in observations with log-normal cost functions [ADD DETAILS HERE]
+CARDAMOM chain gets stuck on “inf” values or “nan” values\
+Check for zero values in observations with log-normal cost functions [ADD DETAILS HERE]\
 
 
 If CARDAMOM_RUN_MODEL gives you\
+```matlab
 ERROR! Execution of CARDAMOM_RUN_MODEL.exe failed, entering keyboard mode
+```
 Then it is possible that the cbf and/or cbr file names have too many characters (current limit is 1000 character maximum, submit issue on github if you need it longer for some reason)
 
 
