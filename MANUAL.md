@@ -19,6 +19,7 @@
   * [CARDAMOM_RUN_MDF]
   * [Gelman-Rubin convergence criterion]
   * [For matlab users]
+
   
 - [CARDAMOM C user guide](#cardamom-c-user-guide)
   * [Make a new CBF file (Matlab)]
@@ -105,7 +106,7 @@ Notes:
 
 Summary of tools to interact with CARDAMOM using python. Read and write of binary files. Conversion of outputs (parameters, pools, fluxes) to netcdf. Additional functionality in summarizing point runs into a netcdf map of results.
 
-See tutorials
+See tutorials (PYTHON/tutorials)
 + Tutorial 1 - *description* - path:
 + Tutorial 2 - *description* - path:
 
