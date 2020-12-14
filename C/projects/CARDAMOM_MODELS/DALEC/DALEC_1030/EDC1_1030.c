@@ -1,5 +1,5 @@
 #pragma once
-int EDC1_1000(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC1_1030(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
 /*EDCD=EDCD2;*/

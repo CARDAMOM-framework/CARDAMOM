@@ -8,7 +8,7 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1000(DATA *CARDADATA)
+int PARS_INFO_1030(DATA *CARDADATA)
 {
 
 /*Decomposition rate*/
@@ -158,6 +158,10 @@ CARDADATA->parmax[34]=100000;
 /*PUW pool*/
 CARDADATA->parmin[35]=1;
 CARDADATA->parmax[35]=10000;
+
+/*Reference VPD for Leuning et al, 1995 eq. 7*/
+CARDADATA->parmin[36]=1;
+CARDADATA->parmax[36]=10000;
 
 
 return 0;

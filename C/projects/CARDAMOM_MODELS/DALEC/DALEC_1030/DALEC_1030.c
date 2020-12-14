@@ -6,7 +6,7 @@
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
-int DALEC_1000(DATA DATA, double const *pars)
+int DALEC_1030(DATA DATA, double const *pars)
 {
 
 double gpppars[11],pi;
@@ -166,7 +166,7 @@ gpppars[7]=DATA.MET[m+3];
 
 
 /*GPP*/
-FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
+FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1)*(1/(1+DATA.MET[m+7]/pars[36]));
 /*Evapotranspiration (VPD = DATA.MET[m+7])*/
 FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/

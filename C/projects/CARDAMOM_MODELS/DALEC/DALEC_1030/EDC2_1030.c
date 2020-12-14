@@ -8,7 +8,7 @@
 #include "stdio.h"
 
 
-int EDC2_1000(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC2_1030(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
 /*Extract DALEC model here*/
