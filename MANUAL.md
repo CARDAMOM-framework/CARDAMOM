@@ -106,9 +106,20 @@ Notes:
 
 Summary of tools to interact with CARDAMOM using python. Read and write of binary files. Conversion of outputs (parameters, pools, fluxes) to netcdf. Additional functionality in summarizing point runs into a netcdf map of results.
 
-See tutorials (PYTHON/tutorials)
-+ Tutorial 1 - *description* - path:
-+ Tutorial 2 - *description* - path:
+See tutorials (PYTHON/tutorials)\
+- [Tutorial 1](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/PYTHON/tutorials/cardamom_tutorial1.ipynb):\
+Description of input file (.cbf) and how to open/view file. Open and view parameter output from assimilation runs (.cbr). Open and view pools/fluxes from forward run (.bin).
+
+- [Tutorial 2](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/PYTHON/tutorials/cardamom_tutorial2.ipynb):\
+This tutorial will show the basic set up to run a CARDAMOM assimilation and forward run from the command line. This is set up for mac/linux.\n
+
+    * Basic Steps:
+    * Download/git-clone a copy of CARDAMOM
+    * Compile the c-code of CARDAMOM (make sure to do this after any changes)
+    * Run compiled file for assimilation with a pointer towards the input (.cbf) and parameters (.cbr) locations.
+    * With a parameters file, run a compiled file for a forward run to retrieve the outputs of your parameter ensemble. Point required for outputs (.bin).
+    * Common practice is to organize input, parameter and output files in: topfolder/cbf/.cbf topfolder/cbr/.cbr topfolder/output/*.bin
+
 
 |Filepath|Description|
 |:--------|:-------------|
@@ -363,7 +374,43 @@ Can use the COMPLEX effort to document all the models here, including some examp
 |                                  |          |                                            |                       |                                 |             |
 | DALEC + FF                       | 1200     |                                            |                       |                                 | Exploratory |
 
+### Example List of Parameters Optimized in CARDAMOM
 
+| Shortname | Codename                                                                       | Units | Range |
+|-----------|--------------------------------------------------------------------------------|-------|-------|
+|           | Decomposition rate                                                             |       |       |
+|           | Fraction of GPP respired                                                       |       |       |
+|           | Fraction of (1-fgpp) to foliage                                                |       |       |
+|           | Fraction of (1-fgpp) to roots                                                  |       |       |
+|           | Leaf Lifespan                                                                  |       |       |
+|           | TOR wood* - 1% loss per year value                                             |       |       |
+|           | TOR roots                                                                      |       |       |
+|           | TOR litter                                                                     |       |       |
+|           | TOR SOM                                                                        |       |       |
+|           | Temp factor* = Q10 = 1.2-1.6                                                   |       |       |
+|           | Canopy Efficiency                                                              |       |       |
+|           | Bday                                                                           |       |       |
+|           | Fraction to Clab                                                               |       |       |
+|           | Clab Release period                                                            |       |       |
+|           | Fday                                                                           |       |       |
+|           | Leaf fall period                                                               |       |       |
+|           | LMCA                                                                           |       |       |
+|           | C labile                                                                       |       |       |
+|           | C foliar                                                                       |       |       |
+|           | C roots                                                                        |       |       |
+|           | C_wood                                                                         |       |       |
+|           | C litter                                                                       |       |       |
+|           | C_som                                                                          |       |       |
+|           | IWUE: GPP*VPD/ET: gC/kgH2o *hPa                                                |       |       |
+|           | Runoff focal point (~maximum soil storage capacity x 4)                        |       |       |
+|           | "Wilting point"                                                                |       |       |
+|           | "Bucket at t0"                                                                 |       |       |
+|           | Foliar biomass CF                                                              |       |       |
+|           | "Ligneous" biomass CF".                                                        |       |       |
+|           | DOM CF".                                                                       |       |       |
+|           | Resilience factor (since transfer to litter is represented as (1-pars[30])) ". |       |       |
+|           | Lab pool lifespan                                                              |       |       |
+|           | Moisture factor                                                                |       |       |
 
 ## List of Drivers <a name="list-of-drivers"/>
 
