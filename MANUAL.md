@@ -36,10 +36,6 @@
 - [Running CARDAMOM in parallel](#submission-command-line)
 
 
-- [List of Drivers](#list-of-drivers)
-  * [Inputs (Model ID: 811, 821)]
-  * [List of Ouputs (Model ID: 811, 821)]
-
 - [“Frequently asked questions” and “frequently encountered issues & solutions”](#faq)
   * [Frequently asked questions (FAQs)]
   * [Frequently encountered issues & solutions (FEIs…?)]
@@ -64,14 +60,12 @@
 * Git clone repository OR unzip “CARDAMOM-master.zip” file.
 
 
->*SOON TO BE REQUIRED:* 
->+ Install homebrew (if you don’t already have it) (https://brew.sh/)
->  [DETAILS AS NEEDED]
->    * Install netcdf library (if you don’t already have it)
->    * type “brew install netcdf” in terminal window (Mac), see step (1) for installing brew. 
->    * Anthony, Alex: setenv('CARDAMOM_NC_CONFIG_PATH','/usr/local/bin/nc-config')
->    * For PC: no supported solution yet… (Paul: add potential windows solution)
-
+*SOON TO BE REQUIRED:* 
++ *Install homebrew (if you don’t already have it) (https://brew.sh/)[DETAILS AS NEEDED]*
+    * *Install netcdf library (if you don’t already have it)*
+    * *type “brew install netcdf” in terminal window (Mac), see step (1) for installing brew. *
+    * *Anthony, Alex: setenv('CARDAMOM_NC_CONFIG_PATH','/usr/local/bin/nc-config')*
+    * *For PC: no supported solution yet… (Paul: add potential windows solution)*
 
 + Demos below will compile CARDAMOM and run short assimilation runs and forward runs for testing. There are options in both Python and Matlab. Check Appendix for additional tools written in Matlab and Python.
 
@@ -148,13 +142,13 @@ This section outlines setting up CARDAMOM runs now that it is downloaded and tes
 
 Running CARDAMOM consists of running an assimilation where CARDAMOM is fed drivers (for the model chosen) and observations (to form constraints with the cost function) throught the *.cbf file* and iterates through the MCMC to produce a set of optimized parameters (the *.cbr file* output). These inputs and parameters are then combined in a final forward run to produce output files (*.bin files*) for fluxes, pools, edc states, and probabilities. Depicted in Figure below.
 
-![cardamom_run](/images/CARDAMOM_RUN.png)
+![cardamom_run](/images/CARDAMOM_RUN.png)\
 
 
 To test for convergence between multiple runs started from random sets of parameters (chains), the Gelman-Rubin convergence criterion is often used.
 
->*Gelman-Rubin convergence criterion*
->>Convergence across all parameters is considered adequate for a Gelman-Rubin convergence criterion of <1.2 or <1.1 across all parameter histograms.
+*Gelman-Rubin convergence criterion*
+Convergence across all parameters is considered adequate for a Gelman-Rubin convergence criterion of <1.2 or <1.1 across all parameter histograms.
 
 ### Step 1: CARDAMOM_MDF
 
@@ -166,11 +160,11 @@ These are the assimilation runs for CARDAMOM where repeated iterations optimize 
 /<cardamomfolder>/CARDAMOM/C/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe /<outputfolder>/cbf/<cbffilename>.cbf /<outputfolder>/cbr/<cbrfilename>.cbr 100000 0 200 0.001 119 1000
 ```
 
->*for Matlab Users*
+*for Matlab Users*
 ```matlab
 CBR = CARDAMOM_RUN_MDF(CBF,MCO)
 ```
->>Here’s an example matlab code for (a) running multiple chains, and (b) testing convergence between chains.
+Here’s an example matlab code for (a) running multiple chains, and (b) testing convergence between chains.
 
 ```matlab
 MCO.niterations=1e7;
@@ -179,8 +173,8 @@ CBR=cardamomfun_combine_parameter_chains(CBR);\
 [gr]=cardamomfun_convergence_tests(CBF,CBR,[1,1,1])\
 ```
 
->*for Python Users*
->>see Tutorial 2 above
+*for Python Users*
+see Tutorial 2 above
 
 >*Recommended MCMC configurations* 
 >>+ Sample 10^5 iterations (MCO.niterations=1e5;) for code testing purposes (e.g. CARDAMOM_DEMO)
@@ -242,16 +236,16 @@ The CBF file contains information on the model's driving meterology (see Appendi
 * rc_random_search
 * nodays
 
-> *Example Meteorological fields, see Appendix: Standard Inputs for variables and units*
->>Time [Days since Jan 01, 2001]
->>min temp [C]
->>max temp [C]
->>Solar irradiance [MJ/m2/day]
->>CO2
->>Day of year
->>Burned area [m2/m2]
->>VPD [hPa]
->>Precip. [mm/day]
+*Example Meteorological fields, see Appendix: Standard Inputs for variables and units*
+Time [Days since Jan 01, 2001]\
+min temp [C]\
+max temp [C]\
+Solar irradiance [MJ/m2/day]\
+CO2\
+Day of year\
+Burned area [m2/m2]\
+VPD [hPa]\
+Precip. [mm/day]\
 
 ### Make new CBF File <a name="cardamom-make-cbffile"/>
 
