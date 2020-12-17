@@ -26,6 +26,7 @@ gpppars[10]=pi;
 
 double deltat=DATA.deltat;
 int nr=DATA.nodays;
+double LAIe;
 
 
  double constants[10]={pars[10],0.0156935,4.22273,208.868,0.0453194,0.37836,7.19298, 0.011136,2.1001,0.789798};
@@ -165,7 +166,8 @@ gpppars[5]=DATA.MET[m+5];
 gpppars[7]=DATA.MET[m+3];
 
 /*Canopy efficiency based on maximum canopy efficiency*/
-CE = pars[10] * pars[37]*(1 - exp( - LAI[n]/pars[37]))/LAI[n];
+LAIe=(POOLS[p+1]+POOLS[p+0])/pars[16];
+CE = pars[10] * pars[37]*(1 - exp( - LAIe/pars[37]))/LAIe;
 /*placing in GPP constants*/
 constants[0]=CE;
 /*GPP*/
