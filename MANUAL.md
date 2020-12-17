@@ -8,21 +8,20 @@
 
 
 ## Table of Contents
-- [“Installing” CARDAMOM](#-installing--cardamom)
+- [Getting Started With CARDAMOM](#-getting-started)
+  * [“Installing” CARDAMOM](#-installing--cardamom)
   * [Get code from Github](#get-code-from-github)
-  * [CARDAMOM with Matlab I/O](#cardamom-with-matlab-i-o)
-  * [CARDAMOM with Python I/O](#cardamom-with-python-i-o)
+  * [CARDAMOM Matlab Demo and Setup Test](#cardamom-with-matlab)
+  * [CARDAMOM Python Demo and Setup](#cardamom-with-python)
   
 - [Running CARDAMOM](#running-cardamom)
-  * [Code summary and available platforms]
-  * [The CBF (CARDAMOM binary file) structure]
-  * [CARDAMOM_RUN_MDF]
-  * [Gelman-Rubin convergence criterion]
-  * [For matlab users]
+  * Step 1: CARDAMOM_MDF
+  * Step 2: CARDAMOM_RUN_MODEL
+  * Saving output at runtime (Matlab)
 
-  
-- [CARDAMOM C user guide](#cardamom-c-user-guide)
-  * [Make a new CBF file (Matlab)]
+- [The CBF File (CARDAMOM binary input file)](#cardamom-cbffile)
+  * CBF Fields
+  * [Make a new CBF file](#cardamom-make-cbffile)
   
 - [CARDAMOM C developer guide](#cardamom-c-developer-guid)
   * [Intro tips]
@@ -34,10 +33,8 @@
   * [Make a new cost function]
   * [Switches for EDCs]
 
-- [Submission command line functions](#submission-command-line)
-  * [Line input variables]
+- [Running CARDAMOM in parallel](#submission-command-line)
 
-- [CARDAMOM model library](#cardamom-model-library)
 
 - [List of Drivers](#list-of-drivers)
   * [Inputs (Model ID: 811, 821)]
@@ -47,32 +44,63 @@
   * [Frequently asked questions (FAQs)]
   * [Frequently encountered issues & solutions (FEIs…?)]
 
+- [Appendix](#appendix)
+  * [CARDAMOM model library](#cardamom-model-library)
+  * [Standard Input, Outputs, Parameters](#cardamom-input-output-parameters)
+  * [Recommended Settings](#-recommended-settings)
+  * [Helper Scripts](#-helper-scripts)
+
+- [References](#-references)
 
 
+## Getting Started with CARDAMOM <a name="-getting-started"/>
 
-## “Installing” CARDAMOM <a name="-installing--cardamom"/>
+### “Installing” CARDAMOM <a name="-installing--cardamom"/>
 
-### Get code from Github
+#### Get code from Github
 + Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework
 + Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c
-+ Click on green “Code” button, and either (a) git clone with ssh (recommended), or (b) use alternative method (e.g. download zip). 
++ Click on green “Code” button, and either (a) git clone with ssh (recommended), or (b) use alternative method (e.g. download zip).
+* Git clone repository OR unzip “CARDAMOM-master.zip” file.
 
-### CARDAMOM with Matlab I/O <a name="cardamom-with-matlab-i-o"/>
 
-Follow these steps *once*. Once you’ve successfully made it to step 6, you can then start matlab and you’re ready to use all CARDAMOM routines without any further action.
+>*SOON TO BE REQUIRED:* 
+>+ Install homebrew (if you don’t already have it) (https://brew.sh/)
+>  [DETAILS AS NEEDED]
+>    * Install netcdf library (if you don’t already have it)
+>    * type “brew install netcdf” in terminal window (Mac), see step (1) for installing brew. 
+>    * Anthony, Alex: setenv('CARDAMOM_NC_CONFIG_PATH','/usr/local/bin/nc-config')
+>    * For PC: no supported solution yet… (Paul: add potential windows solution)
+
+
++ Demos below will compile CARDAMOM and run short assimilation runs and forward runs for testing. There are options in both Python and Matlab. Check Appendix for additional tools written in Matlab and Python.
+
+#### Compile code from Github
++ Use a C compiler to comple the assimilation (CARDAMOM_MDF.exe) and forward run (CARDAMOM_RUN_MODEL.exe) functions. For example:
+
+```bash
+gcc -std=c99 CARDAMOM/C/projects/CARDAMOM_MDF/CARDAMOM_MDF.c -o CARDAMOM/C/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe -lm
+gcc -std=c99 CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.c -o CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.exe -lm
+
+```
+
+
+### CARDAMOM Matlab Demo and Setup Test <a name="cardamom-with-matlab"/>
+
+Follow these steps *once*. Once you’ve successfully made it to step 4, you can then start matlab and you’re ready to use all CARDAMOM routines without any further action.
 Note: PC implementation not supported (but do add notes if you’ve managed to do this!).
 
+*What happens when you run CARDAMOM_DEMO:* \
+CARDAMOM_DEMO.m will locally compile the CARDAMOM C code (using “gcc” C compiler). CARDAMOM (called from within matlab) will then show some attempts to find a starting point with probability > 0, and will then start accepting/rejecting parameter samples (note: this is a shorter-than-usual run only for demo purposes). The CARDAMOM_DEMO script will then make a figure with some of the retrieved parameter results. Completion of the CARDAMOM script means all components of CARDAMOM are operational.
 
-### SOON TO BE REQUIRED: 
-1. Install homebrew (if you don’t already have it) (https://brew.sh/)
-  [DETAILS AS NEEDED]
-    * Install netcdf library (if you don’t already have it)
-    * type “brew install netcdf” in terminal window (Mac), see step (1) for installing brew. 
-    * Anthony, Alex: setenv('CARDAMOM_NC_CONFIG_PATH','/usr/local/bin/nc-config')
-    * For PC: no supported solution yet… (Paul: add potential windows solution)
-2. Git clone repository OR unzip “CARDAMOM-master.zip” file.
-3. Start matlab
-4. Set CARDAMOM environmental variables in matlab
+Notes:
+    + This works great on macs and (theoretically) on linux. I have no idea what happens on Windows.
+    + Please report questions and issues encountered in FAQ & FEI section below
+    + Works with Matlab 2017b and later versions. Compatibility with earlier versions is likely straightforward.
+
+#### Run Matlab Demo
+1. Start matlab
+2. Set CARDAMOM environmental variables in matlab
     * To do this:
         - Create or edit existing matlab startup.m file: e.g. type “edit startup.m” in matlab command window to edit new or existing startup file.
         - Copy lines from CARDAMOM/MATLAB/startup_template.m into startup.m file, and adapt as instructed in startup_template.m comments.
@@ -84,34 +112,26 @@ Note: PC implementation not supported (but do add notes if you’ve managed to d
         - to avoid github issues, either:
             + the current working directory needs to be outside the “CARDAMOM” folder, or equivalent github cloned folder (recommended)
             + (b) make a “.gitignore” file and ensure github ignores all user-made files within the “CARDAMOM” folder. 
-5. Quit & restart matlab 
-6. Type “which startup” in matlab command window 
+3. Quit & restart matlab 
+4. Type “which startup” in matlab command window 
     * check matlab is pointing at correct startup.m file
     * In case you encounter issues, more info here (https://www.mathworks.com/help/matlab/ref/startup.html)
-7. Run CARDAMOM_DEMO.
+5. Run CARDAMOM_DEMO.
     * This is a test script to ensure all works well. If you get to the end of the demo script, then you’ve got full CARDAMOM functionality! 
     * Type “CARDAMOM_DEMO” in matlab command window
 
-    
-*What happens when you run CARDAMOM_DEMO:* \
-CARDAMOM_DEMO.m will locally compile the CARDAMOM C code (using “gcc” C compiler). CARDAMOM (called from within matlab) will then show some attempts to find a starting point with probability > 0, and will then start accepting/rejecting parameter samples (note: this is a shorter-than-usual run only for demo purposes). The CARDAMOM_DEMO script will then make a figure with some of the retrieved parameter results. Completion of the CARDAMOM script means all components of CARDAMOM are operational.
 
-Notes:
-    + This works great on macs and (theoretically) on linux. I have no idea what happens on Windows.
-    + Please report questions and issues encountered in FAQ & FEI section below
-    + Works with Matlab 2017b and later versions. Compatibility with earlier versions is likely straightforward.
-
-
-### CARDAMOM with Python I/O <a name="cardamom-with-python-i-o"/>
+### CARDAMOM Python Demo and Setup <a name="cardamom-with-python"/>
 
 Summary of tools to interact with CARDAMOM using python. Read and write of binary files. Conversion of outputs (parameters, pools, fluxes) to netcdf. Additional functionality in summarizing point runs into a netcdf map of results.
 
-See tutorials (PYTHON/tutorials)\
-- [Tutorial 1](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/PYTHON/tutorials/cardamom_tutorial1.ipynb):\
+See tutorials (PYTHON/tutorials)
+
+- [Tutorial 1](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/PYTHON/tutorials/cardamom_tutorial1.ipynb):
 Description of input file (.cbf) and how to open/view file. Open and view parameter output from assimilation runs (.cbr). Open and view pools/fluxes from forward run (.bin).
 
-- [Tutorial 2](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/PYTHON/tutorials/cardamom_tutorial2.ipynb):\
-This tutorial will show the basic set up to run a CARDAMOM assimilation and forward run from the command line. This is set up for mac/linux.\n
+- [Tutorial 2](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/PYTHON/tutorials/cardamom_tutorial2.ipynb):
+This tutorial will show the basic set up to run a CARDAMOM assimilation and forward run from the command line. This is set up for mac/linux.\
 
     * Basic Steps:
     * Download/git-clone a copy of CARDAMOM
@@ -121,35 +141,36 @@ This tutorial will show the basic set up to run a CARDAMOM assimilation and forw
     * Common practice is to organize input, parameter and output files in: topfolder/cbf/.cbf topfolder/cbr/.cbr topfolder/output/*.bin
 
 
-|Filepath|Description|
-|:--------|:-------------|
-|script1||
-|script1||
-|script1||
-
 
 ## Running CARDAMOM <a name="running-cardamom"/>
-### Code summary and available platforms
 
-Currently CARDAMOM wrapper scripts are generally written in matlab and python. Code availability and description across platforms is on a case-by-case basis. We assume (and maybe eventually strive for?) all function names are preserved across matlab/python/other platforms. 
+This section outlines setting up CARDAMOM runs now that it is downloaded and tested (see above). The first example will be CARDAMOM run from the command line, followed by descriptions of CARDAMOM wrappers - written in both *Matlab* and *Python*. Code availability and description across platforms is on a case-by-case basis. We assume (and maybe eventually strive for?) all function names are preserved across matlab/python/other platforms.
 
+Running CARDAMOM consists of running an assimilation where CARDAMOM is fed drivers (for the model chosen) and observations (to form constraints with the cost function) throught the *.cbf file* and iterates through the MCMC to produce a set of optimized parameters (the *.cbr file* output). These inputs and parameters are then combined in a final forward run to produce output files (*.bin files*) for fluxes, pools, edc states, and probabilities. Depicted in Figure below.
 
-### CARDAMOM_RUN_MDF
-
-CBR = CARDAMOM_RUN_MDF(CBF,MCO) 
-
-*Recommended MCMC configurations 
-+ Sample 10^5 iterations (MCO.niterations=1e5;) for code testing purposes (e.g. CARDAMOM_DEMO)
-+ Sample 10^7 iterations (MCO.niterations=1e7;) for exploratory runs
-+ Sample 10^8 iterations (MCO.niterations=1e8;) for final (e.g. publication) runs.
+![cardamom_run](/images/CARDAMOM_RUN.png)
 
 
-*Gelman-Rubin convergence criterion
-Convergence across all parameters is considered adequate for a Gelman-Rubin convergence criterion of <1.2 or <1.1 across all parameter histograms.
+To test for convergence between multiple runs started from random sets of parameters (chains), the Gelman-Rubin convergence criterion is often used.
 
-For matlab users
+>*Gelman-Rubin convergence criterion*
+>>Convergence across all parameters is considered adequate for a Gelman-Rubin convergence criterion of <1.2 or <1.1 across all parameter histograms.
 
-Here’s an example matlab code for (a) running multiple chains, and (b) testing convergence between chains.
+### Step 1: CARDAMOM_MDF
+
+#### Example commandline submission of CARDAMOM assimilation run
+
+These are the assimilation runs for CARDAMOM where repeated iterations optimize the models parameters through MCMC.
+
+```bash
+/<cardamomfolder>/CARDAMOM/C/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe /<outputfolder>/cbf/<cbffilename>.cbf /<outputfolder>/cbr/<cbrfilename>.cbr 100000 0 200 0.001 119 1000
+```
+
+>*for Matlab Users*
+```matlab
+CBR = CARDAMOM_RUN_MDF(CBF,MCO)
+```
+>>Here’s an example matlab code for (a) running multiple chains, and (b) testing convergence between chains.
 
 ```matlab
 MCO.niterations=1e7;
@@ -158,7 +179,24 @@ CBR=cardamomfun_combine_parameter_chains(CBR);\
 [gr]=cardamomfun_convergence_tests(CBF,CBR,[1,1,1])\
 ```
 
-### Saving output at runtime
+>*for Python Users*
+>>see Tutorial 2 above
+
+>*Recommended MCMC configurations* 
+>>+ Sample 10^5 iterations (MCO.niterations=1e5;) for code testing purposes (e.g. CARDAMOM_DEMO)
+>>+ Sample 10^7 iterations (MCO.niterations=1e7;) for exploratory runs
+>>+ Sample 10^8 iterations (MCO.niterations=1e8;) for final (e.g. publication) runs.
+
+
+### Step 2: CARDAMOM_RUN_MODEL
+
+This is the forward run using optimized parameters and saving out the pools and fluxes.
+
+```bash
+/<cardamomfolder>/CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.exe /<outputfolder>/cbf/<cbffilename>.cbf /<outputfolder>/cbr/<cbrfilename>.cbr /<outputfolder>/output/fluxfile_<filename>.bin /<outputfolder>/output/poolfile_<filename>.bin /<outputfolder>/output/edcdfile_<filename>.bin /<outputfolder>/output/probfile_<filename>.bin
+```
+
+### Saving output at runtime (Matlab)
 
 To have CARDAMOM_RUN_MODEL routine save full output at runtime (to avoid having to run model again for post processing):
 
@@ -177,16 +215,47 @@ Make sure to pass string or cell for cbffilename.\
 
 
 
-### The CBF (CARDAMOM binary file) structure (and eventually)
- 
-*Note:We will soon transition to nectdf*
+## The CBF File (CARDAMOM binary input file)<a name="cardamom-cbffile"/>
 
+*Note: Binary cbf will soon transition to a netcdf format*
 
+The CBF file contains information on the model's driving meterology (see Appendix: Standard Inputs) and the observations for constraining the model. In addition, the CBF file contains additional information on what model ID to run, uncertainties of observations, parameter priors and uncertainties, and which EDCs to have on. The driving meteorology is often taken from site level measurements or global reanalysis. See Appendix: Data used in CARDAMOM for datasets used priviously in CARDAMOM.
 
+### CBF Fields
+* OBSinfo
+* PARPRIORS
+* The order of these values are the same as those of the model parameter file
+* PARPRIORUNC
+* The order of these values are the same as those of the model parameter file
+* LAT
+* EDCDIAG
+* OBSUNC
+* MET
+* EDC
+* ID
+* nomet
+* RAW
+* Otherpriors, be careful to check constraints, this is being phased out.
+* noobs
+* OBS
+* OTHER_OBS
+* rc_random_search
+* nodays
 
-## CARDAMOM C user guide <a name="cardamom-c-user-guide"/>
+> *Example Meteorological fields, see Appendix: Standard Inputs for variables and units*
+>>Time [Days since Jan 01, 2001]
+>>min temp [C]
+>>max temp [C]
+>>Solar irradiance [MJ/m2/day]
+>>CO2
+>>Day of year
+>>Burned area [m2/m2]
+>>VPD [hPa]
+>>Precip. [mm/day]
 
-### Make a new CBF file (Matlab). 
+### Make new CBF File <a name="cardamom-make-cbffile"/>
+
+#### Make a new CBF file (Matlab)
 1. Copy an existing CBF structure (CBF=CBFtemplate), OR load an existing file e.g. CBF=CARDAMOM_READ_BINARY_FILEFORMAT(‘cbffile.cbf’)); 
 
 2. clear observations CBF=cardamomfun_clear_cbf_obs(CBF);  
@@ -199,10 +268,14 @@ Make sure to pass string or cell for cbffilename.\
     *Use -9999 for any missing observations in CBF.OBS.* fields.  
 
 
+#### Make a new CBF file (Python)
+1. See Tutorial 2 for structure, replace fields in dictionary with new meteorology and observations.
+
+
+
 ## CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/>
 
-
-Intro tips. 
+### Intro tips. 
 Before doing any of the following, either git branch and/or backup your C code (!!!). 
 Regularly & frequently compile (e.g. CARDAMOM_COMPILE) when making any changes.  
 
@@ -217,12 +290,13 @@ Making a new model ID in CARDAMOM (e.g. ID=830), based on original model (e.g. I
 
 Tips for step 2. 
 + copy every instance of DALEC_811 and name them DALEC_830. 
-+ You can use “CARDAMOM_COMPILE” in matlab, to see if the code compiles OK.  
++ Compile C code to check if it compiles.
+* (Matlab) You can use “CARDAMOM_COMPILE” in matlab, to see if the code compiles OK.  
 + *if the above works without issue, then you should be able to change a CBF.ID value to CBF.ID=830 and the model will run (e.g. with CARDAMOM_RUN_MODEL) without issue!*
 + Once you’ve successfully replicated CBF.ID=811 to CBF.ID=830, you can then make model structure changes in DALEC_830.c
 + Keep using “CARDAMOM_COMPILE” every so often (in matlab, and equivalent function elsewhere) to see if your new code compiles OK.
 
-*For matlab users.*
+*For matlab users*
 + Open CARDAMOM_RUN_MODEL.m and add the new model ID to the appropriate “if” statement (e.g. if CBF.ID==1000 || CBF.ID==1001;). 
 
 
@@ -233,7 +307,7 @@ Tips for step 2.
 
 2. Open PARS_INFO_<newmodelid>.c and add two extra entries at the bottom of the code (with minimum and maximum values). Note: CARDAMOM only supports positive-definite values, if a -ve to +ve range is required, use “exp()” function for -ve to +ve value ranges, and use “log()” to transform these back within DALEC_<newmodelid>.c model. 
 
-3. *FOR MATLAB USERS*. Run this line in the matlab command window after making any changes to the number of parameters or pools in MODEL_INFO_<newmodelid>.c
+3. *For matlab users*. Run this line in the matlab command window after making any changes to the number of parameters or pools in MODEL_INFO_<newmodelid>.c
 
 ```matlab
 MD=CARDAMOM_MODEL_LIBRARY(<newmodelid>,[],1);
@@ -311,23 +385,53 @@ Files that are Modified:
     * Switches for EDCs
     * Switches CBF.OTHERPRIORS (Anthony provide more detail)
 
-## Submission command line functions <a name="submission-command-line"/>
-##### adapted from Jupyter Notebook tutorial: cardamom_tutorial2
 
-### Command line settings
 
-#### From command line:
-```linux
-/.../CARDAMOM/C/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe /.../cbf/filename.cbf /.../cbr/filename.cbr 100000 0 200 0.001 119 1000
+## Running CARDAMOM in parallel <a name="submission-command-line"/>
+
+Add details here on running multiple CARDAMOM points on a server.
+
+
+## “Frequently asked questions” and “frequently encountered issues & solutions” <a name="faq"/>
+
+
+### Frequently asked questions (FAQs)
+
+#### What’s the difference between log-uniform and uniform distributions?
++ See here https://en.wikipedia.org/wiki/Reciprocal_distribution, and example for 0.01-100 below:
+
+Sampling 0.01-100 range with uniform distribution
++ ~25% probability for a value between 0-25
++ ~25% probability for a value between 25-50
++ ~25% probability for a value between 50-75
++ ~25% probability for a value between 75-100
+ 
+Sampling 0.01-100 range with log-uniform distribution
++ 25% probability for a value between 0.01 – 0.1
++ 25% probability for a value between 0.1-1
++ 25% probability for a value between 1-10
++ 25% probability for a value between 10-100
+
+
+### Frequently encountered issues & solutions (FEIs…?)
+
+CARDAMOM_RUN_MODEL.c\
+Error type:\
+
+CARDAMOM chain gets stuck on “inf” values or “nan” values\
+Check for zero values in observations with log-normal cost functions [ADD DETAILS HERE]\
+
+
+If CARDAMOM_RUN_MODEL gives you\
+```matlab
+ERROR! Execution of CARDAMOM_RUN_MODEL.exe failed, entering keyboard mode
 ```
-+ number_iterations = "100000" # Small numbers for test, 100000000 standard run, will take a long time.
-+ printrate = "0" #
-+ samplerate = "200" # Number of output parameters = number_iterations/samplerate, generally use between 500 and 1000 output parameters
-+ minimum_step_size = ".001" # Relates to MCMC, standard is currently .001
-+ mcmcid = "119" # Current default MCMC method is 119
-+ nadapt = "1000" # MCMC setting, standard is 1000
+Then it is possible that the cbf and/or cbr file names have too many characters (current limit is 1000 character maximum, submit issue on github if you need it longer for some reason)
 
-## CARDAMOM model library <a name="cardamom-model-library"/>
+
+## Appendix <a name="appendix"/>
+
+### CARDAMOM model library <a name="cardamom-model-library"/>
 
 List and brief description of currently supported models
 
@@ -374,7 +478,73 @@ Can use the COMPLEX effort to document all the models here, including some examp
 |                                  |          |                                            |                       |                                 |             |
 | DALEC + FF                       | 1200     |                                            |                       |                                 | Exploratory |
 
-### Example List of Parameters Optimized in CARDAMOM
+
+### Standard Input, Outputs, Parameters <a name="cardamom-input-output-parameters"/>
+
+#### List of Drivers <a name="list-of-drivers"/>
+
+##### Inputs (Model ID: 811, 821)
+|CARDAMOM Inputs|Units|Longname|
+|:-------------|:-------------|:-------------|
+|'Time | [Days since Jan 01, 2001]'|
+|'min temp | [C]'|
+|'max temp | [C]'|
+|'Solar irradiance | [MJ/m2/day]'|
+|'CO2 | [ppm]'|
+|'Day of year'|day|
+|'Burned area | [m2/m2]'|
+|'VPD | [hPa]'|
+|'Precip. | [mm/day]'|
+
+
+#### List of Ouputs (Model ID: 811, 821)
+
+##### Pools (gC/m2, kgH2O/m2, instantaneous)
+|CARDAMOM Pools|Longname|
+|:--------|:-------------|
+|'c_labile'|
+|'c_foliar'|
+|'c_root'|
+|'c_wood'|
+|'c_finelitter'|
+|'c_som'|
+|'h2o_forplant'|
+
+##### Fluxes (gC/m2/day, kgH2O/m2/day, mean)
+|CARDAMOM Fluxes|Longname|
+|:--------|:-------------|
+|'gppflux'|
+|'decf_tempr'|
+|'gpp_to_autoresp'|
+|'gpp_to_leaf'|
+|'gpp_to_labile'|
+|'gpp_to_root'|
+|'gpp_to_wood'|
+|'labile_to_foliar'|
+|'leaf_fall'|
+|'leaf_to_litter'|
+|'wood_to_soilc'|
+|'root_to_litter'|
+|'hetresp_litter'|
+|'hetresp_som'|
+|'litter_to_som'|
+|'leaf_onset'|
+|'fire_em_total'|
+|'fire_em_labile'|
+|'fire_em_foliar'|
+|'fire_em_root'|
+|'fire_em_wood'|
+|'fire_em_litter'|
+|'fire_em_som'|
+|'fire1_to_littersom'|
+|'fire2_to_littersom'|
+|'fire3_to_littersom'|
+|'fire4_to_littersom'|
+|'fire5_to_littersom'|
+|'et'|
+|'runoff'|
+
+##### Example List of Parameters Optimized in CARDAMOM
 
 | Shortname | Codename                                                                       | Units | Range |
 |-----------|--------------------------------------------------------------------------------|-------|-------|
@@ -412,108 +582,44 @@ Can use the COMPLEX effort to document all the models here, including some examp
 |           | Lab pool lifespan                                                              |       |       |
 |           | Moisture factor                                                                |       |       |
 
-## List of Drivers <a name="list-of-drivers"/>
 
-### Inputs (Model ID: 811, 821)
-|CARDAMOM Inputs|Units|Longname|
-|:-------------|:-------------|:-------------|
-|'Time | [Days since Jan 01, 2001]'|
-|'min temp | [C]'|
-|'max temp | [C]'|
-|'Solar irradiance | [MJ/m2/day]'|
-|'CO2 | [ppm]'|
-|'Day of year'|day|
-|'Burned area | [m2/m2]'|
-|'VPD | [hPa]'|
-|'Precip. | [mm/day]'|
+### Recommended Settings <a name="-recommended-settings"/>
 
+These are some of the recommended "standard" settings.
 
-### List of Ouputs (Model ID: 811, 821)
-
-#### Pools (gC/m2, kgH2O/m2, instantaneous)
-|CARDAMOM Pools|Longname|
-|:--------|:-------------|
-|'c_labile'|
-|'c_foliar'|
-|'c_root'|
-|'c_wood'|
-|'c_finelitter'|
-|'c_som'|
-|'h2o_forplant'|
-
-#### Fluxes (gC/m2/day, kgH2O/m2/day, mean)
-|CARDAMOM Fluxes|Longname|
-|:--------|:-------------|
-|'gppflux'|
-|'decf_tempr'|
-|'gpp_to_autoresp'|
-|'gpp_to_leaf'|
-|'gpp_to_labile'|
-|'gpp_to_root'|
-|'gpp_to_wood'|
-|'labile_to_foliar'|
-|'leaf_fall'|
-|'leaf_to_litter'|
-|'wood_to_soilc'|
-|'root_to_litter'|
-|'hetresp_litter'|
-|'hetresp_som'|
-|'litter_to_som'|
-|'leaf_onset'|
-|'fire_em_total'|
-|'fire_em_labile'|
-|'fire_em_foliar'|
-|'fire_em_root'|
-|'fire_em_wood'|
-|'fire_em_litter'|
-|'fire_em_som'|
-|'fire1_to_littersom'|
-|'fire2_to_littersom'|
-|'fire3_to_littersom'|
-|'fire4_to_littersom'|
-|'fire5_to_littersom'|
-|'et'|
-|'runoff'|
-
-
-## “Frequently asked questions” and “frequently encountered issues & solutions” <a name="faq"/>
-
-
-### Frequently asked questions (FAQs)
-
-#### What’s the difference between log-uniform and uniform distributions?
-+ See here https://en.wikipedia.org/wiki/Reciprocal_distribution, and example for 0.01-100 below:
-
-Sampling 0.01-100 range with uniform distribution
-+ ~25% probability for a value between 0-25
-+ ~25% probability for a value between 25-50
-+ ~25% probability for a value between 50-75
-+ ~25% probability for a value between 75-100
- 
-Sampling 0.01-100 range with log-uniform distribution
-+ 25% probability for a value between 0.01 – 0.1
-+ 25% probability for a value between 0.1-1
-+ 25% probability for a value between 1-10
-+ 25% probability for a value between 10-100
-
-
-### Frequently encountered issues & solutions (FEIs…?)
-
-CARDAMOM_RUN_MODEL.c\
-Error type:\
-
-CARDAMOM chain gets stuck on “inf” values or “nan” values\
-Check for zero values in observations with log-normal cost functions [ADD DETAILS HERE]\
-
-
-If CARDAMOM_RUN_MODEL gives you\
-```matlab
-ERROR! Execution of CARDAMOM_RUN_MODEL.exe failed, entering keyboard mode
 ```
-Then it is possible that the cbf and/or cbr file names have too many characters (current limit is 1000 character maximum, submit issue on github if you need it longer for some reason)
+number_iterations = "100000" # Small numbers for test, 100000000 standard run, will take a long time.
+printrate = "0" #
+samplerate = "200" # Number of output parameters = number_iterations/samplerate, generally use between 500 and 1000 output parameters
+minimum_step_size = ".001" # Relates to MCMC, standard is currently .001
+mcmcid = "119" # Current default MCMC method is 119
+nadapt = "1000" # MCMC setting, standard is 1000
+```
+
+### Helper Scripts <a name="-helper-scripts"/>
+
+Helper scripts (running and analysing CARDAMOM) are primarily written in Matlab and Python.
+
+|Filepath|Description|
+|:--------|:-------------|
+|script1||
+|script1||
+|script1||
 
 
+## References <a name="-references"/>
 
+Following are a selection of references that include technical details of CARDAMOM.
 
+1. Williams, M., Schwarz, P. A., Law, B. E., Irvine, J., & Kurpius, M. R. (2005). An improved analysis of forest carbon dynamics using data assimilation. Global Change Biology, 11(1), 89–105.
 
+2. Bloom, A., & Williams, M. (2015). Constraining ecosystem carbon dynamics in a data-limited world: integrating ecological" common sense" in a model-data fusion framework. Biogeosciences, 12(5), 1299.
+
+3. Bloom, A. A., Exbrayat, J.-F., van der Velde, I. R., Feng, L., & Williams, M. (2016). The decadal state of the terrestrial carbon cycle: Global retrievals of terrestrial carbon allocation, pools, and residence times. Proceedings of the National Academy of Sciences, 113(5), 1285–1290. https://doi.org/10.1073/pnas.1515160113
+
+4. Quetin, G. R., Bloom, A. A., Bowman, K. W., & Konings, A. G. (2020). Carbon Flux Variability from a Relatively Simple Ecosystem Model with Assimilated Data is Consistent with Terrestrial Biosphere Model Estimates. Journal of Advances in Modeling Earth Systems. https://doi.org/10.1029/2019MS001889
+
+5. Exbrayat, J., Smallman, T. L., Bloom, A. A., Hutley, L. B., & Williams, M. (2018). Inverse Determination of the Influence of Fire on Vegetation Carbon Turnover in the Pantropics. Global Biogeochemical Cycles. https://doi.org/10.1029/2018GB005925
+
+6. Bloom, A. A., Bowman, K. W., Liu, J., Konings, A. G., Worden, J. R., Parazoo, N. C., et al. (2020). Lagged effects dominate the inter-annual variability of the 2010-2015 tropical carbon balance (preprint). Biogeochemistry: Land. https://doi.org/10.5194/bg-2019-459
 
