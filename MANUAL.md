@@ -173,13 +173,13 @@ CBR=cardamomfun_combine_parameter_chains(CBR);\
 [gr]=cardamomfun_convergence_tests(CBF,CBR,[1,1,1])\
 ```
 
-*for Python Users*
+*for Python Users*\
 see Tutorial 2 above
 
->*Recommended MCMC configurations* 
->>+ Sample 10^5 iterations (MCO.niterations=1e5;) for code testing purposes (e.g. CARDAMOM_DEMO)
->>+ Sample 10^7 iterations (MCO.niterations=1e7;) for exploratory runs
->>+ Sample 10^8 iterations (MCO.niterations=1e8;) for final (e.g. publication) runs.
+*Recommended MCMC configurations* 
++ Sample 10^5 iterations (MCO.niterations=1e5;) for code testing purposes (e.g. CARDAMOM_DEMO)
++ Sample 10^7 iterations (MCO.niterations=1e7;) for exploratory runs
++ Sample 10^8 iterations (MCO.niterations=1e8;) for final (e.g. publication) runs.
 
 
 ### Step 2: CARDAMOM_RUN_MODEL
@@ -211,7 +211,7 @@ Make sure to pass string or cell for cbffilename.\
 
 ## The CBF File (CARDAMOM binary input file)<a name="cardamom-cbffile"/>
 
-*Note: Binary cbf will soon transition to a netcdf format*
+*Note: Binary cbf will soon transition to a netcdf format*\\
 
 The CBF file contains information on the model's driving meterology (see Appendix: Standard Inputs) and the observations for constraining the model. In addition, the CBF file contains additional information on what model ID to run, uncertainties of observations, parameter priors and uncertainties, and which EDCs to have on. The driving meteorology is often taken from site level measurements or global reanalysis. See Appendix: Data used in CARDAMOM for datasets used priviously in CARDAMOM.
 
@@ -236,7 +236,7 @@ The CBF file contains information on the model's driving meterology (see Appendi
 * rc_random_search
 * nodays
 
-*Example Meteorological fields, see Appendix: Standard Inputs for variables and units*
+*Example Meteorological fields, see Appendix: Standard Inputs for variables and units*\
 Time [Days since Jan 01, 2001]\
 min temp [C]\
 max temp [C]\
@@ -270,8 +270,8 @@ Precip. [mm/day]\
 ## CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/>
 
 ### Intro tips. 
-Before doing any of the following, either git branch and/or backup your C code (!!!). 
-Regularly & frequently compile (e.g. CARDAMOM_COMPILE) when making any changes.  
+Before doing any of the following, either git branch and/or backup your C code (!!!).\
+Regularly & frequently compile (e.g. CARDAMOM_COMPILE) when making any changes.\
 
 
 ### Make a new model. 
@@ -427,9 +427,9 @@ Then it is possible that the cbf and/or cbr file names have too many characters 
 
 ### CARDAMOM model library <a name="cardamom-model-library"/>
 
-List and brief description of currently supported models
+List and brief description of currently supported models\
 
-Can use the COMPLEX effort to document all the models here, including some examples of the figures.
+Can use the COMPLEX effort to document all the models here, including some examples of the figures.\
 
 
 | Group                            | Model ID | Parent ID(s) if relevant                   | Description           | Details (POC)                   | Status      |
