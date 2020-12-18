@@ -142,8 +142,8 @@ This section outlines setting up CARDAMOM runs now that it is downloaded and tes
 
 Running CARDAMOM consists of running an assimilation where CARDAMOM is fed drivers (for the model chosen) and observations (to form constraints with the cost function) throught the *.cbf file* and iterates through the MCMC to produce a set of optimized parameters (the *.cbr file* output). These inputs and parameters are then combined in a final forward run to produce output files (*.bin files*) for fluxes, pools, edc states, and probabilities. Depicted in Figure below.
 
-![cardamom_run](/images/CARDAMOM_RUN.png)\
-
+![cardamom_run](/images/CARDAMOM_RUN.png)
+*Figure: Diagram of the basic CARDAMOM run modes.*
 
 To test for convergence between multiple runs started from random sets of parameters (chains), the Gelman-Rubin convergence criterion is often used.
 
@@ -383,8 +383,104 @@ Files that are Modified:
 
 ## Running CARDAMOM in parallel <a name="submission-command-line"/>
 
-Add details here on running multiple CARDAMOM points on a server.
+CARDAMOM runs across the whole globe are usually run on servers. CARDAMOM does not currently include any spatial interconnection, so to run a 'map' of CARDAMOM each point is run separately in parallel.
 
+Here are examples from some servers that CARDAMOM has been run on.
+
+### Generally
+1. Create .cbf files from the meteorology and observations at each point of a map.
+    * (Python users) Helpful scripts: PYTHON/cardamom_utilities/makecbfspecific/makecbf.py
+
+2. _NOTE_: Make sure to compile code after any changes made to CARDAMOM and before runs.
+
+3. Create a series of scripts to 'submit' all points to a server to run in parallel.
+
+### Stanford server Sherlock
+1. Create a text file where every line is a assimilation line (this file is automated for Sherlock with yyyy.py, not publicly available):
+
+```bash
+/<cardamomfolder>/CARDAMOM/C/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe /<outputfolder>/cbf/<cbffilename>.cbf /<outputfolder>/cbr/<cbrfilename>.cbr 100000 0 200 0.001 119 1000
+```
+
+2. Create a bash file that submits that text file (e.g. 'submitlist_<filename>.txt') in parallel (Sherlock runs Slurm).
+
+```bash
+#!/bin/bash
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --array=0-80
+#SBATCH -p <nodes>
+#SBATCH -t 48:00:00
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=gquetin@stanford.edu
+
+# define the location of the command list file
+CMD_LIST=/<home>/cbf/submitlist_<filename>.txt
+
+# get the command list index from Slurm
+CMD_INDEX=$SLURM_ARRAY_TASK_ID
+
+# execute the command
+$(sed "${CMD_INDEX}q;d" "$CMD_LIST")
+```
+
+3. After assimilations complete and the parameters sets have been checked, write a text file with the forward run submissions instructions for each point (this file is automated for Sherlock with yyyy.py, not publicly available):
+
+```bash
+/<cardamomfolder>/CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.exe /<outputfolder>/cbf/<cbffilename>.cbf /<outputfolder>/cbr/<cbrfilename>.cbr /<outputfolder>/output/fluxfile_<filename>.bin /<outputfolder>/output/poolfile_<filename>.bin /<outputfolder>/output/edcdfile_<filename>.bin /<outputfolder>/output/probfile_<filename>.bin
+```
+
+4. Create a bash file that submits that text file (e.g. 'forwardlist_<filename>.txt') in parallel (Sherlock runs Slurm). Note that for timing, forward runs are much shorter than assimilation runs.
+ 
+```bash
+#!/bin/bash
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --array=0-5
+#SBATCH -p <nodes>
+#SBATCH -t 00:05:00
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=gquetin@stanford.edu
+
+# define the location of the command list file
+CMD_LIST=/<home>/cbf/forwardlist_<filename>.txt
+
+# get the command list index from Slurm
+CMD_INDEX=$SLURM_ARRAY_TASK_ID
+
+# execute the command
+$(sed "${CMD_INDEX}q;d" "$CMD_LIST")
+```
+
+For large amounts of short runs, submiting a set of each point is beneficial. Note added loop, and the chunking in SBATCH --array=0:870:20:
+
+```bash
+#!/bin/bash
+#SBATCH --ntasks=20
+#SBATCH --cpus-per-task=1
+#SBATCH --array=0-870:20
+#SBATCH -p <nodes>
+#SBATCH -t 00:15:00
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=gquetin@stanford.edu
+
+# define the location of the command list file
+CMD_LIST=/<home>/cbf/forwardlist_<filename>.txt
+
+for i in {0..44}; do
+
+# get the command list index from Slurm
+CMD_INDEX=$((SLURM_ARRAY_TASK_ID+i))
+
+# execute the command
+srun -n 1 $(sed "${CMD_INDEX}q;d" "$CMD_LIST") &
+
+done
+
+wait
+```
+
+5. The results of these runs will be separate files of parameters, fluxes, pools, probabilities, and edc states for each point. These points can then be analysized point by point or aggregated into global maps. See Appendix: Helper Scripts for some examples.
 
 ## “Frequently asked questions” and “frequently encountered issues & solutions” <a name="faq"/>
 
@@ -542,39 +638,39 @@ Can use the COMPLEX effort to document all the models here, including some examp
 
 | Shortname | Codename                                                                       | Units | Range |
 |-----------|--------------------------------------------------------------------------------|-------|-------|
-|           | Decomposition rate                                                             |       |       |
-|           | Fraction of GPP respired                                                       |       |       |
-|           | Fraction of (1-fgpp) to foliage                                                |       |       |
-|           | Fraction of (1-fgpp) to roots                                                  |       |       |
-|           | Leaf Lifespan                                                                  |       |       |
-|           | TOR wood* - 1% loss per year value                                             |       |       |
-|           | TOR roots                                                                      |       |       |
-|           | TOR litter                                                                     |       |       |
-|           | TOR SOM                                                                        |       |       |
-|           | Temp factor* = Q10 = 1.2-1.6                                                   |       |       |
-|           | Canopy Efficiency                                                              |       |       |
-|           | Bday                                                                           |       |       |
-|           | Fraction to Clab                                                               |       |       |
-|           | Clab Release period                                                            |       |       |
-|           | Fday                                                                           |       |       |
-|           | Leaf fall period                                                               |       |       |
-|           | LMCA                                                                           |       |       |
-|           | C labile                                                                       |       |       |
-|           | C foliar                                                                       |       |       |
-|           | C roots                                                                        |       |       |
-|           | C_wood                                                                         |       |       |
-|           | C litter                                                                       |       |       |
-|           | C_som                                                                          |       |       |
-|           | IWUE: GPP*VPD/ET: gC/kgH2o *hPa                                                |       |       |
-|           | Runoff focal point (~maximum soil storage capacity x 4)                        |       |       |
-|           | "Wilting point"                                                                |       |       |
-|           | "Bucket at t0"                                                                 |       |       |
-|           | Foliar biomass CF                                                              |       |       |
-|           | "Ligneous" biomass CF".                                                        |       |       |
-|           | DOM CF".                                                                       |       |       |
-|           | Resilience factor (since transfer to litter is represented as (1-pars[30])) ". |       |       |
-|           | Lab pool lifespan                                                              |       |       |
-|           | Moisture factor                                                                |       |       |
+|           | Decomposition rate                                                             |       |0.00001 - 0.01|
+|           | Fraction of GPP respired                                                       |       |0.2 - 0.8|
+|           | Fraction of (1-fgpp) to foliage                                                |       |0.01 - 0.5|
+|           | Fraction of (1-fgpp) to roots                                                  |       |0.01 - 1.0|
+|           | Leaf Lifespan                                                                  |       |1.001 - 8.0|
+|           | TOR wood* - 1% loss per year value                                             |       |0.000025 - 0.001|
+|           | TOR roots                                                                      |       |0.0001 - 0.01|
+|           | TOR litter                                                                     |       |0.0001 - 0.01|
+|           | TOR SOM                                                                        |       |0.0000001 - 0.001|
+|           | Temp factor* = Q10 = 1.2-1.6                                                   |       |0.018 - 0.08|
+|           | Canopy Efficiency                                                              |       |5.0 - 50.0|
+|           | Bday                                                                           |day of year |365.25 - 4x365.25|
+|           | Fraction to Clab                                                               |       |0.01 - 0.5|
+|           | Clab Release period                                                            |days |365.25/12 - 100|
+|           | Fday                                                                           |day of year |365.25 - 4x365.25|
+|           | Leaf fall period                                                               |days |365.25/12 - 150|
+|           | LMCA                                                                           |g C/m2 |5.0 - 200.0|
+|           | C labile                                                                       |g C/m2 |1.0 - 2000.0|
+|           | C foliar                                                                       |g C/m2 |1.0 - 2000.0|
+|           | C roots                                                                        |g C/m2 |1.0 - 2000.0|
+|           | C_wood                                                                         |g C/m2 |1.0 - 100000.0|
+|           | C litter                                                                       |g C/m2 |1.0 - 2000.0|
+|           | C_som                                                                          |g C/m2 |1.0 - 200000.0|
+|           | IWUE: GPPxVPD/ET: gC/kgH2o -hPa                                                |hPa gC/kgH2O |10.0 - 50.0|
+|           | Runoff focal point (~maximum soil storage capacity x 4)                        |       |1.0 - 100000.0|
+|           | "Wilting point"                                                                |kgH2O/m2 |1.0 - 10000.0|
+|           | "Bucket at t0"                                                                 |kgH2O/m2 |1.0 - 10000.0|
+|           | Foliar biomass CF                                                              |       |0.01 - 1.0|
+|           | "Ligneous" biomass CF".                                                        |       |0.01 - 1.0|
+|           | DOM CF".                                                                       |       |0.01 - 1|
+|           | Resilience factor (since transfer to litter is represented as (1-pars[30])) ". |       |0.01 - 1|
+|           | Lab pool lifespan                                                              |       |1.001 - 8.0|
+|           | Moisture factor                                                                |       |0.01 - 1.0|
 
 
 ### Recommended Settings <a name="-recommended-settings"/>
