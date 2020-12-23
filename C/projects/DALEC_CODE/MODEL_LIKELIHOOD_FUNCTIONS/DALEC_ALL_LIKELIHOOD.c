@@ -47,9 +47,11 @@ if (EDCDmem.DIAG==2){for (n=0;n<20;n++){EDCDmem.SWITCH[n]=DATA.otherpriors[n+30]
 
 /*EQF is stored in the "DATA.otherpriorunc" fields associated with EDCs 7-12*/
 /*default value is 2*/
-EDCDmem.EQF=DATA.otherpriorunc[36]; if (EDCDmem.EQF==-9999){EDCDmem.EQF=2;}
-//EDCDmem.EQF=2;
+EDCDmem.EQF=DATA.otherpriorunc[36]; 
 
+printf("EDCD->EQF* = %2.2f\n",EDCDmem.EQF);
+if (EDCDmem.EQF==-9999){EDCDmem.EQF=2;}
+//EDCDmem.EQF=2;
 printf("EDCD->EQF = %2.2f\n",EDCDmem.EQF);
 
 /*Default structure has all EDC=1, and 100 EDCs*/

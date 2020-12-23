@@ -128,7 +128,7 @@ ncwriteatt(fname,'GPP','Uncertainty_Threshold',CBF.OBSUNC.GPP.obs_unc_threshold)
 
 %********LAI*****************
 
-nccreate(fname,'LAI','Dimensions',{'time',nodays});
+nccreate(fname,'LAI','Dimensions',{'time',nodays},'FillValue',-9999);
 %Writing variable 
 ncwrite_if_exists(fname,'LAI',CBF.OBS.LAI);
 ncwriteatt(fname,'LAI','LAI_data_requirement',CBF.OBSinfo.LAI)

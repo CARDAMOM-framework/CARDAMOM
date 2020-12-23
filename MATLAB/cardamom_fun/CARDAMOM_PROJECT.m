@@ -1588,7 +1588,7 @@ end
 function PXI=create_gcrun_cbf_files(PXI,MASK,OPT)
 
 if nargin<3;OPT.repeat=0;end
-if isstruct(OPT)==0;OPT.repeat=OPT;end
+if isstruct(OPT)==0;OPT0=OPT;clear OPT;OPT.repeat=OPT0;end
 if isfield(OPT,'gcdriobs')==0;OPT.gcdriobs='erai';end
 if isfield(OPT,'repeat')==0;OPT.repeat=0;end
 

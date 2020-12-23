@@ -34,7 +34,7 @@ int StringEndsWith(const char *str, const char *suffix)
 
 int CARDAMOM_DATA_CHECKS(DATA *DATA){
 /*General Checks*/
-printf("***CBF FILE SUMMARY***");
+printf("***CBF FILE SUMMARY***\n");
 printf("MODEL ID = %d\n",DATA->ID);
 printf("No days = %d\n",DATA->nodays);
 printf("Mean Rad = %f\n",DATA->meanrad);
@@ -51,7 +51,7 @@ printf("Number of obs. = %d\n",DATA->noobs); /*shuang*/
 printf("Ecological & Dynamic Constraints options\n");
 printf("EDC likelihood option = %d\n",DATA->EDC);
 printf("EDC diagnostics option = %d\n",DATA->EDCDIAG);
-printf("*****END OF CBF FILE SUMMARY***");
+printf("EDC random search (soon obsolete)= %i\n", DATA->edc_random_search);
 
 
 	printf("DATA->nee_annual_unc=%2.2f\n", DATA->nee_annual_unc);
@@ -64,6 +64,19 @@ printf("*****END OF CBF FILE SUMMARY***");
         printf("DATA->gpp_obs_unc%2.2f\n",DATA->gpp_obs_unc);
         printf("DATA->ch4_annual_unc=%2.2f\n",DATA->ch4_annual_unc);
         printf("DATA->ch4_obs_unc=%2.2f\n",DATA->ch4_obs_unc);
+
+/*
+int n;
+printf("PP \t PPU \t OP \t OPU\n");
+for (n=0;n<50;n++){printf("%2.2f \t %2.2f \t %2.2f \t %2.2f\n",DATA->parpriors[n],DATA->parpriorunc[n],DATA->otherpriors[n],DATA->otherpriorunc[n]);} 
+
+
+printf("PCrotate (soon obsolete) = %i\n",DATA->PCrotate);
+printf("Deltat = %2.2f\n",DATA->deltat);
+*/
+printf("*****END OF CBF FILE SUMMARY***");
+
+
 
 
 
@@ -160,16 +173,29 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 	//Step 3. Cast into existing data structure
 	DATA->ID=DATA->ncdf_data.ID;
 	/*Read to get info on NOMET*/
-        CARDAMOM_MODEL_LIBRARY(DATA);
+        memcpy(DATA->parpriors,DATA->ncdf_data.PARPRIORS.values,50*sizeof(double));
+        memcpy(DATA->parpriorunc,DATA->ncdf_data.PARPRIORUNC.values,50*sizeof(double));
+        memcpy(DATA->otherpriors,DATA->ncdf_data.OTHERPRIORS.values,50*sizeof(double));
+        memcpy(DATA->otherpriorunc,DATA->ncdf_data.OTHERPRIORSUNC.values,50*sizeof(double));
+
+	DATA->EDC=DATA->ncdf_data.EDC;
+	DATA->EDCDIAG=DATA->ncdf_data.EDCDIAG;
+	/*Note CARDAMOM_MODEL_LIBRARY requires two initiated quantities
+	1. DATA->ID	
+	2. DATA->otherpriorunc
+	3. DATA->EDC
+	4. DATA->EDCDIAG
+	This will be obsolete when calling things by ncdf_data availabilty
+	*/
+	CARDAMOM_MODEL_LIBRARY(DATA);
         /*This will eventually be obsolete*/
 
         DATA->nomet=((DALEC *)DATA->MODEL)->nomet;
+	DATA->noobs=-9999;	
 
 	DATA->LAT=DATA->ncdf_data.LAT;
 	DATA->nodays=DATA->ncdf_data.TIME_INDEX.length;
 	
-	DATA->EDC=DATA->ncdf_data.EDC;
-	DATA->EDCDIAG=DATA->ncdf_data.EDCDIAG;
 
 	DATA->gppabs=DATA->ncdf_data.GPP.gppabs;
 
@@ -243,10 +269,6 @@ if (DATA->ncdf_data.CH4.Uncertainty_Threshold<0){DATA->ncdf_data.CH4.Uncertainty
        DATA->ch4_obs_threshold=DATA->ncdf_data.CH4.Uncertainty_Threshold; 
 
 
-	memcpy(DATA->parpriors,DATA->ncdf_data.PARPRIORS.values,50*sizeof(double));
-	memcpy(DATA->parpriorunc,DATA->ncdf_data.PARPRIORUNC.values,50*sizeof(double));
-	memcpy(DATA->otherpriors,DATA->ncdf_data.OTHERPRIORS.values,50*sizeof(double));
-	memcpy(DATA->otherpriorunc,DATA->ncdf_data.OTHERPRIORSUNC.values,50*sizeof(double));
 
 
 	/*NEXT STEPS: figure out how to ceclafre MET and other memory*/
@@ -491,7 +513,7 @@ printf("***Dynamic allocation done!***\n");
   // memcpy(DATA->NEEunc,DATA->ncdf_data.NEE.values,DATA.nodays*sizeof(double));
    memcpy(DATA->CH4,DATA->ncdf_data.CH4.values,DATA->nodays*sizeof(double));
 
-
+DATA->noobs=12;
 
 printf("***Memcopy from netcdf done***\n");
 
@@ -541,6 +563,7 @@ DATA->meanprec = DATA->ncdf_data.TOTAL_PREC.reference_mean;
 
 
 
+
 	DATA->deltat=DATA->MET[DATA->nomet]-DATA->MET[0];
 
 
@@ -565,7 +588,7 @@ DATA->meanprec = DATA->ncdf_data.TOTAL_PREC.reference_mean;
 	c=0;for (n=0;n<DATA->nodays;n++){if (DATA->GPP[n]>-9998){DATA->gpppts[c]=n;c=c+1;}};
 	c=0;for (n=0;n<DATA->nodays;n++){if (DATA->LAI[n]>-9998){DATA->laipts[c]=n;c=c+1;}};
 	c=0;for (n=0;n<DATA->nodays;n++){if (DATA->NEE[n]>-9998){DATA->neepts[c]=n;c=c+1;}};
-	if (DATA->noobs>3){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->WOO[n]>-9998){DATA->woopts[c]=n;c=c+1;}}}
+	if (DATA->noobs>3){c=0;for (n=0;n<DATA->nodays;n++){printf("%2.2f\n",DATA->WOO[n]);if (DATA->WOO[n]>-9998){DATA->woopts[c]=n;c=c+1;}}}
 
 	if (DATA->noobs>4){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->ET[n]>-9998){DATA->etpts[c]=n;c=c+1;}}}
 
