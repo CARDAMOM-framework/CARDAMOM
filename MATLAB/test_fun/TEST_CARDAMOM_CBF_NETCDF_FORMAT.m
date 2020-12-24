@@ -8,6 +8,9 @@ if nargin==0
 CBF=CARDAMOM_READ_BINARY_FILEFORMAT('CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbf');
 end
 
+if isstr(CBF);CBF=CARDAMOM_READ_BINARY_FILEFORMAT(CBF);end
+
+
 
 %Guarantees CBF.RAW available (soon to be decomissioned).
 CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,'testnetcdf.cbf')
