@@ -130,6 +130,14 @@
 		\subsection{Parameters}
 			\begin{align*}
 				\texttt{pars[0]} &= \theta_\text{min}\\
+				\texttt{pars[1]} &= \text{\%GPP lost to autotrophic respiration ($f_\text{auto}$)}\\
+				\texttt{pars[2]} &= \text{\%NPP allocated to foliar pool}\\
+				&\qquad f_\text{fol} = (1-\texttt{pars[1]})\texttt{pars[2]}\\
+				\texttt{pars[12]} &= \text{\%(NPP not allocated to foliar pool) allocated to labile pool}\\
+				&\qquad f_\text{lab} = (1-\texttt{pars[1]})(1-\texttt{pars[2]})\texttt{pars[12]}\\
+				\texttt{pars[3]} &= \text{\%(NPP not allocated to foliar or labile pools) allocated to fine root pool}\\
+				&\qquad f_\text{roo} = (1-\texttt{pars[1]})(1-\texttt{pars[2]})(1-\texttt{pars[12]})\texttt{pars[3]}\\
+				&\qquad f_\text{woo} = (1-\texttt{pars[1]})(1-\texttt{pars[2]})(1-\texttt{pars[12]})(1-\texttt{pars[3]})\\
 				\texttt{pars[4]} &= \frac{1}{c_\text{ll}}\\
 				\texttt{pars[5]} &= \theta_\text{woo}\\
 				\texttt{pars[6]} &= \theta_\text{roo}\\
