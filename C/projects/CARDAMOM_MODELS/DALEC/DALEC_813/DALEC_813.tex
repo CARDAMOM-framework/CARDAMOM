@@ -58,7 +58,7 @@
 				\phi_\text{onset}^{(t)} &= \frac{\sqrt{2}}{\sqrt{\pi}}\times\qty(\frac{-\log(1-c_\text{lr})}{c_\text{ronset}})\times\exp[-\qty(\frac{s\sqrt{2}}{c_\text{ronset}}\sin\qty(\frac{t-d_\text{onset}-0.6245c_\text{ronset}}{s}))^2],\\
 				\phi_\text{fall}^{(t)} &= \frac{\sqrt{2}}{\sqrt{\pi}}\times\qty(\frac{-\log(1-c_\text{ll})}{c_\text{rfall}})\times\exp[-\qty(\frac{s\sqrt{2}}{c_\text{rfall}}\sin\qty(\frac{t - d_\text{fall} - \psi_f}{s}))^2].
 			\end{align}
-			Here $c_\text{ronset}$ and $c_\text{rfall}$ are the labile release and leaf fall periods, $d_\text{onset}$ and $d_\text{fall}$ are the leaf onset and fall days, $c_\text{lr}$ and $c_\text{ll}$ are the annual labile C release and leaf loss fractions, respectively, and $s = \frac{365.25}{\pi}$.
+			Here $c_\text{ronset}$ and $c_\text{rfall}$ are the labile release and leaf fall periods, $d_\text{onset}$ and $d_\text{fall}$ are the leaf onset and fall days, $c_\text{lr}$ and $c_\text{ll}$ are the annual labile C release and leaf loss fractions, respectively, and $s = \frac{365.25}{\pi}$.  $\psi_f$ is the solution to a transcendental equationm discussed {\color{red}in another document}.
 
 		\subsection{Fire Dynamics}
 			Denote $\qty[C_\text{lab}^{(t+1)}, C_\text{fol}^{(t+1)}, C_\text{roo}^{(t+1)}, C_\text{woo}^{(t+1)}, C_\text{lit}^{(t+1)}, C_\text{som}^{(t+1)}] = \vec{C}^{(t+1)} = \text{DALEC}_{813}^\text{fire}(\vec{C}^{(t+1)'})$.  The fire dynamics are given by
