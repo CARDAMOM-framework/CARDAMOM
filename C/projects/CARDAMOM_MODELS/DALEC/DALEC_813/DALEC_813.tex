@@ -56,7 +56,7 @@
 			$\phi_\text{onset}^{(t)}$ and $\phi_\text{fall}^{(t)}$ are phenological functions describing the rates of labile to foliar and foliar to litter pool transfer on day $t$:
 			\begin{align}
 				\phi_\text{onset}^{(t)} &= \frac{\sqrt{2}}{\sqrt{\pi}}\times\qty(\frac{-\log(1-c_\text{lr})}{c_\text{ronset}})\times\exp[-\qty(\frac{s\sqrt{2}}{c_\text{ronset}}\sin\qty(\frac{t-d_\text{onset}-0.6245c_\text{ronset}}{s}))^2],\\
-				\phi_\text{fall}^{(t)} &= \frac{\sqrt{2}}{\sqrt{\pi}}\times\qty(\frac{-\log(1-c_\text{ll})}{c_\text{rfall}})\times\exp[-\qty(\frac{s\sqrt{2}}{c_\text{rfall}}\sin\qty(\frac{t - c_\text{rfall} - \psi_f}{s}))^2].
+				\phi_\text{fall}^{(t)} &= \frac{\sqrt{2}}{\sqrt{\pi}}\times\qty(\frac{-\log(1-c_\text{ll})}{c_\text{rfall}})\times\exp[-\qty(\frac{s\sqrt{2}}{c_\text{rfall}}\sin\qty(\frac{t - d_\text{fall} - \psi_f}{s}))^2].
 			\end{align}
 			Here $c_\text{ronset}$ and $c_\text{rfall}$ are the labile release and leaf fall periods, $d_\text{onset}$ and $d_\text{fall}$ are the leaf onset and fall days, $c_\text{lr}$ and $c_\text{ll}$ are the annual labile C release and leaf loss fractions, respectively, and $s = \frac{365.25}{\pi}$.
 
