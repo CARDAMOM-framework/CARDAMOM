@@ -175,8 +175,6 @@ if (n==0){
   FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23];
   /*Put this evapotranspiration flux into the LAI_KNORR input list*/
   lai_var_list[18]=FLUXES[f+28];
-  /*Plant-available water*/
-  POOLS[p+6]=pars[26];
   /*Put this plant-available soil water into the LAI_KNORR input list*/
   lai_var_list[17]=POOLS[p+6];
   /*Initialize phenology memory of air-temperature */
