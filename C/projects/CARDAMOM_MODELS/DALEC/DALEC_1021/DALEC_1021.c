@@ -158,87 +158,35 @@ f=nofluxes*n;
 /*LAI*/
 /* for the first iteration we compute an initial value of
   evapotranspiration and soil water for use in the LAI_KNORR module */
-if (n==0){
-  /*printf("deltat = %2.7f\n",deltat);
-  */LAI[n]=POOLS[p+1]/pars[16];
-  lai_var_list[2]=pars[36];
-  /*GPP*/
-  gpppars[0]=pars[36];
-  gpppars[1]=DATA.MET[m+2];
-  gpppars[2]=DATA.MET[m+1];
-  gpppars[4]=DATA.MET[m+4];
-  gpppars[5]=DATA.MET[m+5];
-  gpppars[7]=DATA.MET[m+3];
-  /*GPP*/
-  FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
-  /*Evapotranspiration (VPD = DATA.MET[m+7])*/
-  FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23];
-  /*Put this evapotranspiration flux into the LAI_KNORR input list*/
-  lai_var_list[18]=FLUXES[f+28];
-  /*Put this plant-available soil water into the LAI_KNORR input list*/
-  lai_var_list[17]=POOLS[p+6];
-  /*Initialize phenology memory of air-temperature */
-  lai_var_list[5]=pars[37]+3*pars[38];
-  /*Initialize phenology memory of water/structural limitation */
-  lai_var_list[11]=pars[42];
-}
-
-lai_met_list[0]=(DATA.MET[m+2] + DATA.MET[m+1])/2.0; /* meantemp, deg C*/
-lai_var_list[0]=n; /*current timestep index of model run*/
-lai_var_list[19]=deltat; /*time increment of model run*/
-lai_var_list[1]=pars[36]; /*initial LAI parameter*/
-lai_var_list[3]=pars[37]; /*T_phi*/
-lai_var_list[4]=pars[38]; /*T_r*/
-lai_var_list[6]=pars[39]; /*tau_m*/
-lai_var_list[7]=pars[40]; /*plgr*/
-lai_var_list[8]=pars[41]; /*k_L*/
-lai_var_list[9]=pars[42]; /*lambda_max*/
-lai_var_list[10]=pars[43]; /*tau_W*/
-lai_var_list[12]=DATA.LAT; /*latitude*/
-lai_var_list[13]=DATA.MET[m+5]; /*day of year*/
-lai_var_list[14]=pi; /*pi*/
-lai_var_list[15]=pars[44]; /*t_c*/
-lai_var_list[16]=pars[45]; /*t_r*/
-// Run KNORR LAI module
-LAI[n]=LAI_KNORR(lai_met_list, lai_var_list)[0];
-FLUXES[f+34] = LAI_KNORR(lai_met_list, lai_var_list)[0];  // LAI (environmental target)
-FLUXES[f+35] = LAI_KNORR(lai_met_list, lai_var_list)[1];  // T_memory
-FLUXES[f+36] = LAI_KNORR(lai_met_list, lai_var_list)[2];  // lambda_max_memory
-FLUXES[f+37] = LAI_KNORR(lai_met_list, lai_var_list)[3]/deltat;  // dlambda/dt (units: LAI per day)
-FLUXES[f+42] = LAI_KNORR(lai_met_list, lai_var_list)[4];  // fraction of plants above temperature threshold
-FLUXES[f+43] = LAI_KNORR(lai_met_list, lai_var_list)[5];  // fraction of plants above day length threshold
-
-/*Calculate the initial foliar carbon pool*/
-// if (n==0){
-  // POOLS[p+1]=FLUXES[f+34]*pars[16];
-// }
-
-/* if target LAI change (in units of carbon flux) exceeds the available carbon from labile pool, we down-scale the 
-LAI increment (dlambda/dt) and the KNORR LAI */
-// if (FLUXES[f+37]*FLUXES[f+40] + POOLS[p+1]/pars[46] > POOLS[p+0]/deltat){
-if (FLUXES[f+37]*pars[16] > POOLS[p+0]/deltat){
-  /* flag for carbon availability limitation (1 = labile C limits LAI growth) */
-  FLUXES[f+38]=1.0;
-  /* down-scale LAI by the difference between what is requested and what is available */
-  /* - we compute the difference between the KNORR LAI rate of change (in C-flux units) and 
-       what is available from C-labile. This is in g C m-2 d-1.
-     - then we need to compute how much LAI should be down-scaled by, so we compute the LAI 
-       per model timestep */
-  FCdiff = (FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46]) - POOLS[p+0]/deltat;
-  LAIdiff = (FCdiff*deltat)/pars[16];
-  // FLUXES[f+34] = FLUXES[f+34] - LAIdiff;
-  /* set dlambdadt to be available carbon in C-labile, divided by LMCA to get it back into LAI units*/
-  // FLUXES[f+37]=(POOLS[p+0]/deltat)/FLUXES[f+40];
-}
-else {
-	/* flag for carbon availability limitation (1 = labile C limits LAI growth) */
-	FLUXES[f+38]=0.0;
-}
+//if (n==0){
+//  /*printf("deltat = %2.7f\n",deltat);
+//  */LAI[n]=POOLS[p+1]/pars[16];
+//  lai_var_list[2]=pars[36];
+//  /*GPP*/
+//  gpppars[0]=pars[36];
+//  gpppars[1]=DATA.MET[m+2];
+//  gpppars[2]=DATA.MET[m+1];
+//  gpppars[4]=DATA.MET[m+4];
+//  gpppars[5]=DATA.MET[m+5];
+//  gpppars[7]=DATA.MET[m+3];
+//  /*GPP*/
+//  FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
+//  /*Evapotranspiration (VPD = DATA.MET[m+7])*/
+//  FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23];
+//  /*Put this evapotranspiration flux into the LAI_KNORR input list*/
+//  lai_var_list[18]=FLUXES[f+28];
+//  /*Put this plant-available soil water into the LAI_KNORR input list*/
+//  lai_var_list[17]=POOLS[p+6];
+//  /*Initialize phenology memory of air-temperature */
+//  lai_var_list[5]=pars[37]+3*pars[38];
+//  /*Initialize phenology memory of water/structural limitation */
+//  lai_var_list[11]=pars[42];
+//}
 
 LAI[n]=POOLS[p+1]/pars[16]; 
 
 /*GPP*/
-  gpppars[0]=FLUXES[f+34];
+  gpppars[0]=LAI[n];
   gpppars[1]=DATA.MET[m+2];
   gpppars[2]=DATA.MET[m+1];
   gpppars[4]=DATA.MET[m+4];
@@ -256,11 +204,73 @@ FLUXES[f+1]=exp(pars[9]*0.5*(DATA.MET[m+2]+DATA.MET[m+1]-DATA.meantemp))*((DATA.
 /*respiration auto*/
 FLUXES[f+2]=pars[1]*FLUXES[f+0];
 
+//KNORR LAI
+if (n==0){
+  /*Initialize phenology memory of air-temperature */
+  lai_var_list[5]=pars[37]+3*pars[38];
+  /*Initialize phenology memory of water/structural limitation */
+  lai_var_list[11]=pars[42];
+}
+lai_met_list[0]=(DATA.MET[m+2] + DATA.MET[m+1])/2.0; /* meantemp, deg C*/
+lai_var_list[0]=n; /*current timestep index of model run*/
+lai_var_list[19]=deltat; /*time increment of model run*/
+lai_var_list[1]=LAI[n]; /*initial LAI parameter*/
+lai_var_list[2]=LAI[n];
+lai_var_list[3]=pars[37]; /*T_phi*/
+lai_var_list[4]=pars[38]; /*T_r*/
+lai_var_list[6]=pars[39]; /*tau_m*/
+lai_var_list[7]=pars[40]; /*plgr*/
+lai_var_list[8]=pars[41]; /*k_L*/
+lai_var_list[9]=pars[42]; /*lambda_max*/
+lai_var_list[10]=pars[43]; /*tau_W*/
+lai_var_list[12]=DATA.LAT; /*latitude*/
+lai_var_list[13]=DATA.MET[m+5]; /*day of year*/
+lai_var_list[14]=pi; /*pi*/
+lai_var_list[15]=pars[44]; /*t_c*/
+lai_var_list[16]=pars[45]; /*t_r*/
+/*Put the plant-available soil water into the LAI_KNORR input list*/
+lai_var_list[17]=POOLS[p+6];
+/*Put the evapotranspiration flux into the LAI_KNORR input list*/
+lai_var_list[18]=FLUXES[f+28];
+// Run KNORR LAI module
+// - this computes a potential LAI
+FLUXES[f+34] = LAI_KNORR(lai_met_list, lai_var_list)[0];  // LAI (environmental target)
+FLUXES[f+35] = LAI_KNORR(lai_met_list, lai_var_list)[1];  // T_memory
+FLUXES[f+36] = LAI_KNORR(lai_met_list, lai_var_list)[2];  // lambda_max_memory
+FLUXES[f+37] = LAI_KNORR(lai_met_list, lai_var_list)[3]/deltat;  // dlambda/dt (units: LAI per day)
+FLUXES[f+42] = LAI_KNORR(lai_met_list, lai_var_list)[4];  // fraction of plants above temperature threshold
+FLUXES[f+43] = LAI_KNORR(lai_met_list, lai_var_list)[5];  // fraction of plants above day length threshold
+/*Update environmental memory variables for next iteration*/
+/*temperature memory*/
+lai_var_list[5]=FLUXES[f+35];//POOLS[nxp+10];
+/*water/structural memory*/
+lai_var_list[11]=FLUXES[f+36];//POOLS[nxp+11];
+/* if target LAI change (in units of carbon flux) exceeds the available carbon from labile pool, we down-scale the 
+LAI increment (dlambda/dt) and the KNORR LAI */
+// if (FLUXES[f+37]*FLUXES[f+40] + POOLS[p+1]/pars[46] > POOLS[p+0]/deltat){
+//if (FLUXES[f+37]*pars[16] > POOLS[p+0]/deltat){
+if (FLUXES[f+37]*pars[16] > POOLS[p+0]/deltat){
+  /* flag for carbon availability limitation (1 = labile C limits LAI growth) */
+  FLUXES[f+38]=1.0;
+  //FCdiff = (FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46]) - POOLS[p+0]/deltat;
+  //LAIdiff = (FCdiff*deltat)/pars[16];
+  // FLUXES[f+34] = FLUXES[f+34] - LAIdiff;
+  /* set dlambdadt to be available carbon in C-labile, divided by LMCA to get it back into LAI units*/
+  // FLUXES[f+37]=(POOLS[p+0]/deltat)/FLUXES[f+40];
+  //FCdeltafoliar = POOLS[p+0]/deltat;  // only take what is available from the labile pool
+  //FCdiff = FCpotdeltafoliar - FCdeltafoliar;
+  //LAIdiff = (FCdiff*deltat)/pars[16];
+  //FLUXES[f+37]=POOLS[p+0]/deltat;
+}
+else {
+  /* flag for carbon availability limitation (1 = labile C limits LAI growth) */
+  FLUXES[f+38]=0.0;
+}
+
+
 /*requested carbon from labile to foliar (governed by LAI_KNORR)*/
-// FLUXES[f+32]=fmax(fmin(FLUXES[f+37]*FLUXES[f+40] + POOLS[p+1]/pars[46], POOLS[p+0]/deltat), 0);
 FLUXES[f+32]=fmax(FLUXES[f+37]*pars[16], 0);
 /*foliar to litter carbon flux(governed by LAI_KNORR)*/
-// FLUXES[f+33]=-fmin(fmin(FLUXES[f+37]*FLUXES[f+40] + POOLS[p+1]/pars[46], POOLS[p+0]/deltat), 0) + POOLS[p+1]/pars[46];
 FLUXES[f+33]=-fmin(FLUXES[f+37]*pars[16], 0);
 /*leaf production*/
 FLUXES[f+3] = 0;
@@ -293,7 +303,6 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 
         POOLS[nxp+0] = POOLS[p+0] + (FLUXES[f+4]-FLUXES[f+7])*deltat;
         POOLS[nxp+1] = POOLS[p+1] + (FLUXES[f+7] - FLUXES[f+9])*deltat;
-        // POOLS[nxp+1] = FLUXES[f+34]*pars[16];
         POOLS[nxp+2] = POOLS[p+2] + (FLUXES[f+5] - FLUXES[f+11])*deltat;
         POOLS[nxp+3] = POOLS[p+3] +  (FLUXES[f+6] - FLUXES[f+10])*deltat;
         POOLS[nxp+4] = POOLS[p+4] + (FLUXES[f+9] + FLUXES[f+11] - FLUXES[f+12] - FLUXES[f+14])*deltat; 
@@ -356,19 +365,8 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 	  - FE_\Lambda^{(t+1)} = \Lambda^{(t+1)'} * BA ( k_{factor(i)} + (1 - k_{factor(i)}) r )*/
 	FLUXES[f+39] = FLUXES[f+34]*DATA.MET[m+6]*(CF[1] + (1-CF[1])*(1-pars[30]));
 	/*Subtract fire loss LAI from current LAI*/
-	FLUXES[f+34] = FLUXES[f+34] - FLUXES[f+39];
-  /*Update variables for LAI_KNORR to be used in next iteration*/
-  /*plant-available water*/
-  lai_var_list[17]=POOLS[nxp+6]; /*pasm = PAW*/
-  /*evapotranspiration variables*/
-  lai_var_list[18]=FLUXES[f+28]; /*ET*/
-  /*current LAI*/
-  lai_var_list[2]=FLUXES[f+34];//POOLS[nxp+9];
-  /*temperature memory*/
-  lai_var_list[5]=FLUXES[f+35];//POOLS[nxp+10];
-  /*water/structural memory*/
-  lai_var_list[11]=FLUXES[f+36];//POOLS[nxp+11];
-
+	// FLUXES[f+34] = FLUXES[f+34] - FLUXES[f+39];
+  
 }
 
 return 0;
