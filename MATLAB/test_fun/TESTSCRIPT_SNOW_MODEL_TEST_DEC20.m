@@ -1,4 +1,4 @@
-function TEMPSCRIPT_SNOW_MODEL_TEST_DEC20
+function TESTSCRIPT_SNOW_MODEL_TEST_DEC20
 
 keyboard
 
@@ -18,6 +18,7 @@ PARS.tsupercool_liq =  PARS.tp  - (PARS.IE_at_0C_liquid)/PARS.cliq; %[K];
 
 %Snow precip (assuming liquid precip = 0)
 PRECsnow = [1,1,1,1,0,0,0,0,0,1,1,1]; %mm/day (liquid water equivalent)
+AIRtemp= [-5,-5,-5,-3,0,4,10,10,4,-2,-3,-5]; %mm/day (liquid water equivalent)
 deltat=365.25/12;
 %Assume zero soil-snow flux
 
@@ -46,9 +47,16 @@ Rnet = SWdown + LWdown - SWup - Lwup;
 
 %"S" is state variable
 %Snow SWE in Jan 1st  = 50 mm
-SNOW(1) = 50;
+%Units mm of liquid water
+%1mm/m2 = 1kg H2O
+%Meaning mm/m2 and kg can be used interchangeably.
+SNOW_H2O(1) = 50;
 %Snow temp initial condition (K)
 SNOW_TEMP(1) = 268;
+
+
+
+
 
 
 %E_tsw = M_tsw *c_i*T_tsw T_tsw = E_tsw/(c_i*M_tsw)13:34
@@ -59,20 +67,55 @@ FUNC.snow_fliq=@(snow_ie, PARS) min(max((snow_ie - PARS.IE_at_0C_solid )/ (PARS.
 %FUNC.snow_temp@(
 
     
-    
-    
-snow2energy= @(snowtemp,PARS,fliq) (1.0 - fliq) * PARS.cice * snowtemp & + fliq * PARS.cliq * (snowtemp - PARS.tsupercool_liq) ;
+ 
+FUNC.snow2energy= @(snowtemp,PARS,fliq) (1.0 - fliq) * PARS.cice * snowtemp + fliq * PARS.cliq * (snowtemp - PARS.tsupercool_liq) ;
 
-%SNOW_IE(1) = ;
+
+
+%Snow internal energy
+SNOW_IE(1) = FUNC.snow2energy(SNOW_TEMP(1), PARS, 0);
+
+
+SNOW_LF(1)=FUNC.snow_fliq(SNOW_IE(1) , PARS);
+
 
 
 
 %dSWE/dt = PRECsnow - Sublimation - Melt
 for m=1:12
     
-    %MELT (m) = 
+    %H2O contribution to snow pack
+    SNOW_H2O(m+1) = SNOW_H2O(m) +PRECsnow (m);
     
-    SNOW(m+1) =SNOW(m) + PRECsnow(m)*deltat  - ET(m) - MELT(m);
+    %NEXT STEP, calculate PRECsnow_IE
+    %Re-analysis data includes snow:rain fraction
+         SNOW_IE(m+1) = SNOW_IE(m) + FUNC.snow2energy(AIRtemp(m)+PARS.tp,PARS,0) *PRECsnow_IE (m);
+
+
+    
+    %    FUNC.snow2energy(SNOW_TEMP(m),PARS,
+
+    FUNC.snow_fliq
+    
+    %Snow melt at each timestep
+    %TO DO NEXT:
+    %Calculate melt as a function of change in liquid fraction
+    %Calculate liquid fraction as a function of change in energy
+    %"Melt" only occurs if SNOW_LF(t+1) - SNOW_LF(t) > 0;
+    %"Re-Freezing" occurs if SNOW_LF(t+1) - SNOW_LF(t) < 0;
+    %Option 1 = prognostically track SNOW_LF, but ALSO decide how much (if
+    %not all) leaves snowpack
+    %Option 2 = SNOW_LF is always zero (so snow is drained/dry at
+    %begining of each iteration), so no refreezing.
+    
+    MELT(m) = (SNOW_TEMP(1)  -  PARS.tp) *PARS.cice * (SNOW_H2O(m)*(1-SNOW_LF(m));
+    
+    
+      
+    %Snow H2O balance
+    SNOW_H2O(m+1) =SNOW_H2O(m) + PRECsnow(m)*deltat  - ET(m) - MELT(m);
+    %Snow internal energy
+    %SNOW_IE(m+1) =SNOW_IE(m) + 
     
 end
 
