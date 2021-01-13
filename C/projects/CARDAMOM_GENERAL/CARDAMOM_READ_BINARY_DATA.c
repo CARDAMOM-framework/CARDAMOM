@@ -167,6 +167,9 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 	}
 
 	if (fileIsCDF){
+	METADATA metadata;
+	DATA->metadata=metadata;
+
 	  //Step 1.Data file is of the newer NetCDF format
 	  CARDAMOM_READ_NETCDF_DATA(ncfilename, &(DATA->ncdf_data));
 
@@ -545,9 +548,9 @@ for (n=0;n<DATA->nodays;n++){
 	DATA->MET[m+6]=DATA->ncdf_data.BURNED_AREA.values[n];
 	DATA->MET[m+7]=DATA->ncdf_data.VPD.values[n];
 	DATA->MET[m+8]=DATA->ncdf_data.TOTAL_PREC.values[n];
-
 	}
 
+	DATA->metadata.deltat=DATA->ncdf_data.TIME_INDEX.values[1] - DATA->ncdf_data.TIME_INDEX.values[0];
 
 
 /*Populate with mean fields*/

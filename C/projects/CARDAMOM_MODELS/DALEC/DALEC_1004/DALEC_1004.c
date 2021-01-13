@@ -2,13 +2,212 @@
 #include "../../../DALEC_CODE/DALEC_ALL/ACM.c"
 #include "../../../DALEC_CODE/DALEC_ALL/offset.c"
 #include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
+#include "EDC1_1004.c"
+#include "EDC2_1004.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
-int DALEC_1000(DATA DATA, double const *pars)
+
+
+int MOUNT_DALEC_1004_PARS(DATA * DATA){
+
+/*Step 1. Index MODULE*/
+DATA->MODULE_IDX.MODELS.dalec_1004=DATA->nopars;
+
+/*Populate with module parameters*/
+double parmin[36], parmax[36];
+char *parname[36];
+
+parname[0]="Decomposition rate";
+parmin[0]=0.00001;
+parmax[0]=0.01;
+
+parname[1]="Fraction of GPP repsired";
+parmin[1]=0.2;
+parmax[1]=0.8;
+
+parname[2]="Fraction of (1-fgpp) to foliage";
+parmin[2]=0.01;
+parmax[2]=0.5;
+
+parname[3]="Fraction to roots";
+parmin[3]=0.01;
+parmax[3]=1;
+
+parname[4]="Leaf Lifespan";
+parmin[4]=1.001;
+parmax[4]=8;
+
+parname[5]="TOR wood [yr-1]";
+parmin[5]=0.000025;
+parmax[5]=0.001;
+
+parname[6]="TOR roots";
+parmin[6]=0.0001;
+parmax[6]=0.01;
+
+parname[7]="TOR litter";
+parmin[7]=0.0001;
+parmax[7]=0.01;
+
+parname[8]="TOR SOM";
+parmin[8]=0.0000001;
+parmax[8]=0.001;
+
+parname[9]="Temp factor (Q10)";
+parmin[9]=0.018;
+parmax[9]=0.08;
+
+parname[10]="ACM canopy efficiency";
+parmin[10]=5;
+parmax[10]=50;
+
+parname[11]="Leaf onset day";
+parmin[11]=365.25;
+parmax[11]=365.25*4;
+
+parname[12]="Fraction to Clab";
+parmin[12]=0.01;
+parmax[12]=0.5;
+
+parname[13]="Clab Release period";
+parmin[13]=365.25/12;
+parmax[13]=100;
+
+
+parname[14]="Leaf fall day";
+parmin[14]=365.25;
+parmax[14]=365.25*4;
+
+parname[15]="Leaf fall period";
+parmin[15]=365.25/12;
+parmax[15]=150;
+
+/*LMCA*/
+/*Kattge et al. 2011*/
+/*Kattge et al., provide a range of 10 400 g m-2, i.e. 5 200 gC m-2*/
+parname[16]="LCMA [gC/m2]";
+parmin[16]=5;
+parmax[16]=200;
+
+/*C labile*/
+parname[17]="C labile @ t=0";
+parmin[17]=1.0;
+parmax[17]=2000.0;
+
+/*C foliar*/
+parname[18]="C foliar @ t=0";
+parmin[18]=1.0;
+parmax[18]=2000.0;
+
+/*C roots*/
+parname[19]="C roots @ t=0";
+parmin[19]=1.0;
+parmax[19]=2000.0;
+
+/*C_wood*/
+parname[20]="C wood @ t=0";
+parmin[20]=1.0;
+parmax[20]=100000.0;
+
+/*C litter*/
+parname[21]="C litter @ t=0 [gC]";
+parmin[21]=1.0;
+parmax[21]=2000.0;
+
+/*C_som*/
+parname[22]="C som @ t=0 [gC]";
+parmin[22]=1.0;
+parmax[22]=200000.0;
+
+/*IWUE: GPP*VPD/ET: gC/kgH2o *hPa*/
+parname[23]="iWUE";
+parmin[23]=10;
+parmax[23]=50;
+
+/*Runoff focal point (~maximum soil storage capacity x 4)*/
+parname[24]="Q focal point [mm]";
+parmin[24]=1;
+parmax[24]=100000;
+
+/*"Wilting point"*/
+parname[25]="Wilting point [mm]";
+parmin[25]=1;
+parmax[25]=10000;
+
+/*"Bucket at t0"*/
+parname[26]="PAW @ t=0 [mm]";
+parmin[26]=1;
+parmax[26]=10000;
+
+parname[27]="Foliar biomass CF";
+parmin[27]=0.01;
+parmax[27]=1;
+
+/*"Ligneous" biomass CF".*/
+parname[28]="Stem biomass CF";
+parmin[28]=0.01;
+parmax[28]=1;
+
+parname[29]="DOM CF";
+parmin[29]=0.01;
+parmax[29]=1;
+
+parname[30]="Fire resilience factor";
+parmin[30]=0.01;
+parmax[30]=1;
+
+parname[31]="Lab pool lifespan (yrs)";
+parmin[31]=1.001;
+parmax[31]=8;
+
+parname[32]="Moisture factor";
+parmin[32]=0.01;
+parmax[32]=1;
+
+/*PAW->PUW runoff fraction*/
+parname[33]="PAW->PUW Q fraction";
+parmin[33]=0.01;
+parmax[33]=1;
+
+/*PUW Runoff focal point (~maximum soil storage capacity x 4)*/
+parname[34]="Runoff focal point [mm]";
+parmin[34]=1;
+parmax[34]=100000;
+
+parname[35]="PUW pool";
+parmin[35]=1;
+parmax[35]=10000;
+
+int n;
+for (n=0;n<36;n++){
+ADD_PARAMETER_TO_STACK(DATA,parname[n],parmin[n],parmax[n]);}
+
+
+return 0;
+}
+
+
+
+int DALEC_1004(DATA DATA, double const *pars)
 {
 
+
+/*Step 1. Calculate EDC1, chec
+*/
+DALEC *MODEL=(DALEC *)DATA.MODEL;
+
+/*Copy default structure*/
+/*EDCD=*((DALEC *)DATA.MODEL)->EDCD;*/
+int k;
+double P=0;
+int EDC=1;
+EDC=ipow(EDC1_1004(pars,DATA, MODEL->EDCD),DATA.EDC);
+P=P+log((double)EDC);
+
+
+if (EDC==1 | MODEL->EDCD->DIAG>0){
 double gpppars[11],pi;
 /*C-pools, fluxes, meteorology indices*/
 int p,f,m,nxp, i;
@@ -18,12 +217,12 @@ pi=3.1415927;
 
 /*constant gpppars terms*/
 gpppars[3]=1;
-gpppars[6]=DATA.ncdf_data.LAT;
+gpppars[6]=DATA.LAT;
 gpppars[8]=-2.0;
 gpppars[9]=1.0;
 gpppars[10]=pi;
 
-double deltat=DATA.metadata.deltat;
+double deltat=DATA.deltat;
 int nr=DATA.nodays;
 
 
@@ -222,7 +421,7 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 	if (POOLS[p+6]>pars[24]/2){FLUXES[f+29]=(POOLS[p+6]-pars[24]/4)/deltat*(1-pars[33]);
         FLUXES[f+30]=(POOLS[p+6]-pars[24]/4)/deltat*pars[33]/(1-pars[33]);}
 	if (POOLS[p+7]>pars[34]/2){FLUXES[f+31]=(POOLS[p+7]-pars[34]/4)/deltat;}
-	/*Plant-available water ODE*/
+
 	POOLS[nxp+6]=POOLS[p+6] + (-FLUXES[f+29] - FLUXES[f+30] + DATA.MET[m+8] - FLUXES[f+28])*deltat;		
 	/*Plant-unavailable water budget*/
 
@@ -261,7 +460,16 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 
 }
 
-return 0;
+
+EDC=ipow(EDC2_1004(pars,DATA, MODEL->EDCD),DATA.EDC);
+P=P+log((double)EDC);
+for (k=0;k<100;k++){printf("%i ",DATA.M_EDCD[k]);}
+printf("\n");
+
+}
+printf("***");
+
+return P;
 }
 
 
