@@ -37,7 +37,14 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   deltat=(double)var_list[19];
   lambda=(double)var_list[2];
   T_init=(double)0.0;
-  T_phi=(double)var_list[3];
+  if (var_list[3] < 100.0) {
+    // assume temperature parameter is in degrees C
+    T_phi=(double)var_list[3];
+  }
+  else {
+    // assume temperature parameter is in degrees kelvin
+    T_phi=(double)var_list[3]-273.15;
+  }
   T_r=(double)var_list[4];
   T_memory=(double)var_list[5];
   tau_m=(double)1.0; //var_list[6];
@@ -94,11 +101,13 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
 
   dlambdadt = lambda_next - lambda;
 
-  static double return_arr[4];
+  static double return_arr[6];
   return_arr[0] = lambda_next;
   return_arr[1] = T;
   return_arr[2] = laim;
   return_arr[3] = dlambdadt;
+  return_arr[4] = f_T;
+  return_arr[5] = f_d;
   return return_arr;
 }
 
