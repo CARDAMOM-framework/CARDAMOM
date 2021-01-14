@@ -365,7 +365,7 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 	  - FE_\Lambda^{(t+1)} = \Lambda^{(t+1)'} * BA ( k_{factor(i)} + (1 - k_{factor(i)}) r )*/
 	FLUXES[f+39] = FLUXES[f+34]*DATA.MET[m+6]*(CF[1] + (1-CF[1])*(1-pars[30]));
 	/*Subtract fire loss LAI from current LAI*/
-	// FLUXES[f+34] = FLUXES[f+34] - FLUXES[f+39];
+	FLUXES[f+34] = FLUXES[f+34] - FLUXES[f+39];
   
 }
 
