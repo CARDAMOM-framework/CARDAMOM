@@ -164,12 +164,12 @@ CARDADATA->parmin[36]=0.1;
 CARDADATA->parmax[36]=10.0;
 
 /*Mean temperature at leaf onset (T_phi) (degrees kelvin)*/
-CARDADATA->parmin[37]=273.15;
+CARDADATA->parmin[37]=268.15;
 CARDADATA->parmax[37]=323.15;
 
 /*Spatial range of mean temperature at leaf onset (T_r) (degrees C or degrees kelvin)*/
 CARDADATA->parmin[38]=0.1;
-CARDADATA->parmax[38]=3.0;
+CARDADATA->parmax[38]=10.0;
 
 /*Averaging period for temperature growth trigger T (time units of model), usually kept constant*/
 CARDADATA->parmin[39]=1.0;
@@ -180,7 +180,7 @@ CARDADATA->parmin[40]=0.001;
 CARDADATA->parmax[40]=0.5;
 
 /*Inverse of leaf longevity during senescence period (inverse of model time units; e.g. days-1 or months-1)*/
-CARDADATA->parmin[41]=0.01;
+CARDADATA->parmin[41]=0.001;
 CARDADATA->parmax[41]=0.5;
 
 /*Intrinsic maximum LAI (m^2 m^-2)*/
@@ -192,12 +192,12 @@ CARDADATA->parmin[43]=0.1;
 CARDADATA->parmax[43]=300;
 
 /*Mean daylength at leaf shedding (t_c; in units of hours sunlight per day)*/
-CARDADATA->parmin[44]=8;
-CARDADATA->parmax[44]=20;
+CARDADATA->parmin[44]=2;
+CARDADATA->parmax[44]=22;
 
 /*Spatial range of mean daylength at leaf shedding (t_r)*/
 CARDADATA->parmin[45]=0.1;
-CARDADATA->parmax[45]=3.0;
+CARDADATA->parmax[45]=6.0;
 
 /*Foliar carbon turnover rate*/
 CARDADATA->parmin[46]=100;
