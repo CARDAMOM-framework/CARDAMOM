@@ -149,7 +149,7 @@ PARS.init=[100,5];
 %estimates of parameter uncertainty.
 %
 %Example: 
-MCO.nout=10000;
+MCO.nout=100000;
 MCO.printrate=10000;
 MCO.samplerate=20;
 MCO.nadapt=2;

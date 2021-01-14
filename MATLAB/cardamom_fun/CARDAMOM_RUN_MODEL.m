@@ -260,8 +260,12 @@ if OPT.extended==1
     
   %Water stress
   if size(CBR.POOLS,3)>6
-      if OPT.MODEL.ID<=8 | any(ismember([801,802,803,804,805,806,807,808,809,810,811,812,813,10,1000,1001,1002,1003],OPT.MODEL.ID))
+      if OPT.MODEL.ID<=8 | any(ismember([801,802,803,804,805,806,807,808,809,810,811,812,813,10,1000,1001,1002,1003,1005],OPT.MODEL.ID))
     CBR.H2OSTRESS=min([PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);
+    elseif OPT.MODEL.ID==1030
+        CBR.PAWSTRESS=min([PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);        
+        CBR.VPDSTRESS=1./(1+repmat(CBF.MET(:,8)',[size(CBR.PARS(:,37),1),1])./repmat(CBR.PARS(:,37),[1,size(CBF.MET(:,8),1)]));
+        CBR.H2OSTRESS=CBR.PAWSTRESS.*CBR.VPDSTRESS
       elseif OPT.MODEL.ID==9
           CBR.H2OSTRESS=1-exp(-[PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]));
       end
@@ -319,6 +323,7 @@ if any(ismember([1000,1001,1002,1003],OPT.MODEL.ID))
         CBR.RO=CBR.FLUXES(:,:,30)+CBR.FLUXES(:,:,32)+CBR.FLUXES(:,:,33);
     elseif OPT.MODEL.ID==1000 | OPT.MODEL.ID==1002;
         CBR.RO=CBR.FLUXES(:,:,30)+CBR.FLUXES(:,:,32);
+    end
     
 elseif any(ismember([811,812,813],OPT.MODEL.ID)) 
     %Plant-available EWT
@@ -332,19 +337,16 @@ end
     
     
     
-    
-    
-    
-    
 
-
-if any(ismember([809,811,812,813,1000,1001,1002,1003],OPT.MODEL.ID))
+if any(ismember([809,811,812,813,1000,1001,1002,1003,1005,1030],OPT.MODEL.ID))
 
     %export ET 
     CBR.ET=CBR.FLUXES(:,:,29);
 
     
 end
+
+
     %Export fire C emissions
     CBR.FIR=CBR.FLUXES(:,:,17);
     %Export respiration
@@ -425,8 +427,7 @@ delete(sprintf('%s/tempcar*%s*',Dpath,channel));
  end
 
 
-end
-
+ end
 
 
 
