@@ -261,6 +261,7 @@ ncwriteatt(fname,METVNAME{n},'info',METINFO{n});
 ncwriteatt(fname,METVNAME{n},'units',METUNITS{n});
 end
 
+if isfield(CBF,'mmet');disp('******CBF NETCDF WARNING****');warning('CBF->NC translator does not support CBF.mmet, please enter ''reference_mean'' values manually...');end
 
 
 nccreate(fname,'EDCDIAG'); 

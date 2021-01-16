@@ -24,7 +24,7 @@ gpppars[9]=1.0;
 gpppars[10]=pi;
 
 double deltat=DATA.metadata.deltat;
-int nr=DATA.nodays;
+int nr=DATA.ncdf_data.TIME_INDEX.length;
 
 
  double constants[10]={pars[10],0.0156935,4.22273,208.868,0.0453194,0.37836,7.19298, 0.011136,2.1001,0.789798};
@@ -157,7 +157,7 @@ f=nofluxes*n;
 LAI[n]=POOLS[p+1]/pars[16]; 
 /*GPP*/
 gpppars[0]=LAI[n];
-gpppars[1]=DATA.MET[m+2];
+gpppars[1]=DATA.ncdf_data.T2M_MIN.values[m+2];
 gpppars[2]=DATA.MET[m+1];
 gpppars[4]=DATA.MET[m+4];
 gpppars[5]=DATA.MET[m+5];
