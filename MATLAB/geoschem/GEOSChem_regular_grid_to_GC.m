@@ -1,5 +1,5 @@
 function FOUT=GEOSChem_regular_grid_to_GC(FIN,gcres)
-
+%NOTE: replace NaNs with zeros unless NaNs need to be ignored in GC grid averaging
 %INPUTS:
 %FIN: 1x1 degree dataset (180 x 360 x N).
 %gcres: either '2x2.5' or '4x5'

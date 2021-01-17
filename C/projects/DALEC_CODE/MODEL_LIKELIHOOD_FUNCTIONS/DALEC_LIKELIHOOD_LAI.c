@@ -15,9 +15,12 @@ double *LAIA=calloc(D.nodays, sizeof(double));
 
 /*D.LAI[dn] = observed LAI at index dn*/
 /*D.M_LAI[dn] = modelled LAI at index dn*/
-
+double MLAI;
 /*Standard timestep model-data comparison*/
-if (D.otherpriors[4]<0 & D.nlai>0){for (n=0;n<D.nlai;n++){dn=D.laipts[n];tot_exp+=pow(log(D.M_LAI[dn]/D.LAI[dn])/log(2),2);}
+if (D.otherpriors[4]<0 & D.nlai>0){
+for (n=0;n<D.nlai;n++){dn=D.laipts[n];tot_exp+=pow(log(D.M_LAI[dn]/D.LAI[dn])/log(2),2);}
+//for (n=0;n<D.nlai;n++){dn=D.laipts[n];MLAI = (D.M_LAI[dn]+D.M_LAI[dn+1])/2;tot_exp+=pow(log(MLAI/D.LAI[dn])/log(2),2);}
+
 P=P-0.5*tot_exp;}
 
 /*use timesteps for mean LAI calculation*/
