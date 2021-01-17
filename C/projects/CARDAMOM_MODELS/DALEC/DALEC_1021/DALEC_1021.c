@@ -248,7 +248,7 @@ lai_var_list[14]=pi; /*pi*/
 lai_var_list[15]=pars[44]; /*t_c*/
 lai_var_list[16]=pars[45]; /*t_r*/
 /*Put the plant-available soil water into the LAI_KNORR input list*/
-lai_var_list[17]=POOLS[p+6];
+lai_var_list[17]=(POOLS[p+6]+POOLS[nxp+6])/2.0;
 /*Put the evapotranspiration flux into the LAI_KNORR input list*/
 lai_var_list[18]=FLUXES[f+28];
 // Run KNORR LAI module
