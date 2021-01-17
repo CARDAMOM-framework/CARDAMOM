@@ -204,6 +204,25 @@ FLUXES[f+1]=exp(pars[9]*0.5*(DATA.MET[m+2]+DATA.MET[m+1]-DATA.meantemp))*((DATA.
 /*respiration auto*/
 FLUXES[f+2]=pars[1]*FLUXES[f+0];
 
+/*Water pool = Water pool - runoff + prec (mm/day) - ET*/
+  /*printf("%2.1f\n",POOLS[p+6]);*/
+  /*PAW total runoff*/
+
+  FLUXES[f+29]=pow(POOLS[p+6],2)/pars[24]/deltat*(1-pars[33]);  
+        /*PAW -> PUW transfer*/
+  FLUXES[f+30]=FLUXES[f+29]*pars[33]/(1-pars[33]);
+  /*PUW runoff*/
+  FLUXES[f+31]=pow(POOLS[p+7],2)/pars[34]/deltat;
+  /*Maximum water loss at W = pars[24]/2;*/
+  if (POOLS[p+6]>pars[24]/2){FLUXES[f+29]=(POOLS[p+6]-pars[24]/4)/deltat*(1-pars[33]);
+        FLUXES[f+30]=(POOLS[p+6]-pars[24]/4)/deltat*pars[33]/(1-pars[33]);}
+  if (POOLS[p+7]>pars[34]/2){FLUXES[f+31]=(POOLS[p+7]-pars[34]/4)/deltat;}
+  /*Plant-available water ODE*/
+  POOLS[nxp+6]=POOLS[p+6] + (-FLUXES[f+29] - FLUXES[f+30] + DATA.MET[m+8] - FLUXES[f+28])*deltat;   
+  /*Plant-unavailable water budget*/
+
+        POOLS[nxp+7]=POOLS[p+7] + (FLUXES[f+30] - FLUXES[f+31])*deltat;
+
 //KNORR LAI
 if (n==0){
   /*Initialize phenology memory of air-temperature */
@@ -309,24 +328,7 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
         POOLS[nxp+5]= POOLS[p+5]+ (FLUXES[f+14] - FLUXES[f+13]+FLUXES[f+10])*deltat;     
         POOLS[nxp+8] = FLUXES[f+34];
 
-/*Water pool = Water pool - runoff + prec (mm/day) - ET*/
-	/*printf("%2.1f\n",POOLS[p+6]);*/
-	/*PAW total runoff*/
 
-	FLUXES[f+29]=pow(POOLS[p+6],2)/pars[24]/deltat*(1-pars[33]);	
-        /*PAW -> PUW transfer*/
-	FLUXES[f+30]=FLUXES[f+29]*pars[33]/(1-pars[33]);
-	/*PUW runoff*/
-	FLUXES[f+31]=pow(POOLS[p+7],2)/pars[34]/deltat;
-	/*Maximum water loss at W = pars[24]/2;*/
-	if (POOLS[p+6]>pars[24]/2){FLUXES[f+29]=(POOLS[p+6]-pars[24]/4)/deltat*(1-pars[33]);
-        FLUXES[f+30]=(POOLS[p+6]-pars[24]/4)/deltat*pars[33]/(1-pars[33]);}
-	if (POOLS[p+7]>pars[34]/2){FLUXES[f+31]=(POOLS[p+7]-pars[34]/4)/deltat;}
-	/*Plant-available water ODE*/
-	POOLS[nxp+6]=POOLS[p+6] + (-FLUXES[f+29] - FLUXES[f+30] + DATA.MET[m+8] - FLUXES[f+28])*deltat;		
-	/*Plant-unavailable water budget*/
-
-        POOLS[nxp+7]=POOLS[p+7] + (FLUXES[f+30] - FLUXES[f+31])*deltat;
 
 
 
