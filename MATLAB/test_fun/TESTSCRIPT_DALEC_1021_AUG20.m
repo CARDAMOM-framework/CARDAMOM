@@ -32,11 +32,11 @@
 
 
 % % Check carbon balance (ignoring fire losses by setting burned area to zero)
-% partest=CBRtest.PARS(end,:);
-% CBFtest=CBF;
-% CBFtest.MET(:,7)=0;
-% 
-% cbrtest=CARDAMOM_RUN_MODEL(CBFtest,partest);
+partest=CBRtest.PARS(end,:);
+CBFtest=CBF;
+CBFtest.MET(:,7)=0;
+
+cbrtest=CARDAMOM_RUN_MODEL(CBFtest,partest);
 % 
 % 
 % deltat=CBF.MET(2,1)-CBF.MET(1,1);
@@ -69,6 +69,7 @@ ylabel('LAI [m2/m2]')
 xlabel('Months');
 %ylim([0 2.5]);
 %subplot(2,2,3);hist(CBR.PARS(:,43));title(MD.parname{43});ylabel('Frequency')
+
 
 
 fancy_labels = {'Initial LAI', '$T_{\phi}$', '$T_r$', '$T_{\phi}$ averaging period', ... 
