@@ -184,6 +184,8 @@ fclose(fd);
 
 
 command_str=sprintf('%s/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.exe %s %s %s %s %s %s',OPT.Cpath, cbffile,parfile,fluxfile,poolfile,edcdfile,probfile);
+
+
                        %run command
                        disp('C executable command');
                        disp(command_str);
