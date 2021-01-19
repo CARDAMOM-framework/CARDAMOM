@@ -48,8 +48,6 @@ double *NEE=DATA.M_NEE;
   /*water pool*/
   POOLS[6]=pars[26];
   POOLS[7]=pars[35];
-  /*LAI module variables*/
-  POOLS[8]=pars[36];  /* LAI */
 
 
 /* NOTES FOR POOLS AND FLUXES
@@ -154,34 +152,6 @@ nxp=nopools*(n+1);
 m=nomet*n;
 /*flux array index*/
 f=nofluxes*n;
-
-/*LAI*/
-/* for the first iteration we compute an initial value of
-  evapotranspiration and soil water for use in the LAI_KNORR module */
-//if (n==0){
-//  /*printf("deltat = %2.7f\n",deltat);
-//  */LAI[n]=POOLS[p+1]/pars[16];
-//  lai_var_list[2]=pars[36];
-//  /*GPP*/
-//  gpppars[0]=pars[36];
-//  gpppars[1]=DATA.MET[m+2];
-//  gpppars[2]=DATA.MET[m+1];
-//  gpppars[4]=DATA.MET[m+4];
-//  gpppars[5]=DATA.MET[m+5];
-//  gpppars[7]=DATA.MET[m+3];
-//  /*GPP*/
-//  FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
-//  /*Evapotranspiration (VPD = DATA.MET[m+7])*/
-//  FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23];
-//  /*Put this evapotranspiration flux into the LAI_KNORR input list*/
-//  lai_var_list[18]=FLUXES[f+28];
-//  /*Put this plant-available soil water into the LAI_KNORR input list*/
-//  lai_var_list[17]=POOLS[p+6];
-//  /*Initialize phenology memory of air-temperature */
-//  lai_var_list[5]=pars[37]+3*pars[38];
-//  /*Initialize phenology memory of water/structural limitation */
-//  lai_var_list[11]=pars[42];
-//}
 
 LAI[n]=POOLS[p+1]/pars[16]; 
 
@@ -326,7 +296,6 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
         POOLS[nxp+3] = POOLS[p+3] +  (FLUXES[f+6] - FLUXES[f+10])*deltat;
         POOLS[nxp+4] = POOLS[p+4] + (FLUXES[f+9] + FLUXES[f+11] - FLUXES[f+12] - FLUXES[f+14])*deltat; 
         POOLS[nxp+5]= POOLS[p+5]+ (FLUXES[f+14] - FLUXES[f+13]+FLUXES[f+10])*deltat;     
-        POOLS[nxp+8] = FLUXES[f+34];
 
 
 
