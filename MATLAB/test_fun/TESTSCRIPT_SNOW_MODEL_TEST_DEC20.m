@@ -11,6 +11,8 @@ PARS.cliq = 4.186e3; % ! Liquid water specific heat (Cl) [ J/kg/K]
 
 PARS.tp = 273.16; %triple-point temp.
 PARS.latent_heat_fusion = 334000; % J/kg
+PARS.latent_heat_vap=2.5e6;%J/kg
+PARS.latent_heat_sub=PARS.latent_heat_fusion + PARS.latent_heat_vap;%J/kg
 PARS.IE_at_0C_solid=PARS.cice*PARS.tp;
 PARS.IE_at_0C_liquid=PARS.cice*PARS.tp + PARS.latent_heat_fusion;
 PARS.tsupercool_liq =  PARS.tp  - (PARS.IE_at_0C_liquid)/PARS.cliq; %[K];
@@ -36,9 +38,11 @@ LWup = [271, 283, 292, 305, 314, 357, 378, 383, 362, 347, 300, 271]*3600*24/1e6;
 %./CARDAMOM_JPL/PYTHON/ERA5_API/ERA5_API_DOWNLOADER.py -o ./RESEARCH/DATA/ERA5_API/wyoming_radiation_test.nc -v surface_net_solar_radiation surface_net_thermal_radiation surface_solar_radiation_downwards surface_thermal_radiation_downwards --year 2017 --month 01 02 03 04 05 06 07 08 09 10 11 12   --area 43.5 -110.5 43.5 -110.5 --monthly_average --grid_size 1 1
 
 % unit covert from J/m2/day to MJ/m2/day  (/1e6)
-% SWdown = [7.5455    9.1782   15.4878   20.6763   27.3366   27.1438   27.7512   24.4484   17.6172   13.7335    7.1347    5.8443];
-% LWdown = [ 18.2143   21.2924   21.8513   21.1625   21.6022   23.9659   25.6225   24.7010   24.0173   20.4801   21.5173   19.8812];
-% LWup = [3.9281    3.0944    3.9953    4.7450    6.2141    5.6763    7.1693    7.3669    5.4266    4.9323    3.3277    3.2545];
+ SWdown = [7.5455    9.1782   15.4878   20.6763   27.3366   27.1438   27.7512   24.4484   17.6172   13.7335    7.1347    5.8443];
+ LWdown = [ 18.2143   21.2924   21.8513   21.1625   21.6022   23.9659   25.6225   24.7010   24.0173   20.4801   21.5173   19.8812];
+ %Net upward  = LWup - LWdown
+ %LWup = LWdown + Net upward  
+ LWup = ([3.9281    3.0944    3.9953    4.7450    6.2141    5.6763    7.1693    7.3669    5.4266    4.9323    3.3277    3.2545] +  LWdown);
 
 % in W/m2 /(3600*24)
 % SWdown = [87.3325  106.2289  179.2574  239.3091  316.3962  314.1638  321.1939  282.9676  203.9033  158.9526   82.5774   67.6428];
@@ -50,16 +54,35 @@ LWup = [271, 283, 292, 305, 314, 357, 378, 383, 362, 347, 300, 271]*3600*24/1e6;
 % snowcover=[99.9512   99.9512   99.9512   99.9512   99.9512   99.8947   11.3079     0   37.8159   94.7090   97.9974   99.9512]
 % SWE=[0.2658    0.4133    0.5333    0.6217    0.6410    0.3495    0.0078     0    0.0105    0.0255    0.0953    0.1821]
 % snowmelt=[0         0         0         0    0.0032    0.0173    0.0027         0    0.0008    0.0013         0         0]
-% snowsurft=[258.9934  265.2638  268.6025  268.8325  271.9822  273.0088  273.0925  273.1602  271.8199  267.3160  266.4712  262.0739]
-% skintemp=[259.4507  265.7600  269.7007  269.9660  274.7928  279.0397  286.2732  284.8947  278.5555  268.4642  266.9638  262.3272]
+ snowsurft=[258.9934  265.2638  268.6025  268.8325  271.9822  273.0088  273.0925  273.1602  271.8199  267.3160  266.4712  262.0739];
+skintemp=[259.4507  265.7600  269.7007  269.9660  274.7928  279.0397  286.2732  284.8947  278.5555  268.4642  266.9638  262.3272];
 %-------------------------
 
 % ET can be calculated offline
-ET = SWdown * 0;%mm/d
+ET = SWdown * 0.02;%mm/d
 
-albedo=0.95;
+%CONST.ant for now
+%Changes in reality
+%Shuang has snow albedo timeseries
+CONST.albedo=0.95;
 
-SWup=SWdown*albedo;
+CONST.emissivity = 0.97;
+
+%Aerodynamic resistance
+fric_vel=0.1;
+CONST.Hconductance= fric_vel/5;%m/s
+
+CONST.air_density = 1;%kg/m3 %Function of ERA5 pressure/specific humidity/temperature
+CONST.Cp=1004; %J/kg/K %specific heat of air at const pressure
+
+%UNITS CHECK: Hconductance * ( delta_TEMP)*CONST.air_density *CONST.Cp 
+%UNITS = J/m2/s
+
+
+
+CONST.sigmaSB=5.67e-8;
+
+SWup=SWdown*CONST.albedo;
 
 Rnet = SWdown + LWdown - SWup - LWup;
 
@@ -90,8 +113,8 @@ FUNC.snow2energy= @(snowtemp,PARS,fliq) (1.0 - fliq) * PARS.cice * snowtemp + fl
 
 
 
-%Snow internal energy
-SNOW_IE(1) = FUNC.snow2energy(SNOW_TEMP(1), PARS, 0);
+%Snow internal energy per unit snow (mm) * SNOW MASS
+SNOW_IE(1) = FUNC.snow2energy(SNOW_TEMP(1), PARS, 0) * SNOW_H2O(1);
 
 
 SNOW_LF(1)=FUNC.snow_fliq(SNOW_IE(1) , PARS);
@@ -102,15 +125,43 @@ SNOW_LF(1)=FUNC.snow_fliq(SNOW_IE(1) , PARS);
 %dSWE/dt = PRECsnow - Sublimation - Melt
 for m=1:12
     
-    %H2O contribution to snow pack
-    SNOW_H2O(m+1) = SNOW_H2O(m) +PRECsnow (m);
+    %Step 1. Add snow H2O contribution to snow pack
+    %Note: rain goes straight to surface runoff, 
+    %ASSUMPTION: liquid precip no interaction with snow energy balance.
     
-    %NEXT STEP, calculate PRECsnow_IE
+    %One month timestep (adding snow in mm/month)
+    SNOW_H2O(m+1) = SNOW_H2O(m) +PRECsnow (m)*365.25/12;
+    
+    %Step 2. NEXT STEP, calculate PRECsnow_IE
     %Re-analysis data includes snow:rain fraction
-         SNOW_IE(m+1) = SNOW_IE(m) + FUNC.snow2energy(AIRtemp(m)+PARS.tp,PARS,0) *PRECsnow_IE (m);
-
-
+    %For now: assume snow is <= 0C
+    %Energy per unit mass X mass
     
+    LWup(m)=CONST.emissivity*skintemp(m).^4*CONST.sigmaSB*24*3600*1e-6;%MJ/d/m2
+    
+    %Radiative fluxes (J/m2/m)
+    RAD_FLUXES(m)= ( SWdown(m)*(1-CONST.albedo) +LWdown(m)*CONST.emissivity -LWup(m))*1e6*365.25/12;
+    
+    %Turbulent fluxes (ground to air flux = +ve)
+    %J/m2/s
+        H(m) =CONST.Hconductance * (AIRtemp(m)+PARS.tp - skintemp(m))*CONST.air_density *CONST.Cp *3600*24*365.25/12;
+    
+        %LE = ET * 
+        %***CONTINUE FROM HERE NEXT TIME: any missing terms (?)***
+        LE(m) = ET*PARS.latent_heat_sub ;
+        
+    %Track energy in Jules
+         SNOW_IE(m+1) = SNOW_IE(m) + FUNC.snow2energy(min(AIRtemp(m)+PARS.tp, PARS.tp),PARS,0) *PRECsnow(m) + RAD_FLUXES(m);
+         
+
+
+         %Step 3. Cas
+         
+             MELT(m) = (SNOW_TEMP(1)  -  PARS.tp) *PARS.cice * (SNOW_H2O(m)*(1-SNOW_LF(m));
+
+    %
+         
+         
     %    FUNC.snow2energy(SNOW_TEMP(m),PARS,
 
     FUNC.snow_fliq
@@ -126,7 +177,6 @@ for m=1:12
     %Option 2 = SNOW_LF is always zero (so snow is drained/dry at
     %begining of each iteration), so no refreezing.
     
-    MELT(m) = (SNOW_TEMP(1)  -  PARS.tp) *PARS.cice * (SNOW_H2O(m)*(1-SNOW_LF(m));
     
     
       
