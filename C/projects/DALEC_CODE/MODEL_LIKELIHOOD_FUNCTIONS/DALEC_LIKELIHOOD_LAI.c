@@ -18,8 +18,8 @@ double *LAIA=calloc(D.nodays, sizeof(double));
 double MLAI;
 /*Standard timestep model-data comparison*/
 if (D.otherpriors[4]<0 & D.nlai>0){
-for (n=0;n<D.nlai;n++){dn=D.laipts[n];tot_exp+=pow(log(D.M_LAI[dn]/D.LAI[dn])/log(2),2);}
-//for (n=0;n<D.nlai;n++){dn=D.laipts[n];MLAI = (D.M_LAI[dn]+D.M_LAI[dn+1])/2;tot_exp+=pow(log(MLAI/D.LAI[dn])/log(2),2);}
+// for (n=0;n<D.nlai;n++){dn=D.laipts[n];tot_exp+=pow(log(D.M_LAI[dn]/D.LAI[dn])/log(2),2);}
+for (n=0;n<D.nlai;n++){dn=D.laipts[n];MLAI = (D.M_LAI[dn]+D.M_LAI[dn+1])/2;tot_exp+=pow(log(MLAI/D.LAI[dn])/log(2),2);}
 
 P=P-0.5*tot_exp;}
 
