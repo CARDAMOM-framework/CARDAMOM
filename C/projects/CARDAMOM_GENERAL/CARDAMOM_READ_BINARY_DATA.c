@@ -124,7 +124,7 @@ CARDAMOM_MODEL_LIBRARY(DATA);
 /*Future versions: these should be declared within each model structure
 or generically declared for model types (e.g. DALEC, etc).*/
 /*Model-specific quantities (nodays, nofluxes, nopools), will be declared in MODEL_INFO for modularity*/
-DATA->M_LAI=calloc(DATA->nodays,sizeof(double));
+DATA->M_LAI=calloc(DATA->nodays+1,sizeof(double));
 DATA->M_GPP=calloc(DATA->nodays,sizeof(double));
 DATA->M_NEE=calloc(DATA->nodays,sizeof(double));
 

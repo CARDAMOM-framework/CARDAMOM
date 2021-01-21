@@ -341,8 +341,7 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 }
 
 /*LAI is a CARDAMOM-wide state variable, ensuring available at first/last timestep in general (LAI) form, rather than only as "Cfol/LCMA"*/
-LAI[n+1]=POOLS[nxp+1]/pars[16];
-
+LAI[n]=POOLS[nxp+1]/pars[16];
 
 return 0;
 }
