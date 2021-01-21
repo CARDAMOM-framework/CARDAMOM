@@ -132,6 +132,7 @@ local_acc=0;
 runcount=0;
 %Count of unique parameters
 ucount=0;
+uniqueOK=0;
 
 
 %provision: loop can only run 5 times more than samples required (otherwise
@@ -199,18 +200,22 @@ for n=1:MCO.nout;
         disp(['Accepted ',num2str(n),' solutions'])
         disp(['(Log) Probability = ',num2str(P0)])
         disp(['mean step size = ',num2str(sqrt(mean(diag(STEP.covariance))))])
-        if ucount<Npars*3;   fprintf('%2.2f%% of samples aquired for covariance sampler...\n',ucount/Npars/3*100);end
+        if ucount<Npars*2;   fprintf('%2.2f%% of samples aquired for covariance sampler...\n',ucount/Npars/2*100);end
     end
         
     
         %Adjusting step size for optimal MHMCMC performance
 
-        if n<MCO.nout/2 & ucount>Npars*3;% & (Nssamples>10*Npars) & n>MCO.preadaptphase
+         %if uniqueOK==0; if size(unique(PARSALL(floor(Nssamples/2)+1:Nssamples,:),'rows'),1)>Npars;    uniqueOK=1;       end;end
+        
+        if n<MCO.nout/2 & ucount>Npars*2;% & (Nssamples>10*Npars) & n>MCO.preadaptphase
             %If cov is empty
             if STEP.covsamples==0
+               
                 STEP.covariance=cov(pars2norm(PARS,PARSALL(floor(Nssamples/2)+1:Nssamples,:)));
                 STEP.runmean=mean(pars2norm(PARS,PARSALL(floor(Nssamples/2)+1:Nssamples,:)));
                 STEP.covsamples=Nssamples-floor(Nssamples/2);
+      
             else
                 %Calculate covariance of parameters
                 %[CMOUT,Mi]=statfun_add_sample_to_covmat(CM,N,M, x,ar)
@@ -223,7 +228,12 @@ for n=1:MCO.nout;
                 
             end
             
+        try 
             STEP.cholesky=chol(STEP.covariance*2.38^2/Npars);
+        catch
+            disp('Need more samples to initiate covariance sampling...')
+            end
+        
         end
         %Re-setting acceptance rate count
         local_acc=0;
