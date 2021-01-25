@@ -8,7 +8,7 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1021(DATA *CARDADATA)
+int PARS_INFO_1020(DATA *CARDADATA)
 {
 
 /*Decomposition rate*/
