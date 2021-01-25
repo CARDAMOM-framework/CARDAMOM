@@ -8,7 +8,7 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1020(DATA *CARDADATA)
+int PARS_INFO_1021(DATA *CARDADATA)
 {
 
 /*Decomposition rate*/
@@ -160,48 +160,48 @@ CARDADATA->parmin[35]=1;
 CARDADATA->parmax[35]=10000;
 
 /*Initial LAI*/
-CARDADATA->parmin[36]=2.0; //1.0;
-CARDADATA->parmax[36]=2.1; //5.0;
+CARDADATA->parmin[36]=0.1;
+CARDADATA->parmax[36]=10.0;
 
-/*Mean temperature at leaf onset (T_phi)*/
-CARDADATA->parmin[37]=23.0; //12.0;
-CARDADATA->parmax[37]=23.5; //30.0;
+/*Mean temperature at leaf onset (T_phi) (degrees kelvin)*/
+CARDADATA->parmin[37]=268.15;
+CARDADATA->parmax[37]=323.15;
 
-/*Spatial range of mean temperature at leaf onset (T_r)*/
-CARDADATA->parmin[38]=0.5; //0.1;
-CARDADATA->parmax[38]=1.0; //3.0;
+/*Spatial range of mean temperature at leaf onset (T_r) (degrees C or degrees kelvin)*/
+CARDADATA->parmin[38]=0.1;
+CARDADATA->parmax[38]=10.0;
 
 /*Averaging period for temperature growth trigger T (time units of model), usually kept constant*/
-CARDADATA->parmin[39]=1.0; //1.0;
-CARDADATA->parmax[39]=1.01; //2.0;
+CARDADATA->parmin[39]=1.0;
+CARDADATA->parmax[39]=1.01;
 
 /*LAI linear growth constant (inverse of model time units; e.g. days-1 or months-1)*/
-CARDADATA->parmin[40]=0.3; //0.01;
-CARDADATA->parmax[40]=0.35; //0.50;
+CARDADATA->parmin[40]=0.001;
+CARDADATA->parmax[40]=0.5;
 
 /*Inverse of leaf longevity during senescence period (inverse of model time units; e.g. days-1 or months-1)*/
-CARDADATA->parmin[41]=0.03; //0.01;
-CARDADATA->parmax[41]=0.04; //0.50;
+CARDADATA->parmin[41]=0.001;
+CARDADATA->parmax[41]=0.5;
 
 /*Intrinsic maximum LAI (m^2 m^-2)*/
-CARDADATA->parmin[42]=2.8; //1.0;
-CARDADATA->parmax[42]=3.0; //6.0;
+CARDADATA->parmin[42]=0.1;
+CARDADATA->parmax[42]=10.0;
 
 /*Target survival time for LAI under water-deficit conditions (days; or same unit as ET and PAW)*/
-CARDADATA->parmin[43]=0.2; //0.01;
-CARDADATA->parmax[43]=0.3; //300.0;
+CARDADATA->parmin[43]=0.1;
+CARDADATA->parmax[43]=300;
 
 /*Mean daylength at leaf shedding (t_c; in units of hours sunlight per day)*/
-CARDADATA->parmin[44]=12.0; //8.0;
-CARDADATA->parmax[44]=12.5; //14.0;
+CARDADATA->parmin[44]=2;
+CARDADATA->parmax[44]=22;
 
 /*Spatial range of mean daylength at leaf shedding (t_r)*/
-CARDADATA->parmin[45]=0.5; //0.1;
-CARDADATA->parmax[45]=1.0; //3.0;
+CARDADATA->parmin[45]=0.1;
+CARDADATA->parmax[45]=6.0;
 
 /*Foliar carbon turnover rate*/
-CARDADATA->parmin[46]=1000; //100;
-CARDADATA->parmax[46]=2000; //5000;
+CARDADATA->parmin[46]=100;
+CARDADATA->parmax[46]=5000;
 
 return 0;
 
