@@ -4,6 +4,8 @@
 CBRnew=CARDAMOM_RUN_MODEL('testnc.nc.cbf','testnc.cbr');
 
 ni=ncinfo('testnc.nc.cbf');
+ncdisp('testnc.nc.cbf')
+meanmin
 
 %Step 2. Load "pre-saved outputs"
 %save testncCBR_save.mat CBR

@@ -156,9 +156,10 @@ f=nofluxes*n;
 /*LAI*/
 LAI[n]=POOLS[p+1]/pars[16]; 
 /*GPP*/
+/*Continue from here, check with previous code!!*/
 gpppars[0]=LAI[n];
-gpppars[1]=DATA.ncdf_data.T2M_MIN.values[m+2];
-gpppars[2]=DATA.MET[m+1];
+gpppars[1]=DATA.ncdf_data.T2M_MIN.values[m];
+gpppars[2]=DATA.ncdf_data.T2M_MAX.values[m];
 gpppars[4]=DATA.MET[m+4];
 gpppars[5]=DATA.MET[m+5];
 gpppars[7]=DATA.MET[m+3];
