@@ -9,3 +9,7 @@
 DUMPFILES
 MATLAB/startup.m
 MATLAB/CARDAMOM_DISK/*
+
+# Python specific
+__pycache__/
+*.py[cod]
