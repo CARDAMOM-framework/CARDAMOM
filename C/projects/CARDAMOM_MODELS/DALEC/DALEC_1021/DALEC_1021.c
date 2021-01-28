@@ -127,7 +127,7 @@ CF[5]=pars[29];
 
 /*foliar carbon transfer intermediate variables*/
 double netCeffect, nominalClosses;
-double LAIClimdiff, FCdiff, LAIdiff;
+double Fcfolavailable;
 
 /*resilience factor*/
 
@@ -238,33 +238,42 @@ lai_var_list[11]=FLUXES[f+36];//POOLS[nxp+11];
 LAI increment (dlambda/dt) and the KNORR LAI */
 // if (FLUXES[f+37]*FLUXES[f+40] + POOLS[p+1]/pars[46] > POOLS[p+0]/deltat){
 //if (FLUXES[f+37]*pars[16] > POOLS[p+0]/deltat){
-if (FLUXES[f+37]*pars[16] > POOLS[p+0]/deltat){
-  /* flag for carbon availability limitation (1 = labile C limits LAI growth) */
-  FLUXES[f+38]=1.0;
-  //FCdiff = (FLUXES[f+37]*pars[16] + POOLS[p+1]/pars[46]) - POOLS[p+0]/deltat;
-  //LAIdiff = (FCdiff*deltat)/pars[16];
-  // FLUXES[f+34] = FLUXES[f+34] - LAIdiff;
-  /* set dlambdadt to be available carbon in C-labile, divided by LMCA to get it back into LAI units*/
-  // FLUXES[f+37]=(POOLS[p+0]/deltat)/FLUXES[f+40];
-  //FCdeltafoliar = POOLS[p+0]/deltat;  // only take what is available from the labile pool
-  //FCdiff = FCpotdeltafoliar - FCdeltafoliar;
-  //LAIdiff = (FCdiff*deltat)/pars[16];
-  //FLUXES[f+37]=POOLS[p+0]/deltat;
-}
-else {
-  /* flag for carbon availability limitation (1 = labile C limits LAI growth) */
-  FLUXES[f+38]=0.0;
-}
 
 
 /*requested carbon from labile to foliar (governed by LAI_KNORR)*/
-FLUXES[f+32]=fmax(FLUXES[f+37]*pars[16], 0);
+// FLUXES[f+32]=fmax(FLUXES[f+37]*pars[16], 0);
 /*foliar to litter carbon flux(governed by LAI_KNORR)*/
-FLUXES[f+33]=-fmin(FLUXES[f+37]*pars[16], 0);
+// FLUXES[f+33]=-fmin(FLUXES[f+37]*pars[16], 0);
 /*leaf production*/
 FLUXES[f+3] = 0;
 /*labile production*/
-FLUXES[f+4] = (FLUXES[f+0]-FLUXES[f+2])*pars[13-1];
+/* - now the combination of two fractional allocation parameters*/
+FLUXES[f+4] = (FLUXES[f+0]-FLUXES[f+2])*(pars[13-1]+pars[2]);
+
+Fcfolavailable=FLUXES[f+4] + POOLS[p+0]/deltat;
+if (FLUXES[f+37]*pars[16] > Fcfolavailable){
+  /* flag for carbon availability limitation (0=canopy in senescence, 1=labile C does not limit growth, 2=labile C limits LAI growth) */
+  FLUXES[f+38]=2.0;
+  /* flux from labile pool to foliar pool */
+  FLUXES[f+32]=Fcfolavailable;
+  /* flux from foliar pool to litter pool */
+  FLUXES[f+33]=0;
+}
+else if (FLUXES[f+37]*pars[16] < Fcfolavailable && FLUXES[f+37]*pars[16] > 0){
+  FLUXES[f+38]=1.0;
+  /* flux from labile pool to foliar pool */
+  FLUXES[f+32]=FLUXES[f+37]*pars[16];
+  /* flux from foliar pool to litter pool */
+  FLUXES[f+33]=0;
+}
+else {
+  FLUXES[f+38]=0.0;
+  /* flux from labile pool to foliar pool */
+  FLUXES[f+32]=0;
+  /* flux from foliar pool to litter pool */
+  FLUXES[f+33]=FLUXES[f+37]*pars[16];
+}
+
 /*root production*/        
 FLUXES[f+5] = (FLUXES[f+0]-FLUXES[f+2]-FLUXES[f+3]-FLUXES[f+4])*pars[4-1];            
 /*wood production*/       
