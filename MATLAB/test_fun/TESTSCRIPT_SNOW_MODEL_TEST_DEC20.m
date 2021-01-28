@@ -12,6 +12,10 @@ PARS.cliq = 4.186e3; % ! Liquid water specific heat (Cl) [ J/kg/K]
 PARS.tp = 273.16; %triple-point temp.
 PARS.latent_heat_fusion = 334000; % J/kg
 PARS.latent_heat_vap=2.5e6;%J/kg
+%Note: latent heat of vaporization is (more accurately) 
+%True for any temperature (simplification: not a function of temperature);
+%E..g. look at ED2 or Williams et al., (2012) for linear temp dependence
+%Climate and vegetation controls on the surface water balance: Synthesis of evapotranspiration measured across a global network of flux towers
 PARS.latent_heat_sub=PARS.latent_heat_fusion + PARS.latent_heat_vap;%J/kg
 PARS.IE_at_0C_solid=PARS.cice*PARS.tp;
 PARS.IE_at_0C_liquid=PARS.cice*PARS.tp + PARS.latent_heat_fusion;
@@ -103,12 +107,18 @@ SNOW_TEMP(1) = 268;
 %E_tsw = M_tsw *c_i*T_tsw T_tsw = E_tsw/(c_i*M_tsw)13:34
 
 %snow2energy= @(snowtemp) (1.0 - fliq) * cice * temp & + fliq * cliq * (temp - tsupercool_liq) 
+IE=(1.0 - fliq) * cice * temp & + fliq * cliq * (temp - tsupercool_liq) ;
 %l = (\frac{Q_{tsw}-Q_{tsw0}}{Q_{tsw1}-Q_{tsw0}})13:40
 FUNC.snow_fliq=@(snow_ie, PARS) min(max((snow_ie - PARS.IE_at_0C_solid )/ (PARS.IE_at_0C_liquid - PARS.IE_at_0C_solid),0),1);
-%FUNC.snow_temp@(
+%OVERLEAF FOR SNOW TEMP FUNCTION;
+%Re-arrange from above equations
+FUNC.snow_temp@(snow_ie,PARS) 
 
     
  
+%Arg 1. temp
+%ARg 2. par struct 
+%Arg 3. fliq
 FUNC.snow2energy= @(snowtemp,PARS,fliq) (1.0 - fliq) * PARS.cice * snowtemp + fliq * PARS.cliq * (snowtemp - PARS.tsupercool_liq) ;
 
 
@@ -144,21 +154,51 @@ for m=1:12
     
     %Turbulent fluxes (ground to air flux = +ve)
     %J/m2/s
-        H(m) =CONST.Hconductance * (AIRtemp(m)+PARS.tp - skintemp(m))*CONST.air_density *CONST.Cp *3600*24*365.25/12;
+    %Convention = +ve flux upwards
+    %npote : airtemp in celcius
+        H(m) =CONST.Hconductance * (skintemp(m) - (AIRtemp(m)+PARS.tp))*CONST.air_density *CONST.Cp *3600*24*365.25/12;
     
         %LE = ET * 
-        %***CONTINUE FROM HERE NEXT TIME: any missing terms (?)***
         LE(m) = ET*PARS.latent_heat_sub ;
         
-    %Track energy in Jules
-         SNOW_IE(m+1) = SNOW_IE(m) + FUNC.snow2energy(min(AIRtemp(m)+PARS.tp, PARS.tp),PARS,0) *PRECsnow(m) + RAD_FLUXES(m);
+        %Turbulent fluxes
+        %Convention = +ve flux upward
+        TURB_FLUXES(m) = H(m) + LE(m);
+        
+    
+
+       
+       
+       ET_MASS_ENERGY_FLUX(m) = ET* FUNC.snow2energy(SNOW_TEMP(m) ,PARS ,0);
+        SNOW_MASS_ENERGY_FLUX(m)= FUNC.snow2energy(min(AIRtemp(m)+PARS.tp, PARS.tp),PARS,0) *PRECsnow(m) ;
+       
+        %Surface met mass energy exchange  (excluding melt)
+        %Snow input
+        %ET 
+        MASS_EXCHANGE_ENERGY_FLUXES(m) = SNOW_MASS_ENERGY_FLUX(m) - ET_MASS_ENERGY_FLUX(m);
          
 
+        
+        
+        
+    %Track energy in Jules
+         SNOW_IE(m+1) = SNOW_IE(m) + MASS_EXCHANGE_ENERGY_FLUXES(m)+ RAD_FLUXES(m) - TURB_FLUXES(m);
+         
+
+         
+         %Calculate temperature of snow after enegry exchange.
+         SNOW_TEMP(m+1) =  FUNC.snow_(SNOW_IE(m+1), PARS) ;
+         SNOW_LF(m+1) =  FUNC.snow_fliq(SNOW_IE(m+1), PARS) ;
 
          %Step 3. Cas
          
-             MELT(m) = (SNOW_TEMP(1)  -  PARS.tp) *PARS.cice * (SNOW_H2O(m)*(1-SNOW_LF(m));
 
+         
+                 %Melt 
+        %Mass flux
+        %MELT_MASS_FLUX(m) = 
+        %Energy flux
+       MELT(m) = (SNOW_TEMP(m)  -  PARS.tp) *PARS.cice * (SNOW_H2O(m)*(1-SNOW_LF(m));
     %
          
          
