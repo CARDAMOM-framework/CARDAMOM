@@ -271,7 +271,7 @@ else {
   /* flux from labile pool to foliar pool */
   FLUXES[f+32]=0;
   /* flux from foliar pool to litter pool */
-  FLUXES[f+33]=FLUXES[f+37]*pars[16];
+  FLUXES[f+33]=-FLUXES[f+37]*pars[16];
 }
 
 /*root production*/        
