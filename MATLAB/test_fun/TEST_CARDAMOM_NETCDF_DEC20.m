@@ -3,6 +3,8 @@
 
 CBRnew=CARDAMOM_RUN_MODEL('testnc.nc.cbf','testnc.cbr');
 
+ni=ncinfo('testnc.nc.cbf');
+
 %Step 2. Load "pre-saved outputs"
 %save testncCBR_save.mat CBR
 load testncCBR_save.mat CBR
