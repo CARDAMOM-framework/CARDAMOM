@@ -97,7 +97,7 @@ strcpy(poolfile,"tempcardapoolfile.bin");
 strcpy(edcdfile,"tempcardaedcdfile.bin");
 strcpy(probfile,"tempcardaprobfile.bin");}
 
-if (argc>6){
+if (argc>7){
   //Special case, netCDF file argument was given.
   strcpy(ncdffile,files[7]);
 }else{
@@ -133,7 +133,8 @@ if ((ncretval =  nc_def_dim(ncid,"Pool",CARDADATA.nopools,&poolDimID ))){
 if ((ncretval =  nc_def_dim(ncid,"Flux",CARDADATA.nofluxes,&fluxDimID ))){
   ERR(ncretval);
 }
-if ((ncretval =  nc_def_dim(ncid,"Time",NC_UNLIMITED,&timeDimID))){
+//NOTE: this was going to be the NC_UNLIMITED dimension, however due to concerns with support for netcdf classic, it is now fixed
+if ((ncretval =  nc_def_dim(ncid,"Time",CARDADATA.nodays+1,&timeDimID))){
   ERR(ncretval);
 }
 //Hard coded to 1
@@ -165,6 +166,9 @@ int M_P_dems[] = {sampleDimID, probIdxDimID};
 if ((ncretval = nc_def_var(	ncid,"M_P" , NC_DOUBLE, 2, M_P_dems, &pVarID ))){
   ERR(ncretval);
 }
+
+//End NetCDF definition phase, in order to allow for writting
+nc_enddef(ncid);
 
 
 
@@ -200,7 +204,7 @@ if ((ncretval = nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,0,0}, (c
     ERR(ncretval);
 }
 //Write pools
-if ((ncretval = nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,CARDADATA.nodays,CARDADATA.nopools}, CARDADATA.M_POOLS))){
+if ((ncretval = nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,CARDADATA.nodays+1,CARDADATA.nopools}, CARDADATA.M_POOLS))){
     ERR(ncretval);
 }
 //write edcd
