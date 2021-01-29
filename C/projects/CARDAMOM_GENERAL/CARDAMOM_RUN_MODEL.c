@@ -123,7 +123,7 @@ if (ncretval != NC_NOERR){
   ERR(ncretval);
 }
 /*STEP 3.2 - create netCDF output dimensions*/
-int sampleDimID, poolDimID, fluxDimID, timeDimID, probIdxDimID,edcIdxDimID;
+int sampleDimID, poolDimID, fluxDimID, timePoolsDimID,timeFluxesDimID, probIdxDimID,edcIdxDimID;
 if ((ncretval =  nc_def_dim(ncid,"Sample",N,&sampleDimID ))){
   ERR(ncretval);
 }
@@ -133,8 +133,11 @@ if ((ncretval =  nc_def_dim(ncid,"Pool",CARDADATA.nopools,&poolDimID ))){
 if ((ncretval =  nc_def_dim(ncid,"Flux",CARDADATA.nofluxes,&fluxDimID ))){
   ERR(ncretval);
 }
-//NOTE: this was going to be the NC_UNLIMITED dimension, however due to concerns with support for netcdf classic, it is now fixed
-if ((ncretval =  nc_def_dim(ncid,"Time",CARDADATA.nodays+1,&timeDimID))){
+//NOTE: this was going to be the NC_UNLIMITED dimension, however due to concerns with support for netcdf classic, it is now fixed, and split into two
+if ((ncretval =  nc_def_dim(ncid,"Time_pools",CARDADATA.nodays+1,&timePoolsDimID))){
+  ERR(ncretval);
+}
+if ((ncretval =  nc_def_dim(ncid,"Time_fluxes",CARDADATA.nodays,&timeFluxesDimID))){
   ERR(ncretval);
 }
 //Hard coded to 1
@@ -150,11 +153,11 @@ if ((ncretval =  nc_def_dim(ncid,"EDC Index",edcIdxLen,&edcIdxDimID ))){
 
 /*STEP 3.3 - create netCDF variables in preperation for writting them later*/
 int fluxesVarID, poolsVarID, edcdVarID, pVarID;
-int M_FLUXES_dems[] = {sampleDimID,timeDimID,fluxDimID};
+int M_FLUXES_dems[] = {sampleDimID,timeFluxesDimID,fluxDimID};
 if ((ncretval = nc_def_var(	ncid,"FLUXES" , NC_DOUBLE, 3, M_FLUXES_dems, &fluxesVarID ))){
   ERR(ncretval);
 }
-int M_POOLS_dems[] = {sampleDimID,timeDimID,poolDimID};
+int M_POOLS_dems[] = {sampleDimID,timePoolsDimID,poolDimID};
 if ((ncretval = nc_def_var(	ncid,"POOLS" , NC_DOUBLE, 3, M_POOLS_dems, &poolsVarID ))){
   ERR(ncretval);
 }
