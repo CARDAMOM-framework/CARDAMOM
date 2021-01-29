@@ -2,6 +2,14 @@
 #include "math.h"
 #include <stdio.h>
 #include "CARDAMOM_READ_BINARY_DATA.c"
+#include <netcdf.h>
+
+
+/* Handle netCDF library errors by printing an error message and exiting with a
+ * non-zero status.*/
+#define ERRCODE 2
+#define ERR(e) {printf("Error in %s at %d: %s\n", __FILE__, __LINE__, nc_strerror(e)); exit(ERRCODE);}
+
 
 /*syntax CARDAMOM_READ_BINARY_CARDADATA(char *filename,CARDADATA *CARDADATA)*/
 
@@ -76,6 +84,7 @@ char fluxfile[1000];
 char poolfile[1000];
 char edcdfile[1000];
 char probfile[1000];
+char ncdffile[1000];
 
 if (argc-1>2){
 strcpy(fluxfile,files[3]);
@@ -88,6 +97,13 @@ strcpy(poolfile,"tempcardapoolfile.bin");
 strcpy(edcdfile,"tempcardaedcdfile.bin");
 strcpy(probfile,"tempcardaprobfile.bin");}
 
+if (argc>6){
+  //Special case, netCDF file argument was given.
+  strcpy(ncdffile,files[7]);
+}else{
+  strcpy(ncdffile,"tempcardata.nc");
+}
+
 FILE *fdf=fopen(fluxfile,"wb");
 filediag(fdf,fluxfile);
 FILE *fdp=fopen(poolfile,"wb");
@@ -96,6 +112,60 @@ FILE *fde=fopen(edcdfile,"wb");
 filediag(fde,edcdfile);
 FILE *fdpro=fopen(probfile,"wb");
 filediag(fdpro,probfile);
+
+
+/*STEP 3.1 - create netCDF output file*/
+int ncid = 0; //This is the netcdf id num
+int ncretval = 0; //This is a reused variable for the return value of ncdf methods.
+ncretval = nc_create(ncdffile,NC_CLOBBER, &ncid );
+if (ncretval != NC_NOERR){
+  //If nc_create did anything but return no error, then fail
+  ERR(ncretval);
+}
+/*STEP 3.2 - create netCDF output dimensions*/
+int sampleDimID, poolDimID, fluxDimID, timeDimID, probIdxDimID,edcIdxDimID;
+if ((ncretval =  nc_def_dim(ncid,"Sample",N,&sampleDimID ))){
+  ERR(ncretval);
+}
+if ((ncretval =  nc_def_dim(ncid,"Pool",CARDADATA.nopools,&poolDimID ))){
+  ERR(ncretval);
+}
+if ((ncretval =  nc_def_dim(ncid,"Flux",CARDADATA.nofluxes,&fluxDimID ))){
+  ERR(ncretval);
+}
+if ((ncretval =  nc_def_dim(ncid,"Time",NC_UNLIMITED,&timeDimID))){
+  ERR(ncretval);
+}
+//Hard coded to 1
+const size_t probIdxLen=1;
+if ((ncretval =  nc_def_dim(ncid,"Probability Index",probIdxLen,&probIdxDimID ))){
+  ERR(ncretval);
+}
+//Hard coded to 100
+const size_t edcIdxLen=100;
+if ((ncretval =  nc_def_dim(ncid,"EDC Index",edcIdxLen,&edcIdxDimID ))){
+  ERR(ncretval);
+}
+
+/*STEP 3.3 - create netCDF variables in preperation for writting them later*/
+int fluxesVarID, poolsVarID, edcdVarID, pVarID;
+int M_FLUXES_dems[] = {sampleDimID,timeDimID,fluxDimID};
+if ((ncretval = nc_def_var(	ncid,"M_FLUXES" , NC_DOUBLE, 3, M_FLUXES_dems, &fluxesVarID ))){
+  ERR(ncretval);
+}
+int M_POOLS_dems[] = {sampleDimID,timeDimID,poolDimID};
+if ((ncretval = nc_def_var(	ncid,"M_POOLS" , NC_DOUBLE, 3, M_POOLS_dems, &poolsVarID ))){
+  ERR(ncretval);
+}
+int M_EDCD_dems[] = {sampleDimID, edcIdxDimID };
+if ((ncretval = nc_def_var(	ncid,"M_EDCD" , NC_INT, 2, M_EDCD_dems, &edcdVarID ))){
+  ERR(ncretval);
+}
+int M_P_dems[] = {sampleDimID, probIdxDimID};
+if ((ncretval = nc_def_var(	ncid,"M_P" , NC_DOUBLE, 2, M_P_dems, &pVarID ))){
+  ERR(ncretval);
+}
+
 
 
 /*STEP 4 - RUNNING CARDADATA.MLF N TIMES*/
@@ -122,6 +192,31 @@ fwrite(CARDADATA.M_P,sizeof(double),1,fdpro);
 /*double MEDCD[100];for (nn=0;nn<100;nn++){MEDCD[nn]=(double)CARDADATA.M_EDCD[nn];};fwrite(MEDCD,sizeof(double),100,fde);
 */
 
+/*step 4.4 - writing DALEC fluxes and pools to netCDF file*/
+//(with N (Number of samples) being another dimension, applied to all vars)
+
+//Write fluxes
+if ((ncretval = nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,0,0}, (const size_t[]){1,CARDADATA.nodays,CARDADATA.nofluxes}, CARDADATA.M_FLUXES))){
+    ERR(ncretval);
+}
+//Write pools
+if ((ncretval = nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,CARDADATA.nodays,CARDADATA.nopools}, CARDADATA.M_POOLS))){
+    ERR(ncretval);
+}
+//write edcd
+if ((ncretval = nc_put_vara_int(ncid,edcdVarID,(const size_t[]){n,0}, (const size_t[]){1,edcIdxLen}, CARDADATA.M_EDCD))){
+    ERR(ncretval);
+}
+//write M_P
+if ((ncretval = nc_put_vara_double(ncid,pVarID,(const size_t[]){n,0}, (const size_t[]){1,probIdxLen}, CARDADATA.M_P))){
+    ERR(ncretval);
+}
+
+
+//write attributes to netCDF file
+
+
+
 /*STEP 4 completed*/
 }
 
@@ -132,6 +227,10 @@ fclose(fdp);
 fclose(fde);
 fclose(fdpro);
 fclose(fd);
+
+if ((ncretval = nc_close(ncid))){
+  ERR(ncretval);
+}
 
 /*Step 6: Free memory*/
 /*exhaustive list of all malloc/calloc used fields*/
