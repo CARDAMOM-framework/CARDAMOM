@@ -151,19 +151,19 @@ if ((ncretval =  nc_def_dim(ncid,"EDC Index",edcIdxLen,&edcIdxDimID ))){
 /*STEP 3.3 - create netCDF variables in preperation for writting them later*/
 int fluxesVarID, poolsVarID, edcdVarID, pVarID;
 int M_FLUXES_dems[] = {sampleDimID,timeDimID,fluxDimID};
-if ((ncretval = nc_def_var(	ncid,"M_FLUXES" , NC_DOUBLE, 3, M_FLUXES_dems, &fluxesVarID ))){
+if ((ncretval = nc_def_var(	ncid,"FLUXES" , NC_DOUBLE, 3, M_FLUXES_dems, &fluxesVarID ))){
   ERR(ncretval);
 }
 int M_POOLS_dems[] = {sampleDimID,timeDimID,poolDimID};
-if ((ncretval = nc_def_var(	ncid,"M_POOLS" , NC_DOUBLE, 3, M_POOLS_dems, &poolsVarID ))){
+if ((ncretval = nc_def_var(	ncid,"POOLS" , NC_DOUBLE, 3, M_POOLS_dems, &poolsVarID ))){
   ERR(ncretval);
 }
 int M_EDCD_dems[] = {sampleDimID, edcIdxDimID };
-if ((ncretval = nc_def_var(	ncid,"M_EDCD" , NC_INT, 2, M_EDCD_dems, &edcdVarID ))){
+if ((ncretval = nc_def_var(	ncid,"EDCD" , NC_INT, 2, M_EDCD_dems, &edcdVarID ))){
   ERR(ncretval);
 }
 int M_P_dems[] = {sampleDimID, probIdxDimID};
-if ((ncretval = nc_def_var(	ncid,"M_P" , NC_DOUBLE, 2, M_P_dems, &pVarID ))){
+if ((ncretval = nc_def_var(	ncid,"PROB" , NC_DOUBLE, 2, M_P_dems, &pVarID ))){
   ERR(ncretval);
 }
 
