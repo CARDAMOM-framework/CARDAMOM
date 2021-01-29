@@ -35,6 +35,15 @@ double *POOLS=DATA.M_POOLS;
 double *LAI=DATA.M_LAI;
 double *NEE=DATA.M_NEE;
 
+/*Met pointer transfers*/
+/*CONTINUE FROM HERE*/
+double *SSRD=DATA.ncdf_data.SSRD.values;
+double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
+double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
+double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
+
+
+
   /*assigning values to pools*/
   /*L,F,R,W,Lit,SOM*/
   POOLS[0]=pars[17];
@@ -158,11 +167,11 @@ LAI[n]=POOLS[p+1]/pars[16];
 /*GPP*/
 /*Continue from here, check with previous code!!*/
 gpppars[0]=LAI[n];
-gpppars[1]=DATA.ncdf_data.T2M_MIN.values[m];
-gpppars[2]=DATA.ncdf_data.T2M_MAX.values[m];
-gpppars[4]=DATA.MET[m+4];
-gpppars[5]=DATA.MET[m+5];
-gpppars[7]=DATA.MET[m+3];
+gpppars[1]=DATA.ncdf_data.T2M_MAX.values[n];
+gpppars[2]=DATA.ncdf_data.T2M_MIN.values[n];
+gpppars[4]=DATA.ncdf_data.CO2.values[n];
+gpppars[5]=DATA.ncdf_data.DOY.values[n];
+gpppars[7]=DATA.ncdf_data.SSRD.values[n];
 
 
 
