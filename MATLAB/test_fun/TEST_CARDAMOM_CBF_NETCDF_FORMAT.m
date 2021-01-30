@@ -82,6 +82,13 @@ ncwrite(fname,'OTHERPRIORSUNC',CBF.RAW.OTHERPRIORSUNC)
 
 
 
+%Other options
+nccreate(fname,'EDC_equilibrium_factor'); 
+ncwrite(fname,'EDC_equilibrium_factor',CBF.RAW.OTHERPRIORSUNC(37))
+ncwriteatt(fname,'EDC_equilibrium_factor','Default_value','2')
+
+
+
 %Other obs
 %Mean biomass
 nccreate(fname,'Mean_Biomass'); 

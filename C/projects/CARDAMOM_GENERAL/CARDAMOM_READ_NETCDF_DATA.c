@@ -420,6 +420,10 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 
 	DATA->EDCDIAG=ncdf_read_single_double_var(ncid, "EDCDIAG");
 
+        DATA->EDC_equilibrium_factor=ncdf_read_single_double_var(ncid, "EDC_equilibrium_factor");
+
+
+
 	DATA->ET.values=ncdf_read_double_var(ncid, "ET", &(DATA->ET.length));
 		DATA->ET.Uncertainty=ncdf_read_double_attr(ncid, "ET","Uncertainty");
 		DATA->ET.Annual_Uncertainty=ncdf_read_double_attr(ncid, "ET","Annual_Uncertainty");
@@ -468,6 +472,10 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 	DATA->PARPRIORUNC.values=ncdf_read_double_var(ncid, "PARPRIORUNC", &(DATA->PARPRIORUNC.length));
 	DATA->OTHERPRIORS.values=ncdf_read_double_var(ncid, "OTHERPRIORS", &(DATA->OTHERPRIORS.length));
 	DATA->OTHERPRIORSUNC.values=ncdf_read_double_var(ncid, "OTHERPRIORSUNC", &(DATA->OTHERPRIORSUNC.length));
+
+
+
+
 
 	DATA->SSRD.values=ncdf_read_double_var(ncid, "SSRD", &(DATA->SSRD.length));
 		DATA->SSRD.reference_mean=ncdf_read_double_attr(ncid, "SSRD","reference_mean");

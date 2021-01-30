@@ -127,6 +127,7 @@ CO2_STRUCT CO2;
 DOY_STRUCT DOY;
 double EDC;
 double EDCDIAG;
+double EDC_equilibrium_factor;
 ET_STRUCT ET;
 EWT_STRUCT EWT;
 GPP_STRUCT GPP;

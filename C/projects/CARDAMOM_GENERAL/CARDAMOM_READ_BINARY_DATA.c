@@ -41,7 +41,6 @@ printf("Mean Rad = %f\n",DATA->meanrad);
 printf("Mean Temp = %f\n",DATA->meantemp);
 printf("Mean Prec = %f\n",DATA->meanprec);
 printf("Latitude = %f\n",DATA->LAT);
-printf("Number of MET drivers%d\n",DATA->nomet);
 printf("Number of GPP obs. = %d\n",DATA->ngpp);
 printf("Number of LAI obs. = %d\n",DATA->nlai);
 printf("Number of NEE obs. = %d\n",DATA->nnee);
@@ -112,7 +111,6 @@ printf("About to declare obs memory\n");
 	/*For re-use of DATA structure (presumably), the data is only re-read if the fields are set to zero (or initialized)*/
 	/*Currently not sure why this is here: however, this is harmless*/
 	/*also it is good practice to initialize pointers in C*/
-	if (DATA->MET==0){DATA->MET=calloc(DATA->nomet*DATA->nodays,sizeof(double));}
 	if (DATA->GPP==0){DATA->GPP=calloc(DATA->nodays,sizeof(double));}
 	if (DATA->NEE==0){DATA->NEE=calloc(DATA->nodays,sizeof(double));}
 	if (DATA->LAI==0){DATA->LAI=calloc(DATA->nodays,sizeof(double));}
@@ -167,8 +165,8 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 	}
 
 	if (fileIsCDF){
-	METADATA metadata;
-	DATA->metadata=metadata;
+	DERIVED DERIVED;
+	DATA->DERIVED=DERIVED;
 
 	  //Step 1.Data file is of the newer NetCDF format
 	  CARDAMOM_READ_NETCDF_DATA(ncfilename, &(DATA->ncdf_data));
@@ -193,12 +191,14 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 	CARDAMOM_MODEL_LIBRARY(DATA);
         /*This will eventually be obsolete*/
 
-        DATA->nomet=((DALEC *)DATA->MODEL)->nomet;
-	DATA->noobs=-9999;	
-
-	DATA->LAT=DATA->ncdf_data.LAT;
-	DATA->nodays=DATA->ncdf_data.TIME_INDEX.length;
 	
+        DATA->nomet=((DALEC *)DATA->MODEL)->nomet;
+	
+	DATA->noobs=-9999;	
+	
+	/*
+	DATA->LAT=DATA->ncdf_data.LAT;*/
+	DATA->nodays=DATA->ncdf_data.TIME_INDEX.length;
 
 	DATA->gppabs=DATA->ncdf_data.GPP.gppabs;
 
@@ -274,7 +274,6 @@ if (DATA->ncdf_data.CH4.Uncertainty_Threshold<0){DATA->ncdf_data.CH4.Uncertainty
 
 
 
-	/*NEXT STEPS: figure out how to ceclafre MET and other memory*/
 	// READ GPP, LAI, etc.:
 
 
@@ -315,175 +314,6 @@ if (DATA->ncdf_data.CH4.Uncertainty_Threshold<0){DATA->ncdf_data.CH4.Uncertainty
 	/*Other priors & uncertainties: 201-300*/
 	/*TEMPORAL DRIVERS & DATA: 301-end*/
 
-if (fileIsCDF==0){
-
-printf("About to read cbf binary file...\n");
-	FILE *fid=fopen(filename,"rb");
-	filediag(fid,filename);
-
-	/*READING STATIC DATA*/
-
-	double statdat[100];
-	/*reading 1-100*/
-	fread(statdat,sizeof(double),100,fid);
-	/*DALEC model run info*/
-	DATA->ID=(int)statdat[0];
-	DATA->LAT=statdat[1];
-	DATA->nodays=(int)statdat[2];
-	DATA->nomet=(int)statdat[3];
-	DATA->noobs=(int)statdat[4];
-	DATA->EDC=(int)statdat[5];
-	DATA->EDCDIAG=(int)statdat[6];
-	DATA->gppabs=(int)statdat[7];
-	/*DALEC MCMC run info*/
-	/*set to 1 for (a) few and (b) well constrained priors, otherwise 0*/
-	/*binary file mcmc options (need to add all options HERE except inout files)*/
-	DATA->edc_random_search=(int)statdat[10];
-	DATA->gppiav=(int)statdat[11];
-	DATA->laiiav=(int)statdat[12];
-	DATA->nee_annual_unc=statdat[13];
-	DATA->et_annual_unc=statdat[14];
-	DATA->nee_obs_unc=statdat[15];if (statdat[15]<0){DATA->nee_obs_unc=0.5;}
-	DATA->et_obs_unc=statdat[16];if (statdat[16]<0){DATA->et_obs_unc=2;}
-	DATA->ewt_annual_unc=statdat[17];
-	DATA->ewt_obs_unc=statdat[18];if (statdat[18]<0){DATA->ewt_obs_unc=50;}
-	DATA->gpp_annual_unc=statdat[19];
-	DATA->gpp_obs_unc=statdat[20];if (statdat[20]<0){DATA->gpp_obs_unc=2;}
-	DATA->et_obs_threshold=statdat[21]; if (statdat[21]<0){DATA->et_obs_threshold=0;}
-	DATA->gpp_obs_threshold=statdat[22]; if (statdat[22]<0){DATA->gpp_obs_threshold=0;}
-	DATA->ch4iav=(int)statdat[23];  /*shuang*/
-	DATA->ch4_annual_unc=statdat[24];  /*shuang*/
-	DATA->ch4_obs_unc=statdat[25];if (statdat[25]<0){DATA->ch4_obs_unc=0.5;}  /*shuang*/
-	DATA->ch4_obs_threshold=statdat[26]; if (statdat[26]<0){DATA->ch4_obs_threshold=1e-5;}  /*shuang; AAB = 0.1 mgCH4/m2/day*/
-
-
-	/*UP TO USER to read data and allocate it to DATA structure*/
-	double parpriors[50],parpriorunc[50],otherpriors[50],otherpriorunc[50];
-	fread(parpriors,sizeof(double),50,fid);
-	fread(parpriorunc,sizeof(double),50,fid);
-	fread(otherpriors,sizeof(double),50,fid);
-	fread(otherpriorunc,sizeof(double),50,fid);
-
-	/*For universal data structure, DATA contains 50 parameter prior spaces
-	 * use as many as needed!*/
-	memcpy(DATA->parpriors,parpriors,50*sizeof(double));
-	memcpy(DATA->parpriorunc,parpriorunc,50*sizeof(double));
-	memcpy(DATA->otherpriors,otherpriors,50*sizeof(double));
-	memcpy(DATA->otherpriorunc,otherpriorunc,50*sizeof(double));
-
-
-	/*loading model specific values*/
-	/*this includes information on the number of pools, number of parameters, etc.
-	?*this allows an initialization of the model output fields (stored in DATA for simplicity)*/
-
-	CARDAMOM_MODEL_LIBRARY(DATA);
-
-
-
-
-
-/*********Memory allocation for dynamic fields, common to both netcdf and cbf formats*******/
-
-
-
-	/*the following fields (begining by M_) are for storage purposes*/
-	/*data stored in these fields is over-written at each model run*/
-	/*Future versions: these should be declared within each model structure
-	or generically declared for model types (e.g. DALEC, etc).*/
-	/*Model-specific quantities (nodays, nofluxes, nopools), will be declared in MODEL_INFO for modularity*/
-	
-	DYNAMIC_DATA_MEMORY_ALLOCATION(DATA);
-
-
-
-	/*6 met fields for DALEC CDEA*/
-
-	int n, nn;
-	double *metline, *obsline;
-	metline=calloc(DATA->nomet,sizeof(double));
-	obsline=calloc(DATA->noobs,sizeof(double));
-	/*mean met and mean obs line, in case user-defined*/
-
-
-	int frfm,frfo;
-
-
-	printf("reading file...\n");
-	for (n=0;n<DATA->nodays+1;n++){
-		frfm=fread(metline,sizeof(double),DATA->nomet,fid);
-		frfo=fread(obsline,sizeof(double),DATA->noobs,fid);
-		if (n<DATA->nodays){
-		for (nn=0;nn<DATA->nomet;nn++){DATA->MET[n*DATA->nomet+nn]=metline[nn];}
-		DATA->GPP[n]=obsline[0];
-		DATA->LAI[n]=obsline[1];
-		DATA->NEE[n]=obsline[2];
-		if (obsline[0]>-9998){DATA->ngpp=DATA->ngpp+1;}
-		if (obsline[1]>-9998){DATA->nlai=DATA->nlai+1;}
-		if (obsline[2]>-9998){DATA->nnee=DATA->nnee+1;}
-		if (DATA->noobs>3){DATA->WOO[n]=obsline[3];
-		if (obsline[3]>-9998){DATA->nwoo=DATA->nwoo+1;}}
-	        if (DATA->noobs>4){DATA->ET[n]=obsline[4];
-	        if (obsline[4]>-9998){DATA->net=DATA->net+1;}}
-	        if (DATA->noobs>5){DATA->EWT[n]=obsline[5];
-	        if (obsline[5]>-9998){DATA->newt=DATA->newt+1;}}
-
-	        if (DATA->noobs>6){DATA->BAND1[n]=obsline[6];
-	        if (obsline[6]>-9998){DATA->nband1=DATA->nband1+1;}}
-
-	        if (DATA->noobs>7){DATA->BAND2[n]=obsline[7];
-	        if (obsline[7]>-9998){DATA->nband2=DATA->nband2+1;}}
-
-	        if (DATA->noobs>8){DATA->BAND3[n]=obsline[8];
-	        if (obsline[8]>-9998){DATA->nband3=DATA->nband3+1;}}
-
-	        if (DATA->noobs>9){DATA->BAND4[n]=obsline[9];
-	        if (obsline[9]>-9998){DATA->nband4=DATA->nband4+1;}}
-
-	        if (DATA->noobs>10){DATA->SOM[n]=obsline[10];
-	        if (obsline[10]>-9998){DATA->nsom=DATA->nsom+1;}}
-
-	     /*   if (DATA->noobs>11){DATA->NEEunc[n]=obsline[11];
-	        if (obsline[11]>-9998){DATA->nneeunc=DATA->nneeunc+1;}}*/  /*shuang by default there is not a field for NEEunc in CBF.OBS*/
-
-	        if (DATA->noobs>11){DATA->CH4[n]=obsline[11];
-	        if (obsline[11]>-9998){DATA->nch4=DATA->nch4+1;}}   /*shuang this correspond to the new field CH4 added after SOM in write binary.m */
-	};
-
-	}
-
-	fclose(fid);
-
-
-
-	/*deriving mean temp and mean rad*/
-	DATA->meantemp=0;
-	DATA->meanrad=0;
-	DATA->meanprec=0;
-	/*2 options:*/
-	/*1. derive mean met values based on "MET" (frfm = DATA->nomet)*/
-	/*2. prescribe user-provided mean met values (frfm = 0)*/
-	if (frfm==0){
-	for (n=0;n<DATA->nodays;n++){DATA->meantemp+=0.5*DATA->MET[DATA->nomet*n+1]/(double)DATA->nodays;}
-	for (n=0;n<DATA->nodays;n++){DATA->meantemp+=0.5*DATA->MET[DATA->nomet*n+2]/(double)DATA->nodays;}
-	for (n=0;n<DATA->nodays;n++){DATA->meanrad+=DATA->MET[DATA->nomet*n+3]/(double)DATA->nodays;}
-	/*only if no met > 6*/
-	if (DATA->nomet>8){
-	for (n=0;n<DATA->nodays;n++){DATA->meanprec+=DATA->MET[DATA->nomet*n+8]/(double)DATA->nodays;}};
-	printf("No prescribed met reference means, calculating based on driver data\n");
-	}
-	else if (frfm==DATA->nomet){
-	DATA->meantemp=0.5*metline[1] + 0.5*metline[2];
-	DATA->meanrad=metline[3];
-	if (DATA->nomet>6){DATA->meanprec=metline[8];}
-	printf("Using prescribed met reference means\n");
-	}
-	printf("frfm = %i\n",frfm);
-
-
-        free(metline);
-        free(obsline);
-
-/*done reading standard cbf file*/}
 
 
 
@@ -536,27 +366,9 @@ for (n=0;n<DATA->nodays;n++){
 /*endofloop*/} 
 
 
-	/*Populate "MET" with 9 fields*/
-	for (n=0;n<DATA->nodays;n++){
-	m=n*DATA->nomet;
-	DATA->MET[m]=DATA->ncdf_data.TIME_INDEX.values[n];
-	DATA->MET[m+1]=DATA->ncdf_data.T2M_MIN.values[n];
-	DATA->MET[m+2]=DATA->ncdf_data.T2M_MAX.values[n];
-	DATA->MET[m+3]=DATA->ncdf_data.SSRD.values[n];
-	DATA->MET[m+4]=DATA->ncdf_data.CO2.values[n];
-	DATA->MET[m+5]=DATA->ncdf_data.DOY.values[n];
-	DATA->MET[m+6]=DATA->ncdf_data.BURNED_AREA.values[n];
-	DATA->MET[m+7]=DATA->ncdf_data.VPD.values[n];
-	DATA->MET[m+8]=DATA->ncdf_data.TOTAL_PREC.values[n];
-	}
-
-	DATA->metadata.deltat=DATA->ncdf_data.TIME_INDEX.values[1] - DATA->ncdf_data.TIME_INDEX.values[0];
+	DATA->DERIVED.deltat=DATA->ncdf_data.TIME_INDEX.values[1] - DATA->ncdf_data.TIME_INDEX.values[0];
 
 
-/*Populate with mean fields*/
-DATA->meantemp = DATA->ncdf_data.T2M_MAX.reference_mean/2 + DATA->ncdf_data.T2M_MIN.reference_mean/2;
-DATA->meanrad = DATA->ncdf_data.SSRD.reference_mean;
-DATA->meanprec = DATA->ncdf_data.TOTAL_PREC.reference_mean;
 
 
 
@@ -567,7 +379,6 @@ DATA->meanprec = DATA->ncdf_data.TOTAL_PREC.reference_mean;
 
 
 
-	DATA->deltat=DATA->MET[DATA->nomet]-DATA->MET[0];
 
 
 
@@ -634,7 +445,6 @@ int INITIALIZE_DATA_STRUCT(DATA *CDATA){
 
 /*initialising array pointers as zero*/
 /*NOTE: These may need to be set to NULL*/
-CDATA->MET=0;
 CDATA->GPP=0;
 CDATA->LAI=0;
 CDATA->NEE=0;
@@ -674,7 +484,6 @@ if (DATA.nsom>0){free(DATA.sompts);}
 if (DATA.nneeunc>0){free(DATA.neeuncpts);}
 if (DATA.nch4>0){free(DATA.ch4pts);} /*shuang*/
 
-free(DATA.MET);
 free(DATA.LAI);
 free(DATA.NEE);
 free(DATA.WOO);

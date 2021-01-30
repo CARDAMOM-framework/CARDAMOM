@@ -1,6 +1,7 @@
 %Step 1.  Run with existing output;
 
 
+CBF=CARDAMOM_READ_BINARY_FILEFORMAT('testnc.cbf');
 CBRnew=CARDAMOM_RUN_MODEL('testnc.nc.cbf','testnc.cbr');
 
 ni=ncinfo('testnc.nc.cbf');
@@ -16,4 +17,5 @@ total(CBRnew.POOLS-CBR.POOLS)
 total(CBRnew.FLUXES-CBR.FLUXES)
 total(CBRnew.PARS-CBR.PARS)
 mean(CBRnew.PROB-CBR.PROB)
+
 

@@ -28,26 +28,18 @@ int n;
 /*switch all on if EDCDIAG<2 , otherwise, switch on/off according to EDCSWITCH*/
 /*EDCSETUP function will be included in DALEC_ALL_LIKELIHOOD.c*/
 
-/*
-printf("*****")
-printf("*****Note on status of DALEC EDC settings*******\n");
-printf("*****")
-printf("*****")
-printf("*****")
-printf("******Only default values used for now, introduce EDC settings via netcdf system when needed\n");
-printf("*****")
-*/
 
 
-for (n=0;n<100;n++){EDCDmem.SWITCH[n]=1;}
-if (EDCDmem.DIAG==2){for (n=0;n<20;n++){EDCDmem.SWITCH[n]=DATA.otherpriors[n+30];}}
+//NOTE: EDCswitches temporarily decomissioned. These will be revived after refactoring//
+//for (n=0;n<100;n++){EDCDmem.SWITCH[n]=1;}
+//if (EDCDmem.DIAG==2){for (n=0;n<20;n++){EDCDmem.SWITCH[n]=DATA.otherpriors[n+30];}}
 
-//if (EDCDmem.DIAG==2){for (n=0;n<20;n++){EDCDmem.SWITCH[n]=0;}}
 
 
 /*EQF is stored in the "DATA.otherpriorunc" fields associated with EDCs 7-12*/
 /*default value is 2*/
-EDCDmem.EQF=DATA.otherpriorunc[36]; 
+//EDCDmem.EQF=DATA.otherpriorunc[36]; 
+EDCDmem.EQF=DATA.ncdf_data.EDC_equilibrium_factor;
 
 printf("EDCD->EQF* = %2.2f\n",EDCDmem.EQF);
 if (EDCDmem.EQF==-9999){EDCDmem.EQF=2;}

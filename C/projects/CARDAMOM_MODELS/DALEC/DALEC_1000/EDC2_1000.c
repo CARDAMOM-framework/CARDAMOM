@@ -15,12 +15,15 @@ int EDC2_1000(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 /*Copy model pointer for brevity*/
 DALEC *MODEL=(DALEC *)DATA.MODEL;
 
-double *MET=DATA.MET;
 double *POOLS=DATA.M_POOLS;
 double *FLUXES=DATA.M_FLUXES;
-int nodays=DATA.nodays;
+int nodays=DATA.ncdf_data.TIME_INDEX.length;
 double *parmax=DATA.parmax;
-double meantemp=DATA.meantemp;
+
+double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
+double meanrad = DATA.ncdf_data.SSRD.reference_mean;
+double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
+
 
 /*EDCD=EDCD2;*/
 
@@ -56,7 +59,7 @@ for (n=0;n<nopools;n++){MPOOLS[n]=mean_pool(POOLS,n,nodays+1,nopools);};
 /*Assuming COMPLETE years*/
 double *MPOOLSjan;
 /*pool interval*/
-int dint=(int)floor(nodays/(MET[nomet*(nodays-1)]-MET[0])*365.25);
+int dint=(int)floor(nodays/(DATA.ncdf_data.TIME_INDEX.values[nodays-1]-DATA.ncdf_data.TIME_INDEX.values[0])*365.25);
 /*declaring mean pool array*/
 MPOOLSjan=calloc(nopools,sizeof(double));if (MPOOLSjan==0){printf("WARNING NULL POINTER");}
 /*deriving mean jan pools*/
@@ -87,7 +90,7 @@ int f=0;
 for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<nodays;n++){FT[f]+=FLUXES[n*nofluxes+f];}}
 /*Total prec*/
 double PREC=0;
-for (n=0;n<nodays;n++){PREC+=MET[n*nomet+8];}
+for (n=0;n<nodays;n++){PREC+=DATA.ncdf_data.TOTAL_PREC.values[n];}
 
 
 double Fin[8];

@@ -14,9 +14,10 @@ int EDC1_1000(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 */
 
 
+double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
+double meanrad = DATA.ncdf_data.SSRD.reference_mean;
+double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
 
-double meantemp=DATA.meantemp;
-double meanrad=DATA.meanrad;
 
 
 /*This function was created on 7 Jan 2014*/
