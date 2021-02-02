@@ -44,8 +44,9 @@ LWup = [271, 283, 292, 305, 314, 357, 378, 383, 362, 347, 300, 271]*3600*24/1e6;
 % unit covert from J/m2/day to MJ/m2/day  (/1e6)
  SWdown = [7.5455    9.1782   15.4878   20.6763   27.3366   27.1438   27.7512   24.4484   17.6172   13.7335    7.1347    5.8443];
  LWdown = [ 18.2143   21.2924   21.8513   21.1625   21.6022   23.9659   25.6225   24.7010   24.0173   20.4801   21.5173   19.8812];
- %Net upward  = LWup - LWdown
- %LWup = LWdown + Net upward  
+ %netLWup  = LWup - LWdown
+ %LWup = LWdown + netLWup
+ %netLWup = [3.9281    3.0944    3.9953    4.7450    6.2141    5.6763    7.1693    7.3669    5.4266    4.9323    3.3277    3.2545];
  LWup = ([3.9281    3.0944    3.9953    4.7450    6.2141    5.6763    7.1693    7.3669    5.4266    4.9323    3.3277    3.2545] +  LWdown);
 
 % in W/m2 /(3600*24)
@@ -121,7 +122,22 @@ FUNC.snow_temp@(snow_ie,PARS)
 %Arg 3. fliq
 FUNC.snow2energy= @(snowtemp,PARS,fliq) (1.0 - fliq) * PARS.cice * snowtemp + fliq * PARS.cliq * (snowtemp - PARS.tsupercool_liq) ;
 
+% **********************************************************************
+% calculate aero conductance for sensible heat transfer (as a function of wind speed)
+% Inputs:
+ PARS.z=10;% Velocity reference height in meters
+ PARS.h=0.03; % Characteristic roughness height in meters
+ PARS.kappa=0.4; % von Karman's constant
+ v10=[0.4817    0.9765    0.8134    0.5430    0.1999    0.5219    0.3391    0.2098    0.3396    0.4556    1.0371    0.4066];% Horizontal wind velocity at reference height (z) in m/s
+ u10=[0.0191    0.7561    0.9194    0.7794    0.2525    0.5823    0.2504    0.3517    0.1578    0.4720    0.3309    0.3905];
+ ws10=sqrt(v10.^2+u10.^2);
+%  ws2=v10*4.87/ln(67.8*10-5.42);% roughly ws2=0.75*ws10
+ d=0.7*PARS.h; % Approximation for zero-plane displacement height
+ z_0=0.1*PARS.h; % Approximation for momentum roughness height
+% Outputs: Aerodynamic resistance in s/m
+ FUNC.aeroconductance=@(PARS.z,PARS.h,ws10) (PARS.kappa^2.*ws10)/log((PARS.z-d)./z_0).^2;
 
+% **********************************************************************
 
 %Snow internal energy per unit snow (mm) * SNOW MASS
 SNOW_IE(1) = FUNC.snow2energy(SNOW_TEMP(1), PARS, 0) * SNOW_H2O(1);
