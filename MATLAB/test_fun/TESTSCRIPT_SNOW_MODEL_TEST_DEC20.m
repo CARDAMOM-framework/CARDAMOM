@@ -103,17 +103,19 @@ SNOW_TEMP(1) = 268;
 
 
 
-
+keyboard
 
 %E_tsw = M_tsw *c_i*T_tsw T_tsw = E_tsw/(c_i*M_tsw)13:34
 
 %snow2energy= @(snowtemp) (1.0 - fliq) * cice * temp & + fliq * cliq * (temp - tsupercool_liq) 
-IE=(1.0 - fliq) * cice * temp & + fliq * cliq * (temp - tsupercool_liq) ;
+%IE=(1.0 - fliq) * cice * temp & + fliq * cliq * (temp - tsupercool_liq) ;
 %l = (\frac{Q_{tsw}-Q_{tsw0}}{Q_{tsw1}-Q_{tsw0}})13:40
-FUNC.snow_fliq=@(snow_ie, PARS) min(max((snow_ie - PARS.IE_at_0C_solid )/ (PARS.IE_at_0C_liquid - PARS.IE_at_0C_solid),0),1);
+
+FUNC.snow_fliq=@(snow_ie_pum, PARS) min(max((snow_ie_pum - PARS.IE_at_0C_solid )/ (PARS.IE_at_0C_liquid - PARS.IE_at_0C_solid),0),1);
 %OVERLEAF FOR SNOW TEMP FUNCTION;
 %Re-arrange from above equations
-FUNC.snow_temp@(snow_ie,PARS) 
+%Ensure snow_ie is per unit mass
+FUNC.snow_temp=@(snow_ie,PARS) min(snow_ie/PARS.cice,PARS.tp);
 
     
  
@@ -131,11 +133,12 @@ FUNC.snow2energy= @(snowtemp,PARS,fliq) (1.0 - fliq) * PARS.cice * snowtemp + fl
  v10=[0.4817    0.9765    0.8134    0.5430    0.1999    0.5219    0.3391    0.2098    0.3396    0.4556    1.0371    0.4066];% Horizontal wind velocity at reference height (z) in m/s
  u10=[0.0191    0.7561    0.9194    0.7794    0.2525    0.5823    0.2504    0.3517    0.1578    0.4720    0.3309    0.3905];
  ws10=sqrt(v10.^2+u10.^2);
+ 
 %  ws2=v10*4.87/ln(67.8*10-5.42);% roughly ws2=0.75*ws10
  d=0.7*PARS.h; % Approximation for zero-plane displacement height
  z_0=0.1*PARS.h; % Approximation for momentum roughness height
 % Outputs: Aerodynamic resistance in s/m
- FUNC.aeroconductance=@(PARS.z,PARS.h,ws10) (PARS.kappa^2.*ws10)/log((PARS.z-d)./z_0).^2;
+ FUNC.aeroconductance=@(PARS,ws10) (PARS.kappa^2.*ws10)/log((PARS.z-d)./z_0).^2;
 
 % **********************************************************************
 
@@ -143,10 +146,10 @@ FUNC.snow2energy= @(snowtemp,PARS,fliq) (1.0 - fliq) * PARS.cice * snowtemp + fl
 SNOW_IE(1) = FUNC.snow2energy(SNOW_TEMP(1), PARS, 0) * SNOW_H2O(1);
 
 
-SNOW_LF(1)=FUNC.snow_fliq(SNOW_IE(1) , PARS);
+SNOW_LF(1)=FUNC.snow_fliq(SNOW_IE(1)/SNOW_H2O(1) , PARS);
 
 
-
+keyboard
 
 %dSWE/dt = PRECsnow - Sublimation - Melt
 for m=1:12
@@ -175,7 +178,7 @@ for m=1:12
         H(m) =CONST.Hconductance * (skintemp(m) - (AIRtemp(m)+PARS.tp))*CONST.air_density *CONST.Cp *3600*24*365.25/12;
     
         %LE = ET * 
-        LE(m) = ET*PARS.latent_heat_sub ;
+        LE(m) = ET(m)*PARS.latent_heat_sub ;
         
         %Turbulent fluxes
         %Convention = +ve flux upward
@@ -185,7 +188,7 @@ for m=1:12
 
        
        
-       ET_MASS_ENERGY_FLUX(m) = ET* FUNC.snow2energy(SNOW_TEMP(m) ,PARS ,0);
+       ET_MASS_ENERGY_FLUX(m) = ET(m)* FUNC.snow2energy(SNOW_TEMP(m) ,PARS ,0);
         SNOW_MASS_ENERGY_FLUX(m)= FUNC.snow2energy(min(AIRtemp(m)+PARS.tp, PARS.tp),PARS,0) *PRECsnow(m) ;
        
         %Surface met mass energy exchange  (excluding melt)
@@ -198,14 +201,48 @@ for m=1:12
         
         
     %Track energy in Jules
+    %CONTINUE FROM HERE (WHY IS IE NEGATIVE)?
          SNOW_IE(m+1) = SNOW_IE(m) + MASS_EXCHANGE_ENERGY_FLUXES(m)+ RAD_FLUXES(m) - TURB_FLUXES(m);
          
 
          
          %Calculate temperature of snow after enegry exchange.
-         SNOW_TEMP(m+1) =  FUNC.snow_(SNOW_IE(m+1), PARS) ;
-         SNOW_LF(m+1) =  FUNC.snow_fliq(SNOW_IE(m+1), PARS) ;
+         if SNOW_H2O(m)>0;
+         SNOW_TEMP(m+1) =  FUNC.snow_temp(SNOW_IE(m+1)/SNOW_H2O(m), PARS) ;
+         %Snow LF correct for any temperature
+         %FUNC.snow_fliq=@(snow_ie, PARS) min(max((snow_ie - PARS.IE_at_0C_solid )/ (PARS.IE_at_0C_liquid - PARS.IE_at_0C_solid),0),1);
+      % If temp is above zero, snow LF calculation = 1
+      % If temp is at zero, snow LF calculation = 0-1
+      % If temp is below zero, snow LF calculation = 0
+      %CONTINUE FROM HERE: check liquid fraction and internal energy
+      
+         SNOW_LF(m+1) =  FUNC.snow_fliq(SNOW_IE(m+1)/SNOW_H2O(m), PARS) ;
+         
 
+%         me%lt (m) = max(0, (snow_ie - snow_h2o * snow_ie_0C_all_ice));
+
+                  %melt (m) = @(snow_ie,PARS) max(0, (snow_ie - PARS.IE_at_0C_solid));
+
+         %units = SNOW_IE (J)
+         %units =
+         %
+                 MELT_ENERGY(m) =  max(0, (SNOW_IE(m+1) - SNOW_H2O(m) *PARS.IE_at_0C_solid));
+                 
+                 
+                 
+                  MELT_MASS(m) =    SNOW_LF(m+1) * SNOW_H2O(m)  ;
+
+
+                 
+                %MELT(m) = (SNOW_TEMP(m)  -  PARS.tp) *PARS.cice * (SNOW_H2O(m)*(1-SNOW_LF(m));
+
+         else
+              SNOW_TEMP(m+1) = NaN;
+              SNOW_LF(m+1) = NaN;
+                     MELT_ENERGY(m) = 0;
+                     MELT_MASS(m) = 0;
+
+         end
          %Step 3. Cas
          
 
@@ -214,13 +251,12 @@ for m=1:12
         %Mass flux
         %MELT_MASS_FLUX(m) = 
         %Energy flux
-       MELT(m) = (SNOW_TEMP(m)  -  PARS.tp) *PARS.cice * (SNOW_H2O(m)*(1-SNOW_LF(m));
     %
          
          
     %    FUNC.snow2energy(SNOW_TEMP(m),PARS,
 
-    FUNC.snow_fliq
+    %FUNC.snow_fliq
     
     %Snow melt at each timestep
     %TO DO NEXT:
@@ -237,7 +273,10 @@ for m=1:12
     
       
     %Snow H2O balance
-    SNOW_H2O(m+1) =SNOW_H2O(m) + PRECsnow(m)*deltat  - ET(m) - MELT(m);
+    SNOW_H2O(m+1) =SNOW_H2O(m) + PRECsnow(m)*deltat  - ET(m) - MELT_MASS(m);
+    
+                      SNOW_IE(m+1) = SNOW_IE(m+1) - MELT_ENERGY(m);
+
     %Snow internal energy
     %SNOW_IE(m+1) =SNOW_IE(m) + 
     
