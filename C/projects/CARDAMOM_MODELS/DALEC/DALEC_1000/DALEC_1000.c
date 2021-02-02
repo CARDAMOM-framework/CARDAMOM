@@ -6,6 +6,7 @@
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
+
 int DALEC_1000(DATA DATA, double const *pars)
 {
 
@@ -270,6 +271,14 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 
 
 }
+
+
+
+/*Observation operator*/
+/*Populate with model simulated obs*/
+
+
+DATA.MODEL_OBS->Mean_Biomass=pars[17]+pars[18]+pars[19]+pars[20];
 
 return 0;
 }

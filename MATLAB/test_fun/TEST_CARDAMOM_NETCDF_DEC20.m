@@ -2,7 +2,15 @@
 
 
 CBF=CARDAMOM_READ_BINARY_FILEFORMAT('testnc.cbf');
-CBRnew=CARDAMOM_RUN_MODEL('testnc.nc.cbf','testnc.cbr');
+
+%Step 2. Write as netcdf file
+fname_old='testnc.nc.cbf';
+fname='testnc2.nc.cbf';
+delete(fname);
+CARDAMOM_CBF2NETCDF(CBF,fname)
+
+
+CBRnew=CARDAMOM_RUN_MODEL(fname,'testnc.cbr');
 
 ni=ncinfo('testnc.nc.cbf');
 ncdisp('testnc.nc.cbf')

@@ -8,11 +8,22 @@ double deltat;
 }DERIVED;
 
 
+/*Time-varying obs*/
+//double *LAI;
+//double *NBE;
+//double *GPP;
+/*Time invariant obs*/
+typedef struct MODEL_OBS{
+double Mean_Biomass;
+
+}MODEL_OBS;
 
 typedef struct DATA{
 //This is the netCDF data struct. See CARDAMOM_NETCDF_DATA_STRUCTURE.c for details on all the things contained therein
 NETCDF_DATA ncdf_data;
 DERIVED DERIVED;
+MODEL_OBS *  MODEL_OBS;
+
 
 /*DRIVERS*/
 double *MET;

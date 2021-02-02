@@ -83,6 +83,7 @@ return 0;}
 
 int DYNAMIC_DATA_MEMORY_ALLOCATION(DATA * DATA){
 	
+
 	DATA->M_LAI=calloc(DATA->nodays,sizeof(double));
 	DATA->M_GPP=calloc(DATA->nodays,sizeof(double));
 	DATA->M_NEE=calloc(DATA->nodays,sizeof(double));
@@ -165,8 +166,16 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 	}
 
 	if (fileIsCDF){
+	
+
+	/*Stored as variables, contents of memory stay constant throughout*/
 	DERIVED DERIVED;
 	DATA->DERIVED=DERIVED;
+	
+	/*Stored as pointer, contents of memory change for each model iteration*/
+	MODEL_OBS MODEL_OBS;
+	DATA->MODEL_OBS=&MODEL_OBS;
+
 
 	  //Step 1.Data file is of the newer NetCDF format
 	  CARDAMOM_READ_NETCDF_DATA(ncfilename, &(DATA->ncdf_data));

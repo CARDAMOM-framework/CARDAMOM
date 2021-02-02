@@ -406,6 +406,7 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
  	}
 
 	DATA->ABGB.values=ncdf_read_double_var(ncid, "ABGB", &(DATA->ABGB.length));
+	//DATA->ABGB.Uncertainty=ncdf_read_double_attr(ncid, "ABGB", "Uncertainty");
 
 
 

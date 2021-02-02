@@ -80,8 +80,6 @@ p=p-0.5*pow((PARS[n]-DATA.parpriors[n])/(DATA.parpriorunc[n]),2);}
 /*for any other priors, explicitly define functions based on values in DATA.otherpriors*/
 
 /*total biomass (pools 1:4) defined here - using first space of pappriors for total biomass*/
-if (DATA.otherpriors[0]>-9999){
-p=p-0.5*pow(log((PARS[17]+PARS[18]+PARS[19]+PARS[20])/DATA.otherpriors[0])/log(DATA.otherpriorunc[0]),2);}
 
 return p;}
 
@@ -98,6 +96,10 @@ double mgpp=0;
 double mnpdf=0;
 double mlai=0;
 int npdfi[7]={9,10,11,23,24,25,26};
+
+
+if (D.ncdf_data.Mean_Biomass.values[0]>-9999){
+P=P-0.5*pow(log(D.MODEL_OBS->Mean_Biomass/D.ncdf_data.Mean_Biomass.values[0])/log(D.ncdf_data.Mean_Biomass.Uncertainty),2);}
 
 
 
