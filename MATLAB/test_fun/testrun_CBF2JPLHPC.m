@@ -3,17 +3,20 @@
 % CBF=CARDAMOM_READ_BINARY_FILEFORMAT('/Users/jnorton/Models/CARDAMOM_2.1.6c/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbf');
 
 %experiment CBF and name
-% expname='BOREAL3';
+% expname='BOREAL6';
 % CBF=CARDAMOM_READ_BINARY_FILEFORMAT('/Users/jnorton/Models/CARDAMOM_2.1.6c/DATA/BOREAL_EXAMPLE_155E_66S.cbf');
-expname='TEMPERATE3';
-CBF=CARDAMOM_READ_BINARY_FILEFORMAT('/Users/jnorton/Models/CARDAMOM_2.1.6c/DATA/TEMPERATE_EXAMPLE_90W_50N.cbf');
-expname='TROPICS3';
-CBF=CARDAMOM_READ_BINARY_FILEFORMAT('/Users/jnorton/Models/CARDAMOM_2.1.6c/DATA/WET_TROPICS_EXAMPLE_70W_2S.cbf');
-% expname='DRYTROPICS1';
+% expname='TEMPERATE6';
+% CBF=CARDAMOM_READ_BINARY_FILEFORMAT('/Users/jnorton/Models/CARDAMOM_2.1.6c/DATA/TEMPERATE_EXAMPLE_90W_50N.cbf');
+% expname='TROPICS6';
+% CBF=CARDAMOM_READ_BINARY_FILEFORMAT('/Users/jnorton/Models/CARDAMOM_2.1.6c/DATA/WET_TROPICS_EXAMPLE_70W_2S.cbf');
+% expname='DRYTROPICS6';
 % CBF=CARDAMOM_READ_BINARY_FILEFORMAT('/Users/jnorton/Models/CARDAMOM_2.1.6c/DATA/DRY_TROPICS_EXAMPLE_25E_18S.cbf');
+expname='DRYTROPICS1021b';
+CBF=CARDAMOM_READ_BINARY_FILEFORMAT('/Users/jnorton/Models/CARDAMOM_2.1.6c/DATA/DRY_TROPICS_EXAMPLE_25E_18S.cbf');
+
 
 %Changing ID
-CBF.ID=1021;
+CBF.ID=1020;
 CBF.EDC=0;
 CBF.OBS.GPP=[];
 CBF.OTHER_OBS.MLAI.mean=-9999;
@@ -21,12 +24,12 @@ CBF.OTHER_OBS.MLAI.unc=-9999;
 
 
 %Worth doing following any modification to the given model ID, just in case, 
-MD=CARDAMOM_MODEL_LIBRARY(1021,[],1);
+MD=CARDAMOM_MODEL_LIBRARY(1020,[],1);
 
 %For PARRFUN_CARDAMOM_CBF2JPLHPC.m
 OPT.username='jnorton';
 OPT.niterations=1e7;
-OPT.timefactor=4;
+OPT.timefactor=5;
 
 CBR=PARRFUN_CARDAMOM_CBF2JPLHPC(CBF,expname,OPT);
 
@@ -96,3 +99,20 @@ writematrix(CBR{1,1}.POOLS,sprintf('/Users/jnorton/Projects/CARDAMOM/Phenology/r
 
 % CBF MET
 writematrix(CBF.MET,sprintf('/Users/jnorton/Projects/CARDAMOM/Phenology/results/%s_MET.csv', expname));
+
+
+%% Test the degree of water limitation on LAI
+% first, we do a control run with optimized parameters
+partest1=CBR{1,1}.PARS(:,:);
+cbrtest1=CARDAMOM_RUN_MODEL(CBF,partest1);
+% second, we do a test run with no water limitation, by setting tau_W to near zero
+partest2=CBR{1,1}.PARS(:,:);
+partest2(:,44)=1e-6;
+cbrtest2=CARDAMOM_RUN_MODEL(CBF,partest2);
+
+
+% CBR FLUXES
+writematrix(cbrtest2.FLUXES,sprintf('/Users/jnorton/Projects/CARDAMOM/Phenology/results/%s_FLUXES_sensitivitytauw.csv', expname));
+% CBR POOLS
+writematrix(cbrtest2.POOLS,sprintf('/Users/jnorton/Projects/CARDAMOM/Phenology/results/%s_POOLS_sensitivitytauw.csv', expname));
+

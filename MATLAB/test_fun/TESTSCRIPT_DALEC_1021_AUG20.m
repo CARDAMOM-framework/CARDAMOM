@@ -37,18 +37,22 @@ CBFtest=CBF;
 CBFtest.MET(:,7)=0;
 
 cbrtest=CARDAMOM_RUN_MODEL(CBFtest,partest);
-% 
-% 
-% deltat=CBF.MET(2,1)-CBF.MET(1,1);
-% NBE=cbrtest.NBE;
-% %NBE is - dC/dt if "C" is total carbon
-% NBEdpools=-diff(sum(cbrtest.POOLS(:,:,1:6),3))/deltat;
-% 
-% figure(2);clf
-% %subplot(3,3,1);plot(NBEdpools,NBE(2:end),'o-')
-% subplot(3,1,1);hold on;plot(NBE(2:end),'b-');plot(NBEdpools,'r--')
-% subplot(3,1,2);hold on;plot(cbrtest.POOLS(:,:,2))
-% subplot(3,1,3);hold on;plot(cbrtest.LAI)
+
+deltat=CBF.MET(2,1)-CBF.MET(1,1);
+
+% NBE check: fluxes vs pools
+NBE=cbrtest.NBE;
+%%NBE is - dC/dt if "C" is total carbon
+NBEdpools=-diff(sum(cbrtest.POOLS(:,:,1:6),3))/deltat;
+
+% Cfoliar check: fluxes vs pools
+NCfol=cbrtest.FLUXES(:,8) - cbrtest.FLUXES(:,10);
+
+figure(2);clf
+%subplot(3,3,1);plot(NBEdpools,NBE(2:end),'o-')
+subplot(3,1,1);hold on;plot(NBE(2:end),'b-');plot(NBEdpools,'r--')
+subplot(3,1,2);hold on;plot(cbrtest.POOLS(:,:,2))
+subplot(3,1,3);hold on;plot(cbrtest.LAI)
 % 
 % 
 % 
