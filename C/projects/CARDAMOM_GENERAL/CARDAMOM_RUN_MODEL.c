@@ -10,6 +10,7 @@
 #define ERRCODE 2
 #define ERR(e) {printf("Error in %s at %d: %s\n", __FILE__, __LINE__, nc_strerror(e)); exit(ERRCODE);}
 
+#define FILE_NAME_MAX_LEN 1000
 
 /*syntax CARDAMOM_READ_BINARY_CARDADATA(char *filename,CARDADATA *CARDADATA)*/
 
@@ -22,10 +23,22 @@ int main(int argc, char *files[])
 int n, nn;
 
 /*storing command line inputs as 2 files*/
-char metfile[1000];strcpy(metfile,files[1]);
-char parfile[1000];strcpy(parfile,files[2]);
+char metfile[FILE_NAME_MAX_LEN];strncpy(metfile,files[1],FILE_NAME_MAX_LEN-1);
+char parfile[FILE_NAME_MAX_LEN];strncpy(parfile,files[2],FILE_NAME_MAX_LEN-1);
+//Add manditory null terminators just in case we used every char
+metfile[FILE_NAME_MAX_LEN-1]=0;
+parfile[FILE_NAME_MAX_LEN-1]=0;
 
+int ncFilenameLen=strlen(parfile)-4;
+if (ncFilenameLen > FILE_NAME_MAX_LEN-8){
+  printf("Error on input validation, parfile name too long to create netCDF file name from.\n");
+  exit(1);
+}
+char ncdffile[FILE_NAME_MAX_LEN]; strncpy(ncdffile, parfile,ncFilenameLen);
+strncpy(ncdffile+ncFilenameLen, ".nc.cbr",ncFilenameLen+1); //Write an extra char so strncpy adds a null
 
+//printf("Metfile is %s, parfile is %s, ncdffile is %s\n", metfile, parfile, ncdffile);
+//exit(1);
 
 /*declaring data structure*/
 DATA CARDADATA;
@@ -84,7 +97,6 @@ char fluxfile[1000];
 char poolfile[1000];
 char edcdfile[1000];
 char probfile[1000];
-char ncdffile[1000];
 
 if (argc-1>2){
 strcpy(fluxfile,files[3]);
@@ -97,12 +109,6 @@ strcpy(poolfile,"tempcardapoolfile.bin");
 strcpy(edcdfile,"tempcardaedcdfile.bin");
 strcpy(probfile,"tempcardaprobfile.bin");}
 
-if (argc>7){
-  //Special case, netCDF file argument was given.
-  strcpy(ncdffile,files[7]);
-}else{
-  strcpy(ncdffile,"tempcardata.nc");
-}
 
 FILE *fdf=fopen(fluxfile,"wb");
 filediag(fdf,fluxfile);
@@ -123,7 +129,7 @@ if (ncretval != NC_NOERR){
   ERR(ncretval);
 }
 /*STEP 3.2 - create netCDF output dimensions*/
-int sampleDimID, poolDimID, fluxDimID, timePoolsDimID,timeFluxesDimID, probIdxDimID,edcIdxDimID;
+int sampleDimID, poolDimID, fluxDimID, timePoolsDimID,timeFluxesDimID, probIdxDimID,edcIdxDimID, noParsDimID;
 if ((ncretval =  nc_def_dim(ncid,"Sample",N,&sampleDimID ))){
   ERR(ncretval);
 }
@@ -151,8 +157,13 @@ if ((ncretval =  nc_def_dim(ncid,"EDC Index",edcIdxLen,&edcIdxDimID ))){
   ERR(ncretval);
 }
 
+if ((ncretval =  nc_def_dim(ncid,"Parameter",CARDADATA.nopars,&noParsDimID ))){
+  ERR(ncretval);
+}
+
+
 /*STEP 3.3 - create netCDF variables in preperation for writting them later*/
-int fluxesVarID, poolsVarID, edcdVarID, pVarID;
+int fluxesVarID, poolsVarID, edcdVarID, pVarID, parsVarId;
 int M_FLUXES_dems[] = {sampleDimID,timeFluxesDimID,fluxDimID};
 if ((ncretval = nc_def_var(	ncid,"FLUXES" , NC_DOUBLE, 3, M_FLUXES_dems, &fluxesVarID ))){
   ERR(ncretval);
@@ -169,6 +180,11 @@ int M_P_dems[] = {sampleDimID, probIdxDimID};
 if ((ncretval = nc_def_var(	ncid,"PROB" , NC_DOUBLE, 2, M_P_dems, &pVarID ))){
   ERR(ncretval);
 }
+int pars_dems[] = {sampleDimID, noParsDimID};
+if ((ncretval = nc_def_var(	ncid,"PARS" , NC_DOUBLE, 2, pars_dems, &parsVarId ))){
+  ERR(ncretval);
+}
+
 
 //End NetCDF definition phase, in order to allow for writting
 nc_enddef(ncid);
@@ -216,6 +232,10 @@ if ((ncretval = nc_put_vara_int(ncid,edcdVarID,(const size_t[]){n,0}, (const siz
 }
 //write M_P
 if ((ncretval = nc_put_vara_double(ncid,pVarID,(const size_t[]){n,0}, (const size_t[]){1,probIdxLen}, CARDADATA.M_P))){
+    ERR(ncretval);
+}
+//write Pars
+if ((ncretval = nc_put_vara_double(ncid,parsVarId,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars))){
     ERR(ncretval);
 }
 
