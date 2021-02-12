@@ -7,10 +7,33 @@
 
 /* Handle netCDF library errors by printing an error message and exiting with a
  * non-zero status.*/
-#define ERRCODE 2
-#define ERR(e) {printf("Error in %s at %d: %s\n", __FILE__, __LINE__, nc_strerror(e)); exit(ERRCODE);}
-
+#define ERREXITCODE 2
+#define NCDFERR(e) {printf("Error in %s at %d: %s\n", __FILE__, __LINE__, nc_strerror(e));}
 #define FILE_NAME_MAX_LEN 1000
+
+//This is a tiny macro used to do error handeling for netCDF methods with the standard format of returning a result code.
+//It helps make the code look less insane by allowing one-line calls
+//This as a macro because we want the __FILE__ and __LINE__ macros to work
+#define FAILONERROR(ncretval) if (ncretval != NC_NOERR) {NCDFERR(ncretval); exit(ERREXITCODE);}
+//This variant will not die, but will still thow a message at the user about the problem.
+#define WARNONERROR(ncretval) if (ncretval != NC_NOERR) {NCDFERR(ncretval);}
+
+
+
+
+
+//This scans the string and removes all instances of the string toFind, and replaces them with the single char toReplace.
+void str_inplace_replace(char * str, const char * toFind, const char toReplace){
+  //Yeah this implementation is N^2... but we have a small fixed max N, so don't @ me.
+  char* substring=str;
+  while ((substring = strstr(substring, toFind))){
+    memmove(substring, substring+1,strlen(substring)); //Memmove needed due to overlapping strings. Move the whole string, with null term
+    substring[0]=toReplace; //put in the filler char
+  }
+
+}
+
+
 
 /*syntax CARDAMOM_READ_BINARY_CARDADATA(char *filename,CARDADATA *CARDADATA)*/
 
@@ -36,9 +59,12 @@ if (ncFilenameLen > FILE_NAME_MAX_LEN-8){
 }
 char ncdffile[FILE_NAME_MAX_LEN]; strncpy(ncdffile, parfile,ncFilenameLen);
 strncpy(ncdffile+ncFilenameLen, ".nc.cbr",ncFilenameLen+1); //Write an extra char so strncpy adds a null
+str_inplace_replace(ncdffile, "//", '/'); //Remove double-slashes
+str_inplace_replace(ncdffile, ":", '-'); //Remove colons
 
-//printf("Metfile is %s, parfile is %s, ncdffile is %s\n", metfile, parfile, ncdffile);
-//exit(1);
+
+
+
 
 /*declaring data structure*/
 DATA CARDADATA;
@@ -123,67 +149,56 @@ filediag(fdpro,probfile);
 /*STEP 3.1 - create netCDF output file*/
 int ncid = 0; //This is the netcdf id num
 int ncretval = 0; //This is a reused variable for the return value of ncdf methods.
-ncretval = nc_create(ncdffile,NC_CLOBBER, &ncid );
+ncretval = nc_create(ncdffile,NC_NOCLOBBER, &ncid );
 if (ncretval != NC_NOERR){
   //If nc_create did anything but return no error, then fail
   ERR(ncretval);
 }
+
+
 /*STEP 3.2 - create netCDF output dimensions*/
 int sampleDimID, poolDimID, fluxDimID, timePoolsDimID,timeFluxesDimID, probIdxDimID,edcIdxDimID, noParsDimID;
-if ((ncretval =  nc_def_dim(ncid,"Sample",N,&sampleDimID ))){
-  ERR(ncretval);
-}
-if ((ncretval =  nc_def_dim(ncid,"Pool",CARDADATA.nopools,&poolDimID ))){
-  ERR(ncretval);
-}
-if ((ncretval =  nc_def_dim(ncid,"Flux",CARDADATA.nofluxes,&fluxDimID ))){
-  ERR(ncretval);
-}
+FAILONERROR(nc_def_dim(ncid,"Sample",N,&sampleDimID));
+FAILONERROR(nc_def_dim(ncid,"Pool",CARDADATA.nopools,&poolDimID ));
+FAILONERROR(nc_def_dim(ncid,"Flux",CARDADATA.nofluxes,&fluxDimID ));
 //NOTE: this was going to be the NC_UNLIMITED dimension, however due to concerns with support for netcdf classic, it is now fixed, and split into two
-if ((ncretval =  nc_def_dim(ncid,"Time_pools",CARDADATA.nodays+1,&timePoolsDimID))){
-  ERR(ncretval);
-}
-if ((ncretval =  nc_def_dim(ncid,"Time_fluxes",CARDADATA.nodays,&timeFluxesDimID))){
-  ERR(ncretval);
-}
+FAILONERROR(nc_def_dim(ncid,"Time_pools",CARDADATA.nodays+1,&timePoolsDimID));
+FAILONERROR(nc_def_dim(ncid,"Time_fluxes",CARDADATA.nodays,&timeFluxesDimID));
 //Hard coded to 1
 const size_t probIdxLen=1;
-if ((ncretval =  nc_def_dim(ncid,"Probability Index",probIdxLen,&probIdxDimID ))){
-  ERR(ncretval);
-}
+FAILONERROR(nc_def_dim(ncid,"Probability Index",probIdxLen,&probIdxDimID ));
 //Hard coded to 100
 const size_t edcIdxLen=100;
-if ((ncretval =  nc_def_dim(ncid,"EDC Index",edcIdxLen,&edcIdxDimID ))){
-  ERR(ncretval);
-}
+FAILONERROR(nc_def_dim(ncid,"EDC Index",edcIdxLen,&edcIdxDimID ));
 
-if ((ncretval =  nc_def_dim(ncid,"Parameter",CARDADATA.nopars,&noParsDimID ))){
-  ERR(ncretval);
-}
+FAILONERROR(nc_def_dim(ncid,"Parameter",CARDADATA.nopars,&noParsDimID ));
 
 
 /*STEP 3.3 - create netCDF variables in preperation for writting them later*/
 int fluxesVarID, poolsVarID, edcdVarID, pVarID, parsVarId;
-int M_FLUXES_dems[] = {sampleDimID,timeFluxesDimID,fluxDimID};
-if ((ncretval = nc_def_var(	ncid,"FLUXES" , NC_DOUBLE, 3, M_FLUXES_dems, &fluxesVarID ))){
-  ERR(ncretval);
-}
-int M_POOLS_dems[] = {sampleDimID,timePoolsDimID,poolDimID};
-if ((ncretval = nc_def_var(	ncid,"POOLS" , NC_DOUBLE, 3, M_POOLS_dems, &poolsVarID ))){
-  ERR(ncretval);
-}
-int M_EDCD_dems[] = {sampleDimID, edcIdxDimID };
-if ((ncretval = nc_def_var(	ncid,"EDCD" , NC_INT, 2, M_EDCD_dems, &edcdVarID ))){
-  ERR(ncretval);
-}
-int M_P_dems[] = {sampleDimID, probIdxDimID};
-if ((ncretval = nc_def_var(	ncid,"PROB" , NC_DOUBLE, 2, M_P_dems, &pVarID ))){
-  ERR(ncretval);
-}
+
+int fluxes_dems[] = {sampleDimID,timeFluxesDimID,fluxDimID};
+FAILONERROR(nc_def_var(	ncid,"FLUXES" , NC_DOUBLE, 3, fluxes_dems, &fluxesVarID ));
+//EXAMPLE ATTRIBUTES
+char fluxesLowercaseName[]="fluxes";
+WARNONERROR(nc_put_att_text	(	ncid,fluxesVarID,"example_lowercase_name",strlen(fluxesLowercaseName),fluxesLowercaseName));
+//This is an example of an array of doubles. Yes, you do need to specify NC_DOUBLE even though we used the type-safe method nc_put_att_double
+WARNONERROR(nc_put_att_double	(	ncid,fluxesVarID,"example_doubles",NC_DOUBLE,4,(double[]){12.44, 441.0, 3.14159265, 0.0}));
+
+
+
+int pools_dems[] = {sampleDimID,timePoolsDimID,poolDimID};
+FAILONERROR(nc_def_var(	ncid,"POOLS" , NC_DOUBLE, 3, pools_dems, &poolsVarID ));
+
+int edcd_dems[] = {sampleDimID, edcIdxDimID };
+FAILONERROR(nc_def_var(	ncid,"EDCD" , NC_INT, 2, edcd_dems, &edcdVarID ));
+
+int prob_dems[] = {sampleDimID, probIdxDimID};
+FAILONERROR(nc_def_var(	ncid,"PROB" , NC_DOUBLE, 2, prob_dems, &pVarID ));
+
 int pars_dems[] = {sampleDimID, noParsDimID};
-if ((ncretval = nc_def_var(	ncid,"PARS" , NC_DOUBLE, 2, pars_dems, &parsVarId ))){
-  ERR(ncretval);
-}
+FAILONERROR(nc_def_var(	ncid,"PARS" , NC_DOUBLE, 2, pars_dems, &parsVarId ));
+
 
 
 //End NetCDF definition phase, in order to allow for writting
@@ -219,25 +234,15 @@ fwrite(CARDADATA.M_P,sizeof(double),1,fdpro);
 //(with N (Number of samples) being another dimension, applied to all vars)
 
 //Write fluxes
-if ((ncretval = nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,0,0}, (const size_t[]){1,CARDADATA.nodays,CARDADATA.nofluxes}, CARDADATA.M_FLUXES))){
-    ERR(ncretval);
-}
+FAILONERROR(nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,0,0}, (const size_t[]){1,CARDADATA.nodays,CARDADATA.nofluxes}, CARDADATA.M_FLUXES));
 //Write pools
-if ((ncretval = nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,CARDADATA.nodays+1,CARDADATA.nopools}, CARDADATA.M_POOLS))){
-    ERR(ncretval);
-}
+FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,CARDADATA.nodays+1,CARDADATA.nopools}, CARDADATA.M_POOLS));
 //write edcd
-if ((ncretval = nc_put_vara_int(ncid,edcdVarID,(const size_t[]){n,0}, (const size_t[]){1,edcIdxLen}, CARDADATA.M_EDCD))){
-    ERR(ncretval);
-}
+FAILONERROR(nc_put_vara_int(ncid,edcdVarID,(const size_t[]){n,0}, (const size_t[]){1,edcIdxLen}, CARDADATA.M_EDCD));
 //write M_P
-if ((ncretval = nc_put_vara_double(ncid,pVarID,(const size_t[]){n,0}, (const size_t[]){1,probIdxLen}, CARDADATA.M_P))){
-    ERR(ncretval);
-}
+FAILONERROR(nc_put_vara_double(ncid,pVarID,(const size_t[]){n,0}, (const size_t[]){1,probIdxLen}, CARDADATA.M_P));
 //write Pars
-if ((ncretval = nc_put_vara_double(ncid,parsVarId,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars))){
-    ERR(ncretval);
-}
+FAILONERROR(nc_put_vara_double(ncid,parsVarId,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars));
 
 
 //write attributes to netCDF file
@@ -255,9 +260,7 @@ fclose(fde);
 fclose(fdpro);
 fclose(fd);
 
-if ((ncretval = nc_close(ncid))){
-  ERR(ncretval);
-}
+FAILONERROR(nc_close(ncid));
 
 /*Step 6: Free memory*/
 /*exhaustive list of all malloc/calloc used fields*/

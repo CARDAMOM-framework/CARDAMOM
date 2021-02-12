@@ -23,7 +23,7 @@
 //if set to 0, they will instantly die on failing to find any variable or attribute
 //This is meant as a debugging tool more than anything else, and can be used with a "fully complete" netcdf cardamom file containing every variable in order to check if there were typeos in the c code.
 //In the production enviroment, this should always be set to 1
-#define ALLOW_DEFAULTS 0
+#define ALLOW_DEFAULTS 1
 
 
 //#include "CARDAMOM_MODEL_LIBRARY.c"
@@ -486,10 +486,10 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 
 	DATA->VPD.values=ncdf_read_double_var(ncid, "VPD", &(DATA->VPD.length));
 		DATA->VPD.reference_mean=ncdf_read_double_attr(ncid, "VPD","reference_mean");
- 
+
 	DATA->BURNED_AREA.values=ncdf_read_double_var(ncid, "BURNED_AREA", &(DATA->BURNED_AREA.length));
                 DATA->BURNED_AREA.reference_mean=ncdf_read_double_attr(ncid, "BURNED_AREA","reference_mean");
-	
+
 	DATA->CO2.values=ncdf_read_double_var(ncid, "CO2", &(DATA->CO2.length));
 		DATA->CO2.reference_mean=ncdf_read_double_attr(ncid, "CO2","reference_mean");
 
