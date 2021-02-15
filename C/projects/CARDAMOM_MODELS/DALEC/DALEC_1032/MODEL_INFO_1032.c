@@ -1,12 +1,12 @@
 #pragma once
-#include "PARS_INFO_1030.c"
-#include "DALEC_1030.c"
-#include "EDC1_1030.c"
-#include "EDC2_1030.c"
+#include "PARS_INFO_1032.c"
+#include "DALEC_1032.c"
+#include "EDC1_1032.c"
+#include "EDC2_1032.c"
 #include "../../../DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
 #include "../../../CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c"
 
-int MODEL_INFO_1030(DATA * DATA){
+int MODEL_INFO_1032(DATA * DATA){
 
 /*Step 1. Declare structure*/
 /*"static" ensures that the memory is declared in one instance and visible to all functions (I think)*/
@@ -15,7 +15,7 @@ static DALEC DALECmodel;
 /*Step 2: Fill structure with model-specific info*/
 DALECmodel.nopools=8;
 DALECmodel.nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel.nopars=37;
+DALECmodel.nopars=39;
 DALECmodel.nofluxes=33;
 
 /*Short-term: copy quantities into DATA structure to reduce dependencies in CARDAMOM_MODEL_LIBRARY.c*/
@@ -28,9 +28,9 @@ DATA->nofluxes=DALECmodel.nofluxes;
 /*User is able to add further functions as deemed necessary*/
 /*Function names are declared in ../DALEC_ALL/DALEC_MODULE.c*/
 /*Consider starting new module for radically different model structures*/
-DALECmodel.dalec=DALEC_1030;
-DALECmodel.edc1=EDC1_1030;
-DALECmodel.edc2=EDC2_1030;
+DALECmodel.dalec=DALEC_1032;
+DALECmodel.edc1=EDC1_1032;
+DALECmodel.edc2=EDC2_1032;
 
 /*Initialize parameter fields*/
 /*initializing parmin and parmax fields*/
@@ -42,7 +42,7 @@ DATA->parmax=calloc(DATA->nopars,sizeof(double));
 */
 INITIALIZE_PARAMETER_FIELDS(DATA);
 
-PARS_INFO_1030(DATA);
+PARS_INFO_1032(DATA);
 
 oksofar("about to declare EDCD");
 printf("DALECmodel.EDCD = %p\n",DALECmodel.EDCD);

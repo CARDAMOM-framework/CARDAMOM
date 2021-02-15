@@ -8,7 +8,7 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1031(DATA *CARDADATA)
+int PARS_INFO_1032(DATA *CARDADATA)
 {
 
 /*Decomposition rate*/
@@ -107,9 +107,9 @@ CARDADATA->parmax[21]=2000.0;
 CARDADATA->parmin[22]=1.0;
 CARDADATA->parmax[22]=200000.0;
 
-/*IWUE: GPP*VPD/ET: gC/kgH2o *hPa*/
-CARDADATA->parmin[23]=10;
-CARDADATA->parmax[23]=50;
+/*uWUE: GPP*sqrt(VPD)/ET: gC/kgH2o *hPa*/
+CARDADATA->parmin[23]=0.5;
+CARDADATA->parmax[23]=30;
 
 /*Runoff focal point (~maximum soil storage capacity x 4)*/
 CARDADATA->parmin[24]=1;
@@ -166,6 +166,10 @@ CARDADATA->parmax[36]=10000;
 /*VPD curvature exponent */
 CARDADATA->parmin[37]=0.001;
 CARDADATA->parmax[37]=1000;
+
+/*r: The chosen prior range in r conservatively captures the range of values by Boese et al.(2017)*/
+CARDADATA->parmin[38]=0.01;
+CARDADATA->parmax[38]=0.3;
 
 return 0;
 
