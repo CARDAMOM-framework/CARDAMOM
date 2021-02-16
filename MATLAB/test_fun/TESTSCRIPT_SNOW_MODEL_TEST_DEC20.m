@@ -10,7 +10,9 @@ PARS=parameter_constants;
 
 %Snow precip (assuming liquid precip = 0)
 METDATAPRECsnow = [1,1,1,1,0,0,0,0,0,1,1,1]; %mm/day (liquid water equivalent)
-METDATAAIRtemp= [-5,-5,-5,-3,0,4,10,10,4,-2,-3,-5]; %mm/day (liquid water equivalent)
+% snowfall = [3.50 6.50 2.80 3.70 0.90 0.30 0. 0. 1.40 1.40 4.60 2.50] % unit mm/day liquid water equivalent, ERA5
+% total precipitation = [3.50 6.70 3.30 4.20 1.40 2.0 0.90 0.90 3.70  1.80  4.90 2.50]% unit mm/day liquid water equivalent, ERA5
+METDATAAIRtemp= [-5,-5,-5,-3,0,4,10,10,4,-2,-3,-5]; % celcius
 deltat=365.25/12;
 %Assume zero soil-snow flux
 
