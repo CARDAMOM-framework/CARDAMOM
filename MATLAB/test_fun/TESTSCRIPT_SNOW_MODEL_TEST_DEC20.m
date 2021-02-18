@@ -9,8 +9,8 @@ PARS=parameter_constants;
 
 
 %Snow precip (assuming liquid precip = 0)
-METDATAPRECsnow = [1,1,1,1,0,0,0,0,0,1,1,1]; %mm/day (liquid water equivalent)
-% snowfall = [3.50 6.50 2.80 3.70 0.90 0.30 0. 0. 1.40 1.40 4.60 2.50] % unit mm/day liquid water equivalent, ERA5
+%METDATAPRECsnow = [1,1,1,1,0,0,0,0,0,1,1,1]; %mm/day (liquid water equivalent)
+METDATAPRECsnow = [3.50 6.50 2.80 3.70 0.90 0.30 0. 0. 1.40 1.40 4.60 2.50]; % unit mm/day liquid water equivalent, ERA5
 % total precipitation = [3.50 6.70 3.30 4.20 1.40 2.0 0.90 0.90 3.70  1.80  4.90 2.50]% unit mm/day liquid water equivalent, ERA5
 METDATAAIRtemp= [-5,-5,-5,-3,0,4,10,10,4,-2,-3,-5]; % celcius
 deltat=365.25/12;
@@ -35,7 +35,8 @@ METDATALWup = [271, 283, 292, 305, 314, 357, 378, 383, 362, 347, 300, 271]*3600*
  %netLWup  = LWup - LWdown
  %LWup = LWdown + netLWup
  %netLWup = [3.9281    3.0944    3.9953    4.7450    6.2141    5.6763    7.1693    7.3669    5.4266    4.9323    3.3277    3.2545];
- METDATALWup = ([3.9281    3.0944    3.9953    4.7450    6.2141    5.6763    7.1693    7.3669    5.4266    4.9323    3.3277    3.2545] +  METDATALWdown);
+ METDATALWnet=[3.9281    3.0944    3.9953    4.7450    6.2141    5.6763    7.1693    7.3669    5.4266    4.9323    3.3277    3.2545] ;
+ METDATALWup = ( METDATALWnet +  METDATALWdown);
 
 % in W/m2 /(3600*24)
 % SWdown = [87.3325  106.2289  179.2574  239.3091  316.3962  314.1638  321.1939  282.9676  203.9033  158.9526   82.5774   67.6428];
@@ -52,12 +53,12 @@ METDATAskintemp=[259.4507  265.7600  269.7007  269.9660  274.7928  279.0397  286
 %-------------------------
 
 % ET can be calculated offline
-METDATAET = METDATASWdown * 0.02;%mm/day
+METDATAET = METDATASWdown * 0.01;%mm/day
 
 %CONST.ant for now
 %Changes in reality
 %Shuang has snow albedo timeseries
-CONST.albedo=0.95;
+CONST.albedo=0.85;
 
 CONST.emissivity = 0.97;
 
@@ -84,7 +85,7 @@ DIAG.Rnet = METDATASWdown + METDATALWdown - DIAG.SWup - METDATALWup;
 %Units mm of liquid water
 %1mm/m2 = 1kg H2O
 %Meaning mm/m2 and kg can be used interchangeably.
-SNOW_H2O(1) = 50;
+SNOW_H2O(1) = 100;
 %Snow temp initial condition (K)
 SNOW_TEMP(1) = 268;
 
@@ -161,12 +162,20 @@ for m=1:12
     %(J/m2/day)
     
     %Per unit snow area
-    METDATALWup(m)=CONST.emissivity*METDATAskintemp(m).^4*CONST.sigmaSB*24*3600*1e-6;%MJ/d/m2
-    
-    %Radiative fluxes (J/m2/m)
-        %Per unit snow area
+    METDATALWup(m)=CONST.emissivity*min(METDATAskintemp(m),PARS.tp).^4*CONST.sigmaSB *24*3600*1e-6;%MJ/m2/d
+%    METDATALWup(m)=CONST.emissivity*SNOW_TEMP(m).^4*CONST.sigmaSB *24*3600*1e-6;%MJ/m2/d
+           LWUP(m) = METDATALWup(m)*1e6*deltat;
 
-    RAD_FLUXES(m)= ( METDATASWdown(m)*(1-CONST.albedo) +METDATALWdown(m)*CONST.emissivity -METDATALWup(m))*1e6*deltat;
+
+    %Radiative fluxes (J/m2/month)
+        %Per unit snow area
+        %Energy Loss = negative values
+
+        SWNET(m)=METDATASWdown(m)*(1-CONST.albedo)*1e6*deltat;
+        LWDOWN(m)=METDATALWdown(m)*CONST.emissivity*1e6*deltat;
+        LWnet(m) = LWDOWN(m) -  LWUP(m);
+        
+    RAD_FLUXES(m)= SWNET(m) +LWnet(m);
     
     %Turbulent fluxes (ground to air flux = +ve)
     %J/m2/s
@@ -175,7 +184,7 @@ for m=1:12
     %H is in J/m2/month
         %Per unit snow area
 
-        H(m) =CONST.Hconductance * (METDATAskintemp(m) - (METDATAAIRtemp(m)+PARS.tp))*CONST.air_density *CONST.Cp *3600*24*deltat;
+        H(m) =CONST.Hconductance * (min(METDATAskintemp(m),PARS.tp) - (METDATAAIRtemp(m)+PARS.tp))*CONST.air_density *CONST.Cp *3600*24*deltat;
     
         %ET = mm/day
         %Evapotranspiration flux
@@ -222,7 +231,7 @@ for m=1:12
     %Track energy in Jules
     %CONTINUE FROM HERE (WHY IS IE NEGATIVE)?
     %SNOW_IE and MASS_EXCHANGE_ENERGY_FLUXES 
-         SNOW_IE(m+1) = SNOW_IE(m) + MASS_EXCHANGE_ENERGY_FLUXES(m)+ (RAD_FLUXES(m) - TURB_FLUXES(m))*SNOW_COVER_FRAC(m);
+         SNOW_IE(m+1) = max(SNOW_IE(m) + MASS_EXCHANGE_ENERGY_FLUXES(m)+ (RAD_FLUXES(m) - TURB_FLUXES(m))*SNOW_COVER_FRAC(m),0);
          
 
          
@@ -300,12 +309,37 @@ for m=1:12
     %Snow H2O balance
     SNOW_H2O(m+1) =SNOW_H2O(m) + METDATAPRECsnow(m)*deltat  - METDATAET(m) - MELT_MASS(m);
     
-                      SNOW_IE(m+1) = SNOW_IE(m+1) - MELT_ENERGY(m);
+                      SNOW_IE(m+1) = max(SNOW_IE(m+1) - MELT_ENERGY(m),0);
 
     %Snow internal energy
     %SNOW_IE(m+1) =SNOW_IE(m) + 
     
 end
+
+
+figure(1);clf;
+subplot(5,3,1);plot(ET_MASS_ENERGY_FLUX);title('ET_MASS_ENERGY_FLUX')
+subplot(5,3,2);plot(MELT_ENERGY);title('MELT_ENERGY');
+subplot(5,3,3);plot(MASS_EXCHANGE_ENERGY_FLUXES);title('MASS_EXCHANGE_ENERGY_FLUXES')
+subplot(5,3,4);plot(RAD_FLUXES);title('RAD_FLUXES(m)')
+subplot(5,3,5);plot(TURB_FLUXES);title('TURB_FLUXES')
+subplot(5,3,6);plot(SNOW_COVER_FRAC);title('SNOW_COVER_FRAC')
+subplot(5,3,7);plot(SWNET);title('SWnet');
+subplot(5,3,8);plot(LWDOWN);title('LWdown');
+subplot(5,3,9);plot(LWUP);title('LWup');
+subplot(5,3,10);plot(LWnet);title('LWnet');
+subplot(5,3,11);plot(SNOW_IE);title('IE');
+subplot(5,3,12);plot(SNOW_TEMP);title('TEMP');
+subplot(5,3,13);plot(H);title('H');
+subplot(5,3,14);plot(LE);title('LE');
+
+
+
+for s=1:9;subplot(5,3,s);set(gca,'FontSize',16);end
+
++ (RAD_FLUXES(m) - TURB_FLUXES(m))*SNOW_COVER_FRAC(m);
+
+
 
 
 keyboard
