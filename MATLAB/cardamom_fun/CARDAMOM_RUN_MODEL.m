@@ -50,7 +50,7 @@ if OPT.STORE==1 & isstruct(CBF);warning('"STORE" option will be ignored as no .c
 %channel=1;%NOTE: this option is not available yet%If running in parallel, make sure to run on separate "channel"
 %Now ensuring no clashes by (a) unique file id with date, and (b) deleting
 %files when done
-channel=datestr(now,'yyyy-mm-dd-HH:MM:SS:FFF');
+channel=datestr(now,'yyyy-mm-dd-HH-MM-SS-FFF');
 
 if OPT.compile==1
 CARDAMOM_COMPILE(OPT.Cpath);
@@ -265,7 +265,7 @@ if OPT.extended==1
     elseif OPT.MODEL.ID==1030
         CBR.PAWSTRESS=min([PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);        
         CBR.VPDSTRESS=1./(1+repmat(CBF.MET(:,8)',[size(CBR.PARS(:,37),1),1])./repmat(CBR.PARS(:,37),[1,size(CBF.MET(:,8),1)]));
-        CBR.H2OSTRESS=CBR.PAWSTRESS.*CBR.VPDSTRESS
+        CBR.H2OSTRESS=CBR.PAWSTRESS.*CBR.VPDSTRESS;
       elseif OPT.MODEL.ID==9
           CBR.H2OSTRESS=1-exp(-[PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]));
       end
