@@ -37,8 +37,8 @@ for (n=0;n<PI->npars;n++){PI->stepsize[n]=0.0001;}
 oksofar("Done with initial parameters");
 
 
-/*where is this function??*/
-INITIALIZE_MCMC_OUTPUT(*PI,MCOUT);
+/*This function is in the MCMC folder*/
+INITIALIZE_MCMC_OUTPUT(*PI,MCOUT,*MCOPT);
 
 for (n=0;n<PI->npars;n++){PI->stepsize[n]=0.0001;}
 

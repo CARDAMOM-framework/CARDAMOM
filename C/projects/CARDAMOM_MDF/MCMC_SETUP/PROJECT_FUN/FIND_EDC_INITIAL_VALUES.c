@@ -3,8 +3,7 @@
 #include "../../../DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
-/*#include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
-*/
+#include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
 #include "../../../../math_fun/int_max.c"
 
 int FIND_EDC_INITIAL_VALUES(DATA CARDADATA,PARAMETER_INFO *PI, MCMC_OPTIONS *MCOPT_CARDAMOM){
@@ -22,8 +21,6 @@ else {EMLF=EDC_DALEC_MLF;}
 MCMC_OPTIONS MCOPT;
 MCMC_OUTPUT MCOUT;
 
-int OK=INITIALIZE_MCMC_OUTPUT(*PI,&MCOUT);
-okcheck(OK,"CHECK: MCOUT structure initialized,");
 
 
 MCOPT.APPEND=0;
@@ -43,6 +40,20 @@ MCOPT.nchains=1;
 MCOPT.minstepsize=1e-2;
 
 
+MCOPT.mcmcid=2;/*Using metropolis-hastings to find initial parameters*/
+MCOPT.nOUT=100000;/*was 2000*/
+MCOPT.nPRINT=1000;/*was 2000*/
+MCOPT.minstepsize=1e-2;
+MCOPT.nchains=40;
+
+
+
+
+int OK=INITIALIZE_MCMC_OUTPUT(*PI,&MCOUT,MCOPT);
+okcheck(OK,"CHECK: MCOUT structure initialized,");
+
+
+
 oksofar("starting MCMC for EDC inipars");
 int n;
 
@@ -56,7 +67,8 @@ PI->stepsize[n]=0.02;
 /*PI->stepsize[n]=0.00005;*/
 PI->parini[n]=CARDADATA.parpriors[n];
 PI->parfix[n]=0;
-if (PI->parini[n]!=-9999 & CARDADATA.edc_random_search<1) {PI->parfix[n]=1;}}
+/*
+if (PI->parini[n]!=-9999 & CARDADATA.edc_random_search<1) {PI->parfix[n]=1;}*/}
 
 
 
@@ -100,6 +112,8 @@ while (PEDC!=0){
 	oksofar("Running short MCMC to find x_{EDC} = 1");
 	if (MCOPT.mcmcid==1){MHMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
 	if (MCOPT.mcmcid==119){MHMCMC_119(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
+        if (MCOPT.mcmcid==2){DEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
+
 	/*if (MCOPT.mcmcid==2){DEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
 	*/
 	oksofar("Short MCMC complete");
