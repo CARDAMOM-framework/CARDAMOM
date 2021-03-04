@@ -1,5 +1,6 @@
 function TESTSCRIPT_SNOW_MODEL_TEST_DEC20
 
+disp('Figure out why March Temp drops to 100K')
 keyboard
 
 
@@ -87,7 +88,7 @@ DIAG.Rnet = METDATASWdown + METDATALWdown - DIAG.SWup - METDATALWup;
 %Meaning mm/m2 and kg can be used interchangeably.
 SNOW_H2O(1) = 100;
 %Snow temp initial condition (K)
-SNOW_TEMP(1) = 268;
+SNOW_TEMP(1) = 250;
 
 
 
@@ -131,7 +132,7 @@ FUNC.snow2energy= @(snowtemp,PARS,fliq) (1.0 - fliq) * PARS.cice * snowtemp + fl
 % **********************************************************************
 
 %Snow internal energy per unit snow (mm) * SNOW MASS
-SNOW_IE(1) = FUNC.snow2energy(SNOW_TEMP(1), PARS, 0) * SNOW_H2O(1);
+SNOW_IE(1) = double(FUNC.snow2energy(SNOW_TEMP(1), PARS, 0) * SNOW_H2O(1));
 
 
 SNOW_LF(1)=FUNC.snow_fliq(SNOW_IE(1)/SNOW_H2O(1) , PARS);
@@ -208,7 +209,7 @@ for m=1:12
        ET_MASS_ENERGY_FLUX(m) = METDATAET(m)* FUNC.snow2energy(SNOW_TEMP(m) ,PARS ,0)*deltat;
        
 %Snow integrated flux (not per unit area)       
-        SNOW_MASS_ENERGY_FLUX(m)= FUNC.snow2energy(min(METDATAAIRtemp(m)+PARS.tp, PARS.tp),PARS,0) *METDATAPRECsnow(m) ;
+        SNOW_MASS_ENERGY_FLUX(m)= FUNC.snow2energy(min(METDATAAIRtemp(m)+PARS.tp, PARS.tp),PARS,0) *METDATAPRECsnow(m)*deltat ;
        
         %Surface met mass energy exchange  (excluding melt)
         %Snow input
@@ -260,11 +261,16 @@ for m=1:12
                  %MELT_IE = SNOW_IE - (1 - SNOW_LF) * SNOW_H2O * PARS.IE_0C_solid
                  
                  
-                    MELT_ENERGY(m) = max(0, SNOW_IE(m+1)/SNOW_H2O(m) - (1 - SNOW_LF(m)) * SNOW_H2O(m) * PARS.IE_at_0C_solid);
+                 %All units = J/m2/month
+                 %Quantity = total energy removed through timestep
+                 %(timestep is already implicit)
+                    %MELT_ENERGY(m) = max(0, SNOW_IE(m+1) - (1 - SNOW_LF(m+1)) * SNOW_H2O(m) * PARS.IE_at_0C_solid);
 
-                    
+                    %SNOW liq. frac x snow mass
                     
                   MELT_MASS(m) =    SNOW_LF(m+1) * SNOW_H2O(m)  ;
+                  
+                  MELT_ENERGY(m) =   MELT_MASS(m)* PARS.IE_at_0C_solid;
 
 
                  
@@ -307,7 +313,8 @@ for m=1:12
     
       
     %Snow H2O balance
-    SNOW_H2O(m+1) =SNOW_H2O(m) + METDATAPRECsnow(m)*deltat  - METDATAET(m) - MELT_MASS(m);
+    %ET units are in mm/day
+    SNOW_H2O(m+1) =SNOW_H2O(m) + METDATAPRECsnow(m)*deltat  - METDATAET(m)*deltat - MELT_MASS(m);
     
                       SNOW_IE(m+1) = max(SNOW_IE(m+1) - MELT_ENERGY(m),0);
 
@@ -318,9 +325,10 @@ end
 
 
 figure(1);clf;
-subplot(5,3,1);plot(ET_MASS_ENERGY_FLUX);title('ET_MASS_ENERGY_FLUX')
-subplot(5,3,2);plot(MELT_ENERGY);title('MELT_ENERGY');
-subplot(5,3,3);plot(MASS_EXCHANGE_ENERGY_FLUXES);title('MASS_EXCHANGE_ENERGY_FLUXES')
+for s=1:9;subplot(5,3,s);set(gca,'FontSize',10);end
+subplot(5,3,1);plot(ET_MASS_ENERGY_FLUX);title('ET MASS ENERGY FLUX')
+subplot(5,3,2);plot(MELT_ENERGY);title('MELT ENERGY');
+subplot(5,3,3);plot(MASS_EXCHANGE_ENERGY_FLUXES);title(sprintf('MASS EXCHANGE\n ENERGY FLUXES'))
 subplot(5,3,4);plot(RAD_FLUXES);title('RAD_FLUXES(m)')
 subplot(5,3,5);plot(TURB_FLUXES);title('TURB_FLUXES')
 subplot(5,3,6);plot(SNOW_COVER_FRAC);title('SNOW_COVER_FRAC')
@@ -332,10 +340,11 @@ subplot(5,3,11);plot(SNOW_IE);title('IE');
 subplot(5,3,12);plot(SNOW_TEMP);title('TEMP');
 subplot(5,3,13);plot(H);title('H');
 subplot(5,3,14);plot(LE);title('LE');
+subplot(5,3,15);plot(SNOW_H2O);title('SNOW H2O');
 
 
 
-for s=1:9;subplot(5,3,s);set(gca,'FontSize',16);end
+for s=1:9;subplot(5,3,s);set(gca,'FontSize',10);end
 
 + (RAD_FLUXES(m) - TURB_FLUXES(m))*SNOW_COVER_FRAC(m);
 
@@ -344,6 +353,30 @@ for s=1:9;subplot(5,3,s);set(gca,'FontSize',16);end
 
 keyboard
 
+
+end
+
+
+function ERA5_DATA
+
+load('MATLAB/test_fun/ERAsupp_wyo_2017.mat')
+load('MATLAB/test_fun/ERAsnow_wyo_2017.mat')
+
+
+
+%eva_baresoil(m),
+%eva_topcano(m),
+%eva_vegetran(m),
+%forecast_albedo(0-1),
+%potential_eva(m),stl1(K),stl2(K),stl3(K),stl4(K),swvl1(m3/m3),swvl2(m3/m3),swvl3(m3/m3),swvl4(m3/m3),LE(J/m2),H(J/m2)
+  %ERAsuppwyo.
+  
+  ERA5.albedo = ERAsuppwyo.forecast_albedo_0_1_;
+deltat=365.25/12;
+
+  ERA5.H = ERAsuppwyo.H_J_m2_*deltat;
+  ERA5.LE = ERAsuppwyo.LE_J_m2_*deltat;
+  %ERA5. = ERAsuppwyo.
 
 end
 
