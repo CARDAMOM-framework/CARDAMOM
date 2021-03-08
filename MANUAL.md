@@ -730,18 +730,22 @@ Two contrasting examples:
 "ensemble mean" = mean of N CARDAMOM samples.
 
 (1) What is the IAV of ensemble mean GPP?
-Answer: (1) calculate ensemble mean GPP, and (2) calculate its IAV. Effectively no uncertainty estimate here.
+Answer: (1) calculate ensemble mean GPP, and (2) calculate its IAV. Effectively no uncertainty estimate here, possible never need to do this for a single pixel (however: this order may be required for multi pixel uncertainty propagation).
 
 (2) What is the IAV of all GPP ensemble members?
 Answer: (1) calculate IAV for each sample, and (2) calculate any useful/relevant statistics on IAV differences among samples (e.g. medians, percentiles).
 
-Note on above examples: mean GPP IAV is **not** equal to mean of GPP IAV values corresponding to individual ensemble members (e.g. if distribution is skewed).
+Note on above examples: mean GPP IAV is **not** equal to mean of GPP IAV values corresponding to individual ensemble members (e.g. if distribution is skewed). iav(mean(GPP)) =/= mean(iav(GPP)).
 
 
-How to aggregate statistics between pixels
-General issue: no information on correlation between samples between pixels. However, some uncertainty estimation generally.
+<img width="1113" alt="image" src="https://user-images.githubusercontent.com/23563444/110368127-74534600-7ffd-11eb-9d81-479a39618fe0.png">
 
-examples
+
+***How to aggregate statistics between pixels***
+General issue: no information on correlation between samples between pixels. However, some uncertainty estimation generally required
+
+Dilemma. Two pixels, one with mean GPP = 0.2 gC/m2/d (desert), and another with GPP = 10 gC/m2/d (rainforest). How to you aggregate IAVs (if at all)? 
+
 
 
 
