@@ -702,6 +702,64 @@ Helper scripts (running and analysing CARDAMOM) are primarily written in Matlab 
 |script1||
 
 
+
+## Aggregation and uncertainty propagatation
+Description: general rules and guidelines for estimating and propagating uncertainty
+
+"rule no 1." (some funny movie reference)
+"Rule no 2.": perform operation on data before calculating uncertainty (on states and fluxes?)
+
+- example: detrending state and flux data. 
+  - Step 1. Detrend every CARDAMOM sample 
+  - Step 2. Calculate percentile/statistics based on detrended dataset.
+
+Other examples:
+- annually average time series (action = average annually for each samples first, then
+- monthly anomalies
+- normalizing data (GRACE
+- For comparison against observation, perform "observation operator" first, then aggregate.
+
+
+Exception (sort of) to rule = "statistics on statistics".
+
+For example: what is the range of IAV (e.g. as sigma value) among CARDAMOM samples?
+Step 1. Calculate IAV per sample.
+Step 2. Summarize mean, median, standard deviation, percentiles of IAV among samples.
+
+Two contrasting examples:
+"ensemble mean" = mean of N CARDAMOM samples.
+
+(1) What is the IAV of ensemble mean GPP?
+Answer: (1) calculate ensemble mean GPP, and (2) calculate its IAV. Effectively no uncertainty estimate here.
+
+(2) What is the IAV of all GPP ensemble members?
+Answer: (1) calculate IAV for each sample, and (2) calculate any useful/relevant statistics on IAV differences among samples (e.g. medians, percentiles).
+
+Note on above examples: mean GPP IAV is **not** equal to mean of GPP IAV values corresponding to individual ensemble members (e.g. if distribution is skewed).
+
+
+How to aggregate statistics between pixels
+General issue: no information on correlation between samples between pixels. However, some uncertainty estimation generally.
+
+examples
+
+
+
+***end of actual "rules"***
+
+
+
+
+"
+
+
+
+
+
+
+
+
+
 ## References <a name="-references"/>
 
 Following are a selection of references that include technical details of CARDAMOM.
