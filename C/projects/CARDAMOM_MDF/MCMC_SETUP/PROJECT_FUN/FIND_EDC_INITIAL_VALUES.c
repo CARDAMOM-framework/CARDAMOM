@@ -43,6 +43,7 @@ MCOPT.nchains=1;
 MCOPT.minstepsize=1e-2;
 
 
+if (MCOPT_CARDAMOM->mcmcid==3){
 MCOPT.mcmcid=3;
 MCOPT.nOUT=1000;/*was 2000*/
 MCOPT.nPRINT=1000;/*was 2000*/
@@ -51,8 +52,7 @@ MCOPT.nchains=100;
 MCOPT.fixedpars=0;
 MCOPT.fADAPT=0;
 //declaring best_pars
-MCOUT.best_pars=calloc(MCOPT.nchains*PI->npars,sizeof(double));
-
+MCOUT.best_pars=calloc(MCOPT.nchains*PI->npars,sizeof(double));}
 
 
 int OK=INITIALIZE_MCMC_OUTPUT(*PI,&MCOUT,MCOPT);
