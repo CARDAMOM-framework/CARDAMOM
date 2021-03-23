@@ -408,3 +408,25 @@ end
 
 end
 
+function cardamomized_snow
+
+
+%Snow flux
+METDATAPRECsnow = [3.50 6.50 2.80 3.70 0.90 0.30 0. 0. 1.40 1.40 4.60 2.50]; % unit mm/day liquid water equivalent, ERA5
+
+%LST
+METDATAskintemp=[259.4507  265.7600  269.7007  269.9660  274.7928  279.0397  286.2732  284.8947  278.5555  268.4642  266.9638  262.3272];
+
+
+
+
+%Snow data
+
+
+
+
+
+
+
+
+end
