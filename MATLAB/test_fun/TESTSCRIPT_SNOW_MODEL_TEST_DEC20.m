@@ -470,3 +470,70 @@ end
 
 end
 
+
+
+function cardamomized_snow
+
+
+%Snow flux
+METDATAPRECsnow = [3.50 6.50 2.80 3.70 0.90 0.30 0. 0. 1.40 1.40 4.60 2.50]; % unit mm/day liquid water equivalent, ERA5
+
+%LST
+METDATAskintemp=[259.4507  265.7600  269.7007  269.9660  274.7928  279.0397  286.2732  284.8947  278.5555  268.4642  266.9638  262.3272];
+
+
+
+
+%Snow data
+ERA5data=load('MATLAB/test_fun/ERAsnow_wyo_2017.mat');
+ERA5.swe=ERA5data.ERAsnowwyo.swe_m_*1000;
+ERA5.snow=ERA5data.ERAsnowwyo.snfall_m_*1000;
+ERA5.snow_melt=ERA5data.ERAsnowwyo.smlt_m_*1000;
+ERA5.skintemp=ERA5data.ERAsnowwyo.skt_K_;
+
+
+t1=275;
+t2=0.02;
+    MELT_frac_exp=min(1,max((ERA5.skintemp-t1)*t2,0));
+    
+    
+        MELT_frac_exp=min(1,max(((250:290)-t1)*t2,0));
+
+    %Step 1. plot
+    figure(1);clf;hold on;
+    
+    plot(ERA5.skintemp,ERA5.snow_melt./ERA5.swe,'o')
+    plot(250:290,MELT_frac_exp,'r')
+    ylabel('Snow melt / SWE [fraction]')
+
+
+SWE(1)=300; %Parameter 1. Initial condition
+t1=270; %min threshold for melt
+t2=0.1;% slope 
+deltat=365.25/12;
+for m=1:12;
+            MELT_frac(m)=min(max((ERA5.skintemp(m)-t1)*t2,0),1);
+
+    SWE(m+1)=max(SWE(m)+ERA5.snow(m)*deltat - MELT_frac(m)*SWE(m),0);
+
+
+end
+
+figure(2);clf;hold on
+plot(ERA5.swe,'k','Linewidth',2)
+
+
+figure(3);clf;hold on
+plot(SWE,'b','Linewidth',2)
+plot(ERA5.swe,'k','Linewidth',2)
+
+
+
+
+
+
+
+
+
+end
+
