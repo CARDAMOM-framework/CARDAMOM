@@ -70,8 +70,7 @@ DATA.MET[:,8]: precipitation
   POOLS[0,3]=pars(3);Woo
   POOLS[0,4]=pars(2);Litter
   POOLS[0,5]=pars(2);Som
-  POOLS[0,6]=PAW;
-  POOLS[0,7]=PUW;
+
 
         %fluxes - other*********
         0.GPP
@@ -94,7 +93,7 @@ DATA.MET[:,8]: precipitation
 	17-22. Fires (C pools to atmosphere)
 	23-27. Fires (C pool transfers)
 	28. ET
-	29. PAW runoff
+	29. Runoff
   30. PAW -> PUW transfer
 	31. PUW runoff
   32. Aerobic Rh from litter
@@ -109,6 +108,7 @@ DATA.MET[:,8]: precipitation
   41. fCH4 CH4 fraction
   42. thetas=PAW/PAW_fs
 */
+
 
 
 

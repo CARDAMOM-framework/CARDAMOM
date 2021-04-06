@@ -3,6 +3,7 @@ function CARDAMOM_DEMO
 %Step 1. Load CBF file
 CBF=CARDAMOM_READ_BINARY_FILEFORMAT([getenv('CARDAMOM_DATA_PATH'),'/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbf']);
 
+
 %Step 2. Run one MCMC chain
 %MCO is a structure that contains  MCMC options 
 %"niteration" determines how many accepted samples are required
@@ -17,7 +18,7 @@ MCO.mcmcid=119;
 %All accepted parameters AND all corresponding variables are stored in "CBR"
 CBR=CARDAMOM_RUN_MDF(CBF,MCO);
 %Step 3. Run CARDAMOM with optimized parameters (This is done internally - at a basic level - inside "CARDAMOM_RUN_MDF")
-%CBR=CARDAMOM_RUN_MODEL(CBF,CBR.PARS);
+CBR=CARDAMOM_RUN_MODEL(CBF,CBR.PARS);
 
 %Step 4. Plot outputs
 figure(1);clf
