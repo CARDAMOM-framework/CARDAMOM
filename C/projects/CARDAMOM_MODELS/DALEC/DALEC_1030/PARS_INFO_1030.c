@@ -159,8 +159,7 @@ CARDADATA->parmax[34]=100000;
 CARDADATA->parmin[35]=1;
 CARDADATA->parmax[35]=10000;
 
-/*Reference VPD*/
-/* for Leuning et al, 1995 eq. 7*/
+/*Reference VPD for Leuning et al, 1995 eq. 7*/
 CARDADATA->parmin[36]=1;
 CARDADATA->parmax[36]=10000;
 

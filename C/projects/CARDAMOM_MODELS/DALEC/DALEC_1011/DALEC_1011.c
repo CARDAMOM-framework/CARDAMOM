@@ -5,7 +5,7 @@
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
-/*DALEC 1011 is DALEC-JCR v2, updated ET and replaced Prec with Infiltration for PAW balance equation, two new output fluxes and two new pars*/
+
 
 int DALEC_1011(DATA DATA, double const *pars)
 {
@@ -92,7 +92,7 @@ DATA.MET[:,8]: precipitation
 	16. Fires (total)
 	17-22. Fires (C pools to atmosphere)
 	23-27. Fires (C pool transfers)
-	28. ET updated method from Boese et al 2017 and Yan et al 2021
+	28. ET
 	29. Runoff
   30. PAW -> PUW transfer
 	31. PUW runoff
@@ -107,8 +107,6 @@ DATA.MET[:,8]: precipitation
   40. fW Water scaler
   41. fCH4 CH4 fraction
   42. thetas=PAW/PAW_fs
-  43. Infiltration rate, mm/day
-  44. Runoff rate, mm/day
 */
 
 
@@ -214,7 +212,7 @@ gpppars[7]=DATA.MET[m+3];
     //arrhenius
     //fT = exp(pars[9]*(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-DATA.meantemp)); 
     //Q10
-    fT = pow(pars[9],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-DATA.meantemp)/10); 
+    fT = pow(pars[9],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-(DATA.meantemp-0.000001))/10); 
     //fT = pow(pars[9],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-DATA.meantemp)/10);
     /* fV Volumetric factor seperating aerobic and anaerobic respiration */
     /* statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs) */
@@ -238,7 +236,7 @@ gpppars[7]=DATA.MET[m+3];
     }
     /* fCH4*/
     // fT_ch4 = exp(Q10ch4*(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-DATA.meantemp));
-    fT_ch4 = pow(Q10ch4,(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-DATA.meantemp)/10);
+    fT_ch4 = pow(Q10ch4,(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-(DATA.meantemp-0.000001))/10);
     fCH4 = fmin(r_me * fT_ch4,1);
     // fCH4 = r_me * fT_ch4;
     /* fmin() won't be needed once CH4 data is assimilated, as CH4 portion of CO2 should be very small,
@@ -249,11 +247,11 @@ gpppars[7]=DATA.MET[m+3];
 
 /*GPP*/
 FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
-/*Evapotranspiration (VPD = DATA.MET[m+7]) DALEC-JCR v2 updated with radiantion residual component, from Boese and Yan et al 2021*/
-FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23]+DATA.MET[m+3]*pars[42];
+/*Evapotranspiration (VPD = DATA.MET[m+7])*/
+FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
-FLUXES[f+1]=pow(pars[9],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-DATA.meantemp)/10)*((DATA.MET[m+8]/DATA.meanprec-1)*pars[32]+1);
+FLUXES[f+1]=pow(pars[9],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-(DATA.meantemp-0.000001))/10)*((DATA.MET[m+8]/DATA.meanprec-1)*pars[32]+1);
 /*respiration auto*/
 FLUXES[f+2]=pars[1]*FLUXES[f+0];
 /*leaf production*/
@@ -339,17 +337,11 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 	if (POOLS[p+6]>pars[24]/2){FLUXES[f+29]=(POOLS[p+6]-pars[24]/4)/deltat*(1-pars[33]);
         FLUXES[f+30]=(POOLS[p+6]-pars[24]/4)/deltat*pars[33]/(1-pars[33]);}
 	if (POOLS[p+7]>pars[34]/2){FLUXES[f+31]=(POOLS[p+7]-pars[34]/4)/deltat;}
-/*updates in DALEC-JCR v2*/
-/*I =Imax *(1-exp(-Pt/Imax))
-PAW = PAW + (-PAWrunoff – PAW->PUWtransfer + I- ET)*deltat;*/
-/*Infiltration rate*/
-  FLUXES[f+43]=pars[43]*(1-exp(-DATA.MET[m+8]/pars[43]));
-/*runoff rate*/
-	FLUXES[f+44]=DATA.MET[m+8]-FLUXES[f+43];
-  /*Plant-available water budget*/
-  POOLS[nxp+6]=POOLS[p+6] + (-FLUXES[f+29] - FLUXES[f+30] + FLUXES[f+43] - FLUXES[f+28])*deltat;
+
+	POOLS[nxp+6]=POOLS[p+6] + (-FLUXES[f+29] - FLUXES[f+30] + DATA.MET[m+8] - FLUXES[f+28])*deltat;
 	/*Plant-unavailable water budget*/
-  POOLS[nxp+7]=POOLS[p+7] + (FLUXES[f+30] - FLUXES[f+31])*deltat;
+
+        POOLS[nxp+7]=POOLS[p+7] + (FLUXES[f+30] - FLUXES[f+31])*deltat;
 
 
 
