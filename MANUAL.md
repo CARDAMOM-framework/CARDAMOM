@@ -347,10 +347,12 @@ Left figures are showing the uniform space distributions; Middle figures are sho
 Example: NBE uncertainty, CH4, etc.
 
 Files that are Modified:
-+ CARDAMOM_Reader.c (?)
-+ CARDAMOM read/writer Matlab/ Python (e.g. add to list of obsnames in “CBFOBS=compile_cbf_obs_fields(CBF)” CARDAMOM_WRITE_BINARY_FILEFORMAT.m)
++ CARDAMOM read/writer Matlab/ Python (e.g. add to list of obsnames in “CBFOBS=compile_cbf_obs_fields(CBF)”)
++ CARDAMOM_WRITE_BINARY_FILEFORMAT.m; CARDAMOM_READ_BINARY_FILEFORMAT.m
 + CARDAMOM_DATA_STRUCTURE.c
++ CARDAMOM_READ_BINARY_DATA.c
 
+0. To add changes, can simply search for term ‘CH4’ to find all the spots you need to add your new term
 1. Add observation variable name to CARDAMOM_DATA_STRUCTURE.c (e.g. follow “GPP” entry as example)
     * Add number of indices and number of none zero obs (again, follow GPP example throughout code)
 2. Add to CARDAMOM_READ_BINARY_DATA.c
@@ -368,6 +370,7 @@ Files that are Modified:
     * Optional: add new cost function module (e.g. DATA_LIKELIHOOD_CH4.c) to use 
     * To do this, add cost function module call in CARDAMOM/C/projects/DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_ALL_LIKELIHOOD.c
     * If observation field can only be used by subset of models (e.g. DATA.CH4 can only be used by DATA.ID==1010), then add “IF” statement to only run “DATA_LIKELIHOOD_CH4.c” if DATA.ID==1010.
+5. Refer to section ‘Make a new cost function’ to add your new stream to cost function
 
 
 
