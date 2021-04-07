@@ -8,7 +8,7 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1011(DATA *CARDADATA)
+int PARS_INFO_1050(DATA *CARDADATA)
 {
 
 /*Decomposition rate*/
@@ -48,10 +48,8 @@ CARDADATA->parmin[8]=0.0000001;
 CARDADATA->parmax[8]=0.001;
 
 /*Temp factor* = Q10 = 1.2-1.6*/
-//CARDADATA->parmin[9]=0.018;
-//CARDADATA->parmax[9]=0.08;
-CARDADATA->parmin[9]=1.2;
-CARDADATA->parmax[9]=2;
+CARDADATA->parmin[9]=0.018;
+CARDADATA->parmax[9]=0.08;
 
 /*Canopy Efficiency*/
 CARDADATA->parmin[10]=5;
@@ -99,7 +97,7 @@ CARDADATA->parmax[19]=2000.0;
 
 /*C_wood*/
 CARDADATA->parmin[20]=1.0;
-CARDADATA->parmax[20]=100000.0;
+CARDADATA->parmax[20]=1000.0;
 
 /*C litter*/
 CARDADATA->parmin[21]=1.0;
@@ -161,32 +159,9 @@ CARDADATA->parmax[34]=100000;
 CARDADATA->parmin[35]=1;
 CARDADATA->parmax[35]=10000;
 
-/*jc PAW_fs   fully saturated PAW*/
-CARDADATA->parmin[36]=10.0;
-CARDADATA->parmax[36]=100000.0;
-
-/*jc N statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)*/
-CARDADATA->parmin[37]=1;
-CARDADATA->parmax[37]=100.0;
-
-/*jc thetas_opt   optimum thetas for water scaler fW*/
-CARDADATA->parmin[38]=0.2;
-CARDADATA->parmax[38]=1.0;
-
-/*jc fwc the water scaler fW value at the end point C  */
-CARDADATA->parmin[39]=0.01;
-CARDADATA->parmax[39]=1.0;
-
-/*jc r_me   CH4:CO2 conversion ratio*/
-CARDADATA->parmin[40]=0.001;
-CARDADATA->parmax[40]=0.9;
-
-/*jc Q10ch4 Q10 for CH4 production  */
-CARDADATA->parmin[41]=1.0;
-CARDADATA->parmax[41]=3.0;
-
-
 
 return 0;
 
 }
+
+

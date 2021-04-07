@@ -3,7 +3,7 @@
 
 # CARDAMOM community collaborative manual
 
-***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, and others***  
+***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, Renato Braghiere and others***  
 [If you’re making any edits, add your name here!]
 
 
@@ -347,12 +347,10 @@ Left figures are showing the uniform space distributions; Middle figures are sho
 Example: NBE uncertainty, CH4, etc.
 
 Files that are Modified:
-+ CARDAMOM read/writer Matlab/ Python (e.g. add to list of obsnames in “CBFOBS=compile_cbf_obs_fields(CBF)”)
-+ CARDAMOM_WRITE_BINARY_FILEFORMAT.m; CARDAMOM_READ_BINARY_FILEFORMAT.m
++ CARDAMOM_Reader.c (?)
++ CARDAMOM read/writer Matlab/ Python (e.g. add to list of obsnames in “CBFOBS=compile_cbf_obs_fields(CBF)” CARDAMOM_WRITE_BINARY_FILEFORMAT.m)
 + CARDAMOM_DATA_STRUCTURE.c
-+ CARDAMOM_READ_BINARY_DATA.c
 
-0. To add changes, can simply search for term ‘CH4’ to find all the spots you need to add your new term
 1. Add observation variable name to CARDAMOM_DATA_STRUCTURE.c (e.g. follow “GPP” entry as example)
     * Add number of indices and number of none zero obs (again, follow GPP example throughout code)
 2. Add to CARDAMOM_READ_BINARY_DATA.c
@@ -370,7 +368,6 @@ Files that are Modified:
     * Optional: add new cost function module (e.g. DATA_LIKELIHOOD_CH4.c) to use 
     * To do this, add cost function module call in CARDAMOM/C/projects/DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_ALL_LIKELIHOOD.c
     * If observation field can only be used by subset of models (e.g. DATA.CH4 can only be used by DATA.ID==1010), then add “IF” statement to only run “DATA_LIKELIHOOD_CH4.c” if DATA.ID==1010.
-5. Refer to section ‘Make a new cost function’ to add your new stream to cost function
 
 
 
@@ -573,6 +570,7 @@ Can use the COMPLEX effort to document all the models here, including some examp
 | 1021                             |          |                                            | Norton                | In prep.                        |             |
 | 1030--1039                       | 1000     | VPD-GPP sensitivity                        | Paul Levine           |                                 |             |
 | 1040                             | 1005     | Nutrient model                             | Anthony Bloom         | In prep.                        |             |
+| 1050                             | 1000     | Nitrogen model                             | Renato Braghiere         | In prep.                        |             |
 |                                  |          |                                            |                       |                                 |             |
 | DALEC + FF                       | 1200     |                                            |                       |                                 | Exploratory |
 
@@ -703,68 +701,6 @@ Helper scripts (running and analysing CARDAMOM) are primarily written in Matlab 
 |script1||
 |script1||
 |script1||
-
-
-
-## Aggregation and uncertainty propagatation
-Description: general rules and guidelines for estimating and propagating uncertainty
-
-"rule no 1." (some funny movie reference)
-"Rule no 2.": perform operation on data before calculating uncertainty (on states and fluxes?)
-
-- example: detrending state and flux data. 
-  - Step 1. Detrend every CARDAMOM sample 
-  - Step 2. Calculate percentile/statistics based on detrended dataset.
-
-Other examples:
-- annually average time series (action = average annually for each samples first, then
-- monthly anomalies
-- normalizing data (GRACE
-- For comparison against observation, perform "observation operator" first, then aggregate.
-
-
-Exception (sort of) to rule = "statistics on statistics".
-
-For example: what is the range of IAV (e.g. as sigma value) among CARDAMOM samples?
-Step 1. Calculate IAV per sample.
-Step 2. Summarize mean, median, standard deviation, percentiles of IAV among samples.
-
-Two contrasting examples:
-"ensemble mean" = mean of N CARDAMOM samples.
-
-(1) What is the IAV of ensemble mean GPP?
-Answer: (1) calculate ensemble mean GPP, and (2) calculate its IAV. Effectively no uncertainty estimate here, possible never need to do this for a single pixel (however: this order may be required for multi pixel uncertainty propagation).
-
-(2) What is the IAV of all GPP ensemble members?
-Answer: (1) calculate IAV for each sample, and (2) calculate any useful/relevant statistics on IAV differences among samples (e.g. medians, percentiles).
-
-Note on above examples: mean GPP IAV is **not** equal to mean of GPP IAV values corresponding to individual ensemble members (e.g. if distribution is skewed). iav(mean(GPP)) =/= mean(iav(GPP)).
-
-
-<img width="1113" alt="image" src="https://user-images.githubusercontent.com/23563444/110368127-74534600-7ffd-11eb-9d81-479a39618fe0.png">
-
-
-***How to aggregate statistics between pixels***
-General issue: no information on correlation between samples between pixels. However, some uncertainty estimation generally required
-
-Dilemma. Two pixels, one with mean GPP = 0.2 gC/m2/d (desert), and another with GPP = 10 gC/m2/d (rainforest). How to you aggregate IAVs (if at all)? 
-
-
-
-
-***end of actual "rules"***
-
-
-
-
-"
-
-
-
-
-
-
-
 
 
 ## References <a name="-references"/>
