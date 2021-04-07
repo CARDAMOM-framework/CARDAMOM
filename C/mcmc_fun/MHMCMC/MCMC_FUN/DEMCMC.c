@@ -141,9 +141,9 @@ for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
 	for (nn=0;nn<NC;nn++){
 
 	/*Step size is 1 wigth 10% prob iterations*/
-        PI.stepsize[0]=1 - (1-2.38/sqrt(2*PI.npars))*(double)((double)(random()/RAND_MAX)<0.9);
+        PI.stepsize[0]=1 - (1-2.38/sqrt(2*PI.npars)*0.1)*(double)((double)(random()/RAND_MAX)<0.9);
 	/*take a step (DE-MCMC style)*/
-	PI.stepsize[0]=PI.stepsize[0]/10;
+	//PI.stepsize[0]=PI.stepsize[0]/10;
 	withinrange=STEP_DEMCMC(PARS,pars_new,PI,nn,NC);
 	/*p(x) = 0 if parameters outside bounds*/
 	if (withinrange==1){
