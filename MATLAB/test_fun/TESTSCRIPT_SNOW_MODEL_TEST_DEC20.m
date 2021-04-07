@@ -472,7 +472,109 @@ end
 
 
 
+
+
 function cardamomized_snow
+
+
+load  MATLAB/test_fun/ERAforcing_wyo_2008_2017.mat  
+load CARDAMOM/MATLAB/test_fun/ERAsupp_wyo_2008_2017.mat
+
+% 
+% SWE=ERAsuppwyo.swe_m_;
+% MELT=ERAsnowwyo.smlt_m_;
+% SKIN=ERAsnowwyo.skt_K_;
+% SNOW=ERAsnowwyo.snfall_m_;
+
+
+
+
+
+
+%Snow data
+ERA5.swe=ERAsuppwyo.swe_m_*1000;
+ERA5.snow=ERAsnowwyo.snfall_m_*1000;
+ERA5.snow_melt=ERAsnowwyo.smlt_m_*1000;
+ERA5.skintemp=ERAsnowwyo.skt_K_;
+ERA5.srad=ERAsnowwyo.SWdown_MJ_m2_d_;
+
+
+t1=275;
+t2=0.02;
+    MELT_frac_exp=min(1,max((ERA5.skintemp-t1)*t2,0));
+    
+    
+        MELT_frac_exp=min(1,max(((250:290)-t1)*t2,0));
+        
+        MELT_frac_exp_conc=min(1,max(((ERA5.skintemp)-t1)*t2,0));
+
+    %Step 1. plot
+    figure(1);clf;hold on;
+    subplot(2,1,1);hold on
+    plot(ERA5.skintemp,ERA5.snow_melt./ERA5.swe,'o')
+    plot(250:290,MELT_frac_exp,'r')
+    
+    ylabel('Snow melt / SWE [fraction]')
+        subplot(2,1,2);
+        plot(ERA5.snow_melt./ERA5.swe,'ko--'); hold on
+
+            plot( MELT_frac_exp_conc,'b')
+
+
+
+SWEmodel(1)=300; %Parameter 1. Initial condition
+t1=270; %min threshold for melt
+t2=0.1;% slope 
+deltat=365.25/12;
+for m=1:numel(ERA5.swe);
+            MELT_frac(m)=min(max((ERA5.skintemp(m)-t1)*t2,0),1);
+
+    SWEmodel(m+1)=max(SWEmodel(m)+ERA5.snow(m)*deltat - MELT_frac(m)*SWEmodel(m),0);
+    MELTmodel(m)=MELT_frac(m)*SWEmodel(m);
+end
+
+figure(2);clf;hold on
+plot(ERA5.swe,'k','Linewidth',2)
+
+
+figure(3);clf;hold on
+plot(SWEmodel,'b','Linewidth',2)
+plot(ERA5.swe,'k--o','Linewidth',2);
+ylabel('SWE [mm]')
+xlabel('Months since Jan 2008');
+legend('Reduced Complexity', 'ERA5')
+
+
+
+
+
+
+figure(4);clf;hold on
+plot(SWEmodel,'b','Linewidth',2)
+plot(ERA5.swe,'k--o','Linewidth',2)
+
+
+
+
+
+
+
+
+end
+
+function cardamomized_snow_old
+
+
+load  MATLAB/test_fun/ERAforcing_wyo_2008_2017.mat  
+
+load CARDAMOM/MATLAB/test_fun/ERAsupp_wyo_2008_2017.mat
+
+
+SWE=ERAsuppwyo.swe_m_;
+MELT=ERAsnowwyo.smlt_m_;
+SKIN=ERAsnowwyo.skt_K_;
+
+
 
 
 %Snow flux
