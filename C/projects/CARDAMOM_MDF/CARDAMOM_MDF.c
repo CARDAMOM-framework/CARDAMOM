@@ -13,6 +13,7 @@
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_NOBOUNCE.c"
 /*Temporarily de-activating to write EDC sampler*/
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
+#include "../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_NODIMADAPT.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_SLOWADAPT.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_103.c"
@@ -90,8 +91,8 @@ if (MCOPT.mcmcid==116){MCOPT.nchains=1;}
 if (MCOPT.mcmcid==117){MCOPT.nchains=1;}
 if (MCOPT.mcmcid==118){MCOPT.nchains=1;}
 if (MCOPT.mcmcid==119){MCOPT.nchains=1;}
-if (MCOPT.mcmcid==3){MCOPT.nchains=1;}
-else if (MCOPT.mcmcid==2){MCOPT.nchains=40;}
+if (MCOPT.mcmcid==3){MCOPT.nchains=100;}
+else if (MCOPT.mcmcid==2){MCOPT.nchains=100;}
 
 
 okcheck(OK,"MDF options structure read successfully");
@@ -273,19 +274,24 @@ MHMCMC_119(CARDADATA.MLF,CARDADATA,PI,MCOPT,&MCOUT);
 printf("completed MHMCMC 119\n");
 break;
 
-case 3:
-printf("about to start MHMCMC (no dim adapt)\n");
-MHMCMC_NODIMADAPT(CARDADATA.MLF,CARDADATA,PI,MCOPT,&MCOUT);
-printf("completed MHMCMC\n");
-break;
+//case 3:
+//printf("about to start MHMCMC (no dim adapt)\n");
+//MHMCMC_NODIMADAPT(CARDADATA.MLF,CARDADATA,PI,MCOPT,&MCOUT);
+//printf("completed MHMCMC\n");
+//break;
 case 2:
 printf("about to start DEMCMC\n");
 DEMCMC(CARDADATA.MLF,CARDADATA,PI,MCOPT,&MCOUT);
+break;
+case 3:
+MCOPT.fADAPT=0.05;
+printf("about to start ADEMCMC\n");
+ADEMCMC(CARDADATA.MLF,CARDADATA,PI,MCOPT,&MCOUT);
+break;
 
 /*printf("DEMCMC temporarily disconnected, need to de-bug, correct and re-introduce");
 printf("completed DEMCMC\n");
 break;*/
-break;
 default:
 printf("Error: no valid mcmcid value prescribed...\n");
 

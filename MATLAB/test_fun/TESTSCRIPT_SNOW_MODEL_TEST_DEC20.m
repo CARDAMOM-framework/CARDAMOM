@@ -324,7 +324,6 @@ SKIN=ERAsnowwyo.skt_K_;
 
 
 
-
 %Snow flux
 METDATAPRECsnow = [3.50 6.50 2.80 3.70 0.90 0.30 0. 0. 1.40 1.40 4.60 2.50]; % unit mm/day liquid water equivalent, ERA5
 
@@ -376,6 +375,7 @@ plot(ERA5.swe,'k','Linewidth',2)
 figure(3);clf;hold on
 plot(SWE,'b','Linewidth',2)
 plot(ERA5.swe,'k','Linewidth',2)
+
 
 
 

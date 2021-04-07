@@ -16,7 +16,6 @@ either (a) be re-derived using the MODEL_LIKELIHOOD function, or (b)
 written to a separate file.*/
 /*fwrite(&PROB,1,sizeof(double),fileout);*/
 
-
 fclose(fileout);
 
 
