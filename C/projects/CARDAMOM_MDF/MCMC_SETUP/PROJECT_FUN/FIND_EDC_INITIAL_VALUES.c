@@ -3,8 +3,8 @@
 #include "../../../DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
-/*#include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
-*/
+#include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
+#include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
 #include "../../../../math_fun/int_max.c"
 
 int FIND_EDC_INITIAL_VALUES(DATA CARDADATA,PARAMETER_INFO *PI, MCMC_OPTIONS *MCOPT_CARDAMOM){
@@ -22,8 +22,8 @@ else {EMLF=EDC_DALEC_MLF;}
 MCMC_OPTIONS MCOPT;
 MCMC_OUTPUT MCOUT;
 
-int OK=INITIALIZE_MCMC_OUTPUT(*PI,&MCOUT);
-okcheck(OK,"CHECK: MCOUT structure initialized,");
+
+int PEDCC,nn;
 
 
 MCOPT.APPEND=0;
@@ -43,6 +43,23 @@ MCOPT.nchains=1;
 MCOPT.minstepsize=1e-2;
 
 
+if (MCOPT_CARDAMOM->mcmcid==3){
+MCOPT.mcmcid=3;
+MCOPT.nOUT=1000;/*was 2000*/
+MCOPT.nPRINT=1000;/*was 2000*/
+MCOPT.minstepsize=1e-5;
+MCOPT.nchains=100;
+MCOPT.fixedpars=0;
+MCOPT.fADAPT=0;
+//declaring best_pars
+MCOUT.best_pars=calloc(MCOPT.nchains*PI->npars,sizeof(double));}
+
+
+int OK=INITIALIZE_MCMC_OUTPUT(*PI,&MCOUT,MCOPT);
+okcheck(OK,"CHECK: MCOUT structure initialized,");
+
+
+
 oksofar("starting MCMC for EDC inipars");
 int n;
 
@@ -56,7 +73,8 @@ PI->stepsize[n]=0.02;
 /*PI->stepsize[n]=0.00005;*/
 PI->parini[n]=CARDADATA.parpriors[n];
 PI->parfix[n]=0;
-if (PI->parini[n]!=-9999 & CARDADATA.edc_random_search<1) {PI->parfix[n]=1;}}
+/*
+if (PI->parini[n]!=-9999 & CARDADATA.edc_random_search<1) {PI->parfix[n]=1;}*/}
 
 
 
@@ -100,19 +118,43 @@ while (PEDC!=0){
 	oksofar("Running short MCMC to find x_{EDC} = 1");
 	if (MCOPT.mcmcid==1){MHMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
 	if (MCOPT.mcmcid==119){MHMCMC_119(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
+        if (MCOPT.mcmcid==2){DEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
+        if (MCOPT.mcmcid==3){ADEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
+
 	/*if (MCOPT.mcmcid==2){DEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
 	*/
 	oksofar("Short MCMC complete");
-	for (n=0;n<PI->npars;n++){PI->parini[n]=MCOUT.best_pars[n];}
+	for (n=0;n<PI->npars*MCOPT.nchains;n++){PI->parini[n]=MCOUT.best_pars[n];}
 
-	PEDC=EMLF(CARDADATA, PI->parini);count=count+1;
+	PEDCC=0;
+	for (nn=0;nn<MCOPT.nchains;nn++){
+	PEDC=EMLF(CARDADATA, PI->parini + nn*PI->npars);
+	printf("PEDC for chain %i = %2.1f\n",nn,PEDC);
+	if (PEDC>-5.0){PEDCC=PEDCC+1;}}
+
+	
+	printf("*******\n");
+	printf("*******\n");
+	printf("%i out of %i chains have non-zero prob\n",PEDCC,MCOPT.nchains);
+	printf("*******\n");
+	printf("*******\n");
+
+	
+	count=count+1;
+	
+	if (MCOPT.mcmcid==2 && PEDCC>MCOPT.nchains*0.1){PEDC=0;}
+	if (MCOPT.mcmcid==3 && PEDCC>MCOPT.nchains*0.1){PEDC=0;}
+	if (MCOPT.mcmcid==2 || MCOPT.mcmcid==3){MCOPT.randparini=0;}	
+	/*Hard coding*/
+	
 	/*in case one EDC missing*/
-	if (PEDC!=0 & count%3==0){for (n=0;n<PI->npars;n++){PI->parini[n]=CARDADATA.parpriors[n];}}
+	if (MCOPT.mcmcid==119 && PEDC!=0 && count%3==0){for (n=0;n<PI->npars;n++){PI->parini[n]=CARDADATA.parpriors[n];}}
+
 }
 
 /*Writing parameters to file*/
 FILE *fileout=fopen(MCOPT_CARDAMOM->startfile,"ab");
-for (n=0;n<PI->npars;n++){fwrite(&MCOUT.best_pars[n],1,sizeof(double),fileout);}
+for (n=0;n<PI->npars*MCOPT.nchains;n++){fwrite(&MCOUT.best_pars[n],1,sizeof(double),fileout);}
 fclose(fileout);
 oksofar("Starting solution found & written to file");
 printf("filename = %s\n",MCOPT_CARDAMOM->startfile);

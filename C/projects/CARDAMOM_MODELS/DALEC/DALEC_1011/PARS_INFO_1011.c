@@ -185,7 +185,13 @@ CARDADATA->parmax[40]=0.9;
 CARDADATA->parmin[41]=1.0;
 CARDADATA->parmax[41]=3.0;
 
+/*jc v2 rET radiation coefficient in ET, unitless*/
+CARDADATA->parmin[42]=0.01;
+CARDADATA->parmax[42]=0.3;
 
+/*jc v2 Imax maximum infiltration rate, mm/day same with prec */
+CARDADATA->parmin[43]=100/(365.25/12);
+CARDADATA->parmax[43]=2000/(365.25/12);
 
 return 0;
 
