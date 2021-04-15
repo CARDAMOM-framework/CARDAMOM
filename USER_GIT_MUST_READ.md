@@ -30,7 +30,7 @@
 1) git checkout dev_branch # make sure you are on your local dev_branch
 2) git pull origin master # It will pull master from remote to your local master, then merge to your local dev_branch
 
-### To push my local development branch to remote development branch:
+### To push your local development branch to remote development branch:
 1) git checkout dev_branch # To stay on your local branch 
 2) git push origin dev_branch # It pushes your local dev_branch to the remote dev_branch; ‘origin’ always means the remote repo
 
