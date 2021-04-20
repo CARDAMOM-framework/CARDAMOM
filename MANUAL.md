@@ -57,7 +57,7 @@
 + Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework
 + Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c
 + Click on green “Code” button, and either (a) git clone with ssh (recommended), or (b) use alternative method (e.g. download zip).
-* Git clone repository OR unzip “CARDAMOM-master.zip” file.
+* Git clone repository OR unzip “CARDAMOM-master.zip” file (NOTE: make link to CARDAMOM GITHUB.md, Shuang's user guide).
 
 
 *SOON TO BE REQUIRED:* 
