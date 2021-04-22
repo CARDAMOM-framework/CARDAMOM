@@ -56,7 +56,13 @@
 #### Get code from Github
 + Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework
 + Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c
-+ Click on green “Code” button, and either (a) git clone with ssh (recommended), or (b) use alternative method (e.g. download zip).
++ Click on green “Code” button, and either (a) git clone with ssh (recommended),
+
+Example
+Step 1. type "cd /Users/[yourusername]/", in your mac terminal, for example, or alternatively go to the preffered directory for storing CARDAMOM code.
+Step 2. type "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c" mac terminal
+
++   or (b) use alternative method (e.g. download zip).
 * Git clone repository OR unzip “CARDAMOM-master.zip” file (NOTE: make link to CARDAMOM GITHUB.md, Shuang's user guide).
 
 
