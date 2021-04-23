@@ -76,7 +76,7 @@ Step 2. type "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c" m
 
 + Demos below will compile CARDAMOM and run short assimilation runs and forward runs for testing. There are options in both Python and Matlab. Check Appendix for additional tools written in Matlab and Python.
 
-### CARDAMOM GIT user must read <a name="cardamom-git-must-read">
+### CARDAMOM Github user must read <a name="cardamom-git-must-read">
 
 After you clone the CARDAMOM repository to your local, please take a minute to go through the first section in  [CARDAMOM_GIT_MUST_READ.md](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/CARDAMOM_GIT_MUST_READ.md). We recommand all users to follow the instructions in order to effectively maintain the CARDAMOM github environment. 
 
