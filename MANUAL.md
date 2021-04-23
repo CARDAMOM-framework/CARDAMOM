@@ -575,6 +575,7 @@ Can use the COMPLEX effort to document all the models here, including some examp
 | 1008                             | 1002     | 1002 with surface runoff proportional to P | Paul Levine           |                                 |             |
 | 1009                             | 1005     | 1005 with surface runoff proportional to P | Paul Levine           |                                 |             |
 | 1010                             |          | CH4 module                                 | Ma                    | In prep.                        |             |
+| 1011-1015                             |          | CH4 module                                 | Ma                    | In prep.                        |             |
 | 1020                             |          |                                            | Norton                | In prep.                        |             |
 | 1021                             |          |                                            | Norton                | In prep.                        |             |
 | 1030--1039                       | 1000     | VPD-GPP sensitivity                        | Paul Levine           |                                 |             |
