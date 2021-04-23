@@ -11,7 +11,7 @@
 - [Getting Started With CARDAMOM](#-getting-started)
   * [“Installing” CARDAMOM](#-installing--cardamom)
   * [Get code from Github](#get-code-from-github)
-  * [CARDAMOM GIT user must read](#cardamom-git-must-read)
+  * [CARDAMOM Github user must read](#cardamom-git-must-read)
   * [CARDAMOM Matlab Demo and Setup Test](#cardamom-with-matlab)
   * [CARDAMOM Python Demo and Setup](#cardamom-with-python)
   
