@@ -3,7 +3,7 @@
 
 # CARDAMOM community collaborative manual
 
-***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, and others***  
+***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, Renato Braghiere and others***  
 [If you’re making any edits, add your name here!]
 
 
@@ -11,6 +11,7 @@
 - [Getting Started With CARDAMOM](#-getting-started)
   * [“Installing” CARDAMOM](#-installing--cardamom)
   * [Get code from Github](#get-code-from-github)
+  * [CARDAMOM Github User Must Read](#cardamom-git-must-read)
   * [CARDAMOM Matlab Demo and Setup Test](#cardamom-with-matlab)
   * [CARDAMOM Python Demo and Setup](#cardamom-with-python)
   
@@ -75,7 +76,9 @@ Step 2. type "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c" m
 
 + Demos below will compile CARDAMOM and run short assimilation runs and forward runs for testing. There are options in both Python and Matlab. Check Appendix for additional tools written in Matlab and Python.
 
+### CARDAMOM Github User Must Read <a name="cardamom-git-must-read">
 
+After you clone the CARDAMOM repository to your local, please take a minute to go through the first section in  [CARDAMOM_GIT_MUST_READ.md](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/CARDAMOM_GIT_MUST_READ.md). We recommand all users to follow the instructions in order to effectively maintain the CARDAMOM github environment. 
 
 ### CARDAMOM Matlab Demo and Setup Test <a name="cardamom-with-matlab"/>
 
@@ -575,10 +578,12 @@ Can use the COMPLEX effort to document all the models here, including some examp
 | 1008                             | 1002     | 1002 with surface runoff proportional to P | Paul Levine           |                                 |             |
 | 1009                             | 1005     | 1005 with surface runoff proportional to P | Paul Levine           |                                 |             |
 | 1010                             |          | CH4 module                                 | Ma                    | In prep.                        |             |
+| 1011-1015                             |          | CH4 module                                 | Ma                    | In prep.                        |             |
 | 1020                             |          |                                            | Norton                | In prep.                        |             |
 | 1021                             |          |                                            | Norton                | In prep.                        |             |
 | 1030--1039                       | 1000     | VPD-GPP sensitivity                        | Paul Levine           |                                 |             |
 | 1040                             | 1005     | Nutrient model                             | Anthony Bloom         | In prep.                        |             |
+| 1050                             | 1000     | Nitrogen model                             | Renato Braghiere      | In prep.                        |             |
 |                                  |          |                                            |                       |                                 |             |
 | DALEC + FF                       | 1200     |                                            |                       |                                 | Exploratory |
 
