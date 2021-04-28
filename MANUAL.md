@@ -583,9 +583,8 @@ Can use the COMPLEX effort to document all the models here, including some examp
 | 1020                             |          |                                            | Norton                | In prep.                        |             |
 | 1021                             |          |                                            | Norton                | In prep.                        |             |
 | 1030--1039                       | 1000     | VPD-GPP sensitivity                        | Paul Levine           |                                 |             |
-| 1040                             | 1005     | Nutrient model                             | Anthony Bloom         | In prep.
-|             |
-| 1050                             | 1000     | Nitrogn model                              | Renato Braghiere      | In prep.                              
+| 1040                             | 1005     | Nutrient model                             | Anthony Bloom         | In prep.                                   
+| 1050                             | 1000     | Nitrogen model                             | Renato Braghiere      | In prep.                              
 |                                  |          |                                            |                       |                                 |             |
 | DALEC + FF                       | 1200     |                                            |                       |                                 | Exploratory |
 
