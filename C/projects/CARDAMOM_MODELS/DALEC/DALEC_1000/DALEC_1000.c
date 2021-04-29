@@ -32,8 +32,9 @@ int nr=DATA.nodays;
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
 double *FLUXES=DATA.M_FLUXES;
 double *POOLS=DATA.M_POOLS;
-double *LAI=DATA.M_LAI;
-double *NEE=DATA.M_NEE;
+//double *LAI=DATA.M_LAI;
+double LAI;//This is the LAI value at start of each timestep
+//double *NEE=DATA.M_NEE;
 
   /*assigning values to pools*/
   /*L,F,R,W,Lit,SOM*/
@@ -154,9 +155,9 @@ f=nofluxes*n;
 
 
 /*LAI*/
-LAI[n]=POOLS[p+1]/pars[16]; 
+LAI=POOLS[p+1]/pars[16]; 
 /*GPP*/
-gpppars[0]=LAI[n];
+gpppars[0]=LAI;
 gpppars[1]=DATA.MET[m+2];
 gpppars[2]=DATA.MET[m+1];
 gpppars[4]=DATA.MET[m+4];
@@ -256,10 +257,50 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 	FLUXES[f+16]=0;for (nn=0;nn<6;nn++){FLUXES[f+16]+=FLUXES[f+17+nn];}
 
 	/*Net ecosystem exchange + Fires*/
-	NEE[n]=-FLUXES[f+0]+FLUXES[f+2]+FLUXES[f+12]+FLUXES[f+13]+FLUXES[f+16];
+	//NEE[n]=-FLUXES[f+0]+FLUXES[f+2]+FLUXES[f+12]+FLUXES[f+13]+FLUXES[f+16];
 
 
 }
+
+//Observation operator
+
+//M_NBE (CURRENTLY NEE)
+if (D.nnbe>0){for (n=0;n<nr;n++){f=nofluxes*n;DATA.M_NBE[n]=-FLUXES[f+0]+FLUXES[f+2]+FLUXES[f+12]+FLUXES[f+13]+FLUXES[f+16];}}
+
+//M_ET
+if (D.net>0){for (n=0;n<nr;n++){DATA.M_ET[n]=FLUXES[nofluxes*n+28]}};
+
+//M_GPP
+if (D.ngpp>0){for (n=0;n<nr;n++){DATA.M_GPP[n]=(FLUXES[nofluxes*n+0])*0.5}};
+
+
+//M_LAI
+if (D.otherpriors[4]>0 | D.nlai>0){for (n=0;n<nr;n++){DATA.M_LAI[n]=(POOLS[nopools*n+1]+POOLS[nopools*(n+1)+1])*0.5/PARS[16];}};
+
+//M_EWT: GRACE-EWT timeseries
+if (DATA.newt>0){for (n=0;n<nr;n++){p=nopools*n;nxp=nopools*(n+1);DATA.M_EWT[n]=(POOLS[p+6]+ POOLS[p+7] +POOLS[nxp+6]+ POOLS[nxp+7])*0.5;}}
+
+//M_CH4 [N/A in this model];
+
+//M_ABGB_t0: initial ABGB value
+if (DATA.otherpriors[0]>-9999){DATA.M_ABGB_t0[0]=PARS[17]+PARS[18]+PARS[19]+PARS[20];}
+
+//M_ABGB: ABGB timeseries
+if (D.nabgb>0){for (n=0;n<nr;n++){nxp=nopools*(n+1);p=nopools*n;DATA.M_ABGB[n]=(POOLS[p+0]+POOLS[p+1]+POOLS[p+2]+POOLS[p+3]+POOLS[nxp+0]+POOLS[nxp+1]+POOLS[nxp+2]+POOLS[nxp+3])*0.5;}}
+
+//M_SOM: SOM timeseries
+if (D.som>0){for (n=0;n<nr;n++){nxp=nopools*(n+1);p=nopools*n;DATA.M_SOM[n]=(POOLS[p+4]+POOLS[p+5]+POOLS[nxp+4]+POOLS[nxp+5])*0.5;}}
+
+/*M_MGPP:Mean GPP*/
+if (D.otherpriors[5]>-9999){DATA.M_MGPP[0]=0;for (n=0;n<nr;n++){DATA.M_MGPP[0]+=FLUXES[n*nofluxes];};DATA.M_MGPP[0]=DATA.M_MGPP[0]/(double)nr;}
+
+/*M_MFIRE: Mean fire emissions*/
+if (D.otherpriors[2]>-9999){DATA.M_MFIRE[0]=0;for (n=0;n<nr;n++){DATA.M_MFIRE[0]+=FLUXES[n*nofluxes+16];};DATA.M_MFIRE[0]=DATA.M_MFIRE[0]/(double)nr;}
+
+
+
+}
+
 
 return 0;
 }

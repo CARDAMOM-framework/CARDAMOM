@@ -32,7 +32,7 @@ printf("Latitude = %f\n",CDATA->LAT);
 printf("Number of MET drivers%d\n",CDATA->nomet);
 printf("Number of GPP obs. = %d\n",CDATA->ngpp);
 printf("Number of LAI obs. = %d\n",CDATA->nlai);
-printf("Number of NEE obs. = %d\n",CDATA->nnee);
+printf("Number of NBE obs. = %d\n",CDATA->nnbe);
 printf("Number of EWT obs. = %d\n",CDATA->newt); /*shuang*/
 printf("Number of CH4 obs. = %d\n",CDATA->nch4); /*shuang*/
 printf("Number of obs. = %d\n",CDATA->noobs); /*shuang*/
@@ -82,9 +82,9 @@ DATA->gppabs=(int)statdat[7];
 DATA->edc_random_search=(int)statdat[10];
 DATA->gppiav=(int)statdat[11];
 DATA->laiiav=(int)statdat[12];
-DATA->nee_annual_unc=statdat[13];
+DATA->nbe_annual_unc=statdat[13];
 DATA->et_annual_unc=statdat[14];
-DATA->nee_obs_unc=statdat[15];if (statdat[15]<0){DATA->nee_obs_unc=0.5;}
+DATA->nbe_obs_unc=statdat[15];if (statdat[15]<0){DATA->nbe_obs_unc=0.5;}
 DATA->et_obs_unc=statdat[16];if (statdat[16]<0){DATA->et_obs_unc=2;}
 DATA->ewt_annual_unc=statdat[17];
 DATA->ewt_obs_unc=statdat[18];if (statdat[18]<0){DATA->ewt_obs_unc=50;}
@@ -126,7 +126,20 @@ or generically declared for model types (e.g. DALEC, etc).*/
 /*Model-specific quantities (nodays, nofluxes, nopools), will be declared in MODEL_INFO for modularity*/
 DATA->M_LAI=calloc(DATA->nodays,sizeof(double));
 DATA->M_GPP=calloc(DATA->nodays,sizeof(double));
-DATA->M_NEE=calloc(DATA->nodays,sizeof(double));
+DATA->M_NBE=calloc(DATA->nodays,sizeof(double));
+DATA->M_ET=calloc(DATA->nodays,sizeof(double));
+DATA->M_EWT=calloc(DATA->nodays,sizeof(double));
+DATA->M_CH4=calloc(DATA->nodays,sizeof(double));
+DATA->M_ABGB_t0=calloc(1,sizeof(double));
+DATA->M_ABGB=calloc(DATA->nodays,sizeof(double));
+DATA->M_SOM=calloc(DATA->nodays,sizeof(double));
+DATA->M_MGPP=calloc(1,sizeof(double));
+DATA->M_MFIRE=calloc(1,sizeof(double));
+
+
+
+
+
 
 printf("DATA->nodays = %i\n", DATA->nodays);
 printf("DATA->nofluxes = %i\n", DATA->nofluxes);
@@ -149,9 +162,9 @@ DATA->M_PARS=calloc(DATA->nopars,sizeof(double));
 /*also it is good practice to initialize pointers in C*/
 if (DATA->MET==0){DATA->MET=calloc(DATA->nomet*DATA->nodays,sizeof(double));}
 if (DATA->GPP==0){DATA->GPP=calloc(DATA->nodays,sizeof(double));}
-if (DATA->NEE==0){DATA->NEE=calloc(DATA->nodays,sizeof(double));}
+if (DATA->NBE==0){DATA->NBE=calloc(DATA->nodays,sizeof(double));}
 if (DATA->LAI==0){DATA->LAI=calloc(DATA->nodays,sizeof(double));}
-if (DATA->WOO==0){DATA->WOO=calloc(DATA->nodays,sizeof(double));}
+if (DATA->BIOMASS==0){DATA->BIOMASS=calloc(DATA->nodays,sizeof(double));}
 if (DATA->ET==0){DATA->ET=calloc(DATA->nodays,sizeof(double));}
 if (DATA->EWT==0){DATA->EWT=calloc(DATA->nodays,sizeof(double));}
 if (DATA->BAND1==0){DATA->BAND1=calloc(DATA->nodays,sizeof(double));}
@@ -159,7 +172,7 @@ if (DATA->BAND2==0){DATA->BAND2=calloc(DATA->nodays,sizeof(double));}
 if (DATA->BAND3==0){DATA->BAND3=calloc(DATA->nodays,sizeof(double));}
 if (DATA->BAND4==0){DATA->BAND4=calloc(DATA->nodays,sizeof(double));}
 if (DATA->SOM==0){DATA->SOM=calloc(DATA->nodays,sizeof(double));}
-if (DATA->NEEunc==0){DATA->NEEunc=calloc(DATA->nodays,sizeof(double));}
+if (DATA->NBEunc==0){DATA->NBEunc=calloc(DATA->nodays,sizeof(double));}
 if (DATA->CH4==0){DATA->CH4=calloc(DATA->nodays,sizeof(double));}
 
 /*What happens:
@@ -171,8 +184,8 @@ if (DATA->CH4==0){DATA->CH4=calloc(DATA->nodays,sizeof(double));}
 
 DATA->ngpp=0;
 DATA->nlai=0;
-DATA->nnee=0;
-DATA->nwoo=0;
+DATA->nnbe=0;
+DATA->nabgb=0;
 DATA->net=0;
 DATA->newt=0;
 DATA->nband1=0;
@@ -180,7 +193,7 @@ DATA->nband2=0;
 DATA->nband3=0;
 DATA->nband4=0;
 DATA->nsom=0;
-DATA->nneeunc=0;
+DATA->nnbeunc=0;
 DATA->nch4=0; /*shuang*/
 
 
@@ -205,12 +218,12 @@ for (n=0;n<DATA->nodays+1;n++){
 	for (nn=0;nn<DATA->nomet;nn++){DATA->MET[n*DATA->nomet+nn]=metline[nn];}
 	DATA->GPP[n]=obsline[0];
 	DATA->LAI[n]=obsline[1];
-	DATA->NEE[n]=obsline[2];
+	DATA->NBE[n]=obsline[2];
 	if (obsline[0]>-9998){DATA->ngpp=DATA->ngpp+1;}
 	if (obsline[1]>-9998){DATA->nlai=DATA->nlai+1;}
-	if (obsline[2]>-9998){DATA->nnee=DATA->nnee+1;}
-	if (DATA->noobs>3){DATA->WOO[n]=obsline[3];
-	if (obsline[3]>-9998){DATA->nwoo=DATA->nwoo+1;}}
+	if (obsline[2]>-9998){DATA->nnbe=DATA->nnbe+1;}
+	if (DATA->noobs>3){DATA->BIOMASS[n]=obsline[3];
+	if (obsline[3]>-9998){DATA->nabgb=DATA->nabgb+1;}}
         if (DATA->noobs>4){DATA->ET[n]=obsline[4];
         if (obsline[4]>-9998){DATA->net=DATA->net+1;}}
         if (DATA->noobs>5){DATA->EWT[n]=obsline[5];
@@ -231,7 +244,7 @@ for (n=0;n<DATA->nodays+1;n++){
         if (DATA->noobs>10){DATA->SOM[n]=obsline[10];
         if (obsline[10]>-9998){DATA->nsom=DATA->nsom+1;}}
 
-     /*   if (DATA->noobs>11){DATA->NEEunc[n]=obsline[11];
+     /*   if (DATA->noobs>11){DATA->NBEunc[n]=obsline[11];
         if (obsline[11]>-9998){DATA->nneeunc=DATA->nneeunc+1;}}*/  /*shuang by default there is not a field for NEEunc in CBF.OBS*/
 
         if (DATA->noobs>11){DATA->CH4[n]=obsline[11];
@@ -248,8 +261,8 @@ fclose(fid);
 
 if (DATA->ngpp>0){DATA->gpppts=calloc(DATA->ngpp,sizeof(int));}
 if (DATA->nlai>0){DATA->laipts=calloc(DATA->nlai,sizeof(int));}
-if (DATA->nnee>0){DATA->neepts=calloc(DATA->nnee,sizeof(int));}
-if (DATA->nwoo>0){DATA->woopts=calloc(DATA->nwoo,sizeof(int));}
+if (DATA->nnbe>0){DATA->nbepts=calloc(DATA->nnbe,sizeof(int));}
+if (DATA->nabgb>0){DATA->abgbpts=calloc(DATA->nabgb,sizeof(int));}
 if (DATA->net>0){DATA->etpts=calloc(DATA->net,sizeof(int));}
 if (DATA->newt>0){DATA->ewtpts=calloc(DATA->newt,sizeof(int));}
 if (DATA->nband1>0){DATA->band1pts=calloc(DATA->nband1,sizeof(int));}
@@ -257,15 +270,15 @@ if (DATA->nband2>0){DATA->band2pts=calloc(DATA->nband2,sizeof(int));}
 if (DATA->nband3>0){DATA->band3pts=calloc(DATA->nband3,sizeof(int));}
 if (DATA->nband4>0){DATA->band4pts=calloc(DATA->nband4,sizeof(int));}
 if (DATA->nsom>0){DATA->sompts=calloc(DATA->nsom,sizeof(int));}
-if (DATA->nneeunc>0){DATA->neeuncpts=calloc(DATA->nneeunc,sizeof(int));}
+if (DATA->nnbeunc>0){DATA->nbeuncpts=calloc(DATA->nnbeunc,sizeof(int));}
 if (DATA->nch4>0){DATA->ch4pts=calloc(DATA->nch4,sizeof(int));}       /*shuang*/
 
 /*Deriving laipts, gpppts, neepts*/
 int c;
 c=0;for (n=0;n<DATA->nodays;n++){if (DATA->GPP[n]>-9998){DATA->gpppts[c]=n;c=c+1;}};
 c=0;for (n=0;n<DATA->nodays;n++){if (DATA->LAI[n]>-9998){DATA->laipts[c]=n;c=c+1;}};
-c=0;for (n=0;n<DATA->nodays;n++){if (DATA->NEE[n]>-9998){DATA->neepts[c]=n;c=c+1;}};
-if (DATA->noobs>3){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->WOO[n]>-9998){DATA->woopts[c]=n;c=c+1;}}}
+c=0;for (n=0;n<DATA->nodays;n++){if (DATA->NBE[n]>-9998){DATA->nbepts[c]=n;c=c+1;}};
+if (DATA->noobs>3){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->ABGB[n]>-9998){DATA->abgbpts[c]=n;c=c+1;}}}
 
 if (DATA->noobs>4){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->ET[n]>-9998){DATA->etpts[c]=n;c=c+1;}}}
 
@@ -335,8 +348,8 @@ int INITIALIZE_DATA_STRUCT(DATA *CDATA){
 CDATA->MET=0;
 CDATA->GPP=0;
 CDATA->LAI=0;
-CDATA->NEE=0;
-CDATA->WOO=0;
+CDATA->NBE=0;
+CDATA->ABGB=0;
 CDATA->ET=0;
 CDATA->EWT=0;
 CDATA->BAND1=0;
@@ -344,7 +357,7 @@ CDATA->BAND2=0;
 CDATA->BAND3=0;
 CDATA->BAND4=0;
 CDATA->SOM=0;
-CDATA->NEEunc=0;
+CDATA->NBEunc=0;
 CDATA->CH4=0; /*shuang*/
 
 
@@ -360,8 +373,8 @@ int FREE_DATA_STRUCT(DATA DATA){
 
 if (DATA.ngpp>0){free(DATA.gpppts);}
 if (DATA.nlai>0){free(DATA.laipts);}
-if (DATA.nnee>0){free(DATA.neepts);}
-if (DATA.nwoo>0){free(DATA.woopts);}
+if (DATA.nnbe>0){free(DATA.nbepts);}
+if (DATA.nabgb>0){free(DATA.abgbpts);}
 if (DATA.net>0){free(DATA.etpts);}
 if (DATA.newt>0){free(DATA.ewtpts);}
 if (DATA.nband1>0){free(DATA.band1pts);}
@@ -369,13 +382,13 @@ if (DATA.nband2>0){free(DATA.band2pts);}
 if (DATA.nband3>0){free(DATA.band3pts);}
 if (DATA.nband4>0){free(DATA.band4pts);}
 if (DATA.nsom>0){free(DATA.sompts);}
-if (DATA.nneeunc>0){free(DATA.neeuncpts);}
+if (DATA.nnbeunc>0){free(DATA.nbeuncpts);}
 if (DATA.nch4>0){free(DATA.ch4pts);} /*shuang*/
 
 free(DATA.MET);
 free(DATA.LAI);
-free(DATA.NEE);
-free(DATA.WOO);
+free(DATA.NBE);
+free(DATA.ABGB/);
 free(DATA.ET);
 free(DATA.GPP);
 free(DATA.EWT);
@@ -384,14 +397,27 @@ free(DATA.BAND3);
 free(DATA.BAND2);
 free(DATA.BAND1);
 free(DATA.SOM);
-free(DATA.NEEunc);
+free(DATA.NBEunc);
 free(DATA.CH4);/*shuang*/
 
-free(DATA.M_PARS);
+//Cost function obsetvations
 free(DATA.M_LAI);
 free(DATA.M_GPP);
+free(DATA.M_ET);
+free(DATA.M_NBE);
+free(DATA.M_EWT);
+free(DATA.M_CH4);
+free(DATA.M_ABGB_t0);
+free(DATA.M_ABGB);
+free(DATA.M_SOM);
+free(DATA.M_MGPP);
+free(DATA.M_MFIRE);
+
+
+
+
+free(DATA.M_PARS);
 free(DATA.M_FLUXES);
-free(DATA.M_NEE);
 free(DATA.M_POOLS);
 free(DATA.M_P);
 free(DATA.M_EDCD);

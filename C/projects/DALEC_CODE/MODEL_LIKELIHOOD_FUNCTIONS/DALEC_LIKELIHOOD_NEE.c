@@ -1,22 +1,22 @@
-double DALEC_LIKELIHOOD_NEE(DATA D){
+double DALEC_LIKELIHOOD_NBE(DATA D){
 
 
 
 int dn, n,m;
 double am,mam,P=0;
-/*NEE likelyhood*/
+/*NBE likelyhood*/
 if (D.nnee>0){
 double tot_exp=0;
 if (D.nee_annual_unc<0){
 
 if (D.nneeunc==0){
-/*Standard NEE likelihood approach*/
-for (n=0;n<D.nnee;n++){dn=D.neepts[n];tot_exp+=pow((D.M_NEE[dn]-D.NEE[dn])/D.nee_obs_unc,2);}}
+/*Standard NBE likelihood approach*/
+for (n=0;n<D.nnee;n++){dn=D.neepts[n];tot_exp+=pow((D.M_NBE[dn]-D.NBE[dn])/D.nee_obs_unc,2);}}
 
 
 if (D.nneeunc>0){
-/*Standard NEE likelihood approach*/
-for (n=0;n<D.nnee;n++){dn=D.neepts[n];tot_exp+=pow((D.M_NEE[dn]-D.NEE[dn])/D.NEEunc[dn],2);}}
+/*Standard NBE likelihood approach*/
+for (n=0;n<D.nnee;n++){dn=D.neepts[n];tot_exp+=pow((D.M_NBE[dn]-D.NBE[dn])/D.NBEunc[dn],2);}}
 
 }
 else{
@@ -28,11 +28,11 @@ else{
 for (m=0;m<D.nnee/12;m++){
 /*Calculate annual mean*/
 mam=0;am=0;
-for (n=0;n<12;n++){dn=D.neepts[n+m*12];mam=mam+D.M_NEE[dn];am=am+D.NEE[dn];}
+for (n=0;n<12;n++){dn=D.neepts[n+m*12];mam=mam+D.M_NBE[dn];am=am+D.NBE[dn];}
 /*normalize means*/
 mam=mam/12;am=am/12;
 /*Calculate seasonal cost function*/
-for (n=0;n<12;n++){dn=D.neepts[n+m*12];tot_exp+=pow((D.M_NEE[dn]-D.NEE[dn]-mam+am)/D.nee_obs_unc,2);}
+for (n=0;n<12;n++){dn=D.neepts[n+m*12];tot_exp+=pow((D.M_NBE[dn]-D.NBE[dn]-mam+am)/D.nee_obs_unc,2);}
 /*Calculate annual cost function*/
 /*TEST: normalize model likelihood by normal distribution with mean zero and unc = x2 annual unc.*/
 tot_exp+=pow((am-mam)/D.nee_annual_unc,2);
