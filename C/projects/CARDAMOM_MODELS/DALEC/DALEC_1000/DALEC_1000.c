@@ -2,9 +2,11 @@
 #include "../../../DALEC_CODE/DALEC_ALL/ACM.c"
 #include "../../../DALEC_CODE/DALEC_ALL/offset.c"
 #include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
-
+#include "../DALEC_OBSERVATION_OPERATORS/DALEC_OBSERVATION_OPERATORS.c"
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
+
+
 
 int DALEC_1000(DATA DATA, double const *pars)
 {
@@ -256,50 +258,47 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 	/*replace in next version of DALEC_FIRES*/
 	FLUXES[f+16]=0;for (nn=0;nn<6;nn++){FLUXES[f+16]+=FLUXES[f+17+nn];}
 
+	
 	/*Net ecosystem exchange + Fires*/
-	//NEE[n]=-FLUXES[f+0]+FLUXES[f+2]+FLUXES[f+12]+FLUXES[f+13]+FLUXES[f+16];
+	//Inline observation operators
+	//DATA.M_NBE[n]=-FLUXES[f+0]+FLUXES[f+2]+FLUXES[f+12]+FLUXES[f+13]+FLUXES[f+16];
 
 
 }
 
-//Observation operator
+//External observation operator
 
 //M_NBE (CURRENTLY NEE)
-if (D.nnbe>0){for (n=0;n<nr;n++){f=nofluxes*n;DATA.M_NBE[n]=-FLUXES[f+0]+FLUXES[f+2]+FLUXES[f+12]+FLUXES[f+13]+FLUXES[f+16];}}
+int nbefluxes[5]={0,2,12,13,16};
+int nbefluxsigns[5]={-1,1,1,1,1};
 
-//M_ET
-if (D.net>0){for (n=0;n<nr;n++){DATA.M_ET[n]=FLUXES[nofluxes*n+28]}};
+DALEC_OBSOPE_NBE(DATA,nbefluxes,nbefluxsigns,5);
 
-//M_GPP
-if (D.ngpp>0){for (n=0;n<nr;n++){DATA.M_GPP[n]=(FLUXES[nofluxes*n+0])*0.5}};
+//GPP
+DALEC_OBSOPE_GPP(DATA,0);
 
+//ET
+DALEC_OBSOPE_ET(DATA,28);
 
-//M_LAI
-if (D.otherpriors[4]>0 | D.nlai>0){for (n=0;n<nr;n++){DATA.M_LAI[n]=(POOLS[nopools*n+1]+POOLS[nopools*(n+1)+1])*0.5/PARS[16];}};
+//DATA, leaf area pool, LCMA
+DALEC_OBSOPE_LAI(DATA,1,PARS[16]);
 
-//M_EWT: GRACE-EWT timeseries
-if (DATA.newt>0){for (n=0;n<nr;n++){p=nopools*n;nxp=nopools*(n+1);DATA.M_EWT[n]=(POOLS[p+6]+ POOLS[p+7] +POOLS[nxp+6]+ POOLS[nxp+7])*0.5;}}
+//GRACE EWT
+int h2o_pools[2]={6,7};
+//DATA, array of pool indices, number of pool indices
+DALEC_OBSOPE_GRACE_EWT(DATA,h2o_pools,2);
 
-//M_CH4 [N/A in this model];
+//Total abgb (initial and time resolved)
+int abgb_pools[4]={0,1,2,3};
+DALEC_OBSOPE_ABGB(DATA,abgb_pools,4);
 
-//M_ABGB_t0: initial ABGB value
-if (DATA.otherpriors[0]>-9999){DATA.M_ABGB_t0[0]=PARS[17]+PARS[18]+PARS[19]+PARS[20];}
-
-//M_ABGB: ABGB timeseries
-if (D.nabgb>0){for (n=0;n<nr;n++){nxp=nopools*(n+1);p=nopools*n;DATA.M_ABGB[n]=(POOLS[p+0]+POOLS[p+1]+POOLS[p+2]+POOLS[p+3]+POOLS[nxp+0]+POOLS[nxp+1]+POOLS[nxp+2]+POOLS[nxp+3])*0.5;}}
-
-//M_SOM: SOM timeseries
-if (D.som>0){for (n=0;n<nr;n++){nxp=nopools*(n+1);p=nopools*n;DATA.M_SOM[n]=(POOLS[p+4]+POOLS[p+5]+POOLS[nxp+4]+POOLS[nxp+5])*0.5;}}
-
-/*M_MGPP:Mean GPP*/
-if (D.otherpriors[5]>-9999){DATA.M_MGPP[0]=0;for (n=0;n<nr;n++){DATA.M_MGPP[0]+=FLUXES[n*nofluxes];};DATA.M_MGPP[0]=DATA.M_MGPP[0]/(double)nr;}
+//Total soil organic C
+int som_pools[2]={4,5};
+DALEC_OBSOPE_SOM(DATA,som_pools,2);
 
 /*M_MFIRE: Mean fire emissions*/
-if (D.otherpriors[2]>-9999){DATA.M_MFIRE[0]=0;for (n=0;n<nr;n++){DATA.M_MFIRE[0]+=FLUXES[n*nofluxes+16];};DATA.M_MFIRE[0]=DATA.M_MFIRE[0]/(double)nr;}
+DALEC_OBSOPE_FIRE(DATA,16);
 
-
-
-}
 
 
 return 0;

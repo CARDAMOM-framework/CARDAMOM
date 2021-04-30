@@ -8,7 +8,7 @@
 #include "DALEC_LIKELIHOOD_ET.c"
 #include "DALEC_LIKELIHOOD_GPP.c"
 #include "DALEC_LIKELIHOOD_LAI.c"
-#include "DALEC_LIKELIHOOD_NEE.c"
+#include "DALEC_LIKELIHOOD_NBE.c"
 #include "DALEC_LIKELIHOOD_CH4.c"
 /*Any likelihood functions used in multiple MLF functions are kept here!*/
 
@@ -91,8 +91,6 @@ if (DATA.otherpriors[0]>-9999){
 //p=p-0.5*pow(log((PARS[17]+PARS[18]+PARS[19]+PARS[20])/DATA.otherpriors[0])/log(DATA.otherpriorunc[0]),2);}
 p=p-0.5*pow(log((DATA.M_BIOMASS_t0[0])/DATA.otherpriors[0])/log(DATA.otherpriorunc[0]),2);}
 
-return p;}
-
 
 
 
@@ -100,7 +98,7 @@ return p;}
 P=P+DALEC_LIKELIHOOD_GPP(D);
 P=P+DALEC_LIKELIHOOD_LAI(D);
 P=P+DALEC_LIKELIHOOD_ET(D);
-P=P+DALEC_LIKELIHOOD_NEE(D);
+P=P+DALEC_LIKELIHOOD_NBE(D);
 if (D.ID==1010){
 	P=P+DALEC_LIKELIHOOD_CH4(D);
 	}
