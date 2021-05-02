@@ -3,6 +3,7 @@
 //global structure//
 typedef struct OBSOPE{
 bool SUPPORT_CH4_OBS;
+//Need to fill this out...
 bool SUPPORT_GPP_OBS;
 int gpp_flux_index;
 bool SUPPORT_LAI_OBS;

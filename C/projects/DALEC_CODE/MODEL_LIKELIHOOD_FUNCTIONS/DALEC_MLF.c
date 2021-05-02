@@ -7,6 +7,9 @@
 double DALEC_MLF(DATA DATA,double *PARS){
 
 
+//copy pars to M_PARS for export
+memcpy(DATA.M_PARS,pars,DATA.nopars);
+
 /*Copy model pointer for brevity*/
 DALEC *MODEL=(DALEC *)DATA.MODEL;
 
