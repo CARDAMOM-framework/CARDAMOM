@@ -13,9 +13,10 @@ int FIND_EDC_INITIAL_VALUES(DATA CARDADATA,PARAMETER_INFO *PI, MCMC_OPTIONS *MCO
 
 double (*EMLF)(DATA, double *);
 
-if (CARDADATA.assemble_model==1){
-EMLF=EDC_DALEC_MLF_beta;}
-else {EMLF=EDC_DALEC_MLF;}
+//if (CARDADATA.assemble_model==1){
+//EMLF=EDC_DALEC_MLF_beta;}
+//else {
+EMLF=EDC_DALEC_MLF;
 
 /*This MCMC is designed to find the best-fit DALEC parameters ONLY*/
 

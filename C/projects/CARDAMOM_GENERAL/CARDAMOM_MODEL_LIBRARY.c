@@ -59,7 +59,7 @@ int CARDAMOM_MODEL_LIBRARY(DATA *DATA){
 
 
 int status=0;
-if (DATA->ID==101  ){MODEL_INFO_101(DATA);}
+/*if (DATA->ID==101  ){MODEL_INFO_101(DATA);}
 else if (DATA->ID==400  ){MODEL_INFO_400(DATA);}
 else if (DATA->ID==803  ){MODEL_INFO_803(DATA);}
 else if (DATA->ID==804  ){MODEL_INFO_804(DATA);}
@@ -77,7 +77,9 @@ else if (DATA->ID==821  ){MODEL_INFO_821(DATA);}
 else if (DATA->ID==830  ){MODEL_INFO_830(DATA);}
 else if (DATA->ID==831  ){MODEL_INFO_831(DATA);}
 else if (DATA->ID==840  ){MODEL_INFO_840(DATA);}
-else if (DATA->ID==1000  ){MODEL_INFO_1000(DATA);}
+*/
+if (DATA->ID==1000  ){MODEL_INFO_1000(DATA);}
+/*
 else if (DATA->ID==1001  ){MODEL_INFO_1001(DATA);}
 else if (DATA->ID==1002  ){MODEL_INFO_1002(DATA);}
 else if (DATA->ID==1003  ){MODEL_INFO_1003(DATA);}
@@ -91,6 +93,7 @@ else if (DATA->ID==1040  ){MODEL_INFO_1040(DATA);}
 else if (DATA->ID==1010  ){MODEL_INFO_1010(DATA);}
 else if (DATA->ID==1011  ){MODEL_INFO_1011(DATA);}
 else if (DATA->ID==1200  ){MODEL_INFO_1200(DATA);}
+*/
 else {status=1;}
 
 

@@ -164,7 +164,7 @@ if (DATA->MET==0){DATA->MET=calloc(DATA->nomet*DATA->nodays,sizeof(double));}
 if (DATA->GPP==0){DATA->GPP=calloc(DATA->nodays,sizeof(double));}
 if (DATA->NBE==0){DATA->NBE=calloc(DATA->nodays,sizeof(double));}
 if (DATA->LAI==0){DATA->LAI=calloc(DATA->nodays,sizeof(double));}
-if (DATA->BIOMASS==0){DATA->BIOMASS=calloc(DATA->nodays,sizeof(double));}
+if (DATA->ABGB==0){DATA->ABGB=calloc(DATA->nodays,sizeof(double));}
 if (DATA->ET==0){DATA->ET=calloc(DATA->nodays,sizeof(double));}
 if (DATA->EWT==0){DATA->EWT=calloc(DATA->nodays,sizeof(double));}
 if (DATA->BAND1==0){DATA->BAND1=calloc(DATA->nodays,sizeof(double));}
@@ -222,7 +222,7 @@ for (n=0;n<DATA->nodays+1;n++){
 	if (obsline[0]>-9998){DATA->ngpp=DATA->ngpp+1;}
 	if (obsline[1]>-9998){DATA->nlai=DATA->nlai+1;}
 	if (obsline[2]>-9998){DATA->nnbe=DATA->nnbe+1;}
-	if (DATA->noobs>3){DATA->BIOMASS[n]=obsline[3];
+	if (DATA->noobs>3){DATA->ABGB[n]=obsline[3];
 	if (obsline[3]>-9998){DATA->nabgb=DATA->nabgb+1;}}
         if (DATA->noobs>4){DATA->ET[n]=obsline[4];
         if (obsline[4]>-9998){DATA->net=DATA->net+1;}}
@@ -388,7 +388,7 @@ if (DATA.nch4>0){free(DATA.ch4pts);} /*shuang*/
 free(DATA.MET);
 free(DATA.LAI);
 free(DATA.NBE);
-free(DATA.ABGB/);
+free(DATA.ABGB);
 free(DATA.ET);
 free(DATA.GPP);
 free(DATA.EWT);

@@ -8,11 +8,9 @@ double tot_exp=0;
 
 
 /*Mean biomass at time = 0 */
-if (DATA.otherpriors[0]>-9999){
-//p=p-0.5*pow(log((PARS[17]+PARS[18]+PARS[19]+PARS[20])/DATA.otherpriors[0])/log(DATA.otherpriorunc[0]),2);}
-p=p-0.5*pow(log((DATA.M_ABGB_t0[0])/DATA.otherpriors[0])/log(DATA.otherpriorunc[0]),2);}
-
-return p;}
+if (D.otherpriors[0]>-9999){
+//p=p-0.5*pow(log((PARS[17]+PARS[18]+PARS[19]+PARS[20])/D.otherpriors[0])/log(D.otherpriorunc[0]),2);}
+P=P-0.5*pow(log((D.M_ABGB_t0[0])/D.otherpriors[0])/log(D.otherpriorunc[0]),2);}
 
 
 

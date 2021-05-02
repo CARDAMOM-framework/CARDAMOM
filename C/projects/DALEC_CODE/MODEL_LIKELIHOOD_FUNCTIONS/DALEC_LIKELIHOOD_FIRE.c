@@ -1,4 +1,4 @@
-double DALEC_LIKELIHOOD_MEANS(DATA D){
+double DALEC_LIKELIHOOD_FIRE(DATA D){
 
 
 
@@ -19,22 +19,9 @@ for (n=0;n<D.nodays;n++){//mfire+=D.M_FLUXES[n*D.nofluxes+16];}
 if (D.otherpriorunc[2]>0){P=P-0.5*pow(log(D.M_MFIRE[0]/D.otherpriors[2])/log(D.otherpriorunc[2]),2);}
 else {P=P-0.5*pow((D.M_MFIRE[0]-D.otherpriors[2])/D.otherpriorunc[2],2);}
 }
-
-
-
-double mgpp;
-/*Constrain mean GPP*/
-if (D.otherpriors[5]>-9999){mgpp=0;
-/*Step 1. Sum gpp*/
-for (n=0;n<D.nodays;n++){mgpp+=D.M_FLUXES[n*D.nofluxes+0];}
-/*Normalize gpp constraint to daily mean flux*/
-mgpp=mgpp/((double)D.nodays);
-/*Step 2. Constrain against gpp*/
-if (D.otherpriorunc[5]>0){P=P-0.5*pow(log(mgpp/D.otherpriors[5])/log(D.otherpriorunc[5]),2);}
-else {P=P-0.5*pow((mgpp-D.otherpriors[5])/D.otherpriorunc[5],2);}
-/*P=P-0.5*pow((mgpp-D.otherpriors[5])/D.otherpriorunc[5],2);*/
-
 }
+
+
 
 
 

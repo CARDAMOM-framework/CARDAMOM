@@ -1,3 +1,49 @@
+#pragma once
+#include <stdbool.h>
+//global structure//
+typedef struct OBSOPE{
+bool SUPPORT_CH4_OBS;
+bool SUPPORT_GPP_OBS;
+int gpp_flux_index;
+bool SUPPORT_LAI_OBS;
+int foliar_pool_index;
+int LCMA;
+bool SUPPORT_ET_OBS;
+int et_flux_index;
+bool SUPPORT_NBE_OBS;
+int *nbe_flux_indices;
+int *nbe_flux_signs;
+int n_nbe_fluxes;
+bool SUPPORT_ABGB_OBS;
+int * abgb_pool_indices;
+int n_abgb_pools;
+bool SUPPORT_SOM_OBS;
+int * som_pool_indices;
+int n_som_pools;
+bool SUPPORT_GRACE_EWT_OBS;
+int * h2o_pool_indices;
+int n_h2o_pools;
+bool SUPPORT_NBE_FIRE;
+int fire_index;
+}OBSOPE;
+
+
+int INITIALIZE_OBSOPE_SUPPORT(OBSOPE * OBSOPE){
+
+OBSOPE->SUPPORT_CH4_OBS=false;
+OBSOPE->SUPPORT_GPP_OBS=false;
+OBSOPE->SUPPORT_LAI_OBS=false;
+OBSOPE->SUPPORT_ET_OBS=false;
+OBSOPE->SUPPORT_NBE_OBS=false;
+OBSOPE->SUPPORT_ABGB_OBS=false;
+OBSOPE->SUPPORT_SOM_OBS=false;
+OBSOPE->SUPPORT_GRACE_EWT_OBS=false;
+OBSOPE->SUPPORT_NBE_FIRE=false;
+
+
+return 0;
+}
+
 int DALEC_OBSOPE_GPP(DATA D, int gpp_flux){
 
 //Time varying GPP 
@@ -32,7 +78,7 @@ int n,nn;
 for (n=0;n<D.nodays;n++){
 D.M_NBE[n]=0;
 for (nn=0;nn<n_nbe_fluxes;nn++){
-D.M_NBE[n]+=D.M_FLUXES[D.nofluxes*n+nbe_fluxes[nn]]*nbe_flux_signs[nn];}}};
+D.M_NBE[n]+=D.M_FLUXES[D.nofluxes*n+nbe_fluxes[nn]]*(double)nbe_flux_signs[nn];}}};
 
 return 0;}
 
@@ -105,9 +151,12 @@ int DALEC_OBSOPE_SOM(DATA D, int * som_pools, int n_som_pools){
 
 
 
-if (D.nsom>0){for (n=0;n<D.nodays;n++){
-//declarations
+if (D.nsom>0){
+//declare constanta
 int p,nxp,n,nn;
+//loop through days
+for (n=0;n<D.nodays;n++){
+//declarations
 
 //indices
 nxp=D.nopools*(n+1);p=D.nopools*n;

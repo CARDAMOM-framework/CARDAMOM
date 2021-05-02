@@ -10,6 +10,9 @@
 #include "DALEC_LIKELIHOOD_LAI.c"
 #include "DALEC_LIKELIHOOD_NBE.c"
 #include "DALEC_LIKELIHOOD_CH4.c"
+#include "DALEC_LIKELIHOOD_ABGB.c"
+#include "DALEC_LIKELIHOOD_SOM.c"
+#include "DALEC_LIKELIHOOD_FIRE.c"
 /*Any likelihood functions used in multiple MLF functions are kept here!*/
 
 
@@ -67,61 +70,33 @@ p=p-0.5*pow((PARS[n]-DATA.parpriors[n])/(DATA.parpriorunc[n]),2);}
 
 }}
 
+return p;}
+
 /*for any other priors, explicitly define functions based on values in DATA.otherpriors*/
 
 /*total biomass (pools 1:4) defined here - using first space of pappriors for total biomass*/
 
 
-double LIKELIHOOD(DATA D)
-{
-int n,dn,m,f;
-double P=0, Ps;
-double tot_exp;
-double CPG;
-double mfire=0;
-double msif=0;
-double mgpp=0;
-double mnpdf=0;
-double mlai=0;
+double LIKELIHOOD(DATA D){
+double P=0;
 //int npdfi[7]={9,10,11,23,24,25,26};
 
 
-/*Mean biomass at time = 0 */
-if (DATA.otherpriors[0]>-9999){
-//p=p-0.5*pow(log((PARS[17]+PARS[18]+PARS[19]+PARS[20])/DATA.otherpriors[0])/log(DATA.otherpriorunc[0]),2);}
-p=p-0.5*pow(log((DATA.M_BIOMASS_t0[0])/DATA.otherpriors[0])/log(DATA.otherpriorunc[0]),2);}
-
-
-
-
-
-P=P+DALEC_LIKELIHOOD_GPP(D);
-P=P+DALEC_LIKELIHOOD_LAI(D);
-P=P+DALEC_LIKELIHOOD_ET(D);
-P=P+DALEC_LIKELIHOOD_NBE(D);
-if (D.ID==1010){
-	P=P+DALEC_LIKELIHOOD_CH4(D);
-	}
-
-	if (D.ID==1011){
-	P=P+DALEC_LIKELIHOOD_CH4(D);
-	}
-/*shuang: 101010 was created for climate sensitivity test Nov2020*/
-
-double mam=0,am=0;
-
-P = P + DALEC_LIKELIHOOD_ABGB(D);
-P = P + DALEC_LIKELIHOOD_SOIL(D);
-P = P + DALEC_LIKELIHOOD_GRACE_EWT(D);
+if (((DALEC *)D.MODEL)->OBSOPE.SUPPORT_CH4_OBS){   P=P+DALEC_LIKELIHOOD_CH4(D);}
+if (((DALEC *)D.MODEL)->OBSOPE.SUPPORT_GPP_OBS){   P=P+DALEC_LIKELIHOOD_GPP(D);}
+if (((DALEC *)D.MODEL)->OBSOPE.SUPPORT_LAI_OBS){   P=P+DALEC_LIKELIHOOD_LAI(D);}
+if (((DALEC *)D.MODEL)->OBSOPE.SUPPORT_ET_OBS){   P=P+DALEC_LIKELIHOOD_ET(D);}
+if (((DALEC *)D.MODEL)->OBSOPE.SUPPORT_NBE_OBS){   P=P+DALEC_LIKELIHOOD_NBE(D);}
+if (((DALEC *)D.MODEL)->OBSOPE.SUPPORT_ABGB_OBS){   P=P+DALEC_LIKELIHOOD_ABGB(D);}
+if (((DALEC *)D.MODEL)->OBSOPE.SUPPORT_SOM_OBS){   P=P+DALEC_LIKELIHOOD_SOM(D);}
+if (((DALEC *)D.MODEL)->OBSOPE.SUPPORT_GRACE_EWT_OBS){   P=P+DALEC_LIKELIHOOD_GRACE_EWT_OBS(D);}
+if (((DALEC *)D.MODEL)->OBSOPE.SUPPORT_FIRE_OBS){   P=P+DALEC_LIKELIHOOD_FIRE_OBS(D);}
 
 
 /*Note: only use with model ID = 806*/
-
-if (D.ID==806){P = P + DALEC_806_MFCF(D);}
-if (D.ID==807){P = P + DALEC_807_MFCF(D);}
-if (D.ID==808){P = P + DALEC_807_MFCF(D);}
-
-
+//if (D.ID==806){P = P + DALEC_806_MFCF(D);}
+//if (D.ID==807){P = P + DALEC_807_MFCF(D);}
+//if (D.ID==808){P = P + DALEC_807_MFCF(D);}
 
 /*Constrain CMS disturbance fluxes*/
 //if (D.otherpriors[6]>-9999){mnpdf=0;
@@ -135,11 +110,6 @@ if (D.ID==808){P = P + DALEC_807_MFCF(D);}
 //if (mnpdf<D.otherpriors[6]) {
 //P=P-0.5*pow(log(mnpdf/D.otherpriors[6])/log(D.otherpriorunc[6]),2);
 //}}
-
-
-
-
-
 
 if (isnan(P)){P=log(0);}
 return P;}

@@ -24,7 +24,7 @@ double *CH4; /*shuang*/
 int *gpppts;
 int *nbepts;
 int *laipts;
-int *abgb/pts;
+int *abgbpts;
 int *etpts;
 int *ewtpts;
 int *band1pts;

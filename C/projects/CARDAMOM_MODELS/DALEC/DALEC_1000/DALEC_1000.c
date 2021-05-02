@@ -6,6 +6,55 @@
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
+int DALEC_1000_MODCONFIG(DALEC * DALECmodel){
+DALECmodel->nopools=8;
+DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
+DALECmodel->nopars=36;
+DALECmodel->nofluxes=32;
+
+//declaring observation operator structure, and filling with DALEC configurations
+OBSOPE OBSOPE;
+DALECmodel->OBSOPE=OBSOPE;
+INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
+
+
+OBSOPE.SUPPORT_GPP_OBS=true;
+OBSOPE.SUPPORT_LAI_OBS=true;
+OBSOPE.SUPPORT_ET_OBS=true;
+OBSOPE.SUPPORT_NBE_OBS=true;
+OBSOPE.SUPPORT_ABGB_OBS=true;
+OBSOPE.SUPPORT_SOM_OBS=true;
+OBSOPE.SUPPORT_GRACE_EWT_OBS=true;
+OBSOPE.SUPPORT_NBE_FIRE=true;
+
+OBSOPE.gpp_flux_index=0;
+OBSOPE.foliar_pool_index=1;
+OBSOPE.lcma_index=16;
+OBSOPE.et_flux_index=28;
+
+static int nbefluxes[5]={0,2,12,13,16},OBSOPE.nbe_flux_indices=&nbefluxes;
+static int nbefluxsigns[5]={-1,1,1,1,1},OBSOPE.nbe_flux_signs=&nbefluxsigns;
+OBSOPE.n_nbe_fluxes=5;
+
+static int abgb_pool_indices[4]={0,1,2,3}, OBSOPE.abgb_pool_indices=&abgb_pool_indices;
+OBSOPE.n_abgb_pools=4;
+
+static int som_pool_indices[2]={4,5}, OBSOPE.abgb_pool_indices=&abgb_pool_indices;
+OBSOPE.n_abgb_pools=2;
+
+
+int * som_pool_indices;
+int n_som_pools;
+
+bool SUPPORT_GRACE_EWT_OBS;
+int * h2o_pool_indices;
+int n_h2o_pools;
+bool SUPPORT_NBE_FIRE;
+int fire_index;
+
+
+return 0;}
+
 
 
 int DALEC_1000(DATA DATA, double const *pars)
@@ -34,6 +83,7 @@ int nr=DATA.nodays;
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
 double *FLUXES=DATA.M_FLUXES;
 double *POOLS=DATA.M_POOLS;
+
 //double *LAI=DATA.M_LAI;
 double LAI;//This is the LAI value at start of each timestep
 //double *NEE=DATA.M_NEE;
@@ -281,7 +331,7 @@ DALEC_OBSOPE_GPP(DATA,0);
 DALEC_OBSOPE_ET(DATA,28);
 
 //DATA, leaf area pool, LCMA
-DALEC_OBSOPE_LAI(DATA,1,PARS[16]);
+DALEC_OBSOPE_LAI(DATA,1,pars[16]);
 
 //GRACE EWT
 int h2o_pools[2]={6,7};

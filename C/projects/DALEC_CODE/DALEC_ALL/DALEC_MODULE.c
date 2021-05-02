@@ -1,4 +1,7 @@
 #pragma once
+#include "../../CARDAMOM_MODELS/DALEC/DALEC_OBSERVATION_OPERATORS/DALEC_OBSERVATION_OPERATORS.c"
+
+
 /*This function contains to model-specific structure*/
 /*starting with constant terms showing up across scripts*/
 /*unclear where this should be declared, but "pragma once" solves problem for now*/
@@ -30,9 +33,11 @@ int nopools;
 int nopars;
 int nofluxes;
 int nomet;
+int * testvec;
 int (*dalec)(DATA,const double *);
 int (*edc1)(const double *, DATA, struct EDCDIAGNOSTIC * EDCD);
 int (*edc2)(const double *, DATA, struct EDCDIAGNOSTIC * EDCD);
 /*contains all the EDCD relevant info*/
 struct EDCDIAGNOSTIC * EDCD;
+OBSOPE OBSOPE;
 }DALEC;
