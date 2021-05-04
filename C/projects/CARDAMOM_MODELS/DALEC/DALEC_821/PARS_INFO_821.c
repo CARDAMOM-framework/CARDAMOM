@@ -140,7 +140,7 @@ CARDADATA->parmin[30]=0.01;
 CARDADATA->parmax[30]=1;
 
 /* ball-berry slope m [unitless]*/
-CARDADATA->parmin[31]=2; //Olsen et al. 2010
+CARDADATA->parmin[31]=5; //Olsen et al. 2010
 CARDADATA->parmax[31]=30;//50;
 
 /* ball-berry intercept b [mol m^-2 s^-1]*/

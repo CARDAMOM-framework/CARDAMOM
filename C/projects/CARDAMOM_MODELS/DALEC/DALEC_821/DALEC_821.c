@@ -158,7 +158,7 @@ var_list[6]=0.6;//1.0//208.868; /* k */
 
 met_list[0]=DATA.MET[m+1]; /*mintemp, deg C*/
 met_list[1]=DATA.MET[m+2]; /*maxtemp, deg C*/
-met_list[2]=DATA.MET[m+4]/10.; /*co2, needs to be in Pa*/
+met_list[2]=DATA.MET[m+4]; /*co2 in ppm*/
 met_list[3]=DATA.MET[m+3]; /*rad (swdown)*/
 met_list[4]=DATA.MET[m+7]; /*VPD*/
 
@@ -168,17 +168,18 @@ double psfc=1013.25; /*hPa*/
 double *BALDOCCHI_ANALYTICAL_OUTPUT = BALDOCCHI_ANALYTICAL(met_list,var_list);
 
 /*GPP*/
+/* GPP * soil water limitation */
 FLUXES[f+0]=BALDOCCHI_ANALYTICAL_OUTPUT[0]*fmin(POOLS[p+6]/pars[23],1);
 /*Evapotranspiration (VPD = DATA.MET[m+7])*/
-//FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/BALDOCCHI_ANALYTICAL(met_list,var_list)[1];
-FLUXES[f+28]=DATA.MET[m+7]*BALDOCCHI_ANALYTICAL_OUTPUT[1]/psfc*fmin(POOLS[p+6]/pars[23],1);
+/* ET * soil water limitation */
+FLUXES[f+28]=BALDOCCHI_ANALYTICAL_OUTPUT[1]*fmin(POOLS[p+6]/pars[23],1);
 
 /*calculate water use efficiency*/
 double WUE=FLUXES[f+0]/FLUXES[f+28];
 
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
-FLUXES[f+1]=exp(pars[9]*0.5*(DATA.MET[m+2]+DATA.MET[m+1]-DATA.meantemp))*((DATA.MET[m+8]/DATA.meanprec-1)*pars[30]+1);
+FLUXES[f+1]=exp(pars[9]*0.5*(DATA.MET[m+2]+DATA.MET[m+1])-DATA.meantemp)*((DATA.MET[m+8]/DATA.meanprec-1)*pars[30]+1);
 /*respiration auto*/
 FLUXES[f+2]=pars[1]*FLUXES[f+0];
 /*leaf production*/

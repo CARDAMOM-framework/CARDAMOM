@@ -49,10 +49,13 @@ double ANALYTICALSOLVER_BALDOCCHI(double const *met_list, double const *var_list
     double alpha, beta, sgamma, theta1;
     double pj, qj, rj, pc, qc, rc, Assim_j, Assim_c, GPP;
     double pi=3.1415927;
+	double diffusion_scale;
+    
+	diffusion_scale = (double)1.0; /*changed from 1.647*/
 
     /*compute combined variables*/
-    alpha=(double)1.647 + var_list[1]/var_list[2] - var_list[0]*RH;
-    beta=(double)met_list[2]*(var_list[2]*(var_list[0]*RH-1.647) - 2.*var_list[1]);
+    alpha=(double)diffusion_scale + var_list[1]/var_list[2] - var_list[0]*RH;
+    beta=(double)met_list[2]*(var_list[2]*(var_list[0]*RH-diffusion_scale) - 2.*var_list[1]);
     sgamma=(double)pow(met_list[2],2.)*var_list[1]*var_list[2];
     theta1=(double)var_list[2]*var_list[0]*RH - var_list[1];
 
