@@ -15,9 +15,10 @@ DALECmodel->nofluxes=32;
 //declaring observation operator structure, and filling with DALEC configurations
 OBSOPE OBSOPE;
 DALECmodel->OBSOPE=OBSOPE;
+//Initialize all SUPPORT OBS values (default value = false).
 INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 
-
+//Set SUPPORT_OBS values to true if model supports observation operation.
 OBSOPE.SUPPORT_GPP_OBS=true;
 OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
@@ -27,30 +28,33 @@ OBSOPE.SUPPORT_SOM_OBS=true;
 OBSOPE.SUPPORT_GRACE_EWT_OBS=true;
 OBSOPE.SUPPORT_NBE_FIRE=true;
 
+//Provide values required by each OBS operator
+//Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
+//Note: no values required for any SUPPORT_*_OBS quantity set to false.
+
+//GPP-specific variables
 OBSOPE.gpp_flux_index=0;
+//LAI-specific variables
 OBSOPE.foliar_pool_index=1;
-OBSOPE.lcma_index=16;
+//
+OBSOPE.lcma_pars_index=16;
+//ET variabiles
 OBSOPE.et_flux_index=28;
-
-static int nbefluxes[5]={0,2,12,13,16},OBSOPE.nbe_flux_indices=&nbefluxes;
-static int nbefluxsigns[5]={-1,1,1,1,1},OBSOPE.nbe_flux_signs=&nbefluxsigns;
+//NBE-specific variables
+static int nbe_flux_indices[5]={0,2,12,13,16},OBSOPE.nbe_flux_indices=&nbefluxes;
+static int nbe_flux_signs[5]={-1,1,1,1,1},OBSOPE.nbe_flux_signs=&nbefluxsigns;
 OBSOPE.n_nbe_fluxes=5;
-
+//ABGB-specific variables
 static int abgb_pool_indices[4]={0,1,2,3}, OBSOPE.abgb_pool_indices=&abgb_pool_indices;
 OBSOPE.n_abgb_pools=4;
-
-static int som_pool_indices[2]={4,5}, OBSOPE.abgb_pool_indices=&abgb_pool_indices;
-OBSOPE.n_abgb_pools=2;
-
-
-int * som_pool_indices;
-int n_som_pools;
-
-bool SUPPORT_GRACE_EWT_OBS;
-int * h2o_pool_indices;
-int n_h2o_pools;
-bool SUPPORT_NBE_FIRE;
-int fire_index;
+//SOM-specific variables
+static int som_pool_indices[2]={4,5}, OBSOPE.som_pool_indices=&som_pool_indices;
+OBSOPE.n_som_pools=2;
+//H2O-specific variables
+static int h2o_pool_indices[2]={6,7}, OBSOPE.h2o_pool_indices=&h2o_pool_indices;
+OBSOPE.n_h2o_pools=2;
+//Fire-specific variables
+OBSOPE.fire_index=16;
 
 
 return 0;}

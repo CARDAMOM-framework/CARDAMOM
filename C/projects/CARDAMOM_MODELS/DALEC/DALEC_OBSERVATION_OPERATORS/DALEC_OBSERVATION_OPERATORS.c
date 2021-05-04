@@ -25,7 +25,7 @@ bool SUPPORT_GRACE_EWT_OBS;
 int * h2o_pool_indices;
 int n_h2o_pools;
 bool SUPPORT_NBE_FIRE;
-int fire_index;
+int fire_flux_index;
 }OBSOPE;
 
 
@@ -59,9 +59,9 @@ return 0;}
 
 
 //Mean fire co2 flux
-int DALEC_OBSOPE_FIRE(DATA D, int fire_flux){
+int DALEC_OBSOPE_FIRE(DATA D, int fire_flux_index){
 
-if (D.otherpriors[2]>-9999){int n;D.M_MFIRE[0]=0;for (n=0;n<D.nodays;n++){D.M_MFIRE[0]+=D.M_FLUXES[n*D.nofluxes+fire_flux];};D.M_MFIRE[0]=D.M_MFIRE[0]/(double)D.nodays;}
+if (D.otherpriors[2]>-9999){int n;D.M_MFIRE[0]=0;for (n=0;n<D.nodays;n++){D.M_MFIRE[0]+=D.M_FLUXES[n*D.nofluxes+fire_flux_index];};D.M_MFIRE[0]=D.M_MFIRE[0]/(double)D.nodays;}
 
 
 return 0;}
@@ -92,9 +92,9 @@ return 0;}
 
 
 //LAI observation operator
-int DALEC_OBSOPE_LAI(DATA D, int folc_pool,double lcma){
+int DALEC_OBSOPE_LAI(DATA D, int folc_pool,double lcma_pars_index){
 
-if (D.otherpriors[4]>0 | D.nlai>0){int n;for (n=0;n<D.nodays;n++){D.M_LAI[n]=(D.M_POOLS[D.nopools*n+folc_pool]+D.M_POOLS[D.nopools*(n+1)+folc_pool])*0.5/lcma;}};
+if (D.otherpriors[4]>0 | D.nlai>0){int n;for (n=0;n<D.nodays;n++){D.M_LAI[n]=(D.M_POOLS[D.nopools*n+folc_pool]+D.M_POOLS[D.nopools*(n+1)+folc_pool])*0.5/D.M_PARS[lcma_pars_index];}};
 
 
 return 0;}
