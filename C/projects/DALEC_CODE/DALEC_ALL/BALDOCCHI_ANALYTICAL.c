@@ -131,13 +131,13 @@ double* BALDOCCHI_ANALYTICAL(double const *met_list, double const *var_list)
     /***************************************/
     /* Screen for bad behavior of GPP, negative values or negative sensitivity to CO2 slope*/
 	
-	if ((GPP_leaf_now > 0) & (dGPPdCa > 0.)){
+	if ((GPP_leaf_now > 0.001) & (dGPPdCa > 0.)){
 	GPP = GPP_leaf_now;
 	/*printf("Root1: %f\n",GPP);*/
 	} else {
 	
 	/* Do not allow negative values of GPP */
-	GPP = 0;
+	GPP = (double)0.001;
 	
 	}
 		
