@@ -235,6 +235,15 @@ Make sure to pass string or cell for cbffilename.\
 
 <img width="830" alt="image" src="https://user-images.githubusercontent.com/23563444/117489093-086c5b80-af22-11eb-8006-693c716d142f.png">
 
+*In CARDAMOM C code* 
+See conventions above
+
+*For Matlab users*
+CARDAMOM_RUN_MODEL.m throws out first one, but only because it’s repeat of initial conditions (which are contained in parameter vector).
+
+
+
+
 
 
 ## The CBF File (CARDAMOM binary input file)<a name="cardamom-cbffile"/>
