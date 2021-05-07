@@ -19,6 +19,7 @@
   * Step 1: CARDAMOM_MDF
   * Step 2: CARDAMOM_RUN_MODEL
   * Saving output at runtime (Matlab)
+- [CARDAMOM state and flux conventions]
 
 - [The CBF File (CARDAMOM binary input file)](#cardamom-cbffile)
   * CBF Fields
