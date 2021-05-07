@@ -33,26 +33,25 @@ OBSOPE.SUPPORT_NBE_FIRE=true;
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
 
 //GPP-specific variables
-OBSOPE.gpp_flux_index=0;
+OBSOPE.GPP_flux=0;
 //LAI-specific variables
-OBSOPE.foliar_pool_index=1;
-//
-OBSOPE.lcma_pars_index=16;
+OBSOPE.LAI_foliar_pool=1;
+OBSOPE.LAI_lcma_pars=16;
 //ET variabiles
-OBSOPE.et_flux_index=28;
+OBSOPE.ET_flux=28;
 //NBE-specific variables
-static int nbe_flux_indices[5]={0,2,12,13,16},OBSOPE.nbe_flux_indices=&nbefluxes;
-static int nbe_flux_signs[5]={-1,1,1,1,1},OBSOPE.nbe_flux_signs=&nbefluxsigns;
-OBSOPE.n_nbe_fluxes=5;
+static int NBE_fluxes[5]={0,2,12,13,16},OBSOPE.NBE_fluxes=&NBE_fluxes;
+static double NBE_flux_signs[5]={-1.,1.,1.,1.,1.},OBSOPE.NBE_flux_signs=&NBE_flux_signs;
+OBSOPE.NBE_n_fluxes=5;
 //ABGB-specific variables
-static int abgb_pool_indices[4]={0,1,2,3}, OBSOPE.abgb_pool_indices=&abgb_pool_indices;
-OBSOPE.n_abgb_pools=4;
+static int ABGB_pools[4]={0,1,2,3}, OBSOPE.abgb_pool_indices=&abgb_pool_indices;
+OBSOPE.ABGB_n_pools=4;
 //SOM-specific variables
-static int som_pool_indices[2]={4,5}, OBSOPE.som_pool_indices=&som_pool_indices;
-OBSOPE.n_som_pools=2;
+static int SOM_pools[2]={4,5}, OBSOPE.som_pool_indices=&som_pool_indices;
+OBSOPE.SOM_n_pools=2;
 //H2O-specific variables
-static int h2o_pool_indices[2]={6,7}, OBSOPE.h2o_pool_indices=&h2o_pool_indices;
-OBSOPE.n_h2o_pools=2;
+static int GRACE_EWT_h2o_pools[2]={6,7}, OBSOPE.h2o_pool_indices=&h2o_pool_indices;
+OBSOPE.GRACE_EWT_n_h2o_pools=2;
 //Fire-specific variables
 OBSOPE.fire_index=16;
 
