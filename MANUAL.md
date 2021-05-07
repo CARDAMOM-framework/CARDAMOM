@@ -226,6 +226,17 @@ Make sure to pass string or cell for cbffilename.\
 
 
 
+## CARDAMOM state and flux conventions 
+
+- Initial conditions correspond to pools (states) at first timestep t = 0
+- Model Meteorological forcing at timestep t is centered between pools (states) t and t+1
+- Model fluxes at timestep t also centered between states t and t +1 
+
+
+<img width="830" alt="image" src="https://user-images.githubusercontent.com/23563444/117489093-086c5b80-af22-11eb-8006-693c716d142f.png">
+
+
+
 ## The CBF File (CARDAMOM binary input file)<a name="cardamom-cbffile"/>
 
 *Note: Binary cbf will soon transition to a netcdf format*\\
