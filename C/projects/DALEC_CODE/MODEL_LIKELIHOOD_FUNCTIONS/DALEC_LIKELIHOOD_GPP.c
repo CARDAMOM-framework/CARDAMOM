@@ -47,7 +47,6 @@ P=P-0.5*tot_exp;}
 
 
 
-double mgpp;
 /*Constrain mean GPP*/
 if (D.otherpriors[5]>-9999){mgpp=0;
 /*Step 1. Sum gpp*/

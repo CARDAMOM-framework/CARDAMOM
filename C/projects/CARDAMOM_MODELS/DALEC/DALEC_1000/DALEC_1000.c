@@ -26,7 +26,7 @@ OBSOPE.SUPPORT_NBE_OBS=true;
 OBSOPE.SUPPORT_ABGB_OBS=true;
 OBSOPE.SUPPORT_SOM_OBS=true;
 OBSOPE.SUPPORT_GRACE_EWT_OBS=true;
-OBSOPE.SUPPORT_NBE_FIRE=true;
+OBSOPE.SUPPORT_FIR_OBS=true;
 
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
@@ -36,24 +36,31 @@ OBSOPE.SUPPORT_NBE_FIRE=true;
 OBSOPE.GPP_flux=0;
 //LAI-specific variables
 OBSOPE.LAI_foliar_pool=1;
-OBSOPE.LAI_lcma_pars=16;
+OBSOPE.LAI_LCMA=16;
 //ET variabiles
 OBSOPE.ET_flux=28;
 //NBE-specific variables
-static int NBE_fluxes[5]={0,2,12,13,16},OBSOPE.NBE_fluxes=&NBE_fluxes;
-static double NBE_flux_signs[5]={-1.,1.,1.,1.,1.},OBSOPE.NBE_flux_signs=&NBE_flux_signs;
+static int NBE_fluxes[]={0,2,12,13,16};
+OBSOPE.NBE_fluxes=NBE_fluxes;
+static double NBE_flux_signs[]={-1.,1.,1.,1.,1.};
+OBSOPE.NBE_flux_signs=NBE_flux_signs;
 OBSOPE.NBE_n_fluxes=5;
+
 //ABGB-specific variables
-static int ABGB_pools[4]={0,1,2,3}, OBSOPE.abgb_pool_indices=&abgb_pool_indices;
+static int ABGB_pools[]={0,1,2,3}; 
+OBSOPE.ABGB_pools=ABGB_pools;
 OBSOPE.ABGB_n_pools=4;
+
 //SOM-specific variables
-static int SOM_pools[2]={4,5}, OBSOPE.som_pool_indices=&som_pool_indices;
+static int SOM_pools[]={4,5}; 
+OBSOPE.SOM_pools=SOM_pools;
 OBSOPE.SOM_n_pools=2;
 //H2O-specific variables
-static int GRACE_EWT_h2o_pools[2]={6,7}, OBSOPE.h2o_pool_indices=&h2o_pool_indices;
+static int GRACE_EWT_h2o_pools[]={6,7};
+OBSOPE.GRACE_EWT_h2o_pools=GRACE_EWT_h2o_pools;
 OBSOPE.GRACE_EWT_n_h2o_pools=2;
 //Fire-specific variables
-OBSOPE.fire_index=16;
+OBSOPE.FIR_flux=16;
 
 
 return 0;}
@@ -318,40 +325,6 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 
 
 }
-
-//External observation operator
-
-//M_NBE (CURRENTLY NEE)
-int nbefluxes[5]={0,2,12,13,16};
-int nbefluxsigns[5]={-1,1,1,1,1};
-
-DALEC_OBSOPE_NBE(DATA,nbefluxes,nbefluxsigns,5);
-
-//GPP
-DALEC_OBSOPE_GPP(DATA,0);
-
-//ET
-DALEC_OBSOPE_ET(DATA,28);
-
-//DATA, leaf area pool, LCMA
-DALEC_OBSOPE_LAI(DATA,1,pars[16]);
-
-//GRACE EWT
-int h2o_pools[2]={6,7};
-//DATA, array of pool indices, number of pool indices
-DALEC_OBSOPE_GRACE_EWT(DATA,h2o_pools,2);
-
-//Total abgb (initial and time resolved)
-int abgb_pools[4]={0,1,2,3};
-DALEC_OBSOPE_ABGB(DATA,abgb_pools,4);
-
-//Total soil organic C
-int som_pools[2]={4,5};
-DALEC_OBSOPE_SOM(DATA,som_pools,2);
-
-/*M_MFIRE: Mean fire emissions*/
-DALEC_OBSOPE_FIRE(DATA,16);
-
 
 
 return 0;
