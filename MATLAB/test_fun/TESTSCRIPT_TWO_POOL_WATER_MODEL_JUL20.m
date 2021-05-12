@@ -230,8 +230,6 @@ PARS_OPT.porosity.name={'Porosity L1','Porosity L2'};
 
 
 
-
-
 PARS_OPT.psifield.init=-0.05;%MPA (field capacity)
 PARS_OPT.psifield.min=-0.11;%MPA (field capacity)
 PARS_OPT.psifield.max=-0.01;%MPA (field capacity)
