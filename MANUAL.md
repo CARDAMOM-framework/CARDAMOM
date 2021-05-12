@@ -42,6 +42,8 @@
   * [Frequently asked questions (FAQs)]
   * [Frequently encountered issues & solutions (FEIs…?)]
 
+- [Troubleshooting CARDAMOM runs: "my CARDAMOM run doesn't work”](#troubleshoot)
+
 - [Appendix](#appendix)
   * [CARDAMOM model library](#cardamom-model-library)
   * [Standard Input, Outputs, Parameters](#cardamom-input-output-parameters)
@@ -558,6 +560,25 @@ If CARDAMOM_RUN_MODEL gives you\
 ERROR! Execution of CARDAMOM_RUN_MODEL.exe failed, entering keyboard mode
 ```
 Then it is possible that the cbf and/or cbr file names have too many characters (current limit is 1000 character maximum, submit issue on github if you need it longer for some reason)
+
+
+## Troubleshooting CARDAMOM runs: "my CARDAMOM run doesn't work" <a name="troubleshoot"/>
+
+This could include one of the following commonly encountered issues:
+- Nan or inf state, pool or cost function values
+- A solution that is "stuck" (i.e. no change in parameter samples from first to last).
+
+
+Some common questions & solutions:
+
+###Does .cbf file have negative values for positive-only quantities?
+Example: Check GPP, ET, LAI and biomass observations (which are physically only represented as positive quantities), and either:
++ remove -ve values
++ Assign a "threshold value" (if variable cost function supports this)
++ Opt for cost function coniguration which tolerates negative values (not recommended unless necessary).
+
+
+
 
 
 ## Appendix <a name="appendix"/>
