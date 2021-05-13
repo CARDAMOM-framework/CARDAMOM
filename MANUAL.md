@@ -19,6 +19,7 @@
   * Step 1: CARDAMOM_MDF
   * Step 2: CARDAMOM_RUN_MODEL
   * Saving output at runtime (Matlab)
+- [CARDAMOM state and flux conventions]
 
 - [The CBF File (CARDAMOM binary input file)](#cardamom-cbffile)
   * CBF Fields
@@ -41,6 +42,8 @@
   * [Frequently asked questions (FAQs)]
   * [Frequently encountered issues & solutions (FEIs…?)]
 
+- [Troubleshooting CARDAMOM runs: "my CARDAMOM run doesn't work”](#troubleshoot)
+
 - [Appendix](#appendix)
   * [CARDAMOM model library](#cardamom-model-library)
   * [Standard Input, Outputs, Parameters](#cardamom-input-output-parameters)
@@ -57,14 +60,17 @@
 #### Get code from Github
 + Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework
 + Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c
-+ Click on green “Code” button, and either (a) git clone with ssh (recommended),
++ Click on green “Code” button, and select git clone with ssh
 
 Example
-Step 1. type "cd /Users/[yourusername]/", in your mac terminal, for example, or alternatively go to the preffered directory for storing CARDAMOM code.
+
+Step 1. type "cd /Users/[yourusername]/", in your mac terminal, for example (or alternatively go to the preffered directory for storing CARDAMOM code).
+
 Step 2. type "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c" mac terminal
 
-+   or (b) use alternative method (e.g. download zip).
-* Git clone repository OR unzip “CARDAMOM-master.zip” file (NOTE: make link to CARDAMOM GITHUB.md, Shuang's user guide).
+ Using alternative method (e.g. download zip) is **not recommended** (!) unless you only intend to download code once, and do not anticipate collaborating with team.
+ 
+(NOTE: make link to CARDAMOM GITHUB.md, Shuang's user guide).
 
 
 *SOON TO BE REQUIRED:* 
@@ -220,6 +226,26 @@ This function stores output by default\
 ```
 Set OPT.STORE=1 (see “CARDAMOM_RUN_MODEL.m”) for instruction\
 Make sure to pass string or cell for cbffilename.\
+
+
+
+## CARDAMOM state and flux conventions 
+
+- Initial conditions correspond to pools (states) at first timestep t = 0
+- Model Meteorological forcing at timestep t is centered between pools (states) t and t+1
+- Model fluxes at timestep t also centered between states t and t +1 
+
+
+<img width="830" alt="image" src="https://user-images.githubusercontent.com/23563444/117489093-086c5b80-af22-11eb-8006-693c716d142f.png">
+
+*In CARDAMOM C code* 
+See conventions above
+
+*For Matlab users*
+CARDAMOM_RUN_MODEL.m throws out first one, but only because it’s repeat of initial conditions (which are contained in parameter vector).
+
+
+
 
 
 
@@ -534,6 +560,25 @@ If CARDAMOM_RUN_MODEL gives you\
 ERROR! Execution of CARDAMOM_RUN_MODEL.exe failed, entering keyboard mode
 ```
 Then it is possible that the cbf and/or cbr file names have too many characters (current limit is 1000 character maximum, submit issue on github if you need it longer for some reason)
+
+
+## Troubleshooting CARDAMOM runs: "my CARDAMOM run doesn't work" <a name="troubleshoot"/>
+
+This could include one of the following commonly encountered issues:
+- Nan or inf state, pool or cost function values
+- A solution that is "stuck" (i.e. no change in parameter samples from first to last).
+
+
+Some common questions & solutions:
+
+###Does .cbf file have negative values for positive-only quantities?
+Example: Check GPP, ET, LAI and biomass observations (which are physically only represented as positive quantities), and either:
++ remove -ve values
++ Assign a "threshold value" (if variable cost function supports this)
++ Opt for cost function coniguration which tolerates negative values (not recommended unless necessary).
+
+
+
 
 
 ## Appendix <a name="appendix"/>

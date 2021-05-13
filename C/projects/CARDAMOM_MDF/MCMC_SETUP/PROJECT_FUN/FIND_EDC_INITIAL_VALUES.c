@@ -12,10 +12,12 @@ int FIND_EDC_INITIAL_VALUES(DATA CARDADATA,PARAMETER_INFO *PI, MCMC_OPTIONS *MCO
 /*First: choosing the correct EDC MODEL LIKELIHOOD FUNCTION (EMLF)*/
 
 double (*EMLF)(DATA, double *);
+double (*MLF)(DATA, double *);
 
 if (CARDADATA.assemble_model==1){
 EMLF=EDC_DALEC_MLF_beta;}
-else {EMLF=EDC_DALEC_MLF;}
+else {EMLF=EDC_DALEC_MLF;
+MLF=DALEC_MLF;}
 
 /*This MCMC is designed to find the best-fit DALEC parameters ONLY*/
 
@@ -128,9 +130,10 @@ while (PEDC!=0){
 
 	PEDCC=0;
 	for (nn=0;nn<MCOPT.nchains;nn++){
-	PEDC=EMLF(CARDADATA, PI->parini + nn*PI->npars);
-	printf("PEDC for chain %i = %2.1f\n",nn,PEDC);
-	if (PEDC>-5.0){PEDCC=PEDCC+1;}}
+	PEDC=EMLF(CARDADATA, PI->parini + nn*PI->npars);double P;
+	P=MLF(CARDADATA, PI->parini + nn*PI->npars);
+	printf("PEDC for chain %i = %2.1f (%2.1f)\n",nn,PEDC,P);
+	if (PEDC==0){PEDCC=PEDCC+1;}}
 
 	
 	printf("*******\n");
@@ -142,8 +145,9 @@ while (PEDC!=0){
 	
 	count=count+1;
 	
-	if (MCOPT.mcmcid==2 && PEDCC>MCOPT.nchains*0.1){PEDC=0;}
-	if (MCOPT.mcmcid==3 && PEDCC>MCOPT.nchains*0.1){PEDC=0;}
+	if (MCOPT.mcmcid==2 && PEDCC>MCOPT.nchains){PEDC=0;}
+	//Guarantee that at least half of chains have non-zero starting probabilities
+	if (MCOPT.mcmcid==3 && PEDCC>MCOPT.nchains/2){PEDC=0;}else{PEDC=-1;}
 	if (MCOPT.mcmcid==2 || MCOPT.mcmcid==3){MCOPT.randparini=0;}	
 	/*Hard coding*/
 	
