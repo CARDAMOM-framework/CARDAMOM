@@ -3,7 +3,7 @@
 
 # CARDAMOM community collaborative manual
 
-***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, and others***  
+***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, Renato Braghiere and others***  
 [If you’re making any edits, add your name here!]
 
 
@@ -11,6 +11,7 @@
 - [Getting Started With CARDAMOM](#-getting-started)
   * [“Installing” CARDAMOM](#-installing--cardamom)
   * [Get code from Github](#get-code-from-github)
+  * [CARDAMOM Github User Must Read](#cardamom-git-must-read)
   * [CARDAMOM Matlab Demo and Setup Test](#cardamom-with-matlab)
   * [CARDAMOM Python Demo and Setup](#cardamom-with-python)
   
@@ -18,6 +19,7 @@
   * Step 1: CARDAMOM_MDF
   * Step 2: CARDAMOM_RUN_MODEL
   * Saving output at runtime (Matlab)
+- [CARDAMOM state and flux conventions]
 
 - [The CBF File (CARDAMOM binary input file)](#cardamom-cbffile)
   * CBF Fields
@@ -40,6 +42,8 @@
   * [Frequently asked questions (FAQs)]
   * [Frequently encountered issues & solutions (FEIs…?)]
 
+- [Troubleshooting CARDAMOM runs: "my CARDAMOM run doesn't work”](#troubleshoot)
+
 - [Appendix](#appendix)
   * [CARDAMOM model library](#cardamom-model-library)
   * [Standard Input, Outputs, Parameters](#cardamom-input-output-parameters)
@@ -56,8 +60,17 @@
 #### Get code from Github
 + Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework
 + Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c
-+ Click on green “Code” button, and either (a) git clone with ssh (recommended), or (b) use alternative method (e.g. download zip).
-* Git clone repository OR unzip “CARDAMOM-master.zip” file.
++ Click on green “Code” button, and select git clone with ssh
+
+Example
+
+Step 1. type "cd /Users/[yourusername]/", in your mac terminal, for example (or alternatively go to the preffered directory for storing CARDAMOM code).
+
+Step 2. type "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c" mac terminal
+
+ Using alternative method (e.g. download zip) is **not recommended** (!) unless you only intend to download code once, and do not anticipate collaborating with team.
+ 
+(NOTE: make link to CARDAMOM GITHUB.md, Shuang's user guide).
 
 
 *SOON TO BE REQUIRED:* 
@@ -69,7 +82,9 @@
 
 + Demos below will compile CARDAMOM and run short assimilation runs and forward runs for testing. There are options in both Python and Matlab. Check Appendix for additional tools written in Matlab and Python.
 
+### CARDAMOM Github User Must Read <a name="cardamom-git-must-read">
 
+After you clone the CARDAMOM repository to your local, please take a minute to go through the first section in  [CARDAMOM_GIT_MUST_READ.md](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/CARDAMOM_GIT_MUST_READ.md). We recommand all users to follow the instructions in order to effectively maintain the CARDAMOM github environment. 
 
 ### CARDAMOM Matlab Demo and Setup Test <a name="cardamom-with-matlab"/>
 
@@ -214,6 +229,26 @@ Make sure to pass string or cell for cbffilename.\
 
 
 
+## CARDAMOM state and flux conventions 
+
+- Initial conditions correspond to pools (states) at first timestep t = 0
+- Model Meteorological forcing at timestep t is centered between pools (states) t and t+1
+- Model fluxes at timestep t also centered between states t and t +1 
+
+
+<img width="830" alt="image" src="https://user-images.githubusercontent.com/23563444/117489093-086c5b80-af22-11eb-8006-693c716d142f.png">
+
+*In CARDAMOM C code* 
+See conventions above
+
+*For Matlab users*
+CARDAMOM_RUN_MODEL.m throws out first one, but only because it’s repeat of initial conditions (which are contained in parameter vector).
+
+
+
+
+
+
 ## The CBF File (CARDAMOM binary input file)<a name="cardamom-cbffile"/>
 
 *Note: Binary cbf will soon transition to a netcdf format*\\
@@ -265,6 +300,12 @@ Precip. [mm/day]\
 
 5. Add observations from new locations. 
     *Use -9999 for any missing observations in CBF.OBS.* fields.  
+
+##### Warning! Regularly encountered issues
+
+* use cardamom_vvuq_cbf_summary(CBF), and check all observations included in CBF file. Often some get left over from previous runs (oops!). In particular, check "CBF.OTHER_OBS" and CBF.PARPRIORS to make sure nothing "unexpected" is there (this also shows up when using cardamom_vvuq_cbf_summary(CBF).
+
+
 
 
 #### Make a new CBF file (Python)
@@ -527,6 +568,28 @@ ERROR! Execution of CARDAMOM_RUN_MODEL.exe failed, entering keyboard mode
 Then it is possible that the cbf and/or cbr file names have too many characters (current limit is 1000 character maximum, submit issue on github if you need it longer for some reason)
 
 
+## Troubleshooting CARDAMOM runs: "my CARDAMOM run doesn't work" <a name="troubleshoot"/>
+
+This could include one of the following commonly encountered issues:
+- Nan or inf state, pool or cost function values
+- A solution that is "stuck" (i.e. no change in parameter samples from first to last).
+- CBR.PROB is -inf. Solutions include:
++ check CBF.OTHER_OBS.Mfire for non -9999 data. If that's the case, is burned area zero at all timesteps? This would cause issue (zero fire in model, and non-zero fire in data).
+
+
+
+Some common questions & solutions:
+
+###Does .cbf file have negative values for positive-only quantities?
+Example: Check GPP, ET, LAI and biomass observations (which are physically only represented as positive quantities), and either:
++ remove -ve values
++ Assign a "threshold value" (if variable cost function supports this)
++ Opt for cost function coniguration which tolerates negative values (not recommended unless necessary).
+
+
+
+
+
 ## Appendix <a name="appendix"/>
 
 ### CARDAMOM model library <a name="cardamom-model-library"/>
@@ -535,6 +598,7 @@ List and brief description of currently supported models\
 
 Can use the COMPLEX effort to document all the models here, including some examples of the figures.\
 
+#### TABLE A1. CARDAMOM model IDs.
 
 | Group                            | Model ID | Parent ID(s) if relevant                   | Description           | Details (POC)                   | Status      |
 |----------------------------------|----------|--------------------------------------------|-----------------------|---------------------------------|-------------|
@@ -569,10 +633,12 @@ Can use the COMPLEX effort to document all the models here, including some examp
 | 1008                             | 1002     | 1002 with surface runoff proportional to P | Paul Levine           |                                 |             |
 | 1009                             | 1005     | 1005 with surface runoff proportional to P | Paul Levine           |                                 |             |
 | 1010                             |          | CH4 module                                 | Ma                    | In prep.                        |             |
+| 1011-1015                        |          | CH4 module                                 | Ma                    | In prep.                        |             |
 | 1020                             |          |                                            | Norton                | In prep.                        |             |
 | 1021                             |          |                                            | Norton                | In prep.                        |             |
 | 1030--1039                       | 1000     | VPD-GPP sensitivity                        | Paul Levine           |                                 |             |
-| 1040                             | 1005     | Nutrient model                             | Anthony Bloom         | In prep.                        |             |
+| 1040                             | 1005     | Nutrient model                             | Anthony Bloom         | In prep.                                   
+| 1050                             | 1000     | Nitrogen model                             | Renato Braghiere      | In prep.                              
 |                                  |          |                                            |                       |                                 |             |
 | DALEC + FF                       | 1200     |                                            |                       |                                 | Exploratory |
 
