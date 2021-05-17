@@ -104,15 +104,15 @@ Notes:
 2. Set CARDAMOM environmental variables in matlab
     * To do this:
         - Create or edit existing matlab startup.m file: e.g. type “edit startup.m” in matlab command window to edit new or existing startup file.
-        - Copy lines from CARDAMOM/MATLAB/startup_template.m into startup.m file, and adapt as instructed in startup_template.m comments.
-        - Save startup.m
-        - Make a directory called “DUMPFILES” by typing “mat” in matlab command window
+        - Copy lines from CARDAMOM_2.1.6c/MATLAB/startup_template.m into startup.m file, and adapt as instructed in startup_template.m comments.
+        - Save changes to startup.m
+        - Make a directory called “DUMPFILES” by typing “mkdir DUMPFILES” in matlab command window OR type "mkdir DUMFILES" in terminal console (in which case, ensure you are in the desired working directory where startup.m is).
     * Tips: 
         - Type “pwd” right after starting matlab to find out current working directory
         - paths in “startup.m” should either be absolute paths, or relative to current working directory
         - to avoid github issues, either:
             + the current working directory needs to be outside the “CARDAMOM” folder, or equivalent github cloned folder (recommended)
-            + (b) make a “.gitignore” file and ensure github ignores all user-made files within the “CARDAMOM” folder. 
+            + (b) make a “.gitignore” file and ensure github ignores all user-made files within the “CARDAMOM_2.1.6c” folder. 
 3. Quit & restart matlab 
 4. Type “which startup” in matlab command window 
     * check matlab is pointing at correct startup.m file
