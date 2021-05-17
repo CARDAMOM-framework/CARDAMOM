@@ -33,6 +33,8 @@ hist(CBR.PARS(:,17));ylabel('Frequency');xlabel('Leaf C Mass per area [gC/m2]');
 
 
 
+disp('CARDAMOM demo has completed')
+
 
 
 
