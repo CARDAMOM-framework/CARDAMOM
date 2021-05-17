@@ -301,6 +301,12 @@ Precip. [mm/day]\
 5. Add observations from new locations. 
     *Use -9999 for any missing observations in CBF.OBS.* fields.  
 
+##### Warning! Regularly encountered issues
+
+* use cardamom_vvuq_cbf_summary(CBF), and check all observations included in CBF file. Often some get left over from previous runs (oops!). In particular, check "CBF.OTHER_OBS" and CBF.PARPRIORS to make sure nothing "unexpected" is there (this also shows up when using cardamom_vvuq_cbf_summary(CBF).
+
+
+
 
 #### Make a new CBF file (Python)
 1. See Tutorial 2 for structure, replace fields in dictionary with new meteorology and observations.
@@ -567,6 +573,9 @@ Then it is possible that the cbf and/or cbr file names have too many characters 
 This could include one of the following commonly encountered issues:
 - Nan or inf state, pool or cost function values
 - A solution that is "stuck" (i.e. no change in parameter samples from first to last).
+- CBR.PROB is -inf. Solutions include:
++ check CBF.OTHER_OBS.Mfire for non -9999 data. If that's the case, is burned area zero at all timesteps? This would cause issue (zero fire in model, and non-zero fire in data).
+
 
 
 Some common questions & solutions:
