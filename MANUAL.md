@@ -69,7 +69,7 @@ Step 1. type "cd /Users/[yourusername]/", in your mac terminal, for example (or 
 Step 2. type "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c" mac terminal.
 - See Git Clone FAQ below for troubleshooting
 
- Using alternative method (e.g. download zip) is **not recommended** (!) unless you only intend to download code once, and do not anticipate collaborating with team.
+**Do not use .zip approach** (!) unless you only intend to download code once, and do not anticipate collaborating with team.
  
  
  ### git clone FAQ
