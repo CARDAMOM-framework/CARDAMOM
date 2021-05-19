@@ -15,7 +15,7 @@ disp('**********')
 disp('**********')
 disp('**********')
 disp('**********')
-disp('CARDAMOM_RUN_MDF successfully executed')
+disp('CARDAMOM_RUN_MODEL successfully executed')
 disp('**********')
 disp('**********')
 disp('**********')
@@ -25,3 +25,44 @@ disp('**********')
 cbrtest='cardamom_integration_test.cbr';
 delete('cardamom_integration_test.cbrSTART');
 CBRtest=CARDAMOM_RUN_MDF(CBF,[],cbrtest);
+
+
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('CARDAMOM_RUN_MDF with MHMCMC successfully executed')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+
+%ADEMCMC
+
+%Step 2. Set up and run DEMCMC
+MCO.niterations=10000;
+MCO.printrate=100;
+MCO.samplerate=MCO.niterations/2000*100;
+MCO.mcmcid=3;
+CBF.EDC=0;
+CBR=CARDAMOM_RUN_MDF(CBF,MCO);toc
+
+
+
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('CARDAMOM_RUN_MDF with ADEMCMC (with EDC=0 successfully executed')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+
+
+
+
