@@ -4,7 +4,6 @@
 #include <math.h>
 #include "../../../math_fun/std.c"
 #include "NORMPARS.c"
-#include "ADAPT_DEMCMC_STEP_SIZE.c"
 #include "STEP_DEMCMC.c"
 #include "WRITE_DEMCMC_RESULTS.c"
 
