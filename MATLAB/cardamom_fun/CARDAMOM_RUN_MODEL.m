@@ -232,7 +232,14 @@ disp('Step 3:ALL CARDAMOM_RUN_MODEL.c outputs successfully loaded!');
 %NEE = Resp - GPP. 
 %This flux CORRECTLY does not include fires.
 %That would be NBE (Net Biospheric Exchange).
-CBR.NEE=sum(CBR.FLUXES(:,:,[3,13,14]),3)-CBR.FLUXES(:,:,1);
+%Shuang made changes here, modified Rh scheme (1010 and 1011) use different
+%fluxes,consistant with DALEC source code, April 2021
+if OPT.MODEL.ID==1010 || OPT.MODEL.ID==1011 
+    CBR.NEE=sum(CBR.FLUXES(:,:,[3,37]),3)-CBR.FLUXES(:,:,1);
+else
+    CBR.NEE=sum(CBR.FLUXES(:,:,[3,13,14]),3)-CBR.FLUXES(:,:,1);
+end
+
 if OPT.MODEL.ID>1;CBR.NBE=sum(CBR.FLUXES(:,:,[3,13,14]),3)-CBR.FLUXES(:,:,1)+CBR.FLUXES(:,:,17);else CBR.NBE=CBR.NEE;end
 %Fossil fuel option 
 if OPT.MODEL.ID==1200; CBR.FF= CBR.FLUXES(:,:,31);end

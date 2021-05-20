@@ -1,9 +1,0 @@
-to compile mcmc test function
-gcc MCMC_TEMPLATE.c -lm
-
-
-To check for memory leaqks
-gcc MCMC_TEMPLATE.c -g -lm
-valgrind --leak-check=yes --track-origins=yes ./a.out testmem
-
-
