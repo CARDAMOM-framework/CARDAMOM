@@ -1,5 +1,5 @@
 %Step 1. load existing structure
-cbfffilename=[getenv('CARDAMOM_DATA_PATH'),'/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbf'];
+cbffilename=[getenv('CARDAMOM_DATA_PATH'),'/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbf'];%edited by MS
 
 
 CBF=CARDAMOM_READ_BINARY_FILEFORMAT(cbffilename);
