@@ -14,7 +14,8 @@ double (*EMLF)(DATA, double *);
 double (*MLF)(DATA, double *);
 
 if (CARDADATA.assemble_model==1){
-EMLF=EDC_DALEC_MLF_beta;}
+//EMLF=EDC_DALEC_MLF_beta;}
+}
 else {EMLF=EDC_DALEC_MLF;
 MLF=DALEC_MLF;}
 
