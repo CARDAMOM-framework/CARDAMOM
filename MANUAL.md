@@ -6,6 +6,10 @@
 ***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, Renato Braghiere and others***  
 [If you’re making any edits, add your name here!]
 
+<div class="text-red mb-2">
+  .text-red on white
+</div>
+
 
 ## Table of Contents
 - [Getting Started With CARDAMOM](#-getting-started)
@@ -631,10 +635,10 @@ Can use the COMPLEX effort to document all the models here, including some examp
 |                                  | 813        | 811                      | 811 with Shuang Ma’s temp fix                       |                                 | Published (Bloom et al., 2020)  |
 |                                  | 820        | 811                      | Climate-sensitive mortality                         |                                 |                                 |
 |                                  | 821        |                          | Ball-berry scheme                                   |                                 |                                 |
-|                                  | 830        |                          |                                                     |                                 |                                 |
-|                                  | 831        |                          |                                                     |                                 |                                 |
-|                                  | 840        |                          |                                                     |                                 |                                 |
-| DALEC + PAW + PUW                | 1000       |                          |                                                     |                                 | In prep.                        |
+|                                  | 830        |     809                  |     Stephanie Stettz old weather GPP test           |                                 |                                 |
+|                                  | 831        |       809                |    Stettz et al. cold weather GPP                   |                                 |                                 |
+|                                  | 840        |         No idea          |         No idea                                     |                                 |                                 |
+| DALEC + PAW + PUW                | 1000       |      811                 |                                                     |                                 | In prep.                        |
 |                                  | 1001       | 1000                     | 1000 with max infiltration                          | Paul Levine                     |                                 |
 |                                  | 1002       | 1000                     | 1000 with uWUE                                      | Paul Levine                     |                                 |
 |                                  | 1003       | 1000                     | 1000 with surface runoff proportional to P          | Paul Levine                     |                                 |
