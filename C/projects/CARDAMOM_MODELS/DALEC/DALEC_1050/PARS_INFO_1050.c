@@ -51,6 +51,7 @@ CARDADATA->parmax[8]=0.001;
 CARDADATA->parmin[9]=0.018;
 CARDADATA->parmax[9]=0.08;
 
+//This is a good spot for Vcmax25
 /*Canopy Efficiency*/
 CARDADATA->parmin[10]=5;
 CARDADATA->parmax[10]=50;
@@ -159,6 +160,7 @@ CARDADATA->parmax[34]=100000;
 CARDADATA->parmin[35]=1;
 CARDADATA->parmax[35]=10000;
 
+/*Medlyn g1 (copy syntax from above)*/
 
 return 0;
 

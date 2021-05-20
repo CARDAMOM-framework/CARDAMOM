@@ -157,15 +157,21 @@ f=nofluxes*n;
 LAI[n]=POOLS[p+1]/pars[16]; 
 /*GPP*/
 gpppars[0]=LAI[n];
-gpppars[1]=DATA.MET[m+2];
-gpppars[2]=DATA.MET[m+1];
-gpppars[4]=DATA.MET[m+4];
-gpppars[5]=DATA.MET[m+5];
-gpppars[7]=DATA.MET[m+3];
+gpppars[1]=DATA.MET[m+2];//max temp
+gpppars[2]=DATA.MET[m+1];//min temp
+gpppars[4]=DATA.MET[m+4];//CO2
+gpppars[5]=DATA.MET[m+5];//Day of year
+gpppars[7]=DATA.MET[m+3];//Shortwave downward radation
 
 
 
 /*GPP*/
+/*An from Yanlan's paper replaces "ACM" (Williams et al., 1997) */
+//Actually OK that we're replacing GPP with An, because we're still closing C balance
+//Need to revisit when Alex Norton models Rauto more comprehensively
+//Note: beta = fmin(POOLS[p+6]/pars[25],1);
+//FLUXES[f+0]=LIU_An(.....met...LAI...parameters)*fmin(POOLS[p+6]/pars[25],1);
+
 FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
 /*Evapotranspiration (VPD = DATA.MET[m+7])*/
 FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23];
