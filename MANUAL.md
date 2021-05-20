@@ -3,6 +3,8 @@
 
 # CARDAMOM community collaborative manual
 
+###*THIS MANUAL IS WORK IN PROGRESS*
+
 ***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, Renato Braghiere and others***  
 [If you’re making any edits, add your name here!]
 
