@@ -1,7 +1,6 @@
 
 #pragma once
 #include "../../../DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
-#include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
@@ -118,7 +117,6 @@ while (PEDC!=0){
 	/*insert prior value option here!*/
 
 	oksofar("Running short MCMC to find x_{EDC} = 1");
-	if (MCOPT.mcmcid==1){MHMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
 	if (MCOPT.mcmcid==119){MHMCMC_119(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
         if (MCOPT.mcmcid==2){DEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
         if (MCOPT.mcmcid==3){ADEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
@@ -147,7 +145,7 @@ while (PEDC!=0){
 	
 	if (MCOPT.mcmcid==2 && PEDCC>MCOPT.nchains){PEDC=0;}
 	//Guarantee that at least half of chains have non-zero starting probabilities
-	if (MCOPT.mcmcid==3 && PEDCC>MCOPT.nchains/2){PEDC=0;}else{PEDC=-1;}
+	if (MCOPT.mcmcid==3){if (PEDCC>MCOPT.nchains/2){PEDC=0;}else{PEDC=-1;}}
 	if (MCOPT.mcmcid==2 || MCOPT.mcmcid==3){MCOPT.randparini=0;}	
 	/*Hard coding*/
 	
