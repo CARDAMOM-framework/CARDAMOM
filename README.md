@@ -16,7 +16,7 @@ Anthony Bloom (JPL, abloom @ jpl . nasa . gov)
 Caroline Famiglietti (Stanford University, cfamigli @ stanford . edu_)
 Gregory Quetin (UC Santa Barbara, gquetin @ ucsb . edu)
 
-For the university of Edinburgh (UK) CARDAMOM code (used in Exbrayat et al., 2018, Smallman et al., 2021, Famiglietti et al., 2021,  and references therein), visit https://github.com/GCEL/CARDAMOM, or contact Luke Smallman (t . l . smallman @ ed . ac . uk) and Mathew Williams (Mat . Williams @ ed . ac . uk).
+For the University of Edinburgh (UK) CARDAMOM code (used in Exbrayat et al., 2018, Smallman et al., 2021, Famiglietti et al., 2021,  and references therein), visit https://github.com/GCEL/CARDAMOM, or contact Luke Smallman (t . l . smallman @ ed . ac . uk) and Mathew Williams (Mat . Williams @ ed . ac . uk).
 
 For general information on the scientific applications of both CARDAMOM frameworks, we refer users to aforementioned papers. 
 
