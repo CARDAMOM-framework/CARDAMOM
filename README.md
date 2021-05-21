@@ -1,26 +1,23 @@
 
+# CARDAMOM framework version 2.1.6
+*JPL, Stanford, UCSB CARDAMOM code*
 
-# CARDAMOM version 2.2 copyright statement
-Copyright  (c) 2020 California  Institute  of Technology (“Caltech”) and University of Washington. U.S. Government  sponsorship acknowledged.
+## General description 
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED  TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-# General description 
-
-The Carbon data model framework (CARDAMOM) is a Bayesian inference approach for using terrestrial ecosystem observations to optimize terrestrial carbon cycle model states and processes parameters. The CARDAMOM code presented here is the culmination of a grassroots model development effort undertaken across multiple institutions, including the Jet Propulsion Laboratory (California Institute for Technology), University of Edinburgh, Stanford University and University of California Santa Barbara. The "CARDAMOM framework version 2.2" code provided here (https://github.com/CARDAMOM-framework/) was used in Bloom et al. (2020), Quetin et al., (2020), Yin et al. (2020), Famiglietti et al., (2021), and remains backward compatible with Bloom et al., (2016). 
+The Carbon data model framework (CARDAMOM) is a Bayesian inference approach for using terrestrial ecosystem observations to optimize terrestrial carbon cycle model states and processes parameters. The CARDAMOM code presented here is the culmination of a grassroots model development effort undertaken across multiple institutions, including the Jet Propulsion Laboratory (California Institute for Technology), University of Edinburgh, Stanford University and University of California Santa Barbara. The CARDAMOM framework version 2.1.6 code provided here (https://github.com/CARDAMOM-framework/) was used in Bloom et al. (2020), Quetin et al., (2020), Yin et al. (2020), Famiglietti et al., (2021), and remains backward compatible with Bloom et al., (2016). 
 
 The Data Assimilation Linked Ecosystem Carbon (DALEC) model used in CARDAMOM is described in Williams et al. (2005).  Additional information and references for individual DALEC versions and module components are provided throughout the code.
 
-Points of contact for CARDAMOM framework version 2.2:
+Points of contact for the JPL, Stanford & UCSB CARDAMOM code:
 Anthony Bloom (JPL, abloom @ jpl . nasa . gov)
-Caroline Famiglietti (Stanford University, cfamigli @ stanford . edu_)
+Caroline Famiglietti (Stanford University, cfamigli @ stanford . edu)
 Gregory Quetin (UC Santa Barbara, gquetin @ ucsb . edu)
 
 For the University of Edinburgh (UK) CARDAMOM code (used in Exbrayat et al., 2018, Smallman et al., 2021, Famiglietti et al., 2021,  and references therein), visit https://github.com/GCEL/CARDAMOM, or contact Luke Smallman (t . l . smallman @ ed . ac . uk) and Mathew Williams (Mat . Williams @ ed . ac . uk).
 
 For general information on the scientific applications of both CARDAMOM frameworks, we refer users to aforementioned papers. 
 
-# References
+## References
 
 Bloom, A.A., Exbrayat, J.F., Van Der Velde, I.R., Feng, L. and Williams, M., 2016. The decadal state of the terrestrial carbon cycle: Global retrievals of terrestrial carbon allocation, pools, and residence times. Proceedings of the National Academy of Sciences, 113(5), pp.1285-1290.
 
@@ -41,3 +38,9 @@ Smallman, T. L., Milodowski, D. T., Neto, E. S., Koren, G., Ometto, J., and Will
 Williams, M., Schwarz, P.A., Law, B.E., Irvine, J. and Kurpius, M.R., 2005. An improved analysis of forest carbon dynamics using data assimilation. Global change biology, 11(1), pp.89-105.
 
 Yin, Y., Bloom, A.A., Worden, J., Saatchi, S., Yang, Y., Williams, M., Liu, J., Jiang, Z., Worden, H., Bowman, K. and Frankenberg, C., 2020. Fire decline in dry tropical ecosystems enhances decadal land carbon sink. Nature communications, 11(1), pp.1-7.
+
+
+## CARDAMOM copyright statement
+Copyright  (c) 2020 California  Institute  of Technology (“Caltech”) and University of Washington. U.S. Government  sponsorship acknowledged.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED  TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
