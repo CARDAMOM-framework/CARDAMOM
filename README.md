@@ -1,6 +1,6 @@
 
 # CARDAMOM framework version 2.1.6
-*JPL, Stanford, UCSB CARDAMOM code*
+*JPL, Stanford & UCSB CARDAMOM code*
 
 ## General description 
 
