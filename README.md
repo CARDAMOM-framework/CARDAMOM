@@ -1,32 +1,28 @@
-# CARDAMOM
-Copyright  (c) 2020 California  Institute  of Technology (“Caltech”) and University of Washington. U.S. Government  sponsorship acknowledged.
 
+
+# CARDAMOM version 2.2 copyright statement
+Copyright  (c) 2020 California  Institute  of Technology (“Caltech”) and University of Washington. U.S. Government  sponsorship acknowledged.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED  TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#General description and versions
+# General description 
 
+The Carbon data model framework (CARDAMOM) is a Bayesian inference framework for using terrestrial ecosystem observations to optimize terrestrial carbon cycle model states and processes parameters. CARDAMOM code develpment is a grassroots model-data fusion development effort undertaken across multiple institutions (including the University of Edinburugh, UK, Stanford University, Jet Propulsion Laboratory California institute for Technology, University of California, Santa Barbara). The "JPL-Stanford-UCSB CARDAMOM framework" code provided here (https://github.com/CARDAMOM-framework/) was used in Bloom et al. (2020), Quetin et al., (2020), Yin et al. (2020), Famiglietti et al., (2021), and remains backward compatible with Bloom et al., (2016). 
 
+The Data Assimilation Linked Ecosystem Carbon (DALEC) models used in CARDAMOM are described in  Williams et al. (2005). Additional Information and references for individual DALEC versions is provided throughout the code.
 
-The Carbon data model framework (CARDAMOM) is a Bayesian model-data fusion system for optimizing model states and process parameters with respect to measurements of terrestrial ecosystem carbon and water states (Bloom et al., 2016; Smallman et al., 2017; Famiglietti et al. 2021 among several other efforts). 
+# Versions and resources
 
-Original versions of the Data Assimilation Linked Ecosystem Carbon (DALEC) models used in CARDAMOM are described in  Williams et al. (2005). Additional Information and references for individual DALEC versions is provided throughout the code.
+Points of contact for the JPL-Stanford-UCSB CARDAMOM framework :
+Anthony Bloom (JPL, abloom @ jpl . nasa . gov)
+Caroline Famiglietti (Stanford University, cfamigli @ stanford . edu_)
+Gregory Quetin (UC Santa Barbara, gquetin @ ucsb . edu)
 
-CARDAMOM is a grass-roots development effort undertaken across multiple institution (University of Edinburugh, UK, Stanford University, Jet Propulsion Laboratory @ California institute for technology, University of California, Santa arbara). The CARDAMOM framework (version 2.2) code provided here, colloquially referred to here as the "JPL-Stanford CARDAMOM framework", was used in Bloom et al. (2020), QUetin et al., (2020), Yin et al., Famiglietti et al., (2021), and remains backward compatible with Bloom et al., (2016).
+For the university of Edinburgh (UK) CARDAMOM code (used by Smallman et al., 2021, Famiglietti et al., 2021,  and references therein), visit https://github.com/GCEL/CARDAMOM, or contact Luke Smallman (t . l . smallman @ ed . ac . uk) and Mathew Williams (Mat . Williams @ ed . ac . uk).
 
-For later releases, check https://github or reach out to
+For general information on the scientific implementation of both frameworks, we refer users to aforementioned papers. 
 
-Points of contact
-Anthony Bloom (abloom @ jpl . nasa . gov)
-Greg?
-Caroline?
-
-
-For general information, we also refer the reader to aforementioned papers. For the university of Edinburgh (UK) CARDAMOMcode (used by Smallman et al., 2021, Famiglietti et al., 2021  and references therein), visit https://github.com/GCEL/CARDAMOM. 
-
-#CARDAMOM References
-
-
+# References
 
 Bloom, A.A., Exbrayat, J.F., Van Der Velde, I.R., Feng, L. and Williams, M., 2016. The decadal state of the terrestrial carbon cycle: Global retrievals of terrestrial carbon allocation, pools, and residence times. Proceedings of the National Academy of Sciences, 113(5), pp.1285-1290.
 
