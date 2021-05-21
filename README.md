@@ -4,9 +4,15 @@ Copyright  (c) 2020 California  Institute  of Technology (“Caltech”) and Uni
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED  TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Version and general information:
+#General description and versions
 
-The CARDAMOM framework (version 2.2) code provided here, colloquially referred to here as the "JPL-Stanford CARDAMOM framework", was used in Bloom et al. (2020), QUetin et al., (2020), Yin et al., Famiglietti et al., (2021), and remains backward compatible with Bloom et al., (2016).
+
+
+The Carbon data model framework (CARDAMOM) is a Bayesian model-data fusion system for optimizing model states and process parameters with respect to measurements of terrestrial ecosystem carbon and water states (Bloom et al., 2016; Smallman et al., 2017; Famiglietti et al. 2021 among several other efforts). 
+
+Original versions of the Data Assimilation Linked Ecosystem Carbon (DALEC) models used in CARDAMOM are described in  Williams et al. (2005). Additional Information and references for individual DALEC versions is provided throughout the code.
+
+CARDAMOM is a grass-roots development effort undertaken across multiple institution (University of Edinburugh, UK, Stanford University, Jet Propulsion Laboratory @ California institute for technology, University of California, Santa arbara). The CARDAMOM framework (version 2.2) code provided here, colloquially referred to here as the "JPL-Stanford CARDAMOM framework", was used in Bloom et al. (2020), QUetin et al., (2020), Yin et al., Famiglietti et al., (2021), and remains backward compatible with Bloom et al., (2016).
 
 For later releases, check https://github or reach out to
 
