@@ -9,8 +9,7 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 int DALEC_1000_MODCONFIG(DALEC * DALECmodel){
 
 //declaring observation operator structure, and filling with DALEC configurations
-OBSOPE OBSOPE;
-DALECmodel->OBSOPE=OBSOPE;
+static OBSOPE OBSOPE;
 //Initialize all SUPPORT OBS values (default value = false).
 INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 
@@ -58,6 +57,9 @@ OBSOPE.GRACE_EWT_n_h2o_pools=2;
 //Fire-specific variables
 OBSOPE.FIR_flux=16;
 
+
+
+DALECmodel->OBSOPE=OBSOPE;
 
 return 0;}
 

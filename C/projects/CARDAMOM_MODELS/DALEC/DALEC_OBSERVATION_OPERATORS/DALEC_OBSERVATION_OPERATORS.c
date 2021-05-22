@@ -46,7 +46,6 @@ OBSOPE->SUPPORT_SOM_OBS=false;
 OBSOPE->SUPPORT_GRACE_EWT_OBS=false;
 OBSOPE->SUPPORT_FIR_OBS=false;
 
-printf("So far so good (false declarations)\n");
 return 0;
 }
 
@@ -62,8 +61,6 @@ if (D->ngpp>0){int n;for (n=0;n<D->nodays;n++){D->M_GPP[n]=D->M_FLUXES[D->noflux
 //Mean GPP 
 if (D->otherpriors[5]>-9999){int n;D->M_MGPP[0]=0;for (n=0;n<D->nodays;n++){D->M_MGPP[0]+=D->M_FLUXES[n*D->nofluxes+O->GPP_flux];};D->M_MGPP[0]=D->M_MGPP[0]/(double)D->nodays;}
 
-printf("So far so good (inside GPP cost function)\n");
-
 return 0;}
 
 
@@ -77,7 +74,6 @@ int DALEC_OBSOPE_FIR(DATA * D, OBSOPE * O){
 if (D->otherpriors[2]>-9999){int n;D->M_MFIRE[0]=0;for (n=0;n<D->nodays;n++){D->M_MFIRE[0]+=D->M_FLUXES[n*D->nofluxes+O->FIR_flux];};D->M_MFIRE[0]=D->M_MFIRE[0]/(double)D->nodays;}
 
 
-printf("So far so good (inside FIRE cost function)\n");
 
 return 0;}
 
@@ -98,7 +94,6 @@ D->M_NBE[n]+=D->M_FLUXES[D->nofluxes*n+O->NBE_fluxes[nn]]*O->NBE_flux_signs[nn];
 
 
 
-printf("So far so good (inside NBE cost function)\n");
 
 return 0;}
 
@@ -108,7 +103,6 @@ int DALEC_OBSOPE_ET(DATA * D, OBSOPE * O){
 if (D->net>0){int n;for (n=0;n<D->nodays;n++){D->M_ET[n]=D->M_FLUXES[D->nofluxes*n+O->ET_flux];}};
 
 
-printf("So far so good (inside ET cost function)\n");
 
 return 0;}
 
@@ -116,14 +110,12 @@ return 0;}
 //LAI observation operator
 int DALEC_OBSOPE_LAI(DATA * D, OBSOPE * O){
 //int folc_pool,double lcma_pars_index
-printf("inside LAI OBSOPE\n");
 
 int n=0;
-printf("(D->M_POOLS[D->nopools*n+O->LAI_foliar_pool] = %2.2f\n",(D->M_POOLS[D->nopools*n+O->LAI_foliar_pool]));
+
 if (D->otherpriors[4]>0 | D->nlai>0){int n;for (n=0;n<D->nodays;n++){D->M_LAI[n]=(D->M_POOLS[D->nopools*n+O->LAI_foliar_pool]+D->M_POOLS[D->nopools*(n+1)+O->LAI_foliar_pool])*0.5/D->M_PARS[O->LAI_LCMA];}};
 
 
-printf("done with LAI OBSOPE\n");
 return 0;}
 
 
@@ -211,9 +203,7 @@ int DALEC_OBSOPE(DATA * D, OBSOPE * O){
 
 if (O->SUPPORT_CH4_OBS){DALEC_OBSOPE_CH4(D, O);}
 if (O->SUPPORT_GPP_OBS){DALEC_OBSOPE_GPP(D, O);}
-printf("Done with GPP OBSOPE\n");
 if (O->SUPPORT_LAI_OBS){DALEC_OBSOPE_LAI(D, O);}
-printf("Done with LAI OBSOPE\n");
 if (O->SUPPORT_ET_OBS){DALEC_OBSOPE_ET(D, O);}
 if (O->SUPPORT_NBE_OBS){DALEC_OBSOPE_NBE(D, O);}
 if (O->SUPPORT_ABGB_OBS){DALEC_OBSOPE_ABGB(D, O);}

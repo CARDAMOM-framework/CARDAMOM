@@ -15,11 +15,11 @@ double *LAIA=calloc(D.nodays, sizeof(double));
 
 /*D.LAI[dn] = observed LAI at index dn*/
 /*D.M_LAI[dn] = modelled LAI at index dn*/
-
+printf("Inside LAI function\n");
 /*Standard timestep model-data comparison*/
 if (D.otherpriors[4]<0 & D.nlai>0){for (n=0;n<D.nlai;n++){dn=D.laipts[n];tot_exp+=pow(log(D.M_LAI[dn]/D.LAI[dn])/log(2),2);}
-P=P-0.5*tot_exp;}
-
+P=P-0.5*tot_exp;
+printf("P=P-0.5*tot_exp = %2.2f\n",P);}
 /*use timesteps for mean LAI calculation*/
 /*Here only using mean LAI*/
 else if (D.otherpriors[4]>0){
