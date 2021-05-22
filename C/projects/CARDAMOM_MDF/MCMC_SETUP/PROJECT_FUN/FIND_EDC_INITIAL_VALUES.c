@@ -2,7 +2,6 @@
 #pragma once
 #include "../../../DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
 #include "../../../DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF_beta.c"
-#include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
@@ -120,7 +119,6 @@ while (PEDC!=0){
 	/*insert prior value option here!*/
 
 	oksofar("Running short MCMC to find x_{EDC} = 1");
-	if (MCOPT.mcmcid==1){MHMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
 	if (MCOPT.mcmcid==119){MHMCMC_119(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
         if (MCOPT.mcmcid==2){DEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
         if (MCOPT.mcmcid==3){ADEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};

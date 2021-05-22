@@ -7,10 +7,6 @@
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
 int DALEC_1000_MODCONFIG(DALEC * DALECmodel){
-DALECmodel->nopools=8;
-DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=36;
-DALECmodel->nofluxes=32;
 
 //declaring observation operator structure, and filling with DALEC configurations
 OBSOPE OBSOPE;

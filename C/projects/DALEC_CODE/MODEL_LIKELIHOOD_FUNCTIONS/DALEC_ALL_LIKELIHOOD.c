@@ -90,8 +90,9 @@ double P=0;
 OBSOPE *O=&((DALEC *)D.MODEL)->OBSOPE;
 
 //Observation operator on DALEC variables.
+printf("About to perform observation operator on all variables\n");
 DALEC_OBSOPE(&D,O);
-
+printf("Done with observation operator on all variables\n");
 
 
 
