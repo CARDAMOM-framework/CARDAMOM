@@ -1,4 +1,15 @@
-double LIU_An(double SRAD, double VPD, double TEMP, double LAI, double vcmax25, double co2, double beta_factor, double g1 ){
+#pragma once
+//double LIU_An(double SRAD, double VPD, double TEMP, double LAI, double vcmax25, double co2, double beta_factor, double g1){
+double LIU_An(double const *gpppars, double const *consts, double const *pars, double const beta){
+
+double SRAD = gpppars[7]; //Shortwave downward radiation
+double VPD = gpppars[11]; //VPD
+double TEMP = (gpppars[1]+gpppars[2])/2.; //(Tmin + Tmax)/2
+double co2 = gpppars[4]; //co2
+double vcmax25 = pars[37]; 
+double g1 = pars[36]; 
+double beta_factor = beta;        
+
 //Add any more parameters to function definition
 
 //CONSTS
@@ -20,6 +31,7 @@ double Vcmax; //the maximum rate of carboxylation of Rubisco
 double Jmax; //the maximum rate of electron transport 
 double J;
 double medlyn_term;
+double ci;
 double a1;
 double a2;
 
@@ -49,7 +61,7 @@ a1 = Vcmax*(ci - cp)/(ci + Kc*(1.+209./Ko));
 a2 = J*(ci-cp)/(4.*(ci + 2.*cp));
 
 
-An = max(0., min(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor)
+An = max(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 
 
 return An;

@@ -4,10 +4,10 @@
 %Step 3. Adapth the paths to make sure these are consistent with your directory system (e.g. depending on where you placed the "CARDAMOM" folder)
 
 %*****CARDAMOM C PATH******
-setenv('CARDAMOM_C_PATH','CARDAMOM_2.1.6c/C');
-setenv('CARDAMOM_DATA_PATH','CARDAMOM_2.1.6c/DATA');
+setenv('CARDAMOM_C_PATH','/Users/braghier/Documents/models/CARDAMOM_2.1.6c/C');
+setenv('CARDAMOM_DATA_PATH','/Users/braghier/Documents/models/CARDAMOM_2.1.6c/DATA');
 
 %****CARDAMOM matlab directory****
-addpath(genpath('CARDAMOM_2.1.6c/MATLAB/'));savepath
+addpath(genpath('/Users/braghier/Documents/models/CARDAMOM_2.1.6c/MATLAB/'));savepath
 
 

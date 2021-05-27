@@ -2,6 +2,7 @@
 #include "../../../DALEC_CODE/DALEC_ALL/ACM.c"
 #include "../../../DALEC_CODE/DALEC_ALL/offset.c"
 #include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
+#include "../../../CARDAMOM_MODELS/DALEC/DALEC_1050/LIU_An.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
@@ -9,7 +10,7 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 int DALEC_1050(DATA DATA, double const *pars)
 {
 
-double gpppars[11],pi;
+double gpppars[12],pi;
 /*C-pools, fluxes, meteorology indices*/
 int p,f,m,nxp, i;
 int n=0,nn=0;
@@ -162,6 +163,7 @@ gpppars[2]=DATA.MET[m+1];//min temp
 gpppars[4]=DATA.MET[m+4];//CO2
 gpppars[5]=DATA.MET[m+5];//Day of year
 gpppars[7]=DATA.MET[m+3];//Shortwave downward radation
+gpppars[11]=DATA.MET[m+7];//VPD
 
 
 
@@ -169,10 +171,14 @@ gpppars[7]=DATA.MET[m+3];//Shortwave downward radation
 /*An from Yanlan's paper replaces "ACM" (Williams et al., 1997) */
 //Actually OK that we're replacing GPP with An, because we're still closing C balance
 //Need to revisit when Alex Norton models Rauto more comprehensively
+
 //Note: beta = fmin(POOLS[p+6]/pars[25],1);
 //FLUXES[f+0]=LIU_An(.....met...LAI...parameters)*fmin(POOLS[p+6]/pars[25],1);
+double beta = fmin(POOLS[p+6]/pars[25],1);
+FLUXES[f+0]=LIU_An(gpppars,constants,pars,beta)*beta;
 
-FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
+
+//FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
 /*Evapotranspiration (VPD = DATA.MET[m+7])*/
 FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/

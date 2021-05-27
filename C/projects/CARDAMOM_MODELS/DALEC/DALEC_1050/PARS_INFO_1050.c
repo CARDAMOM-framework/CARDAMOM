@@ -160,7 +160,13 @@ CARDADATA->parmax[34]=100000;
 CARDADATA->parmin[35]=1;
 CARDADATA->parmax[35]=10000;
 
-/*Medlyn g1 (copy syntax from above)*/
+/*Medlyn g1*/
+CARDADATA->parmin[36]=1.79;
+CARDADATA->parmax[36]=5.79;
+
+/*Vcmax25*/ 
+CARDADATA->parmin[37]=0.;
+CARDADATA->parmax[37]=140.;
 
 return 0;
 

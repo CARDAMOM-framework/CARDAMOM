@@ -17,7 +17,7 @@ MCO.mcmcid=119;
 %All accepted parameters AND all corresponding variables are stored in "CBR"
 CBR=CARDAMOM_RUN_MDF(CBF,MCO);
 %Step 3. Run CARDAMOM with optimized parameters (This is done internally - at a basic level - inside "CARDAMOM_RUN_MDF")
-%CBR=CARDAMOM_RUN_MODEL(CBF,CBR.PARS);
+CBR=CARDAMOM_RUN_MODEL(CBF,CBR.PARS);
 
 %Step 4. Plot outputs
 figure(1);clf
