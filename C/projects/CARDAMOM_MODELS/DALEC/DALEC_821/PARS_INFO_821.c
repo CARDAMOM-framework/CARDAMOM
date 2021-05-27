@@ -152,11 +152,11 @@ CARDADATA->parmin[33]=0.4; //Martin et al. 1999
 CARDADATA->parmax[33]=10;
 
 /* Jmax [umol m^-2 s^-1]*/
-CARDADATA->parmin[34]=20;//10; Walker et al. 2014
+CARDADATA->parmin[34]=3;//10; Walker et al. 2014
 CARDADATA->parmax[34]=400;//500;
 
 /* Vmax [umol m^-2 s^-1]*/
-CARDADATA->parmin[35]=10;//10; Walker et al. 2014
+CARDADATA->parmin[35]=3;//10; Walker et al. 2014
 CARDADATA->parmax[35]=400;//200;
 
 /*IWUE: GPP*VPD/ET: gC/kgH2o *hPa*/

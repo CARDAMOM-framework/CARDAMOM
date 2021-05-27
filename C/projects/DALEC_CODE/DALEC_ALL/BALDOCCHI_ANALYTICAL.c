@@ -15,6 +15,8 @@ double* BALDOCCHI_ANALYTICAL(double const *met_list, double const *var_list)
     /* met_list[2] = co2 [ppm] */
     /* met_list[3] = rad [MJ/day/m^2]*/
     /* met_list[4] = VPD [hPa] */
+    /* met_list[5] = DOY [day] */
+    /* met_list[6] = LAT [degree] */
 
     /* var_list[0] = m  [unitless] */
     /* var_list[1] = b  [mol m^-2 s^-1] */
@@ -30,6 +32,21 @@ double* BALDOCCHI_ANALYTICAL(double const *met_list, double const *var_list)
 	/* Note: Instabilities present if 'm' is <5 or Jmax25/Vmax25 < 0.8 (and vis versa)*/
 	/* Note: Additional instabilities for very high values of VPD not generally seen on Earth*/    
     
+    /* Calculate day length (dayl) in hours */
+    double mult,dayl,dec,pi_here,doy,lat;
+    doy = (double)met_list[5]
+    lat = (double)met_list[6]
+    pi_here = (double)3.14
+    dec=(double)-23.4*cos((360.*(doy+10.)/365.)*pi_here/180.)*pi_here/180.;
+    mult=(double)tan(lat*pi_here/180)*tan(dec);
+    if (mult>=1){
+        dayl=24.;}
+    else if(mult<=-1)
+        dayl=0.;
+    else{
+        dayl=(double)24.*acos(-mult) / pi_here;}
+
+
 
     /*initialize intermediate variables*/
     double Oi, psfc, T, RH, tau, gamma, Kc, Ko;
@@ -38,21 +55,21 @@ double* BALDOCCHI_ANALYTICAL(double const *met_list, double const *var_list)
     double GPP, GPP_root1, GPP_root2, GPP_root3;
     double aj, dj, ej, bj, ac, dc, ec, bc;
     double par_frac, Wm2_umol, second_per_day, parts_ppm, gram_per_mol_C, gram_per_mol_H20,gram_per_kg, diffusionH2OtoCO2;
-	double tset_cold, tset_hot;
+    double tset_cold, tset_hot;
 
 
-	/* conversion constants */
-	par_frac = (double)0.45; /*fraction of insolation that is PAR - Mavi & Tupper (2004)*/
-	Wm2_umol = (double)4.56; /*conversion of solar radiation (W/m2) to umol/s/m2 photosynthetically active radiation*/
-	second_per_day = (double)86400.; /* seconds per day */
-	parts_ppm=(double)1e6; /* parts to ppm*/
-	gram_per_mol_C = (double)12.0107; /* grams per mol Carbon */
-	gram_per_mol_H20 = (double)18.01528; /* grams per mol H2O */
-	gram_per_kg = (double)1000.; /* grams per kilogram */
-	diffusionH2OtoCO2 = (double)1.6; /* ratio of diffusion H2O to CO2 */
+    /* conversion constants */
+    par_frac = (double)0.45; /*fraction of insolation that is PAR - Mavi & Tupper (2004)*/
+    Wm2_umol = (double)4.56; /*conversion of solar radiation (W/m2) to umol/s/m2 photosynthetically active radiation*/
+    second_per_day = (double)dayl*3600.; /* seconds per day length of day in hours and seconds per hour */
+    parts_ppm=(double)1e6; /* parts to ppm*/
+    gram_per_mol_C = (double)12.0107; /* grams per mol Carbon */
+    gram_per_mol_H20 = (double)18.01528; /* grams per mol H2O */
+    gram_per_kg = (double)1000.; /* grams per kilogram */
+    diffusionH2OtoCO2 = (double)1.6; /* ratio of diffusion H2O to CO2 */
 	
-	/*calculate pressure terms in parts per rather than pascal*/
-	/*set up so that all values are in ppm to match Vmax, Jmax, and APAR*/
+    /*calculate pressure terms in parts per rather than pascal*/
+    /*set up so that all values are in ppm to match Vmax, Jmax, and APAR*/
     psfc = (double)101325; /* [Pa] */
     
     Oi=(double)0.209*parts_ppm; /*oxygen at surface umol/mol to match Vmax, Jmax*/
@@ -72,7 +89,7 @@ double* BALDOCCHI_ANALYTICAL(double const *met_list, double const *var_list)
     cold_inhibition=(double)1+exp(0.25*(tset_cold-T));
     heat_inhibition=(double)1+exp(0.4*(T-tset_hot));
     Vmax=(double)var_list[4]*pow(2.1,((T-25.)/10.))/(cold_inhibition*heat_inhibition);
-	Jmax=(double)var_list[3]*pow(2.1,((T-25.)/10.))/(cold_inhibition*heat_inhibition);
+    Jmax=(double)var_list[3]*pow(2.1,((T-25.)/10.))/(cold_inhibition*heat_inhibition);
 
     /*convert insolation (full shortwave from meteorology) to PAR absorbed by the canopy*/
     PAR = (double)met_list[3]*1e6/second_per_day*Wm2_umol*par_frac; /* convert insolation from MJ m^-2 d^-1 to umol m^-2 s^-1 of PAR, units for analytical setup*/
@@ -104,37 +121,37 @@ double* BALDOCCHI_ANALYTICAL(double const *met_list, double const *var_list)
     bc=(double)Kc*(1.+Oi/Ko);
 
 	
-	double wj_adeb_list[] = {aj,dj,ej,bj};
-	double wc_adeb_list[] = {ac,dc,ec,bc};
+    double wj_adeb_list[] = {aj,dj,ej,bj};
+    double wc_adeb_list[] = {ac,dc,ec,bc};
 	
-	/**************************/
-	/* calculate GPP in polynomial solver */
-	double ROOT_CALC, GPP_leaf_now;
-	ROOT_CALC = 1.; /* primary root solution */
+    /**************************/
+    /* calculate GPP in polynomial solver */
+    double ROOT_CALC, GPP_leaf_now;
+    ROOT_CALC = 1.; /* primary root solution */
 	
-	GPP_leaf_now = ANALYTICALSOLVER_BALDOCCHI(met_list, var_list, wc_adeb_list, wj_adeb_list, Rd, RH, ROOT_CALC);
+    GPP_leaf_now = ANALYTICALSOLVER_BALDOCCHI(met_list, var_list, wc_adeb_list, wj_adeb_list, Rd, RH, ROOT_CALC);
 	
-	/**************************/
-	/* check dGPP/dCa */
+    /**************************/
+    /* check dGPP/dCa */
 	
-	double GPP_Ca_high, dGPPdCa;
+    double GPP_Ca_high, dGPPdCa;
 	
-	/* For screening: calculate GPP with higher value of Ca, + 60 ppm */
-	double met_list_high[] = {met_list[0],met_list[1],met_list[2]+60.,met_list[3],met_list[4]}; /* Switch in high value atmospheric CO2 */
-	GPP_Ca_high = ANALYTICALSOLVER_BALDOCCHI(met_list_high, var_list, wc_adeb_list, wj_adeb_list, Rd, RH, ROOT_CALC);
+    /* For screening: calculate GPP with higher value of Ca, + 60 ppm */
+    double met_list_high[] = {met_list[0],met_list[1],met_list[2]+60.,met_list[3],met_list[4]}; /* Switch in high value atmospheric CO2 */
+    GPP_Ca_high = ANALYTICALSOLVER_BALDOCCHI(met_list_high, var_list, wc_adeb_list, wj_adeb_list, Rd, RH, ROOT_CALC);
 	
-	/* Response of GPP solution to CO2 */
-	dGPPdCa = GPP_Ca_high - GPP_leaf_now;
+    /* Response of GPP solution to CO2 */
+    dGPPdCa = GPP_Ca_high - GPP_leaf_now;
 	
 
 
     /***************************************/
     /* Screen for bad behavior of GPP, negative values or negative sensitivity to CO2 slope*/
 	
-	if ((GPP_leaf_now > 0.001) & (dGPPdCa > 0.)){
-	GPP = GPP_leaf_now;
-	/*printf("Root1: %f\n",GPP);*/
-	} else {
+    if ((GPP_leaf_now > 0.001) & (dGPPdCa > 0.)){
+    GPP = GPP_leaf_now;
+    /*printf("Root1: %f\n",GPP);*/
+    } else {
 	
 	/* Do not allow negative values of GPP */
 	GPP = (double)0.001;
@@ -181,12 +198,12 @@ double* BALDOCCHI_ANALYTICAL(double const *met_list, double const *var_list)
     /* Note: could apply the day length here in place of seconds per day*/
     Gs_canopy_kgH20 = (double)Gs_canopy_H20*gram_per_mol_H20*second_per_day/gram_per_kg; //units of kg H2O m^-2 day^-1
     
-	/* Calculate canopy evapotranspiration */
+    /* Calculate canopy evapotranspiration */
 	
-	double ET_canopy_kgH20, psfc_hpa;
-	psfc_hpa = psfc/100.; /* surface pressure in hPa to match VPD units */
+    double ET_canopy_kgH20, psfc_hpa;
+    psfc_hpa = psfc/100.; /* surface pressure in hPa to match VPD units */
 	
-	ET_canopy_kgH20 = (double)(met_list[4]/psfc_hpa)*Gs_canopy_kgH20;
+    ET_canopy_kgH20 = (double)(met_list[4]/psfc_hpa)*Gs_canopy_kgH20;
 
 
     /***********************************************/
