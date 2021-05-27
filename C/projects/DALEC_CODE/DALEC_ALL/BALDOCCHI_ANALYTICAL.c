@@ -35,15 +35,15 @@ double* BALDOCCHI_ANALYTICAL(double const *met_list, double const *var_list)
     
     /* Calculate day length (dayl) in hours */
     double mult,dayl,dec,pi_here,doy,lat;
-    doy = (double)met_list[5]
-    lat = (double)var_list[9]
-    pi_here = (double)3.14
+    doy = (double)met_list[5];
+    lat = (double)var_list[9];
+    pi_here = (double)3.14;
     dec=(double)-23.4*cos((360.*(doy+10.)/365.)*pi_here/180.)*pi_here/180.;
     mult=(double)tan(lat*pi_here/180)*tan(dec);
     if (mult>=1){
         dayl=24.;}
     else if(mult<=-1)
-        dayl=0.;
+        dayl=0.001;
     else{
         dayl=(double)24.*acos(-mult) / pi_here;}
 
