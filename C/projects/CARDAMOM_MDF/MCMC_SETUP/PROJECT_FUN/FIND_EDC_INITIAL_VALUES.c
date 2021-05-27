@@ -144,8 +144,8 @@ while (PEDC!=0){
 	count=count+1;
 	
 	if (MCOPT.mcmcid==2 && PEDCC>MCOPT.nchains){PEDC=0;}
-	//Guarantee that at least half of chains have non-zero starting probabilities
-	if (MCOPT.mcmcid==3){if (PEDCC>MCOPT.nchains/2){PEDC=0;}else{PEDC=-1;}}
+	//Guarantee that at least 1/5 of chains have non-zero starting probabilities
+	if (MCOPT.mcmcid==3){if (PEDCC>MCOPT.nchains/5){PEDC=0;}else{PEDC=-1;}}
 	if (MCOPT.mcmcid==2 || MCOPT.mcmcid==3){MCOPT.randparini=0;}	
 	/*Hard coding*/
 	
