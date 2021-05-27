@@ -91,6 +91,7 @@ var_list[3]=pars[34]; /*Jmax*/
 var_list[4]=pars[35]; /*Vmax*/
 var_list[7]=7.19298; /*c1*/
 var_list[8]=2.1001; /*c2*/
+var_list[9]=DATA.LAT /*LAT*/
 
 /*constants for exponents of leaffall and labrelease factors*/
 /*width*/
@@ -161,6 +162,7 @@ met_list[1]=DATA.MET[m+2]; /*maxtemp, deg C*/
 met_list[2]=DATA.MET[m+4]; /*co2 in ppm*/
 met_list[3]=DATA.MET[m+3]; /*rad (swdown)*/
 met_list[4]=DATA.MET[m+7]; /*VPD*/
+met_list[5]=DATA.MET[m+5] /*DOY*/
 
 double psfc=1013.25; /*hPa*/
 

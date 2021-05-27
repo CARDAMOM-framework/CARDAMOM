@@ -16,7 +16,7 @@ double* BALDOCCHI_ANALYTICAL(double const *met_list, double const *var_list)
     /* met_list[3] = rad [MJ/day/m^2]*/
     /* met_list[4] = VPD [hPa] */
     /* met_list[5] = DOY [day] */
-    /* met_list[6] = LAT [degree] */
+    
 
     /* var_list[0] = m  [unitless] */
     /* var_list[1] = b  [mol m^-2 s^-1] */
@@ -27,6 +27,7 @@ double* BALDOCCHI_ANALYTICAL(double const *met_list, double const *var_list)
     /* var_list[6] = k [unitless] */
     /* var_list[7] = c1 [unused] */
     /* var_list[8] = c2 [unused] */
+    /* var_list[9] = LAT [degree] */
     /******************************************/
     
 	/* Note: Instabilities present if 'm' is <5 or Jmax25/Vmax25 < 0.8 (and vis versa)*/
@@ -35,7 +36,7 @@ double* BALDOCCHI_ANALYTICAL(double const *met_list, double const *var_list)
     /* Calculate day length (dayl) in hours */
     double mult,dayl,dec,pi_here,doy,lat;
     doy = (double)met_list[5]
-    lat = (double)met_list[6]
+    lat = (double)var_list[9]
     pi_here = (double)3.14
     dec=(double)-23.4*cos((360.*(doy+10.)/365.)*pi_here/180.)*pi_here/180.;
     mult=(double)tan(lat*pi_here/180)*tan(dec);
