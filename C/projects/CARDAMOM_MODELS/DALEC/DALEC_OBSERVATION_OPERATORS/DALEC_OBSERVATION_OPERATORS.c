@@ -113,7 +113,16 @@ int DALEC_OBSOPE_LAI(DATA * D, OBSOPE * O){
 
 int n=0;
 
-if (D->otherpriors[4]>0 | D->nlai>0){int n;for (n=0;n<D->nodays;n++){D->M_LAI[n]=(D->M_POOLS[D->nopools*n+O->LAI_foliar_pool]+D->M_POOLS[D->nopools*(n+1)+O->LAI_foliar_pool])*0.5/D->M_PARS[O->LAI_LCMA];}};
+
+printf("D->M_PARS[O->LAI_LCMA] = %2.2f\n",D->M_PARS[O->LAI_LCMA]);
+printf("O->LAI_LCMA = %i\n",O->LAI_LCMA);
+if (D->otherpriors[4]>0 | D->nlai>0){int n;for (n=0;n<D->nodays;n++){
+
+printf("D->M_POOLS[D->nopools*n+O->LAI_foliar_pool]+D->M_POOLS[D->nopools*(n+1)+O->LAI_foliar_pool] = %2.2f\n",D->M_POOLS[D->nopools*n+O->LAI_foliar_pool]+D->M_POOLS[D->nopools*(n+1)+O->LAI_foliar_pool]);
+printf("D->M_POOLS[D->nopools*n+O->LAI_foliar_pool] = %2.2f\n",D->M_POOLS[D->nopools*n+O->LAI_foliar_pool]);
+
+
+D->M_LAI[n]=(D->M_POOLS[D->nopools*n+O->LAI_foliar_pool]+D->M_POOLS[D->nopools*(n+1)+O->LAI_foliar_pool])*0.5/D->M_PARS[O->LAI_LCMA];}};
 
 
 return 0;}
