@@ -26,9 +26,11 @@ plot(1:72,CBR.GPP);ylabel('GPP [gC/m2/day]');xlabel('Months since Jan 2010');
 subplot(2,2,2);
 plot(1:72,CBR.FLUXES(:,:,29));ylabel('ET [kgH2O/m2/day]');xlabel('Months since Jan 2010');
 subplot(2,2,3);
-hist(1-CBR.PARS(:,2));ylabel('Frequency');xlabel('CUE');
+%hist(1-CBR.PARS(:,2));ylabel('Frequency');xlabel('CUE');
+hist(1-CBR.PARS(:,35));ylabel('Frequency');xlabel('Medlyn g1');
 subplot(2,2,4);
-hist(CBR.PARS(:,17));ylabel('Frequency');xlabel('Leaf C Mass per area [gC/m2]');
+%hist(CBR.PARS(:,17));ylabel('Frequency');xlabel('Leaf C Mass per area [gC/m2]');
+hist(CBR.PARS(:,36));ylabel('Frequency');xlabel('Vcmax25');
 
 
 

@@ -165,8 +165,8 @@ CARDADATA->parmin[36]=1.79;
 CARDADATA->parmax[36]=5.79;
 
 /*Vcmax25*/ 
-CARDADATA->parmin[37]=0.;
-CARDADATA->parmax[37]=140.;
+CARDADATA->parmin[37]=1e-8;
+CARDADATA->parmax[37]=140;
 
 return 0;
 

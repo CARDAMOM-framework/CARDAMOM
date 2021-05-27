@@ -174,8 +174,17 @@ gpppars[11]=DATA.MET[m+7];//VPD
 
 //Note: beta = fmin(POOLS[p+6]/pars[25],1);
 //FLUXES[f+0]=LIU_An(.....met...LAI...parameters)*fmin(POOLS[p+6]/pars[25],1);
+
+double SRAD = 12.*gpppars[7]; //Shortwave downward radiation (W.m-2)
+double VPD = gpppars[11]/10.; //VPD (kPa)
+double TEMP = 273.15 + (gpppars[1]+gpppars[2])/2.; //(Tmin + Tmax)/2 (K)
+double co2 = gpppars[4]; //co2 (ppm)
+double vcmax25 = pars[37]; 
+double g1 = pars[36]; 
 double beta = fmin(POOLS[p+6]/pars[25],1);
-FLUXES[f+0]=LIU_An(gpppars,constants,pars,beta)*beta;
+
+//FLUXES[f+0]=LIU_An(gpppars,constants,pars,beta)*beta;
+FLUXES[f+0]=LIU_An(SRAD, VPD, TEMP, vcmax25, co2, beta, g1)*beta;
 
 
 //FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);

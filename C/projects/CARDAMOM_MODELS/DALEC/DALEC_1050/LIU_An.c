@@ -1,14 +1,14 @@
 #pragma once
-//double LIU_An(double SRAD, double VPD, double TEMP, double LAI, double vcmax25, double co2, double beta_factor, double g1){
-double LIU_An(double const *gpppars, double const *consts, double const *pars, double const beta){
+double LIU_An(double SRAD, double VPD, double TEMP, double vcmax25, double co2, double beta_factor, double g1){
+//double LIU_An(double const *gpppars, double const *consts, double const *pars, double const beta){
 
-double SRAD = gpppars[7]; //Shortwave downward radiation
-double VPD = gpppars[11]; //VPD
-double TEMP = (gpppars[1]+gpppars[2])/2.; //(Tmin + Tmax)/2
-double co2 = gpppars[4]; //co2
-double vcmax25 = pars[37]; 
-double g1 = pars[36]; 
-double beta_factor = beta;        
+//double SRAD = 12.*gpppars[7]; //Shortwave downward radiation
+//double VPD = gpppars[11]/10.; //VPD
+//double TEMP = 273.15 + (gpppars[1]+gpppars[2])/2.; //(Tmin + Tmax)/2
+//double co2 = gpppars[4]; //co2
+//double vcmax25 = pars[37]; 
+//double g1 = pars[36]; 
+//double beta_factor = beta;        
 
 //Add any more parameters to function definition
 
