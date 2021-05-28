@@ -1,8 +1,8 @@
 %Section 1: main function
 %Calculate the the mertrics for evaluate the model ouputs
 function SITE_VALIDATION_METRICS % VALIDATE_CARDAMOM_MODEL
-path='/Users/yanyang/Documents/project/clima/';% set the path to the data folder
-
+%path='/Users/yanyang/Documents/project/clima/';% set the path to the data folder
+path='/Users/braghier/Documents/models/CARDAMOM_2.1.6c/';% set the path to the data folder
 cd(path)
 
 MCO.niteration=10000;

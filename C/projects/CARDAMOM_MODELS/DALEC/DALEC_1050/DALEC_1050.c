@@ -184,8 +184,8 @@ double g1 = pars[36];
 double beta = fmin(POOLS[p+6]/pars[25],1);
 
 //FLUXES[f+0]=LIU_An(gpppars,constants,pars,beta)*beta;
-FLUXES[f+0]=LIU_An(SRAD, VPD, TEMP, vcmax25, co2, beta, g1)*beta;
-
+//FLUXES[f+0]=LIU_An(SRAD, VPD, TEMP, vcmax25, co2, beta, g1)*beta;
+FLUXES[f+0]=LIU_An(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n]);
 
 //FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
 /*Evapotranspiration (VPD = DATA.MET[m+7])*/
