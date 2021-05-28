@@ -1,12 +1,26 @@
 function CARDAMOM_CHECK_CBF_FOR_ERRORS(CBF)
 
 
+disp('Met checks')
+okcheck=met_checks(CBF);
+if okcheck==0; warning('Met check failed, see warnings/errors above!');end
+%next checks here
+
+end
+
+function okcheck=met_checks(CBF)
+
+okcheck=1;
+
 if CBF.ID==0;warning('CBF ID = 0, file will make CARDAMOM crash');end
 
-disp('Inside error code')
 
+sprintf('Checking minimum temperature is within range...');
 if (min(CBF.MET(:,2))<-273.15)
-	warning('Minimum temperature not within physical range')
+	warning('Minimum temperature not within physical range');
+	okcheck=0;
+else
+	sprintf('OK!\n');
 end
 
 if (min(CBF.MET(:,3))<-273.15)
