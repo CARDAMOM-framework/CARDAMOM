@@ -1,21 +1,25 @@
 %Section 1: main function
 %Calculate the the mertrics for evaluate the model ouputs
 function SITE_VALIDATION_METRICS % VALIDATE_CARDAMOM_MODEL
-path='/Users/yanyang/Documents/project/clima/';% set the path to the data folder
-cd(path)
 
-MCO.niteration=10000;
-MCO.printrate=1000;
-MCO.samplerate=100;
-MCO.mcmcid=115;
 
-data=readtable('location_fuxnet.csv');
+%These are for test runs
+%Runs in Yang et al. used 10^7, these take about one or two hours to run
+MCO.niterations=10000;%Runs in Yang et al. used 10^7
 
+
+%
+fluxval_path=[getenv('CARDAMOM_PATH'),'/MATLAB/CARDAMOM-FLUXVAL_v1.0/'];
+data=readtable([fluxval_path,'/location_fluxnet.csv']);
+
+%Looping through FLUXNET 2015 sites
 for n=1:size(data,1)
     disp(['n=' num2str(n)]);
-    CBF=CARDAMOM_READ_BINARY_FILEFORMAT(['cbf_files/flux_site_' num2str(n) '.cbf']);
-    CBR=CARDAMOM_RUN_MDF(CBF,MCO);% we use ?PARRFUN? here for running this on a parallel machine;
-    vdata=table2array(readtable(['validation_data/validation_' data.Flux_name{n} '.csv']));% first col is the number of monthsfrom 2000/01/01; second col is date; the 3rd to 5th col is GPP, NEE and ET
+    CBF=CARDAMOM_READ_BINARY_FILEFORMAT([fluxval_path,'cbf_files/flux_site_' num2str(n) '.cbf']);
+    %This is the function for running CARDAMOM on local machine. 
+    %Consider parallelizing with CPU cluster for running all sites  
+    CBR=CARDAMOM_RUN_MDF(CBF,MCO);
+    vdata=table2array(readtable([fluxval_path,'validation_data/validation_' data.Flux_name{n} '.csv']));% first col is the number of monthsfrom 2000/01/01; second col is date; the 3rd to 5th col is GPP, NEE and ET
     site_name=[data.Flux_name{n}(1:2) '_' data.Flux_name{n}(4:end)]; 
     [M1,M2]= VALIDATE_OUTPUTS_AGAINST_SITE_DATA(CBR,vdata,site_name);
     Mseason.(site_name)=M1.(site_name);
@@ -25,6 +29,8 @@ for n=1:size(data,1)
     % training and validation data from the flux data
     CARDAMOM_output_plot(CBR,CBF,vdata,path)
 end
+%This will be saved in your current directory,
+%ensure that this is outside github repo
 save('site_mertrics.mat','Mseason','Mannual'); 
 end
 
