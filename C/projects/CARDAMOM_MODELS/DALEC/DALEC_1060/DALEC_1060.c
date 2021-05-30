@@ -2,6 +2,10 @@
 #include "../../../DALEC_CODE/DALEC_ALL/ACM.c"
 #include "../../../DALEC_CODE/DALEC_ALL/offset.c"
 #include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
+#include "../../../DALEC_CODE/DALEC_ALL/HYROLOGY_MODULES/CONVERTERS/HYDROFUN_EWT2MOI.c"
+#include "../../../DALEC_CODE/DALEC_ALL/HYROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2EWT.c"
+#include "../../../DALEC_CODE/DALEC_ALL/HYROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2CON.c"
+#include "../../../DALEC_CODE/DALEC_ALL/HYROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
@@ -90,8 +94,11 @@ DATA.MET[:,8]: precipitation
 	17-22. Fires (C pools to atmosphere)
 	23-27. Fires (C pool transfers)
 	28. ET
-  29. Runoff
-  32. Potential GPP
+  29. PAW runoff
+  30. PAW->PUW transfer
+  31. PUW runoff
+  32. Surface runoff
+  33. Potential GPP
 */
 
 
@@ -108,7 +115,8 @@ double ff=(log(pars[4])-log(pars[4]-1))/2;
 double fl=(log(pars[31])-log(pars[31]-1))/2;
 
 
-
+// Porosity scaling factor (see line 124 of HESS paper)
+double psi_porosity = -0.117*9.8/1000
 
 /*additional offset*/
 double osf=offset(pars[4],wf);
@@ -167,7 +175,7 @@ gpppars[7]=DATA.MET[m+3];
 
 
 /*GPP*/
-FLUXES[f+32]=ACM(gpppars,constants);
+FLUXES[f+33]=ACM(gpppars,constants);
 FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1)*(1-pow(fmin(fmax(DATA.MET[m+7],0),pars[36])/pars[36],pars[37]));
 /*Evapotranspiration (VPD = DATA.MET[m+7])*/
 FLUXES[f+28]=FLUXES[f+0]*sqrt(DATA.MET[m+7])/pars[23]+DATA.MET[m+3]*pars[38];
@@ -211,26 +219,53 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
         POOLS[nxp+3] = POOLS[p+3] +  (FLUXES[f+6] - FLUXES[f+10])*deltat;
         POOLS[nxp+4] = POOLS[p+4] + (FLUXES[f+9] + FLUXES[f+11] - FLUXES[f+12] - FLUXES[f+14])*deltat; 
         POOLS[nxp+5]= POOLS[p+5]+ (FLUXES[f+14] - FLUXES[f+13]+FLUXES[f+10])*deltat;                    
-/*Water pool = Water pool - runoff + prec (mm/day) - ET*/
-	/*printf("%2.1f\n",POOLS[p+6]);*/
-	/*PAW total runoff*/
 
-	FLUXES[f+29]=pow(POOLS[p+6],2)/pars[24]/deltat*(1-pars[33]);	
-        /*PAW -> PUW transfer*/
-	FLUXES[f+30]=FLUXES[f+29]*pars[33]/(1-pars[33]);
-	/*PUW runoff*/
-	FLUXES[f+31]=pow(POOLS[p+7],2)/pars[34]/deltat;
-	/*Maximum water loss at W = pars[24]/2;*/
-	if (POOLS[p+6]>pars[24]/2){FLUXES[f+29]=(POOLS[p+6]-pars[24]/4)/deltat*(1-pars[33]);
-        FLUXES[f+30]=(POOLS[p+6]-pars[24]/4)/deltat*pars[33]/(1-pars[33]);}
-	if (POOLS[p+7]>pars[34]/2){FLUXES[f+31]=(POOLS[p+7]-pars[34]/4)/deltat;}
-	/*Plant-available water ODE*/
-	POOLS[nxp+6]=POOLS[p+6] + (-FLUXES[f+29] - FLUXES[f+30] + DATA.MET[m+8] - FLUXES[f+28])*deltat;		
-	/*Plant-unavailable water budget*/
+// Infiltration (mm/day)
+double infil = pars[34]*(1 - exp(-DATA.MET[m+8]/pars[34]));
 
-        POOLS[nxp+7]=POOLS[p+7] + (FLUXES[f+30] - FLUXES[f+31])*deltat;
+// Surface runoff (mm/day)
+FLUXES[f+32] = DATA.MET[m+8] - infil;
 
+// Update pools, including infiltration and ET for PAW
+POOLS[nxp+6] = POOLS[p+6] + deltat*(infil - FLUXES[f+28])
+POOLS[nxp+7] = POOLS[p+7]
 
+// Volumetric soil moisture from water pools
+double sm_PAW = HYDROFUN_EWT2MOI(POOLS[nxp+6],pars[39],pars[42]);
+double sm_PUW = HYDROFUN_EWT2MOI(POOLS[nxp+7],pars[40],pars[43]);
+
+// Update PAW SM with infiltration
+sm_PAW += HYDROFUN_EWT2MOI(infil*deltat,pars[39],pars[42]);
+
+// Calculate drainage
+double drain_PAW = DRAINAGE(sm_PAW,pars[44],-pars[41],psi_porosity,pars[24]);
+double drain_PUW = DRAINAGE(sm_PUW,pars[44],-pars[41],psi_porosity,pars[24]);
+
+// Drainage becomes runoff from pools
+FLUXES[f+29] = HYDROFUN_MOI2EWT(drain_PAW,pars[39],pars[42])/deltat;
+FLUXES[f+31] = HYDROFUN_MOI2EWT(drain_PUW,pars[40],pars[43])/deltat;
+
+// Remove drainage from layers
+sm_PAW -= drain_PAW;
+sm_PUW -= drain_PUW;
+
+// Convert to conductivity
+k_PAW = HYDROFUN_MOI2CON(sm_PAW,pars[33],pars[24]);
+k_PUW = HYDROFUN_MOI2CON(sm_PUW,pars[33],pars[24]);
+
+// Convert to potential
+psi_PAW = HYDROFUN_MOI2PSI(sm_PAW,psi_porosity,pars[24]);
+psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[24]);
+
+// Calculate inter-pool transfer in m/s (positive is PUW to PAW)
+double xfer = -1000 * sqrt(k_PAW*k_PUW) * (1000*(psi_PAW-psi_PUW)/(9.8*0.5*(pars[42]+pars[43])) + 1);
+
+// Transfer flux in mm/day
+FLUXES[f+30] = xfer*1000*3600*24
+
+// Update pools
+POOLS[nxp+6] += (FLUXES[f+30] - FLUXES[f+29])*deltat
+POOLS[nxp+7] += (-FLUXES[f+30] - FLUXES[f+31])*deltat
 
 	/*total pool transfers - WITH FIRES*/
 	/*first fluxes*/
