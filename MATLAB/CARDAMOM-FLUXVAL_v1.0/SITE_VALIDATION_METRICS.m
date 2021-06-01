@@ -9,7 +9,7 @@ MCO.niterations=10000;%Runs in Yang et al. used 10^7
 
 
 %
-fluxval_path=[getenv('CARDAMOM_PATH'),'/MATLAB/CARDAMOM-FLUXVAL_v1.0/'];
+fluxval_path=[getenv('CARDAMOM_DATA_PATH'),'/CARDAMOM-FLUXVAL_v1.0/'];
 data=readtable([fluxval_path,'/location_fluxnet.csv']);
 
 %Looping through FLUXNET 2015 sites
