@@ -10,7 +10,7 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 int DALEC_821(DATA DATA, double const *pars)
 {
 
-double met_list[5],var_list[9],pi;
+double met_list[6],var_list[10],pi;
 /*C-pools, fluxes, meteorology indices*/
 int p,f,m,nxp, i;
 int n=0,nn=0;
