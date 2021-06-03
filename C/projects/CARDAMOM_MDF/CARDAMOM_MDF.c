@@ -10,8 +10,8 @@
 
 
 /*Temporarily de-activating to write EDC sampler*/
-#include "../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
-#include "../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
+//#include "../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
+//#include "../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
 
 
@@ -129,7 +129,7 @@ printf("about to start MHMCMC (id = 119)\n");
 MHMCMC_119(CARDADATA.MLF,CARDADATA,PI,MCOPT,&MCOUT);
 printf("completed MHMCMC 119\n");
 break;
-case 2:
+/*case 2:
 printf("about to start DEMCMC\n");
 DEMCMC(CARDADATA.MLF,CARDADATA,PI,MCOPT,&MCOUT);
 break;
@@ -138,7 +138,7 @@ MCOPT.fADAPT=0.05;
 printf("about to start ADEMCMC\n");
 ADEMCMC(CARDADATA.MLF,CARDADATA,PI,MCOPT,&MCOUT);
 break;
-
+*/
 /*printf("DEMCMC temporarily disconnected, need to de-bug, correct and re-introduce");
 printf("completed DEMCMC\n");
 break;*/

@@ -2,8 +2,8 @@
 #pragma once
 #include "../../../DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
-#include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
-#include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
+//#include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
+//#include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
 #include "../../../../math_fun/int_max.c"
 
 int FIND_EDC_INITIAL_VALUES(DATA CARDADATA,PARAMETER_INFO *PI, MCMC_OPTIONS *MCOPT_CARDAMOM){
@@ -119,9 +119,9 @@ while (PEDC!=0){
 
 	oksofar("Running short MCMC to find x_{EDC} = 1");
 	if (MCOPT.mcmcid==119){MHMCMC_119(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
-        if (MCOPT.mcmcid==2){DEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
+       /* if (MCOPT.mcmcid==2){DEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
         if (MCOPT.mcmcid==3){ADEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
-
+*/
 	/*if (MCOPT.mcmcid==2){DEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
 	*/
 	oksofar("Short MCMC complete");
