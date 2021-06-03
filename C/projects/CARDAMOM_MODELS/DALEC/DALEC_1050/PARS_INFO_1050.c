@@ -168,6 +168,10 @@ CARDADATA->parmax[36]=5.79;
 CARDADATA->parmin[37]=1e-8;
 CARDADATA->parmax[37]=140;
 
+/*jc v2 rET radiation coefficient in ET, unitless*/
+CARDADATA->parmin[38]=0.01;
+CARDADATA->parmax[38]=0.30;
+
 return 0;
 
 }

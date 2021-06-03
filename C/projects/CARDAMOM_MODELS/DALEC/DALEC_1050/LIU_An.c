@@ -41,7 +41,7 @@ double An;
 PAR = SRAD/(Ephoton*NA)*1e6;
 
 //absorbed PAR assuming black canopy. 
-PAR = PAR*(1. - exp(-LAI*0.5));
+//PAR = PAR*(1. - exp(-LAI*0.5));
 
 T_C = TEMP - t0C;
 

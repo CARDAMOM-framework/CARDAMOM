@@ -189,7 +189,9 @@ FLUXES[f+0]=LIU_An(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n]);
 
 //FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
 /*Evapotranspiration (VPD = DATA.MET[m+7])*/
-FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23];
+//FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23];
+//Evapotranspiration as in ID 1005:
+FLUXES[f+28]=FLUXES[f+0]*sqrt(DATA.MET[m+7])/pars[23]+DATA.MET[m+3]*pars[38];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
 FLUXES[f+1]=exp(pars[9]*0.5*(DATA.MET[m+2]+DATA.MET[m+1]-DATA.meantemp))*((DATA.MET[m+8]/DATA.meanprec-1)*pars[32]+1);
