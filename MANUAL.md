@@ -8,9 +8,6 @@
 ***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, Renato Braghiere and others***  
 [If you’re making any edits, add your name here!]
 
-<div class="text-red mb-2">
-  .text-red on white
-</div>
 
 
 ## Table of Contents
