@@ -31,7 +31,7 @@ for n=1:size(data,1)
     %*****INSTRUCTIONS FOR RUNNING EXISTING PARAMETER SETS*****
     %Step 1. Comment out "CBR=CARDAMOM_RUN_MDF(CBF,MCO);"
     %Step 2. Add the following lines
-    % 	 - parsfilepath = '/ENTER/FULL/FILE/PATH/TO/YANGETAL/PARS/DATA/HERE/';
+    % 	 - parsfilepath = '/ENTER/FULL/FILE/PATH/TO/YANGETAL/"CBR_PARS"/FOLDER/HERE/';
     %    - parsfile = [parsfilepath,'flux_site_',num2str(n),'_pars.mat'];
     %    - load(parsfile);
     %    - CBR = CARDAMOM_RUN_MODEL(CBF,PARS);
