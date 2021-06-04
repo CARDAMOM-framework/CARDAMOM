@@ -1,6 +1,6 @@
 %Section 1: main function
 %Calculate the the mertrics for evaluate the model ouputs
-function SITE_VALIDATION_METRICS % VALIDATE_CARDAMOM_MODEL
+function CARDAMOM_FLUXVAL_SITE_VALIDATION_METRICS % VALIDATE_CARDAMOM_MODEL
 %***CARDAMOM-FLUXVAL_v1.0 script and general notes***
 %The script is configured for MCMC short test runs only (10^4 samples with a single chain), these are useful for testing scripts but will not produce meaningful CARDAMOM parameter solutions.
 %Runs in Yang et al. used 10^8 samples x 4 chains per site,these take about 2-5 hours per site per chain.
@@ -35,7 +35,7 @@ for n=1:size(data,1)
     %    - parsfile = [parsfilepath,'flux_site_',num2str(n),'_pars.mat'];
     %    - load(parsfile);
     %    - CBR = CARDAMOM_RUN_MODEL(CBF,PARS);
-    CBR=CARDAMOM_RUN_MDF(CBF,MCO)
+    CBR=CARDAMOM_RUN_MDF(CBF,MCO);
 
     vdata=table2array(readtable([fluxval_path,'validation_data/validation_' data.Flux_name{n} '.csv']));% first col is the number of monthsfrom 2000/01/01; second col is date; the 3rd to 5th col is GPP, NEE and ET
     site_name=[data.Flux_name{n}(1:2) '_' data.Flux_name{n}(4:end)]; 
