@@ -1,11 +1,16 @@
 %Section 1: main function
 %Calculate the the mertrics for evaluate the model ouputs
 function SITE_VALIDATION_METRICS % VALIDATE_CARDAMOM_MODEL
-
-
-%These are for test runs
-%Runs in Yang et al. used 10^7, these take about one or two hours to run
-MCO.niterations=10000;%Runs in Yang et al. used 10^7
+%***CARDAMOM-FLUXVAL_v1.0 script and general notes***
+%The script is configured for MCMC short test runs only (10^4 samples with a single chain), these are useful for testing scripts but will not produce meaningful CARDAMOM parameter solutions.
+%Runs in Yang et al. used 10^8 samples x 4 chains per site,these take about 2-5 hours per site per chain.
+%To replicate these results (e.g. at more than a handful of sites), consider parallelizing with CPU cluster for running all sites.
+%To reproduce Yang et al., results using existing data:
+% (1) Download the data from Zenodo source (see Yang et al., for details) 
+% (2) comment out "CBR=CARDAMOM_RUN_MDF(CBF,MCO);" and work through "INSTRUCTIONS FOR RUNNING EXISTING PARAMETER SETS" (see below).
+%For general information on using CARDAMOM, consult MANUAL.md.
+%Number of MCMC iterations
+MCO.niterations=10000;%Runs in Yang et al. used 10^8 samples
 
 
 %
@@ -16,9 +21,22 @@ data=readtable([fluxval_path,'/location_fluxnet.csv']);
 for n=1:size(data,1)
     disp(['n=' num2str(n)]);
     CBF=CARDAMOM_READ_BINARY_FILEFORMAT([fluxval_path,'cbf_files/flux_site_' num2str(n) '.cbf']);
-    %This is the function for running CARDAMOM on local machine. 
-    %Consider parallelizing with CPU cluster for running all sites  
-    CBR=CARDAMOM_RUN_MDF(CBF,MCO);
+    %*****NOTES FOR DERIVING NEW PARAMETER SETS***************
+    % * This is the function for running CARDAMOM on local machine.
+    % * Runs in Yang et al. used 10^8, these take about 3-5 hours per site, below runs are for testing purposes only. 
+    % * Consider parallelizing with CPU cluster for running all sites.
+    % * To run more than one parameter chain, you can append "CARDAMOM_RUN_MDF" line as follows
+    %   - for chain=1:4;     CBR(chain)=CARDAMOM_RUN_MDF(CBF,MCO); end
+    %   - CBR=cardamomfun_combine_parameter_chains(CBR);
+    %*****INSTRUCTIONS FOR RUNNING EXISTING PARAMETER SETS*****
+    %Step 1. Comment out "CBR=CARDAMOM_RUN_MDF(CBF,MCO);"
+    %Step 2. Add the following lines
+    % 	 - parsfilepath = '/ENTER/FULL/FILE/PATH/TO/YANGETAL/PARS/DATA/HERE/';
+    %    - parsfile = [parsfilepath,'flux_site_',num2str(n),'_pars.mat'];
+    %    - load(parsfile);
+    %    - CBR = CARDAMOM_RUN_MODEL(CBF,PARS);
+    CBR=CARDAMOM_RUN_MDF(CBF,MCO)
+
     vdata=table2array(readtable([fluxval_path,'validation_data/validation_' data.Flux_name{n} '.csv']));% first col is the number of monthsfrom 2000/01/01; second col is date; the 3rd to 5th col is GPP, NEE and ET
     site_name=[data.Flux_name{n}(1:2) '_' data.Flux_name{n}(4:end)]; 
     [M1,M2]= VALIDATE_OUTPUTS_AGAINST_SITE_DATA(CBR,vdata,site_name);
