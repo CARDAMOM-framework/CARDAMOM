@@ -1,7 +1,6 @@
 % compare the training data & validation data with the CARDAMOM outputs
 
 function CARDAMOM_output_plot(CBR,CBF,vdata)
-c%d(path)
 
 month=1:192;
 figure(1);clf
