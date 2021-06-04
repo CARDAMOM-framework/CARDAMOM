@@ -3,7 +3,8 @@
 
 # CARDAMOM community collaborative manual
 
-###*THIS MANUAL IS WORK IN PROGRESS*
+###**THIS IS THE CARDAMOM TEAM INTERNAL MANUAL. Use this mannual collaboratively with CARDAMOM team. As & when instructions are ready to be used in public CARDAMOM code, copy/transfer/adapt these manually into MANUAL_PUBLIC.md**
+
 
 ***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, Renato Braghiere and others***  
 [If you’re making any edits, add your name here!]
