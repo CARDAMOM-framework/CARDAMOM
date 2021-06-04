@@ -58,29 +58,29 @@ disp('**********')
 
 %ADEMCMC
 
-%Step 2. Set up and run DEMCMC
-%Still in prototype phase
-MCO.niterations=10000;
-MCO.printrate=100;
-MCO.samplerate=MCO.niterations/2000*100;
-MCO.mcmcid=3;
-CBF.EDC=0;
-CBR=CARDAMOM_RUN_MDF(CBF,MCO);toc
-
-
-
-disp('**********')
-disp('**********')
-disp('**********')
-disp('**********')
-disp('**********')
-disp('CARDAMOM_RUN_MDF with ADEMCMC (with EDC=0 successfully executed')
-disp('**********')
-disp('**********')
-disp('**********')
-disp('**********')
-disp('**********')
-
+% %Step 2. Set up and run DEMCMC
+% %Still in prototype phase
+% MCO.niterations=10000;
+% MCO.printrate=100;
+% MCO.samplerate=MCO.niterations/2000*100;
+% MCO.mcmcid=3;
+% CBF.EDC=0;
+% CBR=CARDAMOM_RUN_MDF(CBF,MCO);toc
+% 
+% 
+% 
+% disp('**********')
+% disp('**********')
+% disp('**********')
+% disp('**********')
+% disp('**********')
+% disp('CARDAMOM_RUN_MDF with ADEMCMC (with EDC=0 successfully executed')
+% disp('**********')
+% disp('**********')
+% disp('**********')
+% disp('**********')
+% disp('**********')
+% 
 
 
 
