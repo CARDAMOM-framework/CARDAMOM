@@ -2,7 +2,7 @@
 
 # CARDAMOM framework version 2.2 collaborative manual
 
-### This is the manual (work in progress!) for the JPL, Stanford & UCSB CARDAMOM framework. Consult README.md file for general details on versions, publications,  and the University of Edinburgh/NCEO (UK) CARDAMOM code.
+#### This is the manual (work in progress!) for the JPL, Stanford & UCSB CARDAMOM framework. Consult README.md file for general details on versions, publications,  and the University of Edinburgh/NCEO (UK) CARDAMOM code.
 
 
 ## Table of Contents
@@ -589,57 +589,29 @@ Example: Check GPP, ET, LAI and biomass observations (which are physically only 
 
 ### CARDAMOM model library <a name="cardamom-model-library"/>
 
-List and brief description of currently supported models\
+List and brief description of models available in CARDAMOM version 2.2. Consult the publications for additional details on each model. For further information on CARDAMOM models currently in development, or to contribute to CARDAMOM code base with novel model structures, please reach out to the CARDAMOM team (see README.md for points of contact).
 
-Can use the COMPLEX effort to document all the models here, including some examples of the figures.\
 
 #### TABLE A1. CARDAMOM model IDs.
 
 | Group                            | Model ID   | Parent ID(s) if relevant | Description                                         | Details (POC)                   | Status                          |
 |----------------------------------|----------  |--------------------------|-----------------------------------------------------|---------------------------------|---------------------------------|
-| Low complexity                   | 101        |                          | 3-pool DALEC                                        |                                 | Tested                          |
-| DALEC C only                     | 400        |                          |                                                     | Bloom et al., 2016              | Published                       |
-| DALEC C + plant-available water. | 803        |                          |                                                     |                                 |                                 |
-|                                  | 804        |                          |                                                     |                                 |                                 |
-|                                  | 805        |                          |                                                     |                                 |                                 |
-|                                  | 806        |                          |                                                     |                                 |                                 |
-|                                  | 807        |                          |                                                     |                                 |                                 |
-|                                  | 808        |                          |                                                     |                                 |                                 |
-|                                  | 809        |                          |                                                     |                                 |                                 |
-|                                  | 810        |                          | Non-binary EDCs                                     |                                 | Exploratory                     |
-|                                  | 811        | 809                      |                                                     |                                 | Published (Quetin et al., 2020) |
-|                                  | 812        | 813                      | 813 with uWUE                                       |                                 |                                 |
+| Low complexity                   | 101        |                          | 3-pool DALEC                                        |                                 | Published (Famiglietti et al., 2021)                   |
+| DALEC C only                     | 400        |                          |                                                     | Bloom et al., 2016              | Published                       |       |                                 |
+|                                  | 809        |                          |                                                     |                                 |      Yin et al., 2020     |
+|                                  | 811        | 809                      |                                                     |                                 | Quetin et al., 2020 |                               |                                 |
 |                                  | 813        | 811                      | 811 with Shuang Ma’s temp fix                       |                                 | Published (Bloom et al., 2020)  |
-|                                  | 820        | 811                      | Climate-sensitive mortality                         |                                 |                                 |
-|                                  | 821        |                          | Ball-berry scheme                                   |                                 |                                 |
-|                                  | 830        |     809                  |     Stephanie Stettz old weather GPP test           |                                 |                                 |
-|                                  | 831        |       809                |    Stettz et al. cold weather GPP                   |                                 |                                 |
-|                                  | 840        |         No idea          |         No idea                                     |                                 |                                 |
-| DALEC + PAW + PUW                | 1000       |      811                 |                                                     |                                 | In prep.                        |
-|                                  | 1001       | 1000                     | 1000 with max infiltration                          | Paul Levine                     |                                 |
-|                                  | 1002       | 1000                     | 1000 with uWUE                                      | Paul Levine                     |                                 |
-|                                  | 1003       | 1000                     | 1000 with surface runoff proportional to P          | Paul Levine                     |                                 |
-|                                  | 1004       | 1000                     | Testing new modular parameter definitions           | Anthony Bloom                   | In prep.                        |
-|                                  | 1005       | 1000                     | Boese et al, 2017 (uWUE + rad)                      | Paul Levine, Yan Yang           |                                 |
-|                                  | 1006       | 1002                     | 1002 with max infiltration                          | Paul Levine                     |                                 |
-|                                  | 1007       | 1005                     | 1005 with max infiltration                          | Paul Levine                     |                                 |
-|                                  | 1008       | 1002                     | 1002 with surface runoff proportional to P          | Paul Levine                     |                                 |
-|                                  | 1009       | 1005                     | 1005 with surface runoff proportional to P          | Paul Levine                     |                                 |
-|                                  | 1010       |                          | CH4 module                                          | Ma                              | In prep.                        |
-|                                  | 1011-1015  |                          | CH4 module                                          | Ma                              | In prep.                        |
-|                                  | 1020       |                          |                                                     | Norton                          | In prep.                        |
-|                                  | 1021       |                          |                                                     | Norton                          | In prep.                        |
-|                                  | 1030--1039 | 1000                     | VPD-GPP sensitivity                                 | Paul Levine                     |                                 |
-|                                  | 1040       | 1005                     | Nutrient model                                      | Anthony Bloom                   | In prep.                        |
-|                                  | 1050       | 1000                     | Nitrogen model                                      | Renato Braghiere                | In prep.                        |
-|                                  | 1060--1069 | 1000                     | Hydrology from Massoud et al, 2021                  | Paul Levine                     |                                 |
-| DALEC + FF                       | 1200       |                          |                                                     |                                 | Exploratory                     |
+|                                  | 831        |       809                |    Stettz et al. cold weather GPP                   |                                 |     Stettz et al., 2021, in prep.      |
+| DALEC + PAW + PUW                | 1000       |      811                 |                                                     |                                 | Famiglietti et al., 2021   |
+|                                  | 1003       | 1000                     | 1000 with surface runoff proportional to P          | Paul Levine                     | Published (Famiglietti et al., 2021)  |
+|                                  | 1005       | 1000                     | Boese et al, 2017 (uWUE + rad)                      | Paul Levine, Yan Yang           |    Yang et al., in prep.        |
+
 
 ### Standard Input, Outputs, Parameters <a name="cardamom-input-output-parameters"/>
 
 #### List of Drivers <a name="list-of-drivers"/>
 
-##### Inputs (Model ID: 811, 821)
+##### Inputs (Model ID: 811)
 |CARDAMOM Inputs|Units|Longname|
 |:-------------|:-------------|:-------------|
 |'Time | [Days since Jan 01, 2001]'|
@@ -653,7 +625,7 @@ Can use the COMPLEX effort to document all the models here, including some examp
 |'Precip. | [mm/day]'|
 
 
-#### List of Ouputs (Model ID: 811, 821)
+#### List of Ouputs (Model ID: 811)
 
 ##### Pools (gC/m2, kgH2O/m2, instantaneous)
 |CARDAMOM Pools|Longname|
