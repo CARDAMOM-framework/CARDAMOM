@@ -45,7 +45,7 @@ for n=1:size(data,1)
     clear M1 M2
     % ploting the CARDAMOM outputs (GPP, NEE and ET) along with the
     % training and validation data from the flux data
-    CARDAMOM_output_plot(CBR,CBF,vdata,path)
+    CARDAMOM_output_plot(CBR,CBF,vdata);
 end
 %This will be saved in your current directory,
 %ensure that this is outside github repo
