@@ -1,21 +1,17 @@
 
 
-
-# CARDAMOM community collaborative manual
-
-###**THIS IS THE CARDAMOM TEAM INTERNAL MANUAL. Use this mannual collaboratively with CARDAMOM team. As & when instructions are ready to be used in public CARDAMOM code, copy/transfer/adapt these manually into MANUAL_PUBLIC.md**
+# CARDAMOM framework version 2.2 collaborative manual
 
 
-***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, Renato Braghiere and others***  
-[If you’re making any edits, add your name here!]
-
+***THIS MANUAL IS WORK IN PROGRESS (!)*** *This is the manual for the JPL, Stanford & UCSB CARDAMOM framework. Consult README.md file for general details on versions, publications,  and the University of Edinburgh/NCEO (UK) CARDAMOM code.*
 
 
 ## Table of Contents
+- [General CARDAMOM code description](#-general)
+
 - [Getting Started With CARDAMOM](#-getting-started)
   * [“Installing” CARDAMOM](#-installing--cardamom)
   * [Get code from Github](#get-code-from-github)
-  * [CARDAMOM Github User Must Read](#cardamom-git-must-read)
   * [CARDAMOM Matlab Demo and Setup Test](#cardamom-with-matlab)
   * [CARDAMOM Python Demo and Setup](#cardamom-with-python)
   
@@ -57,52 +53,39 @@
 - [References](#-references)
 
 
+## General CARDAMOM code description <a name="-general"/>
+
+The CARDAMOM code consists of (i) a core C functionality, which includes the DALEC model structures, the model-data cost function and the Bayesian model-data fusion (MDF) algorithm, and (ii) a family of matlab or python functions that allow users to engage with CARDAMOM I/O in their native/preferred language.
+
+The CARDAMOM  C code inputs are almost entirely prescribed by user-created driver files (.cbf files, soon to be .nc.cbf files), which include met forcings, observations and uncertainties, and model configurations. The CARDAMOM outputs (.cbr files, soon to be .nc.cbr) consist of (tyically 1000) parameter vectors, which comprise the "a posteriori" distribution of parameters, derived within the Bayesian MDF C code. While the creation of driver (.cbf) files and reading of output (.cbr) files can be done in any language, here we provide matlab or python functionalities; both languages (and potentially more in the future) are expected to be regularly updated and supported as the CARDAMOM C code evolves in future versions.
+
+Consult the README.md file for general information on the available CARDAMOM versions, publications, and points of contact.
+
 ## Getting Started with CARDAMOM <a name="-getting-started"/>
 
 ### “Installing” CARDAMOM <a name="-installing--cardamom"/>
 
 #### Get code from Github
-+ Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework
-+ Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c
+
++ Go to https://github.com/CARDAMOM-framework/CARDAMOM_v2.2
 + Click on green “Code” button, and select git clone with ssh
 
 Example
 
-Step 1. type "cd /Users/[yourusername]/", in your mac terminal, for example (or alternatively go to the preffered directory for storing CARDAMOM code).
+Step 1. type "cd /Users/[yourusername]/", in your mac terminal, for example (or alternatively go to the preferred directory for storing CARDAMOM code).
 
-Step 2. type "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c" mac terminal.
-- See Git Clone FAQ below for troubleshooting
+Step 2. type "git clone git@github.com:CARDAMOM-framework/CARDAMOM_v2.2.git" on mac terminal.
 
-**Do not use .zip approach** (!) unless you only intend to download code once, and do not anticipate collaborating with team.
  
- 
- ### git clone FAQ
- Get fatal error when typing "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c", what should I do?
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-(NOTE: make link to CARDAMOM GITHUB.md, Shuang's user guide).
-
-
 *SOON TO BE REQUIRED:* 
 + *Install homebrew (if you don’t already have it) (https://brew.sh/)[DETAILS AS NEEDED]*
     * *Install netcdf library (if you don’t already have it)*
     * *type “brew install netcdf” in terminal window (Mac), see step (1) for installing brew. *
-    * *Anthony, Alex: setenv('CARDAMOM_NC_CONFIG_PATH','/usr/local/bin/nc-config')*
-    * *For PC: no supported solution yet… (Paul: add potential windows solution)*
+    * setenv('CARDAMOM_NC_CONFIG_PATH','/usr/local/bin/nc-config')*
+    * *For PC: no supported solution yet…*
 
 + Demos below will compile CARDAMOM and run short assimilation runs and forward runs for testing. There are options in both Python and Matlab. Check Appendix for additional tools written in Matlab and Python.
 
-### CARDAMOM Github User Must Read <a name="cardamom-git-must-read">
-
-After you clone the CARDAMOM repository to your local, please take a minute to go through the first section in  [CARDAMOM_GIT_MUST_READ.md](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/CARDAMOM_GIT_MUST_READ.md). We recommand all users to follow the instructions in order to effectively maintain the CARDAMOM github environment. 
 
 ### CARDAMOM Matlab Demo and Setup Test <a name="cardamom-with-matlab"/>
 
@@ -122,7 +105,7 @@ Notes:
 2. Set CARDAMOM environmental variables in matlab
     * To do this:
         - Create or edit existing matlab startup.m file: e.g. type “edit startup.m” in matlab command window to edit new or existing startup file.
-        - Copy lines from CARDAMOM_2.1.6c/MATLAB/startup_template.m into startup.m file, and adapt as instructed in startup_template.m comments.
+        - Copy lines from CARDAMOM_v2.2/MATLAB/startup_template.m into startup.m file, and adapt as instructed in startup_template.m comments.
         - Save changes to startup.m
         - Make a directory called “DUMPFILES” by typing “mkdir DUMPFILES” in matlab command window OR type "mkdir DUMFILES" in terminal console (in which case, ensure you are in the desired working directory where startup.m is).
     * Tips: 
@@ -130,7 +113,7 @@ Notes:
         - paths in “startup.m” should either be absolute paths, or relative to current working directory
         - to avoid github issues, either:
             + the current working directory needs to be outside the “CARDAMOM” folder, or equivalent github cloned folder (recommended)
-            + (b) make a “.gitignore” file and ensure github ignores all user-made files within the “CARDAMOM_2.1.6c” folder. 
+            + (b) make a “.gitignore” file and ensure github ignores all user-made files within the “CARDAMOM_v2.2” folder. 
 3. Quit & restart matlab 
 4. Type “which startup” in matlab command window 
     * check matlab is pointing at correct startup.m file
@@ -159,10 +142,10 @@ Summary of tools to interact with CARDAMOM using python. Read and write of binar
 
 See tutorials (PYTHON/tutorials)
 
-- [Tutorial 1](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/PYTHON/tutorials/cardamom_tutorial1.ipynb):
+- [Tutorial 1](https://github.com/CARDAMOM-framework/CARDAMOM_v2.2/blob/master/PYTHON/tutorials/cardamom_tutorial1.ipynb):
 Description of input file (.cbf) and how to open/view file. Open and view parameter output from assimilation runs (.cbr). Open and view pools/fluxes from forward run (.bin).
 
-- [Tutorial 2](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/PYTHON/tutorials/cardamom_tutorial2.ipynb):
+- [Tutorial 2](https://github.com/CARDAMOM-framework/CARDAMOM_v2.2/blob/master/PYTHON/tutorials/cardamom_tutorial2.ipynb):
 This tutorial will show the basic set up to run a CARDAMOM assimilation and forward run from the command line. This is set up for mac/linux.\
 
     * Basic Steps:
@@ -232,12 +215,7 @@ This is the forward run using optimized parameters and saving out the pools and 
 
 To have CARDAMOM_RUN_MODEL routine save full output at runtime (to avoid having to run model again for post processing):
 
-+ Opt. 1 (recommendeds): To save output corresponding to PXI project,
-
-Use CARDAMOM_PROJECT_OUTPUTS_beta.m\
-This function stores output by default\
-
-+ Opt. 2 (prob not worth it for a handful of cbf files): To save output corresponding to cbf file, use\
++ (prob not worth it for a handful of cbf files): To save output corresponding to cbf file, use\
 
 ```matlab
 [CBR,CBF]=CARDAMOM_RUN_MODEL(cbffilename,PARS,OPT);
@@ -612,57 +590,29 @@ Example: Check GPP, ET, LAI and biomass observations (which are physically only 
 
 ### CARDAMOM model library <a name="cardamom-model-library"/>
 
-List and brief description of currently supported models\
+List and brief description of models available in CARDAMOM version 2.2. Consult the publications for additional details on each model. For further information on CARDAMOM models currently in development, or to contribute to CARDAMOM code base with novel model structures, please reach out to the CARDAMOM team (see README.md for points of contact).
 
-Can use the COMPLEX effort to document all the models here, including some examples of the figures.\
 
 #### TABLE A1. CARDAMOM model IDs.
 
 | Group                            | Model ID   | Parent ID(s) if relevant | Description                                         | Details (POC)                   | Status                          |
 |----------------------------------|----------  |--------------------------|-----------------------------------------------------|---------------------------------|---------------------------------|
 | Low complexity                   | 101        |                          | 3-pool DALEC                                        |                                 | Published (Famiglietti et al., 2021)                   |
-| DALEC C only                     | 400        |                          |                                                     | Bloom et al., 2016              | Published                       |
-| DALEC C + plant-available water. | 803        |                          |                                                     |                                 |                                 |
-|                                  | 804        |                          |                                                     |                                 |                                 |
-|                                  | 805        |                          |                                                     |                                 |                                 |
-|                                  | 806        |                          |                                                     |                                 |                                 |
-|                                  | 807        |                          |                                                     |                                 |                                 |
-|                                  | 808        |                          |                                                     |                                 |                                 |
-|                                  | 809        |                          |                                                     |                                 |      Published (Yin et al., 2021)     |
-|                                  | 810        |                          | Non-binary EDCs                                     |                                 | Exploratory                     |
-|                                  | 811        | 809                      |                                                     |                                 | Published (Quetin et al., 2020) |
-|                                  | 812        | 813                      | 813 with uWUE                                       |                                 |                                 |
+| DALEC C only                     | 400        |                          |                                                     | Bloom et al., 2016              | Published                       |       |                                 |
+|                                  | 809        |                          |                                                     |                                 |      Yin et al., 2020     |
+|                                  | 811        | 809                      |                                                     |                                 | Quetin et al., 2020 |                               |                                 |
 |                                  | 813        | 811                      | 811 with Shuang Ma’s temp fix                       |                                 | Published (Bloom et al., 2020)  |
-|                                  | 820        | 811                      | Climate-sensitive mortality                         |                                 |                                 |
-|                                  | 821        |                          | Ball-berry scheme                                   |                                 |    In prep.                     |
-|                                  | 830        |     809                  |     Stephanie Stettz old weather GPP test           |                                 |                                 |
 |                                  | 831        |       809                |    Stettz et al. cold weather GPP                   |                                 |     Stettz et al., 2021, in prep.      |
-|                                  | 840        |         No idea          |         No idea                                     |                                 |                                 |
-| DALEC + PAW + PUW                | 1000       |      811                 |                                                     |                                 |  Published (Famiglietti et al., 2021)   |
-|                                  | 1001       | 1000                     | 1000 with max infiltration                          | Paul Levine                     |                                 |
-|                                  | 1002       | 1000                     | 1000 with uWUE                                      | Paul Levine                     |                                 |
+| DALEC + PAW + PUW                | 1000       |      811                 |                                                     |                                 | Famiglietti et al., 2021   |
 |                                  | 1003       | 1000                     | 1000 with surface runoff proportional to P          | Paul Levine                     | Published (Famiglietti et al., 2021)  |
-|                                  | 1004       | 1000                     | Testing new modular parameter definitions           | Anthony Bloom                   | In prep.                        |
 |                                  | 1005       | 1000                     | Boese et al, 2017 (uWUE + rad)                      | Paul Levine, Yan Yang           |    Yang et al., in prep.        |
-|                                  | 1006       | 1002                     | 1002 with max infiltration                          | Paul Levine                     | Exploratory                     |
-|                                  | 1007       | 1005                     | 1005 with max infiltration                          | Paul Levine                      | Exploratory                     |
-|                                  | 1008       | 1002                     | 1002 with surface runoff proportional to P          | Paul Levine                      | Exploratory                     |
-|                                  | 1009       | 1005                     | 1005 with surface runoff proportional to P          | Paul Levine                       | Exploratory                     |
-|                                  | 1010       |                          | CH4 module                                          | Ma                              | In prep.                        |
-|                                  | 1011-1015  |                          | CH4 module                                          | Ma                              | In prep.                        |
-|                                  | 1020       |                          |                                                     | Norton                          | In prep.                        |
-|                                  | 1021       |                          |                                                     | Norton                          | In prep.                        |
-|                                  | 1030--1039 | 1000                     | VPD-GPP sensitivity                                 | Paul Levine                     |     In prep.                  |
-|                                  | 1040       | 1005                     | Nutrient model                                      | Anthony Bloom                   | In prep.                        |
-|                                  | 1050       | 1000                     | Nitrogen model                                      | Renato Braghiere                | In prep.                        |
-|                                  | 1060--1069 | 1000                     | Hydrology from Massoud et al, 2021                  | Paul Levine                     |                                 |
-| DALEC + FF                       | 1200       |                          |                                                     |                                 | Exploratory                     |
+
 
 ### Standard Input, Outputs, Parameters <a name="cardamom-input-output-parameters"/>
 
 #### List of Drivers <a name="list-of-drivers"/>
 
-##### Inputs (Model ID: 811, 821)
+##### Inputs (Model ID: 811)
 |CARDAMOM Inputs|Units|Longname|
 |:-------------|:-------------|:-------------|
 |'Time | [Days since Jan 01, 2001]'|
@@ -676,7 +626,7 @@ Can use the COMPLEX effort to document all the models here, including some examp
 |'Precip. | [mm/day]'|
 
 
-#### List of Ouputs (Model ID: 811, 821)
+#### List of Ouputs (Model ID: 811)
 
 ##### Pools (gC/m2, kgH2O/m2, instantaneous)
 |CARDAMOM Pools|Longname|
@@ -790,36 +740,23 @@ Helper scripts (running and analysing CARDAMOM) are primarily written in Matlab 
 ## Aggregation and uncertainty propagatation
 Description: general rules and guidelines for estimating and propagating uncertainty
 
-"rule no 1." (some funny movie reference)
-"Rule no 2.": perform operation on data before calculating uncertainty (on states and fluxes?)
+###perform operation on data before calculating uncertainty (on states and fluxes?)
 
-- example: detrending state and flux data. 
+Example: detrending state and flux data. 
   - Step 1. Detrend every CARDAMOM sample 
   - Step 2. Calculate percentile/statistics based on detrended dataset.
 
-Other examples:
-- annually average time series (action = average annually for each samples first, then
-- monthly anomalies
-- normalizing data (GRACE
-- For comparison against observation, perform "observation operator" first, then aggregate.
+###annually averaged time series 
+ - Step 1. average annually for each samples first, then,
+ - Step 2. Calculate percentile/statistics based on sample outcomes in Step 1.
+
+###For comparison against observation.
+ - Step 1. perform "observation operator" first, then
+ - Step 2. perform statistics between transformed quantities and observation
 
 
-Exception (sort of) to rule = "statistics on statistics".
 
-For example: what is the range of IAV (e.g. as sigma value) among CARDAMOM samples?
-Step 1. Calculate IAV per sample.
-Step 2. Summarize mean, median, standard deviation, percentiles of IAV among samples.
 
-Two contrasting examples:
-"ensemble mean" = mean of N CARDAMOM samples.
-
-(1) What is the IAV of ensemble mean GPP?
-Answer: (1) calculate ensemble mean GPP, and (2) calculate its IAV. Effectively no uncertainty estimate here, possible never need to do this for a single pixel (however: this order may be required for multi pixel uncertainty propagation).
-
-(2) What is the IAV of all GPP ensemble members?
-Answer: (1) calculate IAV for each sample, and (2) calculate any useful/relevant statistics on IAV differences among samples (e.g. medians, percentiles).
-
-Note on above examples: mean GPP IAV is **not** equal to mean of GPP IAV values corresponding to individual ensemble members (e.g. if distribution is skewed). iav(mean(GPP)) =/= mean(iav(GPP)).
 
 
 <img width="1113" alt="image" src="https://user-images.githubusercontent.com/23563444/110368127-74534600-7ffd-11eb-9d81-479a39618fe0.png">
@@ -834,12 +771,6 @@ Dilemma. Two pixels, one with mean GPP = 0.2 gC/m2/d (desert), and another with 
 
 
 ***end of actual "rules"***
-
-
-
-
-"
-
 
 
 
