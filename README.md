@@ -1,10 +1,10 @@
 
-## CARDAMOM framework version 2.1.6
+## CARDAMOM framework version 2.2
 #### *JPL, Stanford & UCSB CARDAMOM framework*
 
 ## General description 
 
-The Carbon data model framework (CARDAMOM) is a Bayesian inference approach for using terrestrial ecosystem observations to optimize terrestrial carbon cycle model states and processes parameters. The CARDAMOM code presented here is the culmination of a grassroots model development effort undertaken across multiple institutions, including the Jet Propulsion Laboratory (California Institute for Technology), University of Edinburgh, Stanford University and University of California Santa Barbara. The CARDAMOM framework version 2.1.6 code provided here (https://github.com/CARDAMOM-framework/) was used in Bloom et al. (2020), Quetin et al., (2020), Yin et al. (2020), Famiglietti et al., (2021), and remains backward compatible with Bloom et al., (2016). 
+The Carbon data model framework (CARDAMOM) is a Bayesian inference approach for using terrestrial ecosystem observations to optimize terrestrial carbon cycle model states and processes parameters. The CARDAMOM code presented here is the culmination of a grassroots model development effort undertaken across multiple institutions, including the Jet Propulsion Laboratory (California Institute for Technology), University of Edinburgh, Stanford University and University of California Santa Barbara. The CARDAMOM framework version 2.2 code provided here (https://github.com/CARDAMOM-framework/) was used in Bloom et al. (2020), Quetin et al., (2020), Yin et al. (2020), Famiglietti et al., (2021), and remains backward compatible with Bloom et al., (2016). 
 
 The Data Assimilation Linked Ecosystem Carbon (DALEC) model used in CARDAMOM is described in Williams et al. (2005).  Additional information and references for individual DALEC versions and module components are provided throughout the code.
 
@@ -12,6 +12,9 @@ Points of contact for the JPL, Stanford & UCSB CARDAMOM code:
 Anthony Bloom (JPL, abloom @ jpl . nasa . gov)
 Caroline Famiglietti (Stanford University, cfamigli @ stanford . edu)
 Gregory Quetin (UC Santa Barbara, gquetin @ ucsb . edu)
+
+
+Updates to CARDAMOM version 2.2 (and subsequent versions) will be made publicly available at https://github.com/CARDAMOM-framework/ as "read-only" github repositories. If you wish to collaborate with the CARDAMOM development team or contribute to the CARDAMOM code release, we encourage you to communicate with the points of contact (above).
 
 For the University of Edinburgh/NCEO (UK) CARDAMOM code (used in Exbrayat et al., 2018, Smallman et al., 2021, Famiglietti et al., 2021,  and references therein), the code is available at https://github.com/GCEL/CARDAMOM; contact Luke Smallman (t . l . smallman @ ed . ac . uk) and Mathew Williams (Mat . Williams @ ed . ac . uk) for access.
 
