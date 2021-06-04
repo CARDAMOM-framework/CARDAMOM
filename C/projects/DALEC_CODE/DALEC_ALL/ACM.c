@@ -1,5 +1,5 @@
 #pragma once
-/* This is the Aggregated Canopy Model, originally described in Williams et al. (1997), and coupled to DALEC models in Williams et al., (2005). Code implementation based on code and materials from Fox et al. (2009) "REFLEX" experiment, and subsequently adapted for Bloom & Williams 2015.
+/* This is the Aggregated Canopy Model (ACM), originally described in Williams et al. (1997), and coupled to DALEC models in Williams et al., (2005). Code implementation based on code and materials from Fox et al. (2009) "REFLEX" experiment, and subsequently adapted for Bloom & Williams 2015.
 
 Williams, M., Rastetter, E. B., Fernandes, D. N., Goulden, M. L.,Shaver,  G.  R.,  and  Johnson,  L.  C.:  Predicting  gross  primaryproductivity in terrestrial ecosystems, Ecol. Appl., 7, 882–894,1997.
 Williams,   M.,   Schwarz,   P.   A.,   Law,   B.   E.,   Irvine,   J.,   andKurpius, M. R.: An improved analysis of forest carbon dynamicsusing data assimilation, Glob. Change Biol., 11, 89–105, 2005.
