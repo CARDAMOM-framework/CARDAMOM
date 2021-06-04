@@ -1,8 +1,9 @@
 
 
-# CARDAMOM community collaborative manual
+# CARDAMOM framework version 2.2 collaborative manual
 
-###***THIS MANUAL IS WORK IN PROGRESS***
+### This is the manual (work in progress!) for the JPL, Stanford & UCSB CARDAMOM framework. Consult README.md file for general details on versions, publications,  and the University of Edinburgh/NCEO (UK) CARDAMOM code.
+
 
 ## Table of Contents
 - [General CARDAMOM code description](#-general)
@@ -57,6 +58,8 @@ The CARDAMOM code consists of (i) a core C functionality, which includes the DAL
 
 The CARDAMOM  C code inputs are almost entirely prescribed by user-created driver files (.cbf files, soon to be .nc.cbf files), which include met forcings, observations and uncertainties, and model configurations. The CARDAMOM outputs (.cbr files, soon to be .nc.cbr) consist of (tyically 1000) parameter vectors, which comprise the "a posteriori" distribution of parameters, derived within the Bayesian MDF C code. While the creation of driver (.cbf) files and reading of output (.cbr) files can be done in any language, here we provide matlab or python functionalities; both languages (and potentially more in the future) are expected to be regularly updated and supported as the CARDAMOM C code evolves in future versions.
 
+Consult the README.md file for general information on the available CARDAMOM versions, publications, and points of contact.
+
 ## Getting Started with CARDAMOM <a name="-getting-started"/>
 
 ### “Installing” CARDAMOM <a name="-installing--cardamom"/>
@@ -101,7 +104,7 @@ Notes:
 2. Set CARDAMOM environmental variables in matlab
     * To do this:
         - Create or edit existing matlab startup.m file: e.g. type “edit startup.m” in matlab command window to edit new or existing startup file.
-        - Copy lines from CARDAMOM_2.1.6c/MATLAB/startup_template.m into startup.m file, and adapt as instructed in startup_template.m comments.
+        - Copy lines from CARDAMOM_v2.2/MATLAB/startup_template.m into startup.m file, and adapt as instructed in startup_template.m comments.
         - Save changes to startup.m
         - Make a directory called “DUMPFILES” by typing “mkdir DUMPFILES” in matlab command window OR type "mkdir DUMFILES" in terminal console (in which case, ensure you are in the desired working directory where startup.m is).
     * Tips: 
@@ -109,7 +112,7 @@ Notes:
         - paths in “startup.m” should either be absolute paths, or relative to current working directory
         - to avoid github issues, either:
             + the current working directory needs to be outside the “CARDAMOM” folder, or equivalent github cloned folder (recommended)
-            + (b) make a “.gitignore” file and ensure github ignores all user-made files within the “CARDAMOM_2.1.6c” folder. 
+            + (b) make a “.gitignore” file and ensure github ignores all user-made files within the “CARDAMOM_v2.2” folder. 
 3. Quit & restart matlab 
 4. Type “which startup” in matlab command window 
     * check matlab is pointing at correct startup.m file
@@ -138,10 +141,10 @@ Summary of tools to interact with CARDAMOM using python. Read and write of binar
 
 See tutorials (PYTHON/tutorials)
 
-- [Tutorial 1](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/PYTHON/tutorials/cardamom_tutorial1.ipynb):
+- [Tutorial 1](https://github.com/CARDAMOM-framework/CARDAMOM_v2.2/blob/master/PYTHON/tutorials/cardamom_tutorial1.ipynb):
 Description of input file (.cbf) and how to open/view file. Open and view parameter output from assimilation runs (.cbr). Open and view pools/fluxes from forward run (.bin).
 
-- [Tutorial 2](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/PYTHON/tutorials/cardamom_tutorial2.ipynb):
+- [Tutorial 2](https://github.com/CARDAMOM-framework/CARDAMOM_v2.2/blob/master/PYTHON/tutorials/cardamom_tutorial2.ipynb):
 This tutorial will show the basic set up to run a CARDAMOM assimilation and forward run from the command line. This is set up for mac/linux.\
 
     * Basic Steps:
