@@ -5,12 +5,11 @@
 ###***THIS MANUAL IS WORK IN PROGRESS***
 
 ## Table of Contents
-- General CARDAMOM code description (#-general)
+- [General CARDAMOM code description](#-general)
 
 - [Getting Started With CARDAMOM](#-getting-started)
   * [“Installing” CARDAMOM](#-installing--cardamom)
   * [Get code from Github](#get-code-from-github)
-  * [CARDAMOM Github User Must Read](#cardamom-git-must-read)
   * [CARDAMOM Matlab Demo and Setup Test](#cardamom-with-matlab)
   * [CARDAMOM Python Demo and Setup](#cardamom-with-python)
   
@@ -54,6 +53,9 @@
 
 ## General CARDAMOM code description <a name="-general"/>
 
+The CARDAMOM code consists of (i) a core C functionality, which includes the DALEC model structures, the model-data cost function and the Bayesian model-data fusion (MDF) algorithm, and (ii) a family of matlab or python functions that allow users to engage with CARDAMOM I/O in their native/preferred language.
+
+The CARDAMOM  C code inputs are almost entirely prescribed by user-created driver files (.cbf files, soon to be .nc.cbf files), which include met forcings, observations and uncertainties, and model configurations. The CARDAMOM outputs (.cbr files, soon to be .nc.cbr) consist of (tyically 1000) parameter vectors, which comprise the "a posteriori" distribution of parameters, derived within the Bayesian MDF C code. While the creation of driver (.cbf) files and reading of output (.cbr) files can be done in any language, here we provide matlab or python functionalities; both languages (and potentially more in the future) are expected to be regularly updated and supported as the CARDAMOM C code evolves in future versions.
 
 ## Getting Started with CARDAMOM <a name="-getting-started"/>
 
@@ -80,9 +82,6 @@ Step 2. type "git clone git@github.com:CARDAMOM-framework/CARDAMOM_v2.2.git" on 
 
 + Demos below will compile CARDAMOM and run short assimilation runs and forward runs for testing. There are options in both Python and Matlab. Check Appendix for additional tools written in Matlab and Python.
 
-### CARDAMOM Github User Must Read <a name="cardamom-git-must-read">
-
-After you clone the CARDAMOM repository to your local, please take a minute to go through the first section in  [CARDAMOM_GIT_MUST_READ.md](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/CARDAMOM_GIT_MUST_READ.md). We recommand all users to follow the instructions in order to effectively maintain the CARDAMOM github environment. 
 
 ### CARDAMOM Matlab Demo and Setup Test <a name="cardamom-with-matlab"/>
 
@@ -212,12 +211,7 @@ This is the forward run using optimized parameters and saving out the pools and 
 
 To have CARDAMOM_RUN_MODEL routine save full output at runtime (to avoid having to run model again for post processing):
 
-+ Opt. 1 (recommendeds): To save output corresponding to PXI project,
-
-Use CARDAMOM_PROJECT_OUTPUTS_beta.m\
-This function stores output by default\
-
-+ Opt. 2 (prob not worth it for a handful of cbf files): To save output corresponding to cbf file, use\
++ (prob not worth it for a handful of cbf files): To save output corresponding to cbf file, use\
 
 ```matlab
 [CBR,CBF]=CARDAMOM_RUN_MODEL(cbffilename,PARS,OPT);
