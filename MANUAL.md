@@ -619,7 +619,7 @@ Can use the COMPLEX effort to document all the models here, including some examp
 
 | Group                            | Model ID   | Parent ID(s) if relevant | Description                                         | Details (POC)                   | Status                          |
 |----------------------------------|----------  |--------------------------|-----------------------------------------------------|---------------------------------|---------------------------------|
-| Low complexity                   | 101        |                          | 3-pool DALEC                                        |                                 | Tested                          |
+| Low complexity                   | 101        |                          | 3-pool DALEC                                        |                                 | Published (Famiglietti et al., 2021)                   |
 | DALEC C only                     | 400        |                          |                                                     | Bloom et al., 2016              | Published                       |
 | DALEC C + plant-available water. | 803        |                          |                                                     |                                 |                                 |
 |                                  | 804        |                          |                                                     |                                 |                                 |
@@ -627,31 +627,31 @@ Can use the COMPLEX effort to document all the models here, including some examp
 |                                  | 806        |                          |                                                     |                                 |                                 |
 |                                  | 807        |                          |                                                     |                                 |                                 |
 |                                  | 808        |                          |                                                     |                                 |                                 |
-|                                  | 809        |                          |                                                     |                                 |                                 |
+|                                  | 809        |                          |                                                     |                                 |      Published (Yin et al., 2021)     |
 |                                  | 810        |                          | Non-binary EDCs                                     |                                 | Exploratory                     |
 |                                  | 811        | 809                      |                                                     |                                 | Published (Quetin et al., 2020) |
 |                                  | 812        | 813                      | 813 with uWUE                                       |                                 |                                 |
 |                                  | 813        | 811                      | 811 with Shuang Ma’s temp fix                       |                                 | Published (Bloom et al., 2020)  |
 |                                  | 820        | 811                      | Climate-sensitive mortality                         |                                 |                                 |
-|                                  | 821        |                          | Ball-berry scheme                                   |                                 |                                 |
+|                                  | 821        |                          | Ball-berry scheme                                   |                                 |    In prep.                     |
 |                                  | 830        |     809                  |     Stephanie Stettz old weather GPP test           |                                 |                                 |
-|                                  | 831        |       809                |    Stettz et al. cold weather GPP                   |                                 |                                 |
+|                                  | 831        |       809                |    Stettz et al. cold weather GPP                   |                                 |     Stettz et al., 2021, in prep.      |
 |                                  | 840        |         No idea          |         No idea                                     |                                 |                                 |
-| DALEC + PAW + PUW                | 1000       |      811                 |                                                     |                                 | In prep.                        |
+| DALEC + PAW + PUW                | 1000       |      811                 |                                                     |                                 |  Published (Famiglietti et al., 2021)   |
 |                                  | 1001       | 1000                     | 1000 with max infiltration                          | Paul Levine                     |                                 |
 |                                  | 1002       | 1000                     | 1000 with uWUE                                      | Paul Levine                     |                                 |
-|                                  | 1003       | 1000                     | 1000 with surface runoff proportional to P          | Paul Levine                     |                                 |
+|                                  | 1003       | 1000                     | 1000 with surface runoff proportional to P          | Paul Levine                     | Published (Famiglietti et al., 2021)  |
 |                                  | 1004       | 1000                     | Testing new modular parameter definitions           | Anthony Bloom                   | In prep.                        |
-|                                  | 1005       | 1000                     | Boese et al, 2017 (uWUE + rad)                      | Paul Levine, Yan Yang           |                                 |
-|                                  | 1006       | 1002                     | 1002 with max infiltration                          | Paul Levine                     |                                 |
-|                                  | 1007       | 1005                     | 1005 with max infiltration                          | Paul Levine                     |                                 |
-|                                  | 1008       | 1002                     | 1002 with surface runoff proportional to P          | Paul Levine                     |                                 |
-|                                  | 1009       | 1005                     | 1005 with surface runoff proportional to P          | Paul Levine                     |                                 |
+|                                  | 1005       | 1000                     | Boese et al, 2017 (uWUE + rad)                      | Paul Levine, Yan Yang           |    Yang et al., in prep.        |
+|                                  | 1006       | 1002                     | 1002 with max infiltration                          | Paul Levine                     | Exploratory                     |
+|                                  | 1007       | 1005                     | 1005 with max infiltration                          | Paul Levine                      | Exploratory                     |
+|                                  | 1008       | 1002                     | 1002 with surface runoff proportional to P          | Paul Levine                      | Exploratory                     |
+|                                  | 1009       | 1005                     | 1005 with surface runoff proportional to P          | Paul Levine                       | Exploratory                     |
 |                                  | 1010       |                          | CH4 module                                          | Ma                              | In prep.                        |
 |                                  | 1011-1015  |                          | CH4 module                                          | Ma                              | In prep.                        |
 |                                  | 1020       |                          |                                                     | Norton                          | In prep.                        |
 |                                  | 1021       |                          |                                                     | Norton                          | In prep.                        |
-|                                  | 1030--1039 | 1000                     | VPD-GPP sensitivity                                 | Paul Levine                     |                                 |
+|                                  | 1030--1039 | 1000                     | VPD-GPP sensitivity                                 | Paul Levine                     |     In prep.                  |
 |                                  | 1040       | 1005                     | Nutrient model                                      | Anthony Bloom                   | In prep.                        |
 |                                  | 1050       | 1000                     | Nitrogen model                                      | Renato Braghiere                | In prep.                        |
 |                                  | 1060--1069 | 1000                     | Hydrology from Massoud et al, 2021                  | Paul Levine                     |                                 |
