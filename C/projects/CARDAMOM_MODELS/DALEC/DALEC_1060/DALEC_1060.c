@@ -2,10 +2,11 @@
 #include "../../../DALEC_CODE/DALEC_ALL/ACM.c"
 #include "../../../DALEC_CODE/DALEC_ALL/offset.c"
 #include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
-#include "../../../DALEC_CODE/DALEC_ALL/HYROLOGY_MODULES/CONVERTERS/HYDROFUN_EWT2MOI.c"
-#include "../../../DALEC_CODE/DALEC_ALL/HYROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2EWT.c"
-#include "../../../DALEC_CODE/DALEC_ALL/HYROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2CON.c"
-#include "../../../DALEC_CODE/DALEC_ALL/HYROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI.c"
+#include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/DRAINAGE.c"
+#include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_EWT2MOI.c"
+#include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2EWT.c"
+#include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2CON.c"
+#include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
@@ -116,7 +117,7 @@ double fl=(log(pars[31])-log(pars[31]-1))/2;
 
 
 // Porosity scaling factor (see line 124 of HESS paper)
-double psi_porosity = -0.117*9.8/1000
+double psi_porosity = -0.117*9.8/1000;
 
 /*additional offset*/
 double osf=offset(pars[4],wf);
@@ -227,8 +228,8 @@ double infil = pars[34]*(1 - exp(-DATA.MET[m+8]/pars[34]));
 FLUXES[f+32] = DATA.MET[m+8] - infil;
 
 // Update pools, including infiltration
-POOLS[nxp+6] = POOLS[p+6] + deltat*infil
-POOLS[nxp+7] = POOLS[p+7]
+POOLS[nxp+6] = POOLS[p+6] + deltat*infil;
+POOLS[nxp+7] = POOLS[p+7];
 
 // Volumetric soil moisture from water pools
 double sm_PAW = HYDROFUN_EWT2MOI(POOLS[nxp+6],pars[39],pars[42]);
@@ -250,12 +251,12 @@ sm_PAW -= drain_PAW;
 sm_PUW -= drain_PUW;
 
 // Convert to conductivity
-k_PAW = HYDROFUN_MOI2CON(sm_PAW,pars[33],pars[24]);
-k_PUW = HYDROFUN_MOI2CON(sm_PUW,pars[33],pars[24]);
+double k_PAW = HYDROFUN_MOI2CON(sm_PAW,pars[33],pars[24]);
+double k_PUW = HYDROFUN_MOI2CON(sm_PUW,pars[33],pars[24]);
 
 // Convert to potential
-psi_PAW = HYDROFUN_MOI2PSI(sm_PAW,psi_porosity,pars[24]);
-psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[24]);
+double psi_PAW = HYDROFUN_MOI2PSI(sm_PAW,psi_porosity,pars[24]);
+double psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[24]);
 
 // Calculate inter-pool transfer in m/s (positive is PUW to PAW)
 double xfer = -1000 * sqrt(k_PAW*k_PUW) * (1000*(psi_PAW-psi_PUW)/(9.8*0.5*(pars[42]+pars[43])) + 1);

@@ -8,7 +8,7 @@ p - layer porosity (1)
 z - layer thickness (m)
 */
 
-double HYDROFUN_MOI2EWT(double ewt, double p, double z){
+double HYDROFUN_MOI2EWT(double moi, double p, double z){
 
 double ewt=moi*1000*p*z;
 
