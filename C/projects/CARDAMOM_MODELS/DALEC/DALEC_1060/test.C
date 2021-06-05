@@ -1,6 +1,0 @@
-#include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2CON.c"
-
-int test()
-{
-	printf(HYDROFUN_MOI2CON(2.4,0.5,1.5))
-}

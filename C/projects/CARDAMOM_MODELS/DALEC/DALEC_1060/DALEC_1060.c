@@ -226,8 +226,8 @@ double infil = pars[34]*(1 - exp(-DATA.MET[m+8]/pars[34]));
 // Surface runoff (mm/day)
 FLUXES[f+32] = DATA.MET[m+8] - infil;
 
-// Update pools, including infiltration and ET for PAW
-POOLS[nxp+6] = POOLS[p+6] + deltat*(infil - FLUXES[f+28])
+// Update pools, including infiltration
+POOLS[nxp+6] = POOLS[p+6] + deltat*infil
 POOLS[nxp+7] = POOLS[p+7]
 
 // Volumetric soil moisture from water pools
@@ -261,11 +261,11 @@ psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[24]);
 double xfer = -1000 * sqrt(k_PAW*k_PUW) * (1000*(psi_PAW-psi_PUW)/(9.8*0.5*(pars[42]+pars[43])) + 1);
 
 // Transfer flux in mm/day
-FLUXES[f+30] = xfer*1000*3600*24
+FLUXES[f+30] = xfer*1000*3600*24;
 
-// Update pools
-POOLS[nxp+6] += (FLUXES[f+30] - FLUXES[f+29])*deltat
-POOLS[nxp+7] += (-FLUXES[f+30] - FLUXES[f+31])*deltat
+// Update pools, including ET from PAW
+POOLS[nxp+6] += (FLUXES[f+30] - FLUXES[f+29] - FLUXES[f+28])*deltat;
+POOLS[nxp+7] += (-FLUXES[f+30] - FLUXES[f+31])*deltat;
 
 	/*total pool transfers - WITH FIRES*/
 	/*first fluxes*/
