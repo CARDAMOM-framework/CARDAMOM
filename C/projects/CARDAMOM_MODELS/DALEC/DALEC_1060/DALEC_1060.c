@@ -236,7 +236,7 @@ double sm_PAW = HYDROFUN_EWT2MOI(POOLS[nxp+6],pars[39],pars[42]);
 double sm_PUW = HYDROFUN_EWT2MOI(POOLS[nxp+7],pars[40],pars[43]);
 
 // Update PAW SM with infiltration
-sm_PAW += HYDROFUN_EWT2MOI(infil*deltat,pars[39],pars[42]);
+//sm_PAW += HYDROFUN_EWT2MOI(infil*deltat,pars[39],pars[42]);
 
 // Calculate drainage
 double drain_PAW = DRAINAGE(sm_PAW,pars[44],-pars[41],psi_porosity,pars[24]);
