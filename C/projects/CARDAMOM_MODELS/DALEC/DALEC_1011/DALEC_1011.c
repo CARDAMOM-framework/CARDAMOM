@@ -249,7 +249,7 @@ gpppars[7]=DATA.MET[m+3];
 
 /*GPP*/
 FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
-/*Evapotranspiration (VPD = DATA.MET[m+7]) DALEC-JCR v2 updated with radiantion residual component, from Boese and Yan et al 2021*/
+/*Evapotranspiration (VPD = DATA.MET[m+7]) DALEC-JCR v2 updated with radiation residual component, from Boese and Yan et al 2021*/
 FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23]+DATA.MET[m+3]*pars[42];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
