@@ -608,14 +608,14 @@ t2=0.02;
     ylabel('Snow melt / SWE [fraction]')
 
 
-SWE(1)=300; %Parameter 1. Initial condition
-t1=270; %min threshold for melt
-t2=0.1;% slope 
+SWE(1)=300; %Parameter 1. Initial condition [0.00001, 10000]
+t1=270; %min threshold for melt Prior = [240 300]
+t2=0.1;% slope (units = melt fraction per degree K). [0.0001 1]
 deltat=365.25/12;
 for m=1:12;
             MELT_frac(m)=min(max((ERA5.skintemp(m)-t1)*t2,0),1);
 
-    SWE(m+1)=max(SWE(m)+ERA5.snow(m)*deltat - MELT_frac(m)*SWE(m),0);
+    SWE(m+1)=max(SWE(m)+ERA5.snow(m)*deltat - MELT_frac(m)*(SWE(m)),0);
 
 
 end
