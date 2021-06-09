@@ -28,7 +28,7 @@ double deltat=DATA.deltat;
 int nr=DATA.nodays;
 
 
- double constants[10]={pars[10],0.0156935,4.22273,208.868,0.0453194,0.37836,7.19298, 0.011136,2.1001,0.789798};
+double constants[10]={pars[10],0.0156935,4.22273,208.868,0.0453194,0.37836,7.19298, 0.011136,2.1001,0.789798};
 
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
 double *FLUXES=DATA.M_FLUXES;
@@ -48,7 +48,7 @@ double *NEE=DATA.M_NEE;
 
 POOLS[6]=pars[26];
 POOLS[7]=pars[35];
-
+POOLS[8]=pars[37]; /*SWE*/
 
 /* NOTES FOR POOLS AND FLUXES
 DATA.MET[:,0]: projday
@@ -60,7 +60,7 @@ DATA.MET[:,5]: yearday
 DATA.MET[:,6]: burned area
 DATA.MET[:,7]: VPD
 DATA.MET[:,8]: precipitation
-
+DATA.MET[:,9]: snowfall
 
   POOLS[0,0]=pars(8);Lab
   POOLS[0,1]=pars(5);Fol
@@ -212,10 +212,14 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
         POOLS[nxp+5]= POOLS[p+5]+ (FLUXES[f+14] - FLUXES[f+13]+FLUXES[f+10])*deltat;                    
 /*Water pool = Water pool - runoff + prec (mm/day) - ET*/
 	/*printf("%2.1f\n",POOLS[p+6]);*/
-	/*PAW total runoff*/
+	  /*Snow water equivalent*/
+				POOLS[nxp+8]=POOLS[p+8]+DATA.MET[m+9]*deltat /*first step snowfall to SWE*/
+        FLUXES[f+32]=min(max(((DATA.MET[m+2]+DATA.MET[m+1])/2-pars[38])*pars[39],0),1)*POOLS[nxp+8]; /*melted snow per day*/
+        POOLS[nxp+8]=POOLS[nxp+8]-FLUXES[f+32]*deltat; /*second step remove snowmelt from SWE*/
 
+	/*PAW total runoff*/
 	FLUXES[f+29]=pow(POOLS[p+6],2)/pars[24]/deltat*(1-pars[33]);	
-        /*PAW -> PUW transfer*/
+  /*PAW -> PUW transfer*/
 	FLUXES[f+30]=FLUXES[f+29]*pars[33]/(1-pars[33]);
 	/*PUW runoff*/
 	FLUXES[f+31]=pow(POOLS[p+7],2)/pars[34]/deltat;
@@ -224,7 +228,7 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
         FLUXES[f+30]=(POOLS[p+6]-pars[24]/4)/deltat*pars[33]/(1-pars[33]);}
 	if (POOLS[p+7]>pars[34]/2){FLUXES[f+31]=(POOLS[p+7]-pars[34]/4)/deltat;}
 
-	POOLS[nxp+6]=POOLS[p+6] + (-FLUXES[f+29] - FLUXES[f+30] + DATA.MET[m+8] - FLUXES[f+28])*deltat;
+	POOLS[nxp+6]=POOLS[p+6] + (-FLUXES[f+29] - FLUXES[f+30] + DATA.MET[m+8] - FLUXES[f+28] + FLUXES[f+32])*deltat;
 
 		
 	/*Plant-unavailable water budget*/

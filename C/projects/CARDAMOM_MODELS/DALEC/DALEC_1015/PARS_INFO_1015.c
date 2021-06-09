@@ -165,6 +165,17 @@ CARDADATA->parmax[35]=10000;
 CARDADATA->parmin[36]=0.01;
 CARDADATA->parmax[36]=0.3;
 
+/*iSWE: initial for state variable SWE snow water equivalent*/
+CARDADATA->parmin[37]=0.000001;
+CARDADATA->parmax[37]=10000;
+
+/*sn1: min threshold for melt*/
+CARDADATA->parmin[38]=240;
+CARDADATA->parmax[38]=300;
+
+/*sn2: slope*/
+CARDADATA->parmin[39]=0.00001;
+CARDADATA->parmax[39]=1;
 return 0;
 
 }
