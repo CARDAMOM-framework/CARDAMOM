@@ -3,12 +3,11 @@
 %This code runs a sequence of CARDAMOM benchmark tests with expected or
 %known outcomes
 
-cbffilename='CARDAMOM/DATA/GCRUN_JUN20_TDLE_1942.cbf';
-cbrfilename='CARDAMOM/DATA/GCRUN_JUN20_TDLE_1942_1.cbr';
+cbffilename='CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbf';
+cbrfilename='CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbr';
 
 %Step 1. Run forward run
 CBR=CARDAMOM_RUN_MODEL(cbffilename,cbrfilename);
-CBF=CARDAMOM_READ_BINARY_FILEFORMAT(cbffilename);
 
 disp('**********')
 disp('**********')
@@ -21,6 +20,24 @@ disp('**********')
 disp('**********')
 disp('**********')
 disp('**********')
+
+
+
+
+CBF=CARDAMOM_READ_BINARY_FILEFORMAT(cbffilename);
+
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('CARDAMOM_READ_BINARY_FILEFORMAT successfully executed')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+
 
 cbrtest='cardamom_integration_test.cbr';
 delete('cardamom_integration_test.cbrSTART');
@@ -42,6 +59,7 @@ disp('**********')
 %ADEMCMC
 
 %Step 2. Set up and run DEMCMC
+%Still in prototype phase
 MCO.niterations=10000;
 MCO.printrate=100;
 MCO.samplerate=MCO.niterations/2000*100;

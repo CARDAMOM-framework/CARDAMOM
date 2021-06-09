@@ -20,22 +20,24 @@ printf("D.nlai = %i\n",D.nlai);
 printf("D.otherpriors[4] = %2.2f\n",D.otherpriors[4]);
 printf("D.M_LAI[D.laipts[1]] = %2.2f\n",D.M_LAI[D.laipts[0]]);
 /*Standard timestep model-data comparison*/
+
+//Notes: If no "MLAI" (mean LAI) is provided, then cost function conducts a month-to-month comparison
 if (D.otherpriors[4]<0 & D.nlai>0){for (n=0;n<D.nlai;n++){dn=D.laipts[n];tot_exp+=pow(log(D.M_LAI[dn]/D.LAI[dn])/log(2),2);}
 P=P-0.5*tot_exp;
 printf("P=P-0.5*tot_exp = %2.2f\n",P);}
 /*use timesteps for mean LAI calculation*/
 /*Here only using mean LAI*/
+//NOTES: if "MLAI" (mean LAI) is provided, then only mean LAI is considered (either throughout model run or throughout overlapping timeseries, depending on whether LAI timeseries data is provided.
 else if (D.otherpriors[4]>0){
 
-
+//If timeseries data is provided, calculate model MLAI constraint during those points
 if (D.nlai>0){
 for (n=0;n<D.nlai;n++){dn=D.laipts[n];mlai+=D.M_LAI[dn];}
 mlai=mlai/(double)D.nlai;}
+//If no timeseries data is provided, calculate model MLAI for whole run
 else {for (n=0;n<D.nodays;n++){mlai+=D.M_LAI[n];};mlai=mlai/(double)D.nodays;}
 
-
-
-
+//Apply MLAI as normal or log-normal distrubution (depending if MLAI unc is positive or negative)
 if (D.otherpriorunc[4]<0){
 P=P-0.5*pow((mlai-D.otherpriors[4])/D.otherpriorunc[4],2);}
 else {
