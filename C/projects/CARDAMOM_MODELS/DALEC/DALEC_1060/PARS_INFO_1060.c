@@ -147,7 +147,7 @@ CARDADATA->parmax[31]=8;
 CARDADATA->parmin[32]=0.01;
 CARDADATA->parmax[32]=1;
 
-/*Saturated hydraulic condictivity (m/s)*/
+/*Saturated hydraulic conductivity (m/s)*/
 CARDADATA->parmin[33]=0.0000001;
 CARDADATA->parmax[33]=0.00001;
 
