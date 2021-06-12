@@ -96,7 +96,7 @@ DATA.MET[:,8]: precipitation
 	23-27. Fires (C pool transfers)
 	28. ET
   29. PAW runoff
-  30. PAW->PUW transfer
+  30. PUW->PAW transfer
   31. PUW runoff
   32. Surface runoff
   33. Potential GPP
