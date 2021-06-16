@@ -264,7 +264,7 @@ if OPT.extended==1
   if size(CBR.POOLS,3)>6
       if OPT.MODEL.ID<=8 | any(ismember([801,802,803,804,805,806,807,808,809,810,811,812,813,10,1000,1001,1002,1003,1005,1009],OPT.MODEL.ID))
     CBR.H2OSTRESS=min([PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);
-    elseif OPT.MODEL.ID==1030 | OPT.MODEL.ID==1031 | OPT.MODEL.ID==1032;
+    elseif OPT.MODEL.ID==1030 | OPT.MODEL.ID==1031 | OPT.MODEL.ID==1032 | OPT.MODEL.ID==1060;
         CBR.PAWSTRESS=min([PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);        
         CBR.VPDSTRESS=1./(1+repmat(CBF.MET(:,8)',[size(CBR.PARS(:,37),1),1])./repmat(CBR.PARS(:,37),[1,size(CBF.MET(:,8),1)]));
         CBR.H2OSTRESS=CBR.PAWSTRESS.*CBR.VPDSTRESS
@@ -310,7 +310,7 @@ end
 
 
 
-if any(ismember([1000,1001,1002,1003],OPT.MODEL.ID))
+if any(ismember([1000,1001,1002,1003,1005,1030,1031,1032,1060],OPT.MODEL.ID))
     %Accounting for time offset
     CBR.EWT=[CBR.PARS(:,27), CBR.POOLS(:,:,7)]+[CBR.PARS(:,36),CBR.POOLS(:,:,8)];
     CBR.EWT=CBR.EWT(:,2:end)/2+CBR.EWT(:,1:end-1)/2;
@@ -321,9 +321,9 @@ if any(ismember([1000,1001,1002,1003],OPT.MODEL.ID))
 
 %Runoff from PAW and PUW 
     %Wrong: CBR.RO=CBR.FLUXES(:,:,30)-CBR.FLUXES(:,:,31)+CBR.FLUXES(:,:,32);
-    if OPT.MODEL.ID==1001 | OPT.MODEL.ID==1003;
+    if OPT.MODEL.ID==1001 | OPT.MODEL.ID==1003 | OPT.MODEL.ID==1060;
         CBR.RO=CBR.FLUXES(:,:,30)+CBR.FLUXES(:,:,32)+CBR.FLUXES(:,:,33);
-    elseif OPT.MODEL.ID==1000 | OPT.MODEL.ID==1002;
+    elseif OPT.MODEL.ID==1000 | OPT.MODEL.ID==1002 | OPT.MODEL.ID==1030 | OPT.MODEL.ID==1031 | OPT.MODEL.ID==1032;
         CBR.RO=CBR.FLUXES(:,:,30)+CBR.FLUXES(:,:,32);
     end
     
@@ -340,7 +340,7 @@ end
     
     
 
-if any(ismember([809,811,812,813,1000,1001,1002,1003,1005,1009,1030,1031,1032],OPT.MODEL.ID))
+if any(ismember([809,811,812,813,1000,1001,1002,1003,1005,1009,1030,1031,1032,1060],OPT.MODEL.ID))
 
     %export ET 
     CBR.ET=CBR.FLUXES(:,:,29);
