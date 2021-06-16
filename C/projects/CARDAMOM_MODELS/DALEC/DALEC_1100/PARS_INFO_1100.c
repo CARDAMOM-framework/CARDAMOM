@@ -107,13 +107,13 @@ CARDADATA->parmax[21]=2000.0;
 CARDADATA->parmin[22]=1.0;
 CARDADATA->parmax[22]=200000.0;
 
-/*IWUE: GPP*VPD/ET: gC/kgH2o *hPa*/
-CARDADATA->parmin[23]=10;
-CARDADATA->parmax[23]=50;
+/*uWUE: GPP*sqrt(VPD)/ET: gC/kgH2o *hPa*/
+CARDADATA->parmin[23]=0.5;
+CARDADATA->parmax[23]=30;
 
-/*Runoff focal point (~maximum soil storage capacity x 4)*/
-CARDADATA->parmin[24]=1;
-CARDADATA->parmax[24]=100000;
+/*Retention parameter (b)*/
+CARDADATA->parmin[24]=1.5;
+CARDADATA->parmax[24]=10;
 
 /*"Wilting point"*/
 CARDADATA->parmin[25]=1;
@@ -147,18 +147,53 @@ CARDADATA->parmax[31]=8;
 CARDADATA->parmin[32]=0.01;
 CARDADATA->parmax[32]=1;
 
-/*PAW->PUW runoff fraction*/
-CARDADATA->parmin[33]=0.01;
-CARDADATA->parmax[33]=1;
+/*Saturated hydraulic conductivity (m/s)*/
+CARDADATA->parmin[33]=0.0000001;
+CARDADATA->parmax[33]=0.00001;
 
-/*PUW Runoff focal point (~maximum soil storage capacity x 4)*/
-CARDADATA->parmin[34]=1;
-CARDADATA->parmax[34]=100000;
+/*Maximum infiltration (m/month)*/
+CARDADATA->parmin[34]=100;
+CARDADATA->parmax[34]=2000;
 
 /*PUW pool*/
 CARDADATA->parmin[35]=1;
 CARDADATA->parmax[35]=10000;
 
+/*Reference VPD */
+CARDADATA->parmin[36]=10;
+CARDADATA->parmax[36]=10000;
+
+/*VPD curvature exponent */
+CARDADATA->parmin[37]=0.001;
+CARDADATA->parmax[37]=1000;
+
+/*r: The chosen prior range in r conservatively captures the range of values by Boese et al.(2017)*/
+CARDADATA->parmin[38]=0.01;
+CARDADATA->parmax[38]=0.3;
+
+/*PAW porosity*/
+CARDADATA->parmin[39]=0.2;
+CARDADATA->parmax[39]=0.8;
+
+/*PUW porosity*/
+CARDADATA->parmin[40]=0.2;
+CARDADATA->parmax[40]=0.8;
+
+/*Field capacity (negative) potential (-Mpa)*/
+CARDADATA->parmin[41]=0.01;
+CARDADATA->parmax[41]=0.1;
+
+/*PAW depth (m)*/
+CARDADATA->parmin[42]=0.01;
+CARDADATA->parmax[42]=100;
+
+/*PUW depth (m)*/
+CARDADATA->parmin[43]=0.01;
+CARDADATA->parmax[43]=100;
+
+/*Runoff excess*/
+CARDADATA->parmin[44]=0.01;
+CARDADATA->parmax[44]=1;
 
 return 0;
 
