@@ -1,5 +1,4 @@
 #pragma once
-#include "../../../DALEC_CODE/DALEC_ALL/ACM.c"
 #include "../../../DALEC_CODE/DALEC_ALL/offset.c"
 #include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
 #include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/DRAINAGE.c"
@@ -7,7 +6,7 @@
 #include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2EWT.c"
 #include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2CON.c"
 #include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI.c"
-#include "../../../CARDAMOM_MODELS/DALEC/DALEC_1100/LIU_An.c"
+#include "../../../DALEC_CODE/DALEC_ALL/LIU_An.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
@@ -15,19 +14,11 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 int DALEC_1100(DATA DATA, double const *pars)
 {
 
-double gpppars[11],pi;
 /*C-pools, fluxes, meteorology indices*/
 int p,f,m,nxp, i;
 int n=0,nn=0;
-pi=3.1415927;
+double pi=3.1415927;
 
-
-/*constant gpppars terms*/
-gpppars[3]=1;
-gpppars[6]=DATA.LAT;
-gpppars[8]=-2.0;
-gpppars[9]=1.0;
-gpppars[10]=pi;
 
 double deltat=DATA.deltat;
 int nr=DATA.nodays;
@@ -166,30 +157,15 @@ f=nofluxes*n;
 
 /*LAI*/
 LAI[n]=POOLS[p+1]/pars[16]; 
-/*GPP*/
-gpppars[0]=LAI[n];
-gpppars[1]=DATA.MET[m+2];
-gpppars[2]=DATA.MET[m+1];
-gpppars[4]=DATA.MET[m+4];
-gpppars[5]=DATA.MET[m+5];
-gpppars[7]=DATA.MET[m+3];
-
-
 
 /*GPP*/
-FLUXES[f+33]=ACM(gpppars,constants);
-
-
-//FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1)*(1-pow(fmin(fmax(DATA.MET[m+7],0),pars[36])/pars[36],pars[37]));
-
-double SRAD = 12.*gpppars[7]; //Shortwave downward radiation (W.m-2)
-double VPD = gpppars[11]/10.; //VPD (kPa)
-double TEMP = 273.15 + (gpppars[1]+gpppars[2])/2.; //(Tmin + Tmax)/2 (K)
-double co2 = gpppars[4]; //co2 (ppm)
+double SRAD = 12.*DATA.MET[m+3]; //Shortwave downward radiation (W.m-2)
+double VPD = DATA.MET[m+5]/10.; //VPD (kPa)
+double TEMP = 273.15 + (DATA.MET[m+2]+DATA.MET[m+3])/2.; //(Tmin + Tmax)/2 (K)
+double co2 = DATA.MET[m+4]; //co2 (ppm)
 double vcmax25 = pars[46]; 
 double g1 = pars[45]; 
 double beta = fmin(POOLS[p+6]/pars[25],1);
-
 FLUXES[f+0]=LIU_An(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n]);
 
 /*Evapotranspiration (VPD = DATA.MET[m+7])*/
