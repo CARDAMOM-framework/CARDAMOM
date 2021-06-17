@@ -46,7 +46,7 @@ return 0;}
 #include "../CARDAMOM_MODELS/DALEC/DALEC_1032/MODEL_INFO_1032.c"
 #include "../CARDAMOM_MODELS/DALEC/DALEC_1040/MODEL_INFO_1040.c"
 #include "../CARDAMOM_MODELS/DALEC/DALEC_1060/MODEL_INFO_1060.c"
-#include "../CARDAMOM_MODELS/DALEC/DALEC_1060/MODEL_INFO_1100.c"
+#include "../CARDAMOM_MODELS/DALEC/DALEC_1100/MODEL_INFO_1100.c"
 
 /*This function attributes model specific variables based
  * on the ID number stored in DATA->ID*/
