@@ -160,7 +160,7 @@ LAI[n]=POOLS[p+1]/pars[16];
 
 /*GPP*/
 double SRAD = 12.*DATA.MET[m+3]; //Shortwave downward radiation (W.m-2)
-double VPD = DATA.MET[m+5]/10.; //VPD (kPa)
+double VPD = DATA.MET[m+7]/10.; //VPD (kPa)
 double TEMP = 273.15 + (DATA.MET[m+2]+DATA.MET[m+3])/2.; //(Tmin + Tmax)/2 (K)
 double co2 = DATA.MET[m+4]; //co2 (ppm)
 double vcmax25 = pars[46]; 
