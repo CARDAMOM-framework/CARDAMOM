@@ -7,8 +7,85 @@ if k>0
         disp(sprintf('Met check failed with total %d warning(s)',k))
 end
 
+disp('OBS checks')
+obs_flag=obs_checks(CBF);
+if obs_flag>0
+        disp(sprintf('OBS check failed with total %d warning(s)',obs_flag))
+end
+
 %next checks here
 end
+
+function obs_flag=obs_checks(CBF)
+obs_flag=0;
+disp('Checking CBF OBS GPP is positive or valid missing value')
+if (sum(CBF.OBS.GPP<=0 & CBF.OBS.GPP~=-9999)>0)
+        warning('CBF OBS GPP is negative, file will make CARDAMOM crash');
+        obs_flag = obs_flag + 1;
+end
+
+disp('Checking CBF OBS LAI is positive or valid missing value')
+if (sum(CBF.OBS.LAI<=0 & CBF.OBS.LAI~=-9999)>0)
+        warning('CBF OBS LAI is negative, file will make CARDAMOM crash');
+        obs_flag = obs_flag + 1;
+end
+
+
+disp('Checking CBF OBS ABGB is positive or valid missing value')
+if (sum(CBF.OBS.ABGB<=0 & CBF.OBS.ABGB~=-9999)>0)
+        warning('CBF OBS ABGB is negative, file will make CARDAMOM crash');
+        obs_flag = obs_flag + 1;
+end
+
+disp('Checking CBF OBS ET is positive or valid missing value')
+if (sum(CBF.OBS.ET<=0 & CBF.OBS.ET~=-9999)>0)
+        warning('CBF OBS ET is negative, file will make CARDAMOM crash');
+        obs_flag = obs_flag + 1;
+end
+
+disp('Checking CBF OBS SOM is positive or valid missing value')
+if (sum(CBF.OBS.SOM<=0 & CBF.OBS.SOM~=-9999)>0)
+        warning('CBF OBS SOM is negative, file will make CARDAMOM crash');
+        obs_flag = obs_flag + 1;
+end
+
+
+disp('Checking CBF OBS CH4 is positive or valid missing value')
+if (sum(CBF.OBS.CH4<=0 & CBF.OBS.CH4~=-9999)>0)
+        warning('CBF OBS CH4 is negative, file will make CARDAMOM crash');
+        obs_flag = obs_flag + 1;
+end
+
+
+disp('Checking CBF OTHER OBS MBiomass is positive or valid missing value')
+if ((CBF.OTHER_OBS.MBiomass.mean<=0 & CBF.OTHER_OBS.MBiomass.mean~=-9999)>0)
+        warning('CBF OTHER_OBS MBiomass is negative, file will make CARDAMOM crash');
+        obs_flag = obs_flag + 1;
+end
+
+
+disp('Checking CBF OTHER OBS MFire is positive or valid missing value')
+if ((CBF.OTHER_OBS.MFire.mean<=0 & CBF.OTHER_OBS.MFire.mean~=-9999)>0)
+        warning('CBF OTHER_OBS MFire is negative, file will make CARDAMOM crash');
+        obs_flag = obs_flag + 1;
+end
+
+
+disp('Checking CBF OTHER OBS MLAI is positive or valid missing value')
+if ((CBF.OTHER_OBS.MLAI.mean<=0 & CBF.OTHER_OBS.MLAI.mean~=-9999)>0)
+        warning('CBF OTHER_OBS MLAI is negative, file will make CARDAMOM crash');
+        obs_flag = obs_flag + 1;
+end
+
+
+disp('Checking CBF OTHER OBS MGPP is positive or valid missing value')
+if ((CBF.OTHER_OBS.MGPP.mean<=0 & CBF.OTHER_OBS.MGPP.mean~=-9999)>0)
+        warning('CBF OTHER_OBS MGPP is negative, file will make CARDAMOM crash');
+        obs_flag = obs_flag + 1;
+end
+
+
+end 
 
 function k=met_checks(CBF)
 %okcheck=1;
