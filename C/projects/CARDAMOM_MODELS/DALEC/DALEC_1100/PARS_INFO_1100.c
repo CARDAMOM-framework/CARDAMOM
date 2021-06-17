@@ -195,6 +195,14 @@ CARDADATA->parmax[43]=100;
 CARDADATA->parmin[44]=0.01;
 CARDADATA->parmax[44]=1;
 
+/*Medlyn g1*/
+CARDADATA->parmin[45]=1.79;
+CARDADATA->parmax[45]=5.79;
+
+/*Vcmax25*/ 
+CARDADATA->parmin[46]=1e-8;
+CARDADATA->parmax[46]=140;
+
 return 0;
 
 }
