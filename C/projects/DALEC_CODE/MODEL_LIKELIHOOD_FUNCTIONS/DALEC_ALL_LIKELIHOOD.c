@@ -89,16 +89,16 @@ double P=0;
 
 OBSOPE *O=&((DALEC *)D.MODEL)->OBSOPE;
 
-printf("O->SUPPORT_LAI_OBS = %d\n",O->SUPPORT_LAI_OBS);
+//printf("O->SUPPORT_LAI_OBS = %d\n",O->SUPPORT_LAI_OBS);
 
 
 //Observation operator on DALEC variables.
 DALEC_OBSOPE(&D,O);
 
 
-printf("About to calculate likelihoods...\n");
+//printf("About to calculate likelihoods...\n");
 
-printf("O->SUPPORT_LAI_OBS = %d\n",O->SUPPORT_LAI_OBS);
+//printf("O->SUPPORT_LAI_OBS = %d\n",O->SUPPORT_LAI_OBS);
 
 if (O->SUPPORT_CH4_OBS){   P=P+DALEC_LIKELIHOOD_CH4(D);}
 if (O->SUPPORT_GPP_OBS){   P=P+DALEC_LIKELIHOOD_GPP(D);}

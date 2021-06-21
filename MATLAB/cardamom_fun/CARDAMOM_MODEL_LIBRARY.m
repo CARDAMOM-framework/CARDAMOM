@@ -34,7 +34,7 @@ unix(sprintf('./%s/projects/CARDAMOM_GENERAL/CARDAMOM_ASSEMBLE_MODELS.exe %s',Cp
 end
 
 %*****Step 1. find path for model info*****
-filename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/MODEL_INFO_%i.c',Cpath,ID,ID);
+filename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/DALEC_%i.c',Cpath,ID,ID);
 stack_filename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/dalec_%i_pars.txt',Cpath,ID,ID);
 
 %filename=sprintf('%s/projects/CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c',Cpath);
@@ -56,9 +56,10 @@ D=importdata(filename,'');
 for n=1:size(D,1);
     %reading strings that read as follows
     %DATA->nopools=7;
-    if strncmp(D{n},'DALECmodel.no',12)
+    if strncmp(D{n},'DALECmodel->no',14)
         %E.g. evaluates  'DALECmodel.nopools=7;'
-    eval(D{n}(1:find(D{n}==';',1)));
+        st=D{n};st(st=='>')='.';st=st(st~='-');
+    eval(st(1:find(st==';',1)));
     end
 end
 

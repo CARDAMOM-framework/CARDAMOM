@@ -60,7 +60,7 @@ else {P=P-0.5*pow((mgpp-D.otherpriors[5])/D.otherpriorunc[5],2);}
 
 }
 
-printf("Done with GPP cost function\n");
+//printf("Done with GPP cost function\n");
 
 
 

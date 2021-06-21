@@ -10,9 +10,9 @@ double DALEC_MLF(DATA DATA,double *PARS){
 //copy pars to M_PARS for export
 int n; for (n=0;n<DATA.nopars;n++){DATA.M_PARS[n]=PARS[n];}
 
-printf("DATA.nopars = %i\n",DATA.nopars);
-printf("PARS[16] = %2.2f\n",PARS[16]);
-printf("DATA.M_PARS[16] = %2.2f\n",DATA.M_PARS[16]);
+//printf("DATA.nopars = %i\n",DATA.nopars);
+//printf("PARS[16] = %2.2f\n",PARS[16]);
+//printf("DATA.M_PARS[16] = %2.2f\n",DATA.M_PARS[16]);
 
 /*Copy model pointer for brevity*/
 DALEC *MODEL=(DALEC *)DATA.MODEL;

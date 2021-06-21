@@ -16,10 +16,6 @@ int MODEL_INFO_1000(DATA * DATA){
 static DALEC DALECmodel;
 
 
-DALECmodel.nopools=8;
-DALECmodel.nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel.nopars=36;
-DALECmodel.nofluxes=32;
 
 /*Step 2: Fill structure with model-specific info*/
 DALEC_1000_MODCONFIG(&DALECmodel);

@@ -1,12 +1,17 @@
 #pragma once
-#include "../../../DALEC_CODE/DALEC_ALL/ACM.c"
-#include "../../../DALEC_CODE/DALEC_ALL/offset.c"
+//Note: DALEC_OBSERVATION_OPERATORS.c included in DALEC_MODULE.
 #include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
-#include "../DALEC_OBSERVATION_OPERATORS/DALEC_OBSERVATION_OPERATORS.c"
+
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
 int DALEC_1000_MODCONFIG(DALEC * DALECmodel){
+
+
+DALECmodel->nopools=8;
+DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
+DALECmodel->nopars=36;
+DALECmodel->nofluxes=32;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
@@ -56,8 +61,6 @@ OBSOPE.GRACE_EWT_h2o_pools=GRACE_EWT_h2o_pools;
 OBSOPE.GRACE_EWT_n_h2o_pools=2;
 //Fire-specific variables
 OBSOPE.FIR_flux=16;
-
-
 
 DALECmodel->OBSOPE=OBSOPE;
 
