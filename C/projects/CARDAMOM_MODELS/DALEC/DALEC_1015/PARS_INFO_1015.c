@@ -176,6 +176,10 @@ CARDADATA->parmax[38]=300;
 /*sn2: slope*/
 CARDADATA->parmin[39]=0.00001;
 CARDADATA->parmax[39]=1;
+
+/*sn3: snow cover fraction scalar*/
+CARDADATA->parmin[40]=0.01;
+CARDADATA->parmax[40]=20.0;
 return 0;
 
 }

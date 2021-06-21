@@ -15,8 +15,8 @@ for (n=0;n<D.newt;n++){
 dn=D.ewtpts[n];
 
 /*mean model EWT*/
-mewtm+=(D.M_POOLS[D.nopools*dn+6] + D.M_POOLS[D.nopools*dn+7]+
-D.M_POOLS[D.nopools*(dn+1)+6] + D.M_POOLS[D.nopools*(dn+1)+7]
+mewtm+=(D.M_POOLS[D.nopools*dn+6] + D.M_POOLS[D.nopools*dn+7] + D.M_POOLS[D.nopools*dn+8] +
+D.M_POOLS[D.nopools*(dn+1)+6] + D.M_POOLS[D.nopools*(dn+1)+7] + D.M_POOLS[D.nopools*(dn+1)+8]
 )/(D.newt*2);
 /*Mean obs ewt - already aligned between t and t+1*/
 mewt+=(D.EWT[dn])/(D.newt);
@@ -24,8 +24,8 @@ mewt+=(D.EWT[dn])/(D.newt);
 }
 
 for (n=0;n<D.newt;n++){dn=D.ewtpts[n];tot_exp+=pow((
-(D.M_POOLS[D.nopools*dn+6]+ D.M_POOLS[D.nopools*dn+7]
-+D.M_POOLS[D.nopools*(dn+1)+6]+ D.M_POOLS[D.nopools*(dn+1)+7])/2
+(D.M_POOLS[D.nopools*dn+6]+ D.M_POOLS[D.nopools*dn+7]+ D.M_POOLS[D.nopools*dn+8]
++D.M_POOLS[D.nopools*(dn+1)+6]+ D.M_POOLS[D.nopools*(dn+1)+7]+ D.M_POOLS[D.nopools*(dn+1)+8])/2
 -mewtm - D.EWT[dn]+mewt)/D.ewt_obs_unc,2);}
 P=P-0.5*tot_exp;}
 
