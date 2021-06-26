@@ -152,8 +152,8 @@ CARDADATA->parmin[33]=0.0000001;
 CARDADATA->parmax[33]=0.00001;
 
 /*Maximum infiltration (m/month)*/
-CARDADATA->parmin[34]=100;
-CARDADATA->parmax[34]=2000;
+CARDADATA->parmin[34]=1;
+CARDADATA->parmax[34]=1e4;
 
 /*PUW pool*/
 CARDADATA->parmin[35]=1;
