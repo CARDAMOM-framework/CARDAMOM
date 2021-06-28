@@ -648,14 +648,15 @@ Can use the COMPLEX effort to document all the models here, including some examp
 |                                  | 1007       | 1005                     | 1005 with max infiltration                          | Paul Levine                      | Exploratory                     |
 |                                  | 1008       | 1002                     | 1002 with surface runoff proportional to P          | Paul Levine                      | Exploratory                     |
 |                                  | 1009       | 1005                     | 1005 with surface runoff proportional to P          | Paul Levine                       | Exploratory                     |
-|                                  | 1010       |                          | CH4 module                                          | Ma                              | In prep.                        |
-|                                  | 1011-1015  |                          | CH4 module                                          | Ma                              | In prep.                        |
+|                                  | 1010-1014       |                          | CH4 module                                          | Ma                              | In prep.                        |
+|                                  | 1015-1019  |                          | snow module                                          | Ma                              | In prep.                        |
 |                                  | 1020       |                          |                                                     | Norton                          | In prep.                        |
 |                                  | 1021       |                          |                                                     | Norton                          | In prep.                        |
 |                                  | 1030--1039 | 1000                     | VPD-GPP sensitivity                                 | Paul Levine                     |     In prep.                  |
 |                                  | 1040       | 1005                     | Nutrient model                                      | Anthony Bloom                   | In prep.                        |
 |                                  | 1050       | 1000                     | Nitrogen model                                      | Renato Braghiere                | In prep.                        |
 |                                  | 1060--1069 | 1000                     | Hydrology from Massoud et al, 2021                  | Paul Levine                     |                                 |
+| Flagship                         | 1100--1110 |101x,105x,106x            | "Kitchen sink" model                                |                                 | Exploratory                     |
 | DALEC + FF                       | 1200       |                          |                                                     |                                 | Exploratory                     |
 
 ### Standard Input, Outputs, Parameters <a name="cardamom-input-output-parameters"/>

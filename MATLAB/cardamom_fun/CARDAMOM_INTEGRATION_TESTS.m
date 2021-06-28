@@ -40,7 +40,9 @@ disp('**********')
 
 
 cbrtest='cardamom_integration_test.cbr';
+delete('cardamom_integration_test.cbr');
 delete('cardamom_integration_test.cbrSTART');
+CBF.EDC=0;
 CBRtest=CARDAMOM_RUN_MDF(CBF,[],cbrtest);
 
 
