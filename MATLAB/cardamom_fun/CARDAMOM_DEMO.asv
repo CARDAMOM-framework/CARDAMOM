@@ -37,7 +37,7 @@ figure(1);clf
 subplot(2,2,1);set(gca,'FontSize',6);
 %plot(1:72,CBR.FLUXES(:,:,33)+CBR.FLUXES(:,:,34));ylabel('Transpiration + Evap [kgH2O/m2/day]');xlabel('Months since Jan 2010');
 plot(1:72,CBR.FLUXES(:,:,33));ylabel('Transpiration [kgH2O/m2/day]');xlabel('Months since Jan 2010');
-%plot(1:72,CBR.FLUXES(:,:,34));ylabel('Evap [kgH2O/m2/day]');xlabel('Months since Jan 2010');
+plot(1:72,CBR.FLUXES(:,:,34));ylabel('Evap [kgH2O/m2/day]');xlabel('Months since Jan 2010');
 subplot(2,2,2);
 plot(1:72,CBR.FLUXES(:,:,29));ylabel('ET [kgH2O/m2/day]');xlabel('Months since Jan 2010');
 subplot(2,2,3);
