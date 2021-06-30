@@ -87,11 +87,13 @@ int f=0;
 for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<nodays;n++){FT[f]+=FLUXES[n*nofluxes+f];}}
 /*Total prec*/
 double PREC=0;
+double SNOWF=0;
 for (n=0;n<nodays;n++){PREC+=MET[n*nomet+8];}
+for (n=0;n<nodays;n++){SNOWF+=MET[n*nomet+9];}
 
 
-double Fin[8];
-double Fout[8];
+double Fin[9];
+double Fout[9];
 double Pstart;
 double Pend;
 /*temporary print switch*/
@@ -123,12 +125,14 @@ Fout[4]=FT[12]+FT[14]+FT[21]+FT[27];
 Fin[5]=FT[10]+FT[14]+FT[26]+FT[27];
 Fout[5]=FT[13]+FT[22];
 /*PAH2O*/
-Fin[6]=PREC;
+Fin[6]=PREC-SNOWF+FT[32];
 Fout[6]=FT[28]+FT[29]+FT[30];
 /*PUH2O*/
 Fin[7]=FT[30];
 Fout[7]=FT[31];
-
+/*SWE*/
+Fin[8]=SNOWF;
+Fout[8]=FT[32];
 
 /*Inlcuding H2O pool*/
 /*EDCs 7-13 - inputs, outputs and exponential tolerance*/
