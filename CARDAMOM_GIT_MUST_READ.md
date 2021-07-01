@@ -2,7 +2,7 @@
 1. CARDAMOM user GitHub instructions (New users are required to go through this section)
 2. Instructions to correct an unintentional git commit and git push that bring files to an older version, or unintentionally stashed changes, committed and pushed to the master
 
-***Anthony Bloom, Gregory R Quetin, Paul Levine, Shuang Ma, and others***  
+***Shuang Ma and others***  
 [If you’re making any edits, add your name here!]
 
 # 1. CARDAMOM user GitHub instructions (New users are required to go through this section)
