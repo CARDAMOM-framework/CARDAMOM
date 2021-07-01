@@ -22,8 +22,6 @@ disp('**********')
 disp('**********')
 
 
-
-
 CBF=CARDAMOM_READ_BINARY_FILEFORMAT(cbffilename);
 
 disp('**********')
@@ -109,8 +107,10 @@ cfpars=CBR.PARS(end,:);
 CBRcf=CARDAMOM_RUN_MODEL(CBFcf,cfpars);
 
 
+k=1;
 %Step 2. COst function with zero obs
 disp(sprintf('Cost function with zero obs %2.2f (expected 0)',CBRcf.PROB));
+ALL_TESTS(k,:)=[ 0, CBRcf.PROB];TEST_NAMES{k}='No obs';k=k+1;
 
 %*************LAI for 809*****************
 %LAI, no change
@@ -119,15 +119,24 @@ CBFcftest.OBS.LAI=CBF.MET(:,1)*-9999;
 CBFcftest.OBS.LAI(2) = (CBRcf.POOLS(1,2,2) +  CBRcf.POOLS(1,1,2))/2/CBRcf.PARS(1,17);
 CBRcf=CARDAMOM_RUN_MODEL(CBFcftest,cfpars);
 disp(sprintf('Cost function with LAI(2) obs %2.2f (expected 0)',CBRcf.PROB));
+ALL_TESTS(k,:)=[ 0, CBRcf.PROB];TEST_NAMES{k}='LAI, 1 obs, no offset';k=k+1;
+
 
 %LAI 1-sigma change
 CBFcftest.OBS.LAI(2) = (CBRcf.POOLS(1,2,2) +  CBRcf.POOLS(1,1,2))/2/CBRcf.PARS(1,17)*2;
 CBRcf=CARDAMOM_RUN_MODEL(CBFcftest,cfpars);
 disp(sprintf('Cost function with LAI(2) obs %2.2f (expected -0.5)',CBRcf.PROB));
 
+ALL_TESTS(k,:)=[ -0.5, CBRcf.PROB];TEST_NAMES{k}='LAI, 1 obs, + 1-delta offset';k=k+1;
+
+
 CBFcftest.OBS.LAI(2) = (CBRcf.POOLS(1,2,2) +  CBRcf.POOLS(1,1,2))/2/CBRcf.PARS(1,17)/2;
 CBRcf=CARDAMOM_RUN_MODEL(CBFcftest,cfpars);
 disp(sprintf('Cost function with LAI(2) obs %2.2f (expected -0.5)',CBRcf.PROB));
+ALL_TESTS(k,:)=[ -0.5, CBRcf.PROB];TEST_NAMES{k}='LAI, 1 obs, - 1-delta offset';k=k+1;
+
+
+
 
 %*************GPP for 809*****************
 
@@ -137,6 +146,7 @@ CBFcftest.OBS.GPP(2) = CBRcf.GPP(2);
 CBFcftest.OBSUNC.GPP.gppabs=0;
 CBRcf=CARDAMOM_RUN_MODEL(CBFcftest,cfpars);
 disp(sprintf('Cost function with GPP(2) obs %2.2f (expected 0)',CBRcf.PROB));
+
 
 CBFcftest.OBS.GPP(2) = CBRcf.GPP(2)*1.23;
 CBFcftest.OBSUNC.GPP.gppabs=1;
