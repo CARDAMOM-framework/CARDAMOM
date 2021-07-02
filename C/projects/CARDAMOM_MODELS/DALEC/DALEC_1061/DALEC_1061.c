@@ -7,6 +7,8 @@
 #include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2EWT.c"
 #include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2CON.c"
 #include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI.c"
+#include "../../../CARDAMOM_MODELS/DALEC/DALEC_1061/LIU_An_1061.c"
+
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
@@ -177,7 +179,25 @@ gpppars[7]=DATA.MET[m+3];
 
 /*GPP*/
 FLUXES[f+33]=ACM(gpppars,constants);
-FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1)*(1-pow(fmin(fmax(DATA.MET[m+7],0),pars[36])/pars[36],pars[37]));
+//FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1)*(1-pow(fmin(fmax(DATA.MET[m+7],0),pars[36])/pars[36],pars[37]));
+
+//Note: beta = fmin(POOLS[p+6]/pars[25],1);
+//FLUXES[f+0]=LIU_An(.....met...LAI...parameters)*fmin(POOLS[p+6]/pars[25],1);
+
+double SRAD = 12.*gpppars[7]; //Shortwave downward radiation (W.m-2)
+double VPD = DATA.MET[m+7]/10.; //VPD (kPa)
+double TEMP = 273.15 + (gpppars[1]+gpppars[2])/2.; //(Tmin + Tmax)/2 (K)
+double co2 = gpppars[4]; //co2 (ppm)
+double vcmax25 = pars[46]; 
+double g1 = pars[45]; 
+double beta = fmin(POOLS[p+6]/pars[25],1);
+double Tupp = pars[47]; 
+double Tdown = pars[48]; 
+
+FLUXES[f+0]=LIU_An_1061(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n], Tupp, Tdown);
+
+printf('2.f%')
+
 /*Evapotranspiration (VPD = DATA.MET[m+7])*/
 FLUXES[f+28]=FLUXES[f+0]*sqrt(DATA.MET[m+7])/pars[23]+DATA.MET[m+3]*pars[38];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
