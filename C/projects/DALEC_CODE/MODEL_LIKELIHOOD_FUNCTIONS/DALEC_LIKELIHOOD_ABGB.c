@@ -20,7 +20,7 @@ if (D.nabgb>0){
 /*Looping through all available constraints*/
 for (n=0;n<D.nabgb;n++){dn=D.abgbpts[n];
 /*biomass = totals of labile, foliar, root, wood*/
-biomass=D.M_POOLS[D.nopools*(dn+1)+0]+D.M_POOLS[D.nopools*(dn+1)+1]+D.M_POOLS[D.nopools*(dn+1)+2]+D.M_POOLS[D.nopools*(dn+1)+3];
+//biomass=D.M_POOLS[D.nopools*(dn+1)+0]+D.M_POOLS[D.nopools*(dn+1)+1]+D.M_POOLS[D.nopools*(dn+1)+2]+D.M_POOLS[D.nopools*(dn+1)+3];
 biomass=D.M_ABGB[dn];
 /*Model-data mismatch*/
 tot_exp+=pow(log(biomass/D.ABGB[dn])/log(D.otherpriorunc[1]),2);}

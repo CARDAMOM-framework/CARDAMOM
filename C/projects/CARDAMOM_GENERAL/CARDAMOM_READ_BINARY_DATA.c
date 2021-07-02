@@ -104,6 +104,10 @@ fread(parpriors,sizeof(double),50,fid);
 fread(parpriorunc,sizeof(double),50,fid);
 fread(otherpriors,sizeof(double),50,fid);
 fread(otherpriorunc,sizeof(double),50,fid);
+///SPECIAL CASE: ABGB uncertainty, remover when transitioning to netcdf///
+if (otherpriorunc[1]<0){otherpriorunc[1]=2;} 
+if (otherpriorunc[7]<0){otherpriorunc[7]=2;} 
+
 
 /*For universal data structure, DATA contains 50 parameter prior spaces
  * use as many as needed!*/

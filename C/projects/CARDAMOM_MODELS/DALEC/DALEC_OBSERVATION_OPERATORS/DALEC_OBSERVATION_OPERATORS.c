@@ -121,7 +121,7 @@ if (D->otherpriors[4]>0 | D->nlai>0){int n;for (n=0;n<D->nodays;n++){
 //printf("D->M_POOLS[D->nopools*n+O->LAI_foliar_pool] = %2.2f\n",D->M_POOLS[D->nopools*n+O->LAI_foliar_pool]);
 
 
-D->M_LAI[n]=(D->M_POOLS[D->nopools*n+O->LAI_foliar_pool]+D->M_POOLS[D->nopools*(n+1)+O->LAI_foliar_pool])/D->M_PARS[O->LAI_LCMA];
+D->M_LAI[n]=(D->M_POOLS[D->nopools*n+O->LAI_foliar_pool]+D->M_POOLS[D->nopools*(n+1)+O->LAI_foliar_pool])*0.5/D->M_PARS[O->LAI_LCMA];
 
 }
 
@@ -170,6 +170,7 @@ D->M_ABGB[n]=0;
 for (nn=0;nn<O->ABGB_n_pools;nn++){
 D->M_ABGB[n]+=(D->M_POOLS[p+O->ABGB_pools[nn]]+D->M_POOLS[nxp+O->ABGB_pools[nn]])*0.5;}
 
+
 }}
 
 
@@ -201,7 +202,6 @@ D->M_SOM[n]=0;
 //loop through pools
 for (nn=0;nn<O->SOM_n_pools;nn++){
 D->M_SOM[n]+=(D->M_POOLS[p+O->SOM_pools[nn]]+D->M_POOLS[nxp+O->SOM_pools[nn]])*0.5;}
-
 }}
 
 
