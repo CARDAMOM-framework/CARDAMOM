@@ -196,8 +196,6 @@ double Tdown = pars[48];
 
 FLUXES[f+0]=LIU_An_1061(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n], Tupp, Tdown);
 
-printf('2.f%')
-
 /*Evapotranspiration (VPD = DATA.MET[m+7])*/
 FLUXES[f+28]=FLUXES[f+0]*sqrt(DATA.MET[m+7])/pars[23]+DATA.MET[m+3]*pars[38];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/

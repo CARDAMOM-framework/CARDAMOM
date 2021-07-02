@@ -57,7 +57,7 @@ cp = 36.9 + 1.18*(T_C - 25.) + 0.36*pow((T_C - 25.), 2.);
 
 double q_10 = 2.0;
 
-Vcmax = vcmax25*pow(q_10,0.1*(T_C-25.))/((1 + exp(0.3*(T_C-Tupp)))*(1 +exp(0.3*(Tdown-T_C))));
+Vcmax = vcmax25*pow(q_10,0.1*(T_C-25.))/((1 + exp(0.3*(T_C-Tupp-273.15)))*(1 +exp(0.3*(Tdown-T_C-273.15))));
 
 Jmax = Vcmax*exp(1.);
 

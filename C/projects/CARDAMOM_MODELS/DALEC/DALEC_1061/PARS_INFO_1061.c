@@ -204,12 +204,12 @@ CARDADATA->parmin[46]=1.e-8;
 CARDADATA->parmax[46]=140.;
 
 /*Tupp*/ 
-CARDADATA->parmin[47]=26.;
-CARDADATA->parmax[47]=45.;
+CARDADATA->parmin[47]=299.15;
+CARDADATA->parmax[47]=318.15;
 
 /*Tdown*/ 
-CARDADATA->parmin[48]=-10.;
-CARDADATA->parmax[48]=13.;
+CARDADATA->parmin[48]=263.15;
+CARDADATA->parmax[48]=286.15;
 
 
 return 0;
