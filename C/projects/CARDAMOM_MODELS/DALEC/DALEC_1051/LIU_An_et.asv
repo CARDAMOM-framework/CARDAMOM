@@ -1,5 +1,5 @@
 #pragma once
-double * LIU_An_et(double SRAD, double VPD, double TEMP, double vcmax25, double co2, double beta_factor, double g1, double LAI, double ga, double VegK){
+double * LIU_An_et(double SRAD, double VPD, double TEMP, double vcmax25, double co2, double beta_factor, double g1, double LAI, double ga, double VegK, double clapp_theta){
 //double LIU_An(double const *gpppars, double const *consts, double const *pars, double const beta){
 
 //double SRAD = 12.*gpppars[7]; //Shortwave downward radiation
@@ -50,7 +50,7 @@ static double r[3];
 PAR = SRAD/(Ephoton*NA)*1e6;
 
 //absorbed PAR assuming black canopy. 
-//PAR = PAR*(1. - exp(-LAI*VegK));
+PAR = PAR*(1. - exp(-LAI*VegK));
 
 T_C = TEMP - t0C;
 
@@ -96,36 +96,40 @@ double gs; //stomatal conductance
 double transp; // transpiration
 double evap; // evaporation
 double Psurf = 100.0; //Surface pressure in kPa
-double VPD_kPa = VPD*Psurf; //100.0 kPa = 1000.0 hPa => Surface pressure
+double VPD_kPa = VPD*100.0; //100.0 kPa = 1000.0 hPa => Surface pressure
 
 
-SRADg = SRAD*(exp(-LAI*VegK));
+SRADg = SRAD*exp(-LAI*VegK);
 
 
 sV = 0.04145*exp(0.06088*T_C); 
 
-petVnum = (sV*(SRAD-SRADg)+1.225*1000*VPD_kPa*ga)*(SRAD)/(lambda0*60*60);
-petVnumB = 1.26*(sV*SRADg)/(sV+gammaV)/lambda0*60*60; //from mm.hr-1 
+petVnumB = 1.26*(sV*SRADg)/(sV+gammaV)/lambda0*60*60;
+
+
+
 
 if(beta_factor>0 && SRAD >0){
 
+petVnum = (sV*(SRAD-SRADg)+1.225*1000*VPD_kPa*ga)*(SRAD)/(lambda0*60*60);
 gs = 1.6*An/(co2-ci)*LAI*0.02405; 
-transp = petVnum/(sV+gammaV*(1+ga*(1/ga+1/gs)));
 
+transp = petVnum/(sV+gammaV*(1+ga*(1/ga+1/gs)));
 }
 else{
 transp = 0.0;
+
 }
 
 r[1] = transp*24; //from mm.hr-1 to mm.day-1
 
-evap = petVnumB;
+evap = petVnumB*(0.28/clapp_theta);
 
 r[2] = evap*24; //from mm.hr-1 to mm.day-1
 
 
-//printf("SRADg = %f, VegK = %f, LAI = %f\n", (SRADg/SRAD), VegK, LAI);
-//printf("transp = %f, evap = %f\n", r[1], r[2] );
+printf("SRADg = %f, VegK = %f\n", (SRADg/SRAD), VegK );
+printf("transp = %f, evap = %f\n", r[1], r[2] );
 
 return r;
 }

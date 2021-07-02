@@ -9,7 +9,7 @@ CBF=CARDAMOM_READ_BINARY_FILEFORMAT([getenv('CARDAMOM_DATA_PATH'),'/CARDAMOM_DAT
 %"printrate" determines how oftern MCMC progress stats are printed (in
 %terms of tested samples)
 %"samplerate" determines how often the accepted parameter samples are stored
-MCO.niterations=100000;
+MCO.niterations=10e5;
 MCO.printrate=1000;
 MCO.samplerate=100;
 MCO.mcmcid=119;
@@ -39,13 +39,14 @@ subplot(2,2,1);set(gca,'FontSize',6);
 plot(1:72,CBR.FLUXES(:,:,33));ylabel('Transpiration [kgH2O/m2/day]');xlabel('Months since Jan 2010');
 %plot(1:72,CBR.FLUXES(:,:,34));ylabel('Evap [kgH2O/m2/day]');xlabel('Months since Jan 2010');
 subplot(2,2,2);
-plot(1:72,CBR.FLUXES(:,:,29));ylabel('ET [kgH2O/m2/day]');xlabel('Months since Jan 2010');
+%plot(1:72,CBR.FLUXES(:,:,29));ylabel('ET [kgH2O/m2/day]');xlabel('Months since Jan 2010');
+plot(CBR.FLUXES(:,:,33)+CBR.FLUXES(:,:,34),CBR.FLUXES(:,:,29));ylabel('ET [kgH2O/m2/day]');xlabel('T + E [kgH2O/m2/day]');
 subplot(2,2,3);
 %hist(1-CBR.PARS(:,2));ylabel('Frequency');xlabel('CUE');
 hist(CBR.PARS(:,40));ylabel('Frequency');xlabel('ga');
 subplot(2,2,4);
 %hist(CBR.PARS(:,17));ylabel('Frequency');xlabel('Leaf C Mass per area [gC/m2]');
-hist(CBR.PARS(:,41));ylabel('Frequency');xlabel('clapp_theta');
+%hist(CBR.PARS(:,41));ylabel('Frequency');xlabel('clapp_theta');
 
 
 

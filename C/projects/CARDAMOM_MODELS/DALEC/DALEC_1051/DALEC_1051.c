@@ -168,14 +168,14 @@ gpppars[11]=DATA.MET[m+7];//VPD
 /*Calculate light extinction coefficient*/
 double DOY = DATA.MET[m+5];
 double B = (DOY-81)*2*pi/365.;
-double ET = 9.87*sin(2*B)-7.53*cos(B)-1.5*sin(B);
+double ET1 = 9.87*sin(2*B)-7.53*cos(B)-1.5*sin(B);
 double DA = 23.45*sin((284+DOY)*2*pi/365); //Deviation angle
 double LST = (int) (DOY*24*60) % (24*60);
-double AST = LST+ET;
+double AST = LST+ET1;
 double h = (AST-12*60)/4; //hour angle
 double alpha = asin((sin(pi/180*DATA.LAT)*sin(pi/180*DA)+cos(pi/180*DATA.LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
 double zenith_angle = 90-alpha;
-double LAD = 1; //leaf angle distribution
+double LAD = 0.5; //leaf angle distribution
 double VegK = sqrt(pow(LAD,2)+ pow(tan(zenith_angle/180*pi),2))/(LAD+1.774*pow((1+1.182),-0.733)); //Campbell and Norman 1998
 
 /*GPP*/
@@ -199,18 +199,22 @@ double clapp_theta = pars[39];
 
 //FLUXES[f+0]=LIU_An(gpppars,constants,pars,beta)*beta;
 //FLUXES[f+0]=LIU_An(SRAD, VPD, TEMP, vcmax25, co2, beta, g1)*beta;
-FLUXES[f+0]=LIU_An_et(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n], ga, VegK, clapp_theta)[0];
+FLUXES[f+0]=LIU_An_et(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n], ga, VegK)[0];
 
 //transpiration//
-FLUXES[f+32] = LIU_An_et(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n], ga, VegK, clapp_theta)[1];
+FLUXES[f+32] = LIU_An_et(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n], ga, VegK)[1];
 //evaporation//
-FLUXES[f+33] = LIU_An_et(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n], ga, VegK, clapp_theta)[2];
+FLUXES[f+33] = LIU_An_et(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n], ga, VegK)[2];
 
 //FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
 /*Evapotranspiration (VPD = DATA.MET[m+7])*/
 //FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23];
 //Evapotranspiration as in ID 1005:
 FLUXES[f+28]=FLUXES[f+0]*sqrt(DATA.MET[m+7])/pars[23]+DATA.MET[m+3]*pars[38];
+
+//FLUXES[f+28]=FLUXES[f+32]+FLUXES[f+33];
+
+
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
 FLUXES[f+1]=exp(pars[9]*0.5*(DATA.MET[m+2]+DATA.MET[m+1]-DATA.meantemp))*((DATA.MET[m+8]/DATA.meanprec-1)*pars[32]+1);

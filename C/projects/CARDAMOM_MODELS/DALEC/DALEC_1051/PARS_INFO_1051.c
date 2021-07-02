@@ -177,8 +177,8 @@ CARDADATA->parmin[39]=1e-6;
 CARDADATA->parmax[39]=2.0;
 
 /*ClappHornberger theta*/
-CARDADATA->parmin[40]=0.395;
-CARDADATA->parmax[40]=0.482;
+/*CARDADATA->parmin[40]=0.395;*/
+/*CARDADATA->parmax[40]=0.482;*/
 
 return 0;
 
