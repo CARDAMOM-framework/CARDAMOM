@@ -70,7 +70,8 @@ DATA.MET[:,8]: precipitation
   POOLS[0,3]=pars(3);Woo
   POOLS[0,4]=pars(2);Litter
   POOLS[0,5]=pars(2);Som
-
+  POOLS[0,6]=PAW;
+  POOLS[0,7]=PUW;
 
         %fluxes - other*********
         0.GPP
@@ -93,7 +94,7 @@ DATA.MET[:,8]: precipitation
 	17-22. Fires (C pools to atmosphere)
 	23-27. Fires (C pool transfers)
 	28. ET
-	29. Runoff
+	29. PAW runoff
   30. PAW -> PUW transfer
 	31. PUW runoff
   32. Aerobic Rh from litter
@@ -108,7 +109,6 @@ DATA.MET[:,8]: precipitation
   41. fCH4 CH4 fraction
   42. thetas=PAW/PAW_fs
 */
-
 
 
 
@@ -286,10 +286,10 @@ FLUXES[f+32] = POOLS[p+4]*(1-pow(1-fW*fT*fV*pars[8-1],deltat))/deltat;
 FLUXES[f+33] = POOLS[p+5]*(1-pow(1-fW*fT*fV*pars[9-1],deltat))/deltat;
 /*34 anaerobic Rh from litter*/
 //FLUXES[f+34] = POOLS[p+4]*(1-pow(1-1*fT*(1-fV)*pars[8-1],deltat))/deltat;
-FLUXES[f+34] = POOLS[p+4]*(1-pow(1-1*fT*(1-fV)*fwc*pars[8-1],deltat))/deltat;
+FLUXES[f+34] = POOLS[p+4]*(1-pow(1-fwc*fT*(1-fV)*pars[8-1],deltat))/deltat;
 /*35 anaerobic Rh from SOM*/
 //FLUXES[f+35] = POOLS[p+5]*(1-pow(1-1*fT*(1-fV)*pars[9-1],deltat))/deltat;
-FLUXES[f+35] = POOLS[p+5]*(1-pow(1-1*fT*(1-fV)*fwc*pars[9-1],deltat))/deltat;
+FLUXES[f+35] = POOLS[p+5]*(1-pow(1-fwc*fT*(1-fV)*pars[9-1],deltat))/deltat;
 /*36 Rh_CO2*/
 FLUXES[f+36] = (FLUXES[f+32]+FLUXES[f+33])*1+(FLUXES[f+34]+FLUXES[f+35])*(1-fCH4);
 /*37 Rh_CH4*/

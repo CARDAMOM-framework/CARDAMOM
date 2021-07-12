@@ -4,7 +4,6 @@
 #include <math.h>
 #include "../../../math_fun/std.c"
 #include "NORMPARS.c"
-#include "ADAPT_DEMCMC_STEP_SIZE.c"
 #include "STEP_DEMCMC.c"
 #include "WRITE_DEMCMC_RESULTS.c"
 
@@ -71,7 +70,7 @@ NC=MCO.nchains;
 
 /*initialising P as -inf */
 double Pmin=0;
-int n=0,nn=0,m=0;
+int n=0,nn=0,m=0,withinrange,wrlocal=0;
 
 COUNTERS N;
 N.ACC=0;
@@ -93,7 +92,7 @@ BESTPARS=calloc(PI.npars*NC,sizeof(double));
 for (nn=0;nn<NC;nn++){
 for (n=0;n<PI.npars;n++){
 /*if MCO.fixedpars=0*/
-if (MCO.fixedpars!=1){PI.parfix[n]=0;}
+/*if (MCO.fixedpars!=1){PI.parfix[n]=0;}*/
 /*ONLY assigning randompars if (a) randparini==1 or (b) PI.parini[n]=-9999*/
 
 if (MCO.randparini==1 && PI.parfix[n]!=1){
@@ -103,16 +102,15 @@ else
 
 /*{PARS[n+nn*PI.npars]=PI.parini[n+nn*PI.npars];}}}
 */
-{PARS[n+nn*PI.npars]=PI.parini[n];}}}
+{PARS[n+nn*PI.npars]=PI.parini[n+nn*PI.npars];}
+}}
 
-/*Defining default PCArotation here*/
-/*if (PI.PCArotation==NULL){
-for (m=0;m<PI.npars;m++){
-for (m=0;m<PI.npars;m++){
-PI.PCArotation[m][n]
-}
-}
-} */
+
+for (nn=0;nn<NC;nn++){
+for (n=0;n<PI.npars;n++){
+printf("%1.1e ",PARS[n+nn*PI.npars]);}
+printf("\n");}
+
 
 oksofar("Established PI.parini - begining MHMCMC now");
 
@@ -133,57 +131,57 @@ printf("starting likelihood for chain %i = %e\n",nn,P[nn]);
 if (isinf(P[nn])==-1){printf("WARNING! P(0)=-inf - MHMCMC may get stuck - if so, please check your initial conditions\n");}}
 
 /*STEP 2 - BEGIN MCMC*/
-while (N.ACC < MCO.nOUT && (Pmin<0 || MCO.nWRITE>0 || N.ACC==0)){
-
+for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
 	/*Looping through each chain*/
 	/*UPDATE: retaining parameter vector (as done in ter Braak, 2006) and moving on to next chain if metropolis ratio is rejected*/
-	nn=0;
-	/*Step size is 1 every 10 iterations*/
-        PI.stepsize[0]=1 - (1-sqrt(2.38/sqrt(2*PI.npars)))*(double)(N.ITER % 10 != 0);
 	
-	PI.stepsize[0]=1e-1-(1e-1-1)*(double)(N.ITER % 10 == 0);
+	//PI.stepsize[0]=1e-1-(1e-1-1)*(double)(n % 10 == 0);
 	
 	for (nn=0;nn<NC;nn++){
+
+	/*Step size is 1 wigth 10% prob iterations*/
+        PI.stepsize[0]=1 - (1-2.38/sqrt(2*PI.npars)*0.1)*(double)((double)(random()/RAND_MAX)<0.9);
 	/*take a step (DE-MCMC style)*/
-	STEP_DEMCMC(PARS,pars_new,PI,nn,NC);
+	//PI.stepsize[0]=PI.stepsize[0]/10;
+	withinrange=STEP_DEMCMC(PARS,pars_new,PI,nn,NC);
+	/*p(x) = 0 if parameters outside bounds*/
+	if (withinrange==1){
+wrlocal=wrlocal+1;
 	/*Calculate new likelihood*/
-	P_new=MODEL_LIKELIHOOD(DATA,pars_new);
+	P_new=MODEL_LIKELIHOOD(DATA,pars_new);}
+        else
+	{P_new=log(0);}
+        //printf("P_new = %2.2f\n, PI.stepsize = %2.2f\n",P_new, PI.stepsize[0]);
 	/*if (isinf(P_new)==0){oksofar("Found non-inf solution");}
 	*/
 	/*treating nans as -inf*/
-	if isnan(P_new){printf("Warning: MLF generated NaN... treating as -Inf");P[nn]=log(0);}
+	if isnan(P_new){P_new=log(0);}
 	if (P_new-P[nn]>log((double)random()/RAND_MAX)){N.ACC=N.ACC+1;
-		/*storing accepted solution*/
-		/*for DEMCMC, that's each sample from each chain*/
+	if (isinf(P_new)==0 && isinf(P[nn])){printf("pnew = %2.1f, p = %2.1f, (P_new-P[nn]) = %2.1f\n",P_new,P[nn],P_new-P[nn]);}
+
+
 		for (n=0;n<PI.npars;n++){
 		PARS[n+nn*PI.npars]=pars_new[n];}
-		if (P_new>P[nn]){BESTPARS[n]=pars_new[n];}
-		P[nn]=P_new;
-
-	/*writing results: parameters and log likelihood*/
-        /*writing ALL results! Changed on Sat 30 Nov 2013*/
-	if (MCO.nWRITE>0 && (N.ACC % MCO.nWRITE)==0){WRITE_DEMCMC_RESULTS(PARS,PI,MCO);}
-
-}
-
+		if (P_new>P[nn]){for (n=0;n<PI.npars;n++){BESTPARS[n + nn*PI.npars]=pars_new[n];}
+		if (P_new==0 && P_new>P[nn] ){printf("Found bestpars, prob = %2.1f, chain = %i\n",P_new,nn);}
+		}
+		P[nn]=P_new;}
 	}
-	/*Continuing in any case*/
-	N.ITER=N.ITER+1;
 	
+	/*regularly write results*/
+	if (MCO.nWRITE>0 && (N.ITER % MCO.nWRITE)==0){
+WRITE_DEMCMC_RESULTS(PARS,PI,MCO);}
 	
 	/*Printing Info to Screen*/
 	if (MCO.nPRINT>0 && N.ITER % MCO.nPRINT==0){
-		printf("Total Accepted = %d out of %d (N.ITER = %d)\n",N.ACC,MCO.nOUT,N.ITER);
+		printf("%d out of %d iterations)\n",N.ITER,MCO.nOUT);
+		printf("within range = %2.2f\n",wrlocal/((double)N.ITER*NC)*100);
 		printf("Local Acceptance rate %5.1f\n %%",100*(double)N.ACC/((double)N.ITER*NC));
 		printf("PI.stepsize = %5.5f\n",PI.stepsize[0]);
 		printf("Log Likelihoods: ");
-		for (nn=0;nn<NC;nn++){printf("%2.3f",P[nn]);}
+		for (nn=0;nn<NC;nn++){printf("%2.1f ",P[nn]);}
 		printf("\n");
-		printf("Log Likelihood (new): %2.3f\n",P_new);
-
-
-
-}
+	}
 
 /*End of chain loop*/
 	/*END OF WHILE LOOP*/
@@ -197,7 +195,10 @@ while (N.ACC < MCO.nOUT && (Pmin<0 || MCO.nWRITE>0 || N.ACC==0)){
 
 /*filling in MCOUT details*/
 /*best parameter combination*/
-for (n=0;n<PI.npars;n++){MCOUT->best_pars[n]=BESTPARS[n];}
+//printf("bestpars\n");
+for (n=0;n<PI.npars*NC;n++){MCOUT->best_pars[n]=BESTPARS[n];
+//printf("MCOUT->best_pars[%i]=%2.1f",n,MCOUT->best_pars[n]);
+}
 /*MCMC completed*/
 MCOUT->complete=1;
 /*done with MCMC completion*/
@@ -205,7 +206,7 @@ MCOUT->complete=1;
 free(BESTPARS);
 free(PARS);
 free(P);
-printf("MHMCMC DONE\n");
+printf("DEMCMC DONE\n");
 
 
 return 0;

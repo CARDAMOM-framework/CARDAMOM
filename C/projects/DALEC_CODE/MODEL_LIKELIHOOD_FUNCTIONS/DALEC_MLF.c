@@ -108,10 +108,10 @@ P=-0.5*((double)tot_exp*10)*DATA.EDC;
 
 /*overriding if model likelihood is zero or erroneous*/
 double ML=DATA.MLF(DATA,PARS);
-if (DATA.EDC==0 && ( isinf(ML)==-1 || isinf(ML)==1 || isnan(ML) )){P=P-0.5*10;}
+if (( isinf(ML)==-1 || isinf(ML)==1 || isnan(ML) )){
+P=P-0.5*10;}
 /*if (DATA->EDC==0 && (isinf(ML)==-1 || isnan(ML))){P=P-0.5*10;}
 */
-
 
 return P;
 

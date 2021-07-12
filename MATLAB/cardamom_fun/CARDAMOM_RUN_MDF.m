@@ -30,8 +30,13 @@ if isfield(MCO,'samplerate')==0;MCO.samplerate=MCO.niterations/2000;end
 if isfield(MCO,'minstepsize')==0;MCO.minstepsize=1e-5;end
 if isfield(MCO,'mcmcid')==0;MCO.mcmcid=119;end
 if isfield(MCO,'nadapt')==0;MCO.nadapt=100;end
-
-if numel(fields(MCO))>6; warning('Unused fieldnames provided in MCMC options structure "MCO"; while these won''t interfere with CARDAMOM_RUN_MDF, check for typos just in case');disp(MCO);end
+disp(MCO);
+if numel(fields(MCO))>6; 
+    disp('*****WARNING*****')
+    disp('Unused fieldnames provided in MCMC options structure "MCO"; while these won''t interfere with CARDAMOM_RUN_MDF, check for typos just in case');
+    disp('******************')
+    keyboard;
+end
 
 end
 
@@ -62,7 +67,7 @@ end
 
 
 %compilation command
-cp=unix(sprintf('gcc %s/projects/CARDAMOM_MDF/CARDAMOM_MDF.c -o %s/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe -lm',Cpath,Cpath));
+%cp=unix(sprintf('gcc %s/projects/CARDAMOM_MDF/CARDAMOM_MDF.c -o %s/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe -lm',Cpath,Cpath));
 %ensures code is compiled
 
 

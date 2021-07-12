@@ -19,6 +19,8 @@ function PXI=CARDAMOM_PROJECT(projname,repeat)
 %- GLOBAL05
 
 %TEST PR 2
+if nargin==0;keyboard;end
+
 
 if nargin<2;repeat=0;end
 
@@ -26,6 +28,13 @@ if nargin<2;repeat=0;end
 switch projname
     case 'GCRUN_NOV18_CMS_PRIOR_V1'
     PXI=GCRUN_NOV18_CMS_PRIOR_V1;%Land-surface constrained run for CMS-Flux prior
+    
+            case 'GCRUN_SEP20_CMS_PRIOR'
+    PXI=GCRUN_SEP20_CMS_PRIOR;
+        case 'GCRUN_SEP20_CMS_PRIOR_V2'
+    PXI=GCRUN_SEP20_CMS_PRIOR_V2;
+            case 'GCRUN_SEP20_CMS_PRIOR_V3'
+    PXI=GCRUN_SEP20_CMS_PRIOR_V3;
     %******CONTINUE FROM HERE*****
     %PXI=GCRUN_DEC18_TDLE was only copy-pasted from PROJSCRIPT_CARDAMOM_CMS_JUL18
         case 'GCRUN_MAR19_CMS_PRIOR_V1'
@@ -104,6 +113,9 @@ switch projname
         else
             load(savefile);
         end
+        
+        
+        
 
         %OBSOLETE! Change in code has lead to issues in reproducing these
         %Use AUG19
@@ -1512,11 +1524,229 @@ PXI=cardamom_pixel_output_summary(PXI);
 
 end
 
-function PXI=create_gcrun_cbf_files(PXI,MASK,repeat)
 
-if nargin<3;repeat=0;end
+
+%GCRUN routines
+function PXI=GCRUN_SEP20_CMS_PRIOR_V2
+%Step 1. 
+%CMS-Flux prior fluxes, describe here
+%No atmosphere
+%LS constraints = GFEDv4s fire emissions, FLUXCOM GPP
+
+
+RO.tidx=1:228;%Index of timesteps 
+RO.tnbeidx=[];% no atmospheric data
+RO.tbbidx=[];
+%Options are temporary: 
+%Remove once done replicating runs
+%SIF options
+% 0 = no sif data
+% 1 = GOSAT sif data
+% 2 = GOME2 data
+% 3 = FLUXSAT data
+RO.sifopt=3;
+%BB opt:
+%0 = no bb data
+%1 = GFEDv4s constraint
+%2 = top-down CO constraint
+RO.bbopt=1;
+%BB uncertainty
+%+ve = log; -ve = abs
+RO.bbunc=-0.2;
+%Mean GPP constraint
+%0. No mean GPP 
+%1. Fluxcom GPP
+RO.gppopt=0;
+%OCO-2 options( 1 or 0)
+%ri ==1 | ri==8 | ri==9 | ri==10 | ri==11  | ri==12 | ri==13  | ri==14 | ri==15  | ri==21
+RO.oco2=0;
+
+%NBE uncertainty mode
+%For global uncertainty, provide two values
+%For CMS-Flux uncertainty, set to CMS-Flux
+RO.nbeunc = [0,0];
+ defval('runname','');
+  defval('s3x3',0);
+  RO.nbe_s3x3=s3x3;
+  
+  RO.mco=[1e6 0 5e2 0.0005];
+
+%PXI options
+PXI.RO=RO;
+PXI.run_details='GCRUN_SEP20: 2001-2019 and LS constraints';
+PXI.ID=813;
+PXI.run_name=['GCRUN_SEP20_CMS_PRIOR_V2'];
+PXI.analysis=PXI.run_name;%Indicates which folder these go in.
+
+%Create and summarize PXI, based on available options
+OPT.repeat=0; 
+    OPT.gcdriobs='era5';
+    OPT.funcs{1}='CBF.PARPRIORS(11)=-9999;';
+
+PXI=create_gcrun_cbf_files(PXI,[],OPT);
+
+% %Step 2. determine output status
+PXI=cardamom_pixel_output_summary(PXI);
+% 
+
+
+
+
+end
+
+%GCRUN routines
+function PXI=GCRUN_SEP20_CMS_PRIOR_V3
+%Step 1. 
+%CMS-Flux prior fluxes, describe here
+%No atmosphere
+%LS constraints = GFEDv4s fire emissions, FLUXCOM GPP
+
+
+RO.tidx=1:228;%Index of timesteps 
+RO.tnbeidx=[];% no atmospheric data
+RO.tbbidx=[];
+%Options are temporary: 
+%Remove once done replicating runs
+%SIF options
+% 0 = no sif data
+% 1 = GOSAT sif data
+% 2 = GOME2 data
+% 3 = FLUXSAT data
+RO.sifopt=3;
+%BB opt:
+%0 = no bb data
+%1 = GFEDv4s constraint
+%2 = top-down CO constraint
+RO.bbopt=1;
+%BB uncertainty
+%+ve = log; -ve = abs
+RO.bbunc=-0.2;
+%Mean GPP constraint
+%0. No mean GPP 
+%1. Fluxcom GPP
+RO.gppopt=0;
+%OCO-2 options( 1 or 0)
+%ri ==1 | ri==8 | ri==9 | ri==10 | ri==11  | ri==12 | ri==13  | ri==14 | ri==15  | ri==21
+RO.oco2=0;
+
+%NBE uncertainty mode
+%For global uncertainty, provide two values
+%For CMS-Flux uncertainty, set to CMS-Flux
+RO.nbeunc = [0,0];
+ defval('runname','');
+  defval('s3x3',0);
+  RO.nbe_s3x3=s3x3;
+  
+  RO.mco=[1e6 0 5e2 0.0005];
+
+%PXI options
+PXI.RO=RO;
+PXI.run_details='GCRUN_SEP20: 2001-2019 and LS constraints';
+PXI.ID=813;
+PXI.run_name=['GCRUN_SEP20_CMS_PRIOR_V3'];
+PXI.analysis=PXI.run_name;%Indicates which folder these go in.
+
+%Create and summarize PXI, based on available options
+OPT.repeat=0; 
+    OPT.gcdriobs='era5';
+    OPT.funcs{1}='CBF.PARPRIORS(11)=-9999;';
+    OPT.funcs{2}='if isempty(CBF.OBS.GPP)==0 & max(CBF.OBS.GPP)>-9999; CBF.OBSUNC.GPP.obs_unc_threshold=max(CBF.OBS.GPP)/10;end';
+
+PXI=create_gcrun_cbf_files(PXI,[],OPT);
+
+% %Step 2. determine output status
+PXI=cardamom_pixel_output_summary(PXI);
+% 
+
+
+
+
+end
+
+
+%GCRUN routines
+function PXI=GCRUN_SEP20_CMS_PRIOR
+%Step 1. 
+%CMS-Flux prior fluxes, describe here
+%No atmosphere
+%LS constraints = GFEDv4s fire emissions, FLUXCOM GPP
+
+
+RO.tidx=1:228;%Index of timesteps 
+RO.tnbeidx=[];% no atmospheric data
+RO.tbbidx=[];
+%Options are temporary: 
+%Remove once done replicating runs
+%SIF options
+% 0 = no sif data
+% 1 = GOSAT sif data
+% 2 = GOME2 data
+% 3 = FLUXSAT data
+RO.sifopt=3;
+%BB opt:
+%0 = no bb data
+%1 = GFEDv4s constraint
+%2 = top-down CO constraint
+RO.bbopt=1;
+%BB uncertainty
+%+ve = log; -ve = abs
+RO.bbunc=-0.2;
+%Mean GPP constraint
+%0. No mean GPP 
+%1. Fluxcom GPP
+RO.gppopt=0;
+%OCO-2 options( 1 or 0)
+%ri ==1 | ri==8 | ri==9 | ri==10 | ri==11  | ri==12 | ri==13  | ri==14 | ri==15  | ri==21
+RO.oco2=0;
+
+%NBE uncertainty mode
+%For global uncertainty, provide two values
+%For CMS-Flux uncertainty, set to CMS-Flux
+RO.nbeunc = [0,0];
+ defval('runname','');
+  defval('s3x3',0);
+  RO.nbe_s3x3=s3x3;
+  
+  RO.mco=[1e6 0 5e2 0.0005];
+
+%PXI options
+PXI.RO=RO;
+PXI.run_details='GCRUN_SEP20: 2001-2019 and LS constraints';
+PXI.ID=813;
+PXI.run_name=['GCRUN_SEP20_CMS_PRIOR'];
+PXI.analysis=PXI.run_name;%Indicates which folder these go in.
+
+%Create and summarize PXI, based on available options
+OPT.repeat=0; 
+    OPT.gcdriobs='era5';
+    OPT.funcs{1}='CBF.PARPRIORS(11)=-9999;';
+
+PXI=create_gcrun_cbf_files(PXI,[],OPT);
+
+% %Step 2. determine output status
+PXI=cardamom_pixel_output_summary(PXI);
+% 
+
+
+
+
+end
+
+function PXI=create_gcrun_cbf_files(PXI,MASK,OPT)
+
+if nargin<3;OPT.repeat=0;end
+if isstruct(OPT)==0;OPT2.repeat=OPT;OPT=OPT2;clear OPT2;end
+if isfield(OPT,'gcdriobs')==0;OPT.gcdriobs='erai';end
+if isfield(OPT,'repeat')==0;OPT.repeat=0;end
+
 %Load gridded drivers and observations
+switch OPT.gcdriobs
+    case 'erai'
 repeatdriobs=0;GCDRIOBS=READ_GRID_GC_4x5_DRIVERS_OBS(repeatdriobs);
+    case 'era5'
+        GCDRIOBS=READ_GRID_GC_4x5_DRIVERS_OBS_ERA5;
+end
+        
 
 [~,LSFRAC]=loadlandseamask('4x5');
 GCLSMASK=LSFRAC>0.1;%Test with ALL regions
@@ -1591,7 +1821,7 @@ PXI.dates=datenum('01/01/2001')+[365.25/24+(tidx(1)-1)*365.25/12:365.25/12:+(tid
 %(a) file does not exist, or
 %(b) remakecbf==1
 
-remake_cbf=repeat;
+remake_cbf=OPT.repeat;
 
 %
 for n=1:numel(row);
@@ -1711,7 +1941,7 @@ CBF.OBS.NBE(1:N)=-9999;
               %GFED constraint
         if RO.bbopt==1
         %Write GFEDv4 data
-        if mean(GCDRIOBS.FireC(r,c,:),3)>0 & max(CBF.MET(:,7))>0;CBF.OTHER_OBS.MBiomass.mean=mean(GCDRIOBS.FireC(r,c,:));
+        if mean(GCDRIOBS.FireC(r,c,:),3)>0 & max(CBF.MET(:,7))>0;CBF.OTHER_OBS.MFire.mean=mean(GCDRIOBS.FireC(r,c,:));
         elseif mean(GCDRIOBS.FireC(r,c,:),3)==0 & max(CBF.MET(:,7))>0; disp('no significant fire emissions included in GFED');
         end
             
@@ -1793,6 +2023,15 @@ CBF.OBS.NBE(1:N)=-9999;
     end
         
     
+    
+    %User-defined functions
+    if isfield(OPT,'funcs') & numel(OPT.funcs)>0;
+        for nf=1:numel(OPT.funcs)
+        eval(OPT.funcs{nf})
+        end
+    end
+    
+    
     %writetofile
     CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,PXI.cbffilename{n,1});
     disp(PXI.cbffilename{n,1});
@@ -1866,6 +2105,243 @@ end
 end
 
 %Glpobal 05x05 grid routines
+
+
+
+function PXItemplate=GL05RUN_MAY21(OPT)
+%Step 1. Load drivers 
+%See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
+%TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
+%Better to start with a template of RUN29 just in case
+%New system (in the interest of memory)
+%Make sure to include PXI backup
+if nargin==0;OPT=[];end
+%Step 1. Define all files
+[~,LSFRAC]=loadlandseamask(0.5);
+
+%1.1 load LAI for baseline criterion
+LAI=quickload('DATASCRIPT_READ_MODIS_MONTHLY_LAI_MAY17(0.5)');
+PXItemplate.MASK=nanmean(LAI.data,3)>0.1;
+
+
+%Step 1.2 run names
+if isfield(OPT,'analysis')==0;OPT.analysis='GL05RUN_MAY21';end
+if isfield(OPT,'run_name')==0;OPT.run_name='GL05RUN_MAY21';end
+if isfield(OPT,'run_details')==0;OPT.run_details='GL05RUN_MAY21';end
+
+
+    PXItemplate.analysis=OPT.analysis;
+PXItemplate.run_name=OPT.run_name;
+PXItemplate.run_details=OPT.run_details;
+
+projdir=sprintf('CARDAMOM_DISK/CBF_FILES/%s',PXItemplate.analysis);
+if isempty(projdir);mkdir(projdir);end
+
+%PXItemplate.ID=809;
+PXItemplate.ID=1005;
+%Step 1.2.1 declaremaps
+[x,y,A]=loadworldmesh(0.5);
+PXItemplate.x=x;PXItemplate.y=y;PXItemplate.area=A;
+PXItemplate.nodays=180;
+PXItemplate.dates=datenum('01/01/2001')+365.25/24:365.25/12:datenum('01/01/2019');
+
+%Step 1.3 pixel info
+%name convention (row_col, 1,1=SW)
+PXItemplate.pixelidmap=x*0;
+PXItemplate.pixelnmap=x*0;
+[rows,cols]=find(PXItemplate.MASK);
+for n=1:numel(rows);
+    r=rows(n);
+    c=cols(n);
+    PXItemplate.lon(n)=x(r,c);
+    PXItemplate.lat(n)=y(r,c);
+    PXItemplate.r(n)=r;
+    PXItemplate.c(n)=c;
+    PXItemplate.pixelid{n}=sprintf('%03i%03i',r,c);
+    PXItemplate.pixelidmap(r,c)=str2num(PXItemplate.pixelid{n});
+    PXItemplate.pixelnmap(r,c)=n;
+end
+
+%STEP 1.4; paths and execs
+%opt=1 sets relatve path
+PXItemplate=make_cbf_files(PXItemplate,1);
+
+%
+%PXItemplate=CARDAMOM_PROJECT_SETUP(PXItemplate);
+
+
+
+
+
+
+%Step 2. cycle through each quantity, (1) open file, (2), write, (3) close file
+%Step 2.1: write empty template file
+%cbffiletemplate=sprintf('CARDAMOM_DISK/CBF_FILES/RUN29/RUN29_%05i.cbf',6000);
+CBFtemplate=cardamomfun_clear_cbf_obs(CARDAMOM_CBF_TEMPLATE(809));
+CBFtemplate.PARPRIORS(2)=0.5;CBFtemplate.PARPRIORUNC(2)=1.2;
+CBFtemplate.PARPRIORS(11)=17.5;CBFtemplate.PARPRIORUNC(2)=1.5;
+
+CBFtemplate.MET(1:192,1:9)=-9999;
+%CBD.OBS(1:192,1:3)=-9999;
+%CBFtemplate.nomet=9;
+CBFtemplate.ID=PXItemplate.ID;
+CBFtemplate.MET(1:192,1)=[0:191]*365.25/12+365.25/24;%Units are days since a
+DATA=DATASCRIPT_READ_NOAA_MAUNA_LOA_CO2_SEP17;
+CBFtemplate.MET(1:192,5)=DATA.data(DATA.year>2000 & DATA.year<2017);
+CBFtemplate.MET(1:192,6)=mod(CBFtemplate.MET(1:192,1),365.25);
+
+CBFtemplate.OBS.NBE=[];
+CBFtemplate.OBS.GPP=[1:192]*0-9999;
+CBFtemplate.OBS.LAI=[1:192]*0-9999;
+CBFtemplate.OBS.EWT=[1:192]*0-9999;
+
+
+cbfyears=floor(CBFtemplate.MET(:,1)/365.25)+2001;
+cbfmonths=mod([1:192]-1,12)+1;
+cbfdate=CBFtemplate.MET(:,1);
+
+
+%Writing template files  wit h global info only
+% for n=1:numel(PXItemplate.r);
+%     %Writing LAT and 2001-2016 LAI
+%     CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,PXItemplate.cbffilename{n});
+% end
+% 
+GRACE=quickload('DATASCRIPT_READ_GRACE_MASCONS_MAR19');
+
+gracedate=GRACE.time-datenum('01/01/2001');
+    cbfgrpts{1}=closest(gracedate(1),cbfdate):closest(gracedate(end),cbfdate);
+    cbfgrpts{2}=closest(cbfdate(1),gracedate):closest(cbfdate(end),gracedate);
+
+%Step 3. define gridcells
+%Step 4: define relevant pixel info
+%IF NEEDED, load drivers separately 
+%EPREC=quickload('DATASCRIPT_READ_ERAI_MONTHLY_JUL18(''prec'',0.5)');
+EPREC=quickload('DATASCRIPT_READ_ERAI_MONTHLY_JUL18(''prec'',0.5)');
+ET2M=quickload('DATASCRIPT_READ_ERAI_MONTHLY_JUL18(''t2m'',0.5)');
+ESRAD=quickload('DATASCRIPT_READ_ERAI_MONTHLY_JUL18(''srad'',0.5)');
+ED2M=quickload('DATASCRIPT_READ_ERAI_MONTHLY_JUL18(''d2m'',0.5)');
+GBA=quickload('DATASCRIPT_READ_GFED4_BA_DATA_OCT15(1)');
+HWSD=quickload('DATASCRIPT_READ_HWSD_MAP(0.5)');
+TABGB=quickload('DATASCRIPT_READ_SAATCHI_BIOMASS_MAP(0.5)');
+
+ if isfield(OPT,'csif')==0;OPT.csif=0;end
+ 
+ if OPT.csif==0;
+    GSIF=quickload('DATASCRIPT_READ_GOME_2_FLUORESCENCE_SEP17');
+ else
+     GSIF=quickload('DATASCRIPT_READ_CSIF_DATA_APR19');
+     GSIF.data05x05=GSIF.data;
+ end
+
+
+peaklai=projscript_approximate_peak_lai(LAI.data);
+GPP=quickload('DATASCRIPT_READ_FLUXCOM_DATASETS_OCT17');
+%Loading GRACE data here
+
+
+
+%Load GFED burned area
+[~,~,A025]=loadworldmesh(0.25);
+BA=mapsfun_coarsen_resolution(GBA.ba,A025,2);
+VPD=(SCIFUN_H2O_SATURATION_PRESSURE(ET2M.datamax) - SCIFUN_H2O_SATURATION_PRESSURE(ED2M.datamax))*10;
+%For comparison: for yr=2001:2016; GF4=DATASCRIPT_READ_GFED4_DATA_MAY16(yr);GFEDCannual025x025(:,:,yr-2000)=mean(GF4.ES(:,:,:,4),3);end
+% [~,~,A025]=loadworldmesh(0.25);
+% GFEDCannual05x05=mapsfun_coarsen_resolution(GFEDCannual025x025,A025,2);
+%save DUMPFILES/GFED_2001_2016_05x05_NOCODE.mat GFEDCannual05x05
+%Units are gC/m2/month
+load DUMPFILES/GFED_2001_2016_05x05_NOCODE.mat GFEDCannual05x05
+
+idx=1:192;
+
+for ri=1
+   %Setting all time-dependent terms and writing to file
+for n=1:numel(rows);
+    CBF=CBFtemplate;
+    r=PXItemplate.r(n);
+    c=PXItemplate.c(n);
+    CBF.LAT=PXItemplate.lat(n);
+    %LAI
+    CBF.OBS.LAI(1:192)=nanzerofill(LAI.data(r,c,:));
+    
+    
+    %Step 1. Load CBD file
+    %CBF=CARDAMOM_READ_BINARY_FILEFORMAT(PXItemplate.cbffilename{n,ri});
+    %Step 2. Fill in drivers
+    r=PXItemplate.r(n);c=PXItemplate.c(n);
+    CBF.MET(:,2)=ET2M.datamin(r,c,idx);
+    CBF.MET(:,3)=ET2M.datamax(r,c,idx);
+    CBF.MET(:,4)=ESRAD.data(r,c,idx);
+    CBF.MET(:,7)=BA(r,c,idx);
+    CBF.MET(:,8)=VPD(r,c,idx);
+    CBF.MET(:,9)=EPREC.data(r,c,idx)*1e3;%mm/day
+    
+
+
+
+    %SIF
+      SIF=squeeze(GSIF.data05x05(r,c,:));
+        SIF(isfinite(SIF)==0 | SIF<0)=-9999;
+        % SIFUNC(SIF<0)=-9999;
+        %Entering SIF in CBF
+        CBF.OBS.GPP(cbfyears>=min(GSIF.year) & cbfyears<=max(GSIF.year))=SIF;
+        CBF.OBSUNC.GPP.gppabs=0;
+     
+
+
+    EWT=squeeze(GRACE.data(r,c,:));
+    EWT(isfinite(EWT)==0 )=-9999;
+
+   if isfield(OPT,'grace')==0;OPT.grace=1;end
+       
+
+     if OPT.grace==1;
+            CBF.OBS.EWT(cbfgrpts{1})=EWT(cbfgrpts{2});
+    end
+        
+
+    %Write GFEDv4 data
+    %This tends to be an issue where fires are virtually 0
+    %COnvert to gC/m2/d
+      if mean(GFEDCannual05x05(r,c,:))>0 & max(CBF.MET(:,7))>0
+	 CBF.OTHER_OBS.MFire.mean=mean(GFEDCannual05x05(r,c,:),3)*12/365.25;
+     CBF.OTHER_OBS.MFire.unc=1.5;
+      end
+     
+     %Write MPI GPP with log2 uncertainty here
+     %remove pars(11) constraint
+        CBF.OTHER_OBS.MGPP.mean=nanzerofill(mean(mean(GPP.data(r,c,:,:),3),4));
+        CBF.OTHER_OBS.MGPP.unc=1.5;
+
+        
+         CBF.OTHER_OBS.MLAI.mean=mean(CBF.OBS.LAI(CBF.OBS.LAI>-9999));
+        %CBD.OTHERPRIORSUNC(5)=mean(CBD.OBS(CBD.OBS(:,2)>-9999,2))*0.2;
+        %CBD.OTHERPRIORUNC(5)=CBD.OTHERPRIORS(5)*0.5;
+        CBF.OTHER_OBS.MLAI.unc=1.5;
+
+    
+    %    Biomass
+    CBF.OTHER_OBS.MBiomass.mean=nanzerofill(TABGB.data(r,c));
+    UNC=max(1.5,1.5*12.5*100/TABGB.data(r,c));if isinf(UNC);UNC=-9999;end
+     CBF.OTHER_OBS.MBiomass.unc=UNC;
+    %SOM
+    CBF.PARPRIORS(23)= nanzerofill(HWSD.data(r,c));
+    CBF.PARPRIORUNC(23)=1.5;
+
+    
+    %writetofile
+    disp(sprintf('writing %s',PXItemplate.cbffilename{n,ri}));
+        CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,PXItemplate.cbffilename{n,ri});
+
+end
+end
+%VPD units = hPa.
+%Prec units = mm /day
+% CBF2.MET(:,8)=VPD.data(r,c,1:120);
+% CBF2.MET(:,9)=EPREC.data(r,c,1:120)*1e3;
+
+
+end
 function PXItemplate=GL05RUN_MAR19(OPT)
 %Step 1. Load drivers 
 %See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
@@ -2415,6 +2891,331 @@ repeatmlco2=1;
 if matfilecontains(GCDRIOBS,'NBE')==0 || repeat==1 || repeatmlco2==1;
 MLCO2=DATASCRIPT_READ_NOAA_MAUNA_LOA_CO2_OCT19;
 GCDRIOBS.CO2=MLCO2.data(MLCO2.year>=YEARS(1) & MLCO2.year<=YEARS(end));
+end
+
+    GCDRIOBS=matfile(dumpfilename,'Writable',false);
+
+
+
+
+end
+
+
+function GCDRIOBS=READ_GRID_GC_4x5_DRIVERS_OBS_ERA5(repeat)
+
+
+%This function is a universal gridding of all/any datasets at 4x5  
+YEARS=2001:2019;
+
+
+defval('repeat',0);
+%Dumpfile and stuff here
+%GCDRIOBS 
+%dumpfilename='DUMPFILES/PROJSCRIPT_CARDAMOM_CMS_GC4x5_DRIOBS_NOV18.mat';
+dumpfilename='DUMPFILES/PROJSCRIPT_CARDAMOM_CMS_GC4x5_DRIOBS_ERA5_AUG20.mat';
+
+if isempty(dir(dumpfilename))==0 && repeat==1;delete(dumpfilename);end
+
+%Create/open file
+GCDRIOBS=matfile(dumpfilename,'Writable',true);
+GCDRIOBS.dates=datenum(sprintf('01/01/%4i',YEARS(1)))+365.25/24:365.25/12:datenum(sprintf('01/01/%4i',YEARS(end)+1));
+
+
+    %FOr any additional datasets, update & import through function below
+
+
+[~,~,A05]=loadworldmesh(0.5);
+[~,LSFRAC]=loadlandseamask('4x5');
+[~,lsfrac05]=loadlandseamask(0.5);
+[~,lsfrac025]=loadlandseamask(0.25);
+[~,lsfrac1]=loadlandseamask(1);
+
+GC=GEOSChem_xygrids;
+
+%Read ERA-interim (new dataset function);
+%2001-2017
+metobsidx=1:numel(YEARS)*12;
+%metobsidx_erai=1:numel(2001:2018)*12;
+metobsidx_str=sprintf('%i:%i',metobsidx(1),metobsidx(end));
+%metobsidx_str_erai=sprintf('%i:%i',metobsidx(1),metobsidx_erai(end));
+
+repeatbiomass=0;
+if matfilecontains(GCDRIOBS,'annualbiomass')==0 || repeat==1 || repeatbiomass==1;
+    BTD=quickload('DATASCRIPT_READ_YY_BIOMASS_MAPS_APR19');
+    %Only 2001-2017
+    yrs=BTD.year<2018 & BTD.year>2000;
+    BTD.biomass=BTD.biomass(:,:,yrs);
+    M3D=repmat(lsfrac05>0.5,[1,1,size(BTD.biomass,3)]);
+    %Remove sea
+BTD.biomass(M3D==0)=NaN;
+%Set land values to zero;
+BTD.biomass(isnan(BTD.biomass) & M3D)=0;
+GCDRIOBS.annualbiomass=GEOSChem_regular_grid_to_GC(BTD.biomass);% Units = gC/m2
+end
+
+
+if matfilecontains(GCDRIOBS,'prec')==0 || repeat==1;
+% EPREC=quickload('DATASCRIPT_READ_ERAI_MONTHLY_JUL18(''prec'',0.5)');EPREC.data(EPREC.data<0)=0;
+% GCDRIOBS.prec=indeks(GEOSChem_regular_grid_to_GC(EPREC.data),[':,:,',metobsidx_str_erai]);
+% clear EPREC;
+end
+
+if matfilecontains(GCDRIOBS,'prec_e5')==0 || repeat==1;
+EPREC=quickload('DATASCRIPT_READ_ERA5_MONTHLY_AUG20(''tp'',0.5,2001:2019)');
+EPREC.data(EPREC.data<0)=0;
+GCDRIOBS.prec=indeks(GEOSChem_regular_grid_to_GC(EPREC.data),[':,:,',metobsidx_str]);
+clear EPREC;
+end
+
+
+if matfilecontains(GCDRIOBS,'vpd')==0 || repeat==1;
+ET2M=quickload('DATASCRIPT_READ_ERA5_MONTHLY_AUG20(''t2m'',0.5,2001:2019)');
+GCDRIOBS.mintemp=indeks(GEOSChem_regular_grid_to_GC(ET2M.datamin),[':,:,',metobsidx_str]);
+GCDRIOBS.maxtemp=indeks(GEOSChem_regular_grid_to_GC(ET2M.datamax),[':,:,',metobsidx_str]);
+
+ED2M=quickload('DATASCRIPT_READ_ERA5_MONTHLY_AUG20(''d2m'',0.5,2001:2019)');
+GCDRIOBS.vpd=GEOSChem_regular_grid_to_GC(indeks(SCIFUN_H2O_SATURATION_PRESSURE(ET2M.datamax),[':,:,',metobsidx_str]) - indeks(SCIFUN_H2O_SATURATION_PRESSURE(ED2M.datamax),[':,:,',metobsidx_str]))*10;
+
+clear E*2M ;
+end
+
+
+if matfilecontains(GCDRIOBS,'srad')==0 || repeat==1;
+ESRAD=quickload('DATASCRIPT_READ_ERA5_MONTHLY_AUG20(''ssrd'',0.5,2001:2019)');
+GCDRIOBS.srad=indeks(GEOSChem_regular_grid_to_GC(ESRAD.data),[':,:,',metobsidx_str]);
+clear ESRAD;
+end
+
+%MPI GPP
+%replace "Always 0" values with NaNs
+%Use lsmask05 = 0.5 as a cutoff;
+%assume (a) values outside are caterorized as ls=0, and (b) values inside
+%are zeros (not empty). Apply this approach to standardize across all
+%datasets. prescribe all values outside 0.5 as NaN
+%First step.
+%mask=mean(mean(GPP.data,3),4)==0 & loadlandseamask(0.5)<1
+if matfilecontains(GCDRIOBS,'MPIGPPmean')==0 || repeat==1;
+GPP=quickload('DATASCRIPT_READ_FLUXCOM_DATASETS_OCT17');
+M4D=repmat(lsfrac05>0.5,[1,1,size(GPP.data,3),size(GPP.data,4)]);
+GPP.data(M4D==0)=NaN;GPP.data(isnan(GPP.data) & M4D)=0;
+GCDRIOBS.MPIGPPmean=GEOSChem_regular_grid_to_GC(GPP.data);% Units = gC/m2/day
+end
+
+%Burned area
+%NRW CODE:
+repeatba=0;
+if matfilecontains(GCDRIOBS,'BA')==0 || repeat==1 || repeatba==1;
+
+GBA=[];
+GCE=[];
+for yr=YEARS
+    GF4=DATASCRIPT_READ_GFED4_DATA_MAY16(yr);
+    GBA(:,:,(yr-2001)*12+[1:12])=GF4.BA;
+    GCE(:,:,(yr-2001)*12+[1:12])=GF4.ES(:,:,:,4);
+end
+
+ M4D=repmat(lsfrac025>0.5,[1,1,size(GBA,3),size(GBA,4)]);
+ GBA(M4D==0)=NaN;GBA(isnan(GBA) & M4D)=0;
+ GCE(M4D==0)=NaN;GCE(isnan(GCE) & M4D)=0;
+ %Ensures land fire-free regions = 0 but sea regions are = NaN
+ GCDRIOBS.BA=indeks(GEOSChem_regular_grid_to_GC(GBA),[':,:,',metobsidx_str]);
+ GCDRIOBS.FireC=indeks(GEOSChem_regular_grid_to_GC(GCE),[':,:,',metobsidx_str])*12/365.25;%g species/m2/month
+ %nantotal(nanmean(GCDRIOBS.FireC,3).*GC.area)*365.25/1e15
+
+ disp('GFEDv4s beta does not provide 2017-19 burned area');
+ disp('Using GFEDv4s 2001-2016 BA/Emissions ratio')
+ idx16=16*12;
+ 
+ for m=1:36
+     BAextra(:,:,m)=sum(GCDRIOBS.BA(:,:,m:12:idx16),3)./sum(GCDRIOBS.FireC(:,:,m:12:idx16),3).*GCDRIOBS.FireC(:,:,idx16+m);
+ end
+ %storing and replacing NaNs with zeros (Nans occur when 2010-2016 fires
+ %are zero)
+GCDRIOBS.BA(:,:,idx16+1:end)= BAextra;
+GCDRIOBS.BA=nan2zero(GCDRIOBS.BA);
+%OLD CODE: used GFEDv4 BA data
+% GBA0=quickload('DATASCRIPT_READ_GFED4_BA_DATA_OCT15(1)');
+ %M4D=repmat(lsfrac025>0.5,[1,1,size(GBA.ba,3),size(GBA.ba,4)]);
+% GBA.ba(M4D==0)=NaN;GBA.ba(isnan(GBA.ba) & M4D)=0;%Ensures land fire-free regions = 0 but sea regions are = NaN
+% GCDRIOBS.BA=indeks(GEOSChem_regular_grid_to_GC(GBA.ba),[':,:,',eraidx]);
+end
+
+if matfilecontains(GCDRIOBS,'SOM')==0 || repeat==1
+%Soil C
+HWSD=quickload('DATASCRIPT_READ_HWSD_MAP');
+GCDRIOBS.SOM=GEOSChem_regular_grid_to_GC(HWSD.data);
+
+end
+%LAI
+% LAI=quickload('DATASCRIPT_READ_MODIS_MONTHLY_LAI');LAI.data(isfinite(LAI.data)==0)=0;
+% LAI4x50=GEOSChem_grid_1x1_to_GC(LAI.data);
+
+
+
+
+
+repeatlai=0;
+if matfilecontains(GCDRIOBS,'LAI')==0 || repeat==1 || repeatlai==1
+LAI=DATASCRIPT_READ_MODIS_MONTHLY_LAI_MAY17('4x5');
+GCDRIOBS.LAI=LAI.data(:,:,metobsidx(1:192));
+GCDRIOBS.LAI(:,:,193:metobsidx(end))=NaN;
+GCDRIOBS.PEAKLAIDAY=projscript_approximate_peak_lai(GCDRIOBS.LAI(:,:,1:192));
+end
+
+
+
+%Next: ABGB
+if matfilecontains(GCDRIOBS,'TABGB')==0 || repeat==1
+TABGB=quickload('DATASCRIPT_READ_SAATCHI_BIOMASS_MAP(0.25)');
+TABGB.data(TABGB.data==0 | lsfrac025<0.5)=NaN;
+GCDRIOBS.TABGB=GEOSChem_regular_grid_to_GC(TABGB.data);
+end
+
+
+%Normalizing NBE and BB fluxes by land surface area
+[~,LSFRAC]=loadlandseamask('4x5');
+
+
+if matfilecontains(GCDRIOBS,'BBCO')==0 || repeat==1
+%Load CO emissions, and store mean fire C loss (total)
+DATA=quickload('PROJSCRIPT_CO_BAYESIAN_PARTITIONING_MAR17');
+CO2CO=permute(ncread('OUTPUTS/CMS_FIRES_CO2CO/CMS_FIRES_CO2CO_NOV16.nc','CO2:CO'),[2,1,3]);
+%mean CO emissions
+%Convert to total C emissions
+%CO + CO*CO2CO
+%Convert to daily flux
+%For comparison: 
+%for yr=2001:2015; GF4=DATASCRIPT_READ_GFED4_DATA_MAY16(yr);GFEDCannual025x025(:,:,yr-2000)=mean(GF4.ES(:,:,:,4),3);end
+%save DUMPFILES/GFED_2001_2015_4x5_NOCODE_v2.mat GFEDCannual025x025
+%load DUMPFILES/GFED_2001_2015_4x5_NOCODE_v2.mat GFEDCannual025x025
+%NaNs for sea values
+%Therefore no need to normalize by land-sea mask
+% M3D=repmat(lsfrac025>0.5,[1,1,size(GFEDCannual025x025,3)]);
+% GFEDCannual025x025(M3D==0)=NaN;
+% GFEDCannual4x5=GEOSChem_regular_grid_to_GC(GFEDCannual025x025);
+
+
+% GFEDCannual1x1=mapsfun_coarsen_resolution(GFEDCannual025x025,A025,4);
+
+for yr=2001:2015
+ BBCO(:,:,yr-2000)=mean(nan2zero(DATA.COsource(:,:,DATA.year==yr,2).*(CO2CO(:,:,DATA.year==yr)+1))*12/44*12/365.25,3);
+end
+
+   GCDRIOBS.BBCO=BBCO;
+   
+GCDRIOBS.BBCO=GCDRIOBS.BBCO./repmat(LSFRAC,[1,1,size(GCDRIOBS.BBCO,3)]);
+
+
+end
+%Convert to gC/m2/d
+% GCDRIOBS.BBGFED=GFEDCannual4x5*12/365.25;
+repeatallsif=0;
+if matfilecontains(GCDRIOBS,'SIF')==0 || matfilecontains(GCDRIOBS,'SIFgome2')==0 || matfilecontains(GCDRIOBS,'SIFfluxsat')==0 || repeat==1 || repeatallsif==1
+
+
+%Load GOSAT and GOME2 SIF datasets
+GOSAT=quickload('DATASCRIPT_READ_GOSAT_FLUORESCENCE(''4x5'')');
+GOME2=quickload('DATASCRIPT_READ_GOME_2_FLUORESCENCE_NOV18');
+%For completeness, expanding and storing missing data as  NaN
+SIFgosat(1:46,1:72,[1:metobsidx(end)])=NaN;
+SIFgosat(1:46,1:72,109:180)=GOSAT.SIF(1:46,1:72,GOSAT.year<=2015 & GOSAT.year>=2010);
+SIFgome2(1:46,1:72,1:metobsidx(end))=NaN;
+SIFgome2(1:46,1:72,73:204)=GEOSChem_regular_grid_to_GC(GOME2.data05x05(:,:,GOME2.year>=2007 & GOME2.year<=2017));
+
+
+FLUXSAT=quickload('DATASCRIPT_READ_FLUXSAT_SIF_GPP');
+
+%2001-2018
+%SIFfluxsat already normalized by unit land
+%GCDRIOBS.SIFfluxsat(1:46,1:72,1:216)=FLUXSAT.data./repmat(LSFRAC,[1,1,size(FLUXSAT,3)]);
+SIFfluxsat(1:46,1:72,1:metobsidx(end))=NaN;
+%Only including 2007-2018
+SIFfluxsat(1:46,1:72,73:216)=FLUXSAT.data(:,:,73:216);
+
+GCDRIOBS.SIFfluxsat=SIFfluxsat;
+
+GCDRIOBS.SIF=SIFgosat;
+GCDRIOBS.SIFgome2=SIFgome2;
+
+end
+
+
+
+
+%NBE normalization OK, but ensure to limit analysis to >=10% land cover
+%Rationale = oceans disproportionally contribute to gridcell flux
+%otherwise.
+
+
+repeatallnbe=0;
+
+
+
+if matfilecontains(GCDRIOBS,'NBE')==0 || matfilecontains(GCDRIOBS,'NBE_CMS_JAN20')==0  || repeat==1 || repeatallnbe==1;
+    
+    
+
+CMS=DATASCRIPT_READ_JUNJIE_CMS_OUTPUT_JUL18;
+CMS2=DATASCRIPT_READ_JUNJIE_CMS_OUTPUT_SEP19('CMS_2015_2018_SEP19');
+CMS3=DATASCRIPT_READ_JUNJIE_CMS_OUTPUT_SEP19('CMS_2010_2018_JAN20');
+
+%Only providing b35 results here 
+NBE(:,:,109:144)=CMS.post;
+NBE(:,:,[1:108,145:180])=NaN;
+NBE73(:,:,109:180)=CMS.post_b73;NBE73(:,:,1:108)=NaN;
+NBEoco2=CMS.post_oco2;
+NBE_OCO2_SEP19(:,:,169:216)=CMS2.post;NBE_OCO2_SEP19(:,:,1:168)=NaN;
+NBE73_s3x3(:,:,109:180)=CMS.post_b73_s3x3;NBE73_s3x3(:,:,1:108)=NaN;
+NBE_CMS_JAN20(:,:,109:216)=CMS3.post;NBE_CMS_JAN20(:,:,1:108)=NaN;
+NBE_CMS_JAN20_UNC(:,:,109:216)=CMS3.post;NBE_CMS_JAN20_UNC(:,:,1:108)=NaN;
+
+%Translate to C equivalent
+%See Bowman et al., 2017 outputs
+
+GCDRIOBS.NBE=NBE;
+GCDRIOBS.NBE73=NBE73;
+GCDRIOBS.NBEoco2=NBEoco2;
+GCDRIOBS.NBE73_s3x3=NBE73_s3x3;
+GCDRIOBS.NBE_OCO2_SEP19=NBE_OCO2_SEP19;
+GCDRIOBS.NBE_CMS_JAN20=NBE_CMS_JAN20;
+GCDRIOBS.NBE_CMS_JAN20_UNC=NBE_CMS_JAN20_UNC;
+
+GCDRIOBS.NBE=GCDRIOBS.NBE./repmat(LSFRAC,[1,1,size(GCDRIOBS.NBE,3)]);
+GCDRIOBS.NBE73=GCDRIOBS.NBE73./repmat(LSFRAC,[1,1,size(GCDRIOBS.NBE73,3)]);
+GCDRIOBS.NBEoco2=GCDRIOBS.NBEoco2./repmat(LSFRAC,[1,1,size(GCDRIOBS.NBEoco2,3)]);
+GCDRIOBS.NBE73_s3x3=GCDRIOBS.NBE73_s3x3./repmat(LSFRAC,[1,1,size(GCDRIOBS.NBE73_s3x3,3)]);
+GCDRIOBS.NBE_OCO2_SEP19=GCDRIOBS.NBE_OCO2_SEP19./repmat(LSFRAC,[1,1,size(GCDRIOBS.NBE_OCO2_SEP19,3)]);
+GCDRIOBS.NBE_CMS_JAN20=GCDRIOBS.NBE_CMS_JAN20./repmat(LSFRAC,[1,1,size(GCDRIOBS.NBE_CMS_JAN20,3)]);
+
+GCDRIOBS.LSFRAC=LSFRAC;
+%GCDRIOBS.BBGFED=GCDRIOBS.BBGFED./repmat(LSFRAC,[1,1,size(GCDRIOBS.BBGFED,3)]);
+
+%Deriving NBE uncertainty stats based on Liu et al. 2010
+%These can then be prescribed as annual and seasonal uncertainty values for
+%each gridcell
+%Step 1. Derive mean uncertainty for each gridcell
+GCDRIOBS.NBEunc=mean(std(CMS.unc,[],4),3);
+
+%Step 2. for each year, remove mean of each MCMC layer
+for yr=2010:2012;
+    midx=[1:12]+12*(yr-2010);
+    NBEannual_mc(:,:,yr-2009,:)=mean(CMS.unc(:,:,midx,:),3);
+    NBEseasonal_mc(:,:,midx,:)=CMS.unc(:,:,midx,:)-repmat(NBEannual_mc(:,:,yr-2009,:),[1,1,12,1]);
+end
+GCDRIOBS.NBEunc_annual=mean(std(NBEannual_mc,[],4),3);
+GCDRIOBS.NBEunc_seasonal=mean(std(NBEseasonal_mc,[],4),3);
+%CO2 concentrations global
+%MLCO2=DATASCRIPT_READ_NOAA_MAUNA_LOA_CO2_SEP17;
+
+
+end
+
+
+repeatmlco2=1;
+if matfilecontains(GCDRIOBS,'NBE')==0 || repeat==1 || repeatmlco2==1;
+%MLCO2=DATASCRIPT_READ_NOAA_MAUNA_LOA_CO2_OCT19;
+NOAACO2=DATASCRIPT_READ_NOAA_GLOBAL_CO2_AUG20;
+GCDRIOBS.CO2=NOAACO2.data(NOAACO2.year>=YEARS(1) & NOAACO2.year<=YEARS(end));
 end
 
     GCDRIOBS=matfile(dumpfilename,'Writable',false);
