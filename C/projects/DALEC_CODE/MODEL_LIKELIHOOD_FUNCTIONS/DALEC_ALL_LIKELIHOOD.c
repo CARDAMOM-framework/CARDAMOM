@@ -33,13 +33,31 @@ int n;
 /*EDC switches are stored in DATA->parpriors (positions 31-50);*/
 /*switch all on if EDCDIAG<2 , otherwise, switch on/off according to EDCSWITCH*/
 /*EDCSETUP function will be included in DALEC_ALL_LIKELIHOOD.c*/
+
+/*
+printf("*****")
+printf("*****Note on status of DALEC EDC settings*******\n");
+printf("*****")
+printf("*****")
+printf("*****")
+printf("******Only default values used for now, introduce EDC settings via netcdf system when needed\n");
+printf("*****")
+*/
+
+
 for (n=0;n<100;n++){EDCDmem.SWITCH[n]=1;}
 if (EDCDmem.DIAG==2){for (n=0;n<20;n++){EDCDmem.SWITCH[n]=DATA.otherpriors[n+30];}}
 
+//if (EDCDmem.DIAG==2){for (n=0;n<20;n++){EDCDmem.SWITCH[n]=0;}}
+
+
 /*EQF is stored in the "DATA.otherpriorunc" fields associated with EDCs 7-12*/
 /*default value is 2*/
-EDCDmem.EQF=DATA.otherpriorunc[36]; if (EDCDmem.EQF==-9999){EDCDmem.EQF=2;}
+EDCDmem.EQF=DATA.otherpriorunc[36]; 
 
+printf("EDCD->EQF* = %2.2f\n",EDCDmem.EQF);
+if (EDCDmem.EQF==-9999){EDCDmem.EQF=2;}
+//EDCDmem.EQF=2;
 printf("EDCD->EQF = %2.2f\n",EDCDmem.EQF);
 
 /*Default structure has all EDC=1, and 100 EDCs*/
@@ -83,6 +101,7 @@ return p;}
 double LIKELIHOOD(DATA D){
 
 //Step 1. Implement observarion operator on 
+printf("LIKELIHOOD Line 104...\n");
 
 
 double P=0;
@@ -93,7 +112,9 @@ OBSOPE *O=&((DALEC *)D.MODEL)->OBSOPE;
 
 
 //Observation operator on DALEC variables.
+printf("LIKELIHOOD Line 115...\n");
 DALEC_OBSOPE(&D,O);
+printf("LIKELIHOOD Line 117...\n");
 
 
 //printf("About to calculate likelihoods...\n");
@@ -111,6 +132,7 @@ if (O->SUPPORT_GRACE_EWT_OBS){   P=P+DALEC_LIKELIHOOD_GRACE_EWT(D);}
 if (O->SUPPORT_FIR_OBS){   P=P+DALEC_LIKELIHOOD_FIRE(D);}
 
 
+printf("LIKELIHOOD Line 134...\n");
 
 
 /*Note: only use with model ID = 806*/

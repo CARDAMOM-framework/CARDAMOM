@@ -2,12 +2,13 @@
 
 %This code runs a sequence of CARDAMOM benchmark tests with expected or
 %known outcomes
+cbffilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbf';
+cbrfilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbr';
 
-cbffilename='CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbf';
-cbrfilename='CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbr';
+CBF=CARDAMOM_READ_BINARY_FILEFORMAT(cbffilename);
 
 %Step 1. Run forward run
-CBR=CARDAMOM_RUN_MODEL(cbffilename,cbrfilename);
+CBR=CARDAMOM_RUN_MODEL(CBF,cbrfilename);
 
 disp('**********')
 disp('**********')
@@ -94,8 +95,7 @@ disp('**********')
 
 %Step 1. Generate some output (since 813 not available yet).
 %CBF=CARDAMOM_CBF_TEMPLATE(1000);
-cbffilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbf';
-cbrfilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbr';
+
 %CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,cbffilename);
 %CBR=CARDAMOM_RUN_MDF(CBF,[],cbrfilename);
 

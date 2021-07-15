@@ -65,6 +65,7 @@ return 0;}
 
 
 int DALEC_OBSOPE_CH4(DATA * D, OBSOPE * O){
+    printf("...DALEC_OBSOPE_CH4 Line 0...\n");
 return 0;
 }
 
@@ -147,15 +148,15 @@ return 0;}
 int DALEC_OBSOPE_ABGB(DATA * D, OBSOPE * O){
 
 
-
+printf("DALEC_OBSOPE_ABGB Line 151...\n");
 if (D->otherpriors[0]>-9999){
-
-int nn;
-D->M_ABGB_t0[0]=0;
+printf("DALEC_OBSOPE_ABGB Line 153...\n");
+    int nn;
+D->M_ABGB_t0[0]=0;printf("DALEC_OBSOPE_ABGB Line 155...\n");
 for (nn=0;nn<O->ABGB_n_pools;nn++){D->M_ABGB_t0[0]+=D->M_POOLS[O->ABGB_pools[nn]];}
 }
 
-
+printf("DALEC_OBSOPE_ABGB Line 159...\n");
 if (D->nabgb>0){
 //declarations
 int p,nxp,n,nn;
@@ -163,16 +164,16 @@ int p,nxp,n,nn;
 for (n=0;n<D->nodays;n++){
 //indices
 nxp=D->nopools*(n+1);p=D->nopools*n;
-
+printf("DALEC_OBSOPE_ABGB Line 167...\n");
 //inialize
 D->M_ABGB[n]=0;
 //loop through pools
 for (nn=0;nn<O->ABGB_n_pools;nn++){
 D->M_ABGB[n]+=(D->M_POOLS[p+O->ABGB_pools[nn]]+D->M_POOLS[nxp+O->ABGB_pools[nn]])*0.5;}
-
+printf("DALEC_OBSOPE_ABGB Line 173...\n");
 
 }}
-
+printf("DALEC_OBSOPE_ABGB Line 176...\n");
 
 return 0;
 }
@@ -212,16 +213,28 @@ return 0;
 
 ///Full observation operator
 int DALEC_OBSOPE(DATA * D, OBSOPE * O){
-
+printf("DALEC_OBSOPE Line 216...\n");
+printf("O->SUPPORT_CH4_OBS = %i\n",(int)O->SUPPORT_CH4_OBS);
+printf("...218...\n");
+printf("...219...\n");
 if (O->SUPPORT_CH4_OBS){DALEC_OBSOPE_CH4(D, O);}
+printf("...221...\n");
 if (O->SUPPORT_GPP_OBS){DALEC_OBSOPE_GPP(D, O);}
+printf("...223...\n");
 if (O->SUPPORT_LAI_OBS){DALEC_OBSOPE_LAI(D, O);}
+printf("...225...\n");
 if (O->SUPPORT_ET_OBS){DALEC_OBSOPE_ET(D, O);}
+printf("...227...\n");
 if (O->SUPPORT_NBE_OBS){DALEC_OBSOPE_NBE(D, O);}
+printf("...229...\n");
 if (O->SUPPORT_ABGB_OBS){DALEC_OBSOPE_ABGB(D, O);}
+printf("...231...\n");
 if (O->SUPPORT_SOM_OBS){DALEC_OBSOPE_SOM(D, O);}
+printf("...233...\n");
 if (O->SUPPORT_GRACE_EWT_OBS){DALEC_OBSOPE_GRACE_EWT(D, O);}
+printf("...235...\n");
 if (O->SUPPORT_FIR_OBS){DALEC_OBSOPE_FIR(D, O);}
+printf("DALEC_OBSOPE Line 237...\n");
 
 return 0;}
 

@@ -1,6 +1,10 @@
 #pragma once
 #include "CARDAMOM_MODULE_IDX.c"
+#include "CARDAMOM_NETCDF_DATA_STRUCTURE.c"
 typedef struct DATA{
+//This is the netCDF data struct. See CARDAMOM_NETCDF_DATA_STRUCTURE.c for details on all the things contained therein
+NETCDF_DATA ncdf_data;
+
 /*DRIVERS*/
 double *MET;
 double meanprec;
@@ -124,7 +128,3 @@ void *MODEL;
 struct MODULE_IDX MODULE_IDX;
 
 }DATA;
-
-
-
-
