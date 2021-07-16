@@ -2,13 +2,39 @@
 
 %This code runs a sequence of CARDAMOM benchmark tests with expected or
 %known outcomes
-cbffilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbf';
+cbffilename_old='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbf';
+cbffilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.nc.cbf';
+cbftestfile='CARDAMOM/DATA/MODEL_ID_1000_TEST_ONLY.nc.cbf';
+
+%Converting to netcdf file
+TEST_CARDAMOM_CBF_NETCDF_FORMAT(cbffilename_old,cbffilename);
+%Make a copy
+copyfile(cbffilename,cbftestfile);
+
+
 cbrfilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbr';
 
-CBF=CARDAMOM_READ_BINARY_FILEFORMAT(cbffilename);
+%CBF=CARDAMOM_READ_BINARY_FILEFORMAT(cbffilename);
 
+
+
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('CARDAMOM_READ_BINARY_FILEFORMAT.m successfully executed')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
 %Step 1. Run forward run
-CBR=CARDAMOM_RUN_MODEL(CBF,cbrfilename);
+CBR_old=CARDAMOM_RUN_MODEL(cbffilename_old,cbrfilename);
+CBR=CARDAMOM_RUN_MODEL(cbffilename,cbrfilename);
+
+
+
 
 disp('**********')
 disp('**********')
@@ -23,25 +49,14 @@ disp('**********')
 disp('**********')
 
 
-CBF=CARDAMOM_READ_BINARY_FILEFORMAT(cbffilename);
 
-disp('**********')
-disp('**********')
-disp('**********')
-disp('**********')
-disp('**********')
-disp('CARDAMOM_READ_BINARY_FILEFORMAT successfully executed')
-disp('**********')
-disp('**********')
-disp('**********')
-disp('**********')
-disp('**********')
+
 
 
 cbrtest='cardamom_integration_test.cbr';
 delete('cardamom_integration_test.cbr');
 delete('cardamom_integration_test.cbrSTART');
-CBF.EDC=0;
+CBF.EDC=1;
 CBRtest=CARDAMOM_RUN_MDF(CBF,[],cbrtest);
 
 

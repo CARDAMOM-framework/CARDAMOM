@@ -169,10 +169,10 @@ int CARDAMOM_READ_BINARY_DATA(char *filename,DATA *DATA)
 	//This determines if we are dealing with netCDF files, or traditional cardamom files. By default, we assume the older binary format
 	int fileIsCDF =0;
 	int testnc=0,n,m;
-	char *ncfilename="CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE_beta_v2.nc.cbf";
+	//char *ncfilename="CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE_beta_v2.nc.cbf";
 	if (StringEndsWith(filename, ".nc.cbf") | (testnc==1)){
 	  fileIsCDF=1;
-		if (testnc==0){ncfilename=filename;}
+		//if (testnc==0){ncfilename=filename;}
 	}
 
 	if (fileIsCDF){

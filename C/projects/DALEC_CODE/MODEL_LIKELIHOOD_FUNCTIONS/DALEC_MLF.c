@@ -6,10 +6,8 @@
 
 double DALEC_MLF(DATA DATA,double *PARS){
 
-printf("DALEC_MLF Line 9...\n");
 //copy pars to M_PARS for export
 int n; for (n=0;n<DATA.nopars;n++){DATA.M_PARS[n]=PARS[n];}
-printf("DALEC_MLF Line 12...\n");
 //printf("DATA.nopars = %i\n",DATA.nopars);
 //printf("PARS[16] = %2.2f\n",PARS[16]);
 //printf("DATA.M_PARS[16] = %2.2f\n",DATA.M_PARS[16]);
@@ -24,23 +22,19 @@ EDCD=*MODEL->EDCD;
 /*EDCD->nedc=100;
 int n; for (n=0;n<EDCD->nedc;n++){EDCD->PASSFAIL[n]=1;}
 */
-printf("DALEC_MLF Line 27...\n");
 int EDC;
 double P=0,P_p;
 
 EDC=ipow(MODEL->edc1(PARS,DATA, &EDCD),DATA.EDC);
 P=P+log((double)EDC);
 
-printf("DALEC_MLF Line 34...\n");
 if (EDC==1 | EDCD.DIAG==1){
 /*PARAMETER LOG LIKELIHOOD*/
 P=P+LIKELIHOOD_P(DATA,PARS);
 P_p=P;
 
-printf("DALEC_MLF Line 40...\n");
 /*running model*/
 MODEL->dalec(DATA, PARS);
-printf("DALEC_MLF Line 43...\n");
 
 /*storing GPP*/
 //for (n=0;n<DATA.nodays;n++){DATA.M_GPP[n]=DATA.M_FLUXES[n*DATA.nofluxes];}
@@ -48,27 +42,22 @@ printf("DALEC_MLF Line 43...\n");
 /*EDC2 check*/
 EDC=MODEL->edc2(PARS, DATA, &EDCD);
 EDC=ipow(EDC,DATA.EDC);
-printf("DALEC_MLF Line 51...\n");
 
 /*LIKELIHOOD*/
 P=P+log((double)EDC);
-printf("DALEC_MLF Line 55...\n");
 
 
 
 if (EDC==1){P=P+LIKELIHOOD(DATA);}}
-printf("DALEC_MLF Line 60...\n");
 
 
 
 /*saving EDCD if EDCDIAG==1*/
 if (DATA.EDCDIAG==1){for (n=0;n<100;n++){DATA.M_EDCD[n]=EDCD.PASSFAIL[n];}}
-printf("DALEC_MLF Line 66...\n");
 
 
 /*saving likelihood P*/
 DATA.M_P[0]=P;
-printf("DALEC_MLF Line 71...\n");
 
 
 /*Returning the log likelihood P*/

@@ -1,12 +1,14 @@
 %Notes: https://www.unidata.ucar.edu/software/netcdf/docs/netcdf_data_set_components.html
 
 %- Scalar variables don't need dimension definitions
-function fname=TEST_CARDAMOM_CBF_NETCDF_FORMAT(CBF,fname)
+function TEST_CARDAMOM_CBF_NETCDF_FORMAT(CBF,fname)
 
 if nargin==0
 % Step 1. Read CBF file
 CBF=CARDAMOM_READ_BINARY_FILEFORMAT('CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbf');
 end
+
+if isstr(CBF);CBF=CARDAMOM_READ_BINARY_FILEFORMAT(CBF);end
 
 
 %Guarantees CBF.RAW available (soon to be decomissioned).

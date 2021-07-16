@@ -101,7 +101,6 @@ return p;}
 double LIKELIHOOD(DATA D){
 
 //Step 1. Implement observarion operator on 
-printf("LIKELIHOOD Line 104...\n");
 
 
 double P=0;
@@ -112,9 +111,7 @@ OBSOPE *O=&((DALEC *)D.MODEL)->OBSOPE;
 
 
 //Observation operator on DALEC variables.
-printf("LIKELIHOOD Line 115...\n");
 DALEC_OBSOPE(&D,O);
-printf("LIKELIHOOD Line 117...\n");
 
 
 //printf("About to calculate likelihoods...\n");
@@ -132,7 +129,6 @@ if (O->SUPPORT_GRACE_EWT_OBS){   P=P+DALEC_LIKELIHOOD_GRACE_EWT(D);}
 if (O->SUPPORT_FIR_OBS){   P=P+DALEC_LIKELIHOOD_FIRE(D);}
 
 
-printf("LIKELIHOOD Line 134...\n");
 
 
 /*Note: only use with model ID = 806*/

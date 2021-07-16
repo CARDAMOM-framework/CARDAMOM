@@ -120,7 +120,6 @@ double *pars=calloc(CARDADATA.nopars,sizeof(double));
 /*STEP 3 - declaring flux, pool and edc files*/
 /*note - these should be input at command line as variables*/
 
-printf("Line 123...\n");
 char fluxfile[1000];
 char poolfile[1000];
 char edcdfile[1000];
@@ -147,7 +146,6 @@ filediag(fde,edcdfile);
 FILE *fdpro=fopen(probfile,"wb");
 filediag(fdpro,probfile);
 
-printf("Line 150...\n");
 /*STEP 3.1 - create netCDF output file*/
 int ncid = 0; //This is the netcdf id num
 int ncretval = 0; //This is a reused variable for the return value of ncdf methods.
@@ -187,7 +185,6 @@ WARNONERROR(nc_put_att_text	(	ncid,fluxesVarID,"example_lowercase_name",strlen(f
 //This is an example of an array of doubles. Yes, you do need to specify NC_DOUBLE even though we used the type-safe method nc_put_att_double
 WARNONERROR(nc_put_att_double	(	ncid,fluxesVarID,"example_doubles",NC_DOUBLE,4,(double[]){12.44, 441.0, 3.14159265, 0.0}));
 
-printf("Line 190...\n");
 
 
 int pools_dems[] = {sampleDimID,timePoolsDimID,poolDimID};
@@ -203,7 +200,6 @@ int pars_dems[] = {sampleDimID, noParsDimID};
 FAILONERROR(nc_def_var(	ncid,"PARS" , NC_DOUBLE, 2, pars_dems, &parsVarId ));
 
 
-printf("Line 206...\n");
 //End NetCDF definition phase, in order to allow for writting
 nc_enddef(ncid);
 
@@ -221,9 +217,7 @@ fread(pars,sizeof(double),CARDADATA.nopars,fd);
 /*Setting EDCDIAG = 1 to ensure full model run*/
 CARDADATA.EDCDIAG=1;
 
-printf("Line 224...\n");
 CARDADATA.MLF(CARDADATA,pars);
-printf("Line 226...\n");
 /*step 4.3 - writing DALEC fluxes and pools to file*/
 fwrite(CARDADATA.M_FLUXES,sizeof(double),CARDADATA.nodays*CARDADATA.nofluxes,fdf);
 fwrite(CARDADATA.M_POOLS,sizeof(double),(CARDADATA.nodays+1)*CARDADATA.nopools,fdp);
@@ -232,7 +226,6 @@ fwrite(CARDADATA.M_P,sizeof(double),1,fdpro);
 /*writing as double - platform issues related to "int"*/
 /*double MEDCD[100];for (nn=0;nn<100;nn++){MEDCD[nn]=(double)CARDADATA.M_EDCD[nn];};fwrite(MEDCD,sizeof(double),100,fde);
 */
-printf("Line 235...\n");
 /*step 4.4 - writing DALEC fluxes and pools to netCDF file*/
 //(with N (Number of samples) being another dimension, applied to all vars)
 
