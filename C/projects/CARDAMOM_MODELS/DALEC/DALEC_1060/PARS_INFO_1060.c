@@ -151,7 +151,7 @@ CARDADATA->parmax[32]=1;
 CARDADATA->parmin[33]=0.0000001;
 CARDADATA->parmax[33]=0.00001;
 
-/*Maximum infiltration (m/month)*/
+/*Maximum infiltration (mm/day)*/
 CARDADATA->parmin[34]=1;
 CARDADATA->parmax[34]=1e4;
 
