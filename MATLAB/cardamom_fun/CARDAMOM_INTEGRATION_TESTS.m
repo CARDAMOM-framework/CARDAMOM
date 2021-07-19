@@ -7,11 +7,11 @@
 
 nccbffilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.nc.cbf';
 ncdisp(nccbffilename)
-cbftestfile='CARDAMOM/DATA/MODEL_ID_1000_TEST_ONLY.nc.cbf';
+nccbftestfile='CARDAMOM/DATA/MODEL_ID_1000_TEST_ONLY.nc.cbf';
 
 %Converting to netcdf file
 %Make a copy
-copyfile(nccbffilename,cbftestfile);
+copyfile(nccbffilename,nccbftestfile);
 
 
 cbrfilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbr';
@@ -28,6 +28,7 @@ CBR=CARDAMOM_RUN_MODEL(nccbffilename,cbrfilename);
 %Compare CBR against benchmarks
 load('CARDAMOM/DATA/CBR_PRE_NCDF_BENCHMARKS','CBRcbf','CBRnccbf')
 
+disp('Numerical differences: expected to be ~0')
 disp(minmax(CBRnccbf.FLUXES-CBR.FLUXES))
 disp(minmax(CBRcbf.FLUXES-CBR.FLUXES))
 disp(minmax(CBRnccbf.POOLS-CBR.POOLS))
@@ -48,16 +49,17 @@ disp('**********')
 disp('**********')
 
 
-keyboard
 
 
-
-
+mdf_tests=0;
+if mdf_tests==1;
 cbrtest='cardamom_integration_test.cbr';
 delete('cardamom_integration_test.cbr');
 delete('cardamom_integration_test.cbrSTART');
-CBF.EDC=1;
-CBRtest=CARDAMOM_RUN_MDF(CBF,[],cbrtest);
+
+
+
+CBRtest=CARDAMOM_RUN_MDF(nccbftestfile,[],cbrtest);
 
 
 disp('**********')
@@ -80,8 +82,7 @@ MCO.niterations=10000;
 MCO.printrate=100;
 MCO.samplerate=MCO.niterations/2000*100;
 MCO.mcmcid=3;
-CBF.EDC=0;
-CBR=CARDAMOM_RUN_MDF(CBF,MCO);
+CBR=CARDAMOM_RUN_MDF(nccbftestfile,MCO);
 
 
 
@@ -98,7 +99,7 @@ disp('**********')
 disp('**********')
 
 
-
+end
 %COst function tests
 %Step 1. Use existing solution
 %cbffilename='CARDAMOM/DATA/GCRUN_JUN20_TDLE_1942.cbf';
@@ -113,6 +114,12 @@ disp('**********')
 
 %CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,cbffilename);
 %CBR=CARDAMOM_RUN_MDF(CBF,[],cbrfilename);
+
+
+cost_function_tests=0;
+
+if cost_function_tests==1;
+
 
 CBF=CARDAMOM_READ_BINARY_FILEFORMAT(nccbffilename);
 CBR=CARDAMOM_RUN_MODEL(CBF,cbrfilename);
@@ -206,7 +213,7 @@ disp(sprintf('Cost function with GPP(2) obs %2.2f (expected -0.5)',CBRcf.PROB));
 ALL_TESTS(k,:)=[ -0.5, CBRcf.PROB];TEST_NAMES{k}='GPP, 1 obs, 1-delta offset';k=k+1;
 
 
-
+end
 
 
 
