@@ -109,10 +109,10 @@ double ch4_obs_unc;/*shuang*/
 double ch4_obs_threshold;/*shuang*/
 
 /*priors*/
-double parpriors[50];
-double parpriorunc[50];
-double otherpriors[50];
-double otherpriorunc[50];
+double parpriors[500];
+double parpriorunc[500];
+double otherpriors[500];
+double otherpriorunc[500];
 int PCrotate;
 /*TO DO: include parameter info and model likelihood function fields HERE
 These can then be assigned during call to CARDAMOM_MODEL_LIBRARY*/

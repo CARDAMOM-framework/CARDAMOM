@@ -2,14 +2,16 @@
 
 %This code runs a sequence of CARDAMOM benchmark tests with expected or
 %known outcomes
-cbffilename_old='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbf';
-cbffilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.nc.cbf';
+%cbffilename_old='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbf';
+%delete(cbffilename);TEST_CARDAMOM_CBF_NETCDF_FORMAT(cbffilename_old,cbffilename);
+
+nccbffilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.nc.cbf';
+ncdisp(nccbffilename)
 cbftestfile='CARDAMOM/DATA/MODEL_ID_1000_TEST_ONLY.nc.cbf';
 
 %Converting to netcdf file
-TEST_CARDAMOM_CBF_NETCDF_FORMAT(cbffilename_old,cbffilename);
 %Make a copy
-copyfile(cbffilename,cbftestfile);
+copyfile(nccbffilename,cbftestfile);
 
 
 cbrfilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbr';
@@ -18,21 +20,18 @@ cbrfilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbr';
 
 
 
-disp('**********')
-disp('**********')
-disp('**********')
-disp('**********')
-disp('**********')
-disp('CARDAMOM_READ_BINARY_FILEFORMAT.m successfully executed')
-disp('**********')
-disp('**********')
-disp('**********')
-disp('**********')
-disp('**********')
-%Step 1. Run forward run
-CBR_old=CARDAMOM_RUN_MODEL(cbffilename_old,cbrfilename);
-CBR=CARDAMOM_RUN_MODEL(cbffilename,cbrfilename);
 
+%Step 1. Run forward run
+%CBR_old=CARDAMOM_RUN_MODEL(cbffilename_old,cbrfilename);
+CBR=CARDAMOM_RUN_MODEL(nccbffilename,cbrfilename);
+
+%Compare CBR against benchmarks
+load('CARDAMOM/DATA/CBR_PRE_NCDF_BENCHMARKS','CBRcbf','CBRnccbf')
+
+disp(minmax(CBRnccbf.FLUXES-CBR.FLUXES))
+disp(minmax(CBRcbf.FLUXES-CBR.FLUXES))
+disp(minmax(CBRnccbf.POOLS-CBR.POOLS))
+disp(minmax(CBRcbf.POOLS-CBR.POOLS))
 
 
 
@@ -114,7 +113,7 @@ disp('**********')
 %CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,cbffilename);
 %CBR=CARDAMOM_RUN_MDF(CBF,[],cbrfilename);
 
-CBF=CARDAMOM_READ_BINARY_FILEFORMAT(cbffilename);
+CBF=CARDAMOM_READ_BINARY_FILEFORMAT(nccbffilename);
 CBR=CARDAMOM_RUN_MODEL(CBF,cbrfilename);
 
 CBFcf=cardamomfun_clear_cbf_obs(CBF);clear CBF;
