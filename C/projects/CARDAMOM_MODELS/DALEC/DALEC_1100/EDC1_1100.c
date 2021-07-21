@@ -87,7 +87,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[16-1]==1)
 
 
 
-
+EDCD->pEDC=log(EDC);
 
 
 return EDC;

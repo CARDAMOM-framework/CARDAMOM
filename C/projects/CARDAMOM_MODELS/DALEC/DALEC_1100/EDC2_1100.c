@@ -74,8 +74,8 @@ MPOOLSjan[n]=MPOOLSjan[n]+POOLS[nopools*(m*dint)+n]/(nodays/dint+1);}}
 /*EDC no 6*/
 /*0.2*Cf < Cr < 5*Cf*/
 /*Cfoliar : Croot = 5:1 or 1:5*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[6-1]==1)) & (MPOOLS[1]>MPOOLS[2]*5 | MPOOLS[1]*5<MPOOLS[2])){EDC=ipow(0,EDCD->SWITCH[6-1]);EDCD->PASSFAIL[6-1]=0; }
-
+/*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[6-1]==1)) & (MPOOLS[1]>MPOOLS[2]*5 | MPOOLS[1]*5<MPOOLS[2])){EDC=ipow(0,EDCD->SWITCH[6-1]);EDCD->PASSFAIL[6-1]=0; }*/
+EDCD->pEDC=EDCD->pEDC-0.5*pow(log(MPOOLS[1]/MPOOLS[2])/log(2),2);
 
 /*equilibrium factor (in comparison to C_initial)*/
 double EQF=EDCD->EQF;
@@ -147,10 +147,10 @@ Rm=Fin[n]/Fout[n];
 /*Theoretical starting input/output*/
 Rs=Rm*MPOOLSjan[n]/Pstart;
 
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[7-1+n]==1))
+/*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[7-1+n]==1))
 & ((fabs(log(Rs))>log(EQF)) || (fabs(Rs-Rm)>etol)))
-{EDC=ipow(0,EDCD->SWITCH[7-1+n]);EDCD->PASSFAIL[7-1+n]=0;}
-
+{EDC=ipow(0,EDCD->SWITCH[7-1+n]);EDCD->PASSFAIL[7-1+n]=0;}*/
+EDCD->pEDC=EDCD->pEDC-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
 
 /*storing EDCPROB: i.e. the log probability of each EDC based on a gaussian representation*/
 /*of each constraint*/
@@ -171,10 +171,10 @@ printf("****\n");}}
 
 
 /*Ensuring that wilting point is at or below the mean H2O pool EDC14*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[15-1]==1)) & (pars[25]>MPOOLS[6])){EDC=ipow(0,EDCD->SWITCH[15-1]);EDCD->PASSFAIL[15-1]=0;}
+/*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[15-1]==1)) & (pars[25]>MPOOLS[6])){EDC=ipow(0,EDCD->SWITCH[15-1]);EDCD->PASSFAIL[15-1]=0;}*/
 
 /***********************EDCs done here****************************/
-
+EDCD->pEDC=EDCD->pEDC+log(1/(1+exp(10*(pars[25]-MPOOLS[6])/MPOOLS[6])));
 
 
 /*Additional faults can be stored in positions 35-40*/
@@ -182,7 +182,8 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[15-1]==1)
 /*PRIOR RANGES - ALL POOLS MUST CONFORM*/
 int pidx[]={17,18,19,20,21,22,26,35};
 
-for (n=0;n<nopools-1;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;}}
+/*for (n=0;n<nopools-1;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;}}*/
+for (n=0;n<nopools;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;EDCD->pEDC=log(0);}}
 
 
 int PEDC;
@@ -192,7 +193,8 @@ if (EDC==1 || DIAG==1)
 while ((n<nopools) & (EDC==1 || DIAG==1))
 {nn=0;PEDC=1;while ((nn<nodays+1) & (PEDC==1))
 {if ((POOLS[n+nn*nopools]<0) || isnan(POOLS[n+nn*nopools])==1)
-{EDC=0;PEDC=0;EDCD->PASSFAIL[35+n]=0;}nn=nn+1;};
+/*{EDC=0;PEDC=0;EDCD->PASSFAIL[35+n]=0;}nn=nn+1;};*/
+{EDC=0;PEDC=0;EDCD->PASSFAIL[35+n]=0;EDCD->pEDC=log(0);}nn=nn+1;};	
 n=n+1;
 }
 }
