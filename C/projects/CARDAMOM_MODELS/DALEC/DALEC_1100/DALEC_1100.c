@@ -159,6 +159,20 @@ f=nofluxes*n;
 LAI[n]=POOLS[p+1]/pars[16]; 
 
 /*GPP*/
+/*Temp scaling factor*/
+double g;
+int Tminmin = pars[47] - 273.15; 
+int Tminmax = pars[48] - 273.15;
+if( DATA.MET[m+1] < Tminmin ) {
+    g=0;
+}
+else if (DATA.MET[m+1] > Tminmax) {
+    g=1;
+}
+else {
+    g=(DATA.MET[m+1] - Tminmin)/(Tminmax - Tminmin);
+}
+
 double SRAD = 12.*DATA.MET[m+3]; //Shortwave downward radiation (W.m-2)
 double VPD = DATA.MET[m+7]/10.; //VPD (kPa)
 double TEMP = 273.15 + (DATA.MET[m+2]+DATA.MET[m+3])/2.; //(Tmin + Tmax)/2 (K)
@@ -166,7 +180,7 @@ double co2 = DATA.MET[m+4]; //co2 (ppm)
 double vcmax25 = pars[46]; 
 double g1 = pars[45]; 
 double beta = fmin(POOLS[p+6]/pars[25],1);
-FLUXES[f+0]=LIU_An(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n]);
+FLUXES[f+0]=LIU_An(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n])*g;
 
 /*Evapotranspiration (VPD = DATA.MET[m+7])*/
 FLUXES[f+28]=FLUXES[f+0]*sqrt(DATA.MET[m+7])/pars[23]+DATA.MET[m+3]*pars[38];
