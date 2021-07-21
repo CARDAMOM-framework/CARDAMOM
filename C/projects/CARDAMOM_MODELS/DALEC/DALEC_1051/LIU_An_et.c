@@ -1,5 +1,5 @@
 #pragma once
-double * LIU_An_et(double SRAD, double VPD, double TEMP, double vcmax25, double co2, double beta_factor, double g1, double LAI, double ga, double VegK){
+double * LIU_An_et(double SRAD, double VPD, double TEMP, double vcmax25, double co2, double beta_factor, double g1, double LAI, double ga, double VegK, double Tupp, double Tdown, double C3_frac){
 //double LIU_An(double const *gpppars, double const *consts, double const *pars, double const beta){
 
 //double SRAD = 12.*gpppars[7]; //Shortwave downward radiation
@@ -34,7 +34,7 @@ double Jmax; //the maximum rate of electron transport
 double J;
 double medlyn_term;
 double ci;
-double C3_frac = 1.; //Fraction of C3 per gridcell
+//double C3_frac = 1.; //Fraction of C3 per gridcell
 double a1;
 double a2;
 
@@ -58,7 +58,12 @@ Kc = 300.*exp(0.074*(T_C - 25.));
 Ko = 300.*exp(0.015*(T_C - 25.));
 cp = 36.9 + 1.18*(T_C - 25.) + 0.36*pow((T_C - 25.), 2.);
 
-Vcmax = vcmax25*exp(50.*(TEMP - 298.)/(298.*R*TEMP));
+
+//Vcmax = vcmax25*exp(50.*(TEMP - 298.)/(298.*R*TEMP));
+double q_10 = 2.0;
+
+Vcmax = vcmax25*pow(q_10,0.1*(T_C-25.))/((1 + exp(0.3*(T_C-Tupp-273.15)))*(1 +exp(0.3*(Tdown-T_C-273.15))));
+
 Jmax = Vcmax*exp(1.);
 
 J = (0.3*PAR + Jmax - sqrt(pow(0.3*PAR + Jmax,2) - 4.*0.9*0.3*PAR*Jmax))/2/0.9;
@@ -99,17 +104,16 @@ double Psurf = 100.0; //Surface pressure in kPa
 double VPD_kPa = VPD*Psurf; //100.0 kPa = 1000.0 hPa => Surface pressure
 
 
-SRADg = SRAD*(exp(-LAI*VegK));
-
-
 sV = 0.04145*exp(0.06088*T_C); 
+
+SRADg = SRAD*exp(-LAI*VegK);
 
 petVnum = (sV*(SRAD-SRADg)+1.225*1000*VPD_kPa*ga)*(SRAD)/(lambda0*60*60);
 petVnumB = 1.26*(sV*SRADg)/(sV+gammaV)/lambda0*60*60; //from mm.hr-1 
 
 if(beta_factor>0 && SRAD >0){
 
-gs = 1.6*An/(co2-ci)*LAI*0.02405; 
+gs = (1.6*An)/((co2-ci)*LAI*0.02405); 
 transp = petVnum/(sV+gammaV*(1+ga*(1/ga+1/gs)));
 
 }

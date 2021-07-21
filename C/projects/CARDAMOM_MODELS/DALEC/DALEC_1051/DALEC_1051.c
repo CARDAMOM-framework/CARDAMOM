@@ -194,25 +194,27 @@ double vcmax25 = pars[37];
 double g1 = pars[36]; 
 double beta = fmin(POOLS[p+6]/pars[25],1);
 
-double ga = pars[38]; 
-double clapp_theta = pars[39]; 
+double ga = pars[39]; 
+double Tupp = pars[40]; 
+double Tdown = pars[41]; 
+double C3_frac = pars[42]; 
 
 //FLUXES[f+0]=LIU_An(gpppars,constants,pars,beta)*beta;
 //FLUXES[f+0]=LIU_An(SRAD, VPD, TEMP, vcmax25, co2, beta, g1)*beta;
-FLUXES[f+0]=LIU_An_et(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n], ga, VegK)[0];
+FLUXES[f+0]=LIU_An_et(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[0];
 
 //transpiration//
-FLUXES[f+32] = LIU_An_et(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n], ga, VegK)[1];
+FLUXES[f+32] = LIU_An_et(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[1];
 //evaporation//
-FLUXES[f+33] = LIU_An_et(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n], ga, VegK)[2];
+FLUXES[f+33] = LIU_An_et(SRAD, VPD, TEMP, vcmax25, co2, beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[2];
 
 //FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
 /*Evapotranspiration (VPD = DATA.MET[m+7])*/
 //FLUXES[f+28]=FLUXES[f+0]*DATA.MET[m+7]/pars[23];
 //Evapotranspiration as in ID 1005:
-FLUXES[f+28]=FLUXES[f+0]*sqrt(DATA.MET[m+7])/pars[23]+DATA.MET[m+3]*pars[38];
+//FLUXES[f+28]=FLUXES[f+0]*sqrt(DATA.MET[m+7])/pars[23]+DATA.MET[m+3]*pars[38];
 
-//FLUXES[f+28]=FLUXES[f+32]+FLUXES[f+33];
+FLUXES[f+28]=FLUXES[f+32]+FLUXES[f+33];
 
 
 /*temprate - now comparable to Q10 - factor at 0C is 1*/

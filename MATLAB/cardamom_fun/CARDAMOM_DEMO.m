@@ -14,7 +14,7 @@ MCO.printrate=1000;
 MCO.samplerate=100;
 MCO.mcmcid=119;
 %CARDAMOM_RUN_MDF runs the MCMC
-%All accepted parameters AND all corresponding variables are stored in "CBR"
+%All accepted parameters AND all corresponding variables are  stored in "CBR"
 CBR=CARDAMOM_RUN_MDF(CBF,MCO);
 %Step 3. Run CARDAMOM with optimized parameters (This is done internally - at a basic level - inside "CARDAMOM_RUN_MDF")
 CBR=CARDAMOM_RUN_MODEL(CBF,CBR.PARS);
@@ -45,9 +45,10 @@ subplot(2,2,3);
 %hist(1-CBR.PARS(:,2));ylabel('Frequency');xlabel('CUE');
 hist(CBR.PARS(:,40));ylabel('Frequency');xlabel('ga');
 subplot(2,2,4);
-%hist(CBR.PARS(:,17));ylabel('Frequency');xlabel('Leaf C Mass per area [gC/m2]');
-%hist(CBR.PARS(:,41));ylabel('Frequency');xlabel('clapp_theta');
+plot(1:72,CBR.FLUXES(:,:,29));ylabel('ET [kgH2O/m2/day]');xlabel('Months since Jan 2010');
 
+%hist(CBR.PARS(:,17));ylabel('Frequency');xlabel('Leaf C Mass per area [gC/m2]');
+hist(CBR.PARS(:,41)-273.15);ylabel('Frequency');xlabel('Tup');
 
 
 disp('CARDAMOM demo has completed')

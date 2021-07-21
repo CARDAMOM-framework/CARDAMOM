@@ -173,12 +173,20 @@ CARDADATA->parmin[38]=0.01;
 CARDADATA->parmax[38]=0.30;
 
 /*aerodynamic conductance*/
-CARDADATA->parmin[39]=1e-6;
+CARDADATA->parmin[39]=1.e-6;
 CARDADATA->parmax[39]=2.0;
 
-/*ClappHornberger theta*/
-/*CARDADATA->parmin[40]=0.395;*/
-/*CARDADATA->parmax[40]=0.482;*/
+/*Tupp*/ 
+CARDADATA->parmin[40]=299.15;
+CARDADATA->parmax[40]=318.15;
+
+/*Tdown*/ 
+CARDADATA->parmin[41]=263.15;
+CARDADATA->parmax[41]=286.15;
+
+/*C3_frac*/ 
+CARDADATA->parmin[42]=0.1;
+CARDADATA->parmax[42]=1.0;
 
 return 0;
 
