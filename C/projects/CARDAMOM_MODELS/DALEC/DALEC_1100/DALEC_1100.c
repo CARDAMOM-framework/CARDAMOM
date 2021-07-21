@@ -15,7 +15,7 @@ int DALEC_1100_MODCONFIG(DALEC * DALECmodel){
 
 DALECmodel.nopools=8;
 DALECmodel.nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel.nopars=47;
+DALECmodel.nopars=49;
 DALECmodel.nofluxes=34;
 
 //declaring observation operator structure, and filling with DALEC configurations
@@ -224,11 +224,25 @@ f=nofluxes*n;
 LAI[n]=POOLS[p+1]/pars[16]; 
 
 /*GPP*/
+/*Temp scaling factor*/
+double g;
+int Tminmin = pars[47] - 273.15; 
+int Tminmax = pars[48] - 273.15;
+if( DATA.MET[m+1] < Tminmin ) {
+    g=0;
+}
+else if (DATA.MET[m+1] > Tminmax) {
+    g=1;
+}
+else {
+    g=(DATA.MET[m+1] - Tminmin)/(Tminmax - Tminmin);
+}
+
 double vcmax25 = pars[46]; 
 double g1 = pars[45]; 
 double beta = fmin(POOLS[p+6]/pars[25],1);
 // Annual radiation, VPD in kPa, mean T in K
-FLUXES[f+0]=LIU_An(12*SSRD[n], VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n]);
+FLUXES[f+0]=LIU_An(12*SSRD[n], VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n])*g;
 
 /*Evapotranspiration*/
 FLUXES[f+28]=FLUXES[f+0]*sqrt(VPD[n])/pars[23]+SSRD[n]*pars[38];
