@@ -262,7 +262,7 @@ if OPT.extended==1
     
   %Water stress
   if size(CBR.POOLS,3)>6
-    if OPT.MODEL.ID<=8 | any(ismember([801,802,803,804,805,806,807,808,809,810,811,812,813,10,1000,1001,1002,1003,1005,1009],OPT.MODEL.ID))
+      if OPT.MODEL.ID<=8 | any(ismember([801,802,803,804,805,806,807,808,809,810,811,812,813,10,1000,1001,1002,1003,1005,1009],OPT.MODEL.ID))
     CBR.H2OSTRESS=min([PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);
     elseif OPT.MODEL.ID==1030 | OPT.MODEL.ID==1031 | OPT.MODEL.ID==1032 | OPT.MODEL.ID==1060;
         CBR.PAWSTRESS=min([PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);        
