@@ -86,10 +86,10 @@ a2 = J;
 An_C4 = max(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 
 
-//Total photosynthesis
+//Total photosynthesis 
 An = C3_frac*(An_C3) + (1. - C3_frac)*(An_C4);
 
-r[0] = An;
+r[0] = An*(12.e-6)*(24.*60.*60.); //from umolCO2m-2s-1 to gCm-2day-1
 
 //##################Transpiration#################
 
@@ -103,6 +103,7 @@ double evap; // evaporation
 double Psurf = 100.0; //Surface pressure in kPa
 double VPD_kPa = VPD*Psurf; //100.0 kPa = 1000.0 hPa => Surface pressure
 
+ga = ga/0.02405; //correction factor
 
 sV = 0.04145*exp(0.06088*T_C); 
 

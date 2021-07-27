@@ -9,7 +9,7 @@ CBF=CARDAMOM_READ_BINARY_FILEFORMAT([getenv('CARDAMOM_DATA_PATH'),'/CARDAMOM_DAT
 %"printrate" determines how oftern MCMC progress stats are printed (in
 %terms of tested samples)
 %"samplerate" determines how often the accepted parameter samples are stored
-MCO.niterations=10e5;
+MCO.niterations=10e4;
 MCO.printrate=1000;
 MCO.samplerate=100;
 MCO.mcmcid=119;

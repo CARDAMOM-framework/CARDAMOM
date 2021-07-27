@@ -185,7 +185,7 @@ CARDADATA->parmin[41]=263.15;
 CARDADATA->parmax[41]=286.15;
 
 /*C3_frac*/ 
-CARDADATA->parmin[42]=0.1;
+CARDADATA->parmin[42]=1e-8;
 CARDADATA->parmax[42]=1.0;
 
 return 0;
