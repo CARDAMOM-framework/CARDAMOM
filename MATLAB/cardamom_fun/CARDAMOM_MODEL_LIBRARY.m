@@ -57,7 +57,6 @@ for n=1:size(D,1);
     %reading strings that read as follows
     %DATA->nopools=7;
     if strncmp(D{n},'DALECmodel->no',14)
-        disp(D{n})
         %E.g. evaluates  'DALECmodel.nopools=7;'
         st=D{n};st(st=='>')='.';st=st(st~='-');
     eval(st(1:find(st==';',1)));

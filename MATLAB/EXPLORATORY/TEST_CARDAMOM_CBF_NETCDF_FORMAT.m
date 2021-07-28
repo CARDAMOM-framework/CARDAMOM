@@ -21,7 +21,8 @@ CBF=CARDAMOM_READ_BINARY_FILEFORMAT('testnetcdf.cbf');
 %nodays
 %Number of timesteps
 nodays=size(CBF.MET,1);
-
+%Number of met fields
+nomet=size(CBF.MET,2);
 
 
 %Step 2. write as netcdf file
