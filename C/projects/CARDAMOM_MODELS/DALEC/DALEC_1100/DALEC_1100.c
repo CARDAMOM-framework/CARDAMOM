@@ -15,8 +15,8 @@ int DALEC_1100_MODCONFIG(DALEC * DALECmodel){
 
 DALECmodel.nopools=8;
 DALECmodel.nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel.nopars=49;
-DALECmodel.nofluxes=34;
+DALECmodel.nopars=53;
+DALECmodel.nofluxes=36;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
@@ -157,6 +157,8 @@ double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
   31. PUW runoff
   32. Surface runoff
   33. Potential GPP
+  34. Transpiration
+  35. Evaporation
 */
 
 
@@ -223,7 +225,20 @@ f=nofluxes*n;
 /*LAI*/
 LAI[n]=POOLS[p+1]/pars[16]; 
 
-/*GPP*/
+
+/*Calculate light extinction coefficient*/
+double B = (DOY-81)*2*pi/365.;
+double ET1 = 9.87*sin(2*B)-7.53*cos(B)-1.5*sin(B);
+double DA = 23.45*sin((284+DOY)*2*pi/365); //Deviation angle
+double LST = (int) (DOY*24*60) % (24*60);
+double AST = LST+ET1;
+double h = (AST-12*60)/4; //hour angle
+double alpha = asin((sin(pi/180*DATA.ncdf_data.LAT)*sin(pi/180*DA)+cos(pi/180*DATA.ncdf_data.LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
+double zenith_angle = 90-alpha;
+double LAD = 1.0; //leaf angle distribution
+double VegK = sqrt(pow(LAD,2)+ pow(tan(zenith_angle/180*pi),2))/(LAD+1.774*pow((1+1.182),-0.733)); //Campbell and Norman 1998
+
+
 /*Temp scaling factor*/
 double g;
 int Tminmin = pars[47] - 273.15; 
@@ -241,11 +256,21 @@ else {
 double vcmax25 = pars[46]; 
 double g1 = pars[45]; 
 double beta = fmin(POOLS[p+6]/pars[25],1);
-// Annual radiation, VPD in kPa, mean T in K
-FLUXES[f+0]=LIU_An(12*SSRD[n], VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n])*g;
+double ga = pars[49]; 
+double Tupp = pars[50]; 
+double Tdown = pars[51]; 
+double C3_frac = pars[52]; 
 
+/*GPP*/
+// Annual radiation, VPD in kPa, mean T in K
+FLUXES[f+0]=LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[0]*g;
+
+//transpiration//
+FLUXES[f+32] = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, co2, beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[1];
+//evaporation//
+FLUXES[f+33] = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, co2, beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[2];
 /*Evapotranspiration*/
-FLUXES[f+28]=FLUXES[f+0]*sqrt(VPD[n])/pars[23]+SSRD[n]*pars[38];
+FLUXES[f+28]=FLUXES[f+32]+FLUXES[f+33];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
 FLUXES[f+1]=exp(pars[9]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp))*((PREC[n]/meanprec-1)*pars[32]+1);
