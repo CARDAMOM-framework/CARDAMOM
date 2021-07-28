@@ -13,10 +13,10 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
 int DALEC_1100_MODCONFIG(DALEC * DALECmodel){
 
-DALECmodel.nopools=8;
-DALECmodel.nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel.nopars=53;
-DALECmodel.nofluxes=35;
+DALECmodel->nopools=8;
+DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
+DALECmodel->nopars=53;
+DALECmodel->nofluxes=35;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
