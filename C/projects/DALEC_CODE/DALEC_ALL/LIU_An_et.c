@@ -77,13 +77,13 @@ ci = co2*(1. - 1./medlyn_term);
 a1 = Vcmax*(ci - cp)/(ci + Kc*(1.+209./Ko));
 a2 = J*(ci-cp)/(4.*(ci + 2.*cp));
 
-An_C3 = max(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
+An_C3 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 
 //Two terms for C4 photosynthesis
 a1 = Vcmax;
 a2 = J;
 
-An_C4 = max(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
+An_C4 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 
 
 //Total photosynthesis 
