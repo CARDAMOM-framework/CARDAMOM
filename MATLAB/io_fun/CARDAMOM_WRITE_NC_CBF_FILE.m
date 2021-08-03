@@ -50,11 +50,11 @@ ncwrite(fname,fieldnames{f},CBF.(fieldnames{f}).values)
           disp(fieldnames{f});
 
    %Write attributes related to quantity
-   natt=numel(CBF.(fieldnames{f}).attributes);
+   natt=numel(CBF.(fieldnames{f}).Attributes);
    if natt>0;
        for a=1:natt
-           if strcmp(CBF.(fieldnames{f}).attributes(a).Name,'_FillValue')==0
-       ncwriteatt(fname,fieldnames{f},CBF.(fieldnames{f}).attributes(a).Name, CBF.(fieldnames{f}).attributes(a).Value)
+           if strcmp(CBF.(fieldnames{f}).Attributes(a).Name,'_FillValue')==0
+       ncwriteatt(fname,fieldnames{f},CBF.(fieldnames{f}).Attributes(a).Name, CBF.(fieldnames{f}).Attributes(a).Value)
            end
        end
        

@@ -8,6 +8,38 @@
 nccbffilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.nc.cbf';
 ncdisp(nccbffilename)
 nccbftestfile='CARDAMOM/DATA/MODEL_ID_1000_TEST_ONLY.nc.cbf';
+nccbftestfile2='CARDAMOM/DATA/MODEL_ID_1000_TEST_ONLY_2.nc.cbf';
+
+
+%testing matlab read-write functions
+
+CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename);
+CARDAMOM_WRITE_NC_CBF_FILE(CBF,nccbftestfile2);
+CBF(2)=CARDAMOM_READ_NC_CBF_FILE(nccbftestfile2);
+
+f=fields(CBF);cbfioerror=0;
+for n=1:numel(f)
+    cbffielddif=nansum(CBF(2).(f{n}).values- CBF(1).(f{n}).values);
+    if cbffielddif~=0;disp(sprintf('CBF.%s: Warning, non-zero dif',f{n}));cbfioerror=1;end
+end
+if cbfioerror==0;
+    
+    
+    
+    
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+    disp('CARDAMOM_*_NC_CBF_FILE() commands check complete')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+end
+
 
 %Converting to netcdf file
 %Make a copy
@@ -15,6 +47,12 @@ copyfile(nccbffilename,nccbftestfile);
 
 
 cbrfilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbr';
+
+
+
+
+
+
 
 %CBF=CARDAMOM_READ_BINARY_FILEFORMAT(cbffilename);
 
