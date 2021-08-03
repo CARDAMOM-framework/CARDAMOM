@@ -203,9 +203,11 @@ CARDADATA->parmax[45]=5.79;
 CARDADATA->parmin[46]=1e-8;
 CARDADATA->parmax[46]=140;
 
-/* Tminmin and Tminmax scaling factor*/
+/*Tminmin scaling factor*/
 CARDADATA->parmin[47]=258.15;
 CARDADATA->parmax[47]=273.15;
+
+/*Tminmax scaling factor*/
 CARDADATA->parmin[48]=273.15;
 CARDADATA->parmax[48]=288.15;
 
