@@ -11,11 +11,10 @@ ni=ncinfo(filename);
 
 %Step 1. Read all variables
 for n=1:numel(ni.Variables);
-    
+        
     CBF.(ni.Variables(n).Name).values=ncread(filename,ni.Variables(n).Name);
     
-    CBF.(ni.Variables(n).Name).Att
-    
+    CBF.(ni.Variables(n).Name).Attributes=ncread(filename,ni.Variables(n).Attributes);
 
 end
 
