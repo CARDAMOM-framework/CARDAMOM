@@ -242,14 +242,14 @@ double VegK = sqrt(pow(LAD,2)+ pow(tan(zenith_angle/180*pi),2))/(LAD+1.774*pow((
 double g;
 int Tminmin = pars[47] - 273.15; 
 int Tminmax = pars[48] - 273.15;
-if( DATA.MET[m+1] < Tminmin ) {
+if( T2M_MIN[n] < Tminmin ) {
     g=0;
 }
-else if (DATA.MET[m+1] > Tminmax) {
+else if (T2M_MIN[n] > Tminmax) {
     g=1;
 }
 else {
-    g=(DATA.MET[m+1] - Tminmin)/(Tminmax - Tminmin);
+    g=(T2M_MIN[n] - Tminmin)/(Tminmax - Tminmin);
 }
 
 double vcmax25 = pars[46]; 
