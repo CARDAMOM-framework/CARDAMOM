@@ -126,7 +126,6 @@ CF[4]=pars[27]/2+pars[28]/2;
 CF[5]=pars[29];
 
 /*foliar carbon transfer intermediate variables*/
-double netCeffect, nominalClosses;
 double Fcfolavailable;
 
 /*resilience factor*/
@@ -235,16 +234,6 @@ FLUXES[f+43] = LAI_KNORR_OUTPUT[5];  // fraction of plants above day length thre
 lai_var_list[5]=FLUXES[f+35];//POOLS[nxp+10];
 /*water/structural memory*/
 lai_var_list[11]=FLUXES[f+36];//POOLS[nxp+11];
-/* if target LAI change (in units of carbon flux) exceeds the available carbon from labile pool, we down-scale the 
-LAI increment (dlambda/dt) and the KNORR LAI */
-// if (FLUXES[f+37]*FLUXES[f+40] + POOLS[p+1]/pars[46] > POOLS[p+0]/deltat){
-//if (FLUXES[f+37]*pars[16] > POOLS[p+0]/deltat){
-
-
-/*requested carbon from labile to foliar (governed by LAI_KNORR)*/
-// FLUXES[f+32]=fmax(FLUXES[f+37]*pars[16], 0);
-/*foliar to litter carbon flux(governed by LAI_KNORR)*/
-// FLUXES[f+33]=-fmin(FLUXES[f+37]*pars[16], 0);
 /*leaf production*/
 FLUXES[f+3] = 0;
 /*labile production*/
