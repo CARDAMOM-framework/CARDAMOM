@@ -223,12 +223,13 @@ lai_var_list[17]=(POOLS[p+6]+POOLS[nxp+6])/2.0;
 lai_var_list[18]=FLUXES[f+28];
 // Run KNORR LAI module
 // - this computes a potential LAI
-FLUXES[f+34] = LAI_KNORR(lai_met_list, lai_var_list)[0];  // LAI (environmental target)
-FLUXES[f+35] = LAI_KNORR(lai_met_list, lai_var_list)[1];  // T_memory
-FLUXES[f+36] = LAI_KNORR(lai_met_list, lai_var_list)[2];  // lambda_max_memory
-FLUXES[f+37] = LAI_KNORR(lai_met_list, lai_var_list)[3]/deltat;  // dlambda/dt (units: LAI per day)
-FLUXES[f+42] = LAI_KNORR(lai_met_list, lai_var_list)[4];  // fraction of plants above temperature threshold
-FLUXES[f+43] = LAI_KNORR(lai_met_list, lai_var_list)[5];  // fraction of plants above day length threshold
+double *LAI_KNORR_OUTPUT = LAI_KNORR(lai_met_list,lai_var_list);
+FLUXES[f+34] = LAI_KNORR_OUTPUT[0];  // LAI (environmental target)
+FLUXES[f+35] = LAI_KNORR_OUTPUT[1];  // T_memory
+FLUXES[f+36] = LAI_KNORR_OUTPUT[2];  // lambda_max_memory
+FLUXES[f+37] = LAI_KNORR_OUTPUT[3]/deltat;  // dlambda/dt (units: LAI per day)
+FLUXES[f+42] = LAI_KNORR_OUTPUT[4];  // fraction of plants above temperature threshold
+FLUXES[f+43] = LAI_KNORR_OUTPUT[5];  // fraction of plants above day length threshold
 /*Update environmental memory variables for next iteration*/
 /*temperature memory*/
 lai_var_list[5]=FLUXES[f+35];//POOLS[nxp+10];
