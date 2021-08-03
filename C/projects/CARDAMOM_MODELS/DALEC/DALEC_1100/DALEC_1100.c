@@ -273,17 +273,17 @@ double Tupp = pars[50];
 double Tdown = pars[51]; 
 double C3_frac = pars[52]; 
 
-/*GPP*/
+// GPP, T, and E from LIU_An_et
 // Annual radiation, VPD in kPa, mean T in K
-FLUXES[f+0]=LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[0]*g;
-
+double *LIU_An_et_out = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)
+// GPP
+FLUXES[f+0] = LIU_An_et_out[0]*g;
 //transpiration//
-FLUXES[f+33] = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[1];
+FLUXES[f+33] = LIU_An_et_out[1];
 //evaporation//
-FLUXES[f+34] = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[2];
-/*Evapotranspiration*/
+FLUXES[f+34] = LIU_An_et_out[2];
+// Evapotranspiration
 FLUXES[f+28]=FLUXES[f+34]+FLUXES[f+33];
-
 
 // Infiltration (mm/day)
 double infil = pars[34]*(1 - exp(-PREC[n]/pars[34]));
@@ -363,12 +363,13 @@ lai_var_list[17]=(POOLS[p+6]+POOLS[nxp+6])/2.0;
 lai_var_list[18]=FLUXES[f+28];
 // Run KNORR LAI module
 // - this computes a potential LAI
-FLUXES[f+37] = LAI_KNORR(lai_met_list, lai_var_list)[0];  // LAI (environmental target)
-FLUXES[f+38] = LAI_KNORR(lai_met_list, lai_var_list)[1];  // T_memory
-FLUXES[f+39] = LAI_KNORR(lai_met_list, lai_var_list)[2];  // lambda_max_memory
-FLUXES[f+40] = LAI_KNORR(lai_met_list, lai_var_list)[3]/deltat;  // dlambda/dt (units: LAI per day)
-FLUXES[f+44] = LAI_KNORR(lai_met_list, lai_var_list)[4];  // fraction of plants above temperature threshold
-FLUXES[f+45] = LAI_KNORR(lai_met_list, lai_var_list)[5];  // fraction of plants above day length threshold
+double *LAI_KNORR_out = LAI_KNORR(lai_met_list, lai_var_list)
+FLUXES[f+37] = LAI_KNORR_out[0];  // LAI (environmental target)
+FLUXES[f+38] = LAI_KNORR_out[1];  // T_memory
+FLUXES[f+39] = LAI_KNORR_out[2];  // lambda_max_memory
+FLUXES[f+40] = LAI_KNORR_out[3]/deltat;  // dlambda/dt (units: LAI per day)
+FLUXES[f+44] = LAI_KNORR_out[4];  // fraction of plants above temperature threshold
+FLUXES[f+45] = LAI_KNORR_out[5];  // fraction of plants above day length threshold
 /*Update environmental memory variables for next iteration*/
 /*temperature memory*/
 lai_var_list[5]=FLUXES[f+38];//POOLS[nxp+10];
