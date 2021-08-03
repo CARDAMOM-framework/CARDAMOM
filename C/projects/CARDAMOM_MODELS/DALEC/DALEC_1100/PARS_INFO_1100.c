@@ -199,7 +199,7 @@ CARDADATA->parmax[44]=1;
 CARDADATA->parmin[45]=1.79;
 CARDADATA->parmax[45]=5.79;
 
-/*Vcmax25*/ 
+/*Vcmax25*/
 CARDADATA->parmin[46]=1e-8;
 CARDADATA->parmax[46]=140;
 
@@ -215,15 +215,15 @@ CARDADATA->parmax[48]=288.15;
 CARDADATA->parmin[49]=1.e-6;
 CARDADATA->parmax[49]=2.0;
 
-/*Tupp*/ 
+/*Tupp*/
 CARDADATA->parmin[50]=299.15;
 CARDADATA->parmax[50]=318.15;
 
-/*Tdown*/ 
+/*Tdown*/
 CARDADATA->parmin[51]=263.15;
 CARDADATA->parmax[51]=286.15;
 
-/*C3_frac*/ 
+/*C3_frac*/
 CARDADATA->parmin[52]=1e-8;
 CARDADATA->parmax[52]=1.0;
 
