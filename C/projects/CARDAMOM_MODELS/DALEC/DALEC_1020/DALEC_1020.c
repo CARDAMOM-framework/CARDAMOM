@@ -258,6 +258,7 @@ else {
 
 
 /*requested carbon from labile to foliar (governed by LAI_KNORR)*/
+//FLUXES[f+32]=fmax(fmin(FLUXES[f+37]*pars[16],POOLS[p+0]), 0);
 FLUXES[f+32]=fmax(FLUXES[f+37]*pars[16], 0);
 /*foliar to litter carbon flux(governed by LAI_KNORR)*/
 FLUXES[f+33]=-fmin(FLUXES[f+37]*pars[16], 0);
