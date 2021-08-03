@@ -255,14 +255,14 @@ double VegK = sqrt(pow(LAD,2)+ pow(tan(zenith_angle/180*pi),2))/(LAD+1.774*pow((
 double g;
 int Tminmin = pars[47] - 273.15; 
 int Tminmax = pars[48] - 273.15;
-if( DATA.MET[m+1] < Tminmin ) {
+if( T2M_MIN[n] < Tminmin ) {
     g=0;
 }
-else if (DATA.MET[m+1] > Tminmax) {
+else if (T2M_MIN[n] > Tminmax) {
     g=1;
 }
 else {
-    g=(DATA.MET[m+1] - Tminmin)/(Tminmax - Tminmin);
+    g=(T2M_MIN[n] - Tminmin)/(Tminmax - Tminmin);
 }
 
 double vcmax25 = pars[46]; 
@@ -340,7 +340,7 @@ if (n==0){
   /*Initialize phenology memory of water/structural limitation */
   lai_var_list[11]=pars[42];
 }
-lai_met_list[0]=(DATA.MET[m+2] + DATA.MET[m+1])/2.0; /* meantemp, deg C*/
+lai_met_list[0]=(T2M_MAX[n] + T2M_MIN[n])/2.0; /* meantemp, deg C*/
 lai_var_list[0]=n; /*current timestep index of model run*/
 lai_var_list[19]=deltat; /*time increment of model run*/
 lai_var_list[1]=LAI[n]; /*initial LAI parameter*/
@@ -352,8 +352,8 @@ lai_var_list[7]=pars[40]; /*plgr*/
 lai_var_list[8]=pars[41]; /*k_L*/
 lai_var_list[9]=pars[42]; /*lambda_max*/
 lai_var_list[10]=pars[43]; /*tau_W*/
-lai_var_list[12]=DATA.LAT; /*latitude*/
-lai_var_list[13]=DATA.MET[m+5]; /*day of year*/
+lai_var_list[12]=DATA.ncdf_data.LAT; /*latitude*/
+lai_var_list[13]=DOY[n]; /*day of year*/
 lai_var_list[14]=pi; /*pi*/
 lai_var_list[15]=pars[44]; /*t_c*/
 lai_var_list[16]=pars[45]; /*t_r*/
