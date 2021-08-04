@@ -74,7 +74,7 @@ double* BALDOCCHI_ANALYTICAL(double const *met_list, double const *var_list)
     psfc = (double)101325; /* [Pa] */
     
     Oi=(double)0.209*parts_ppm; /*oxygen at surface umol/mol to match Vmax, Jmax*/
-    T=(double)0.5*(met_list[1]+met_list[0]); /* mean temperature */
+    T=(double)met_list[1];/*max temperature*/ /*replaced: (double)0.5*(met_list[1]+met_list[0]);*/ /* mean temperature */
     RH=(double)1.-met_list[4]/(6.1094*exp( (17.625*T) / (T+243.04) )); /*relative humidity, <1*/
 
     tau=(double)2600.*pow(0.57,((T-25.)/10.));

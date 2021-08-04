@@ -155,7 +155,7 @@ f=nofluxes*n;
 LAI[n]=POOLS[p+1]/pars[15];
 
 var_list[5]=LAI[n];
-var_list[6]=0.6;//1.0//208.868; /* k */
+var_list[6]=0.5;//1.0//208.868; /* k */
 
 met_list[0]=DATA.MET[m+1]; /*mintemp, deg C*/
 met_list[1]=DATA.MET[m+2]; /*maxtemp, deg C*/
