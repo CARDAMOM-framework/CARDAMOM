@@ -39,6 +39,8 @@
 
 nccbffilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.nc.cbf';
  cbrfilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.cbr';
+ cbrfilename1100ref='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr';
+ %copyfile( cbrfilename1100, cbrfilename1100ref);
 ncdisp(nccbffilename1100)
 nccbftestfile='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY.nc.cbf';
 nccbftestfile2='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY_2.nc.cbf';
@@ -88,7 +90,15 @@ end
 
 
  CBR=CARDAMOM_RUN_MODEL(nccbffilename1100,cbrfilename1100);
- 
+ CBRref=CARDAMOM_RUN_MODEL(nccbffilename1100,cbrfilename1100ref);
+% 
+% %Compare CBR against benchmarks 
+ disp('Numerical differences: expected to be ~0')
+ disp(minmax(CBR.FLUXES-CBRref.FLUXES))
+ disp(minmax(CBR.FLUXES-CBRref.FLUXES))
+ disp(minmax(CBR.POOLS-CBRref.POOLS))
+ disp(minmax(CBR.POOLS-CBRref.POOLS))
+
  
 
 disp('**********')
