@@ -77,6 +77,35 @@ end
 
 else
 %Find parameter info here *******
+parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/DALEC_%i.c',Cpath,ID,ID);
+ D=importdata(parfilename,'');
+ k=0;n=1;p=0;
+ while k<2;
+          linestr=D{n};
+
+     if k==1
+         if strcmp(linestr(1:4),'int ')
+         %Assumes "int " (4 characters) is removed
+         eval(sprintf('P.%s = %i;',linestr(5:find(linestr==';',1)-1),  p));
+         p=p+1;
+         else
+             k=2;
+         
+         end
+     end
+
+if strcmp(linestr,'//***DALEC PARAMETERS***');disp(linestr);k=1;end
+
+     n=n+1;
+
+
+ end
+ 
+
+ 
+ 
+
+
 parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',Cpath,ID,ID);
 
 
@@ -96,7 +125,7 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',
      b2=find(linestr==']');
      linestr(b1)='(';
      linestr(b2)=')';
-     lnum=num2str(str2num(linestr(b1+1:b2-1))+1);
+     lnum=num2str(eval(linestr(b1+1:b2-1))+1);
      linestr=[linestr(1:b1),lnum,linestr(b2:end)];
      %Find first ";"
      eval(linestr(1:find(linestr==';',1)));

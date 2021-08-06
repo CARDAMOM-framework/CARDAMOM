@@ -11,7 +11,37 @@
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
+
+
+struct DALEC_1100_PARAMETERS{
+//***DALEC PARAMETERS***
+int tr_lit2soil;
+int f_auto;
+} DALEC_1100_PARAMETERS={0,1};
+
+struct DALEC_1100_FLUXES{
+//***DALEC FLUXES***
+int gpp;
+int temprate;} DALEC_1100_FLUXES={0,1};
+
+struct DALEC_1100_POOLS{
+//***DALEC POOLS***
+int C_lab;
+int C_fol;
+int C_roo;
+int C_woo;
+int C_lit;
+int C_som;
+int H2O_PAW;
+int H2O_PUW;
+int H2O_SWE;} DALEC_1100_POOLS={0,1,2,3,4,5,6,7,8};
+
+
+
 int DALEC_1100_MODCONFIG(DALEC * DALECmodel){
+
+
+
 
 DALECmodel->nopools=8;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
@@ -77,6 +107,15 @@ return 0;}
 int DALEC_1100(DATA DATA, double const *pars)
 {
 
+
+
+struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
+struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
+struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
+
+
+
+
 /*C-pools, fluxes, meteorology indices*/
 int p=0,f,m,nxp, i;
 int n=0,nn=0;
@@ -97,10 +136,10 @@ double *LAI=DATA.M_LAI;
 
   /*assigning values to pools*/
   /*L,F,R,W,Lit,SOM*/
-  POOLS[0]=pars[17];
-  POOLS[1]=pars[18];
-  POOLS[2]=pars[19];
-  POOLS[3]=pars[20];
+  POOLS[S.C_lab]=pars[17];
+  POOLS[S.C_fol]=pars[18];
+  POOLS[S.C_roo]=pars[19];
+  POOLS[S.C_woo]=pars[20];
   POOLS[4]=pars[21];
   POOLS[5]=pars[22];
   /*water pools*/
@@ -222,7 +261,7 @@ f=nofluxes*n;
 
 
 /*LAI*/
-LAI[n]=POOLS[p+1]/pars[16]; 
+LAI[n]=POOLS[p+S.C_fol]/pars[16]; 
 
 
 /*Calculate light extinction coefficient*/
@@ -262,7 +301,7 @@ double C3_frac = pars[52];
 
 /*GPP*/
 // Annual radiation, VPD in kPa, mean T in K
-FLUXES[f+0]=LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[0]*g;
+FLUXES[F.gpp]=LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[0]*g;
 
 //transpiration//
 FLUXES[f+33] = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[1];
@@ -272,9 +311,9 @@ FLUXES[f+34] = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n
 FLUXES[f+28]=FLUXES[f+34]+FLUXES[f+33];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
-FLUXES[f+1]=exp(pars[9]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp))*((PREC[n]/meanprec-1)*pars[32]+1);
+FLUXES[F.temprate]=exp(pars[9]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp))*((PREC[n]/meanprec-1)*pars[32]+1);
 /*respiration auto*/
-FLUXES[f+2]=pars[1]*FLUXES[f+0];
+FLUXES[f+2]=pars[P.f_auto]*FLUXES[F.gpp];
 /*leaf production*/
 FLUXES[f+3]=(FLUXES[f+0]-FLUXES[f+2])*pars[2];
 /*labile production*/
