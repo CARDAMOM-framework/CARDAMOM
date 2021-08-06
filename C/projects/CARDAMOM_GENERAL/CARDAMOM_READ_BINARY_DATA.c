@@ -99,7 +99,7 @@ DATA->ch4_obs_threshold=statdat[26]; if (statdat[26]<0){DATA->ch4_obs_threshold=
 DATA->scfiav=(int)statdat[27];  /*shuang*/
 DATA->scf_annual_unc=statdat[28];  /*shuang*/
 DATA->scf_obs_unc=statdat[29];if (statdat[29]<0){DATA->scf_obs_unc=0.5;}  /*shuang*/
-DATA->scf_obs_threshold=statdat[30]; if (statdat[30]<0){DATA->scf_obs_threshold=0.01;}  /*shuang; unitless; fraction*/
+DATA->scf_obs_threshold=statdat[30]; if (statdat[30]<0){DATA->scf_obs_threshold=0.1;}  /*shuang; unitless; fraction*/
 
 /*UP TO USER to read data and allocate it to DATA structure*/
 double parpriors[50],parpriorunc[50],otherpriors[50],otherpriorunc[50];
