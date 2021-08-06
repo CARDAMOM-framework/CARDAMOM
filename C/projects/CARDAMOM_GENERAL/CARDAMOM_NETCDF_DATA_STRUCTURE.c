@@ -119,6 +119,48 @@ size_t length; //Set to 0 if not present
 double reference_mean;
 }VPD_STRUCT;
 
+
+typedef struct OBS_STRUCT{
+size_t length;
+double * values;
+double * unc;
+int log_transform;//log-transform data 
+int normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
+int mean_only;//(0 = no, 1 = yes). 
+int structural_error;
+double threshold;
+double single_monthly_unc;
+double single_annual_unc;
+double structural_unc;
+//expand as needed
+int n_obs;//number of non-empty obs
+int * obs_indices;//indices of non-empty obs
+
+}OBS_STRUCT;
+
+
+
+//Function for reading these
+/*OBS_STRUCT READ_NETCF_OBS_FIELDS(int ncid, char * OBSNAME){
+OBS_STRUCT OBS;
+OBS.unc = ncdf_read_double_var(ncid, strcat(OBSNAME,"unc") , &(OBS.length));
+OBS.values = ncdf_read_double_var(ncid, OBSNAME , &(OBS.length));
+OBS.log_transform=ncdf_read_int_attr(ncid, OBSNAME,"opt_log_transform");
+OBS.normalization=ncdf_read_int_attr(ncid, OBSNAME,"opt_normalization");
+OBS.mean_only=ncdf_read_int_attr(ncid, OBSNAME,"opt_mean_only");
+OBS.structural_error=ncdf_read_int_attr(ncid, OBSNAME,"opt_structural_error");
+OBS.threshold=ncdf_read_double_attr(ncid, OBSNAME,"threshold");
+OBS.single_monthly_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_monthly_unc");
+OBS.single_annual_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_annual_unc");
+OBS.structural_unc=ncdf_read_double_attr(ncid, OBSNAME,"structural_unc");
+return OBS;
+};*/
+
+
+
+
+
+
 typedef struct NETCDF_DATA{
 ONE_DIM_VAR_WITH_UNCERTAINTY_STRUCT ABGB;
 BURNED_AREA_STRUCT BURNED_AREA;
@@ -127,7 +169,8 @@ CO2_STRUCT CO2;
 DOY_STRUCT DOY;
 double EDC;
 double EDCDIAG;
-ET_STRUCT ET;
+//ET_STRUCT ET;
+OBS_STRUCT ET;
 EWT_STRUCT EWT;
 GPP_STRUCT GPP;
 double ID;

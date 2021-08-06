@@ -1,6 +1,8 @@
 #pragma once
 #include "CARDAMOM_MODULE_IDX.c"
 #include "CARDAMOM_NETCDF_DATA_STRUCTURE.c"
+#include "../COST_FUNCTION/LIKELIHOOD_FUNCTIONS.c"
+
 typedef struct DATA{
 //This is the netCDF data struct. See CARDAMOM_NETCDF_DATA_STRUCTURE.c for details on all the things contained therein
 NETCDF_DATA ncdf_data;
@@ -16,6 +18,7 @@ double *NBE;/*NBE uncertinaty*/
 double *LAI;
 double *ABGB;
 double *ET;
+OBS_STRUCT OBS_ET;
 double *EWT;
 double *BAND4;
 double *BAND3;

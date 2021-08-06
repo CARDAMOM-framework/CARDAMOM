@@ -57,6 +57,9 @@
  *  returns: the int attribute read, or DEFAULT_INT_VAL if the requested attribute does not exsist.
  *   if there is an error, the program exits after displaying a message.
  */
+
+
+
 int ncdf_read_int_attr(int ncid, const char* context, const char * attrName){
 	int retval =0; //Return value variable for NCDF calls.
 	int attrResult;
@@ -397,6 +400,26 @@ double ncdf_read_single_double_var(int ncid, const char * varName ){
  *	NOTE: if you intend to modify what is read in when reading a netCDF file,
  *  You MUST edit both this method, and the DATA struct in CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_DATA_STRUCTURE.c
  */
+
+//Function for reading these
+OBS_STRUCT READ_NETCF_OBS_FIELDS(int ncid, char * OBSNAME){
+OBS_STRUCT OBS;
+OBS.unc = ncdf_read_double_var(ncid, strcat(OBSNAME,"unc") , &(OBS.length));
+OBS.values = ncdf_read_double_var(ncid, OBSNAME , &(OBS.length));
+OBS.log_transform=ncdf_read_int_attr(ncid, OBSNAME,"opt_log_transform");
+OBS.normalization=ncdf_read_int_attr(ncid, OBSNAME,"opt_normalization");
+OBS.mean_only=ncdf_read_int_attr(ncid, OBSNAME,"opt_mean_only");
+OBS.structural_error=ncdf_read_int_attr(ncid, OBSNAME,"opt_structural_error");
+OBS.threshold=ncdf_read_double_attr(ncid, OBSNAME,"threshold");
+OBS.single_monthly_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_monthly_unc");
+OBS.single_annual_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_annual_unc");
+OBS.structural_unc=ncdf_read_double_attr(ncid, OBSNAME,"structural_unc");
+return OBS;
+};
+
+
+
+
 int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 {
 	int retval =0; //Return value variable for NCDF calls.
@@ -420,10 +443,26 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 
 	DATA->EDCDIAG=ncdf_read_single_double_var(ncid, "EDCDIAG");
 
-	DATA->ET.values=ncdf_read_double_var(ncid, "ET", &(DATA->ET.length));
-		DATA->ET.Uncertainty=ncdf_read_double_attr(ncid, "ET","Uncertainty");
-		DATA->ET.Annual_Uncertainty=ncdf_read_double_attr(ncid, "ET","Annual_Uncertainty");
-		DATA->ET.Uncertainty_Threshold=ncdf_read_double_attr(ncid, "ET","Uncertainty_Threshold");
+
+
+	
+	DATA->ET=READ_NETCF_OBS_FIELDS(ncid, "ET");
+
+
+
+
+
+
+	//DATA->ET.Uncertainty=ncdf_read_double_attr(ncid, "ET","Uncertainty");
+//	DATA->ET.Annual_Uncertainty=ncdf_read_double_attr(ncid, "ET","Annual_Uncertainty");
+//	DATA->ET.Uncertainty_Threshold=ncdf_read_double_attr(ncid, "ET","Uncertainty_Threshold");
+
+
+
+
+
+
+
 
 	DATA->EWT.values=ncdf_read_double_var(ncid, "EWT", &(DATA->EWT.length));
 		DATA->EWT.Uncertainty=ncdf_read_double_attr(ncid, "EWT","Uncertainty");

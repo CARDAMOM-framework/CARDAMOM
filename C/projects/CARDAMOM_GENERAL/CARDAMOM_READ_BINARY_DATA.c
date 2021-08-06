@@ -3,6 +3,18 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 #pragma once
 #include "../../auxi_fun/filediag.c"
 #include "../../auxi_fun/oksofar.c"
@@ -126,7 +138,7 @@ printf("About to declare obs memory\n");
 	if (DATA->NBE==0){DATA->NBE=calloc(DATA->nodays,sizeof(double));}
 	if (DATA->LAI==0){DATA->LAI=calloc(DATA->nodays,sizeof(double));}
 	if (DATA->ABGB==0){DATA->ABGB=calloc(DATA->nodays,sizeof(double));}
-	if (DATA->ET==0){DATA->ET=calloc(DATA->nodays,sizeof(double));}
+	//if (DATA->ET==0){DATA->ET=calloc(DATA->nodays,sizeof(double));}
 	if (DATA->EWT==0){DATA->EWT=calloc(DATA->nodays,sizeof(double));}
 	if (DATA->BAND1==0){DATA->BAND1=calloc(DATA->nodays,sizeof(double));}
 	if (DATA->BAND2==0){DATA->BAND2=calloc(DATA->nodays,sizeof(double));}
@@ -135,6 +147,13 @@ printf("About to declare obs memory\n");
 	if (DATA->SOM==0){DATA->SOM=calloc(DATA->nodays,sizeof(double));}
 	if (DATA->NBEunc==0){DATA->NBEunc=calloc(DATA->nodays,sizeof(double));}
 	if (DATA->CH4==0){DATA->CH4=calloc(DATA->nodays,sizeof(double));}
+
+
+
+	//////Try alternative form
+	
+	//READ OBS field
+
 
 	/*What happens:
 	- DATA->EWT is populated with 1XN values IF values exist in netcf
@@ -219,20 +238,20 @@ int CARDAMOM_READ_BINARY_DATA(char *ncfilename,DATA *DATA)
 
 	if (DATA->ncdf_data.NBE.Uncertainty<0){DATA->ncdf_data.NBE.Uncertainty=0.5;}
 	if (DATA->ncdf_data.GPP.Uncertainty<0){DATA->ncdf_data.GPP.Uncertainty=2;}
-	if (DATA->ncdf_data.ET.Uncertainty<0){DATA->ncdf_data.ET.Uncertainty=2;}
+	//if (DATA->ncdf_data.ET.Uncertainty<0){DATA->ncdf_data.ET.Uncertainty=2;}
 	if (DATA->ncdf_data.CH4.Uncertainty<0){DATA->ncdf_data.CH4.Uncertainty=0.5;}
 	if (DATA->ncdf_data.EWT.Uncertainty<0){DATA->ncdf_data.EWT.Uncertainty=50;}
 
 
- if (DATA->ncdf_data.ET.Uncertainty_Threshold<0){DATA->ncdf_data.ET.Uncertainty_Threshold=0;}
+// if (DATA->ncdf_data.ET.Uncertainty_Threshold<0){DATA->ncdf_data.ET.Uncertainty_Threshold=0;}
  if (DATA->ncdf_data.GPP.Uncertainty_Threshold<0){DATA->ncdf_data.GPP.Uncertainty_Threshold=0;}
 if (DATA->ncdf_data.CH4.Uncertainty_Threshold<0){DATA->ncdf_data.CH4.Uncertainty_Threshold=1e-5;}; /*TO ADDRESS: other fields use "0" threshold as default*/
 
 		
 	DATA->nbe_annual_unc=DATA->ncdf_data.NBE.Annual_Uncertainty;
-        DATA->et_annual_unc=DATA->ncdf_data.ET.Annual_Uncertainty;
+        //DATA->et_annual_unc=DATA->ncdf_data.ET.Annual_Uncertainty;
         DATA->nbe_obs_unc=DATA->ncdf_data.NBE.Uncertainty;
-        DATA->et_obs_unc=DATA->ncdf_data.ET.Uncertainty;
+        //DATA->et_obs_unc=DATA->ncdf_data.ET.Uncertainty;
         DATA->ewt_annual_unc=DATA->ncdf_data.EWT.Annual_Uncertainty;
         DATA->ewt_obs_unc=DATA->ncdf_data.EWT.Uncertainty;
         DATA->gpp_annual_unc=DATA->ncdf_data.GPP.Annual_Uncertainty;
@@ -243,7 +262,7 @@ if (DATA->ncdf_data.CH4.Uncertainty_Threshold<0){DATA->ncdf_data.CH4.Uncertainty
 
 
 
-       DATA->et_obs_threshold=DATA->ncdf_data.ET.Uncertainty_Threshold;
+       //DATA->et_obs_threshold=DATA->ncdf_data.ET.Uncertainty_Threshold;
        DATA->gpp_obs_threshold=DATA->ncdf_data.GPP.Uncertainty_Threshold;
        DATA->ch4_obs_threshold=DATA->ncdf_data.CH4.Uncertainty_Threshold; 
 
@@ -386,7 +405,7 @@ DATA->meanprec = DATA->ncdf_data.TOTAL_PREC.reference_mean;
 	c=0;for (n=0;n<DATA->nodays;n++){if (DATA->NBE[n]>-9998){DATA->nbepts[c]=n;c=c+1;}};
 	if (DATA->noobs>3){c=0;for (n=0;n<DATA->nodays;n++){printf("%2.2f\n",DATA->ABGB[n]);if (DATA->ABGB[n]>-9998){DATA->abgbpts[c]=n;c=c+1;}}}
 
-	if (DATA->noobs>4){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->ET[n]>-9998){DATA->etpts[c]=n;c=c+1;}}}
+	//if (DATA->noobs>4){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->ET[n]>-9998){DATA->etpts[c]=n;c=c+1;}}}
 
 	if (DATA->noobs>5){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->EWT[n]>-9998){DATA->ewtpts[c]=n;c=c+1;}}}
 /*
