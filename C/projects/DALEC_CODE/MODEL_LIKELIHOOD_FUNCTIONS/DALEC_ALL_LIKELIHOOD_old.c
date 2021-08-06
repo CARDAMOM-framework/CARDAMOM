@@ -10,7 +10,6 @@
 #include "DALEC_LIKELIHOOD_LAI.c"
 #include "DALEC_LIKELIHOOD_NEE.c"
 #include "DALEC_LIKELIHOOD_CH4.c"
-#include "DALEC_LIKELIHOOD_SCF.c"
 /*Any likelihood functions used in multiple MLF functions are kept here!*/
 
 
@@ -100,13 +99,10 @@ if (D.ID==1010){
 	P=P+DALEC_LIKELIHOOD_CH4(D);
 	}
 
-if (D.ID==1011){
+	if (D.ID==1011){
 	P=P+DALEC_LIKELIHOOD_CH4(D);
 	}
-
-if (D.ID==1015){
-	P=P+DALEC_LIKELIHOOD_SCF(D);
-	}
+/*shuang: 101010 was created for climate sensitivity test Nov2020*/
 
 double mam=0,am=0;
 

@@ -130,7 +130,7 @@ end
 function CBF=define_cbf_obs_fields(CBF,CBFOBS);
 
 
-obsnames={'GPP','LAI','NBE','ABGB','ET','EWT','BAND1','BAND2','BAND3','BAND4','SOM','CH4','SCF'};
+obsnames={'GPP','LAI','NBE','ABGB','ET','EWT','BAND1','BAND2','BAND3','BAND4','SOM','CH4'};
 for n=1:numel(obsnames);%CBF.noobs;
        if size(CBFOBS,2)>=n && sum(CBFOBS(:,n)~=-9999);
             CBF.OBS.(obsnames{n})=CBFOBS(:,n);
@@ -158,9 +158,6 @@ function CBF=read_obs_uncertainty_fields(CBF,SD,OPRU);
 % DATA->ch4_annual_unc=statdat[24];  /*shuang*/
 % DATA->ch4_obs_unc=statdat[25];if (statdat[25]<0){DATA->ch4_obs_unc=0.5;}  /*shuang*/
 % DATA->ch4_obs_threshold=statdat[26]; if (statdat[26]<0){DATA->ch4_obs_threshold=0;}  /*shuang*/
-% DATA->scf_annual_unc=statdat[28];  /*shuang*/
-% DATA->scf_obs_unc=statdat[29];if (statdat[29]<0){DATA->scf_obs_unc=0.75;}  /*shuang*/
-% DATA->scf_obs_threshold=statdat[30]; if (statdat[30]<0){DATA->scf_obs_threshold=0.1;}  /*shuang*/
 
 %NBE
 CBF.OBSUNC.NBE.annual_unc=SD(14);
@@ -191,15 +188,8 @@ CBF.OBSUNC.GPP.gppabs_info='Set to "1" for GPP data, set to "0" for SIF data"';
 %CH4
 CBF.OBSUNC.CH4.annual_unc=SD(25);
 CBF.OBSUNC.CH4.unc=SD(26);
-CBF.OBSUNC.CH4.info=sprintf('Single point uncertaint factor (default = */ +2, must be >1) and annual (annual_unc) CH4 uncertainty [mgC/m2/d]\n default obs unc threshold is 1e-5 mgC/m2/d: this ensures log-tranformed model CH4 values are insensitive to CH4<0.1');
+CBF.OBSUNC.CH4.info=sprintf('Single point uncertaint factor (default = */ +2, must be >1) and annual (annual_unc) CH4 uncertainty [mgC/m2/d]\n default obs unc threshold is 0.1mgC/m2/d: this ensures log-tranformed model CH4 values are insensitive to CH4<0.1');
 CBF.OBSUNC.CH4.obs_unc_threshold=SD(27);%Default = 0.01
-
-
-%SCF
-CBF.OBSUNC.SCF.annual_unc=SD(29);
-CBF.OBSUNC.SCF.unc=SD(30);
-CBF.OBSUNC.SCF.info=sprintf('Single point uncertaint factor (default = */ +2, must be >1) and annual (annual_unc) SCF uncertainty unitless\n default obs unc threshold is 0.1 unitless: this ensures log-tranformed model SCF values are insensitive to SCF<0.1');
-CBF.OBSUNC.SCF.obs_unc_threshold=SD(31);%Default = 0.01
 
 
 %Time-resolved SOM uncertainty

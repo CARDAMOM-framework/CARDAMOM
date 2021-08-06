@@ -128,7 +128,7 @@ warning('CARDAMOM_WRITE_BINARY_FILEFORMAT: CBF.OBS matrix used to define observa
 else
 
 
-obsnames={'GPP','LAI','NBE','ABGB','ET','EWT','BAND1','BAND2','BAND3','BAND4','SOM','CH4','SCF'};
+obsnames={'GPP','LAI','NBE','ABGB','ET','EWT','BAND1','BAND2','BAND3','BAND4','SOM','CH4'};
 fnames=fieldnames(CBF.OBS);
 
     for n=1:numel(obsnames);isobs(n)=sum(strcmp(obsnames{n},fnames));end
@@ -173,10 +173,8 @@ function [SD,OPRU]=write_obs_uncertainty_fields(CBF,SD,OPRU)
 % DATA->gpp_obs_unc=statdat[20];if (statdat[18]<0){DATA->gpp_obs_unc=2;}
 % DATA->ch4_annual_unc=statdat[24];  /*shuang*/
 % DATA->ch4_obs_unc=statdat[25];if (statdat[25]<0){DATA->ch4_obs_unc=0.5;}  /*shuang*/
-% DATA->ch4_obs_threshold=statdat[26]; if (statdat[26]<0){DATA->ch4_obs_threshold=1e-5;}  /*shuang*/
-% DATA->scf_annual_unc=statdat[28];  /*shuang*/
-% DATA->scf_obs_unc=statdat[29];if (statdat[29]<0){DATA->scf_obs_unc=0.2;}  /*shuang*/
-% DATA->scf_obs_threshold=statdat[30]; if (statdat[30]<0){DATA->scf_obs_threshold=1e-1;}  /*shuang*/
+% DATA->ch4_obs_threshold=statdat[26]; if (statdat[26]<0){DATA->ch4_obs_threshold=0;}  /*shuang*/
+
 %NBE
 SD(14)=CBF.OBSUNC.NBE.annual_unc;
 SD(16)=CBF.OBSUNC.NBE.seasonal_unc;
@@ -205,16 +203,9 @@ SD(22)=CBF.OBSUNC.ET.obs_unc_threshold;
 SD(23)=CBF.OBSUNC.GPP.obs_unc_threshold;
 
 %CH4
-% SD(24) should be assigned for ch4iav but not used here
 SD(25)=CBF.OBSUNC.CH4.annual_unc;
 SD(26)=CBF.OBSUNC.CH4.unc;
 SD(27)=CBF.OBSUNC.CH4.obs_unc_threshold;
-
-%SCF
-% SD(28) should be assigned for scfiav but not used here
-SD(29)=CBF.OBSUNC.SCF.annual_unc;
-SD(30)=CBF.OBSUNC.SCF.unc;
-SD(31)=CBF.OBSUNC.SCF.obs_unc_threshold;
 
 %Time-resolved biomass uncertaiknty
 OPRU(2)=CBF.OBSUNC.ABGB.unc;

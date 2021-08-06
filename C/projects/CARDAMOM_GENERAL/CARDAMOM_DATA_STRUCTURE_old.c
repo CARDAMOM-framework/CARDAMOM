@@ -19,8 +19,7 @@ double *BAND2;
 double *BAND1;
 double *SOM;
 double *NEEunc; /*NBE uncertainty*/
-double *CH4; /*shuang first added in 1010, 1011*/
-double *SCF; /*shuang first added in 1015*/
+double *CH4; /*shuang*/
 /*Indices of non-empty points in observation timeseries*/
 int *gpppts;
 int *neepts;
@@ -35,7 +34,6 @@ int *band4pts;
 int *sompts;
 int *neeuncpts;
 int *ch4pts; /*shuang*/
-int *scfpts; /*shuang first added in 1015*/
 /*Number of non-empty points in observation timeseries*/
 /*Number of indices can be stored in single obs vector in the future*/
 int ngpp;
@@ -51,7 +49,6 @@ int nband4;
 int nsom;
 int nneeunc;
 int nch4;/*shuang*/
-int nscf; /*shuang first added in 1015*/
 /*saving computational speed by allocating memory to model output*/
 double *M_PARS; /*Prescribing these here since they need to be carried across functions with a "DATA"-only interface*/
 /*Model fluxes*/
@@ -83,7 +80,6 @@ int gppiav;
 int laiiav;
 int etiav;
 int ch4iav;/*shuang*/
-int scfiav;/*shuang*/
 double nee_annual_unc;
 double nee_obs_unc;
 double et_annual_unc;
@@ -97,9 +93,7 @@ double gpp_obs_threshold;
 double ch4_annual_unc;/*shuang*/
 double ch4_obs_unc;/*shuang*/
 double ch4_obs_threshold;/*shuang*/
-double scf_annual_unc;/*shuang*/
-double scf_obs_unc;/*shuang*/
-double scf_obs_threshold;/*shuang*/
+
 /*priors*/
 double parpriors[50];
 double parpriorunc[50];

@@ -96,10 +96,7 @@ DATA->ch4iav=(int)statdat[23];  /*shuang*/
 DATA->ch4_annual_unc=statdat[24];  /*shuang*/
 DATA->ch4_obs_unc=statdat[25];if (statdat[25]<0){DATA->ch4_obs_unc=0.5;}  /*shuang*/
 DATA->ch4_obs_threshold=statdat[26]; if (statdat[26]<0){DATA->ch4_obs_threshold=1e-5;}  /*shuang; AAB = 0.1 mgCH4/m2/day*/
-DATA->scfiav=(int)statdat[27];  /*shuang*/
-DATA->scf_annual_unc=statdat[28];  /*shuang*/
-DATA->scf_obs_unc=statdat[29];if (statdat[29]<0){DATA->scf_obs_unc=0.5;}  /*shuang*/
-DATA->scf_obs_threshold=statdat[30]; if (statdat[30]<0){DATA->scf_obs_threshold=0.01;}  /*shuang; unitless; fraction*/
+
 
 /*UP TO USER to read data and allocate it to DATA structure*/
 double parpriors[50],parpriorunc[50],otherpriors[50],otherpriorunc[50];
@@ -163,8 +160,8 @@ if (DATA->BAND3==0){DATA->BAND3=calloc(DATA->nodays,sizeof(double));}
 if (DATA->BAND4==0){DATA->BAND4=calloc(DATA->nodays,sizeof(double));}
 if (DATA->SOM==0){DATA->SOM=calloc(DATA->nodays,sizeof(double));}
 if (DATA->NEEunc==0){DATA->NEEunc=calloc(DATA->nodays,sizeof(double));}
-if (DATA->CH4==0){DATA->CH4=calloc(DATA->nodays,sizeof(double));}/*shuang*/
-if (DATA->SCF==0){DATA->SCF=calloc(DATA->nodays,sizeof(double));}/*shuang*/
+if (DATA->CH4==0){DATA->CH4=calloc(DATA->nodays,sizeof(double));}
+
 /*What happens:
 - DATA->EWT is populated with 1XN values IF values exist in netcf 
 - DATA->EWT is populated with 1XN -9999 values IF either (a) that's what's already there OR (b) single (scaler) fill value is in place of 1XN array (i.e. netcdf "empty" field), OR (c) field doesn't exist */
@@ -185,7 +182,7 @@ DATA->nband4=0;
 DATA->nsom=0;
 DATA->nneeunc=0;
 DATA->nch4=0; /*shuang*/
-DATA->nscf=0; /*shuang*/
+
 
 
 /*6 met fields for DALEC CDEA*/
@@ -202,18 +199,18 @@ int frfm,frfo;
 
 printf("reading file...\n");
 for (n=0;n<DATA->nodays+1;n++){
-   frfm=fread(metline,sizeof(double),DATA->nomet,fid);
-   frfo=fread(obsline,sizeof(double),DATA->noobs,fid);
-   if (n<DATA->nodays){
-   for (nn=0;nn<DATA->nomet;nn++){DATA->MET[n*DATA->nomet+nn]=metline[nn];}
-   DATA->GPP[n]=obsline[0];
-   DATA->LAI[n]=obsline[1];
-   DATA->NEE[n]=obsline[2];
-   if (obsline[0]>-9998){DATA->ngpp=DATA->ngpp+1;}
-   if (obsline[1]>-9998){DATA->nlai=DATA->nlai+1;}
-   if (obsline[2]>-9998){DATA->nnee=DATA->nnee+1;}
-   if (DATA->noobs>3){DATA->WOO[n]=obsline[3];
-   if (obsline[3]>-9998){DATA->nwoo=DATA->nwoo+1;}}
+	frfm=fread(metline,sizeof(double),DATA->nomet,fid);
+	frfo=fread(obsline,sizeof(double),DATA->noobs,fid);
+	if (n<DATA->nodays){
+	for (nn=0;nn<DATA->nomet;nn++){DATA->MET[n*DATA->nomet+nn]=metline[nn];}
+	DATA->GPP[n]=obsline[0];
+	DATA->LAI[n]=obsline[1];
+	DATA->NEE[n]=obsline[2];
+	if (obsline[0]>-9998){DATA->ngpp=DATA->ngpp+1;}
+	if (obsline[1]>-9998){DATA->nlai=DATA->nlai+1;}
+	if (obsline[2]>-9998){DATA->nnee=DATA->nnee+1;}
+	if (DATA->noobs>3){DATA->WOO[n]=obsline[3];
+	if (obsline[3]>-9998){DATA->nwoo=DATA->nwoo+1;}}
         if (DATA->noobs>4){DATA->ET[n]=obsline[4];
         if (obsline[4]>-9998){DATA->net=DATA->net+1;}}
         if (DATA->noobs>5){DATA->EWT[n]=obsline[5];
@@ -239,8 +236,6 @@ for (n=0;n<DATA->nodays+1;n++){
 
         if (DATA->noobs>11){DATA->CH4[n]=obsline[11];
         if (obsline[11]>-9998){DATA->nch4=DATA->nch4+1;}}   /*shuang this correspond to the new field CH4 added after SOM in write binary.m */
-        if (DATA->noobs>12){DATA->SCF[n]=obsline[11];
-        if (obsline[12]>-9998){DATA->nscf=DATA->nscf+1;}} 
 };
 
 }
@@ -264,7 +259,6 @@ if (DATA->nband4>0){DATA->band4pts=calloc(DATA->nband4,sizeof(int));}
 if (DATA->nsom>0){DATA->sompts=calloc(DATA->nsom,sizeof(int));}
 if (DATA->nneeunc>0){DATA->neeuncpts=calloc(DATA->nneeunc,sizeof(int));}
 if (DATA->nch4>0){DATA->ch4pts=calloc(DATA->nch4,sizeof(int));}       /*shuang*/
-if (DATA->nscf>0){DATA->scfpts=calloc(DATA->nscf,sizeof(int));}       /*shuang*/
 
 /*Deriving laipts, gpppts, neepts*/
 int c;
@@ -290,8 +284,6 @@ if (DATA->noobs>10){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->SOM[n]>-9998){DAT
 /*if (DATA->noobs>11){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->NEEunc[n]>-9998){DATA->neeuncpts[c]=n;c=c+1;}}}*/
 
 if (DATA->noobs>11){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->CH4[n]>-9998){DATA->ch4pts[c]=n;c=c+1;}}} /*shuang*/
-
-if (DATA->noobs>12){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->SCF[n]>-9998){DATA->scfpts[c]=n;c=c+1;}}} /*shuang*/
 
 /*deriving mean temp and mean rad*/
 
@@ -354,7 +346,7 @@ CDATA->BAND4=0;
 CDATA->SOM=0;
 CDATA->NEEunc=0;
 CDATA->CH4=0; /*shuang*/
-CDATA->SCF=0; /*shuang*/
+
 
 CDATA->assemble_model=0;
 
@@ -379,7 +371,6 @@ if (DATA.nband4>0){free(DATA.band4pts);}
 if (DATA.nsom>0){free(DATA.sompts);}
 if (DATA.nneeunc>0){free(DATA.neeuncpts);}
 if (DATA.nch4>0){free(DATA.ch4pts);} /*shuang*/
-if (DATA.nscf>0){free(DATA.scfpts);} /*shuang*/
 
 free(DATA.MET);
 free(DATA.LAI);
@@ -395,7 +386,6 @@ free(DATA.BAND1);
 free(DATA.SOM);
 free(DATA.NEEunc);
 free(DATA.CH4);/*shuang*/
-free(DATA.SCF);/*shuang*/
 
 free(DATA.M_PARS);
 free(DATA.M_LAI);
