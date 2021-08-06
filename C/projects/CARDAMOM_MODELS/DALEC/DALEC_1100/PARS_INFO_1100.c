@@ -1,4 +1,6 @@
 #pragma once
+#include "DALEC_1100.c"
+
 /*PARAMETER_INFO (typedef struct) must have at least 3 fields
  *  * npars,
  *   * parmax
@@ -11,13 +13,19 @@
 int PARS_INFO_1100(DATA *CARDADATA)
 {
 
-/*Decomposition rate*/
-CARDADATA->parmin[0]=0.00001;
-CARDADATA->parmax[0]=0.01;
 
+struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
+
+/*Decomposition rate*/
+CARDADATA->parmin[P.tr_lit2soil]=0.00001;
+CARDADATA->parmax[P.tr_lit2soil]=0.01;
+
+
+printf("P.f_auto = %i\n",P.f_auto);
+printf("P.tr_lit2soil = %i\n",P.tr_lit2soil);
 /*Fraction of GPP respired*/
-CARDADATA->parmin[1]=0.2;
-CARDADATA->parmax[1]=0.8;
+CARDADATA->parmin[P.f_auto]=0.2;
+CARDADATA->parmax[P.f_auto]=0.8;
 
 /*Fraction of (1-fgpp) to foliage*/
 CARDADATA->parmin[2]=0.01;

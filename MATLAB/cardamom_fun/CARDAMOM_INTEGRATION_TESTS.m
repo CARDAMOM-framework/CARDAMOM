@@ -37,19 +37,43 @@
 
 
 
+
 nccbffilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.nc.cbf';
  cbrfilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.cbr';
  cbrfilename1100ref='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr';
- %copyfile( cbrfilename1100, cbrfilename1100ref);
-ncdisp(nccbffilename1100)
+ cbrfilename1100refmat='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr.mat';
+
+ ncdisp(nccbffilename1100)
 nccbftestfile='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY.nc.cbf';
 
 
 %testing matlab read-write functions
 
 CBF1100=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
+
+CBF1100.EWT.values=CBF1100.EWT.values*NaN;
+CBF1100.Mean_Biomass.values=CBF1100.Mean_Biomass.values*NaN;
+CBF1100.Mean_Fire.values=CBF1100.Mean_Fire.values*NaN;
+CBF1100.Mean_LAI.values=CBF1100.Mean_LAI.values*NaN;
+CBF1100.Mean_GPP.values=CBF1100.Mean_GPP.values*NaN;
+CBF1100.PARPRIORS.values=CBF1100.PARPRIORS.values*NaN;
+CBF1100.OTHERPRIORS.values=CBF1100.OTHERPRIORS.values*NaN;
+CBF1100.PARPRIORUNC.values=CBF1100.PARPRIORUNC.values*NaN;
+CBF1100.OTHERPRIORSUNC.values=CBF1100.OTHERPRIORSUNC.values*NaN;
+CBF1100.EDC.values=0;
+
+
+
 CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbftestfile);
 CBF1100test=CARDAMOM_READ_NC_CBF_FILE(nccbftestfile);
+ updateref=1;
+ if updateref==1
+ copyfile( cbrfilename1100, cbrfilename1100ref);
+  CBRref=CARDAMOM_RUN_MODEL(nccbftestfile,cbrfilename1100ref);
+ save(cbrfilename1100refmat, 'CBRref');
+ end
+
+
 f=fields(CBF1100);cbfioerror=0;
 for n=1:numel(f)
     cbffielddif=nansum(CBF1100test.(f{n}).values- CBF1100.(f{n}).values);
@@ -88,15 +112,17 @@ end
 
 
 
- CBR=CARDAMOM_RUN_MODEL(nccbffilename1100,cbrfilename1100);
- CBRref=CARDAMOM_RUN_MODEL(nccbffilename1100,cbrfilename1100ref);
+ CBR=CARDAMOM_RUN_MODEL(nccbftestfile,cbrfilename1100);
+load(cbrfilename1100refmat, 'CBRref');
+
 % 
 % %Compare CBR against benchmarks 
  disp('Numerical differences: expected to be ~0')
  disp(minmax(CBR.FLUXES-CBRref.FLUXES))
- disp(minmax(CBR.FLUXES-CBRref.FLUXES))
  disp(minmax(CBR.POOLS-CBRref.POOLS))
- disp(minmax(CBR.POOLS-CBRref.POOLS))
+ disp(minmax(CBR.PARS-CBRref.PARS))
+ disp(minmax(CBR.PROB-CBRref.PROB))
+
 
  
 
