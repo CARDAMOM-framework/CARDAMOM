@@ -28,6 +28,7 @@ double P=0,P_p;
 EDC=ipow(MODEL->edc1(PARS,DATA, &EDCD),DATA.EDC);
 P=P+log((double)EDC);
 
+
 if (EDC==1 | EDCD.DIAG==1){
 /*PARAMETER LOG LIKELIHOOD*/
 P=P+LIKELIHOOD_P(DATA,PARS);
@@ -59,7 +60,6 @@ if (DATA.EDCDIAG==1){for (n=0;n<100;n++){DATA.M_EDCD[n]=EDCD.PASSFAIL[n];}}
 /*saving likelihood P*/
 DATA.M_P[0]=P;
 
-printf("P = %2.2f\n",P);
 /*Returning the log likelihood P*/
 return P;
 
@@ -105,13 +105,14 @@ tot_exp+=1-ipow(EDCD.PASSFAIL[n],EDCD.SWITCH[n]);}
 P=-0.5*((double)tot_exp*10)*DATA.EDC;
 
 
-
 /*overriding if model likelihood is zero or erroneous*/
 double ML=DATA.MLF(DATA,PARS);
 if (( isinf(ML)==-1 || isinf(ML)==1 || isnan(ML) )){
 P=P-0.5*10;}
 /*if (DATA->EDC==0 && (isinf(ML)==-1 || isnan(ML))){P=P-0.5*10;}
 */
+
+
 
 return P;
 

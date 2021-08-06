@@ -301,7 +301,7 @@ double C3_frac = pars[52];
 
 /*GPP*/
 // Annual radiation, VPD in kPa, mean T in K
-FLUXES[F.gpp]=LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[0]*g;
+FLUXES[f+F.gpp]=LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[0]*g;
 
 //transpiration//
 FLUXES[f+33] = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[1];
@@ -313,7 +313,7 @@ FLUXES[f+28]=FLUXES[f+34]+FLUXES[f+33];
 /* x (1 + a* P/P0)/(1+a)*/
 FLUXES[F.temprate]=exp(pars[9]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp))*((PREC[n]/meanprec-1)*pars[32]+1);
 /*respiration auto*/
-FLUXES[f+2]=pars[P.f_auto]*FLUXES[F.gpp];
+FLUXES[f+2]=pars[P.f_auto]*FLUXES[f+F.gpp];
 /*leaf production*/
 FLUXES[f+3]=(FLUXES[f+0]-FLUXES[f+2])*pars[2];
 /*labile production*/

@@ -20,6 +20,9 @@ struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 CARDADATA->parmin[P.tr_lit2soil]=0.00001;
 CARDADATA->parmax[P.tr_lit2soil]=0.01;
 
+
+printf("P.f_auto = %i\n",P.f_auto);
+printf("P.tr_lit2soil = %i\n",P.tr_lit2soil);
 /*Fraction of GPP respired*/
 CARDADATA->parmin[P.f_auto]=0.2;
 CARDADATA->parmax[P.f_auto]=0.8;

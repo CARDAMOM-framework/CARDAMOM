@@ -18,11 +18,10 @@ EDCD=*MODEL->EDCD;
 
 int EDC,n;
 double P=0,P_p;
-
 EDCD.pEDC=0;
+
 MODEL->edc1(PARS,DATA, &EDCD);
 P=P+EDCD.pEDC;
-
 
 /*PARAMETER LOG LIKELIHOOD*/
 P=P+LIKELIHOOD_P(DATA,PARS);
@@ -32,7 +31,9 @@ P_p=P;
 MODEL->dalec(DATA, PARS);
 
 /*storing GPP*/
-for (n=0;n<DATA.nodays;n++){DATA.M_GPP[n]=DATA.M_FLUXES[n*DATA.nofluxes];}
+//for (n=0;n<DATA.nodays;n++){DATA.M_GPP[n]=DATA.M_FLUXES[n*DATA.nofluxes];}
+
+
 
 /*EDC2 check*/
 MODEL->edc2(PARS, DATA, &EDCD);
