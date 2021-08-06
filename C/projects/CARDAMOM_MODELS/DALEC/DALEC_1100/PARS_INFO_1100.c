@@ -227,6 +227,10 @@ CARDADATA->parmax[51]=286.15;
 CARDADATA->parmin[52]=1e-8;
 CARDADATA->parmax[52]=1.0;
 
+/*CI (Clumping Index)*/
+CARDADATA->parmin[53]=1e-8;
+CARDADATA->parmax[53]=1.0;
+
 return 0;
 
 }

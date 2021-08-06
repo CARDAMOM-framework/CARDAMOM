@@ -107,7 +107,7 @@ ga = ga/0.02405; //correction factor
 
 sV = 0.04145*exp(0.06088*T_C); 
 
-SRADg = SRAD*exp(-LAI*VegK*CI);
+SRADg = SRAD*exp(-LAI*VegK);
 
 petVnum = (sV*(SRAD-SRADg)+1.225*1000*VPD_kPa*ga)*(SRAD)/(lambda0*60*60);
 petVnumB = 1.26*(sV*SRADg)/(sV+gammaV)/lambda0*60*60; //from mm.hr-1 
