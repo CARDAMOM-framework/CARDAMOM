@@ -50,7 +50,7 @@ if nargin<4 | isempty(compile); compile=1;end
 %CARDAMOM CBF file
 if isstr(CBF)==0;
     cbffile=['DUMPFILES/CBF',char(ceil(rand(1,20)*25)+96),'temp.cbf'];
-    CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,cbffile);
+    CARDAMOM_WRITE_NC_CBF_FILE(CBF,cbffile);
     cbftemp=1;
 else
     cbffile=CBF;

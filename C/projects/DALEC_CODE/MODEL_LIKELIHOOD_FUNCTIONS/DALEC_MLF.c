@@ -59,7 +59,7 @@ if (DATA.EDCDIAG==1){for (n=0;n<100;n++){DATA.M_EDCD[n]=EDCD.PASSFAIL[n];}}
 /*saving likelihood P*/
 DATA.M_P[0]=P;
 
-
+printf("P = %2.2f\n",P);
 /*Returning the log likelihood P*/
 return P;
 
