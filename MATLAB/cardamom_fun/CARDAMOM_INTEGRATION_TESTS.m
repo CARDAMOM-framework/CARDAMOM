@@ -43,14 +43,13 @@ nccbffilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.nc.cbf';
  %copyfile( cbrfilename1100, cbrfilename1100ref);
 ncdisp(nccbffilename1100)
 nccbftestfile='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY.nc.cbf';
-nccbftestfile2='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY_2.nc.cbf';
 
 
 %testing matlab read-write functions
 
 CBF1100=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
-CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbftestfile2);
-CBF1100test=CARDAMOM_READ_NC_CBF_FILE(nccbftestfile2);
+CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbftestfile);
+CBF1100test=CARDAMOM_READ_NC_CBF_FILE(nccbftestfile);
 f=fields(CBF1100);cbfioerror=0;
 for n=1:numel(f)
     cbffielddif=nansum(CBF1100test.(f{n}).values- CBF1100.(f{n}).values);
