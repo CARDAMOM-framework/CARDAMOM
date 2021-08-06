@@ -42,12 +42,7 @@ nccbffilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.nc.cbf';
  cbrfilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.cbr';
  cbrfilename1100ref='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr';
  cbrfilename1100refmat='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr.mat';
- updateref=0;
- if updateref==1
- copyfile( cbrfilename1100, cbrfilename1100ref);
-  CBRref=CARDAMOM_RUN_MODEL(nccbffilename1100,cbrfilename1100ref);
- save(cbrfilename1100refmat, 'CBRref');
- end
+
  ncdisp(nccbffilename1100)
 nccbftestfile='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY.nc.cbf';
 
@@ -70,7 +65,12 @@ CBF1100.EDC.values=0;
 
 CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbftestfile);
 CBF1100test=CARDAMOM_READ_NC_CBF_FILE(nccbftestfile);
-
+ updateref=1;
+ if updateref==1
+ copyfile( cbrfilename1100, cbrfilename1100ref);
+  CBRref=CARDAMOM_RUN_MODEL(nccbftestfile,cbrfilename1100ref);
+ save(cbrfilename1100refmat, 'CBRref');
+ end
 
 
 f=fields(CBF1100);cbfioerror=0;
@@ -112,8 +112,7 @@ end
 
 
  CBR=CARDAMOM_RUN_MODEL(nccbftestfile,cbrfilename1100);
-  CBRref=CARDAMOM_RUN_MODEL(nccbffilename1100,cbrfilename1100);
-%load(cbrfilename1100refmat, 'CBRref');
+load(cbrfilename1100refmat, 'CBRref');
 
 % 
 % %Compare CBR against benchmarks 
