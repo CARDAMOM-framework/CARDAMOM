@@ -314,7 +314,7 @@ double C3_frac = pars[52];
 
 // GPP, T, and E from LIU_An_et
 // Annual radiation, VPD in kPa, mean T in K
-double *LIU_An_et_out = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)
+double *LIU_An_et_out = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac);
 // GPP
 FLUXES[f+F.gpp] = LIU_An_et_out[0]*g;
 //transpiration//
@@ -402,7 +402,7 @@ lai_var_list[17]=(POOLS[p+6]+POOLS[nxp+6])/2.0;
 lai_var_list[18]=FLUXES[f+28];
 // Run KNORR LAI module
 // - this computes a potential LAI
-double *LAI_KNORR_out = LAI_KNORR(lai_met_list, lai_var_list)
+double *LAI_KNORR_out = LAI_KNORR(lai_met_list, lai_var_list);
 FLUXES[f+37] = LAI_KNORR_out[0];  // LAI (environmental target)
 FLUXES[f+38] = LAI_KNORR_out[1];  // T_memory
 FLUXES[f+39] = LAI_KNORR_out[2];  // lambda_max_memory
