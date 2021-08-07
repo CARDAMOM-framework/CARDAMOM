@@ -160,7 +160,7 @@ function CBF=read_obs_uncertainty_fields(CBF,SD,OPRU);
 % DATA->ch4_obs_threshold=statdat[26]; if (statdat[26]<0){DATA->ch4_obs_threshold=0;}  /*shuang*/
 % DATA->scf_annual_unc=statdat[28];  /*shuang*/
 % DATA->scf_obs_unc=statdat[29];if (statdat[29]<0){DATA->scf_obs_unc=0.75;}  /*shuang*/
-% DATA->scf_obs_threshold=statdat[30]; if (statdat[30]<0){DATA->scf_obs_threshold=0.1;}  /*shuang*/
+% DATA->scf_obs_threshold=statdat[30]; if (statdat[30]<0){DATA->scf_obs_threshold=0.05;}  /*shuang*/
 
 %NBE
 CBF.OBSUNC.NBE.annual_unc=SD(14);

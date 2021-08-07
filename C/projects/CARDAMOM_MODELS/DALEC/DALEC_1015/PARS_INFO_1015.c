@@ -179,7 +179,7 @@ CARDADATA->parmax[39]=1;
 
 /*sn3: snow cover fraction scalar*/
 CARDADATA->parmin[40]=0.001;
-CARDADATA->parmax[40]=200.0;
+CARDADATA->parmax[40]=1000.0;
 return 0;
 
 }
