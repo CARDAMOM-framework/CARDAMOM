@@ -214,8 +214,11 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 	/*printf("%2.1f\n",POOLS[p+6]);*/
 	  /*Snow water equivalent*/
 				POOLS[nxp+8]=POOLS[p+8]+DATA.MET[m+9]*deltat; /*first step snowfall to SWE*/
-        FLUXES[f+32]=fmin(fmax(((DATA.MET[m+2]+DATA.MET[m+1])/2-(pars[38]-273.15))*pars[39],0),1)*POOLS[nxp+8]; /*melted snow per day*/
-        POOLS[nxp+8]=fmax(POOLS[nxp+8]-FLUXES[f+32]*deltat,0); /*second step remove snowmelt from SWE*/
+        FLUXES[f+32]=fmin(fmax(((DATA.MET[m+2]+DATA.MET[m+1])/2-(pars[38]-273.15))*pars[39],0),1)*POOLS[nxp+8]; /*melted snow per day*/   
+        FLUXES[f+32]=fmin(FLUXES[f+32],POOLS[nxp+8]/deltat); /*if monthly melt fluxes is larger than SWE storage, melt all*/
+        POOLS[nxp+8]=POOLS[nxp+8]-FLUXES[f+32]*deltat; /*second step remove snowmelt from SWE*/
+        
+        //POOLS[nxp+8]=POOLS[nxp+8]-FLUXES[f+32]*deltat; /*second step remove snowmelt from SWE*/
 		  	FLUXES[f+33]=POOLS[nxp+8]/(POOLS[nxp+8]+pars[40]);  /*snow cover fraction*/
      /*  FLUXES[f+33]=(DATA.MET[m+2]+DATA.MET[m+1])/2-(pars[38]-273.15);*/
        /* FLUXES[f+33]=(DATA.MET[m+2]+DATA.MET[m+1])/2;*/
