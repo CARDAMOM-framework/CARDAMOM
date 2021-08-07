@@ -3,38 +3,127 @@
 %This code runs a sequence of CARDAMOM benchmark tests with expected or
 %known outcomes
 %cbffilename_old='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbf';
-%delete(cbffilename);TEST_CARDAMOM_CBF_NETCDF_FORMAT(cbffilename_old,cbffilename);
+% %delete(cbffilename);TEST_CARDAMOM_CBF_NETCDF_FORMAT(cbffilename_old,cbffilename);
+% 
+% nccbffilename1000='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.nc.cbf';
+% 
+% 
+% CBF1000=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1000);
+%  CBF1100=CBF1000(1);
+%  CBF1100.ID.values=1100;
+%  
+%  nccbffilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.nc.cbf';
+% 
+%  CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbffilename1100);
 
-nccbffilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.nc.cbf';
-ncdisp(nccbffilename)
-nccbftestfile='CARDAMOM/DATA/MODEL_ID_1000_TEST_ONLY.nc.cbf';
+%  cbrfilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.cbr';
+% 
+% CBR1100=CARDAMOM_RUN_MDF(nccbffilename1100,[],cbrfilename1100);
+%CBR1100=CARDAMOM_RUN_MDF(nccbffilename1100,[],cbrfilename1100);
+
+%Step 1. Run forward run
+%This benchmark is obsolete, only applied to ID=1000
+% %CBR_old=CARDAMOM_RUN_MODEL(cbffilename_old,cbrfilename);
+% CBR=CARDAMOM_RUN_MODEL(nccbffilename1100,cbrfilename1100);
+% 
+% %Compare CBR against benchmarks
+% load('CARDAMOM/DATA/CBR_PRE_NCDF_BENCHMARKS','CBRcbf','CBRnccbf')
+% 
+% disp('Numerical differences: expected to be ~0')
+% disp(minmax(CBRnccbf.FLUXES-CBR.FLUXES))
+% disp(minmax(CBRcbf.FLUXES-CBR.FLUXES))
+% disp(minmax(CBRnccbf.POOLS-CBR.POOLS))
+% disp(minmax(CBRcbf.POOLS-CBR.POOLS))
+
+
+
+
+nccbffilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.nc.cbf';
+ cbrfilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.cbr';
+ cbrfilename1100ref='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr';
+ cbrfilename1100refmat='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr.mat';
+
+ ncdisp(nccbffilename1100)
+nccbftestfile='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY.nc.cbf';
+
+
+%testing matlab read-write functions
+
+CBF1100=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
+CBF1100.EWT.values=CBF1100.EWT.values*NaN;
+CBF1100.Mean_Biomass.values=CBF1100.Mean_Biomass.values*NaN;
+CBF1100.Mean_Fire.values=CBF1100.Mean_Fire.values*NaN;
+CBF1100.Mean_LAI.values=CBF1100.Mean_LAI.values*NaN;
+CBF1100.Mean_GPP.values=CBF1100.Mean_GPP.values*NaN;
+CBF1100.PARPRIORS.values=CBF1100.PARPRIORS.values*NaN;
+CBF1100.OTHERPRIORS.values=CBF1100.OTHERPRIORS.values*NaN;
+CBF1100.PARPRIORUNC.values=CBF1100.PARPRIORUNC.values*NaN;
+CBF1100.OTHERPRIORSUNC.values=CBF1100.OTHERPRIORSUNC.values*NaN;
+CBF1100.EDC.values=0;
+
+
+
+CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbftestfile);
+CBF1100test=CARDAMOM_READ_NC_CBF_FILE(nccbftestfile);
+ updateref=1;
+ if updateref==1
+ copyfile( cbrfilename1100, cbrfilename1100ref);
+  CBRref=CARDAMOM_RUN_MODEL(nccbftestfile,cbrfilename1100ref);
+ save(cbrfilename1100refmat, 'CBRref');
+ end
+
+
+f=fields(CBF1100);cbfioerror=0;
+for n=1:numel(f)
+    cbffielddif=nansum(CBF1100test.(f{n}).values- CBF1100.(f{n}).values);
+    if cbffielddif~=0;disp(sprintf('CBF.%s: Warning, non-zero dif',f{n}));cbfioerror=1;end
+end
+if cbfioerror==0; disp('CARDAMOM READ/WRITE NETCDF functions check out...');
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+    disp('CARDAMOM_*_NC_CBF_FILE() commands check complete')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+disp('**********')
+end
+
+
 
 %Converting to netcdf file
 %Make a copy
-copyfile(nccbffilename,nccbftestfile);
+%copyfile(nccbffilename1100,nccbftestfile);
 
 
-cbrfilename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbr';
+%cbrfilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.cbr';
+
+
+
+
+
+
 
 %CBF=CARDAMOM_READ_BINARY_FILEFORMAT(cbffilename);
 
 
 
+ CBR=CARDAMOM_RUN_MODEL(nccbftestfile,cbrfilename1100);
+load(cbrfilename1100refmat, 'CBRref');
 
-%Step 1. Run forward run
-%CBR_old=CARDAMOM_RUN_MODEL(cbffilename_old,cbrfilename);
-CBR=CARDAMOM_RUN_MODEL(nccbffilename,cbrfilename);
-
-%Compare CBR against benchmarks
-load('CARDAMOM/DATA/CBR_PRE_NCDF_BENCHMARKS','CBRcbf','CBRnccbf')
-
-disp('Numerical differences: expected to be ~0')
-disp(minmax(CBRnccbf.FLUXES-CBR.FLUXES))
-disp(minmax(CBRcbf.FLUXES-CBR.FLUXES))
-disp(minmax(CBRnccbf.POOLS-CBR.POOLS))
-disp(minmax(CBRcbf.POOLS-CBR.POOLS))
+% 
+% %Compare CBR against benchmarks 
+ disp('Numerical differences: expected to be ~0')
+ disp(minmax(CBR.FLUXES-CBRref.FLUXES))
+ disp(minmax(CBR.POOLS-CBRref.POOLS))
+ disp(minmax(CBR.PARS-CBRref.PARS))
+ disp(minmax(CBR.PROB-CBRref.PROB))
 
 
+ 
 
 disp('**********')
 disp('**********')
@@ -47,6 +136,14 @@ disp('**********')
 disp('**********')
 disp('**********')
 disp('**********')
+
+
+
+
+
+
+
+
 
 
 
@@ -121,10 +218,10 @@ cost_function_tests=0;
 if cost_function_tests==1;
 
 
-CBF=CARDAMOM_READ_BINARY_FILEFORMAT(nccbffilename);
-CBR=CARDAMOM_RUN_MODEL(CBF,cbrfilename);
+CBF1100=CARDAMOM_READ_BINARY_FILEFORMAT(nccbffilename1100);
+CBR=CARDAMOM_RUN_MODEL(CBF1100,cbrfilename1000);
 
-CBFcf=cardamomfun_clear_cbf_obs(CBF);clear CBF;
+CBFcf=cardamomfun_clear_cbf_obs(CBF1100);clear CBF;
 cfpars=CBR.PARS(end,:);
 CBRcf=CARDAMOM_RUN_MODEL(CBFcf,cfpars);clear CBR;
 

@@ -56,10 +56,13 @@ return 0;
 int DALEC_OBSOPE_GPP(DATA * D, OBSOPE * O){
 
 //Time varying GPP 
-if (D->ngpp>0){int n;for (n=0;n<D->nodays;n++){D->M_GPP[n]=D->M_FLUXES[D->nofluxes*n+O->GPP_flux];}};
+int N=D->ncdf_data.TIME_INDEX.length;
+
+
+if (D->ngpp>0){int n;for (n=0;n<N;n++){D->M_GPP[n]=D->M_FLUXES[D->nofluxes*n+O->GPP_flux];}};
 
 //Mean GPP 
-if (D->otherpriors[5]>-9999){int n;D->M_MGPP[0]=0;for (n=0;n<D->nodays;n++){D->M_MGPP[0]+=D->M_FLUXES[n*D->nofluxes+O->GPP_flux];};D->M_MGPP[0]=D->M_MGPP[0]/(double)D->nodays;}
+if (D->otherpriors[5]>-9999){int n;D->M_MGPP[0]=0;for (n=0;n<N;n++){D->M_MGPP[0]+=D->M_FLUXES[n*D->nofluxes+O->GPP_flux];};D->M_MGPP[0]=D->M_MGPP[0]/(double)N;}
 
 return 0;}
 
@@ -71,7 +74,10 @@ return 0;
 //Mean fire co2 flux
 int DALEC_OBSOPE_FIR(DATA * D, OBSOPE * O){
 
-if (D->otherpriors[2]>-9999){int n;D->M_MFIRE[0]=0;for (n=0;n<D->nodays;n++){D->M_MFIRE[0]+=D->M_FLUXES[n*D->nofluxes+O->FIR_flux];};D->M_MFIRE[0]=D->M_MFIRE[0]/(double)D->nodays;}
+int N=D->ncdf_data.TIME_INDEX.length;
+
+
+if (D->otherpriors[2]>-9999){int n;D->M_MFIRE[0]=0;for (n=0;n<N;n++){D->M_MFIRE[0]+=D->M_FLUXES[n*D->nofluxes+O->FIR_flux];};D->M_MFIRE[0]=D->M_MFIRE[0]/(double)N;}
 
 
 
@@ -84,10 +90,13 @@ return 0;}
 //NBE observation operator
 // R
 int DALEC_OBSOPE_NBE(DATA * D, OBSOPE * O){
-  
+ 
+
+int N=D->ncdf_data.TIME_INDEX.length;
+
 if (D->nnbe>0){
 int n,nn;
-for (n=0;n<D->nodays;n++){
+for (n=0;n<N;n++){
 D->M_NBE[n]=0;
 for (nn=0;nn<O->NBE_n_fluxes;nn++){
 D->M_NBE[n]+=D->M_FLUXES[D->nofluxes*n+O->NBE_fluxes[nn]]*O->NBE_flux_signs[nn];}}};
@@ -99,8 +108,10 @@ return 0;}
 
 //ET observation operator, assuming one flux
 int DALEC_OBSOPE_ET(DATA * D, OBSOPE * O){
-  
-if (D->net>0){int n;for (n=0;n<D->nodays;n++){D->M_ET[n]=D->M_FLUXES[D->nofluxes*n+O->ET_flux];}};
+int N=D->ncdf_data.TIME_INDEX.length;
+
+
+if (D->net>0){int n;for (n=0;n<N;n++){D->M_ET[n]=D->M_FLUXES[D->nofluxes*n+O->ET_flux];}};
 
 
 
@@ -111,11 +122,14 @@ return 0;}
 int DALEC_OBSOPE_LAI(DATA * D, OBSOPE * O){
 //int folc_pool,double lcma_pars_index
 
+
+int N=D->ncdf_data.TIME_INDEX.length;
+
 int n=0;
 
 //printf("D->M_PARS[O->LAI_LCMA] = %2.2f\n",D->M_PARS[O->LAI_LCMA]);
 //printf("O->LAI_LCMA = %i\n",O->LAI_LCMA);
-if (D->otherpriors[4]>0 | D->nlai>0){int n;for (n=0;n<D->nodays;n++){
+if (D->otherpriors[4]>0 | D->nlai>0){int n;for (n=0;n<N;n++){
 
 //printf("D->M_POOLS[D->nopools*n+O->LAI_foliar_pool]+D->M_POOLS[D->nopools*(n+1)+O->LAI_foliar_pool] = %2.2f\n",D->M_POOLS[D->nopools*n+O->LAI_foliar_pool]/2+D->M_POOLS[D->nopools*(n+1)+O->LAI_foliar_pool]/2);
 //printf("D->M_POOLS[D->nopools*n+O->LAI_foliar_pool] = %2.2f\n",D->M_POOLS[D->nopools*n+O->LAI_foliar_pool]);
@@ -136,8 +150,11 @@ int DALEC_OBSOPE_GRACE_EWT(DATA * D, OBSOPE * O){
 //CONTINUR FROM HERE
 if (D->newt>0){int n,nn;
 int * h2op=O->GRACE_EWT_h2o_pools;
+int N=D->ncdf_data.TIME_INDEX.length;
 
-for (n=0;n<D->nodays;n++){D->M_EWT[n]=0;
+
+
+for (n=0;n<N;n++){D->M_EWT[n]=0;
 for (nn=0;nn<O->GRACE_EWT_n_h2o_pools;nn++){
 D->M_EWT[n]+=(D->M_POOLS[D->nopools*n+h2op[nn]] +D->M_POOLS[D->nopools*(n+1)+h2op[nn]])*0.5;}}}
 return 0;}
@@ -146,6 +163,7 @@ return 0;}
 
 int DALEC_OBSOPE_ABGB(DATA * D, OBSOPE * O){
 
+int N=D->ncdf_data.TIME_INDEX.length;
 
 if (D->otherpriors[0]>-9999){
     int nn;
@@ -157,7 +175,7 @@ if (D->nabgb>0){
 //declarations
 int p,nxp,n,nn;
 
-for (n=0;n<D->nodays;n++){
+for (n=0;n<N;n++){
 //indices
 nxp=D->nopools*(n+1);p=D->nopools*n;
 //inialize
@@ -179,13 +197,14 @@ return 0;
 
 int DALEC_OBSOPE_SOM(DATA * D, OBSOPE * O){
 
+int N=D->ncdf_data.TIME_INDEX.length;
 
 
 if (D->nsom>0){
 //declare constanta
 int p,nxp,n,nn;
 //loop through days
-for (n=0;n<D->nodays;n++){
+for (n=0;n<N;n++){
 //declarations
 
 //indices

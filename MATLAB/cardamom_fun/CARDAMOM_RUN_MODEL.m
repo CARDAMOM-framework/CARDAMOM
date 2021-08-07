@@ -84,7 +84,7 @@ if ischar(CBF);
         if strcmp(CBF(end-6:end),'.nc.cbf')==1
             OPT.MODEL.ID=ncread(CBF,'ID');
         else
-        CBF=CARDAMOM_READ_BINARY_FILEFORMAT(cbffile);
+        CBF=CARDAMOM_READ_NC_CBF_FILE(cbffile);
     %parameter file
     %
         OPT.MODEL.ID=CBF.ID;

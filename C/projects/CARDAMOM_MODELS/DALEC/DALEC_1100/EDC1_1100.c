@@ -81,13 +81,12 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[16-1]==1)
 /*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[17-1]==1)) & (pars[24]<pars[34])){EDC=0;EDCD->PASSFAIL[17-1]=0;}
 
 */
-
 /*Add any generalisations derivable from EDC2 (post-run checks) here*/
 /*Note: these must be tested to ensure that DALEC2 run is NOT needed */
 
 
 
-EDCD->pEDC=log(EDC);
+EDCD->pEDC=log((double)EDC);
 
 
 return EDC;
