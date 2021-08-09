@@ -311,7 +311,7 @@ FLUXES[f+34] = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n
 FLUXES[f+28]=FLUXES[f+34]+FLUXES[f+33];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
-FLUXES[F.temprate]=exp(pars[9]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp))*((PREC[n]/meanprec-1)*pars[32]+1);
+FLUXES[f+F.temprate]=exp(pars[9]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp))*((PREC[n]/meanprec-1)*pars[32]+1);
 /*respiration auto*/
 FLUXES[f+2]=pars[P.f_auto]*FLUXES[f+F.gpp];
 /*leaf production*/
