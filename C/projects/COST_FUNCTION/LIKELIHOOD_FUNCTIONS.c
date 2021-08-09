@@ -5,6 +5,7 @@
 
 
 //CF_ID=1
+/*
 double LINEAR_MONTHLY(OBS_STRUCT OBS,double * MOD){
 
 
@@ -27,7 +28,7 @@ for (n=0;n<OBS.N_OBS;n++){dn=OBS.INDICES[n];tot_exp+=pow(log(max(MOD[dn],OBS.THR
 return tot_exp;
 }
 
-
+*/
 
 
 
