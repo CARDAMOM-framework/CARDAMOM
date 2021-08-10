@@ -168,8 +168,8 @@ CARDADATA->parmin[37]=268.15;
 CARDADATA->parmax[37]=323.15;
 
 /*Spatial range of mean temperature at leaf onset (T_r) (degrees C or degrees kelvin)*/
-CARDADATA->parmin[38]=0.1;
-CARDADATA->parmax[38]=10.0;
+CARDADATA->parmin[38]=1.0;
+CARDADATA->parmax[38]=5.0;
 
 /*Averaging period for temperature growth trigger T (time units of model), usually kept constant*/
 CARDADATA->parmin[39]=1.0;
@@ -196,8 +196,8 @@ CARDADATA->parmin[44]=2;
 CARDADATA->parmax[44]=22;
 
 /*Spatial range of mean daylength at leaf shedding (t_r)*/
-CARDADATA->parmin[45]=0.1;
-CARDADATA->parmax[45]=6.0;
+CARDADATA->parmin[45]=1.0;
+CARDADATA->parmax[45]=5.0;
 
 /*Foliar carbon turnover rate*/
 CARDADATA->parmin[46]=100;
