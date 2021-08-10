@@ -299,16 +299,18 @@ double Tupp = pars[50];
 double Tdown = pars[51]; 
 double C3_frac = pars[52]; 
 
-/*GPP*/
+// GPP, T, and E from LIU_An_et
 // Annual radiation, VPD in kPa, mean T in K
-FLUXES[f+F.gpp]=LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[0]*g;
-
+double *LIU_An_et_out = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac);
+// GPP
+FLUXES[f+F.gpp] = LIU_An_et_out[0]*g;
 //transpiration//
-FLUXES[f+33] = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[1];
+FLUXES[f+33] = LIU_An_et_out[1];
 //evaporation//
-FLUXES[f+34] = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac)[2];
-/*Evapotranspiration*/
+FLUXES[f+34] = LIU_An_et_out[2];
+// Evapotranspiration
 FLUXES[f+28]=FLUXES[f+34]+FLUXES[f+33];
+
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
 FLUXES[f+F.temprate]=exp(pars[9]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp))*((PREC[n]/meanprec-1)*pars[32]+1);
