@@ -14,6 +14,7 @@ for n=1:numel(ni.Variables);
         
     CBF.(ni.Variables(n).Name).values=ncread(filename,ni.Variables(n).Name);
     
+   
     CBF.(ni.Variables(n).Name).Attributes=ni.Variables(n).Attributes;
 
 end

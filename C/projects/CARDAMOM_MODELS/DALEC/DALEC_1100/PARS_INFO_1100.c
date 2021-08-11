@@ -216,47 +216,6 @@ CARDADATA->parmax[P.Tdown]=286.15;
 CARDADATA->parmin[P.C3_frac]=1e-8;
 CARDADATA->parmax[P.C3_frac]=1.0;
 
-/*Initial LAI*/
-CARDADATA->parmin[53]=0.1;
-CARDADATA->parmax[53]=10.0;
-
-/*Mean temperature at leaf onset (T_phi) (degrees kelvin)*/
-CARDADATA->parmin[54]=268.15;
-CARDADATA->parmax[54]=323.15;
-
-/*Spatial range of mean temperature at leaf onset (T_r) (degrees C or degrees kelvin)*/
-CARDADATA->parmin[55]=0.1;
-CARDADATA->parmax[55]=10.0;
-
-/*Averaging period for temperature growth trigger T (time units of model), usually kept constant*/
-CARDADATA->parmin[56]=1.0;
-CARDADATA->parmax[56]=1.01;
-
-/*LAI linear growth constant (inverse of model time units; e.g. days-1 or months-1)*/
-CARDADATA->parmin[57]=0.001;
-CARDADATA->parmax[57]=0.5;
-
-/*Inverse of leaf longevity during senescence period (inverse of model time units; e.g. days-1 or months-1)*/
-CARDADATA->parmin[58]=0.001;
-CARDADATA->parmax[58]=0.5;
-
-/*Intrinsic maximum LAI (m^2 m^-2)*/
-CARDADATA->parmin[59]=0.1;
-CARDADATA->parmax[59]=10.0;
-
-/*Target survival time for LAI under water-deficit conditions (days; or same unit as ET and PAW)*/
-CARDADATA->parmin[60]=0.1;
-CARDADATA->parmax[60]=300;
-
-/*Mean daylength at leaf shedding (t_c; in units of hours sunlight per day)*/
-CARDADATA->parmin[61]=2;
-CARDADATA->parmax[61]=22;
-
-/*Spatial range of mean daylength at leaf shedding (t_r)*/
-CARDADATA->parmin[62]=0.1;
-CARDADATA->parmax[62]=6.0;
-
-
 return 0;
 
 }
