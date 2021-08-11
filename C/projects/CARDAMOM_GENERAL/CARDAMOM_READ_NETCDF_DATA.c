@@ -406,7 +406,24 @@ double ncdf_read_single_double_var(int ncid, const char * varName ){
 //Function for reading these
 OBS_STRUCT READ_NETCF_OBS_FIELDS(int ncid, char * OBSNAME){
 OBS_STRUCT OBS;
-OBS.unc = ncdf_read_double_var(ncid, strcat(OBSNAME,"unc") , &(OBS.length));
+printf("Struct declared OK\n");
+
+printf("OBSNAME = %s\n",OBSNAME);
+
+
+char uncsf[50],OBSunc[50];
+strcpy(OBSunc,OBSNAME);
+strcpy(uncsf,"unc");
+strcat(OBSunc,uncsf);
+
+printf("OBSNAME suffix = %s\n",uncsf);
+printf("OBSNAME + suffix = %s\n",OBSunc);
+
+
+OBS.unc = ncdf_read_double_var(ncid, OBSunc , &(OBS.length));
+
+
+
 OBS.values = ncdf_read_double_var(ncid, OBSNAME , &(OBS.length));
 OBS.opt_log_transform=ncdf_read_int_attr(ncid, OBSNAME,"opt_log_transform");
 OBS.opt_normalization=ncdf_read_int_attr(ncid, OBSNAME,"opt_normalization");
@@ -450,6 +467,7 @@ printf("So far so good......\n");
 	
 	DATA->ET=READ_NETCF_OBS_FIELDS(ncid, "ET");
 
+printf("So far so good......\n");
 
 
 printf("DATA->ET.values[0] = %2.2f\n",DATA->ET.values[1]);
