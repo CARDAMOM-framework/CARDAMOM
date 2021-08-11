@@ -148,7 +148,9 @@ struct DALEC_1100_POOLS{
 int DALEC_1100_MODCONFIG(DALEC * DALECmodel){
 
 
-
+struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
+struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
+struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=8;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
@@ -177,34 +179,47 @@ OBSOPE.SUPPORT_FIR_OBS=true;
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
 
 //GPP-specific variables
-OBSOPE.GPP_flux=0;
+OBSOPE.GPP_flux=F.gpp;
 //LAI-specific variables
-OBSOPE.LAI_foliar_pool=1;
-OBSOPE.LAI_LCMA=16;
+OBSOPE.LAI_foliar_pool=S.C_fol;
+OBSOPE.LAI_LCMA=P.LCMA;
 //ET variabiles
-OBSOPE.ET_flux=28;
+OBSOPE.ET_flux=F.et;
 //NBE-specific variables
-static int NBE_fluxes[]={0,2,12,13,16};
+static int NBE_fluxes[5];
+NBE_fluxes[0]=F.gpp;
+NBE_fluxes[1]=F.resp_auto;
+NBE_fluxes[2]=F.resp_het_lit;
+NBE_fluxes[3]=F.resp_het_som;
+NBE_fluxes[4]=F.f_total;
 OBSOPE.NBE_fluxes=NBE_fluxes;
 static double NBE_flux_signs[]={-1.,1.,1.,1.,1.};
 OBSOPE.NBE_flux_signs=NBE_flux_signs;
 OBSOPE.NBE_n_fluxes=5;
 
 //ABGB-specific variables
-static int ABGB_pools[]={0,1,2,3}; 
+static int ABGB_pools[4];
+ABGB_pools[0]=S.C_lab;
+ABGB_pools[1]=S.C_fol;
+ABGB_pools[2]=S.C_roo;
+ABGB_pools[3]=S.C_woo;
 OBSOPE.ABGB_pools=ABGB_pools;
 OBSOPE.ABGB_n_pools=4;
 
 //SOM-specific variables
-static int SOM_pools[]={4,5}; 
+static int SOM_pools[2]; 
+SOM_pools[0]=S.C_lit;
+SOM_pools[1]=S.C_som;
 OBSOPE.SOM_pools=SOM_pools;
 OBSOPE.SOM_n_pools=2;
 //H2O-specific variables
-static int GRACE_EWT_h2o_pools[]={6,7};
+static int GRACE_EWT_h2o_pools[2];
+GRACE_EWT_h2o_pools[0]=S.H2O_PAW;
+GRACE_EWT_h2o_pools[1]=S.H2O_PUW;
 OBSOPE.GRACE_EWT_h2o_pools=GRACE_EWT_h2o_pools;
 OBSOPE.GRACE_EWT_n_h2o_pools=2;
 //Fire-specific variables
-OBSOPE.FIR_flux=16;
+OBSOPE.FIR_flux=F.f_total;
 
 DALECmodel->OBSOPE=OBSOPE;
 
