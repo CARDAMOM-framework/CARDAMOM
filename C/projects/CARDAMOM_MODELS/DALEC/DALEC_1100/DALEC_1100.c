@@ -121,7 +121,9 @@ int H2O_SWE;} DALEC_1100_POOLS={0,1,2,3,4,5,6,7,8};
 int DALEC_1100_MODCONFIG(DALEC * DALECmodel){
 
 
-
+struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
+struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
+struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=8;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
@@ -149,14 +151,16 @@ OBSOPE.SUPPORT_FIR_OBS=true;
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
 
 //GPP-specific variables
-OBSOPE.GPP_flux=0;
+OBSOPE.GPP_flux=F.gpp;
 //LAI-specific variables
 OBSOPE.LAI_foliar_pool=1;
 OBSOPE.LAI_LCMA=16;
 //ET variabiles
 OBSOPE.ET_flux=28;
 //NBE-specific variables
-static int NBE_fluxes[]={0,2,12,13,16};
+static int NBE_fluxes[5];
+NBE_fluxes[0]=F.gpp;
+ //{0,2,12,13,16};
 OBSOPE.NBE_fluxes=NBE_fluxes;
 static double NBE_flux_signs[]={-1.,1.,1.,1.,1.};
 OBSOPE.NBE_flux_signs=NBE_flux_signs;
