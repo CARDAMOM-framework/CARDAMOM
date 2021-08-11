@@ -65,8 +65,8 @@ CARDADATA->parmin[P.Bday]=365.25;
 CARDADATA->parmax[P.Bday]=365.25*4;
 
 /*Fraction to Clab*/
-CARDADATA->parmin[P.labile_frac]=0.01;
-CARDADATA->parmax[P.labile_frac]=0.5;
+CARDADATA->parmin[P.f_lab]=0.01;
+CARDADATA->parmax[P.f_lab]=0.5;
 
 /*Clab Release period*/
 CARDADATA->parmin[P.labile_rel]=365.25/12;
@@ -217,8 +217,8 @@ CARDADATA->parmin[P.C3_frac]=1e-8;
 CARDADATA->parmax[P.C3_frac]=1.0;
 
 /*Initial LAI*/
-CARDADATA->parmin[53]=0.1;
-CARDADATA->parmax[53]=10.0;
+CARDADATA->parmin[P.i_LAI]=0.1;
+CARDADATA->parmax[P.i_LAI]=10.0;
 
 /*Mean temperature at leaf onset (T_phi) (degrees kelvin)*/
 CARDADATA->parmin[54]=268.15;
