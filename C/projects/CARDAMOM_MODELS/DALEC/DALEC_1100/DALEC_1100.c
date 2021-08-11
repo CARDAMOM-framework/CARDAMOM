@@ -27,7 +27,7 @@ int t_soil;
 int temp_factor;
 int canopy_eff;
 int Bday;
-int labile_frac;
+int f_lab;
 int labile_rel;
 int Fday;
 int leaf_fall;
@@ -372,7 +372,7 @@ FLUXES[f+F.resp_auto]=pars[P.f_auto]*FLUXES[f+F.gpp];
 /*leaf production*/
 FLUXES[f+F.leaf_prod]=(FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*pars[P.f_foliar];
 /*labile production*/
-FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.leaf_prod])*pars[P.labile_frac];              
+FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.leaf_prod])*pars[P.f_lab];              
 /*root production*/        
 FLUXES[f+F.root_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.leaf_prod]-FLUXES[f+F.lab_prod])*pars[P.f_root];            
 /*wood production*/       

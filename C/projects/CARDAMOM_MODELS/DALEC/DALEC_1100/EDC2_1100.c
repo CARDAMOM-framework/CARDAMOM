@@ -11,6 +11,9 @@
 int EDC2_1100(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
+struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
+struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
+
 /*Extract DALEC model here*/
 /*Copy model pointer for brevity*/
 DALEC *MODEL=(DALEC *)DATA.MODEL;
@@ -74,8 +77,8 @@ MPOOLSjan[n]=MPOOLSjan[n]+POOLS[nopools*(m*dint)+n]/(nodays/dint+1);}}
 /*EDC no 6*/
 /*0.2*Cf < Cr < 5*Cf*/
 /*Cfoliar : Croot = 5:1 or 1:5*/
-/*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[6-1]==1)) & (MPOOLS[1]>MPOOLS[2]*5 | MPOOLS[1]*5<MPOOLS[2])){EDC=ipow(0,EDCD->SWITCH[6-1]);EDCD->PASSFAIL[6-1]=0; }*/
-EDCD->pEDC=EDCD->pEDC-0.5*pow(log(MPOOLS[1]/MPOOLS[2])/log(2),2);
+/*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[6-1]==1)) & (MPOOLS[S.C_fol]>MPOOLS[S.C_roo]*5 | MPOOLS[S.C_fol]*5<MPOOLS[S.C_roo])){EDC=ipow(0,EDCD->SWITCH[6-1]);EDCD->PASSFAIL[6-1]=0; }*/
+EDCD->pEDC=EDCD->pEDC-0.5*pow(log(MPOOLS[S.C_fol]/MPOOLS[S.C_roo])/log(2),2);
 
 /*equilibrium factor (in comparison to C_initial)*/
 double EQF=EDCD->EQF;
@@ -171,16 +174,16 @@ printf("****\n");}}
 
 
 /*Ensuring that wilting point is at or below the mean H2O pool EDC14*/
-/*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[15-1]==1)) & (pars[25]>MPOOLS[6])){EDC=ipow(0,EDCD->SWITCH[15-1]);EDCD->PASSFAIL[15-1]=0;}*/
+/*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[15-1]==1)) & (pars[P.wilting]>MPOOLS[S.H2O_PAW])){EDC=ipow(0,EDCD->SWITCH[15-1]);EDCD->PASSFAIL[15-1]=0;}*/
 
 /***********************EDCs done here****************************/
-EDCD->pEDC=EDCD->pEDC+log(1/(1+exp(10*(pars[25]-MPOOLS[6])/MPOOLS[6])));
+EDCD->pEDC=EDCD->pEDC+log(1/(1+exp(10*(pars[P.wilting]-MPOOLS[S.H2O_PAW])/MPOOLS[S.H2O_PAW])));
 
 
 /*Additional faults can be stored in positions 35-40*/
 
 /*PRIOR RANGES - ALL POOLS MUST CONFORM*/
-int pidx[]={17,18,19,20,21,22,26,35};
+int pidx[]={P.i_labile,P.i_foliar,P.i_root,P.i_wood,P.i_lit,P.i_soil,P.i_PAW,P.i_PUW};
 
 /*for (n=0;n<nopools-1;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;}}*/
 for (n=0;n<nopools;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;EDCD->pEDC=log(0);}}

@@ -65,8 +65,8 @@ CARDADATA->parmin[P.Bday]=365.25;
 CARDADATA->parmax[P.Bday]=365.25*4;
 
 /*Fraction to Clab*/
-CARDADATA->parmin[P.labile_frac]=0.01;
-CARDADATA->parmax[P.labile_frac]=0.5;
+CARDADATA->parmin[P.f_lab]=0.01;
+CARDADATA->parmax[P.f_lab]=0.5;
 
 /*Clab Release period*/
 CARDADATA->parmin[P.labile_rel]=365.25/12;
