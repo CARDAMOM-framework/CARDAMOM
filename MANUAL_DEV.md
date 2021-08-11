@@ -360,6 +360,9 @@ Tips for step 2.
 
 
 ### Add more parameters to the model. 
+```json
+update this section with instructions for parameter index abstraction
+```
 
 1. In the folder titled C/projects/CARDAMOM_MODELS/DALEC/DALEC_<newmodelid>, open MODEL_INFO_<newmodelid>.c, and change “DALECmodel.nopars” (e.g. from “33” to “35”)
 
