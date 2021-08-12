@@ -656,6 +656,7 @@ Can use the COMPLEX effort to document all the models here, including some examp
 |                                  | 1040       | 1005                     | Nutrient model                                      | Anthony Bloom                   | In prep.                        |
 |                                  | 1050       | 1000                     | Nitrogen model                                      | Renato Braghiere                | In prep.                        |
 |                                  | 1060--1069 | 1000                     | Hydrology from Massoud et al, 2021                  | Paul Levine                     |                                 |
+| Flagship testing               | 1090--1099 |101x,105x,106x,110x         | Testing of flagship model                           |                                 | For testing only                |
 | Flagship                         | 1100--1110 |101x,105x,106x            | "Kitchen sink" model                                |                                 | Exploratory                     |
 | DALEC + FF                       | 1200       |                          |                                                     |                                 | Exploratory                     |
 
