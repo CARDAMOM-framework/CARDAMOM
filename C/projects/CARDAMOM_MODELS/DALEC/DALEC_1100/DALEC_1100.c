@@ -260,7 +260,7 @@ double *LAI=DATA.M_LAI;
   /*assigning values to pools*/
   /*L,F,R,W,Lit,SOM*/
   POOLS[S.C_lab]=pars[P.i_labile];
-  POOLS[S.C_fol]=pars[i_LAI]*pars[P.LCMA];
+  POOLS[S.C_fol]=pars[P.i_LAI]*pars[P.LCMA];
   POOLS[S.C_roo]=pars[P.i_root];
   POOLS[S.C_woo]=pars[P.i_wood];
   POOLS[S.C_lit]=pars[P.i_lit];
@@ -399,7 +399,7 @@ FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
 //KNORR LAI
 if (n==0){
   /*Initialize phenology memory of air-temperature */
-  lai_var_list[5]=pars[P.T_phi]+3*pars[T_range];
+  lai_var_list[5]=pars[P.T_phi]+3*pars[P.T_range];
   /*Initialize phenology memory of water/structural limitation */
   lai_var_list[11]=pars[P.lambda_max];
 }
@@ -446,7 +446,7 @@ FLUXES[f+F.temprate]=exp(pars[P.temp_factor]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp
 FLUXES[f+F.resp_auto]=pars[P.f_auto]*FLUXES[f+F.gpp];
 /*leaf production*/
 // FLUXES[f+F.leaf_prod]=(FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*pars[P.f_foliar];
-FLUXES[f+F.leaf_prod] = 0 // Knorr LAI module
+FLUXES[f+F.leaf_prod] = 0; // Knorr LAI module
 /*labile production*/
 // FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.leaf_prod])*pars[P.f_lab];              
 /* - now the combination of two fractional allocation parameters*/
