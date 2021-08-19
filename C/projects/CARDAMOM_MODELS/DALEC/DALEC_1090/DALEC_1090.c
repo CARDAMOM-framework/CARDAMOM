@@ -7,15 +7,14 @@
 #include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2CON.c"
 #include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI.c"
 #include "../../../DALEC_CODE/DALEC_ALL/LIU_An_et.c"
-#include "../../../DALEC_CODE/DALEC_ALL/LAI_KNORR.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
 
 
-struct DALEC_1100_PARAMETERS{
-/*DALEC PARAMETERS*/
+struct DALEC_1090_PARAMETERS{
+//***DALEC PARAMETERS***
 int tr_lit2soil;
 int f_auto;
 int f_foliar;
@@ -65,108 +64,71 @@ int ga;
 int Tupp;
 int Tdown;
 int C3_frac;
-int clumping;
-int leaf_refl;
-int i_LAI;
-int T_phi;
-int T_range;
-int tau_m;
-int plgr;
-int k_leaf;
-int tau_W;
-int time_c;
-int time_r;
-int lambda_max;
-} DALEC_1100_PARAMETERS={
-     0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-    10,11,12,13,14,15,16,17,18,19,
-    20,21,22,23,24,25,26,27,28,29,
-    30,31,32,33,34,35,36,37,38,39,
-    40,41,42,43,44,45,46,47,48,49,
-    50,51,52,53,54,55,56,57,58,59,
-    60
-};
+} DALEC_1090_PARAMETERS={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48};
 
-struct DALEC_1100_FLUXES{
-/*DALEC FLUXES*/
-int gpp;   /*GPP*/
-int temprate;   /*Temprate*/
-int resp_auto;   /*Autotrophic respiration*/
-int fol_prod;   /*Foliar production*/
-int lab_prod;   /*Labile production*/
-int root_prod;   /*Root production*/
-int wood_prod;   /*Wood production*/
-int lab_release;   /*Labile release*/
-int leaffall_fact;   /*Leaffall factor*/
-int fol2lit;   /*Foliar decomposition*/
-int wood2lit;   /*Wood description*/
-int root2lit;   /*Root decomposition*/
-int resp_het_lit;   /*Litter heterotrophic respiration*/
-int resp_het_som;   /*Soil heterotrophic respiration*/
-int lit2som;   /*Litter decomposition*/
-int lab_release_fact;   /*Labile release factor*/
-int f_total;   /*Flux description*/
-int f_lab;   /*Labile fire loss*/
-int f_fol;   /*Foliar fire loss*/
-int f_roo;   /*Wood fire loss*/
-int f_woo;   /*Root fire loss*/
-int f_lit;   /*Litter fire loss*/
-int f_som;   /*Soil fire loss*/
-int fx_lab2lit;   /*Fire transfer labile to litter*/
-int fx_fol2lit;   /*Fire transfer foliar to litter*/
-int fx_roo2lit;   /*Fire transfer root to litter*/
-int fx_woo2som;   /*Fire transfer wood to soil*/
-int fx_lit2som;   /*Fire transfer litter to soil*/
-int et;   /*Evapotranspiration*/
-int q_paw;   /*PAW runoff*/
-int paw2puw;   /*PAW->PUW transfer*/
-int q_puw;   /*PUW runoff*/
-int q_surf;   /*Surface runoff*/
-int transp;   /*Transpiration*/
-int evap;   /*Evaporation*/
-int target_LAI;
-int t_memory;
-int lambda_max_memory;
-int dlambda_dt;
-int temp_thresh;
-int day_thresh;
-int c_lim_flag;
-} DALEC_1100_FLUXES={
-     0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-    10,11,12,13,14,15,16,17,18,19,
-    20,21,22,23,24,25,26,27,28,29,
-    30,31,32,33,34,35,36,37,38,39,
-    40,41
-};
+struct DALEC_1090_FLUXES{
+//***DALEC FLUXES***
+int gpp;
+int temprate;
+int resp_auto;
+int leaf_prod;
+int lab_prod;
+int root_prod;
+int wood_prod;
+int lab_release;
+int leaffall_fact;
+int leaf2lit;
+int wood2lit;
+int root2lit;
+int resp_het_lit;
+int resp_het_som;
+int lit2som;
+int lab_release_fact;
+int f_total;
+int f_lab;
+int f_fol;
+int f_roo;
+int f_woo;
+int f_lit;
+int f_som;
+int fx_lab2lit;
+int fx_fol2lit;
+int fx_roo2lit;
+int fx_woo2som;
+int fx_lit2som;
+int et;
+int q_paw;
+int paw2puw;
+int q_puw;
+int q_surf;
+int transp;
+int evap;} DALEC_1090_FLUXES={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34};
 
-struct DALEC_1100_POOLS{
-/*DALEC POOLS*/
-int C_lab; /*Labile C*/
-int C_fol; /*Foliar C*/
-int C_roo; /*Root C*/
-int C_woo; /*Wood C*/
-int C_lit; /*Litter C*/
-int C_som; /*Soil C*/
-int H2O_PAW; /*Plant available H2O*/
-int H2O_PUW; /*Plant unavailable H2O*/
-} DALEC_1100_POOLS={
-    0,1,2,3,4,5,6,7
-};
+struct DALEC_1090_POOLS{
+//***DALEC POOLS***
+int C_lab;
+int C_fol;
+int C_roo;
+int C_woo;
+int C_lit;
+int C_som;
+int H2O_PAW;
+int H2O_PUW;
+int H2O_SWE;} DALEC_1090_POOLS={0,1,2,3,4,5,6,7,8};
 
 
 
-int DALEC_1100_MODCONFIG(DALEC * DALECmodel){
+int DALEC_1090_MODCONFIG(DALEC * DALECmodel){
 
 
-struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
-struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
-struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
+struct DALEC_1090_PARAMETERS P=DALEC_1090_PARAMETERS;
+struct DALEC_1090_FLUXES F=DALEC_1090_FLUXES;
+struct DALEC_1090_POOLS S=DALEC_1090_POOLS;
 
 DALECmodel->nopools=8;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-
-DALECmodel->nopars=61;
-DALECmodel->nofluxes=42;
+DALECmodel->nopars=49;
+DALECmodel->nofluxes=35;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
@@ -174,7 +136,7 @@ static OBSOPE OBSOPE;
 INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 
 //Set SUPPORT_OBS values to true if model supports observation operation.
-printf("DALEC_1100_MODCONFIG, Line 22...\n");
+printf("DALEC_1090_MODCONFIG, Line 22...\n");
 OBSOPE.SUPPORT_GPP_OBS=true;
 OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
@@ -237,14 +199,14 @@ return 0;}
 
 
 
-int DALEC_1100(DATA DATA, double const *pars)
+int DALEC_1090(DATA DATA, double const *pars)
 {
 
 
 
-struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
-struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
-struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
+struct DALEC_1090_PARAMETERS P=DALEC_1090_PARAMETERS;
+struct DALEC_1090_FLUXES F=DALEC_1090_FLUXES;
+struct DALEC_1090_POOLS S=DALEC_1090_POOLS;
 
 
 
@@ -253,7 +215,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 int p=0,f,m,nxp, i;
 int n=0,nn=0;
 double pi=3.1415927;
-double lai_met_list[1],lai_var_list[20];
+
 
 double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.values[0];
 int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
@@ -270,12 +232,11 @@ double *LAI=DATA.M_LAI;
   /*assigning values to pools*/
   /*L,F,R,W,Lit,SOM*/
   POOLS[S.C_lab]=pars[P.i_labile];
-  POOLS[S.C_fol]=pars[P.i_LAI]*pars[P.LCMA];
+  POOLS[S.C_fol]=pars[P.i_foliar];
   POOLS[S.C_roo]=pars[P.i_root];
   POOLS[S.C_woo]=pars[P.i_wood];
   POOLS[S.C_lit]=pars[P.i_lit];
   POOLS[S.C_som]=pars[P.i_soil];
-
   /*water pools*/
   POOLS[S.H2O_PAW]=pars[P.i_PAW];
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
@@ -328,8 +289,6 @@ CF[S.C_woo]=pars[P.cf_ligneous];
 CF[S.C_lit]=pars[P.cf_foliar]/2+pars[P.cf_ligneous]/2;
 CF[S.C_som]=pars[P.cf_DOM];
 
-/*foliar carbon transfer intermediate variables*/
-double Fcfolavailable;
 
 /*resilience factor*/
 
@@ -405,97 +364,27 @@ FLUXES[f+F.evap] = LIU_An_et_out[2];
 // Evapotranspiration
 FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
 
-
-//KNORR LAI
-if (n==0){
-  /*Initialize phenology memory of air-temperature */
-  lai_var_list[5]=pars[P.T_phi]+3*pars[P.T_range];
-  /*Initialize phenology memory of water/structural limitation */
-  lai_var_list[11]=pars[P.lambda_max];
-}
-lai_met_list[0]=(T2M_MAX[n] + T2M_MIN[n])/2.0; /* meantemp, deg C*/
-lai_var_list[0]=n; /*current timestep index of model run*/
-lai_var_list[19]=deltat; /*time increment of model run*/
-lai_var_list[1]=LAI[n]; /*initial LAI parameter*/
-lai_var_list[2]=LAI[n];
-lai_var_list[3]=pars[P.T_phi]; /*T_phi*/
-lai_var_list[4]=pars[P.T_range]; /*T_r*/
-lai_var_list[6]=pars[P.tau_m]; /*tau_m*/
-lai_var_list[7]=pars[P.plgr]; /*plgr*/
-lai_var_list[8]=pars[P.k_leaf]; /*k_L*/
-lai_var_list[9]=pars[P.lambda_max]; /*lambda_max*/
-lai_var_list[10]=pars[P.tau_W]; /*tau_W*/
-lai_var_list[12]=DATA.ncdf_data.LAT; /*latitude*/
-lai_var_list[13]=DOY[n]; /*day of year*/
-lai_var_list[14]=pi; /*pi*/
-lai_var_list[15]=pars[P.time_c]; /*t_c*/
-lai_var_list[16]=pars[P.time_r]; /*t_r*/
-/*Put the plant-available soil water into the LAI_KNORR input list*/
-lai_var_list[17]=(POOLS[p+S.H2O_PAW]+POOLS[nxp+S.H2O_PAW])/2.0;
-/*Put the evapotranspiration flux into the LAI_KNORR input list*/
-lai_var_list[18]=FLUXES[f+F.et];
-// Run KNORR LAI module
-// - this computes a potential LAI
-double *LAI_KNORR_out = LAI_KNORR(lai_met_list, lai_var_list);
-FLUXES[f+F.target_LAI] = LAI_KNORR_out[0];  // LAI (environmental target)
-FLUXES[f+F.t_memory] = LAI_KNORR_out[1];  // T_memory
-FLUXES[f+F.lambda_max_memory] = LAI_KNORR_out[2];  // lambda_max_memory
-FLUXES[f+F.dlambda_dt] = LAI_KNORR_out[3]/deltat;  // dlambda/dt (units: LAI per day)
-FLUXES[f+F.temp_thresh] = LAI_KNORR_out[4];  // fraction of plants above temperature threshold
-FLUXES[f+F.day_thresh] = LAI_KNORR_out[5];  // fraction of plants above day length threshold
-/*Update environmental memory variables for next iteration*/
-/*temperature memory*/
-lai_var_list[5]=FLUXES[f+F.t_memory];//POOLS[nxp+10];
-/*water/structural memory*/
-lai_var_list[11]=FLUXES[f+F.lambda_max_memory];//POOLS[nxp+11];
-
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
 FLUXES[f+F.temprate]=exp(pars[P.temp_factor]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp))*((PREC[n]/meanprec-1)*pars[P.moisture]+1);
 /*respiration auto*/
 FLUXES[f+F.resp_auto]=pars[P.f_auto]*FLUXES[f+F.gpp];
 /*leaf production*/
-// FLUXES[f+F.fol_prod]=(FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*pars[P.f_foliar];
-FLUXES[f+F.fol_prod] = 0; // Knorr LAI module
+FLUXES[f+F.leaf_prod]=(FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*pars[P.f_foliar];
 /*labile production*/
-// FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod])*pars[P.f_lab];              
-/* - now the combination of two fractional allocation parameters*/
-FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*(pars[P.f_lab]+pars[P.f_foliar]);
-Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]/deltat;
-if (FLUXES[f+F.dlambda_dt]*pars[P.LCMA] > Fcfolavailable){
-  /* flag for carbon availability limitation (0=canopy in senescence, 1=labile C does not limit growth, 2=labile C limits LAI growth) */
-  FLUXES[f+F.c_lim_flag]=2.0;
-  /* flux from labile pool to foliar pool */
-  FLUXES[F.lab_release]=Fcfolavailable;
-  /* flux from foliar pool to litter pool */
-  FLUXES[f+F.fol2lit]=0;
-}
-else if (FLUXES[f+F.dlambda_dt]*pars[P.LCMA] < Fcfolavailable && FLUXES[f+F.dlambda_dt]*pars[P.LCMA] > 0){
-  FLUXES[f+F.c_lim_flag]=1.0;
-  /* flux from labile pool to foliar pool */
-  FLUXES[F.lab_release]=FLUXES[f+F.dlambda_dt]*pars[P.LCMA];
-  /* flux from foliar pool to litter pool */
-  FLUXES[f+F.fol2lit]=0;
-}
-else {
-  FLUXES[f+F.c_lim_flag]=0.0;
-  /* flux from labile pool to foliar pool */
-  FLUXES[F.lab_release]=0;
-  /* flux from foliar pool to litter pool */
-  FLUXES[f+F.fol2lit]=-FLUXES[f+F.target_LAI]*pars[P.LCMA];
-}
+FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.leaf_prod])*pars[P.f_lab];              
 /*root production*/        
-FLUXES[f+F.root_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod]-FLUXES[f+F.lab_prod])*pars[P.f_root];            
+FLUXES[f+F.root_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.leaf_prod]-FLUXES[f+F.lab_prod])*pars[P.f_root];            
 /*wood production*/       
-FLUXES[f+F.wood_prod] = FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.lab_prod]; 
-//   /*leaf fall factor*/
-//   FLUXES[f+F.leaffall_fact] = (2/sqrt(pi))*(ff/wf)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Fday]+osf)/sf)*sf/wf,2));
-//   /*Labrelease factor*/
-//   FLUXES[f+F.lab_release_fact]=(2/sqrt(pi))*(fl/wl)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Bday]+osl)/sf)*sf/wl,2));
-//   /*labile release - re-arrange order in next versions*/
-//   FLUXES[f+F.lab_release] = POOLS[p+S.C_lab]*(1-pow(1-FLUXES[f+F.lab_release_fact],deltat))/deltat;
-//   /*leaf litter production*/       
-//   FLUXES[f+F.fol2lit] = POOLS[p+S.C_fol]*(1-pow(1-FLUXES[f+F.leaffall_fact],deltat))/deltat;
+FLUXES[f+F.wood_prod] = FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.leaf_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.lab_prod]; 
+/*leaf fall factor*/
+FLUXES[f+F.leaffall_fact] = (2/sqrt(pi))*(ff/wf)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Fday]+osf)/sf)*sf/wf,2));
+/*Labrelease factor*/
+FLUXES[f+F.lab_release_fact]=(2/sqrt(pi))*(fl/wl)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Bday]+osl)/sf)*sf/wl,2));
+/*labile release - re-arrange order in next versions*/
+FLUXES[f+F.lab_release] = POOLS[p+S.C_lab]*(1-pow(1-FLUXES[f+F.lab_release_fact],deltat))/deltat;
+/*leaf litter production*/       
+FLUXES[f+F.leaf2lit] = POOLS[p+S.C_fol]*(1-pow(1-FLUXES[f+F.leaffall_fact],deltat))/deltat;
 /*wood litter production*/       
 FLUXES[f+F.wood2lit] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
 /*root litter production*/
@@ -510,11 +399,11 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
 /*total pool transfers (no fires yet)*/
 
         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.lab_prod]-FLUXES[f+F.lab_release])*deltat;
-        POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.fol_prod] - FLUXES[f+F.fol2lit] + FLUXES[f+F.lab_release])*deltat;
+        POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.leaf_prod] - FLUXES[f+F.leaf2lit] + FLUXES[f+F.lab_release])*deltat;
         POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.root2lit])*deltat;
         POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] +  (FLUXES[f+F.wood_prod] - FLUXES[f+F.wood2lit])*deltat;
-        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.root2lit] - FLUXES[f+F.resp_het_lit] - FLUXES[f+F.lit2som])*deltat; 
-        POOLS[nxp+S.C_som]= POOLS[p+S.C_som]+ (FLUXES[f+F.lit2som] - FLUXES[f+F.resp_het_som] + FLUXES[f+F.wood2lit])*deltat;                    
+        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.leaf2lit] + FLUXES[f+F.root2lit] - FLUXES[f+F.resp_het_lit] - FLUXES[f+F.lit2som])*deltat; 
+        POOLS[nxp+S.C_som]= POOLS[p+S.C_som]+ (FLUXES[f+F.lit2som] - FLUXES[f+F.resp_het_som]+FLUXES[f+F.wood2lit])*deltat;                    
 
 // Infiltration (mm/day)
 double infil = pars[P.max_infil]*(1 - exp(-PREC[n]/pars[P.max_infil]));
@@ -563,8 +452,6 @@ FLUXES[f+F.paw2puw] = xfer*1000*3600*24;
 POOLS[nxp+S.H2O_PAW] += (-FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
 POOLS[nxp+S.H2O_PUW] += (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
 
-
-
 	/*total pool transfers - WITH FIRES*/
 	/*first fluxes*/
 
@@ -605,22 +492,11 @@ POOLS[nxp+S.H2O_PUW] += (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
 	/*replace in next version of DALEC_FIRES*/
     FLUXES[f+F.f_total] = FLUXES[f+F.f_lab] + FLUXES[f+F.f_fol] + FLUXES[f+F.f_roo] + FLUXES[f+F.f_woo] + FLUXES[f+F.f_lit] + FLUXES[f+F.f_som];
 
-   /*Fraction of C-foliar lost due to fires*/
-    FLUXES[f+43] = BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
-   /*Calculate LAI (lambda) lost due to fire
-     - we lose the same fraction of LAI as we do C-foliar 
-     - FE_\Lambda^{(t+1)} = \Lambda^{(t+1)'} * BA ( k_{factor(i)} + (1 - k_{factor(i)}) r )*/
-   FLUXES[f+42] = FLUXES[f+F.target_LAI]*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
-   /*Subtract fire loss LAI from current LAI*/
-   FLUXES[f+F.target_LAI] = FLUXES[f+F.target_LAI] - FLUXES[f+42];
-  
 }
-
-/*LAI is a CARDAMOM-wide state variable, ensuring available at first/last timestep in general (LAI) form, rather than only as "Cfol/LCMA"*/
-LAI[n+1]=POOLS[nxp+1]/pars[P.LCMA];
 
 return 0;
 }
+
 
 
 
