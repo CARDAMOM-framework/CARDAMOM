@@ -216,6 +216,14 @@ CARDADATA->parmax[P.Tdown]=286.15;
 CARDADATA->parmin[P.C3_frac]=1e-8;
 CARDADATA->parmax[P.C3_frac]=1.0;
 
+/*Clumping index*/
+CARDADATA->parmin[P.clumping]=1e-8;
+CARDADATA->parmax[P.clumping]=1.0;
+
+/*Leaf single scattering albedo*/
+CARDADATA->parmin[P.leaf_refl]=1e-8;
+CARDADATA->parmax[P.leaf_refl]=1.0;
+
 /*Initial LAI*/
 CARDADATA->parmin[P.i_LAI]=0.1;
 CARDADATA->parmax[P.i_LAI]=10.0;

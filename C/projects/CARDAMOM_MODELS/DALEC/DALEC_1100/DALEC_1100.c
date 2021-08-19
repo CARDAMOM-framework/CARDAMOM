@@ -395,7 +395,8 @@ double beta = fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1);
 // Annual radiation, VPD in kPa, mean T in K
 double *LIU_An_et_out = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 
     273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), pars[P.Vcmax25], CO2[n], beta, pars[P.Med_g1], 
-    LAI[n], pars[P.ga], VegK, pars[P.Tupp], pars[P.Tdown], pars[P.C3_frac]);
+    LAI[n], pars[P.ga], VegK, pars[P.Tupp], pars[P.Tdown], pars[P.C3_frac],
+    pars[P.clumping], pars[P.leaf_refl]);
 // GPP
 FLUXES[f+F.gpp] = LIU_An_et_out[0]*g;
 //transpiration//
