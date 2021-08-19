@@ -15,7 +15,7 @@ int DALEC_1100_MODCONFIG(DALEC * DALECmodel){
 
 DALECmodel->nopools=8;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=54;
+DALECmodel->nopars=55;
 DALECmodel->nofluxes=35;
 
 //declaring observation operator structure, and filling with DALEC configurations
@@ -226,6 +226,8 @@ LAI[n]=POOLS[p+1]/pars[16];
 
 /*Clumping Index*/
 double CI = pars[53];
+/*Single scattering albedo*/
+double leaf_refl = pars[54];
 
 /*Calculate light extinction coefficient*/
 double B = (DOY[n]-81)*2*pi/365.;
@@ -264,12 +266,11 @@ double C3_frac = pars[52];
 
 /*GPP*/
 // Annual radiation, VPD in kPa, mean T in K
-FLUXES[f+0]=LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac, CI)[0]*g;
-
+FLUXES[f+0]=LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac, CI, leaf_refl)[0]*g;
 //transpiration//
-FLUXES[f+33] = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac, CI)[1];
+FLUXES[f+33] = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac, CI, leaf_refl)[1];
 //evaporation//
-FLUXES[f+34] = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac, CI)[2];
+FLUXES[f+34] = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), vcmax25, CO2[n], beta, g1, LAI[n], ga, VegK, Tupp, Tdown, C3_frac, CI, leaf_refl)[2];
 /*Evapotranspiration*/
 FLUXES[f+28]=FLUXES[f+34]+FLUXES[f+33];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/

@@ -231,6 +231,11 @@ CARDADATA->parmax[52]=1.0;
 CARDADATA->parmin[53]=1e-8;
 CARDADATA->parmax[53]=1.0;
 
+/*Leaf single scattering albedo*/
+CARDADATA->parmin[54]=1e-8;
+CARDADATA->parmax[54]=1.0;
+
+
 return 0;
 
 }

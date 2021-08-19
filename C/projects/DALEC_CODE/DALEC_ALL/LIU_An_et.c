@@ -1,5 +1,5 @@
 #pragma once
-double * LIU_An_et(double SRAD, double VPD, double TEMP, double vcmax25, double co2, double beta_factor, double g1, double LAI, double ga, double VegK, double Tupp, double Tdown, double C3_frac, double CI){
+double * LIU_An_et(double SRAD, double VPD, double TEMP, double vcmax25, double co2, double beta_factor, double g1, double LAI, double ga, double VegK, double Tupp, double Tdown, double C3_frac, double CI, , double leaf_refl){
 //double LIU_An(double const *gpppars, double const *consts, double const *pars, double const beta){
 
 //double SRAD = 12.*gpppars[7]; //Shortwave downward radiation
@@ -42,6 +42,7 @@ double An_C3;
 double An_C4;
 
 double An;
+double An_canopy;
 
 //Array of results with 3 positions for An, E, and Transpiration;
 static double r[3];
@@ -51,6 +52,8 @@ PAR = SRAD/(Ephoton*NA)*1e6;
 
 //absorbed PAR assuming black canopy. 
 //PAR = PAR*(1. - exp(-LAI*VegK));
+
+PAR = (1. - leaf_refl)*PAR*(1. - exp(-VegK*CI*LAI));
 
 T_C = TEMP - t0C;
 
@@ -89,7 +92,11 @@ An_C4 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 //Total photosynthesis 
 An = C3_frac*(An_C3) + (1. - C3_frac)*(An_C4);
 
-r[0] = An*(12.e-6)*(24.*60.*60.); //from umolCO2m-2s-1 to gCm-2day-1
+//Scaling up from leaf to canopy
+//An_canopy = An*(1. - exp(-VegK*LAI))/(VegK);
+An_canopy = An;
+
+r[0] = An_canopy*(12.e-6)*(24.*60.*60.); //from umolCO2m-2s-1 to gCm-2day-1
 
 //##################Transpiration#################
 
@@ -107,7 +114,8 @@ ga = ga/0.02405; //correction factor
 
 sV = 0.04145*exp(0.06088*T_C); 
 
-SRADg = SRAD*exp(-LAI*VegK*CI);
+//SRADg = SRAD*exp(-LAI*VegK*CI);
+SRADg = (1. - leaf_refl)*SRAD*exp(-VegK*CI*LAI);
 
 petVnum = (sV*(SRAD-SRADg)+1.225*1000*VPD_kPa*ga)*(SRAD)/(lambda0*60*60);
 petVnumB = 1.26*(sV*SRADg)/(sV+gammaV)/lambda0*60*60; //from mm.hr-1 
