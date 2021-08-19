@@ -20,17 +20,12 @@ int tr_lit2soil;
 int f_auto;
 int f_foliar;
 int f_root;
-int t_foliar;
 int t_wood;
 int t_root;
 int t_lit;
 int t_soil;
 int temp_factor;
-int canopy_eff;
-int Bday;
 int f_lab;
-int labile_rel;
-int Fday;
 int leaf_fall;
 int LCMA;
 int i_labile;
@@ -46,7 +41,6 @@ int cf_foliar;
 int cf_ligneous;
 int cf_DOM;
 int resilience;
-int t_labile;
 int moisture;
 int hydr_cond;
 int max_infil;
@@ -67,7 +61,6 @@ int Tdown;
 int C3_frac;
 int clumping;
 int leaf_refl;
-int i_LAI;
 int T_phi;
 int T_range;
 int tau_m;
@@ -83,8 +76,7 @@ int lambda_max;
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
-    50,51,52,53,54,55,56,57,58,59,
-    60
+    50,51,52,53
 };
 
 struct DALEC_1100_FLUXES{
@@ -162,7 +154,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 DALECmodel->nopools=8;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
 
-DALECmodel->nopars=61;
+DALECmodel->nopars=54;
 DALECmodel->nofluxes=40;
 
 //declaring observation operator structure, and filling with DALEC configurations
@@ -256,8 +248,6 @@ double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.va
 int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 
 
- double constants[10]={pars[P.canopy_eff],0.0156935,4.22273,208.868,0.0453194,0.37836,7.19298, 0.011136,2.1001,0.789798};
-
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
 double *FLUXES=DATA.M_FLUXES;
 double *POOLS=DATA.M_POOLS;
@@ -267,7 +257,7 @@ double *LAI=DATA.M_LAI;
   /*assigning values to pools*/
   /*L,F,R,W,Lit,SOM*/
   POOLS[S.C_lab]=pars[P.i_labile];
-  POOLS[S.C_fol]=pars[P.i_LAI]*pars[P.LCMA];
+  POOLS[S.C_fol]=pars[P.i_foliar];
   POOLS[S.C_roo]=pars[P.i_root];
   POOLS[S.C_woo]=pars[P.i_wood];
   POOLS[S.C_lit]=pars[P.i_lit];
@@ -292,25 +282,8 @@ double meanrad = DATA.ncdf_data.SSRD.reference_mean;
 double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
 
 
-
-/*constants for exponents of leaffall and labrelease factors*/
-/*width*/
-double wf=pars[P.leaf_fall]*sqrt(2)/2;
-double wl=pars[P.labile_rel]*sqrt(2)/2;
-
-
-/*factor*/
-double ff=(log(pars[P.t_foliar])-log(pars[P.t_foliar]-1))/2;
-/*double fl=(log(1.001)-log(0.001))/2;*/
-double fl=(log(pars[P.t_labile])-log(pars[P.t_labile]-1))/2;
-
-
 // Porosity scaling factor (see line 124 of HESS paper)
 double psi_porosity = -0.117*9.8/1000;
-
-/*additional offset*/
-double osf=offset(pars[P.t_foliar],wf);
-double osl=offset(pars[P.t_labile],wl);
 
 
 /*scaling to biyearly sine curve*/

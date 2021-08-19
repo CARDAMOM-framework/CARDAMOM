@@ -32,10 +32,6 @@ CARDADATA->parmax[P.f_foliar]=0.5;
 CARDADATA->parmin[P.f_root]=0.01;
 CARDADATA->parmax[P.f_root]=1;
 
-/*Leaf Lifespan*/
-CARDADATA->parmin[P.t_foliar]=1.001;
-CARDADATA->parmax[P.t_foliar]=8;
-
 /*TOR wood* - 1% loss per year value*/
 CARDADATA->parmin[P.t_wood]=0.000025;
 CARDADATA->parmax[P.t_wood]=0.001;
@@ -56,25 +52,9 @@ CARDADATA->parmax[P.t_soil]=0.001;
 CARDADATA->parmin[P.temp_factor]=0.018;
 CARDADATA->parmax[P.temp_factor]=0.08;
 
-/*Canopy Efficiency*/
-CARDADATA->parmin[P.canopy_eff]=5;
-CARDADATA->parmax[P.canopy_eff]=50;
-
-/*Bday*/
-CARDADATA->parmin[P.Bday]=365.25;
-CARDADATA->parmax[P.Bday]=365.25*4;
-
 /*Fraction to Clab*/
 CARDADATA->parmin[P.f_lab]=0.01;
 CARDADATA->parmax[P.f_lab]=0.5;
-
-/*Clab Release period*/
-CARDADATA->parmin[P.labile_rel]=365.25/12;
-CARDADATA->parmax[P.labile_rel]=100;
-
-/*Fday*/
-CARDADATA->parmin[P.Fday]=365.25;
-CARDADATA->parmax[P.Fday]=365.25*4;
 
 /*Leaf fall period*/
 CARDADATA->parmin[P.leaf_fall]=365.25/12;
@@ -139,10 +119,6 @@ CARDADATA->parmax[P.cf_DOM]=1;
 /*Resilience factor (since transfer to litter is represented as (1-pars[30])) ".*/
 CARDADATA->parmin[P.resilience]=0.01;
 CARDADATA->parmax[P.resilience]=1;
-
-/*Lab pool lifespan*/
-CARDADATA->parmin[P.t_labile]=1.001;
-CARDADATA->parmax[P.t_labile]=8;
 
 /*Moisture factor*/
 CARDADATA->parmin[P.moisture]=0.01;
@@ -223,10 +199,6 @@ CARDADATA->parmax[P.clumping]=1.0;
 /*Leaf single scattering albedo*/
 CARDADATA->parmin[P.leaf_refl]=1e-8;
 CARDADATA->parmax[P.leaf_refl]=1.0;
-
-/*Initial LAI*/
-CARDADATA->parmin[P.i_LAI]=0.1;
-CARDADATA->parmax[P.i_LAI]=10.0;
 
 /*Mean temperature at leaf onset (T_phi) (degrees kelvin)*/
 CARDADATA->parmin[P.T_phi]=268.15;

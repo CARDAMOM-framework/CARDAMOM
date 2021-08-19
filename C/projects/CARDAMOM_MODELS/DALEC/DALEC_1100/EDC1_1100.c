@@ -41,8 +41,9 @@ double const fwood=1-fauto-ffol-flab-froot;
 /*fraction of GPP som under equilibrium conditions*/
 double const fsom=fwood+(froot+flab+ffol)*pars[P.tr_lit2soil]/(pars[P.tr_lit2soil]+pars[P.t_lit]);
 
-/*yearly leaf loss fraction*/
-double torfol=1/(pars[P.t_foliar]*365.25);
+// /*yearly leaf loss fraction*/
+// double torfol=1/(pars[P.t_foliar]*365.25);
+double torfol = -1000000; /* no more t_foliar */
 
 
 
