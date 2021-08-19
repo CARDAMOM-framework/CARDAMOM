@@ -97,14 +97,12 @@ int lab_prod;   /*Labile production*/
 int root_prod;   /*Root production*/
 int wood_prod;   /*Wood production*/
 int lab_release;   /*Labile release*/
-int leaffall_fact;   /*Leaffall factor*/
 int fol2lit;   /*Foliar decomposition*/
 int wood2lit;   /*Wood description*/
 int root2lit;   /*Root decomposition*/
 int resp_het_lit;   /*Litter heterotrophic respiration*/
 int resp_het_som;   /*Soil heterotrophic respiration*/
 int lit2som;   /*Litter decomposition*/
-int lab_release_fact;   /*Labile release factor*/
 int f_total;   /*Flux description*/
 int f_lab;   /*Labile fire loss*/
 int f_fol;   /*Foliar fire loss*/
@@ -135,8 +133,7 @@ int c_lim_flag;
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
-    30,31,32,33,34,35,36,37,38,39,
-    40,41
+    30,31,32,33,34,35,36,37,38,39
 };
 
 struct DALEC_1100_POOLS{
@@ -166,7 +163,7 @@ DALECmodel->nopools=8;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
 
 DALECmodel->nopars=61;
-DALECmodel->nofluxes=42;
+DALECmodel->nofluxes=40;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
@@ -489,14 +486,6 @@ else {
 FLUXES[f+F.root_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod]-FLUXES[f+F.lab_prod])*pars[P.f_root];            
 /*wood production*/       
 FLUXES[f+F.wood_prod] = FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.lab_prod]; 
-//   /*leaf fall factor*/
-//   FLUXES[f+F.leaffall_fact] = (2/sqrt(pi))*(ff/wf)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Fday]+osf)/sf)*sf/wf,2));
-//   /*Labrelease factor*/
-//   FLUXES[f+F.lab_release_fact]=(2/sqrt(pi))*(fl/wl)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Bday]+osl)/sf)*sf/wl,2));
-//   /*labile release - re-arrange order in next versions*/
-//   FLUXES[f+F.lab_release] = POOLS[p+S.C_lab]*(1-pow(1-FLUXES[f+F.lab_release_fact],deltat))/deltat;
-//   /*leaf litter production*/       
-//   FLUXES[f+F.fol2lit] = POOLS[p+S.C_fol]*(1-pow(1-FLUXES[f+F.leaffall_fact],deltat))/deltat;
 /*wood litter production*/       
 FLUXES[f+F.wood2lit] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
 /*root litter production*/
