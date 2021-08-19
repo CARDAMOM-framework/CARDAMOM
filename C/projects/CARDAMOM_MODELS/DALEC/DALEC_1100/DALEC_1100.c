@@ -14,7 +14,7 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
 
 struct DALEC_1100_PARAMETERS{
-//***DALEC PARAMETERS***
+/*DALEC PARAMETERS*/
 int tr_lit2soil;
 int f_auto;
 int f_foliar;
@@ -64,57 +64,69 @@ int ga;
 int Tupp;
 int Tdown;
 int C3_frac;
-} DALEC_1100_PARAMETERS={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48};
+} DALEC_1100_PARAMETERS={
+     0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+    10,11,12,13,14,15,16,17,18,19,
+    20,21,22,23,24,25,26,27,28,29,
+    30,31,32,33,34,35,36,37,38,39,
+    40,41,42,43,44,45,46,47,48
+};
 
 struct DALEC_1100_FLUXES{
-//***DALEC FLUXES***
-int gpp;
-int temprate;
-int resp_auto;
-int leaf_prod;
-int lab_prod;
-int root_prod;
-int wood_prod;
-int lab_release;
-int leaffall_fact;
-int leaf2lit;
-int wood2lit;
-int root2lit;
-int resp_het_lit;
-int resp_het_som;
-int lit2som;
-int lab_release_fact;
-int f_total;
-int f_lab;
-int f_fol;
-int f_roo;
-int f_woo;
-int f_lit;
-int f_som;
-int fx_lab2lit;
-int fx_fol2lit;
-int fx_roo2lit;
-int fx_woo2som;
-int fx_lit2som;
-int et;
-int q_paw;
-int paw2puw;
-int q_puw;
-int q_surf;
-int transp;
-int evap;} DALEC_1100_FLUXES={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34};
+/*DALEC FLUXES*/
+int gpp;   /*GPP*/
+int temprate;   /*Temprate*/
+int resp_auto;   /*Autotrophic respiration*/
+int fol_prod;   /*Foliar production*/
+int lab_prod;   /*Labile production*/
+int root_prod;   /*Root production*/
+int wood_prod;   /*Wood production*/
+int lab_release;   /*Labile release*/
+int leaffall_fact;   /*Leaffall factor*/
+int fol2lit;   /*Foliar decomposition*/
+int wood2lit;   /*Wood description*/
+int root2lit;   /*Root decomposition*/
+int resp_het_lit;   /*Litter heterotrophic respiration*/
+int resp_het_som;   /*Soil heterotrophic respiration*/
+int lit2som;   /*Litter decomposition*/
+int lab_release_fact;   /*Labile release factor*/
+int f_total;   /*Flux description*/
+int f_lab;   /*Labile fire loss*/
+int f_fol;   /*Foliar fire loss*/
+int f_roo;   /*Wood fire loss*/
+int f_woo;   /*Root fire loss*/
+int f_lit;   /*Litter fire loss*/
+int f_som;   /*Soil fire loss*/
+int fx_lab2lit;   /*Fire transfer labile to litter*/
+int fx_fol2lit;   /*Fire transfer foliar to litter*/
+int fx_roo2lit;   /*Fire transfer root to litter*/
+int fx_woo2som;   /*Fire transfer wood to soil*/
+int fx_lit2som;   /*Fire transfer litter to soil*/
+int et;   /*Evapotranspiration*/
+int q_paw;   /*PAW runoff*/
+int paw2puw;   /*PAW->PUW transfer*/
+int q_puw;   /*PUW runoff*/
+int q_surf;   /*Surface runoff*/
+int transp;   /*Transpiration*/
+int evap;   /*Evaporation*/
+} DALEC_1100_FLUXES={
+     0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+    10,11,12,13,14,15,16,17,18,19,
+    20,21,22,23,24,25,26,27,28,29,
+    30,31,32,33,34
+};
 
 struct DALEC_1100_POOLS{
-//***DALEC POOLS***
-int C_lab;
-int C_fol;
-int C_roo;
-int C_woo;
-int C_lit;
-int C_som;
-int H2O_PAW;
-int H2O_PUW;
-int H2O_SWE;} DALEC_1100_POOLS={0,1,2,3,4,5,6,7,8};
+/*DALEC POOLS*/
+int C_lab; /*Labile C*/
+int C_fol; /*Foliar C*/
+int C_roo; /*Root C*/
+int C_woo; /*Wood C*/
+int C_lit; /*Litter C*/
+int C_som; /*Soil C*/
+int H2O_PAW; /*Plant available H2O*/
+int H2O_PUW; /*Plant unavailable H2O*/
+} DALEC_1100_POOLS={0,1,2,3,4,5,6,7};
 
 
 
@@ -370,13 +382,13 @@ FLUXES[f+F.temprate]=exp(pars[P.temp_factor]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp
 /*respiration auto*/
 FLUXES[f+F.resp_auto]=pars[P.f_auto]*FLUXES[f+F.gpp];
 /*leaf production*/
-FLUXES[f+F.leaf_prod]=(FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*pars[P.f_foliar];
+FLUXES[f+F.fol_prod]=(FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*pars[P.f_foliar];
 /*labile production*/
-FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.leaf_prod])*pars[P.f_lab];              
+FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod])*pars[P.f_lab];              
 /*root production*/        
-FLUXES[f+F.root_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.leaf_prod]-FLUXES[f+F.lab_prod])*pars[P.f_root];            
+FLUXES[f+F.root_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod]-FLUXES[f+F.lab_prod])*pars[P.f_root];            
 /*wood production*/       
-FLUXES[f+F.wood_prod] = FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.leaf_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.lab_prod]; 
+FLUXES[f+F.wood_prod] = FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.lab_prod]; 
 /*leaf fall factor*/
 FLUXES[f+F.leaffall_fact] = (2/sqrt(pi))*(ff/wf)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Fday]+osf)/sf)*sf/wf,2));
 /*Labrelease factor*/
@@ -384,7 +396,7 @@ FLUXES[f+F.lab_release_fact]=(2/sqrt(pi))*(fl/wl)*exp(-pow(sin((TIME_INDEX[n]-pa
 /*labile release - re-arrange order in next versions*/
 FLUXES[f+F.lab_release] = POOLS[p+S.C_lab]*(1-pow(1-FLUXES[f+F.lab_release_fact],deltat))/deltat;
 /*leaf litter production*/       
-FLUXES[f+F.leaf2lit] = POOLS[p+S.C_fol]*(1-pow(1-FLUXES[f+F.leaffall_fact],deltat))/deltat;
+FLUXES[f+F.fol2lit] = POOLS[p+S.C_fol]*(1-pow(1-FLUXES[f+F.leaffall_fact],deltat))/deltat;
 /*wood litter production*/       
 FLUXES[f+F.wood2lit] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
 /*root litter production*/
@@ -399,10 +411,10 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
 /*total pool transfers (no fires yet)*/
 
         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.lab_prod]-FLUXES[f+F.lab_release])*deltat;
-        POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.leaf_prod] - FLUXES[f+F.leaf2lit] + FLUXES[f+F.lab_release])*deltat;
+        POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.fol_prod] - FLUXES[f+F.fol2lit] + FLUXES[f+F.lab_release])*deltat;
         POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.root2lit])*deltat;
         POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] +  (FLUXES[f+F.wood_prod] - FLUXES[f+F.wood2lit])*deltat;
-        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.leaf2lit] + FLUXES[f+F.root2lit] - FLUXES[f+F.resp_het_lit] - FLUXES[f+F.lit2som])*deltat; 
+        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.root2lit] - FLUXES[f+F.resp_het_lit] - FLUXES[f+F.lit2som])*deltat; 
         POOLS[nxp+S.C_som]= POOLS[p+S.C_som]+ (FLUXES[f+F.lit2som] - FLUXES[f+F.resp_het_som]+FLUXES[f+F.wood2lit])*deltat;                    
 
 // Infiltration (mm/day)
