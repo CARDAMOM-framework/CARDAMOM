@@ -94,7 +94,7 @@ An_C4 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 An = C3_frac*(An_C3) + (1. - C3_frac)*(An_C4);
 
 //To scale from leaf to canopy, comment out the following line and uncomment the one after
-double canopy_scale = 1.
+double canopy_scale = 1.;
 // double canopy_scale = (1. - exp(-VegK*LAI*clumping))/(VegK) 
 
 r[0] = An*canopy_scale*(12.e-6)*(24.*60.*60.); //from umolCO2m-2s-1 to gCm-2day-1
