@@ -1,3 +1,4 @@
+
 %Notes: https://www.unidata.ucar.edu/software/netcdf/docs/netcdf_data_set_components.html
 
 %- Scalar variables don't need dimension definitions
@@ -11,10 +12,10 @@ end
 if isstr(CBF);CBF=CARDAMOM_READ_BINARY_FILEFORMAT(CBF);end
 
 
-%Guarantees CBF.RAW available (soon to be decomissioned).
-CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,'testnetcdf.cbf')
-CBF=CARDAMOM_READ_BINARY_FILEFORMAT('testnetcdf.cbf');
-
+% %Guarantees CBF.RAW available (soon to be decomissioned).
+% CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,'testnetcdf.cbf')
+% CBF=CARDAMOM_READ_BINARY_FILEFORMAT('testnetcdf.cbf');
+% 
 
 %Dimensions
 %nopars
@@ -221,7 +222,20 @@ ncwriteatt(fname,'CH4','Uncertainty',CBF.OBSUNC.CH4.unc)
 ncwriteatt(fname,'CH4','Annual_Uncertainty',CBF.OBSUNC.CH4.annual_unc)
 ncwriteatt(fname,'CH4','Uncertainty_Threshold',CBF.OBSUNC.CH4.obs_unc_threshold)
 
-%**********LAI******************
+%********SCF*****************
+
+
+%global attributes
+nccreate(fname,'SCF','Dimensions',{'time',nodays},'FillValue',-9999);
+%Writing variable 
+%----- ncwrite(fname,'CH4',CBF.OBS.CH4); %Variable data must not be empty.
+ncwrite_if_exists(fname,'SCF',CBF.OBS.SCF)
+%Description and comments
+ncwriteatt(fname,'SCF','Description','Snow Cover Fraction')
+ncwriteatt(fname,'SCF','info',CBF.OBSUNC.SCF.info)
+%Variable attributes
+ncwriteatt(fname,'SCF','Uncertainty',CBF.OBSUNC.SCF.unc)
+ncwriteatt(fname,'SCF','Uncertainty_Threshold',CBF.OBSUNC.SCF.obs_unc_threshold)
 
 
 
@@ -242,6 +256,7 @@ nccreate(fname,'DOY','Dimensions',{'time', nodays},'FillValue',-9999);
 nccreate(fname,'BURNED_AREA','Dimensions',{'time', nodays},'FillValue',-9999);
 nccreate(fname,'VPD','Dimensions',{'time',nodays},'FillValue',-9999);
 nccreate(fname,'TOTAL_PREC','Dimensions',{'time', nodays},'FillValue',-9999);
+nccreate(fname,'SNOW_FALL','Dimensions',{'time', nodays},'FillValue',-9999);
 
 
 
@@ -249,11 +264,11 @@ nccreate(fname,'TOTAL_PREC','Dimensions',{'time', nodays},'FillValue',-9999);
 
 
 %ncwrite(fname,'MET',CBF.MET);
-METVNAME={'TIME_INDEX','T2M_MIN','T2M_MAX','SSRD','CO2','DOY','BURNED_AREA','VPD','TOTAL_PREC'};
-METINFO={'Time index','Mean daily min. temperature','Mean daily max. temperature','Global radiation','Atmospheric CO2','Day of year','Burned area','VPD','Total precipitation'};
-METUNITS={'Days','deg C','deg C','MJ/m2/d','ppm','Days','m2/m2','hPA','mm/day'};
+METVNAME={'TIME_INDEX','T2M_MIN','T2M_MAX','SSRD','CO2','DOY','BURNED_AREA','VPD','TOTAL_PREC','SNOW_FALL'};
+METINFO={'Time index','Mean daily min. temperature','Mean daily max. temperature','Global radiation','Atmospheric CO2','Day of year','Burned area','VPD','Total precipitation','Snowfall'};
+METUNITS={'Days','deg C','deg C','MJ/m2/d','ppm','Days','m2/m2','hPA','mm/day','mm/day'};
 
-for n=1:9;
+for n=1:nomet
 ncwrite(fname,METVNAME{n},CBF.MET(:,n));
 ncwriteatt(fname,METVNAME{n},'reference_mean',mean(CBF.MET(:,n)));
 ncwriteatt(fname,METVNAME{n},'info',METINFO{n});
