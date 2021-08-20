@@ -224,6 +224,22 @@ CARDADATA->parmax[P.clumping]=1.0;
 CARDADATA->parmin[P.leaf_refl]=1e-8;
 CARDADATA->parmax[P.leaf_refl]=1.0;
 
+/*iSWE: initial for state variable SWE snow water equivalent*/
+CARDADATA->parmin[P.i_SWE]=0.000001;
+CARDADATA->parmax[P.i_SWE]=10000;
+
+/*sn1: min threshold for melt*/
+CARDADATA->parmin[P.min_melt]=240;
+CARDADATA->parmax[P.min_melt]=270;
+
+/*sn2: slope*/
+CARDADATA->parmin[P.melt_slope]=0.00001;
+CARDADATA->parmax[P.melt_slope]=1;
+
+/*sn3: snow cover fraction scalar*/
+CARDADATA->parmin[P.scf_scalar]=0.001;
+CARDADATA->parmax[P.scf_scalar]=1000.0;
+
 return 0;
 
 }
