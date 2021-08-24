@@ -13,8 +13,8 @@ if isstr(CBF);CBF=CARDAMOM_READ_BINARY_FILEFORMAT(CBF);end
 
 
 % %Guarantees CBF.RAW available (soon to be decomissioned).
-% CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,'testnetcdf.cbf')
-% CBF=CARDAMOM_READ_BINARY_FILEFORMAT('testnetcdf.cbf');
+CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,'testnetcdf.cbf')
+CBF=CARDAMOM_READ_BINARY_FILEFORMAT('testnetcdf.cbf');
 % 
 
 %Dimensions
