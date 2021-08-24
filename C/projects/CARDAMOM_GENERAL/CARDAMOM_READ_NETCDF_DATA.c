@@ -404,7 +404,7 @@ double ncdf_read_single_double_var(int ncid, const char * varName ){
 
 
 //Function for reading these
-OBS_STRUCT READ_NETCF_OBS_FIELDS(int ncid, char * OBSNAME){
+/*OBS_STRUCT READ_NETCDF_OBS_FIELDS(int ncid, char * OBSNAME){
 OBS_STRUCT OBS;
 printf("Struct declared OK\n");
 
@@ -416,11 +416,11 @@ strcpy(OBSunc,OBSNAME);
 strcpy(uncsf,"unc");
 strcat(OBSunc,uncsf);
 
-printf("OBSNAME suffix = %s\n",uncsf);
-printf("OBSNAME + suffix = %s\n",OBSunc);
 
 
-OBS.unc = ncdf_read_double_var(ncid, OBSunc , &(OBS.length));
+size_t unclength;
+OBS.unc = ncdf_read_double_var(ncid, OBSunc , &unclength);
+
 
 
 
@@ -435,7 +435,7 @@ OBS.single_annual_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_annual_unc");
 OBS.structural_unc=ncdf_read_double_attr(ncid, OBSNAME,"structural_unc");
 return OBS;
 };
-
+*/
 
 
 
@@ -463,29 +463,20 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 	DATA->EDCDIAG=ncdf_read_single_double_var(ncid, "EDCDIAG");
 
 
-printf("So far so good......\n");
 	
-	DATA->ET=READ_NETCF_OBS_FIELDS(ncid, "ET");
 
-printf("So far so good......\n");
+//Read data
+DATA->ET=READ_NETCDF_OBS_FIELDS(ncid, "ET");
+
+
+
+
 
 
 printf("DATA->ET.values[0] = %2.2f\n",DATA->ET.values[1]);
 printf("DATA->ET.unc[0] = %2.2f\n",DATA->ET.unc[1]);
 printf("DATA->ET.length[0] = %i\n",(int)DATA->ET.length);
 printf("**********************\n");
-/*
-OBS.unc = ncdf_read_double_var(ncid, strcat(OBSNAME,"unc") , &(OBS.length));
-OBS.values = ncdf_read_double_var(ncid, OBSNAME , &(OBS.length));
-OBS.opt_log_transform=ncdf_read_int_attr(ncid, OBSNAME,"opt_log_transform");
-OBS.opt_normalization=ncdf_read_int_attr(ncid, OBSNAME,"opt_normalization");
-OBS.opt_mean_only=ncdf_read_int_attr(ncid, OBSNAME,"opt_mean_only");
-OBS.opt_structural_error=ncdf_read_int_attr(ncid, OBSNAME,"opt_structural_error");
-OBS.min_threshold_value=ncdf_read_double_attr(ncid, OBSNAME,"min_threshold_value");
-OBS.single_monthly_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_monthly_unc");
-OBS.single_annual_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_annual_unc");
-OBS.structural_unc=ncdf_read_double_attr(ncid, OBSNAME,"structural_unc");
-*/
 
 
 

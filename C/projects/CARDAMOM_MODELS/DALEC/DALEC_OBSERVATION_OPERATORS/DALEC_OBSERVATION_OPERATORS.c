@@ -111,7 +111,7 @@ int DALEC_OBSOPE_ET(DATA * D, OBSOPE * O){
 int N=D->ncdf_data.TIME_INDEX.length;
 
 
-if (D->net>0){int n;for (n=0;n<N;n++){D->M_ET[n]=D->M_FLUXES[D->nofluxes*n+O->ET_flux];}};
+if (D->ncdf_data.ET.length>0){int n;for (n=0;n<N;n++){D->M_ET[n]=D->M_FLUXES[D->nofluxes*n+O->ET_flux];}};
 
 
 

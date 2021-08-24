@@ -138,6 +138,8 @@ printf("About to declare obs memory\n");
 	if (DATA->NBE==0){DATA->NBE=calloc(DATA->nodays,sizeof(double));}
 	if (DATA->LAI==0){DATA->LAI=calloc(DATA->nodays,sizeof(double));}
 	if (DATA->ABGB==0){DATA->ABGB=calloc(DATA->nodays,sizeof(double));}
+	
+
 	//if (DATA->ET==0){DATA->ET=calloc(DATA->nodays,sizeof(double));}
 	if (DATA->EWT==0){DATA->EWT=calloc(DATA->nodays,sizeof(double));}
 	if (DATA->BAND1==0){DATA->BAND1=calloc(DATA->nodays,sizeof(double));}
@@ -154,6 +156,7 @@ printf("About to declare obs memory\n");
 	
 	//READ OBS field
 
+	
 
 	/*What happens:
 	- DATA->EWT is populated with 1XN values IF values exist in netcf
@@ -191,6 +194,33 @@ int CARDAMOM_READ_BINARY_DATA(char *ncfilename,DATA *DATA)
 	  //Step 1.Data file is of the newer NetCDF format
 	  CARDAMOM_READ_NETCDF_DATA(ncfilename, &(DATA->ncdf_data));
 
+
+
+
+
+//Step 2. Default values
+DATA->ncdf_data->ET.obs_unc_type=1;
+DATA->ncdf_data->ET.single_unc=2;
+DATA->ncdf_data->ET.threshold=0;
+//Pre-process (to accelerate model)
+OBS_STRUCT_PREPROCESS(DATA->ncdf_data->ET);
+
+
+//Step 2. Default values
+DATA->ncdf_data->ET.obs_unc_type=1;
+DATA->ncdf_data->ET.single_unc=2;
+DATA->ncdf_data->ET.threshold=0;
+//Pre-process (to accelerate model)
+OBS_STRUCT_PREPROCESS(DATA->ncdf_data->ET);
+
+
+
+
+
+//Next step. Test all data 
+
+
+		
 	//Step 3. Cast into existing data structure
 	DATA->ID=DATA->ncdf_data.ID;
 	/*Read to get info on NOMET*/

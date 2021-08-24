@@ -1,5 +1,6 @@
 #pragma once
 #include "CARDAMOM_MODULE_IDX.c"
+#include "../COST_FUNCTION/CARDAMOM_LIKELIHOOD_FUNCTION.c"
 //This is a generic struct for a 1D var.
 typedef struct ONE_DIM_VAR_STRUCT{
 double* values; //NULL if not present
@@ -119,24 +120,25 @@ size_t length; //Set to 0 if not present
 double reference_mean;
 }VPD_STRUCT;
 
-
+/*
 typedef struct OBS_STRUCT{
 size_t length;
 double * values;
 double * unc;
 int opt_log_transform;//log-transform data 
 int opt_normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
-int opt_mean_only;//(0 = no, 1 = yes). 
+int opt_filter;//(0 = no filter, 1 = mean only, 2==annual mean & monthly anomaly, 3 = seasonal cycle & inter-annual anomalies). 
 int opt_structural_error;
 double min_threshold_value;
 double single_monthly_unc;
 double single_annual_unc;
+double single_mean_unc;
 double structural_unc;
 //expand as needed
 int valid_obs_length;//number of non-empty obs
 int * valid_obs_indices;//indices of non-empty obs
 }OBS_STRUCT;
-
+*/
 
 
 

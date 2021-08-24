@@ -82,6 +82,7 @@ end
 % };
 
 CBF1100dev.ET.values([1,2,4,5])=[0.1,0.2,0.4,0.5];
+CBF1100dev.ETunc.values=CBF1100dev.ET.values*NaN;
 CBF1100dev.ETunc.values([1,2,4,5])=[0.1,0.2,0.4,0.5].^2;
 CBF1100dev.ET.Attributes(3).Name='opt_log_transform';
 CBF1100dev.ET.Attributes(3).Value=1;
@@ -97,6 +98,7 @@ CBF1100dev.ET.Attributes(7).Value=0.05;
 
 CARDAMOM_WRITE_NC_CBF_FILE(CBF1100dev,nccbftestfiledev);
 
+ CBR=CARDAMOM_RUN_MODEL(nccbftestfiledev,cbrfilename1100);
 
 
 
@@ -120,7 +122,6 @@ CARDAMOM_WRITE_NC_CBF_FILE(CBF1100dev,nccbftestfiledev);
 
 
 
- CBR=CARDAMOM_RUN_MODEL(nccbftestfiledev,cbrfilename1100);
 load(cbrfilename1100refmat, 'CBRref');
 
 % 
