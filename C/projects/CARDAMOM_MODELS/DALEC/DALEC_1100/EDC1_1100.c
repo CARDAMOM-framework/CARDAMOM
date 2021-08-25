@@ -43,7 +43,7 @@ double const fsom=fwood+(froot+flab+ffol)*pars[P.tr_lit2soil]/(pars[P.tr_lit2soi
 
 // /*yearly leaf loss fraction*/
 // double torfol=1/(pars[P.t_foliar]*365.25);
-double torfol = -1000000; /* no more t_foliar */
+// double torfol = -1000000; /* no more t_foliar */
 
 
 
@@ -57,7 +57,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[2-1]==1))
 
 /*EDC CHECK NO 3*/
 /*TOR_FOL faster than TOR_WOOD */
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[3-1]==1)) & (pars[P.t_wood]>torfol)){EDC=0;EDCD->PASSFAIL[3-1]=0;}
+// if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[3-1]==1)) & (pars[P.t_wood]>torfol)){EDC=0;EDCD->PASSFAIL[3-1]=0;}
 
 /*EDC CHECK NO 4*/
 /*Root turnover greater than SOM turnover at meantemp*/

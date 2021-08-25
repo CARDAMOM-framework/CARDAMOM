@@ -69,13 +69,15 @@ int tau_W;
 int time_c;
 int time_r;
 int lambda_max;
+int init_T_mem;
+int init_LAIW_mem;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
-    50,51,52
+    50,51,52,53,54
 };
 
 struct DALEC_1100_FLUXES{
@@ -168,7 +170,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 DALECmodel->nopools=8;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
 
-DALECmodel->nopars=53;
+DALECmodel->nopars=55;
 DALECmodel->nofluxes=42;
 
 //declaring observation operator structure, and filling with DALEC configurations
@@ -391,9 +393,9 @@ FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
 //KNORR LAI
 if (n==0){
   /*Initialize phenology memory of air-temperature */
-  lai_var_list[5]=pars[P.T_phi]+3*pars[P.T_range];
+  lai_var_list[5]=pars[P.init_T_mem]*(T2M_MAX[n]-T2M_MIN[n])+T2M_MIN[n];
   /*Initialize phenology memory of water/structural limitation */
-  lai_var_list[11]=pars[P.lambda_max];
+  lai_var_list[11]=pars[P.lambda_max]*pars[P.init_LAIW_mem];
 }
 lai_met_list[0]=(T2M_MAX[n] + T2M_MIN[n])/2.0; /* meantemp, deg C*/
 lai_var_list[0]=n; /*current timestep index of model run*/
