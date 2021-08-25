@@ -19,10 +19,11 @@ struct DALEC_1005_POOLS S=DALEC_1005_POOLS;
 /*Copy model pointer for brevity*/
 DALEC *MODEL=(DALEC *)DATA.MODEL;
 
-double *MET=DATA.MET;
+double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
+double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 double *POOLS=DATA.M_POOLS;
 double *FLUXES=DATA.M_FLUXES;
-int nodays=DATA.nodays;
+int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 double *parmax=DATA.parmax;
 double meantemp=DATA.meantemp;
 
@@ -54,20 +55,20 @@ int k=0;
 double *MPOOLS;
 MPOOLS=calloc(nopools,sizeof(double));
 if (MPOOLS==0){printf("WARNING NULL POINTER");}
-for (n=0;n<nopools;n++){MPOOLS[n]=mean_pool(POOLS,n,nodays+1,nopools);};
+for (n=0;n<nopools;n++){MPOOLS[n]=mean_pool(POOLS,n,N_timesteps+1,nopools);};
 
 /*deriving mean January pools*/
 /*Assuming COMPLETE years*/
 double *MPOOLSjan;
 /*pool interval*/
-int dint=(int)floor(nodays/(MET[nomet*(nodays-1)]-MET[0])*365.25);
+int dint=(int)floor(N_timesteps/(TIME_INDEX[N_timesteps-1]-TIME_INDEX[0])*365.25);
 /*declaring mean pool array*/
 MPOOLSjan=calloc(nopools,sizeof(double));if (MPOOLSjan==0){printf("WARNING NULL POINTER");}
 /*deriving mean jan pools*/
 /*based on all jan pools except initial conditions*/
 for (n=0;n<nopools;n++){
-for (m=0;m<(nodays/dint+1);m++){
-MPOOLSjan[n]=MPOOLSjan[n]+POOLS[nopools*(m*dint)+n]/(nodays/dint+1);}}
+for (m=0;m<(N_timesteps/dint+1);m++){
+MPOOLSjan[n]=MPOOLSjan[n]+POOLS[nopools*(m*dint)+n]/(N_timesteps/dint+1);}}
 /*printing just to make sure*/
 /*for (n=0;n<nopools;n++){printf("Pool = %d, janmnean=%2.2f\n",n,MPOOLSjan[n]);}*/
 
@@ -89,10 +90,10 @@ double EQF=EDCD->EQF;
 double *FT;
 FT=calloc(nofluxes,sizeof(double));
 int f=0;
-for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<nodays;n++){FT[f]+=FLUXES[n*nofluxes+f];}}
+for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nofluxes+f];}}
 /*Total prec*/
-double PREC=0;
-for (n=0;n<nodays;n++){PREC+=MET[n*nomet+8];}
+double TOTAL_PREC=0;
+for (n=0;n<N_timesteps;n++){TOTAL_PREC+=PREC[n];}
 
 
 double Fin[8];
@@ -128,7 +129,7 @@ Fout[4]=FT[F.resp_het_lit]+FT[F.lit2som]+FT[F.f_lit]+FT[F.fx_lit2som];
 Fin[5]=FT[F.wood2lit]+FT[F.lit2som]+FT[F.fx_woo2som]+FT[F.fx_lit2som];
 Fout[5]=FT[F.resp_het_som]+FT[F.f_som];
 /*PAH2O*/
-Fin[6]=PREC;
+Fin[6]=TOTAL_PREC;
 Fout[6]=FT[F.et]+FT[F.q_paw]+FT[F.paw2puw];
 /*PUH2O*/
 Fin[7]=FT[F.paw2puw];
@@ -146,7 +147,7 @@ double Rm, Rs;
 for (n=0;n<nopools;n++){
 /*start and end pools*/
 Pstart=POOLS[n];
-Pend=POOLS[nopools*nodays+n];
+Pend=POOLS[nopools*N_timesteps+n];
 /*mean input/output*/
 Rm=Fin[n]/Fout[n];
 /*Theoretical starting input/output*/
@@ -198,7 +199,7 @@ int PEDC;
 if (EDC==1 || DIAG==1)
 {double min; int nn;n=0;
 while ((n<nopools) & (EDC==1 || DIAG==1))
-{nn=0;PEDC=1;while ((nn<nodays+1) & (PEDC==1))
+{nn=0;PEDC=1;while ((nn<N_timesteps+1) & (PEDC==1))
 {if ((POOLS[n+nn*nopools]<0) || isnan(POOLS[n+nn*nopools])==1)
 // {EDC=0;PEDC=0;EDCD->PASSFAIL[35+n]=0;}nn=nn+1;};
 {EDC=0;PEDC=0;EDCD->PASSFAIL[35+n]=0;EDCD->pEDC=log(0);}nn=nn+1;};	
