@@ -26,7 +26,6 @@ int t_lit;
 int t_soil;
 int temp_factor;
 int f_lab;
-int leaf_fall;
 int LCMA;
 int i_labile;
 int i_foliar;
@@ -76,7 +75,7 @@ int lambda_max;
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
-    50,51,52,53
+    50,51,52
 };
 
 struct DALEC_1100_FLUXES{
@@ -169,7 +168,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 DALECmodel->nopools=8;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
 
-DALECmodel->nopars=54;
+DALECmodel->nopars=53;
 DALECmodel->nofluxes=42;
 
 //declaring observation operator structure, and filling with DALEC configurations
@@ -300,9 +299,6 @@ double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
 // Porosity scaling factor (see line 124 of HESS paper)
 double psi_porosity = -0.117*9.8/1000;
 
-
-/*scaling to biyearly sine curve*/
-double sf=365.25/pi;
 
 /*Combustion factors*/
 double CF[6];

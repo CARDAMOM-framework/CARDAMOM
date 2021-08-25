@@ -56,10 +56,6 @@ CARDADATA->parmax[P.temp_factor]=0.08;
 CARDADATA->parmin[P.f_lab]=0.01;
 CARDADATA->parmax[P.f_lab]=0.5;
 
-/*Leaf fall period*/
-CARDADATA->parmin[P.leaf_fall]=365.25/12;
-CARDADATA->parmax[P.leaf_fall]=150;
-
 /*LMCA*/
 /*Kattge et al. 2011*/
 /*Kattge et al., provide a range of 10 400 g m-2, i.e. 5 200 gC m-2*/
