@@ -56,10 +56,6 @@ CARDADATA->parmax[P.t_soil]=0.001;
 CARDADATA->parmin[P.temp_factor]=0.018;
 CARDADATA->parmax[P.temp_factor]=0.08;
 
-/*Canopy Efficiency*/
-CARDADATA->parmin[P.canopy_eff]=5;
-CARDADATA->parmax[P.canopy_eff]=50;
-
 /*Bday*/
 CARDADATA->parmin[P.Bday]=365.25;
 CARDADATA->parmax[P.Bday]=365.25*4;

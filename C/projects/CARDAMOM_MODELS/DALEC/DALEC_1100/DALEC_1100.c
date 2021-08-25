@@ -25,7 +25,6 @@ int t_root;
 int t_lit;
 int t_soil;
 int temp_factor;
-int canopy_eff;
 int Bday;
 int f_lab;
 int labile_rel;
@@ -71,8 +70,7 @@ int leaf_refl;
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
-    40,41,42,43,44,45,46,47,48,49,
-    50
+    40,41,42,43,44,45,46,47,48,49
 };
 
 struct DALEC_1100_FLUXES{
@@ -154,7 +152,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=8;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=51;
+DALECmodel->nopars=50;
 DALECmodel->nofluxes=35;
 
 //declaring observation operator structure, and filling with DALEC configurations
@@ -247,8 +245,6 @@ double pi=3.1415927;
 double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.values[0];
 int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 
-
- double constants[10]={pars[P.canopy_eff],0.0156935,4.22273,208.868,0.0453194,0.37836,7.19298, 0.011136,2.1001,0.789798};
 
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
 double *FLUXES=DATA.M_FLUXES;
