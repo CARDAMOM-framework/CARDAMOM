@@ -128,7 +128,7 @@ Fout[4]=FT[F.resp_het_lit]+FT[F.lit2som]+FT[F.f_lit]+FT[F.fx_lit2som];
 Fin[5]=FT[F.wood2lit]+FT[F.lit2som]+FT[F.fx_woo2som]+FT[F.fx_lit2som];
 Fout[5]=FT[F.resp_het_som]+FT[F.f_som];
 /*PAH2O*/
-Fin[6]=TOTAL_PREC;
+Fin[6]=TOTAL_PREC-FT[F.q_surf];
 Fout[6]=FT[F.et]+FT[F.q_paw]+FT[F.paw2puw];
 /*PUH2O*/
 Fin[7]=FT[F.paw2puw];
