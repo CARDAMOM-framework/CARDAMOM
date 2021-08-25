@@ -121,11 +121,14 @@ int dlambda_dt;
 int temp_thresh;
 int day_thresh;
 int c_lim_flag;
+int lai_fire;
+int foliar_fire_frac;
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
-    30,31,32,33,34,35,36,37,38,39
+    30,31,32,33,34,35,36,37,38,39,
+    40,41
 };
 
 
@@ -167,7 +170,7 @@ DALECmodel->nopools=8;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
 
 DALECmodel->nopars=54;
-DALECmodel->nofluxes=40;
+DALECmodel->nofluxes=42;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
@@ -581,13 +584,13 @@ POOLS[nxp+S.H2O_PUW] += (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
     FLUXES[f+F.f_total] = FLUXES[f+F.f_lab] + FLUXES[f+F.f_fol] + FLUXES[f+F.f_roo] + FLUXES[f+F.f_woo] + FLUXES[f+F.f_lit] + FLUXES[f+F.f_som];
 
    /*Fraction of C-foliar lost due to fires*/
-    FLUXES[f+43] = BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
+    FLUXES[f+F.foliar_fire_frac] = BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
    /*Calculate LAI (lambda) lost due to fire
      - we lose the same fraction of LAI as we do C-foliar 
      - FE_\Lambda^{(t+1)} = \Lambda^{(t+1)'} * BA ( k_{factor(i)} + (1 - k_{factor(i)}) r )*/
-   FLUXES[f+42] = FLUXES[f+F.target_LAI]*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
+   FLUXES[f+F.lai_fire] = FLUXES[f+F.target_LAI]*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
    /*Subtract fire loss LAI from current LAI*/
-   FLUXES[f+F.target_LAI] = FLUXES[f+F.target_LAI] - FLUXES[f+42];
+   FLUXES[f+F.target_LAI] = FLUXES[f+F.target_LAI] - FLUXES[f+F.lai_fire];
   
 }
 
