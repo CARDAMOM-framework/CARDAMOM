@@ -1,5 +1,7 @@
 #pragma once
-#include "../CARDAMOM_GENERAL/CARDAMOM_READ_NETCDF_DATA.c"
+#include "../CARDAMOM_GENERAL/NETCDF_AUXILLIARY_FUNCTIONS.c"
+
+//#include "../CARDAMOM_GENERAL/CARDAMOM_READ_NETCDF_DATA.c"
 
 
 
@@ -8,10 +10,11 @@ size_t length;
 double * values;
 size_t unc_length;
 double * unc;
-int opt_log_transform;//log-transform data 
+int opt_unc_type;//log-transform data 
 int opt_normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
 int opt_filter;//(0 = no filter, 1 = mean only, 2==annual mean & monthly anomaly, 3 = seasonal cycle & inter-annual anomalies). 
 int opt_structural_error;
+int opt_mean_only;
 double min_threshold_value;
 double single_monthly_unc;
 double single_annual_unc;
@@ -22,6 +25,7 @@ double structural_unc;
 int valid_obs_length;//number of non-empty obs
 int * valid_obs_indices;//indices of non-empty obs
 }OBS_STRUCT;
+
 
 
 
@@ -46,7 +50,7 @@ OBS.unc = ncdf_read_double_var(ncid, OBSunc , &OBS.unc_length);
 OBS.values = ncdf_read_double_var(ncid, OBSNAME , &(OBS.length));
 OBS.opt_unc_type=ncdf_read_int_attr(ncid, OBSNAME,"opt_unc_type");//absolute, log, percentage
 OBS.opt_normalization=ncdf_read_int_attr(ncid, OBSNAME,"opt_normalization");
-OBS.opt_mean_only=ncdf_read_int_attr(ncid, OBSNAME,"opt_mean_only");
+OBS.opt_filter=ncdf_read_int_attr(ncid, OBSNAME,"opt_filter");
 OBS.opt_structural_error=ncdf_read_int_attr(ncid, OBSNAME,"opt_structural_error");
 OBS.min_threshold_value=ncdf_read_double_attr(ncid, OBSNAME,"min_threshold_value");
 OBS.single_monthly_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_monthly_unc");
