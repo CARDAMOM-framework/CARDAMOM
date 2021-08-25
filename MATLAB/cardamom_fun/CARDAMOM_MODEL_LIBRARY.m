@@ -34,7 +34,7 @@ unix(sprintf('./%s/projects/CARDAMOM_GENERAL/CARDAMOM_ASSEMBLE_MODELS.exe %s',Cp
 end
 
 %*****Step 1. find path for model info*****
-filename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/MODEL_INFO_%i.c',Cpath,ID,ID);
+filename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/DALEC_%i.c',Cpath,ID,ID);
 stack_filename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/dalec_%i_pars.txt',Cpath,ID,ID);
 
 %filename=sprintf('%s/projects/CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c',Cpath);
@@ -56,9 +56,10 @@ D=importdata(filename,'');
 for n=1:size(D,1);
     %reading strings that read as follows
     %DATA->nopools=7;
-    if strncmp(D{n},'DALECmodel.no',12)
+    if strncmp(D{n},'DALECmodel->no',14)
         %E.g. evaluates  'DALECmodel.nopools=7;'
-    eval(D{n}(1:find(D{n}==';',1)));
+        st=D{n};st(st=='>')='.';st=st(st~='-');
+    eval(st(1:find(st==';',1)));
     end
 end
 
@@ -76,6 +77,35 @@ end
 
 else
 %Find parameter info here *******
+parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/DALEC_%i.c',Cpath,ID,ID);
+ D=importdata(parfilename,'');
+ k=0;n=1;p=0;
+ while k<2;
+          linestr=D{n};
+
+     if k==1
+         if strcmp(linestr(1:4),'int ')
+         %Assumes "int " (4 characters) is removed
+         eval(sprintf('P.%s = %i;',linestr(5:find(linestr==';',1)-1),  p));
+         p=p+1;
+         else
+             k=2;
+         
+         end
+     end
+
+if strcmp(linestr,'//***DALEC PARAMETERS***');disp(linestr);k=1;end
+
+     n=n+1;
+
+
+ end
+ 
+
+ 
+ 
+
+
 parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',Cpath,ID,ID);
 
 
@@ -95,7 +125,7 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',
      b2=find(linestr==']');
      linestr(b1)='(';
      linestr(b2)=')';
-     lnum=num2str(str2num(linestr(b1+1:b2-1))+1);
+     lnum=num2str(eval(linestr(b1+1:b2-1))+1);
      linestr=[linestr(1:b1),lnum,linestr(b2:end)];
      %Find first ";"
      eval(linestr(1:find(linestr==';',1)));

@@ -8,8 +8,14 @@
 #include "DALEC_LIKELIHOOD_ET.c"
 #include "DALEC_LIKELIHOOD_GPP.c"
 #include "DALEC_LIKELIHOOD_LAI.c"
-#include "DALEC_LIKELIHOOD_NEE.c"
+#include "DALEC_LIKELIHOOD_NBE.c"
 #include "DALEC_LIKELIHOOD_CH4.c"
+#include "DALEC_LIKELIHOOD_ABGB.c"
+#include "DALEC_LIKELIHOOD_SOM.c"
+#include "DALEC_LIKELIHOOD_FIRE.c"
+#include "../../CARDAMOM_MODELS/DALEC/DALEC_OBSERVATION_OPERATORS/DALEC_OBSERVATION_OPERATORS.c"
+
+
 /*Any likelihood functions used in multiple MLF functions are kept here!*/
 
 
@@ -27,13 +33,31 @@ int n;
 /*EDC switches are stored in DATA->parpriors (positions 31-50);*/
 /*switch all on if EDCDIAG<2 , otherwise, switch on/off according to EDCSWITCH*/
 /*EDCSETUP function will be included in DALEC_ALL_LIKELIHOOD.c*/
+
+/*
+printf("*****")
+printf("*****Note on status of DALEC EDC settings*******\n");
+printf("*****")
+printf("*****")
+printf("*****")
+printf("******Only default values used for now, introduce EDC settings via netcdf system when needed\n");
+printf("*****")
+*/
+
+
 for (n=0;n<100;n++){EDCDmem.SWITCH[n]=1;}
 if (EDCDmem.DIAG==2){for (n=0;n<20;n++){EDCDmem.SWITCH[n]=DATA.otherpriors[n+30];}}
 
+//if (EDCDmem.DIAG==2){for (n=0;n<20;n++){EDCDmem.SWITCH[n]=0;}}
+
+
 /*EQF is stored in the "DATA.otherpriorunc" fields associated with EDCs 7-12*/
 /*default value is 2*/
-EDCDmem.EQF=DATA.otherpriorunc[36]; if (EDCDmem.EQF==-9999){EDCDmem.EQF=2;}
+EDCDmem.EQF=DATA.otherpriorunc[36]; 
 
+printf("EDCD->EQF* = %2.2f\n",EDCDmem.EQF);
+if (EDCDmem.EQF==-9999){EDCDmem.EQF=2;}
+//EDCDmem.EQF=2;
 printf("EDCD->EQF = %2.2f\n",EDCDmem.EQF);
 
 /*Default structure has all EDC=1, and 100 EDCs*/
@@ -67,163 +91,63 @@ p=p-0.5*pow((PARS[n]-DATA.parpriors[n])/(DATA.parpriorunc[n]),2);}
 
 }}
 
+return p;}
+
 /*for any other priors, explicitly define functions based on values in DATA.otherpriors*/
 
 /*total biomass (pools 1:4) defined here - using first space of pappriors for total biomass*/
-if (DATA.otherpriors[0]>-9999){
-p=p-0.5*pow(log((PARS[17]+PARS[18]+PARS[19]+PARS[20])/DATA.otherpriors[0])/log(DATA.otherpriorunc[0]),2);}
-
-return p;}
 
 
-double LIKELIHOOD(DATA D)
-{
-int n,dn,m,f;
-double P=0, Ps;
-double tot_exp;
-double CPG;
-double mfire=0;
-double msif=0;
-double mgpp=0;
-double mnpdf=0;
-double mlai=0;
-int npdfi[7]={9,10,11,23,24,25,26};
+double LIKELIHOOD(DATA D){
+
+//Step 1. Implement observarion operator on 
 
 
+double P=0;
 
-P=P+DALEC_LIKELIHOOD_GPP(D);
-P=P+DALEC_LIKELIHOOD_LAI(D);
-P=P+DALEC_LIKELIHOOD_ET(D);
-P=P+DALEC_LIKELIHOOD_NEE(D);
-if (D.ID==1010){
-	P=P+DALEC_LIKELIHOOD_CH4(D);
-	}
+OBSOPE *O=&((DALEC *)D.MODEL)->OBSOPE;
 
-	if (D.ID==1011){
-	P=P+DALEC_LIKELIHOOD_CH4(D);
-	}
-/*shuang: 101010 was created for climate sensitivity test Nov2020*/
-
-double mam=0,am=0;
-
-/*printf("ETprob = %2.2f\n",P);*/
+//printf("O->SUPPORT_LAI_OBS = %d\n",O->SUPPORT_LAI_OBS);
 
 
-/*printf("NEEprob = %2.2f\n",P);*/
-
-/*Cbiomass likelyhood*/
-/*(previously just woody pool)*/
-double biomass;
-tot_exp=0;
-if (D.nwoo>0){
-/*Looping through all available constraints*/
-for (n=0;n<D.nwoo;n++){dn=D.woopts[n];
-/*biomass = totals of labile, foliar, root, wood*/
-biomass=D.M_POOLS[D.nopools*(dn+1)+0]+D.M_POOLS[D.nopools*(dn+1)+1]+D.M_POOLS[D.nopools*(dn+1)+2]+D.M_POOLS[D.nopools*(dn+1)+3];
-/*Model-data mismatch*/
-tot_exp+=pow(log(biomass/D.WOO[dn])/log(D.otherpriorunc[1]),2);}
-//tot_exp+=pow(log(max(biomass,0.01)/max(D.WOO[dn],0.01))/log(max(D.otherpriorunc[1],0.1)),2);} /*shuang for correcting -inf*/
-/*adding cost to overall probability estimate*/
-P=P-0.5*tot_exp;
-}
+//Observation operator on DALEC variables.
+DALEC_OBSOPE(&D,O);
 
 
-double som;
-tot_exp=0;
-if (D.nsom>0){
-/*Looping through all available constraints*/
-for (n=0;n<D.nsom;n++){dn=D.sompts[n];
-/*biomass = totals of litter and som*/
-som=D.M_POOLS[D.nopools*(dn+1)+4]+D.M_POOLS[D.nopools*(dn+1)+5];
-/*Model-data mismatch*/
-tot_exp+=pow(log(som/D.SOM[dn])/log(D.otherpriorunc[7]),2);}
-//tot_exp+=pow(log(max(som,0.1)/max(D.SOM[dn],0.1))/log(max(D.otherpriorunc[7],100)),2);} /*shuang for correcting -inf*/
-/*adding cost to overall probability estimate*/
-P=P-0.5*tot_exp;
-}
+//printf("About to calculate likelihoods...\n");
+
+//printf("O->SUPPORT_LAI_OBS = %d\n",O->SUPPORT_LAI_OBS);
+
+if (O->SUPPORT_CH4_OBS){   P=P+DALEC_LIKELIHOOD_CH4(D);}
+if (O->SUPPORT_GPP_OBS){   P=P+DALEC_LIKELIHOOD_GPP(D);}
+if (O->SUPPORT_LAI_OBS){   P=P+DALEC_LIKELIHOOD_LAI(D);}
+if (O->SUPPORT_ET_OBS){   P=P+DALEC_LIKELIHOOD_ET(D);}
+if (O->SUPPORT_NBE_OBS){   P=P+DALEC_LIKELIHOOD_NBE(D);}
+if (O->SUPPORT_ABGB_OBS){   P=P+DALEC_LIKELIHOOD_ABGB(D);}
+if (O->SUPPORT_SOM_OBS){   P=P+DALEC_LIKELIHOOD_SOM(D);}
+if (O->SUPPORT_GRACE_EWT_OBS){   P=P+DALEC_LIKELIHOOD_GRACE_EWT(D);}
+if (O->SUPPORT_FIR_OBS){   P=P+DALEC_LIKELIHOOD_FIRE(D);}
 
 
-/*Function is external*/
-P= P + DALEC_LIKELIHOOD_GRACE_EWT(D);
-
-/*EWT constraint*/
-/*tot_exp=0;
-double mewt=0, mewtm=0;
-if (D.newt>0){*/
-/*Relative volumetric constraint*/
-/*Note: constraint imposed on t+1 of H2O pools*/
-/*for (n=0;n<D.newt;n++){dn=D.ewtpts[n];mewtm+=(D.M_POOLS[D.nopools*dn+6] + D.M_POOLS[D.nopools*dn+7])/D.newt;mewt+=D.EWT[dn]/D.newt;}
-
-for (n=0;n<D.newt;n++){dn=D.ewtpts[n];tot_exp+=pow((D.M_POOLS[D.nopools*dn+6]+ D.M_POOLS[D.nopools*dn+7]-D.EWT[dn]-mewtm+mewt)/D.ewt_obs_unc,2);}
-P=P-0.5*tot_exp;}*/
-/*
-printf("mewt = %2.2f\n",mewt);
-printf("mewtm = %2.2f\n",mewtm);
-printf("totexp EWT = %2.2f\n",tot_exp);
-*/
 
 
 /*Note: only use with model ID = 806*/
-
-if (D.ID==806){P = P + DALEC_806_MFCF(D);}
-if (D.ID==807){P = P + DALEC_807_MFCF(D);}
-if (D.ID==808){P = P + DALEC_807_MFCF(D);}
-
-
-
-
-
-
-
-/*Constrain fire emissions here*/
-if (D.otherpriors[2]>-9999){
-/*Step 1. Sum fire emissions*/
-for (n=0;n<D.nodays;n++){mfire+=D.M_FLUXES[n*D.nofluxes+16];}
-/*Normalize fire constraint to daily mean flux*/
-mfire=mfire/((double)D.nodays);
-
-/*Step 2. Constrain against fire emissions*/
-if (D.otherpriorunc[2]>0){P=P-0.5*pow(log(mfire/D.otherpriors[2])/log(D.otherpriorunc[2]),2);}
-else {P=P-0.5*pow((mfire-D.otherpriors[2])/D.otherpriorunc[2],2);}
-}
-
-
-
-/*Constrain mean GPP*/
-if (D.otherpriors[5]>-9999){mgpp=0;
-/*Step 1. Sum fire emissions*/
-for (n=0;n<D.nodays;n++){mgpp+=D.M_FLUXES[n*D.nofluxes+0];}
-/*Normalize gpp constraint to daily mean flux*/
-mgpp=mgpp/((double)D.nodays);
-/*Step 2. Constrain against gpp*/
-if (D.otherpriorunc[5]>0){P=P-0.5*pow(log(mgpp/D.otherpriors[5])/log(D.otherpriorunc[5]),2);}
-else {P=P-0.5*pow((mgpp-D.otherpriors[5])/D.otherpriorunc[5],2);}
-/*P=P-0.5*pow((mgpp-D.otherpriors[5])/D.otherpriorunc[5],2);*/
-
-}
-
-
-/*printf("MGPPprob = %2.2f\n",P);&*/
-
-
+//if (D.ID==806){P = P + DALEC_806_MFCF(D);}
+//if (D.ID==807){P = P + DALEC_807_MFCF(D);}
+//if (D.ID==808){P = P + DALEC_807_MFCF(D);}
 
 /*Constrain CMS disturbance fluxes*/
-if (D.otherpriors[6]>-9999){mnpdf=0;
+//if (D.otherpriors[6]>-9999){mnpdf=0;
 /*Step 1. Sum of biomass -> litter emissions (including fire)*/
-for (n=0;n<D.nodays;n++){
-for (f=0;f<7;f++){mnpdf+=D.M_FLUXES[n*D.nofluxes+npdfi[f]];}}
+//for (n=0;n<D.nodays;n++){
+//for (f=0;f<7;f++){mnpdf+=D.M_FLUXES[n*D.nofluxes+npdfi[f]];}}
 /*Normalize npdf constraint to daily mean flux*/
-mnpdf=mnpdf/((double)D.nodays);
+//mnpdf=mnpdf/((double)D.nodays);
 /*Step 2. Constrain against npdf*/
 /*Only constrain if model flux < observed flux (otherwise mortality can explain internal cardamom fluxes)*/
-if (mnpdf<D.otherpriors[6]) {
-P=P-0.5*pow(log(mnpdf/D.otherpriors[6])/log(D.otherpriorunc[6]),2);
-}}
-
-
-
-
-
+//if (mnpdf<D.otherpriors[6]) {
+//P=P-0.5*pow(log(mnpdf/D.otherpriors[6])/log(D.otherpriorunc[6]),2);
+//}}
 
 if (isnan(P)){P=log(0);}
 return P;}

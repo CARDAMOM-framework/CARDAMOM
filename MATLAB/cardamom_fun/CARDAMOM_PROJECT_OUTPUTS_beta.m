@@ -80,6 +80,7 @@ for f=1:numel(FIELDS);
     
         
     if isfield(FIELDS,'overwrite') & FIELDS(f).overwrite==1;fstatus(f)=0 ;
+        
         if isfile(filenames{f})==1;ow=1;disp(sprintf('About to overwrite %s...',filenames{f}));pause(1);end
         
         ;else;    fstatus(f)=isfile(filenames{f});end
@@ -94,7 +95,10 @@ for f=1:numel(FIELDS);
    
 end
 
-if ow==1;for n=10:-1:1;disp(sprintf('Overwriting files in %i seconds',n));pause(1);end;end
+
+
+if ow==1;disp('About to overwrite existing file. Type "dbcont" to continue, or "dbquit" to quit');keyboard;end
+%if ow==1;for n=10:-1:1;disp(sprintf('Overwriting files in %i seconds',n));pause(1);end;end
 
 
 %Step 2. Populate missing files
