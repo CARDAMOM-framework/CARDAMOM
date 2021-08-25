@@ -194,10 +194,10 @@ FLUXES[f+2]=pars[1]*FLUXES[f+0];
 
 //KNORR LAI
 if (n==0){
-  /*Initialize phenology memory of air-temperature */
-  lai_var_list[5]=pars[37]+3*pars[38];
+  /*Initialize phenology memory of air-temperature as some value within mintemp and maxtemp*/
+  lai_var_list[5]=pars[47]*(DATA.MET[m+2]-DATA.MET[m+1])+DATA.MET[m+1];
   /*Initialize phenology memory of water/structural limitation */
-  lai_var_list[11]=pars[42];
+  lai_var_list[11]=pars[48]*pars[42];
 }
 lai_met_list[0]=(DATA.MET[m+2] + DATA.MET[m+1])/2.0; /* meantemp, deg C*/
 lai_var_list[0]=n; /*current timestep index of model run*/
