@@ -125,6 +125,10 @@ int scf;   /*Snow cover fraction*/
     30,31,32,33,34
 };
 
+
+
+
+
 struct DALEC_1100_POOLS{
 /*DALEC POOLS*/
 int C_lab; /*Labile C*/
@@ -137,6 +141,14 @@ int H2O_PAW; /*Plant available H2O*/
 int H2O_PUW; /*Plant unavailable H2O*/
 int H2O_SWE; /*Snow water equivalent*/
 } DALEC_1100_POOLS={0,1,2,3,4,5,6,7,8};
+
+/*
+struct POOLS_INFO{
+int n_input_fluxes
+int n_output_fluxes
+int * input_fluxes
+int * output_fluxes}
+*/
 
 
 
