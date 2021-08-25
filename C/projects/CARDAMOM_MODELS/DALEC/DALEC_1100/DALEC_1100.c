@@ -283,7 +283,7 @@ double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
 double *VPD=DATA.ncdf_data.VPD.values;
 double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
 double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
-double *TIME_INDEX=DATA.ncdf_data.SNOWFALL.values;
+double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
 
 double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
 double meanrad = DATA.ncdf_data.SSRD.reference_mean;

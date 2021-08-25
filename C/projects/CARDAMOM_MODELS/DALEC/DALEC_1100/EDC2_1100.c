@@ -20,6 +20,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 DALEC *MODEL=(DALEC *)DATA.MODEL;
 
 double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
+double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
 double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 double *POOLS=DATA.M_POOLS;
 double *FLUXES=DATA.M_FLUXES;
@@ -92,11 +93,11 @@ int f=0;
 for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nofluxes+f];}}
 /*Total prec*/
 double TOTAL_PREC=0;
-for (n=0;n<N_timesteps;n++){TOTAL_PREC+=PREC[n];}
+for (n=0;n<N_timesteps;n++){TOTAL_PREC+=PREC[n];TOTAL_SNOWFALL+=SNOWFALL[n];}
 
 
-double Fin[8];
-double Fout[8];
+double Fin[9];
+double Fout[9];
 double Pstart;
 double Pend;
 /*temporary print switch*/
@@ -128,11 +129,14 @@ Fout[4]=FT[F.resp_het_lit]+FT[F.lit2som]+FT[F.f_lit]+FT[F.fx_lit2som];
 Fin[5]=FT[F.wood2lit]+FT[F.lit2som]+FT[F.fx_woo2som]+FT[F.fx_lit2som];
 Fout[5]=FT[F.resp_het_som]+FT[F.f_som];
 /*PAH2O*/
-Fin[6]=TOTAL_PREC-FT[F.q_surf];
+Fin[6]=TOTAL_PREC-TOTAL_SNOWFALL+FT[F.melt]-FT[F.q_surf];
 Fout[6]=FT[F.et]+FT[F.q_paw]+FT[F.paw2puw];
 /*PUH2O*/
 Fin[7]=FT[F.paw2puw];
 Fout[7]=FT[F.q_puw];
+/*SWE*/
+Fin[8]=TOTAL_SNOWFALL;
+Fout[8]=FT[F.melt];
 
 
 
@@ -186,7 +190,7 @@ EDCD->pEDC=EDCD->pEDC+log(1/(1+exp(10*(pars[P.wilting]-MPOOLS[S.H2O_PAW])/MPOOLS
 /*Additional faults can be stored in positions 35-40*/
 
 /*PRIOR RANGES - ALL POOLS MUST CONFORM*/
-int pidx[]={P.i_labile,P.i_foliar,P.i_root,P.i_wood,P.i_lit,P.i_soil,P.i_PAW,P.i_PUW};
+int pidx[]={P.i_labile,P.i_foliar,P.i_root,P.i_wood,P.i_lit,P.i_soil,P.i_PAW,P.i_PUW,P.i_SWE};
 
 /*for (n=0;n<nopools-1;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;}}*/
 for (n=0;n<nopools;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;EDCD->pEDC=log(0);}}
