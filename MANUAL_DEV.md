@@ -79,8 +79,12 @@ Step 2. type "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c" m
  ### git clone FAQ
  Get fatal error when typing "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c", what should I do?
  
- 
- 
+
+Support for password authentication was removed on August 13, 2021. Please use a personal access token instead.
+remote: Please see https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/ for more information.
+fatal: Authentication failed for 'https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/'
+
+If you see this message, please input your personal token rather than your personal Github password.
  
  
  
