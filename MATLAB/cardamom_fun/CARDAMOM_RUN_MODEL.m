@@ -67,7 +67,7 @@ if isstruct(CBF)
 cbffile=sprintf('%s/tempcardametfile%s.cbf',Dpath,channel);
 %writing parameters to file
 %writing met drivers to file
-CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,cbffile);
+CARDAMOM_WRITE_NC_CBF_FILE(CBF,cbffile);
 OPT.MODEL.ID=CBF.ID;
 %number of parameter samples
 end
