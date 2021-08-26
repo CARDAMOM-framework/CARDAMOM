@@ -68,7 +68,7 @@ cbffile=sprintf('%s/tempcardametfile%s.nc.cbf',Dpath,channel);
 %writing parameters to file
 %writing met drivers to file
 CARDAMOM_WRITE_NC_CBF_FILE(CBF,cbffile);
-OPT.MODEL.ID=CBF.ID;
+OPT.MODEL.ID=CBF.ID.values;
 %number of parameter samples
 end
   
