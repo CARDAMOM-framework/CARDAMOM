@@ -15,18 +15,18 @@ struct EDCDIAGNOSTIC EDCD;
 /*EDCD=*((DALEC *)DATA.MODEL)->EDCD;*/
 EDCD=*MODEL->EDCD;
 
-
+printf("****\n");
 int EDC,n;
 double P=0,P_p;
 EDCD.pEDC=0;
 
+if (DATA.ncdf_data.EDC==1){
 MODEL->edc1(PARS,DATA, &EDCD);
-P=P+EDCD.pEDC;
+P=P+EDCD.pEDC;}
 
 /*PARAMETER LOG LIKELIHOOD*/
 P=P+LIKELIHOOD_P(DATA,PARS);
 P_p=P;
-
 /*running model*/
 MODEL->dalec(DATA, PARS);
 
@@ -38,19 +38,17 @@ MODEL->dalec(DATA, PARS);
 /*EDC2 check*/
 MODEL->edc2(PARS, DATA, &EDCD);
 
-
 /*EDC2 prior*/
-P=P+EDCD.pEDC;
+if (DATA.ncdf_data.EDC==1){
+P=P+EDCD.pEDC;}
 
 /*Likelihood*/
 P=P+LIKELIHOOD(DATA);
 
 
 
-
 /*saving likelihood P*/
 DATA.M_P[0]=P;
-
 
 /*Returning the log likelihood P*/
 return P;

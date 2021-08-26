@@ -9,32 +9,34 @@ nccbffilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.nc.cbf';
 
  ncdisp(nccbffilename1100)
 nccbftestfiledev='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY_DEV.nc.cbf';
+nccbftestfiledev_noobs='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY_DEV_NOOBS.nc.cbf';
 
 
 %testing matlab read-write functions
 
-CBF1100dev=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
+CBF1100dev0=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
 
-CBF1100dev.EWT.values=CBF1100dev.EWT.values*NaN;
-CBF1100dev.Mean_Biomass.values=CBF1100dev.Mean_Biomass.values*NaN;
-CBF1100dev.Mean_Fire.values=CBF1100dev.Mean_Fire.values*NaN;
-CBF1100dev.Mean_LAI.values=CBF1100dev.Mean_LAI.values*NaN;
-CBF1100dev.Mean_GPP.values=CBF1100dev.Mean_GPP.values*NaN;
-CBF1100dev.PARPRIORS.values=CBF1100dev.PARPRIORS.values*NaN;
-CBF1100dev.OTHERPRIORS.values=CBF1100dev.OTHERPRIORS.values*NaN;
-CBF1100dev.PARPRIORUNC.values=CBF1100dev.PARPRIORUNC.values*NaN;
-CBF1100dev.OTHERPRIORSUNC.values=CBF1100dev.OTHERPRIORSUNC.values*NaN;
-CBF1100dev.EDC.values=0;
-
-
-
+CBF1100dev0.EWT.values=CBF1100dev0.EWT.values*NaN;
+CBF1100dev0.ET.values=CBF1100dev0.ET.values*NaN;
+CBF1100dev0.Mean_Biomass.values=CBF1100dev0.Mean_Biomass.values*NaN;
+CBF1100dev0.Mean_Fire.values=CBF1100dev0.Mean_Fire.values*NaN;
+CBF1100dev0.Mean_LAI.values=CBF1100dev0.Mean_LAI.values*NaN;
+CBF1100dev0.Mean_GPP.values=CBF1100dev0.Mean_GPP.values*NaN;
+CBF1100dev0.PARPRIORS.values=CBF1100dev0.PARPRIORS.values*NaN;
+CBF1100dev0.OTHERPRIORS.values=CBF1100dev0.OTHERPRIORS.values*NaN;
+CBF1100dev0.PARPRIORUNC.values=CBF1100dev0.PARPRIORUNC.values*NaN;
+CBF1100dev0.OTHERPRIORSUNC.values=CBF1100dev0.OTHERPRIORSUNC.values*NaN;
+CBF1100dev0.EDC.values=0;
 
 
 
 
 
-CARDAMOM_WRITE_NC_CBF_FILE(CBF1100dev,nccbftestfiledev);
-CBF1100dev=CARDAMOM_READ_NC_CBF_FILE(nccbftestfiledev);
+
+
+
+CARDAMOM_WRITE_NC_CBF_FILE(CBF1100dev0,nccbftestfiledev);
+CBF1100dev0=CARDAMOM_READ_NC_CBF_FILE(nccbftestfiledev);
  updateref=0;
  if updateref==1
  copyfile( cbrfilename1100, cbrfilename1100ref);
@@ -43,9 +45,9 @@ CBF1100dev=CARDAMOM_READ_NC_CBF_FILE(nccbftestfiledev);
  end
 
 
-f=fields(CBF1100dev);cbfioerror=0;
+f=fields(CBF1100dev0);cbfioerror=0;
 for n=1:numel(f)
-    cbffielddif=nansum(CBF1100dev.(f{n}).values- CBF1100dev.(f{n}).values);
+    cbffielddif=nansum(CBF1100dev0.(f{n}).values- CBF1100dev0.(f{n}).values);
     if cbffielddif~=0;disp(sprintf('CBF.%s: Warning, non-zero dif',f{n}));cbfioerror=1;end
 end
 if cbfioerror==0; disp('CARDAMOM READ/WRITE NETCDF functions check out...');
@@ -81,28 +83,62 @@ end
 % return OBS;
 % };
 
+
+CBF1100dev_noobs=CBF1100dev0;
+CBF1100dev=CBF1100dev0;
 CBF1100dev.ET.values([1,2,4,5])=[0.1,0.2,0.4,0.5];
 CBF1100dev.ETunc.values=CBF1100dev.ET.values*NaN;
 CBF1100dev.ETunc.values([1,2,4,5])=[0.1,0.2,0.4,0.5].^2;
-CBF1100dev.ET.Attributes(3).Name='opt_log_transform';
-CBF1100dev.ET.Attributes(3).Value=1;
+CBF1100dev.ET.Attributes(3).Name='opt_unc_type';
+CBF1100dev.ET.Attributes(3).Value=0;
 CBF1100dev.ET.Attributes(4).Name='opt_normalization';
 CBF1100dev.ET.Attributes(4).Value=0;
 CBF1100dev.ET.Attributes(5).Name='opt_mean_only';
 CBF1100dev.ET.Attributes(5).Value=0;
 CBF1100dev.ET.Attributes(6).Name='opt_structural_error';
-CBF1100dev.ET.Attributes(6).Value=1;
-CBF1100dev.ET.Attributes(7).Name='structural_unc';
-CBF1100dev.ET.Attributes(7).Value=0.05;
+CBF1100dev.ET.Attributes(6).Value=0;
+
+
+
+
+% typedef struct OBS_STRUCT{
+% size_t length;
+% double * values;
+% size_t unc_length;
+% double * unc;
+% int opt_unc_type;//log-transform data 
+% int opt_normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
+% int opt_filter;//(0 = no filter, 1 = mean only, 2==annual mean & monthly anomaly, 3 = seasonal cycle & inter-annual anomalies). 
+% int opt_structural_error;
+% int opt_mean_only;
+% double min_threshold_value;
+% double single_monthly_unc;
+% double single_annual_unc;
+% double single_mean_unc;
+% double single_unc;
+% double structural_unc;
+% //expand as needed
+% int valid_obs_length;//number of non-empty obs
+% int * valid_obs_indices;//indices of non-empty obs
+% }OBS_STRUCT;
+% 
+
+
 
 
 CARDAMOM_WRITE_NC_CBF_FILE(CBF1100dev,nccbftestfiledev);
+CARDAMOM_WRITE_NC_CBF_FILE(CBF1100dev_noobs,nccbftestfiledev_noobs);
 
  CBR=CARDAMOM_RUN_MODEL(nccbftestfiledev,cbrfilename1100);
+ CBR_noobs=CARDAMOM_RUN_MODEL(nccbftestfiledev_noobs,cbrfilename1100);
 
 
+%CHeck ET 
 
+ET1=CBR.FLUXES(1,:,29);
 
+pts=[1,2,4,5];
+total(-0.5*(CBF1100dev.ET.values(pts)-ET1(pts)).^2./CBF1100dev.ETunc.values(pts).^2)
 
 
 %Converting to netcdf file

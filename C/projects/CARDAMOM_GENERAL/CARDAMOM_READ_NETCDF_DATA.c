@@ -132,10 +132,6 @@ DATA->ET=READ_NETCDF_OBS_FIELDS(ncid, "ET");
 
 
 
-printf("DATA->ET.values[0] = %2.2f\n",DATA->ET.values[1]);
-printf("DATA->ET.unc[0] = %2.2f\n",DATA->ET.unc[1]);
-printf("DATA->ET.length[0] = %i\n",(int)DATA->ET.length);
-printf("**********************\n");
 
 
 

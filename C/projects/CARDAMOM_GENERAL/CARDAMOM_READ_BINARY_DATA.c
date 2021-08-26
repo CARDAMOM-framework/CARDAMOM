@@ -194,24 +194,26 @@ int CARDAMOM_READ_BINARY_DATA(char *ncfilename,DATA *DATA)
 	  //Step 1.Data file is of the newer NetCDF format
 	  CARDAMOM_READ_NETCDF_DATA(ncfilename, &(DATA->ncdf_data));
 
-
+printf("Successfully read NETCDF data...\n");
 
 
 
 //Step 2. Default values
-DATA->ncdf_data->ET.obs_unc_type=1;
-DATA->ncdf_data->ET.single_unc=2;
-DATA->ncdf_data->ET.threshold=0;
+DATA->ncdf_data.ET.opt_unc_type=1;
+DATA->ncdf_data.ET.single_unc=2;
+DATA->ncdf_data.ET.min_threshold_value=0;
 //Pre-process (to accelerate model)
-OBS_STRUCT_PREPROCESS(DATA->ncdf_data->ET);
+OBS_STRUCT_PREPROCESS(&DATA->ncdf_data.ET);
+printf("Successfully pre-processed ET...\n");
 
-
-//Step 2. Default values
-DATA->ncdf_data->ET.obs_unc_type=1;
-DATA->ncdf_data->ET.single_unc=2;
-DATA->ncdf_data->ET.threshold=0;
-//Pre-process (to accelerate model)
-OBS_STRUCT_PREPROCESS(DATA->ncdf_data->ET);
+// 
+// 
+// //Step 2. Default values
+// DATA->ncdf_data->ET.obs_unc_type=1;
+// DATA->ncdf_data->ET.single_unc=2;
+// DATA->ncdf_data->ET.threshold=0;
+// //Pre-process (to accelerate model)
+// OBS_STRUCT_PREPROCESS(DATA->ncdf_data->ET);
 
 
 
@@ -348,7 +350,7 @@ printf("***Dynamic allocation done!***\n");
    memcpy(DATA->LAI,DATA->ncdf_data.LAI.values,DATA->nodays*sizeof(double));
    memcpy(DATA->NBE,DATA->ncdf_data.NBE.values,DATA->nodays*sizeof(double));
    memcpy(DATA->ABGB,DATA->ncdf_data.ABGB.values,DATA->nodays*sizeof(double));
-   memcpy(DATA->ET,DATA->ncdf_data.ET.values,DATA->nodays*sizeof(double));
+   //memcpy(DATA->ET,DATA->ncdf_data.ET.values,DATA->nodays*sizeof(double));
    memcpy(DATA->EWT,DATA->ncdf_data.EWT.values,DATA->nodays*sizeof(double));
    /*memcpy(DATA->BAND1,DATA->ncdf_data.BAND1.values,DATA->nodays*sizeof(double));
    memcpy(DATA->BAND2,DATA->ncdf_data.BAND2.values,DATA->nodays*sizeof(double));
@@ -368,7 +370,7 @@ for (n=0;n<DATA->nodays;n++){
                 if (DATA->LAI[n]>-9998){DATA->nlai=DATA->nlai+1;}
                 if (DATA->NBE[n]>-9998){DATA->nnbe=DATA->nnbe+1;}
                 if (DATA->ABGB[n]>-9998){DATA->nabgb=DATA->nabgb+1;}
-                if (DATA->ET[n]>-9998){DATA->net=DATA->net+1;}
+                //if (DATA->ET[n]>-9998){DATA->net=DATA->net+1;}
                 if (DATA->EWT[n]>-9998){DATA->newt=DATA->newt+1;}
 /*              if (DATA->BAND1>-9998){DATA->nband1=DATA->nband1+1;}
                 if (DATA->BAND2>-9998){DATA->nband2=DATA->nband2+1;}
@@ -417,7 +419,7 @@ DATA->meanprec = DATA->ncdf_data.TOTAL_PREC.reference_mean;
 	if (DATA->nlai>0){DATA->laipts=calloc(DATA->nlai,sizeof(int));}
 	if (DATA->nnbe>0){DATA->nbepts=calloc(DATA->nnbe,sizeof(int));}
 	if (DATA->nabgb>0){DATA->abgbpts=calloc(DATA->nabgb,sizeof(int));}
-	if (DATA->net>0){DATA->etpts=calloc(DATA->net,sizeof(int));}
+	//if (DATA->net>0){DATA->etpts=calloc(DATA->net,sizeof(int));}
 	if (DATA->newt>0){DATA->ewtpts=calloc(DATA->newt,sizeof(int));}
 	/*if (DATA->nband1>0){DATA->band1pts=calloc(DATA->nband1,sizeof(int));}
 	if (DATA->nband2>0){DATA->band2pts=calloc(DATA->nband2,sizeof(int));}
@@ -461,7 +463,7 @@ DATA->meanprec = DATA->ncdf_data.TOTAL_PREC.reference_mean;
 
 
 
-
+printf("Done reading all data...\n");
 
 return 0;
 
