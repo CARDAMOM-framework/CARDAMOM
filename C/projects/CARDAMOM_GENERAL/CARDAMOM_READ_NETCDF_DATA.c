@@ -469,6 +469,9 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 	DATA->OTHERPRIORS.values=ncdf_read_double_var(ncid, "OTHERPRIORS", &(DATA->OTHERPRIORS.length));
 	DATA->OTHERPRIORSUNC.values=ncdf_read_double_var(ncid, "OTHERPRIORSUNC", &(DATA->OTHERPRIORSUNC.length));
 
+	DATA->SNOWFALL.values=ncdf_read_double_var(ncid, "SNOWFALL", &(DATA->SNOWFALL.length));
+		DATA->SNOWFALL.reference_mean=ncdf_read_double_attr(ncid, "SNOWFALL","reference_mean");
+
 	DATA->SSRD.values=ncdf_read_double_var(ncid, "SSRD", &(DATA->SSRD.length));
 		DATA->SSRD.reference_mean=ncdf_read_double_attr(ncid, "SSRD","reference_mean");
 
