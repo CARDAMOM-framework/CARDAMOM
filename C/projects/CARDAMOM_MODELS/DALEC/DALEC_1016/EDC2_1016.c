@@ -8,12 +8,12 @@
 #include "stdio.h"
 
 
-int EDC2_1015(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC2_1016(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
-struct DALEC_1015_PARAMETERS P=DALEC_1015_PARAMETERS;
-struct DALEC_1015_FLUXES F=DALEC_1015_FLUXES;
-struct DALEC_1015_POOLS S=DALEC_1015_POOLS;
+struct DALEC_1016_PARAMETERS P=DALEC_1016_PARAMETERS;
+struct DALEC_1016_FLUXES F=DALEC_1016_FLUXES;
+struct DALEC_1016_POOLS S=DALEC_1016_POOLS;
 
 /*Extract DALEC model here*/
 /*Copy model pointer for brevity*/

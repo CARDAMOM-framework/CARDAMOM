@@ -4,7 +4,7 @@
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
-struct DALEC_1015_PARAMETERS{
+struct DALEC_1016_PARAMETERS{
 /*DALEC PARAMETERS*/
 int tr_lit2soil;
 int f_auto;
@@ -43,19 +43,21 @@ int h2o_xfer;
 int PUW_Qmax;
 int i_PUW;
 int boese_r;
+int Tminmin;
+int Tminmax;
 int i_SWE;
 int min_melt;
 int melt_slope;
 int scf_scalar;
-} DALEC_1015_PARAMETERS={
+} DALEC_1016_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
-    40
+    40,41,42
 };
 
-struct DALEC_1015_FLUXES{
+struct DALEC_1016_FLUXES{
 /*DALEC FLUXES*/
 int gpp;   /*GPP*/
 int temprate;   /*Temprate*/
@@ -91,14 +93,14 @@ int paw2puw;   /*PAW->PUW transfer*/
 int q_puw;   /*PUW runoff*/
 int melt;   /*Snow melt*/
 int scf;   /*Snow cover fraction*/
-} DALEC_1015_FLUXES={
+} DALEC_1016_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33
 };
 
-struct DALEC_1015_POOLS{
+struct DALEC_1016_POOLS{
 /*DALEC POOLS*/
 int C_lab; /*Labile C*/
 int C_fol; /*Foliar C*/
@@ -109,19 +111,19 @@ int C_som; /*Soil C*/
 int H2O_PAW; /*Plant available H2O*/
 int H2O_PUW; /*Plant unavailable H2O*/
 int H2O_SWE; /*Snow water equivalent*/
-} DALEC_1015_POOLS={
+} DALEC_1016_POOLS={
     0,1,2,3,4,5,6,7,8
 };
 
-int DALEC_1015_MODCONFIG(DALEC * DALECmodel){
+int DALEC_1016_MODCONFIG(DALEC * DALECmodel){
 
-struct DALEC_1015_PARAMETERS P=DALEC_1015_PARAMETERS;
-struct DALEC_1015_FLUXES F=DALEC_1015_FLUXES;
-struct DALEC_1015_POOLS S=DALEC_1015_POOLS;
+struct DALEC_1016_PARAMETERS P=DALEC_1016_PARAMETERS;
+struct DALEC_1016_FLUXES F=DALEC_1016_FLUXES;
+struct DALEC_1016_POOLS S=DALEC_1016_POOLS;
 
 DALECmodel->nopools=9;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=41;
+DALECmodel->nopars=43;
 DALECmodel->nofluxes=34;
 
 //declaring observation operator structure, and filling with DALEC configurations
@@ -130,7 +132,7 @@ static OBSOPE OBSOPE;
 INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 
 //Set SUPPORT_OBS values to true if model supports observation operation.
-printf("DALEC_1015_MODCONFIG, Line 22...\n");
+printf("DALEC_1016_MODCONFIG, Line 22...\n");
 OBSOPE.SUPPORT_GPP_OBS=true;
 OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
@@ -194,12 +196,12 @@ return 0;}
 
 
 
-int DALEC_1015(DATA DATA, double const *pars)
+int DALEC_1016(DATA DATA, double const *pars)
 {
 
-struct DALEC_1015_PARAMETERS P=DALEC_1015_PARAMETERS;
-struct DALEC_1015_FLUXES F=DALEC_1015_FLUXES;
-struct DALEC_1015_POOLS S=DALEC_1015_POOLS;
+struct DALEC_1016_PARAMETERS P=DALEC_1016_PARAMETERS;
+struct DALEC_1016_FLUXES F=DALEC_1016_FLUXES;
+struct DALEC_1016_POOLS S=DALEC_1016_POOLS;
 
 double gpppars[11],pi;
 /*C-pools, fluxes, meteorology indices*/
@@ -321,9 +323,22 @@ gpppars[5]=DOY[n];
 gpppars[7]=SSRD[n];
 
 
+/*Temp scaling factor*/
+double g;
+int Tminmin = pars[P.Tminmin] - 273.15; 
+int Tminmax = pars[P.Tminmax] - 273.15;
+if( T2M_MIN[n] < Tminmin ) {
+    g=0;
+}
+else if (T2M_MIN[n] > Tminmax) {
+    g=1;
+}
+else {
+    g=(T2M_MIN[n] - Tminmin)/(Tminmax - Tminmin);
+}
 
 /*GPP*/
-FLUXES[f+F.gpp]=ACM(gpppars,constants)*fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1);
+FLUXES[f+F.gpp]=ACM(gpppars,constants)*fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1)*g;
 /*Evapotranspiration*/
 FLUXES[f+F.et]=FLUXES[f+F.gpp]*sqrt(VPD[n])/pars[P.uWUE]+SSRD[n]*pars[P.boese_r];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
