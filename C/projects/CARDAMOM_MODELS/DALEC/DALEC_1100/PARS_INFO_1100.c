@@ -240,6 +240,22 @@ CARDADATA->parmax[P.init_T_mem]=1;
 CARDADATA->parmin[P.init_LAIW_mem]=0.01;
 CARDADATA->parmax[P.init_LAIW_mem]=1;
 
+/*iSWE: initial for state variable SWE snow water equivalent*/
+CARDADATA->parmin[P.i_SWE]=0.000001;
+CARDADATA->parmax[P.i_SWE]=10000;
+
+/*sn1: min threshold for melt*/
+CARDADATA->parmin[P.min_melt]=240;
+CARDADATA->parmax[P.min_melt]=270;
+
+/*sn2: slope*/
+CARDADATA->parmin[P.melt_slope]=0.00001;
+CARDADATA->parmax[P.melt_slope]=1;
+
+/*sn3: snow cover fraction scalar*/
+CARDADATA->parmin[P.scf_scalar]=0.001;
+CARDADATA->parmax[P.scf_scalar]=1000.0;
+
 return 0;
 
 }
