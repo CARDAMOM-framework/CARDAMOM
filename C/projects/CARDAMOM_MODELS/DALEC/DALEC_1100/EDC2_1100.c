@@ -93,6 +93,7 @@ int f=0;
 for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nofluxes+f];}}
 /*Total prec*/
 double TOTAL_PREC=0;
+double TOTAL_SNOWFALL=0;
 for (n=0;n<N_timesteps;n++){TOTAL_PREC+=PREC[n];TOTAL_SNOWFALL+=SNOWFALL[n];}
 
 

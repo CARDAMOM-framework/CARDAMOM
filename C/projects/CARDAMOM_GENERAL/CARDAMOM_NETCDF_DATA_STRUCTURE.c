@@ -83,6 +83,12 @@ double Uncertainty;
 double Annual_Uncertainty;
 }NBE_STRUCT;
 
+typedef struct SNOWFALL_STRUCT{
+double* values; //NULL if not present
+size_t length; //Set to 0 if not present
+double reference_mean;
+}SNOWFALL_STRUCT;
+
 typedef struct SSRD_STRUCT{
 double* values; //NULL if not present
 size_t length; //Set to 0 if not present
@@ -143,6 +149,7 @@ ONE_DIM_VAR_STRUCT PARPRIORUNC;
 ONE_DIM_VAR_STRUCT OTHERPRIORS;
 ONE_DIM_VAR_STRUCT OTHERPRIORSUNC;
 ONE_DIM_VAR_WITH_UNCERTAINTY_STRUCT SOM;
+SNOWFALL_STRUCT SNOWFALL;
 SSRD_STRUCT SSRD;
 T2M_MAX_STRUCT T2M_MAX;
 T2M_MIN_STRUCT T2M_MIN;

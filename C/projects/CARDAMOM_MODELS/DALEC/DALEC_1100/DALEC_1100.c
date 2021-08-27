@@ -25,7 +25,6 @@ int t_root;
 int t_lit;
 int t_soil;
 int temp_factor;
-int canopy_eff;
 int Bday;
 int f_lab;
 int labile_rel;
@@ -76,7 +75,7 @@ int scf_scalar;
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
-    50,51,52,53,54
+    50,51,52,53
 };
 
 struct DALEC_1100_FLUXES{
@@ -161,7 +160,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=9;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=55;
+DALECmodel->nopars=54;
 DALECmodel->nofluxes=37;
 
 //declaring observation operator structure, and filling with DALEC configurations
