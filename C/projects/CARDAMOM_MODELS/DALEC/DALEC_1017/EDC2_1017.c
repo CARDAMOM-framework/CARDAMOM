@@ -20,7 +20,7 @@ struct DALEC_1017_POOLS S=DALEC_1017_POOLS;
 DALEC *MODEL=(DALEC *)DATA.MODEL;
 
 double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
-double *SNOW=DATA.ncdf_data.SNOWFALL.values;
+double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
 double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 double *POOLS=DATA.M_POOLS;
 double *FLUXES=DATA.M_FLUXES;
@@ -95,7 +95,7 @@ for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nof
 /*Total prec*/
 double TOTAL_PREC=0;
 double TOTAL_SNOW=0;
-for (n=0;n<N_timesteps;n++){TOTAL_PREC+=PREC[n];TOTAL_SNOW+=SNOW[n];}
+for (n=0;n<N_timesteps;n++){TOTAL_PREC+=PREC[n];TOTAL_SNOW+=SNOWFALL[n];}
 
 
 double Fin[9];
