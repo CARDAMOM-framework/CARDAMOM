@@ -193,6 +193,14 @@ CARDADATA->parmax[P.melt_slope]=1;
 CARDADATA->parmin[P.scf_scalar]=0.001;
 CARDADATA->parmax[P.scf_scalar]=1000.0;
 
+/*Reference VPD */
+CARDADATA->parmin[P.vpd_ref]=10;
+CARDADATA->parmax[P.vpd_ref]=10000;
+
+/*VPD curvature exponent */
+CARDADATA->parmin[P.vpd_exp]=0.001;
+CARDADATA->parmax[P.vpd_exp]=1000;
+
 return 0;
 
 }
