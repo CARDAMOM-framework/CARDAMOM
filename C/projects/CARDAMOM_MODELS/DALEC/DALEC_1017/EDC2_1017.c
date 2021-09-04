@@ -8,19 +8,19 @@
 #include "stdio.h"
 
 
-int EDC2_1015(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC2_1017(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
-struct DALEC_1015_PARAMETERS P=DALEC_1015_PARAMETERS;
-struct DALEC_1015_FLUXES F=DALEC_1015_FLUXES;
-struct DALEC_1015_POOLS S=DALEC_1015_POOLS;
+struct DALEC_1017_PARAMETERS P=DALEC_1017_PARAMETERS;
+struct DALEC_1017_FLUXES F=DALEC_1017_FLUXES;
+struct DALEC_1017_POOLS S=DALEC_1017_POOLS;
 
 /*Extract DALEC model here*/
 /*Copy model pointer for brevity*/
 DALEC *MODEL=(DALEC *)DATA.MODEL;
 
 double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
-double *SNOW=DATA.ncdf_data.SNOWFALL.values;
+double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
 double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 double *POOLS=DATA.M_POOLS;
 double *FLUXES=DATA.M_FLUXES;
@@ -95,7 +95,7 @@ for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nof
 /*Total prec*/
 double TOTAL_PREC=0;
 double TOTAL_SNOW=0;
-for (n=0;n<N_timesteps;n++){TOTAL_PREC+=PREC[n];TOTAL_SNOW+=SNOW[n];}
+for (n=0;n<N_timesteps;n++){TOTAL_PREC+=PREC[n];TOTAL_SNOW+=SNOWFALL[n];}
 
 
 double Fin[9];
