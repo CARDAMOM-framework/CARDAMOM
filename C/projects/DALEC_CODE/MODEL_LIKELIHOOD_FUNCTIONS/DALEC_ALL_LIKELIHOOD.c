@@ -10,6 +10,7 @@
 #include "DALEC_LIKELIHOOD_LAI.c"
 #include "DALEC_LIKELIHOOD_NEE.c"
 #include "DALEC_LIKELIHOOD_CH4.c"
+#include "DALEC_LIKELIHOOD_POOLINT_ANN.c"
 /*Any likelihood functions used in multiple MLF functions are kept here!*/
 
 
@@ -99,10 +100,21 @@ if (D.ID==1010){
 	P=P+DALEC_LIKELIHOOD_CH4(D);
 	}
 
-	if (D.ID==1011){
+if (D.ID==1011){
 	P=P+DALEC_LIKELIHOOD_CH4(D);
 	}
 /*shuang: 101010 was created for climate sensitivity test Nov2020*/
+
+/* Continuous function towards the initial pools being similar to end pools*/
+/* Added by G. Quetin 10/9/2019 originally, remplemented 08/20/2021*/
+/* double longrun=1.0;*/ /* set to 1.0 to constrain initial conditions in long run*/
+printf("prePOOLINTprob = %2.2f\n",P);
+/*P=P+DALEC_LIKELIHOOD_POOLINT(D);*/
+double POOLINT_P;
+POOLINT_P = DALEC_LIKELIHOOD_POOLINT_ANN(D);
+P=P+POOLINT_P; /*DALEC_LIKELIHOOD_POOLINT_ANN(D);*/
+printf("POOLINTprob = %2.2f\n",POOLINT_P);
+
 
 double mam=0,am=0;
 
