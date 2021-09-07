@@ -62,7 +62,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[3-1]==1))
 /*Root turnover greater than SOM turnover at meantemp*/
 /*same as this*/
 /*\text{EDC 4: }(1-\pavii)^{365} > \Pi_{i=1}^{365} (1-\paix \tratei)*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1)) & (pars[6]<pars[8]*exp(pars[9]*meantemp))){EDC=0;EDCD->PASSFAIL[4-1]=0;}
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1)) & (pars[6]<pars[8])){EDC=0;EDCD->PASSFAIL[4-1]=0;}
 
 /*EDC no 5 is addressed in EDC2_FIREBUCKET.c*/
 
@@ -84,7 +84,8 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[15-1]==1)
 
 /*EDC CHECK NO 17*/ 
 /*Jmax and Vmax related to each other, by G. Quetin 04.07.2020*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[1-1]==1)) & ((pars[34]/pars[35]< .8) || (pars[34]/pars[35]> 1.25))){EDC=0;EDCD->PASSFAIL[1-1]=0;}
+/*Updated by G. Quetin 06.05.2021, after bug fix update to higher value of Jmax per Vmax*/
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[1-1]==1)) & ((pars[34]/pars[35]< 0.8) || (pars[34]/pars[35]> 2.2))){EDC=0;EDCD->PASSFAIL[17-1]=0;}
 
 /*Add any generalisations derivable from EDC2 (post-run checks) here*/
 /*Note: these must be tested to ensure that DALEC2 run is NOT needed */
