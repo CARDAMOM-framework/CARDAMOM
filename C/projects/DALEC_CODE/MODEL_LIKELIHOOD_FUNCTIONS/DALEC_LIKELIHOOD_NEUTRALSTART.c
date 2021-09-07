@@ -1,7 +1,7 @@
 double DALEC_LIKELIHOOD_NEUTRALSTART(DATA D){
 
 /* initial variables */
-int n
+int n;
 double tot_exp=0, P=0;
 int nodays=D.nodays;
 

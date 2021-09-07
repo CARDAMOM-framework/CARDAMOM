@@ -210,7 +210,7 @@ if (EDC==1 || DIAG==1)
 {double min; int nn;
 while ((EDC==1 || DIAG==1))
 {nn=0;PEDC=1;while ((nn<nodays+1) & (PEDC==1))
-{if ((D.M_GPP[nn]<minflux) || isnan(D.M_GPP[nn])==1)
+{if ((DATA.M_GPP[nn]<minflux) || isnan(DATA.M_GPP[nn])==1)
 {EDC=0;PEDC=0;EDCD->PASSFAIL[36+n]=0;}nn=nn+1;};
 }
 }
