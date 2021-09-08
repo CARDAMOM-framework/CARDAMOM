@@ -38,7 +38,17 @@
 
 
 
-nccbffilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.nc.cbf';
+nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS.nc.cbf';
+
+
+%first test is retrieving parameters. Skip only for partial testing
+retrievepars=1;
+if retrievepars==1
+     cbrfilename1100='DUMPFILES/MODEL_ID_1100_EXAMPLE.cbr';
+    CBR=CARDAMOM_RUN_MDF(nccbffilename1100,[],cbrfilename1100);
+end
+
+
  cbrfilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.cbr';
  cbrfilename1100ref='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr';
  cbrfilename1100refmat='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr.mat';
@@ -64,6 +74,7 @@ CBF1100.EDC.values=0;
 
 
 CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbftestfile);
+%CARDAMOM_RUN_MDF(nccbftestfile)
 CBF1100test=CARDAMOM_READ_NC_CBF_FILE(nccbftestfile);
  updateref=1;
  if updateref==1
