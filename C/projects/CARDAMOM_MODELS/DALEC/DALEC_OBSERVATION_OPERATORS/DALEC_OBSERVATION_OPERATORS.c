@@ -163,6 +163,7 @@ return 0;}
 
 int DALEC_OBSOPE_ABGB(DATA * D, OBSOPE * O){
 
+
 int N=D->ncdf_data.TIME_INDEX.length;
 
 if (D->otherpriors[0]>-9999){
@@ -185,6 +186,7 @@ for (nn=0;nn<O->ABGB_n_pools;nn++){
 D->M_ABGB[n]+=(D->M_POOLS[p+O->ABGB_pools[nn]]+D->M_POOLS[nxp+O->ABGB_pools[nn]])*0.5;}
 
 }}
+
 
 return 0;
 }
