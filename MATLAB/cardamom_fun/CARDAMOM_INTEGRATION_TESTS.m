@@ -72,7 +72,7 @@ CBF1100test=CARDAMOM_READ_NC_CBF_FILE(nccbftestfile);
 
 updatecbrref=1;
  if updatecbrref==1
-CARDAMOM_RUN_MDF(nccbftestfile,[],cbrfilename1100ref);
+CARDAMOM_RUN_MDF(CBF1100test,[],cbrfilename1100ref);
  %save(cbrfilename1100refmat, 'CBRref');
  end
 
