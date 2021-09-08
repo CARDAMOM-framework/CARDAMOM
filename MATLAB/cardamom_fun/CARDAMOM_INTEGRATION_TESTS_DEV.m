@@ -43,6 +43,7 @@ CBF1100dev0=CARDAMOM_READ_NC_CBF_FILE(nccbftestfiledev);
   CBRref=CARDAMOM_RUN_MODEL(nccbftestfiledev,cbrfilename1100ref);
  save(cbrfilename1100refmat, 'CBRref');
  end
+load(cbrfilename1100refmat, 'CBRref');
 
 
 f=fields(CBF1100dev0);cbfioerror=0;
@@ -86,9 +87,8 @@ end
 
 CBF1100dev_noobs=CBF1100dev0;
 CBF1100dev=CBF1100dev0;
-CBF1100dev.ET.values([1,2,4,5])=[0.1,0.2,0.4,0.5];
-CBF1100dev.ETunc.values=CBF1100dev.ET.values*NaN;
-CBF1100dev.ETunc.values([1,2,4,5])=[0.1,0.2,0.4,0.5].^2;
+CBF1100dev.ET.values=CBRref.FLUXES(1,:,29);
+CBF1100dev.ETunc.values=CBRref.FLUXES(1,:,29)*0.1;
 CBF1100dev.ET.Attributes(3).Name='opt_unc_type';
 CBF1100dev.ET.Attributes(3).Value=0;
 CBF1100dev.ET.Attributes(4).Name='opt_normalization';
@@ -97,7 +97,8 @@ CBF1100dev.ET.Attributes(5).Name='opt_mean_only';
 CBF1100dev.ET.Attributes(5).Value=0;
 CBF1100dev.ET.Attributes(6).Name='opt_structural_error';
 CBF1100dev.ET.Attributes(6).Value=0;
-
+CBF1100dev.ET.Attributes(7).Name='opt_filter';
+CBF1100dev.ET.Attributes(7).Value=2;
 
 
 
@@ -125,20 +126,22 @@ CBF1100dev.ET.Attributes(6).Value=0;
 
 
 
+% 
+% CARDAMOM_WRITE_NC_CBF_FILE(CBF1100dev,nccbftestfiledev);
+% CARDAMOM_WRITE_NC_CBF_FILE(CBF1100dev_noobs,nccbftestfiledev_noobs);
 
-CARDAMOM_WRITE_NC_CBF_FILE(CBF1100dev,nccbftestfiledev);
-CARDAMOM_WRITE_NC_CBF_FILE(CBF1100dev_noobs,nccbftestfiledev_noobs);
-
- CBR=CARDAMOM_RUN_MODEL(nccbftestfiledev,cbrfilename1100);
- CBR_noobs=CARDAMOM_RUN_MODEL(nccbftestfiledev_noobs,cbrfilename1100);
+ CBR=CARDAMOM_RUN_MODEL(CBF1100dev,cbrfilename1100);
+ CBR_noobs=CARDAMOM_RUN_MODEL(CBF1100dev_noobs,cbrfilename1100);
 
 
+ 
+ 
+ 
+ 
+ 
 %CHeck ET 
-
-ET1=CBR.FLUXES(1,:,29);
-
 pts=[1,2,4,5];
-total(-0.5*(CBF1100dev.ET.values(pts)-ET1(pts)).^2./CBF1100dev.ETunc.values(pts).^2)
+total(-0.5*(CBF1100dev.ET.values(pts)-ET1(pts)').^2./CBF1100dev.ETunc.values(pts).^2)
 
 
 %Converting to netcdf file
@@ -158,7 +161,6 @@ total(-0.5*(CBF1100dev.ET.values(pts)-ET1(pts)).^2./CBF1100dev.ETunc.values(pts)
 
 
 
-load(cbrfilename1100refmat, 'CBRref');
 
 % 
 % %Compare CBR against benchmarks 

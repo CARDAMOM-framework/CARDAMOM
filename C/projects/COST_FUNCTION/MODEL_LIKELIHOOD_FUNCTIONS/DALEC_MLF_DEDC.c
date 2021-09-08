@@ -15,7 +15,6 @@ struct EDCDIAGNOSTIC EDCD;
 /*EDCD=*((DALEC *)DATA.MODEL)->EDCD;*/
 EDCD=*MODEL->EDCD;
 
-printf("****\n");
 int EDC,n;
 double P=0,P_p;
 EDCD.pEDC=0;

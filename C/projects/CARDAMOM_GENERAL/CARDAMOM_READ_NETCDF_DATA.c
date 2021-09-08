@@ -62,40 +62,6 @@
 
 
 
-//Function for reading these
-/*OBS_STRUCT READ_NETCDF_OBS_FIELDS(int ncid, char * OBSNAME){
-OBS_STRUCT OBS;
-printf("Struct declared OK\n");
-
-printf("OBSNAME = %s\n",OBSNAME);
-
-
-char uncsf[50],OBSunc[50];
-strcpy(OBSunc,OBSNAME);
-strcpy(uncsf,"unc");
-strcat(OBSunc,uncsf);
-
-
-
-size_t unclength;
-OBS.unc = ncdf_read_double_var(ncid, OBSunc , &unclength);
-
-
-
-
-OBS.values = ncdf_read_double_var(ncid, OBSNAME , &(OBS.length));
-OBS.opt_log_transform=ncdf_read_int_attr(ncid, OBSNAME,"opt_log_transform");
-OBS.opt_normalization=ncdf_read_int_attr(ncid, OBSNAME,"opt_normalization");
-OBS.opt_mean_only=ncdf_read_int_attr(ncid, OBSNAME,"opt_mean_only");
-OBS.opt_structural_error=ncdf_read_int_attr(ncid, OBSNAME,"opt_structural_error");
-OBS.min_threshold_value=ncdf_read_double_attr(ncid, OBSNAME,"min_threshold_value");
-OBS.single_monthly_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_monthly_unc");
-OBS.single_annual_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_annual_unc");
-OBS.structural_unc=ncdf_read_double_attr(ncid, OBSNAME,"structural_unc");
-return OBS;
-};
-*/
-
 
 
 int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)

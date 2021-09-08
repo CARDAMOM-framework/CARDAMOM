@@ -44,6 +44,15 @@ int StringEndsWith(const char *str, const char *suffix)
     return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
 }
 
+int default_int_value(int * A, int B){
+    if (*A==-9999){*A=B;}
+    return 0;}
+        
+        
+int default_double_value(double * A, double B){
+    if (*A==-9999){*A=B;}
+    return 0;}
+
 int CARDAMOM_DATA_CHECKS(DATA *DATA){
 /*General Checks*/
 printf("***CBF FILE SUMMARY***\n");
@@ -191,6 +200,13 @@ int CARDAMOM_READ_BINARY_DATA(char *ncfilename,DATA *DATA)
 
     int n,m;
     
+    
+    
+    
+    
+
+
+    
 	  //Step 1.Data file is of the newer NetCDF format
 	  CARDAMOM_READ_NETCDF_DATA(ncfilename, &(DATA->ncdf_data));
 
@@ -198,12 +214,19 @@ printf("Successfully read NETCDF data...\n");
 
 
 
-//Step 2. Default values
-DATA->ncdf_data.ET.opt_unc_type=1;
-DATA->ncdf_data.ET.single_unc=2;
-DATA->ncdf_data.ET.min_threshold_value=0;
 //Pre-process (to accelerate model)
+
+//Step 2. Default ET cost function values
+default_int_value(&DATA->ncdf_data.ET.opt_unc_type,1);
+default_int_value(&DATA->ncdf_data.ET.opt_filter,0);
+default_double_value(&DATA->ncdf_data.ET.single_unc,2);
+default_double_value(&DATA->ncdf_data.ET.min_threshold_value,0);
+
 OBS_STRUCT_PREPROCESS(&DATA->ncdf_data.ET);
+printf("DATA->ncdf_data.ET.opt_unc_type = %i\n",DATA->ncdf_data.ET.opt_unc_type);
+printf("DATA->ncdf_data.ET.opt_filter = %i\n",DATA->ncdf_data.ET.opt_filter);
+printf("DATA->ncdf_data.ET.single_unc = %2.2f\n",DATA->ncdf_data.ET.single_unc);
+printf("DATA->ncdf_data.ET.min_threshold_value = %2.2f\n", DATA->ncdf_data.ET.min_threshold_value);
 printf("Successfully pre-processed ET...\n");
 
 // 

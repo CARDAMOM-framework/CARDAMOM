@@ -6,16 +6,15 @@
 
 
 
-typedef struct OBS_STRUCT{
+typedef struct TIMESERIES_OBS_STRUCT{
 size_t length;
 double * values;
 size_t unc_length;
 double * unc;
-int opt_unc_type;//log-transform data 
+int opt_unc_type;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
 int opt_normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
 int opt_filter;//(0 = no filter, 1 = mean only, 2==annual mean & monthly anomaly, 3 = seasonal cycle & inter-annual anomalies). 
 int opt_structural_error;
-int opt_mean_only;
 double min_threshold_value;
 double single_monthly_unc;
 double single_annual_unc;
@@ -25,7 +24,16 @@ double structural_unc;
 //expand as needed
 int valid_obs_length;//number of non-empty obs
 int * valid_obs_indices;//indices of non-empty obs
-}OBS_STRUCT;
+}TIMESERIES_OBS_STRUCT;
+
+
+
+typedef struct SINGLE_OBS_STRUCT{
+double value;
+double unc;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
+int opt_unc_type;//log-transform data 
+double min_threshold_value;
+}SINGLE_OBS_STRUCT;
 
 
 
@@ -33,7 +41,8 @@ int * valid_obs_indices;//indices of non-empty obs
 
 
 
-double OBS_STRUCT_PREPROCESS(OBS_STRUCT * OBS){
+
+double TIMESERIES_OBS_STRUCT_PREPROCESS(TIMESERIES_OBS_STRUCT * OBS){
 
 
 
@@ -77,8 +86,8 @@ return 0;
 
 
 //Function for reading these
-OBS_STRUCT READ_NETCDF_OBS_FIELDS(int ncid, char * OBSNAME){
-OBS_STRUCT OBS;
+TIMESERIES_OBS_STRUCT  READ_NETCDF_TIMESERIES_OBS_FIELDS(int ncid, char * OBSNAME){
+TIMESERIES_OBS_STRUCT OBS;
 printf("Struct declared OK\n");
 
 printf("OBSNAME = %s\n",OBSNAME);
@@ -88,6 +97,10 @@ char uncsf[50],OBSunc[50];
 strcpy(OBSunc,OBSNAME);
 strcpy(uncsf,"unc");
 strcat(OBSunc,uncsf);
+
+printf("(before read) OBS.opt_unc_type = %i\n",OBS.opt_unc_type);
+printf("(before read) OBS.opt_filter = %i\n",OBS.opt_filter);
+
 
 OBS.unc = ncdf_read_double_var(ncid, OBSunc , &OBS.unc_length);
 
@@ -105,7 +118,8 @@ OBS.structural_unc=ncdf_read_double_attr(ncid, OBSNAME,"structural_unc");
 
 
 
-
+printf("(after read) OBS.opt_unc_type = %i\n",OBS.opt_unc_type);
+printf("(after read) OBS.opt_filter = %i\n",OBS.opt_filter);
 
 
 
@@ -118,19 +132,48 @@ return OBS;
 
 
 
+// typedef struct SINGLE_OBS_STRUCT{
+// double value;
+// double unc;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
+// int opt_unc_type;//log-transform data 
+// double min_threshold_value;
+// }SINGLE_OBS_STRUCT;
+// 
+
+
+
+
+//Function for reading these
+SINGLE_OBS_STRUCT OBS_STRUCT READ_NETCDF_SINGLE_OBS_FIELDS(int ncid, char * OBSNAME){
+SINGLE_OBS_STRUCT OBS;
+
+printf("OBSNAME = %s\n",OBSNAME);
+
+
+char uncsf[50],OBSunc[50];
+strcpy(OBSunc,OBSNAME);
+strcpy(uncsf,"unc");
+strcat(OBSunc,uncsf);
+
+
+
+OBS.unc = ncdf_read_double_var(ncid, OBSunc , &OBS.unc_length);
+OBS.value = ncdf_read_double_var(ncid, OBSNAME , &(OBS.length));
+OBS.opt_unc_type=ncdf_read_int_attr(ncid, OBSNAME,"opt_unc_type");//absolute, log, percentage
+OBS.min_threshold_value=ncdf_read_double_attr(ncid, OBSNAME,"min_threshold_value");
+
+
+return OBS;
+};
 
 
 
 
 
 
-
-
-
-double CARDAMOM_LIKELIHOOD_FUNCTION(OBS_STRUCT * OBS,double * MOD){
+double CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(TIMESERIES_OBS_STRUCT * OBS,double * MOD){
 
 /*Data structure, includes model and data*/
-printf("In likelihood function...\n");
 /*EWT constraint*/
 double tot_exp=0;
 int n,m,dn;
@@ -145,7 +188,6 @@ double * values;
 double * unc;
 int opt_log_transform;//log-transform data 
 int opt_normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
-int opt_mean_only;//(0 = no, 1 = yes). 
 int opt_structural_error;
 double min_threshold_value;
 double single_monthly_unc;
@@ -188,7 +230,7 @@ obs[n] = max(obs[n],OBS->min_threshold_value);}}
 double mean_mod=0, mean_obs=0;
 
 
-//calculation of mean
+//calculation of mean where obs are available
 if (OBS->opt_normalization>0 || OBS->opt_filter==1){
 for (n=0;n<N;n++){
 mean_mod += mod[n];
@@ -214,15 +256,15 @@ obs[n]=obs[n]/mean_obs;}
 //log transform
 
 
-if (OBS->opt_unc_type==1)
+if (OBS->opt_unc_type==1){
 for (n=0;n<N;n++){
 mod[n]=log(mod[n]);
 obs[n]=log(obs[n]);
-unc[n]=log(unc[n]);}
+unc[n]=log(unc[n]);}}
 
 
 //Cost function
-
+//This is the only option available for single value (e.g. time invariant) observations
 if (OBS->opt_filter==0){//no filter
 for (n=0;n<N;n++){tot_exp += pow((mod[n] - obs[n])/unc[n],2);}}
 
@@ -252,8 +294,72 @@ free(mod);free(obs);free(unc);
 
 
 double P=-0.5*tot_exp;
+// printf("Completed likelihood function...P = %2.2f\n",P);
+// printf("OBS->opt_filter = %i\n",OBS->opt_filter);
+// printf("OBS->opt_unc_type = %i\n",OBS->opt_unc_type);
 
 return P;
 
-printf("Completed likelihood function...\n");
+}
+
+
+
+
+// typedef struct SINGLE_OBS_STRUCT{
+// double value;
+// double unc;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
+// int opt_unc_type;//log-transform data 
+// double min_threshold_value;
+// }SINGLE_OBS_STRUCT;
+// 
+
+
+
+
+double CARDAMOM_SINGLE_OBS_LIKELIHOOD(SINGLE_OBS_STRUCT * OBS,double MOD){
+
+/*Data structure, includes model and data*/
+/*EWT constraint*/
+double tot_exp=0;
+int n,m,dn;
+/*General notes*/
+/* If D.et_annual_unc<1, then ET constraint is occurring on monthly basis*/
+/* For log_et_obs*/
+
+
+
+
+//Copying memory
+
+double mod = MOD;
+double obs = OBS->value;
+double unc= OBS->unc;
+
+//Setting threshold
+
+if (isinf(OBS->min_threshold_value)==0){
+mod = max(mod,OBS->min_threshold_value);
+obs = max(obs,OBS->min_threshold_value);}
+
+
+if (OBS->opt_unc_type==1){
+for (n=0;n<N;n++){
+mod=log(mod);
+obs=log(obs);
+unc=log(unc);}}
+
+
+//Cost function
+//This is the only option available for single value (e.g. time invariant) observations
+tot_exp += pow((mod- obs)/unc,2);
+
+
+
+double P=-0.5*tot_exp;
+// printf("Completed likelihood function...P = %2.2f\n",P);
+// printf("OBS->opt_filter = %i\n",OBS->opt_filter);
+// printf("OBS->opt_unc_type = %i\n",OBS->opt_unc_type);
+
+return P;
+
 }

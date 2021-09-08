@@ -157,7 +157,6 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[7-1+n]==1
 EDCD->EDCPROB[7-1+n]=-0.5*pow(log(Rs)/log(EQF),2);/*-0.5*pow((Rs-Rm)/etol,2);*/
 
 if (psw==1){
-printf("****\n");
 printf("Pool %i EDCDPROB = %f\n",n,EDCD->EDCPROB[7-1+n]);
 printf("Pool %i Fin = %f,Fout = %f\n",n+1,Fin[n],Fout[n]);
 printf("Pool %i Pstart = %f,Pend = %f\n, Pmeanjan=%f\n",n+1,Pstart,Pend,MPOOLSjan[n]);
@@ -166,8 +165,7 @@ printf("fabs(log(Pend/Pstart)) = %f\n",fabs(log(Pend/Pstart)));
 printf("Rm = %f\n",Rm);
 printf("Rs = %f\n",Rs);
 printf("log(EQF) = %f\n",log(EQF));
-printf("etol = %f\n",etol);
-printf("****\n");}}
+printf("etol = %f\n",etol);}}
 
 
 /*Ensuring that wilting point is at or below the mean H2O pool EDC14*/
