@@ -20,12 +20,16 @@ int EDC,n;
 double P=0,P_p;
 EDCD.pEDC=0;
 
+
+if (DATA.EDC==1){
 MODEL->edc1(PARS,DATA, &EDCD);
-P=P+EDCD.pEDC;
+P=P+EDCD.pEDC;}
+
 
 /*PARAMETER LOG LIKELIHOOD*/
 P=P+LIKELIHOOD_P(DATA,PARS);
 P_p=P;
+
 
 /*running model*/
 MODEL->dalec(DATA, PARS);
@@ -34,13 +38,12 @@ MODEL->dalec(DATA, PARS);
 //for (n=0;n<DATA.nodays;n++){DATA.M_GPP[n]=DATA.M_FLUXES[n*DATA.nofluxes];}
 
 
-
 /*EDC2 check*/
+if (DATA.EDC==1){
 MODEL->edc2(PARS, DATA, &EDCD);
-
-
 /*EDC2 prior*/
-P=P+EDCD.pEDC;
+P=P+EDCD.pEDC;}
+
 
 /*Likelihood*/
 P=P+LIKELIHOOD(DATA);

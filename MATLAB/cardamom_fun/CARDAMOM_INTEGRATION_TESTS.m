@@ -38,17 +38,7 @@
 
 
 
-nccbffilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.nc.cbf';
- cbrfilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.cbr';
- cbrfilename1100ref='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr';
- cbrfilename1100refmat='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr.mat';
-
- ncdisp(nccbffilename1100)
-nccbftestfile='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY.nc.cbf';
-
-
-%testing matlab read-write functions
-
+nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS.nc.cbf';
 CBF1100=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
 CBF1100.EWT.values=CBF1100.EWT.values*NaN;
 CBF1100.Mean_Biomass.values=CBF1100.Mean_Biomass.values*NaN;
@@ -62,8 +52,43 @@ CBF1100.OTHERPRIORSUNC.values=CBF1100.OTHERPRIORSUNC.values*NaN;
 CBF1100.EDC.values=0;
 
 
+%first test is retrieving parameters. Skip only for partial testing
+retrievepars=1;
+if retrievepars==1
+     cbrfilename1100='DUMPFILES/MODEL_ID_1100_EXAMPLE.cbr';
+    CBR=CARDAMOM_RUN_MDF(CBF1100);
+end
+
+
+ cbrfilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.cbr';
+ cbrfilename1100ref='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr';
+ cbrfilename1100refmat='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr.mat';
+
+ ncdisp(nccbffilename1100)
+nccbftestfile='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY.nc.cbf';
+
+
+%testing matlab read-write functions
+
+CBF1100=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
+CBF1100.EWT.values=CBF1100.EWT.values*NaN;
+CBF1100.ABGB.values=CBF1100.ABGB.values*NaN;
+CBF1100.NBE.values=CBF1100.NBE.values*NaN;
+CBF1100.LAI.values=CBF1100.LAI.values*NaN;
+CBF1100.Mean_Biomass.values=CBF1100.Mean_Biomass.values*NaN;
+CBF1100.Mean_Fire.values=CBF1100.Mean_Fire.values*NaN;
+CBF1100.Mean_LAI.values=CBF1100.Mean_LAI.values*NaN;
+CBF1100.Mean_GPP.values=CBF1100.Mean_GPP.values*NaN;
+CBF1100.PARPRIORS.values=CBF1100.PARPRIORS.values*NaN;
+CBF1100.OTHERPRIORS.values=CBF1100.OTHERPRIORS.values*NaN;
+CBF1100.PARPRIORUNC.values=CBF1100.PARPRIORUNC.values*NaN;
+CBF1100.OTHERPRIORSUNC.values=CBF1100.OTHERPRIORSUNC.values*NaN;
+CBF1100.EDC.values=0;
+
+
 
 CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbftestfile);
+%CARDAMOM_RUN_MDF(nccbftestfile)
 CBF1100test=CARDAMOM_READ_NC_CBF_FILE(nccbftestfile);
  updateref=1;
  if updateref==1

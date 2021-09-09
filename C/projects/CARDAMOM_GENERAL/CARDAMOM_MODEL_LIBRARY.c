@@ -101,8 +101,9 @@ else if (DATA->ID==1032  ){MODEL_INFO_1032(DATA);}
 //else if (DATA->ID==1200  ){MODEL_INFO_1200(DATA);}
 else if (DATA->ID==1100  ){MODEL_INFO_1100(DATA);}
 else {status=1;}
-
-
+printf("*******CARDAMOM MODEL LIBRARY DONE****************");
+printf("Model ID = %i loaded & configured...", DATA->ID);
+printf("****************************************************");
 
 return status;}
 
