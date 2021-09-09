@@ -62,16 +62,26 @@
 ### “Installing” CARDAMOM <a name="-installing--cardamom"/>
 
 #### Get code from Github
-+ Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework (register github username if you don't have one)
++ Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework, e.g. email github username to someone you know on CARDAMOM team (register github username on github.com/ if you don't have one)
 + Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c
 + Click on green “Code” button, and select git clone with ssh
 + Copy the "git clone" command from previous step
+
+<img width="386" alt="image" src="https://user-images.githubusercontent.com/23563444/132727267-3fc9dff2-141f-477e-b5e8-8ade0d4329a2.png">
+
+
 + Go to unix command line, or terminal window (mac), and choose installation directory:
 
-Recommendation for macs: type "cd /Users/[yourusername]/", in your mac terminal.
 
-Step 2. type "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c" mac terminal.
-- See Git Clone FAQ below for troubleshooting
+
+Recommendation for macs: 
+- type "cd /Users/[yourusername]/", in your mac terminal.
+
+
++
+- "git clone git@github.com:CARDAMOM-framework/CARDAMOM_2.1.6c.git mac terminal.
+
+See Git Clone FAQ below for troubleshooting
 
 **Do not use .zip approach** (!) unless you only intend to download code once, and do not anticipate collaborating with team.
  
