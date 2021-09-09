@@ -65,8 +65,6 @@ The main steps to install CARDAMOM are (i)  get code from github, (ii) configure
 
 #### Get code from Github
 
-+
-
 + Step 1. Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework, e.g. email github username to someone you know on CARDAMOM team (register github username on github.com/ if you don't have one)
 
 + Step 2. Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c
