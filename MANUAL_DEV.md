@@ -64,18 +64,20 @@
 The main steps to install CARDAMOM are (i)  get code from github, (ii) configure matlab directories, and (iii) test DEMO code.
 
 #### Get code from Github
-+Step 1. Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework, e.g. email github username to someone you know on CARDAMOM team (register github username on github.com/ if you don't have one)
-+Step 2. Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c
-+Step 3. Click on green “Code” button, select and copy github url (highlighted in screenshot below)
++ Step 1. Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework, e.g. email github username to someone you know on CARDAMOM team (register github username on github.com/ if you don't have one)
+
++ Step 2. Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c
+
++ Step 3. Click on green “Code” button, select and copy github url (highlighted in screenshot below)
 
 <img width="386" alt="image" src="https://user-images.githubusercontent.com/23563444/132727267-3fc9dff2-141f-477e-b5e8-8ade0d4329a2.png">
 
 
-+Step 4. Go to unix command line, or terminal window (mac), and choose installation directory:
++ Step 4. Go to unix command line, or terminal window (mac), and choose installation directory:
 
 Recommendation for macs: type "cd /Users/[yourusername]/", in your mac terminal.
 
-+Step 5. Type "git clone" in command line, and paste git clone command from previous steps. For example, command looks like "git clone git@github.com:CARDAMOM-framework/CARDAMOM_2.1.6c.git", and press enter. If all goes well, the  download will take a minute or so, and you will see the following outcome: 
++ Step 5. Type "git clone" in command line, and paste git clone command from previous steps. For example, command looks like "git clone git@github.com:CARDAMOM-framework/CARDAMOM_2.1.6c.git", and press enter. If all goes well, the  download will take a minute or so, and you will see the following outcome: 
 
 <img width="829" alt="image" src="https://user-images.githubusercontent.com/23563444/132729053-d80c0a15-c995-48ab-93a1-10da03f31cd0.png">
 
