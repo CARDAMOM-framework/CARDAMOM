@@ -1,9 +1,9 @@
 #pragma once
 #include "../CARDAMOM_GENERAL/NETCDF_AUXILLIARY_FUNCTIONS.c"
 #include "../../math_fun/max.c"
+#include "../CARDAMOM_GENERAL/CARDAMOM_NETCDF_DATA_STRUCTURE.c"
 
 //#include "../CARDAMOM_GENERAL/CARDAMOM_READ_NETCDF_DATA.c"
-
 
 
 typedef struct TIMESERIES_OBS_STRUCT{
@@ -14,13 +14,12 @@ double * unc;
 int opt_unc_type;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
 int opt_normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
 int opt_filter;//(0 = no filter, 1 = mean only, 2==annual mean & monthly anomaly, 3 = seasonal cycle & inter-annual anomalies). 
-int opt_structural_error;
-double min_threshold_value;
+double min_threshold;
 double single_monthly_unc;
 double single_annual_unc;
 double single_mean_unc;
 double single_unc;
-double structural_unc;
+double structural_unc;//this gets added to uncertainty in quadrature.
 //expand as needed
 int valid_obs_length;//number of non-empty obs
 int * valid_obs_indices;//indices of non-empty obs
@@ -30,9 +29,9 @@ int * valid_obs_indices;//indices of non-empty obs
 
 typedef struct SINGLE_OBS_STRUCT{
 double value;
-double unc;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
-int opt_unc_type;//log-transform data 
-double min_threshold_value;
+double unc;
+int opt_unc_type;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
+double min_threshold;
 }SINGLE_OBS_STRUCT;
 
 
@@ -43,12 +42,17 @@ double min_threshold_value;
 
 
 double TIMESERIES_OBS_STRUCT_PREPROCESS(TIMESERIES_OBS_STRUCT * OBS){
-
-
-
 //OBS_STRUCT_DEFAULT_VALUES(OBS);
-
 //Loop through obs and find valid obs
+    
+    //Global defaults for timeseries obs... these are only defined if they haven't been defined earlier
+default_int_value(&OBS->opt_unc_type,0);
+default_int_value(&OBS->opt_normalization,0);
+default_int_value(&OBS->opt_filter,0);
+default_double_value(&OBS->min_threshold,log(0));//minus infinity
+default_double_value(&OBS->structural_unc,0);
+    
+    
 int n,N=(int)OBS->length;
 
 OBS->valid_obs_length=0;
@@ -62,7 +66,6 @@ int k=0;
 for (n=0;n<N;n++){if (OBS->values[n]!=-9999){OBS->valid_obs_indices[k]=n;k=k+1;}}
 
 
-
 //Populate uncertainty if no values are provided
 for (k=0;k<OBS->valid_obs_length;k++){
 if (OBS->unc[OBS->valid_obs_indices[k]]==-9999){
@@ -71,15 +74,21 @@ if (OBS->opt_unc_type<2){
 OBS->unc[OBS->valid_obs_indices[k]]=OBS->single_unc;}
 
 else if (OBS->opt_unc_type==2){
-OBS->unc[OBS->valid_obs_indices[k]]=OBS->single_unc*OBS->values[k];}
+OBS->unc[OBS->valid_obs_indices[k]]=OBS->single_unc*OBS->values[k];}}}
+
+//Scale uncertainty with structural error
+
+if (OBS->structural_unc==DEFAULT_DOUBLE_VAL){OBS->structural_unc=0;}
+
+//Adding structural error
+for (k=0;k<OBS->valid_obs_length;k++){
+    OBS->unc[OBS->valid_obs_indices[k]]=sqrt(pow(OBS->unc[OBS->valid_obs_indices[k]],2) + pow(OBS->structural_unc,2));}
 
 
-}}
-
-return 0;
 
 
-}
+
+return 0;}
 
 
 
@@ -98,18 +107,13 @@ strcpy(OBSunc,OBSNAME);
 strcpy(uncsf,"unc");
 strcat(OBSunc,uncsf);
 
-printf("(before read) OBS.opt_unc_type = %i\n",OBS.opt_unc_type);
-printf("(before read) OBS.opt_filter = %i\n",OBS.opt_filter);
-
 
 OBS.unc = ncdf_read_double_var(ncid, OBSunc , &OBS.unc_length);
-
 OBS.values = ncdf_read_double_var(ncid, OBSNAME , &(OBS.length));
 OBS.opt_unc_type=ncdf_read_int_attr(ncid, OBSNAME,"opt_unc_type");//absolute, log, percentage
 OBS.opt_normalization=ncdf_read_int_attr(ncid, OBSNAME,"opt_normalization");
 OBS.opt_filter=ncdf_read_int_attr(ncid, OBSNAME,"opt_filter");
-OBS.opt_structural_error=ncdf_read_int_attr(ncid, OBSNAME,"opt_structural_error");
-OBS.min_threshold_value=ncdf_read_double_attr(ncid, OBSNAME,"min_threshold_value");
+OBS.min_threshold=ncdf_read_double_attr(ncid, OBSNAME,"min_threshold");
 OBS.single_monthly_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_monthly_unc");
 OBS.single_annual_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_annual_unc");
 OBS.single_mean_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_mean_unc");
@@ -118,16 +122,14 @@ OBS.structural_unc=ncdf_read_double_attr(ncid, OBSNAME,"structural_unc");
 
 
 
-printf("(after read) OBS.opt_unc_type = %i\n",OBS.opt_unc_type);
-printf("(after read) OBS.opt_filter = %i\n",OBS.opt_filter);
 
 
 
-//pre-process obs
-OBS_STRUCT_PREPROCESS(&OBS);
+
+
 
 return OBS;
-};
+}
 
 
 
@@ -136,7 +138,7 @@ return OBS;
 // double value;
 // double unc;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
 // int opt_unc_type;//log-transform data 
-// double min_threshold_value;
+// double min_threshold;
 // }SINGLE_OBS_STRUCT;
 // 
 
@@ -144,27 +146,23 @@ return OBS;
 
 
 //Function for reading these
-SINGLE_OBS_STRUCT OBS_STRUCT READ_NETCDF_SINGLE_OBS_FIELDS(int ncid, char * OBSNAME){
+SINGLE_OBS_STRUCT READ_NETCDF_SINGLE_OBS_FIELDS(int ncid, char * OBSNAME){
+    
 SINGLE_OBS_STRUCT OBS;
 
 printf("OBSNAME = %s\n",OBSNAME);
 
 
-char uncsf[50],OBSunc[50];
-strcpy(OBSunc,OBSNAME);
-strcpy(uncsf,"unc");
-strcat(OBSunc,uncsf);
+size_t length;
 
-
-
-OBS.unc = ncdf_read_double_var(ncid, OBSunc , &OBS.unc_length);
-OBS.value = ncdf_read_double_var(ncid, OBSNAME , &(OBS.length));
+OBS.value = * ncdf_read_double_var(ncid, OBSNAME , &length );
+OBS.unc = ncdf_read_double_attr(ncid, OBSNAME,"unc");
 OBS.opt_unc_type=ncdf_read_int_attr(ncid, OBSNAME,"opt_unc_type");//absolute, log, percentage
-OBS.min_threshold_value=ncdf_read_double_attr(ncid, OBSNAME,"min_threshold_value");
+OBS.min_threshold=ncdf_read_double_attr(ncid, OBSNAME,"min_threshold");
 
 
 return OBS;
-};
+}
 
 
 
@@ -189,7 +187,7 @@ double * unc;
 int opt_log_transform;//log-transform data 
 int opt_normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
 int opt_structural_error;
-double min_threshold_value;
+double min_threshold;
 double single_monthly_unc;
 double single_annual_unc;
 double single_mean_unc;
@@ -219,12 +217,7 @@ mod[n] = MOD[OBS->valid_obs_indices[n]];
 obs[n] = OBS->values[OBS->valid_obs_indices[n]];
 unc[n] = OBS->unc[OBS->valid_obs_indices[n]];}
 
-//Setting threshold
 
-if (isinf(OBS->min_threshold_value)==0){
-for (n=0;n<N;n++){
-mod[n] = max(mod[n],OBS->min_threshold_value);
-obs[n] = max(obs[n],OBS->min_threshold_value);}}
 
 
 double mean_mod=0, mean_obs=0;
@@ -253,8 +246,14 @@ mod[n]=mod[n]/mean_mod;
 obs[n]=obs[n]/mean_obs;}
 }
 
-//log transform
+//threshold-- applies after normalization
+if (isinf(OBS->min_threshold)==0){
+for (n=0;n<N;n++){
+mod[n] = max(mod[n],OBS->min_threshold);
+obs[n] = max(obs[n],OBS->min_threshold);}}
 
+
+//log transform
 
 if (OBS->opt_unc_type==1){
 for (n=0;n<N;n++){
@@ -309,7 +308,7 @@ return P;
 // double value;
 // double unc;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
 // int opt_unc_type;//log-transform data 
-// double min_threshold_value;
+// double min_threshold;
 // }SINGLE_OBS_STRUCT;
 // 
 
@@ -337,16 +336,15 @@ double unc= OBS->unc;
 
 //Setting threshold
 
-if (isinf(OBS->min_threshold_value)==0){
-mod = max(mod,OBS->min_threshold_value);
-obs = max(obs,OBS->min_threshold_value);}
+if (isinf(OBS->min_threshold)==0){
+mod = max(mod,OBS->min_threshold);
+obs = max(obs,OBS->min_threshold);}
 
 
 if (OBS->opt_unc_type==1){
-for (n=0;n<N;n++){
 mod=log(mod);
 obs=log(obs);
-unc=log(unc);}}
+unc=log(unc);}
 
 
 //Cost function

@@ -2,16 +2,7 @@
 #include "../../../math_fun/std.c"
 #include "../../../math_fun/mean.c"
 #include "../../../math_fun/max.c"
-#include "DALEC_806_MFCF.c"
-#include "DALEC_807_MFCF.c"
-#include "DALEC_LIKELIHOOD_GRACE_EWT.c"
-#include "DALEC_LIKELIHOOD_GPP.c"
-#include "DALEC_LIKELIHOOD_LAI.c"
-#include "DALEC_LIKELIHOOD_NBE.c"
-#include "DALEC_LIKELIHOOD_CH4.c"
-#include "DALEC_LIKELIHOOD_ABGB.c"
-#include "DALEC_LIKELIHOOD_SOM.c"
-#include "DALEC_LIKELIHOOD_FIRE.c"
+#include "../CARDAMOM_LIKELIHOOD_FUNCTION.c"
 #include "../../CARDAMOM_MODELS/DALEC/DALEC_OBSERVATION_OPERATORS/DALEC_OBSERVATION_OPERATORS.c"
 
 
@@ -45,17 +36,17 @@ printf("*****")
 
 
 for (n=0;n<100;n++){EDCDmem.SWITCH[n]=1;}
-if (EDCDmem.DIAG==2){for (n=0;n<20;n++){EDCDmem.SWITCH[n]=DATA.otherpriors[n+30];}}
+// if (EDCDmem.DIAG==2){for (n=0;n<20;n++){EDCDmem.SWITCH[n]=DATA.otherpriors[n+30];}}
 
 //if (EDCDmem.DIAG==2){for (n=0;n<20;n++){EDCDmem.SWITCH[n]=0;}}
 
 
 /*EQF is stored in the "DATA.otherpriorunc" fields associated with EDCs 7-12*/
 /*default value is 2*/
-EDCDmem.EQF=DATA.otherpriorunc[36]; 
+EDCDmem.EQF=DATA.ncdf_data.EDC_EQF;
 
 printf("EDCD->EQF* = %2.2f\n",EDCDmem.EQF);
-if (EDCDmem.EQF==-9999){EDCDmem.EQF=2;}
+if (EDCDmem.EQF==DEFAULT_DOUBLE_VAL){EDCDmem.EQF=2;}
 //EDCDmem.EQF=2;
 printf("EDCD->EQF = %2.2f\n",EDCDmem.EQF);
 
@@ -75,20 +66,22 @@ return 0;
 double LIKELIHOOD_P(DATA DATA,double *PARS)
 {
 /*remember - LOG likelihood*/
-double p=0,p_lma,pn;
-int n;
-
-/*looping through all priors for P*/
-/*where no prior distribution is used, insert 9999*/
-for (n=0;n<50;n++){if (DATA.parpriors[n]>-9999 & DATA.parpriorunc[n]!=-9999){
-if (DATA.parpriorunc[n]>0){
-/*log-normal if uncertainty value is positive*/
-p=p-0.5*pow(log(PARS[n]/DATA.parpriors[n])/log(DATA.parpriorunc[n]),2);}
-else {
-/*log-normal if uncertainty value is positive*/
-p=p-0.5*pow((PARS[n]-DATA.parpriors[n])/(DATA.parpriorunc[n]),2);}
-
-}}
+double p=0;
+        
+//         ,p_lma,pn;
+// int n;
+// 
+// /*looping through all priors for P*/
+// /*where no prior distribution is used, insert 9999*/
+// for (n=0;n<50;n++){if (DATA.parpriors[n]>-9999 & DATA.parpriorunc[n]!=-9999){
+// if (DATA.parpriorunc[n]>0){
+// /*log-normal if uncertainty value is positive*/
+// p=p-0.5*pow(log(PARS[n]/DATA.parpriors[n])/log(DATA.parpriorunc[n]),2);}
+// else {
+// /*log-normal if uncertainty value is positive*/
+// p=p-0.5*pow((PARS[n]-DATA.parpriors[n])/(DATA.parpriorunc[n]),2);}
+// 
+// }}
 
 return p;}
 
@@ -117,17 +110,29 @@ DALEC_OBSOPE(&D,O);
 
 //printf("O->SUPPORT_LAI_OBS = %d\n",O->SUPPORT_LAI_OBS);
 
-if (O->SUPPORT_CH4_OBS){   P=P+DALEC_LIKELIHOOD_CH4(D);}
-if (O->SUPPORT_GPP_OBS){   P=P+DALEC_LIKELIHOOD_GPP(D);}
-if (O->SUPPORT_LAI_OBS){   P=P+DALEC_LIKELIHOOD_LAI(D);}
 //if (O->SUPPORT_ET_OBS){   P=P+DALEC_LIKELIHOOD_ET(D);}
+if (O->SUPPORT_ABGB_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ABGB, D.M_ABGB);}
+if (O->SUPPORT_CH4_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.CH4, D.M_CH4);}
 if (O->SUPPORT_ET_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ET, D.M_ET);}
+if (O->SUPPORT_EWT_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.EWT, D.M_EWT);}
+if (O->SUPPORT_GPP_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.GPP, D.M_GPP);}
+if (O->SUPPORT_LAI_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.LAI, D.M_LAI);}
+if (O->SUPPORT_NBE_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.NBE, D.M_NBE);}
+if (O->SUPPORT_DOM_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.DOM, D.M_DOM);}
 
-if (O->SUPPORT_NBE_OBS){   P=P+DALEC_LIKELIHOOD_NBE(D);}
-if (O->SUPPORT_ABGB_OBS){   P=P+DALEC_LIKELIHOOD_ABGB(D);}
-if (O->SUPPORT_SOM_OBS){   P=P+DALEC_LIKELIHOOD_SOM(D);}
-if (O->SUPPORT_GRACE_EWT_OBS){   P=P+DALEC_LIKELIHOOD_GRACE_EWT(D);}
-if (O->SUPPORT_FIR_OBS){   P=P+DALEC_LIKELIHOOD_FIRE(D);}
+//Mean OBS
+
+
+if (O->SUPPORT_ABGB_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_ABGB, D.M_Mean_ABGB);}
+if (O->SUPPORT_FIR_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_FIR, D.M_Mean_FIR);}
+if (O->SUPPORT_GPP_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_GPP, D.M_Mean_GPP);}
+if (O->SUPPORT_LAI_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_LAI, D.M_Mean_LAI);}
+
+//Parameters and emergent quantities
+if (O->SUPPORT_Cefficiency_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_Cefficiency, D.M_PEQ_Cefficiency);}
+if (O->SUPPORT_CUE_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_CUE, D.M_PEQ_CUE);}
+
+
 
 
 

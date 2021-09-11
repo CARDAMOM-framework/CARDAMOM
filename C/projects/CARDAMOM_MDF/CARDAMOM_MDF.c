@@ -80,7 +80,7 @@ if (argc-1<2){seedrandomnumber(CBFfile);}else{seedrandomnumber(CLA[2]);}
 /*defining data structure*/
 DATA DATA;
 /*Initialize data structure - this function is found in CARDAMOM_READ_BINARY_DATA*/
-OK=INITIALIZE_DATA_STRUCT(&DATA);
+//OK=INITIALIZE_DATA_STRUCT(&DATA);
 okcheck(OK,"Main data structure initialized");
 
 /*read cardamom data from file*/

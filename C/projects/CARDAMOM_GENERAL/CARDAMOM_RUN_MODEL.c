@@ -74,7 +74,7 @@ DATA CARDADATA;
 *//*Initialize data structure*/
 int OK;
 printf("About to read data structure...");
-OK=INITIALIZE_DATA_STRUCT(&CARDADATA);
+//OK=INITIALIZE_DATA_STRUCT(&CARDADATA);
 okcheck(OK,"CHECK: DATA structure successfully initialized");
 printf("Done with initializing data structure!\n");
 /*step 1 - read the met file & initialize model fields here*/

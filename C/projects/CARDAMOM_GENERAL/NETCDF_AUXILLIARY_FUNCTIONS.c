@@ -373,3 +373,14 @@ double ncdf_read_single_double_var(int ncid, const char * varName ){
 
 
 
+
+int default_int_value(int * A, int B){
+    if (*A==DEFAULT_DOUBLE_VAL){*A=B;}
+    return 0;}
+        
+        
+int default_double_value(double * A, double B){
+    if (*A==DEFAULT_INT_VAL){*A=B;}
+    return 0;}
+
+

@@ -1,6 +1,6 @@
 function CARDAMOM_COMPILE(Cpath,opt)
 
-
+clc;
 
 if nargin==0 | isempty(Cpath);
     Cpath=getenv('CARDAMOM_C_PATH');

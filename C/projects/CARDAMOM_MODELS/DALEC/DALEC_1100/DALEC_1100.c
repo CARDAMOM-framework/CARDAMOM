@@ -60,10 +60,12 @@ OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
 OBSOPE.SUPPORT_NBE_OBS=true;
 OBSOPE.SUPPORT_ABGB_OBS=true;
-OBSOPE.SUPPORT_SOM_OBS=true;
-OBSOPE.SUPPORT_GRACE_EWT_OBS=true;
+OBSOPE.SUPPORT_DOM_OBS=true;
+OBSOPE.SUPPORT_EWT_OBS=true;
 OBSOPE.SUPPORT_FIR_OBS=true;
 
+
+OBSOPE.SUPPORT_CUE_OBS=true;
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
@@ -87,18 +89,24 @@ static int ABGB_pools[]={0,1,2,3};
 OBSOPE.ABGB_pools=ABGB_pools;
 OBSOPE.ABGB_n_pools=4;
 
-//SOM-specific variables
-static int SOM_pools[]={4,5}; 
-OBSOPE.SOM_pools=SOM_pools;
-OBSOPE.SOM_n_pools=2;
+//DOM-specific variables
+static int DOM_pools[]={4,5}; 
+OBSOPE.DOM_pools=DOM_pools;
+OBSOPE.DOM_n_pools=2;
 //H2O-specific variables
-static int GRACE_EWT_h2o_pools[]={6,7};
-OBSOPE.GRACE_EWT_h2o_pools=GRACE_EWT_h2o_pools;
-OBSOPE.GRACE_EWT_n_h2o_pools=2;
+static int EWT_h2o_pools[]={6,7};
+OBSOPE.EWT_h2o_pools=EWT_h2o_pools;
+OBSOPE.EWT_n_h2o_pools=2;
 //Fire-specific variables
 OBSOPE.FIR_flux=16;
 
+OBSOPE.CUE_PARAM=1;
+
+
+
 DALECmodel->OBSOPE=OBSOPE;
+
+
 
 return 0;}
 
@@ -135,7 +143,7 @@ double *LAI=DATA.M_LAI;
 // double *NEE=DATA.M_NEE;
 
   /*assigning values to pools*/
-  /*L,F,R,W,Lit,SOM*/
+  /*L,F,R,W,Lit,DOM*/
   POOLS[S.C_lab]=pars[17];
   POOLS[S.C_fol]=pars[18];
   POOLS[S.C_roo]=pars[19];
@@ -336,9 +344,9 @@ FLUXES[f+10] = POOLS[p+3]*(1-pow(1-pars[6-1],deltat))/deltat;
 FLUXES[f+11] = POOLS[p+2]*(1-pow(1-pars[7-1],deltat))/deltat;
 /*respiration heterotrophic litter*/
 FLUXES[f+12] = POOLS[p+4]*(1-pow(1-FLUXES[f+1]*pars[8-1],deltat))/deltat;
-/*respiration heterotrophic SOM*/
+/*respiration heterotrophic DOM*/
 FLUXES[f+13] = POOLS[p+5]*(1-pow(1-FLUXES[f+1]*pars[9-1],deltat))/deltat;
-/*litter to SOM*/
+/*litter to DOM*/
 FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 
 /*total pool transfers (no fires yet)*/

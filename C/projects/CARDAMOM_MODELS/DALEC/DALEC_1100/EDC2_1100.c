@@ -15,7 +15,6 @@ int EDC2_1100(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 /*Copy model pointer for brevity*/
 DALEC *MODEL=(DALEC *)DATA.MODEL;
 
-double *MET=DATA.MET;
 double *POOLS=DATA.M_POOLS;
 double *FLUXES=DATA.M_FLUXES;
 int nodays=DATA.nodays;

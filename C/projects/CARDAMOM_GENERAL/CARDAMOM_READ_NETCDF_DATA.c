@@ -17,10 +17,6 @@
 #include <netcdf.h>
 
 
-#define DEFAULT_DOUBLE_VAL -9999.0
-#define DEFAULT_INT_VAL -9999
-
-
 //NOTE ABOUT THIS MACRO:
 //If set to 1, netCDF methods will continue to run and return with default values if they fail to find the requested variable or attribute
 //if set to 0, they will instantly die on failing to find any variable or attribute
@@ -72,91 +68,118 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
  		ERR(retval);
  	}
 
-	DATA->ABGB.values=ncdf_read_double_var(ncid, "ABGB", &(DATA->ABGB.length));
-
-
-
-	DATA->CH4.values=ncdf_read_double_var(ncid, "CH4", &(DATA->CH4.length));
-		DATA->CH4.Uncertainty=ncdf_read_double_attr(ncid, "CH4","Uncertainty");
-		DATA->CH4.Annual_Uncertainty=ncdf_read_double_attr(ncid, "CH4","Annual_Uncertainty");
-		DATA->CH4.Uncertainty_Threshold=ncdf_read_double_attr(ncid, "CH4","Uncertainty_Threshold");
-
-
-
-	DATA->EDC=ncdf_read_single_double_var(ncid, "EDC");
-
-	DATA->EDCDIAG=ncdf_read_single_double_var(ncid, "EDCDIAG");
 
 
 	
 
+    
+    
+// 
+// //Global defaults
+// default_int_value(OBS.opt_unc_type,0);
+// default_int_value(OBS.opt_normalization,0);//(0 = none, 1 = remove mean, 2 = divide by mean)
+// default_int_value(OBS.opt_filter,0);
+// default_double_value(OBS.opt_min_threshold,log(0));//minus infinity
+// default_double_value(OBS.structural_unc,0);
+
+    
+    
+    
+
 //Read data
-DATA->ET=READ_NETCDF_OBS_FIELDS(ncid, "ET");
+DATA->NBE=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ABGB");
+DATA->CH4=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "CH4");
+DATA->ET=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ET");
+DATA->EWT=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "EWT");
+DATA->GPP=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "GPP");
+DATA->LAI=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "LAI");
+DATA->NBE=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "NBE");
+DATA->DOM=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "DOM");
+
+DATA->Mean_ABGB=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_ABGB");
+DATA->Mean_GPP      =READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_GPP");
+DATA->Mean_LAI       =READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_LAI");
+DATA->Mean_FIR     =READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_FIR");
+
+
+
+//Global defaults: these are set in pre-process if not defined below
+// default_int_value(&OBS->opt_unc_type,0);
+// default_int_value(&OBS->opt_normalization,0);
+// default_int_value(&OBS->opt_filter,0);
+// default_double_value(&OBS->opt_min_threshold,log(0));//minus infinity
+// default_double_value(&OBS->structural_unc,0);
+
+
+
+// Default CH4 options
+
+default_int_value(&DATA->CH4.opt_unc_type,1);
+default_double_value(&DATA->CH4.single_unc,2);
+default_double_value(&DATA->CH4.min_threshold,10);//gC/m2
+
+// Default CH4 options
+
+default_int_value(&DATA->CH4.opt_unc_type,1);
+default_double_value(&DATA->CH4.single_unc,2);
+default_double_value(&DATA->CH4.min_threshold,1e-5);//mgCH4/m2/d
+
+//Default ET options
+
+default_int_value(&DATA->ET.opt_unc_type,1);
+default_double_value(&DATA->ET.single_unc,2);
+default_double_value(&DATA->ET.min_threshold,0.1);
+
+//Default EWT options;
+default_double_value(&DATA->EWT.single_unc,2);
+default_int_value(&DATA->EWT.opt_normalization,1);
+
+//Default GPP options
+default_int_value(&DATA->GPP.opt_unc_type,1);
+default_double_value(&DATA->GPP.single_unc,2);
+default_double_value(&DATA->GPP.min_threshold,0.1);//gC/m2/d
+
+//Default LAI options
+default_int_value(&DATA->LAI.opt_unc_type,1);
+default_double_value(&DATA->LAI.single_unc,2);
+default_double_value(&DATA->LAI.min_threshold,0.1);//m2/m2
+
+
+//Default NBE options;
+default_double_value(&DATA->NBE.single_unc,1);//gC/m2/d
+
+//Default DOM options
+default_int_value(&DATA->DOM.opt_unc_type,1);
+default_double_value(&DATA->DOM.single_unc,2);
+default_double_value(&DATA->DOM.min_threshold,10);//gC/m2
+
+
+
+//pre-process obs to save time
+//Only required for timeseries obs
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ABGB);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->CH4);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ET);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->EWT);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->GPP);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->LAI);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->NBE);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->DOM);
 
 
 
 
 
-
-
-
-
-
-	//DATA->ET.Uncertainty=ncdf_read_double_attr(ncid, "ET","Uncertainty");
-//	DATA->ET.Annual_Uncertainty=ncdf_read_double_attr(ncid, "ET","Annual_Uncertainty");
-//	DATA->ET.Uncertainty_Threshold=ncdf_read_double_attr(ncid, "ET","Uncertainty_Threshold");
-
-
-
-
-
-
-
-
-	DATA->EWT.values=ncdf_read_double_var(ncid, "EWT", &(DATA->EWT.length));
-		DATA->EWT.Uncertainty=ncdf_read_double_attr(ncid, "EWT","Uncertainty");
-		DATA->EWT.Annual_Uncertainty=ncdf_read_double_attr(ncid, "EWT","Annual_Uncertainty");
-
-	DATA->GPP.values=ncdf_read_double_var(ncid, "GPP", &(DATA->GPP.length));
-		DATA->GPP.Uncertainty=ncdf_read_double_attr(ncid, "GPP","Uncertainty");
-		DATA->GPP.Annual_Uncertainty=ncdf_read_double_attr(ncid, "GPP","Annual_Uncertainty");
-		DATA->GPP.gppabs=ncdf_read_double_attr(ncid, "GPP","gppabs");
-		DATA->GPP.Uncertainty_Threshold=ncdf_read_double_attr(ncid, "GPP","Uncertainty_Threshold");
-
+	DATA->EDC=ncdf_read_single_double_var(ncid, "EDC");
+	DATA->EDC_EQF=ncdf_read_single_double_var(ncid, "EDC_EQF");
+	DATA->EDCDIAG=ncdf_read_single_double_var(ncid, "EDCDIAG");
 	DATA->ID=ncdf_read_single_double_var(ncid, "ID" );
-
-	DATA->LAI.values=ncdf_read_double_var(ncid, "LAI", &(DATA->LAI.length));
-
 	DATA->LAT=ncdf_read_single_double_var(ncid, "LAT" );
 
-	DATA->Mean_Biomass.values=ncdf_read_double_var(ncid, "Mean_Biomass", &(DATA->Mean_Biomass.length));
-		DATA->Mean_Biomass.Uncertainty=ncdf_read_double_attr(ncid, "Mean_Biomass","Uncertainty");
 
-	DATA->Mean_Fire.values=ncdf_read_double_var(ncid, "Mean_Fire", &(DATA->Mean_Fire.length));
-		DATA->Mean_Fire.Uncertainty=ncdf_read_double_attr(ncid, "Mean_Fire","Uncertainty");
-
-	DATA->Mean_GPP.values=ncdf_read_double_var(ncid, "Mean_GPP", &(DATA->Mean_GPP.length));
-		DATA->Mean_GPP.Uncertainty=ncdf_read_double_attr(ncid, "Mean_GPP","Uncertainty");
-
-	DATA->Mean_LAI.values=ncdf_read_double_var(ncid, "Mean_LAI", &(DATA->Mean_LAI.length));
-		DATA->Mean_LAI.Uncertainty=ncdf_read_double_attr(ncid, "Mean_LAI","Uncertainty");
-
-	DATA->CH4.values=ncdf_read_double_var(ncid, "CH4", &(DATA->CH4.length));
-		DATA->CH4.Uncertainty=ncdf_read_double_attr(ncid, "CH4","Uncertainty");
-		DATA->CH4.Annual_Uncertainty=ncdf_read_double_attr(ncid, "CH4","Annual_Uncertainty");
-
-	DATA->SOM.values=ncdf_read_double_var(ncid, "SOM", &(DATA->SOM.length));
-		DATA->SOM.Uncertainty=ncdf_read_double_attr(ncid, "SOM","Uncertainty");
-
-	DATA->NBE.values=ncdf_read_double_var(ncid, "NBE", &(DATA->NBE.length));
-		DATA->NBE.Uncertainty=ncdf_read_double_attr(ncid, "NBE","Uncertainty");
-		DATA->NBE.Annual_Uncertainty=ncdf_read_double_attr(ncid, "NBE","Annual_Uncertainty");
-
-	DATA->PARPRIORS.values=ncdf_read_double_var(ncid, "PARPRIORS", &(DATA->PARPRIORS.length));
-	DATA->PARPRIORUNC.values=ncdf_read_double_var(ncid, "PARPRIORUNC", &(DATA->PARPRIORUNC.length));
-	DATA->OTHERPRIORS.values=ncdf_read_double_var(ncid, "OTHERPRIORS", &(DATA->OTHERPRIORS.length));
-	DATA->OTHERPRIORSUNC.values=ncdf_read_double_var(ncid, "OTHERPRIORSUNC", &(DATA->OTHERPRIORSUNC.length));
-
+       
+        
+      
 	DATA->SSRD.values=ncdf_read_double_var(ncid, "SSRD", &(DATA->SSRD.length));
 		DATA->SSRD.reference_mean=ncdf_read_double_attr(ncid, "SSRD","reference_mean");
 
@@ -183,22 +206,6 @@ DATA->ET=READ_NETCDF_OBS_FIELDS(ncid, "ET");
 
 	DATA->DOY.values=ncdf_read_double_var(ncid, "DOY", &(DATA->DOY.length));
 		DATA->DOY.reference_mean=ncdf_read_double_attr(ncid, "DOY","reference_mean");
-
-/*
-	DATA->EDC=ncdf_read_single_double_var(ncid, "EDC", -9999.0);
-	DATA->EDCDIAG=ncdf_read_single_double_var(ncid, "EDCDIAG", -9999.0);
-	DATA->ET=ncdf_read_single_double_var(ncid, "ET", -9999.0);
-	DATA->EWT=ncdf_read_single_double_var(ncid, "EWT", -9999.0);
-	DATA->GPP.values=ncdf_read_double_var(ncid, "GPP", &(DATA->GPP.length));
-	DATA->GPP.Uncertainty=ncdf_read_double_attr(ncid, "GPP","Uncertainty", -9999.0 );
-	DATA->GPP.Annual_Uncertainty=ncdf_read_double_attr(ncid, "GPP","Annual_Uncertainty", -9999.0 );
-	DATA->GPP.gppabs=ncdf_read_double_attr(ncid, "GPP","gppabs", -9999.00 );
-	DATA->GPP.obs_unc_threshold=ncdf_read_double_attr(ncid, "GPP","obs_unc_threshold", -9999.0 );
-
-
-	DATA->ID=ncdf_read_single_double_var(ncid, "ID", -9999.0);
-	DATA->LAI.values=ncdf_read_double_var(ncid, "LAI", &(DATA->LAI.length));
-*/
 
 	return 0;
 }
