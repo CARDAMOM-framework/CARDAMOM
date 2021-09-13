@@ -1,6 +1,7 @@
 
 #pragma once
 #include "../../../DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
+#include "../../../DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF_beta.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
@@ -14,7 +15,8 @@ double (*EMLF)(DATA, double *);
 double (*MLF)(DATA, double *);
 
 if (CARDADATA.assemble_model==1){
-EMLF=EDC_DALEC_MLF_beta;}
+EMLF=EDC_DALEC_MLF_beta;
+MLF=DALEC_MLF_beta;}
 else {EMLF=EDC_DALEC_MLF;
 MLF=DALEC_MLF;}
 

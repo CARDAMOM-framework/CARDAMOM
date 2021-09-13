@@ -11,7 +11,7 @@ function PXI=CARDAMOM_PROJECT(projname,repeat)
 % - Variants of primary project types can either (a) be made externally, or
 % (b) options can be passed via "OPTS" argument
 %
-%REQUIREMENTS: 
+%REQUIREMENTS:
 %PXI must conain all options required to  use other "CARDAMOM_XX" commands
 
 %Currently supported PROJTYPES
@@ -28,7 +28,7 @@ if nargin<2;repeat=0;end
 switch projname
     case 'GCRUN_NOV18_CMS_PRIOR_V1'
     PXI=GCRUN_NOV18_CMS_PRIOR_V1;%Land-surface constrained run for CMS-Flux prior
-    
+
             case 'GCRUN_SEP20_CMS_PRIOR'
     PXI=GCRUN_SEP20_CMS_PRIOR;
         case 'GCRUN_SEP20_CMS_PRIOR_V2'
@@ -52,8 +52,8 @@ switch projname
     PXI=GCRUN_MAR19_TDLE_2;%Constrained by land-surface and atmospheric  datasets (s3x3 NEE); ID.811. annual_unc = 0.05
     case 'GCRUN_MAR19_TDLE_3'
     PXI=GCRUN_MAR19_TDLE_3;%Constrained by land-surface and atmospheric  datasets (s3x3 NEE); ID.811. No NBE
-    
-    %Same as the MAR19, but with corrections on the 
+
+    %Same as the MAR19, but with corrections on the
     case 'GCRUN_JUL19_TDLE'
     PXI=GCRUN_JUL19_TDLE(1,[],repeat);%Constrained by land-surface and atmospheric  datasets (s3x3 NEE); ID.811
     case 'GCRUN_JUL19_TDLE_2'
@@ -62,9 +62,9 @@ switch projname
     PXI=GCRUN_JUL19_TDLE(3,[],repeat);%Constrained by land-surface and atmospheric  datasets (s3x3 NEE); ID.811. No NBE
     case 'GCRUN_JUL19_TDLE_4'
     PXI=GCRUN_JUL19_TDLE(4,[],repeat);%Constrained by land-surface and atmospheric  datasets (s3x3 NEE); ID.811. 2010-2013 NBE mean = 0
-    
-    
-    
+
+
+
     case 'GCRUN_APR20_TDLE'
     PXI=GCRUN_APR20_TDLE(1,[],repeat); %Constrained by land-surface and atmospheric  datasets (s3x3 NEE); ID.811, now spans 2001-2015
    case 'GCRUN_APR20_TDLE_5'
@@ -77,35 +77,35 @@ switch projname
    case 'GCRUN_JUN20_TDLE_5'
     PXI=GCRUN_JUN20_TDLE(5,[],repeat); %Constrained by land-surface and atmospheric  datasets (s3x3 NEE); ID.812, now spans 2001-2015
 
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
     %Lagged effect of 2015 fluxes
-    
-    
+
+
        case 'GCRUN_SEP19_ENSO_LE'
     PXI=GCRUN_SEP19_ENSO_LE(1,[],repeat);%Constrained by land-surface and atmospheric  datasets (s3x3 NEE); ID.811. 2015-2018 NBE mean = 0
-    
+
            case 'GCRUN_NOV19_ENSO_LE'
                %Same as september ENSO LE, but longer timespan
                    PXI=GCRUN_NOV19_ENSO_LE(1,[],repeat);%Constrained by land-surface and atmospheric  datasets (s3x3 NEE); ID.811. 2010-2018 NBE mean = 0
 
-                   
+
            case 'GCRUN_MAR20'
                %Full 2001-2018 record, with all OBS needed for JL analysis
                  PXI=GCRUN_MAR20(1,[],repeat);
 
 
-    
+
     case 'GCRUN_APR19_NBE_BIOMASS'
             %TO DO: (1) make sure biomass is gridded OK, and (2) add to CBF
             %files
     PXI=GCRUN_APR19_NBE_BIOMASS;%Constrained by land-surface and atmospheric  datasets (s3x3 NEE); ID.811
 
-    case 'GL05RUN_FEB19'    
+    case 'GL05RUN_FEB19'
         savefile='CARDAMOM_DISK/CBF_FILES/PXI_FILES/GL05RUN_FEB19_PXI.mat';
         if repeat==1 | isempty(dir(savefile));
         PXI=GL05RUN_FEB19;
@@ -119,11 +119,11 @@ switch projname
 
         %OBSOLETE! Change in code has lead to issues in reproducing these
         %Use AUG19
-%     case 'GL05RUN_MAR19'    
+%     case 'GL05RUN_MAR19'
 %         % ID = 1000
 %         % includes GRACE data
 %         %maaaaybe with biomass data too
-%         %Also includes relative path (to CARDAMOM disk) for easy 
+%         %Also includes relative path (to CARDAMOM disk) for easy
 %         savefile='CARDAMOM_DISK/CBF_FILES/PXI_FILES/GL05RUN_MAR19_PXI.mat';
 %         if repeat==1 | isempty(dir(savefile));
 %         PXI=GL05RUN_MAR19;
@@ -132,12 +132,12 @@ switch projname
 %             load(savefile);
 %             disp(['Savefile = ',savefile]);
 %         end
-%         
-         case 'GL05RUN_AUG19'    
+%
+         case 'GL05RUN_AUG19'
         % ID = 1000
         % includes GRACE data & CSIF data
         %maaaaybe with biomass data too
-        %Also includes relative path (to CARDAMOM disk) for easy 
+        %Also includes relative path (to CARDAMOM disk) for easy
         savefile='CARDAMOM_DISK/CBF_FILES/PXI_FILES/GL05RUN_AUG19_PXI.mat';
                     OPT.analysis='GL05RUN_AUG19';
             OPT.run_name='GL05RUN_AUG19';
@@ -148,14 +148,14 @@ switch projname
         else
             load(savefile);disp(['Savefile = ',savefile]);
         end
-        
-        
-        
-          case 'GL05RUN_APR19_NGD'    
+
+
+
+          case 'GL05RUN_APR19_NGD'
         % ID = 1000
         %No GRACE data
         %maaaaybe with biomass data too
-        %Also includes relative path (to CARDAMOM disk) for easy 
+        %Also includes relative path (to CARDAMOM disk) for easy
         %ADDRESS THIS ISSUE!
 % %Step 1.2 run names
 % if isempty(OPT);
@@ -177,8 +177,8 @@ switch projname
             load(savefile);
             disp(['Savefile = ',savefile]);
         end
-        
-        
+
+
 end
 
 
@@ -197,7 +197,7 @@ function PXI=GCRUN_FEB19_TDLE(runname,s3x3);
 %Details: This is the same as MAY18_3 (RUN 20 in NOV17)
 %However, uncertainties here are set as 1/12 and 0.5 for annual & seasonal
 %fluxes
-%Step 1. Load drivers 
+%Step 1. Load drivers
 %See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
 %TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
 %Better to start with a template of RUN29 just in case
@@ -212,7 +212,7 @@ function PXI=GCRUN_FEB19_TDLE(runname,s3x3);
 
 
 
-%only 
+%only
 %metidx and obsidx
 % index writing at end of CBD definition
 %(move MET to later on)
@@ -227,12 +227,12 @@ function PXI=GCRUN_FEB19_TDLE(runname,s3x3);
 % RO.bbunc=[-0.2,1.5,-0.2,-0.2];
 % RO.gppopt=[1,1,0,0];
 % RO.oco2=[0,0,0,1];
-%     
+%
 
-RO.tidx=109:180;%Index of timesteps 
+RO.tidx=109:180;%Index of timesteps
 RO.tnbeidx=109:180;
 RO.tbbidx=10:15;
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -249,7 +249,7 @@ RO.bbopt=2;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=0;
 %OCO-2 options( 1 or 0)
@@ -291,7 +291,7 @@ function PXI=GCRUN_JUL19_TDLE(opt,runname,repeat);
 %Details: This is the same as MAY18_3 (RUN 20 in NOV17)
 %However, uncertainties here are set as 1/12 and 0.5 for annual & seasonal
 %fluxes
-%Step 1. Load drivers 
+%Step 1. Load drivers
 %See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
 %TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
 %Better to start with a template of RUN29 just in case
@@ -306,7 +306,7 @@ function PXI=GCRUN_JUL19_TDLE(opt,runname,repeat);
 
 
 
-%only 
+%only
 %metidx and obsidx
 % index writing at end of CBD definition
 %(move MET to later on)
@@ -321,9 +321,9 @@ function PXI=GCRUN_JUL19_TDLE(opt,runname,repeat);
 % RO.bbunc=[-0.2,1.5,-0.2,-0.2];
 % RO.gppopt=[1,1,0,0];
 % RO.oco2=[0,0,0,1];
-%     
+%
 
-RO.tidx=109:180;%Index of timesteps 
+RO.tidx=109:180;%Index of timesteps
 
 if opt==3;
     RO.tnbeidx=[];
@@ -332,7 +332,7 @@ else
 end
 
 RO.tbbidx=10:15;
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -348,7 +348,7 @@ RO.bbopt=2;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=0;
 %OCO-2 options( 1 or 0)
@@ -367,7 +367,7 @@ end
  defval('runname','');
   defval('s3x3',0);s3x3=1;
   RO.nbe_s3x3=s3x3;
-  
+
   if opt==4;
       RO.nbezero=1;
   else
@@ -396,7 +396,7 @@ switch opt
     PXI.run_details='GCRUN_JUL19_TDLE_4: Same as GCRUN_JUL19_TDLE but with NBEmean = 0';
     PXI.run_name=['GCRUN_JUL19_TDLE_4',runname];
     PXI.analysis='GCRUN_JUL19_TDLE_4';
-    
+
 end
 PXI.ID=811;
 
@@ -419,7 +419,7 @@ function PXI=GCRUN_APR20_TDLE(opt,runname,repeat);
 %Details: This is the same as MAY18_3 (RUN 20 in NOV17)
 %However, uncertainties here are set as 1/12 and 0.5 for annual & seasonal
 %fluxes
-%Step 1. Load drivers 
+%Step 1. Load drivers
 %See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
 %TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
 %Better to start with a template of RUN29 just in case
@@ -434,7 +434,7 @@ function PXI=GCRUN_APR20_TDLE(opt,runname,repeat);
 
 
 
-%only 
+%only
 %metidx and obsidx
 % index writing at end of CBD definition
 %(move MET to later on)
@@ -449,14 +449,14 @@ function PXI=GCRUN_APR20_TDLE(opt,runname,repeat);
 % RO.bbunc=[-0.2,1.5,-0.2,-0.2];
 % RO.gppopt=[1,1,0,0];
 % RO.oco2=[0,0,0,1];
-%     
+%
 
 
 %OPTIONS
 %opt = 1: standard
 %opt = 5: with ID=812 (iWUE)
 
-RO.tidx=1:180;%Index of timesteps 
+RO.tidx=1:180;%Index of timesteps
 
 if opt==3;
     RO.tnbeidx=[];
@@ -465,7 +465,7 @@ else
 end
 
 RO.tbbidx=1:15;
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -481,7 +481,7 @@ RO.bbopt=2;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=0;
 %OCO-2 options( 1 or 0)
@@ -501,7 +501,7 @@ end
   defval('s3x3',0);s3x3=1;
   RO.nbe_s3x3=s3x3;
   RO.nbe_product='b73';
-  
+
   if opt==4;
       RO.nbezero=1;
   else
@@ -546,7 +546,7 @@ function PXI=GCRUN_JUN20_TDLE(opt,runname,repeat);
 %Details: This is the same as MAY18_3 (RUN 20 in NOV17)
 %However, uncertainties here are set as 1/12 and 0.5 for annual & seasonal
 %fluxes
-%Step 1. Load drivers 
+%Step 1. Load drivers
 %See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
 %TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
 %Better to start with a template of RUN29 just in case
@@ -561,7 +561,7 @@ function PXI=GCRUN_JUN20_TDLE(opt,runname,repeat);
 
 
 
-%only 
+%only
 %metidx and obsidx
 % index writing at end of CBD definition
 %(move MET to later on)
@@ -576,14 +576,14 @@ function PXI=GCRUN_JUN20_TDLE(opt,runname,repeat);
 % RO.bbunc=[-0.2,1.5,-0.2,-0.2];
 % RO.gppopt=[1,1,0,0];
 % RO.oco2=[0,0,0,1];
-%     
+%
 
 
 %OPTIONS
 %opt = 1: standard
 %opt = 5: with ID=812 (iWUE)
 
-RO.tidx=1:180;%Index of timesteps 
+RO.tidx=1:180;%Index of timesteps
 
 if opt==3;
     RO.tnbeidx=[];
@@ -592,7 +592,7 @@ else
 end
 
 RO.tbbidx=1:15;
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -608,7 +608,7 @@ RO.bbopt=2;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=0;
 %OCO-2 options( 1 or 0)
@@ -628,7 +628,7 @@ end
   defval('s3x3',0);s3x3=1;
   RO.nbe_s3x3=s3x3;
   RO.nbe_product='b73';
-  
+
   if opt==4;
       RO.nbezero=1;
   else
@@ -642,13 +642,13 @@ switch opt
     PXI.run_details='GCRUN_JUN20_TDLE: 2010-2015 run with CMS (2010-2013) and LS constraints (based on NOV17 run 20), and prescribed NBE unc';
     PXI.run_name=['GCRUN_JUN20_TDLE',runname];
     PXI.analysis='GCRUN_JUN20_TDLE';
-    
+
     case 4
     PXI.run_details='GCRUN_JUN20_TDLE_4: Same as GCRUN_JUL19_TDLE but with NBEmean = 0';
     PXI.run_name=['GCRUN_JUN20_TDLE_4',runname];
     PXI.analysis='GCRUN_JUN20_TDLE_4';
-    
-    
+
+
     case 5
     PXI.run_details='GCRUN_JUN20_TDLE_5: 2010-2015 run with CMS (2010-2013) with CBR.ID=812 and LS constraints (based on NOV17 run 20), and prescribed NBE unc';
     PXI.run_name=['GCRUN_JUN20_TDLE_5',runname];
@@ -681,7 +681,7 @@ function PXI=GCRUN_SEP19_ENSO_LE(opt,runname,repeat);
 %Details: This is the same as MAY18_3 (RUN 20 in NOV17)
 %However, uncertainties here are set as 1/12 and 0.5 for annual & seasonal
 %fluxes
-%Step 1. Load drivers 
+%Step 1. Load drivers
 %See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
 %TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
 %Better to start with a template of RUN29 just in case
@@ -696,7 +696,7 @@ function PXI=GCRUN_SEP19_ENSO_LE(opt,runname,repeat);
 
 
 
-%only 
+%only
 %metidx and obsidx
 % index writing at end of CBD definition
 %(move MET to later on)
@@ -711,7 +711,7 @@ function PXI=GCRUN_SEP19_ENSO_LE(opt,runname,repeat);
 % RO.bbunc=[-0.2,1.5,-0.2,-0.2];
 % RO.gppopt=[1,1,0,0];
 % RO.oco2=[0,0,0,1];
-%     
+%
 
 RO.tidx=169:216;%Index of timesteps 2015-2018 (Months since 2001)
 
@@ -722,7 +722,7 @@ else
 end
 
 RO.tbbidx=15;
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -738,7 +738,7 @@ RO.bbopt=2;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=0;
 %OCO-2 options( 1 or 0)
@@ -756,7 +756,7 @@ RO.oco2=0;
 %   defval('s3x3',0);
 s3x3=0;
   RO.nbe_s3x3=s3x3;
-  
+
   RO.nbe_product='oco2_sep19';
 
 
@@ -767,7 +767,7 @@ switch opt
     PXI.run_details='GCRUN_SEP19_ENSO_LE: 2015-2018 run with CMS (2015-2018) and LS constraints, and prescribed NBE unc';
     PXI.run_name=['GCRUN_SEP19_ENSO_LE',runname];
     PXI.analysis='GCRUN_SEP19_ENSO_LE';
-    
+
 end
 PXI.ID=811;
 
@@ -790,7 +790,7 @@ function PXI=GCRUN_MAR20(opt,runname,repeat);
 %Details: This is the same as MAY18_3 (RUN 20 in NOV17)
 %However, uncertainties here are set as 1/12 and 0.5 for annual & seasonal
 %fluxes
-%Step 1. Load drivers 
+%Step 1. Load drivers
 %See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
 %TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
 %Better to start with a template of RUN29 just in case
@@ -805,7 +805,7 @@ function PXI=GCRUN_MAR20(opt,runname,repeat);
 
 
 
-%only 
+%only
 %metidx and obsidx
 % index writing at end of CBD definition
 %(move MET to later on)
@@ -820,7 +820,7 @@ function PXI=GCRUN_MAR20(opt,runname,repeat);
 % RO.bbunc=[-0.2,1.5,-0.2,-0.2];
 % RO.gppopt=[1,1,0,0];
 % RO.oco2=[0,0,0,1];
-%     
+%
 
 RO.tidx=1:216;%Index of timesteps 2009-2018 (Months since 2001)
 
@@ -831,7 +831,7 @@ else
 end
 
 RO.tbbidx=15;
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -848,7 +848,7 @@ RO.bbopt=2;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=0;
 %OCO-2 options( 1 or 0)
@@ -866,7 +866,7 @@ RO.oco2=0;
 %   defval('s3x3',0);
 s3x3=0;
   RO.nbe_s3x3=s3x3;
-  
+
   RO.nbe_product='cms_jan20';
 
 
@@ -877,7 +877,7 @@ switch opt
     PXI.run_details='GCRUN_MAR20: 2001-2018 run with CMS (2010-2018) and LS constraints, and prescribed NBE unc';
     PXI.run_name=['GCRUN_MAR20',runname];
     PXI.analysis='GCRUN_MAR20';
-    
+
 end
 PXI.ID=1000;
 
@@ -885,7 +885,7 @@ PXI.ID=1000;
 
 %MASK
 GC=GEOSChem_xygrids;
-%Global 
+%Global
 MASK=GC.y>=-90;
 
 %Create and summarize PXI, based on available options
@@ -902,7 +902,7 @@ function PXI=GCRUN_NOV19_ENSO_LE(opt,runname,repeat);
 %Details: This is the same as MAY18_3 (RUN 20 in NOV17)
 %However, uncertainties here are set as 1/12 and 0.5 for annual & seasonal
 %fluxes
-%Step 1. Load drivers 
+%Step 1. Load drivers
 %See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
 %TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
 %Better to start with a template of RUN29 just in case
@@ -917,7 +917,7 @@ function PXI=GCRUN_NOV19_ENSO_LE(opt,runname,repeat);
 
 
 
-%only 
+%only
 %metidx and obsidx
 % index writing at end of CBD definition
 %(move MET to later on)
@@ -932,7 +932,7 @@ function PXI=GCRUN_NOV19_ENSO_LE(opt,runname,repeat);
 % RO.bbunc=[-0.2,1.5,-0.2,-0.2];
 % RO.gppopt=[1,1,0,0];
 % RO.oco2=[0,0,0,1];
-%     
+%
 
 RO.tidx=97:216;%Index of timesteps 2009-2018 (Months since 2001)
 
@@ -943,7 +943,7 @@ else
 end
 
 RO.tbbidx=15;
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -959,7 +959,7 @@ RO.bbopt=2;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=0;
 %OCO-2 options( 1 or 0)
@@ -977,7 +977,7 @@ RO.oco2=0;
 %   defval('s3x3',0);
 s3x3=0;
   RO.nbe_s3x3=s3x3;
-  
+
   RO.nbe_product='oco2_sep19';
 
 
@@ -988,7 +988,7 @@ switch opt
     PXI.run_details='GCRUN_NOV19_ENSO_LE: 2009-2018 run with CMS (2015-2018) and LS constraints, and prescribed NBE unc';
     PXI.run_name=['GCRUN_NOV19_ENSO_LE',runname];
     PXI.analysis='GCRUN_NOV19_ENSO_LE';
-    
+
 end
 PXI.ID=811;
 
@@ -1011,7 +1011,7 @@ function PXI=GCRUN_MAR19_TDLE(runname,s3x3);
 %Details: This is the same as MAY18_3 (RUN 20 in NOV17)
 %However, uncertainties here are set as 1/12 and 0.5 for annual & seasonal
 %fluxes
-%Step 1. Load drivers 
+%Step 1. Load drivers
 %See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
 %TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
 %Better to start with a template of RUN29 just in case
@@ -1026,7 +1026,7 @@ function PXI=GCRUN_MAR19_TDLE(runname,s3x3);
 
 
 
-%only 
+%only
 %metidx and obsidx
 % index writing at end of CBD definition
 %(move MET to later on)
@@ -1041,12 +1041,12 @@ function PXI=GCRUN_MAR19_TDLE(runname,s3x3);
 % RO.bbunc=[-0.2,1.5,-0.2,-0.2];
 % RO.gppopt=[1,1,0,0];
 % RO.oco2=[0,0,0,1];
-%     
+%
 
-RO.tidx=109:180;%Index of timesteps 
+RO.tidx=109:180;%Index of timesteps
 RO.tnbeidx=109:156;
 RO.tbbidx=10:15;
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -1062,7 +1062,7 @@ RO.bbopt=2;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=0;
 %OCO-2 options( 1 or 0)
@@ -1101,7 +1101,7 @@ function PXI=GCRUN_MAR19_TDLE_2(runname);
 %Details: This is the same as MAY18_3 (RUN 20 in NOV17)
 %However, uncertainties here are set as 1/12 and 0.5 for annual & seasonal
 %fluxes
-%Step 1. Load drivers 
+%Step 1. Load drivers
 %See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
 %TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
 %Better to start with a template of RUN29 just in case
@@ -1116,7 +1116,7 @@ function PXI=GCRUN_MAR19_TDLE_2(runname);
 
 
 
-%only 
+%only
 %metidx and obsidx
 % index writing at end of CBD definition
 %(move MET to later on)
@@ -1131,12 +1131,12 @@ function PXI=GCRUN_MAR19_TDLE_2(runname);
 % RO.bbunc=[-0.2,1.5,-0.2,-0.2];
 % RO.gppopt=[1,1,0,0];
 % RO.oco2=[0,0,0,1];
-%     
+%
 
-RO.tidx=109:180;%Index of timesteps 
+RO.tidx=109:180;%Index of timesteps
 RO.tnbeidx=109:156;
 RO.tbbidx=10:15;
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -1152,7 +1152,7 @@ RO.bbopt=2;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=0;
 %OCO-2 options( 1 or 0)
@@ -1191,7 +1191,7 @@ function PXI=GCRUN_MAR19_TDLE_3(runname,s3x3);
 %Details: This is the same as MAY18_3 (RUN 20 in NOV17)
 %However, uncertainties here are set as 1/12 and 0.5 for annual & seasonal
 %fluxes
-%Step 1. Load drivers 
+%Step 1. Load drivers
 %See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
 %TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
 %Better to start with a template of RUN29 just in case
@@ -1206,7 +1206,7 @@ function PXI=GCRUN_MAR19_TDLE_3(runname,s3x3);
 
 
 
-%only 
+%only
 %metidx and obsidx
 % index writing at end of CBD definition
 %(move MET to later on)
@@ -1221,12 +1221,12 @@ function PXI=GCRUN_MAR19_TDLE_3(runname,s3x3);
 % RO.bbunc=[-0.2,1.5,-0.2,-0.2];
 % RO.gppopt=[1,1,0,0];
 % RO.oco2=[0,0,0,1];
-%     
+%
 
-RO.tidx=109:180;%Index of timesteps 
+RO.tidx=109:180;%Index of timesteps
 RO.tnbeidx=[];
 RO.tbbidx=10:15;
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -1242,7 +1242,7 @@ RO.bbopt=2;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=0;
 %OCO-2 options( 1 or 0)
@@ -1282,7 +1282,7 @@ function PXI=GCRUN_APR19_NBE_BIOMASS(runname);
 %Details: This is the same as MAY18_3 (RUN 20 in NOV17)
 %However, uncertainties here are set as 1/12 and 0.5 for annual & seasonal
 %fluxes
-%Step 1. Load drivers 
+%Step 1. Load drivers
 %See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
 %TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
 %Better to start with a template of RUN29 just in case
@@ -1297,7 +1297,7 @@ function PXI=GCRUN_APR19_NBE_BIOMASS(runname);
 
 
 
-%only 
+%only
 %metidx and obsidx
 % index writing at end of CBD definition
 %(move MET to later on)
@@ -1312,12 +1312,12 @@ function PXI=GCRUN_APR19_NBE_BIOMASS(runname);
 % RO.bbunc=[-0.2,1.5,-0.2,-0.2];
 % RO.gppopt=[1,1,0,0];
 % RO.oco2=[0,0,0,1];
-%     
+%
 
-RO.tidx=109:180;%Index of timesteps 
+RO.tidx=109:180;%Index of timesteps
 RO.tnbeidx=109:156;
 RO.tbbidx=10:15;
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -1335,7 +1335,7 @@ RO.annualbiomass=1;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=0;
 %OCO-2 options( 1 or 0)
@@ -1375,7 +1375,7 @@ function PXI=GCRUN_DEC18_TDLE(runname,s3x3);
 %Details: This is the same as MAY18_3 (RUN 20 in NOV17)
 %However, uncertainties here are set as 1/12 and 0.5 for annual & seasonal
 %fluxes
-%Step 1. Load drivers 
+%Step 1. Load drivers
 %See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
 %TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
 %Better to start with a template of RUN29 just in case
@@ -1390,7 +1390,7 @@ function PXI=GCRUN_DEC18_TDLE(runname,s3x3);
 
 
 
-%only 
+%only
 %metidx and obsidx
 % index writing at end of CBD definition
 %(move MET to later on)
@@ -1405,12 +1405,12 @@ function PXI=GCRUN_DEC18_TDLE(runname,s3x3);
 % RO.bbunc=[-0.2,1.5,-0.2,-0.2];
 % RO.gppopt=[1,1,0,0];
 % RO.oco2=[0,0,0,1];
-%     
+%
 
-RO.tidx=109:180;%Index of timesteps 
+RO.tidx=109:180;%Index of timesteps
 RO.tnbeidx=109:156;
 RO.tbbidx=10:15;
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -1426,7 +1426,7 @@ RO.bbopt=2;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=0;
 %OCO-2 options( 1 or 0)
@@ -1461,16 +1461,16 @@ end
 
 %GCRUN routines
 function PXI=GCRUN_NOV18_CMS_PRIOR_V1
-%Step 1. 
+%Step 1.
 %CMS-Flux prior fluxes, describe here
 %No atmosphere
 %LS constraints = GFEDv4s fire emissions, FLUXCOM GPP
 
 
-RO.tidx=109:204;%Index of timesteps 
+RO.tidx=109:204;%Index of timesteps
 RO.tnbeidx=[];% no atmospheric data
 RO.tbbidx=[];
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -1486,7 +1486,7 @@ RO.bbopt=1;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=1;
 %OCO-2 options( 1 or 0)
@@ -1500,7 +1500,7 @@ RO.nbeunc = [0.5,0.02];
  defval('runname','');
   defval('s3x3',0);
   RO.nbe_s3x3=s3x3;
-  
+
   RO.mco=[1e6 0 5e2 0.0005];
 
 %PXI options
@@ -1518,7 +1518,7 @@ end
 
 % %Step 2. determine output status
 PXI=cardamom_pixel_output_summary(PXI);
-% 
+%
 
 
 
@@ -1528,16 +1528,16 @@ end
 
 %GCRUN routines
 function PXI=GCRUN_SEP20_CMS_PRIOR_V2
-%Step 1. 
+%Step 1.
 %CMS-Flux prior fluxes, describe here
 %No atmosphere
 %LS constraints = GFEDv4s fire emissions, FLUXCOM GPP
 
 
-RO.tidx=1:228;%Index of timesteps 
+RO.tidx=1:228;%Index of timesteps
 RO.tnbeidx=[];% no atmospheric data
 RO.tbbidx=[];
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -1554,7 +1554,7 @@ RO.bbopt=1;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=0;
 %OCO-2 options( 1 or 0)
@@ -1568,7 +1568,7 @@ RO.nbeunc = [0,0];
  defval('runname','');
   defval('s3x3',0);
   RO.nbe_s3x3=s3x3;
-  
+
   RO.mco=[1e6 0 5e2 0.0005];
 
 %PXI options
@@ -1579,7 +1579,7 @@ PXI.run_name=['GCRUN_SEP20_CMS_PRIOR_V2'];
 PXI.analysis=PXI.run_name;%Indicates which folder these go in.
 
 %Create and summarize PXI, based on available options
-OPT.repeat=0; 
+OPT.repeat=0;
     OPT.gcdriobs='era5';
     OPT.funcs{1}='CBF.PARPRIORS(11)=-9999;';
 
@@ -1587,7 +1587,7 @@ PXI=create_gcrun_cbf_files(PXI,[],OPT);
 
 % %Step 2. determine output status
 PXI=cardamom_pixel_output_summary(PXI);
-% 
+%
 
 
 
@@ -1596,16 +1596,16 @@ end
 
 %GCRUN routines
 function PXI=GCRUN_SEP20_CMS_PRIOR_V3
-%Step 1. 
+%Step 1.
 %CMS-Flux prior fluxes, describe here
 %No atmosphere
 %LS constraints = GFEDv4s fire emissions, FLUXCOM GPP
 
 
-RO.tidx=1:228;%Index of timesteps 
+RO.tidx=1:228;%Index of timesteps
 RO.tnbeidx=[];% no atmospheric data
 RO.tbbidx=[];
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -1622,7 +1622,7 @@ RO.bbopt=1;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=0;
 %OCO-2 options( 1 or 0)
@@ -1636,7 +1636,7 @@ RO.nbeunc = [0,0];
  defval('runname','');
   defval('s3x3',0);
   RO.nbe_s3x3=s3x3;
-  
+
   RO.mco=[1e6 0 5e2 0.0005];
 
 %PXI options
@@ -1647,7 +1647,7 @@ PXI.run_name=['GCRUN_SEP20_CMS_PRIOR_V3'];
 PXI.analysis=PXI.run_name;%Indicates which folder these go in.
 
 %Create and summarize PXI, based on available options
-OPT.repeat=0; 
+OPT.repeat=0;
     OPT.gcdriobs='era5';
     OPT.funcs{1}='CBF.PARPRIORS(11)=-9999;';
     OPT.funcs{2}='if isempty(CBF.OBS.GPP)==0 & max(CBF.OBS.GPP)>-9999; CBF.OBSUNC.GPP.obs_unc_threshold=max(CBF.OBS.GPP)/10;end';
@@ -1656,7 +1656,7 @@ PXI=create_gcrun_cbf_files(PXI,[],OPT);
 
 % %Step 2. determine output status
 PXI=cardamom_pixel_output_summary(PXI);
-% 
+%
 
 
 
@@ -1666,16 +1666,16 @@ end
 
 %GCRUN routines
 function PXI=GCRUN_SEP20_CMS_PRIOR
-%Step 1. 
+%Step 1.
 %CMS-Flux prior fluxes, describe here
 %No atmosphere
 %LS constraints = GFEDv4s fire emissions, FLUXCOM GPP
 
 
-RO.tidx=1:228;%Index of timesteps 
+RO.tidx=1:228;%Index of timesteps
 RO.tnbeidx=[];% no atmospheric data
 RO.tbbidx=[];
-%Options are temporary: 
+%Options are temporary:
 %Remove once done replicating runs
 %SIF options
 % 0 = no sif data
@@ -1692,7 +1692,7 @@ RO.bbopt=1;
 %+ve = log; -ve = abs
 RO.bbunc=-0.2;
 %Mean GPP constraint
-%0. No mean GPP 
+%0. No mean GPP
 %1. Fluxcom GPP
 RO.gppopt=0;
 %OCO-2 options( 1 or 0)
@@ -1706,7 +1706,7 @@ RO.nbeunc = [0,0];
  defval('runname','');
   defval('s3x3',0);
   RO.nbe_s3x3=s3x3;
-  
+
   RO.mco=[1e6 0 5e2 0.0005];
 
 %PXI options
@@ -1717,7 +1717,7 @@ PXI.run_name=['GCRUN_SEP20_CMS_PRIOR'];
 PXI.analysis=PXI.run_name;%Indicates which folder these go in.
 
 %Create and summarize PXI, based on available options
-OPT.repeat=0; 
+OPT.repeat=0;
     OPT.gcdriobs='era5';
     OPT.funcs{1}='CBF.PARPRIORS(11)=-9999;';
 
@@ -1725,7 +1725,7 @@ PXI=create_gcrun_cbf_files(PXI,[],OPT);
 
 % %Step 2. determine output status
 PXI=cardamom_pixel_output_summary(PXI);
-% 
+%
 
 
 
@@ -1746,7 +1746,7 @@ repeatdriobs=0;GCDRIOBS=READ_GRID_GC_4x5_DRIVERS_OBS(repeatdriobs);
     case 'era5'
         GCDRIOBS=READ_GRID_GC_4x5_DRIVERS_OBS_ERA5;
 end
-        
+
 
 [~,LSFRAC]=loadlandseamask('4x5');
 GCLSMASK=LSFRAC>0.1;%Test with ALL regions
@@ -1785,7 +1785,7 @@ cbffilepath=sprintf('/Users/abloom/CARDAMOM_DISK/CBF_FILES/%s/',PXI.analysis);
 dirmake(cbffilepath);
 %Decompress option contents
 RO=PXI.RO;
-tidx=RO.tidx;%Index of timesteps 
+tidx=RO.tidx;%Index of timesteps
 tnbeidx=RO.tnbeidx; %
 tbbidx=RO.tbbidx;
 
@@ -1812,12 +1812,12 @@ for n=1:numel(row)
 end
 
 %Step 5: define and write cbf files
-PXI.nodays=diff(minmax(tidx))+1;   
+PXI.nodays=diff(minmax(tidx))+1;
 PXI.dates=datenum('01/01/2001')+[365.25/24+(tidx(1)-1)*365.25/12:365.25/12:+(tidx(end))*365.25/12];
 
 
 
-%ONLY DO IF 
+%ONLY DO IF
 %(a) file does not exist, or
 %(b) remakecbf==1
 
@@ -1832,7 +1832,7 @@ for n=1:numel(row);
     %Ensure MET and OBS are the right size
 %     CBD.MET=CBD.MET(tidx,:);
 %     CBD.OBS=CBD.OBS(tidx,:);
-    
+
     CBF.ID=PXI.ID;
     CBF.nomet=9;
     %Fill in with full timeseries of project
@@ -1850,8 +1850,8 @@ for n=1:numel(row);
     CBF.LAT=PXI.lat(n);
     %LAI
     CBF.OBS.LAI(1:N)=nanzerofill(GCDRIOBS.LAI(r,c,:));
-    
-    
+
+
     %Writing SIF to file
     switch RO.sifopt
         case 1
@@ -1868,19 +1868,19 @@ for n=1:numel(row);
         SIF=[1:N]*0-9999;
                 CBF.OBSUNC.GPP.gppabs=0;
 
-        case 3 
+        case 3
             SIF=squeeze(GCDRIOBS.SIFfluxsat(r,c,:));
                     CBF.OBSUNC.GPP.gppabs=1;
 
     end
-    
+
         SIF(isfinite(SIF)==0 | SIF<=0)=-9999;
         % SIFUNC(SIF<0)=-9999;
         %Entering SIF in CBF
         CBF.OBS.GPP=SIF;
-        
-  
-  %GPP constraint 
+
+
+  %GPP constraint
   if RO.gppopt==1
         CBF.OTHER_OBS.MGPP.mean=mean(mean(GCDRIOBS.MPIGPPmean(r,c,:,:),3),4);
 %        if CBD.OTHERPRIORS(6)<0; disp('ERROROROROROROORRROROR');keyboard;end
@@ -1889,38 +1889,38 @@ for n=1:numel(row);
         CBF.PARPRIORS(11)=-9999;
         CBF.PARPRIORUNC(11)=-9999;
   end
-  
-            
-    
+
+
+
 %CBD.OBS(tnbeidx{ri},3)=GCDRIOBS.NBE(r,c,tnbeidx{ri});
 CBF.OBS.NBE(1:N)=-9999;
     if isempty(tnbeidx)==0
-        
+
             %Choose NBE product
-            
+
             switch RO.nbe_product
                 case 'b73'
-           
+
             if isfield(RO,'nbe_s3x3') & RO.nbe_s3x3==1;
-                    CBF.OBS.NBE(tnbeidx)=GCDRIOBS.NBE73_s3x3(r,c,tnbeidx);         
+                    CBF.OBS.NBE(tnbeidx)=GCDRIOBS.NBE73_s3x3(r,c,tnbeidx);
             else
-                     CBF.OBS.NBE(tnbeidx)=GCDRIOBS.NBE73(r,c,tnbeidx);         
+                     CBF.OBS.NBE(tnbeidx)=GCDRIOBS.NBE73(r,c,tnbeidx);
             end
-            
+
                 case 'oco2_sep19'
-                    
+
                     CBF.OBS.NBE(tnbeidx)=GCDRIOBS.NBE_OCO2_SEP19(r,c,tnbeidx);
-                    
+
                                     case 'cms_jan20'
                     CBF.OBS.NBE(tnbeidx)=GCDRIOBS.NBE_CMS_JAN20(r,c,tnbeidx);
 
-                                         
+
             end
-            
-            
-            
-            
-            
+
+
+
+
+
             if isstr(RO.nbeunc) & strcmp(RO.nbeunc,'CMS-Flux');
             CBF.OBSUNC.NBE.seasonal_unc=GCDRIOBS.NBEunc_seasonal(r,c);
             CBF.OBSUNC.NBE.annual_unc=GCDRIOBS.NBEunc_annual(r,c);
@@ -1930,7 +1930,7 @@ CBF.OBS.NBE(1:N)=-9999;
                 CBF.OBSUNC.NBE.annual_unc=RO.nbeunc(2);
             end
     end
-    
+
     %Adding OCO-2 constraint
     if RO.oco2==1;CBF.OBS.NBE(169:180)=GCDRIOBS.NBEoco2(r,c,:);end
     %*********Biomass burning  constraints here***********
@@ -1944,9 +1944,9 @@ CBF.OBS.NBE(1:N)=-9999;
         if mean(GCDRIOBS.FireC(r,c,:),3)>0 & max(CBF.MET(:,7))>0;CBF.OTHER_OBS.MFire.mean=mean(GCDRIOBS.FireC(r,c,:));
         elseif mean(GCDRIOBS.FireC(r,c,:),3)==0 & max(CBF.MET(:,7))>0; disp('no significant fire emissions included in GFED');
         end
-            
+
         end
-        
+
         %Top-down constraint
         if RO.bbopt==2;
         if max(GCDRIOBS.BBCO(r,c,tbbidx))>0 & max(CBF.MET(tbbidx,7))>0
@@ -1954,8 +1954,8 @@ CBF.OBS.NBE(1:N)=-9999;
         end
         end
           end
-        
-          
+
+
                   %Biomass burnig Uncertainty structure
           if CBF.OTHER_OBS.MFire.mean>-9999
         if RO.bbunc<0
@@ -1966,10 +1966,10 @@ CBF.OBS.NBE(1:N)=-9999;
             CBF.OTHER_OBS.MFire.unc=RO.bbunc;
         end
           end
-          
+
           %***********done with biomass burning constraints*********
-            
-    
+
+
             %Indexing
     CBF.MET=CBF.MET(tidx,:);
     obsnames={'NBE','LAI','GPP'};
@@ -1978,8 +1978,8 @@ CBF.OBS.NBE(1:N)=-9999;
     %CONTINUE
     end
     %CBF.nodays=diff(minmax(tidx))+1;
-          
-          
+
+
     %Adding mean LAI constraint only
         CBF.OTHER_OBS.MLAI.mean=mean(CBF.OBS.LAI(CBF.OBS.LAI>-9999));
         %CBD.OTHERPRIORSUNC(5)=mean(CBD.OBS(CBD.OBS(:,2)>-9999,2))*0.2;
@@ -1989,7 +1989,7 @@ CBF.OBS.NBE(1:N)=-9999;
 
     %*********************
     %    Biomass
-    
+
     if RO.annualbiomass==1
         %Using YY annually gridded biomass
         CBF.OTHER_OBS.MBiomass.mean=-9999;
@@ -1997,41 +1997,41 @@ CBF.OBS.NBE(1:N)=-9999;
         CBF.OBS.ABGB(12:12:end)=GCDRIOBS.annualbiomass(r,c,10:15);
         CBF.OBSUNC.ABGB.unc=max(1.05,1+std(GCDRIOBS.annualbiomass(r,c,10:15))/mean(GCDRIOBS.annualbiomass(r,c,10:15)));
 
-        
+
     elseif RO.annualbiomass==0;
         %Using Saatchi et al. mean tropical biomass
     CBF.OTHER_OBS.MBiomass.mean=nanzerofill(GCDRIOBS.TABGB(r,c));
     UNC=max(1.5,1.5*12.5*100/GCDRIOBS.TABGB(r,c));if isinf(UNC);UNC=-9999;end
     CBF.OTHER_OBS.MBiomass.unc=UNC;
         end
-    
+
     %OSM
     CBF.PARPRIORS(23)= nanzerofill(GCDRIOBS.SOM(r,c));CBF.PARPRIORUNC(23)=1.5;
-    % 
+    %
 %     CBF.PARPRIORS(12)=nanzerofill(GCDRIOBS.PEAKLAIDAY(r,c)-365.25/6+365.25*2);
 %     CBF.PARPRIORUNC(12)=1.5;
 %     %Leaf fall
 %     CBF.PARPRIORS(15)= nanzerofill(GCDRIOBS.PEAKLAIDAY(r,c)+365.25/6+365.25*2);
 %     CBF.PARPRIORUNC(15)=1.5;
-% 
-%   
+%
+%
 
 
     %mean-zero NBE optiony
     if isfield(RO,'nbezero') & RO.nbezero==1
         CBF.OBS.NBE(CBF.OBS.NBE>-9999)=normvec(CBF.OBS.NBE(CBF.OBS.NBE>-9999),3);
     end
-        
-    
-    
+
+
+
     %User-defined functions
     if isfield(OPT,'funcs') & numel(OPT.funcs)>0;
         for nf=1:numel(OPT.funcs)
         eval(OPT.funcs{nf})
         end
     end
-    
-    
+
+
     %writetofile
     CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,PXI.cbffilename{n,1});
     disp(PXI.cbffilename{n,1});
@@ -2069,7 +2069,7 @@ bytesperparameter=2*4; %64-bit, or 8-bytes
 PXI.chains=zeros(numel(PXI.lat),PXI.nochains,1);
 
     cbrpath=sprintf('CARDAMOM_DISK/CBR_FILES/%s',PXI.analysis);
-    %counting CBR files    
+    %counting CBR files
     %Looping through all chains
     MA=CARDAMOM_MODEL_LIBRARY(PXI.ID);
     for p=1:numel(PXI.lat);
@@ -2343,7 +2343,7 @@ end
 
 end
 function PXItemplate=GL05RUN_MAR19(OPT)
-%Step 1. Load drivers 
+%Step 1. Load drivers
 %See script in PROJSCRIPT_CARDAMOM_GLOBAL_TEMPLATE_MAY15
 %TESTSCRIPT_CARDAMOM_BUCKET_NOV16.m
 %Better to start with a template of RUN29 just in case
@@ -2440,7 +2440,7 @@ cbfdate=CBFtemplate.MET(:,1);
 %     %Writing LAT and 2001-2016 LAI
 %     CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,PXItemplate.cbffilename{n});
 % end
-% 
+%
 GRACE=quickload('DATASCRIPT_READ_GRACE_MASCONS_MAR19');
 
 gracedate=GRACE.time-datenum('01/01/2001');
@@ -2449,7 +2449,7 @@ gracedate=GRACE.time-datenum('01/01/2001');
 
 %Step 3. define gridcells
 %Step 4: define relevant pixel info
-%IF NEEDED, load drivers separately 
+%IF NEEDED, load drivers separately
 %EPREC=quickload('DATASCRIPT_READ_ERAI_MONTHLY_JUL18(''prec'',0.5)');
 EPREC=quickload('DATASCRIPT_READ_ERAI_MONTHLY_JUL18(''prec'',0.5)');
 ET2M=quickload('DATASCRIPT_READ_ERAI_MONTHLY_JUL18(''t2m'',0.5)');
@@ -2460,7 +2460,7 @@ HWSD=quickload('DATASCRIPT_READ_HWSD_MAP(0.5)');
 TABGB=quickload('DATASCRIPT_READ_SAATCHI_BIOMASS_MAP(0.5)');
 
  if isfield(OPT,'csif')==0;OPT.csif=0;end
- 
+
  if OPT.csif==0;
     GSIF=quickload('DATASCRIPT_READ_GOME_2_FLUORESCENCE_SEP17');
  else
@@ -2497,8 +2497,8 @@ for n=1:numel(rows);
     CBF.LAT=PXItemplate.lat(n);
     %LAI
     CBF.OBS.LAI(1:192)=nanzerofill(LAI.data(r,c,:));
-    
-    
+
+
     %Step 1. Load CBD file
     %CBF=CARDAMOM_READ_BINARY_FILEFORMAT(PXItemplate.cbffilename{n,ri});
     %Step 2. Fill in drivers
@@ -2509,7 +2509,7 @@ for n=1:numel(rows);
     CBF.MET(:,7)=BA(r,c,idx);
     CBF.MET(:,8)=VPD(r,c,idx);
     CBF.MET(:,9)=EPREC.data(r,c,idx)*1e3;%mm/day
-    
+
 
 
 
@@ -2520,19 +2520,19 @@ for n=1:numel(rows);
         %Entering SIF in CBF
         CBF.OBS.GPP(cbfyears>=min(GSIF.year) & cbfyears<=max(GSIF.year))=SIF;
         CBF.OBSUNC.GPP.gppabs=0;
-     
+
 
 
     EWT=squeeze(GRACE.data(r,c,:));
     EWT(isfinite(EWT)==0 )=-9999;
 
    if isfield(OPT,'grace')==0;OPT.grace=1;end
-       
+
 
      if OPT.grace==1;
             CBF.OBS.EWT(cbfgrpts{1})=EWT(cbfgrpts{2});
     end
-        
+
 
     %Write GFEDv4 data
     %This tends to be an issue where fires are virtually 0
@@ -2541,19 +2541,19 @@ for n=1:numel(rows);
 	 CBF.OTHER_OBS.MFire.mean=mean(GFEDCannual05x05(r,c,:),3)*12/365.25;
      CBF.OTHER_OBS.MFire.unc=1.5;
       end
-     
+
      %Write MPI GPP with log2 uncertainty here
      %remove pars(11) constraint
         CBF.OTHER_OBS.MGPP.mean=nanzerofill(mean(mean(GPP.data(r,c,:,:),3),4));
         CBF.OTHER_OBS.MGPP.unc=1.5;
 
-        
+
          CBF.OTHER_OBS.MLAI.mean=mean(CBF.OBS.LAI(CBF.OBS.LAI>-9999));
         %CBD.OTHERPRIORSUNC(5)=mean(CBD.OBS(CBD.OBS(:,2)>-9999,2))*0.2;
         %CBD.OTHERPRIORUNC(5)=CBD.OTHERPRIORS(5)*0.5;
         CBF.OTHER_OBS.MLAI.unc=1.5;
 
-    
+
     %    Biomass
     CBF.OTHER_OBS.MBiomass.mean=nanzerofill(TABGB.data(r,c));
     UNC=max(1.5,1.5*12.5*100/TABGB.data(r,c));if isinf(UNC);UNC=-9999;end
@@ -2562,7 +2562,7 @@ for n=1:numel(rows);
     CBF.PARPRIORS(23)= nanzerofill(HWSD.data(r,c));
     CBF.PARPRIORUNC(23)=1.5;
 
-    
+
     %writetofile
     disp(sprintf('writing %s',PXItemplate.cbffilename{n,ri}));
         CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,PXItemplate.cbffilename{n,ri});
@@ -2596,13 +2596,13 @@ end
 function GCDRIOBS=READ_GRID_GC_4x5_DRIVERS_OBS(repeat)
 
 
-%This function is a universal gridding of all/any datasets at 4x5  
+%This function is a universal gridding of all/any datasets at 4x5
 YEARS=2001:2018;
 
 
 defval('repeat',0);
 %Dumpfile and stuff here
-%GCDRIOBS 
+%GCDRIOBS
 %dumpfilename='DUMPFILES/PROJSCRIPT_CARDAMOM_CMS_GC4x5_DRIOBS_NOV18.mat';
 dumpfilename='DUMPFILES/PROJSCRIPT_CARDAMOM_CMS_GC4x5_DRIOBS_OCT19.mat';
 
@@ -2765,7 +2765,7 @@ CO2CO=permute(ncread('OUTPUTS/CMS_FIRES_CO2CO/CMS_FIRES_CO2CO_NOV16.nc','CO2:CO'
 %Convert to total C emissions
 %CO + CO*CO2CO
 %Convert to daily flux
-%For comparison: 
+%For comparison:
 %for yr=2001:2015; GF4=DATASCRIPT_READ_GFED4_DATA_MAY16(yr);GFEDCannual025x025(:,:,yr-2000)=mean(GF4.ES(:,:,:,4),3);end
 %save DUMPFILES/GFED_2001_2015_4x5_NOCODE_v2.mat GFEDCannual025x025
 %load DUMPFILES/GFED_2001_2015_4x5_NOCODE_v2.mat GFEDCannual025x025
@@ -2783,7 +2783,7 @@ for yr=2001:2015
 end
 
    GCDRIOBS.BBCO=BBCO;
-   
+
 GCDRIOBS.BBCO=GCDRIOBS.BBCO./repmat(LSFRAC,[1,1,size(GCDRIOBS.BBCO,3)]);
 
 
@@ -2828,14 +2828,14 @@ repeatallnbe=0;
 
 
 if matfilecontains(GCDRIOBS,'NBE')==0 || matfilecontains(GCDRIOBS,'NBE_CMS_JAN20')==0  || repeat==1 || repeatallnbe==1;
-    
-    
+
+
 
 CMS=DATASCRIPT_READ_JUNJIE_CMS_OUTPUT_JUL18;
 CMS2=DATASCRIPT_READ_JUNJIE_CMS_OUTPUT_SEP19('CMS_2015_2018_SEP19');
 CMS3=DATASCRIPT_READ_JUNJIE_CMS_OUTPUT_SEP19('CMS_2010_2018_JAN20');
 
-%Only providing b35 results here 
+%Only providing b35 results here
 NBE(:,:,109:144)=CMS.post;
 NBE(:,:,[1:108,145:180])=NaN;
 NBE73(:,:,109:180)=CMS.post_b73;NBE73(:,:,1:108)=NaN;
@@ -2904,13 +2904,13 @@ end
 function GCDRIOBS=READ_GRID_GC_4x5_DRIVERS_OBS_ERA5(repeat)
 
 
-%This function is a universal gridding of all/any datasets at 4x5  
+%This function is a universal gridding of all/any datasets at 4x5
 YEARS=2001:2019;
 
 
 defval('repeat',0);
 %Dumpfile and stuff here
-%GCDRIOBS 
+%GCDRIOBS
 %dumpfilename='DUMPFILES/PROJSCRIPT_CARDAMOM_CMS_GC4x5_DRIOBS_NOV18.mat';
 dumpfilename='DUMPFILES/PROJSCRIPT_CARDAMOM_CMS_GC4x5_DRIOBS_ERA5_AUG20.mat';
 
@@ -3025,7 +3025,7 @@ end
  disp('GFEDv4s beta does not provide 2017-19 burned area');
  disp('Using GFEDv4s 2001-2016 BA/Emissions ratio')
  idx16=16*12;
- 
+
  for m=1:36
      BAextra(:,:,m)=sum(GCDRIOBS.BA(:,:,m:12:idx16),3)./sum(GCDRIOBS.FireC(:,:,m:12:idx16),3).*GCDRIOBS.FireC(:,:,idx16+m);
  end
@@ -3084,7 +3084,7 @@ CO2CO=permute(ncread('OUTPUTS/CMS_FIRES_CO2CO/CMS_FIRES_CO2CO_NOV16.nc','CO2:CO'
 %Convert to total C emissions
 %CO + CO*CO2CO
 %Convert to daily flux
-%For comparison: 
+%For comparison:
 %for yr=2001:2015; GF4=DATASCRIPT_READ_GFED4_DATA_MAY16(yr);GFEDCannual025x025(:,:,yr-2000)=mean(GF4.ES(:,:,:,4),3);end
 %save DUMPFILES/GFED_2001_2015_4x5_NOCODE_v2.mat GFEDCannual025x025
 %load DUMPFILES/GFED_2001_2015_4x5_NOCODE_v2.mat GFEDCannual025x025
@@ -3102,7 +3102,7 @@ for yr=2001:2015
 end
 
    GCDRIOBS.BBCO=BBCO;
-   
+
 GCDRIOBS.BBCO=GCDRIOBS.BBCO./repmat(LSFRAC,[1,1,size(GCDRIOBS.BBCO,3)]);
 
 
@@ -3152,14 +3152,14 @@ repeatallnbe=0;
 
 
 if matfilecontains(GCDRIOBS,'NBE')==0 || matfilecontains(GCDRIOBS,'NBE_CMS_JAN20')==0  || repeat==1 || repeatallnbe==1;
-    
-    
+
+
 
 CMS=DATASCRIPT_READ_JUNJIE_CMS_OUTPUT_JUL18;
 CMS2=DATASCRIPT_READ_JUNJIE_CMS_OUTPUT_SEP19('CMS_2015_2018_SEP19');
 CMS3=DATASCRIPT_READ_JUNJIE_CMS_OUTPUT_SEP19('CMS_2010_2018_JAN20');
 
-%Only providing b35 results here 
+%Only providing b35 results here
 NBE(:,:,109:144)=CMS.post;
 NBE(:,:,[1:108,145:180])=NaN;
 NBE73(:,:,109:180)=CMS.post_b73;NBE73(:,:,1:108)=NaN;
@@ -3232,7 +3232,7 @@ B=A;B(isnan(A) | A<=0)=-9999;
 end
 
 
-%Auxilliary 
+%Auxilliary
 function PEAKLAIDAY=projscript_approximate_peak_lai(LAIDATA)
 
 YEAR=2000+ceil([1:120]/12);
@@ -3254,8 +3254,8 @@ for m=1:12; COUNT(:,:,m)=sum(PEAKLAIMONTHS==m,3);end
     for m=1:12;PEAKLAIMONTH(COUNT(:,:,m)==max(COUNT,[],3))=m;end
 PEAKLAIDAY=PEAKLAIMONTH*365.25/12-365.25/24;
 PEAKLAIDAY(max(COUNT,[],3)==0)=NaN;
-    
-    
+
+
 
 
 end

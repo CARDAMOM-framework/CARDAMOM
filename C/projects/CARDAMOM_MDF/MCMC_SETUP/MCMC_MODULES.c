@@ -10,8 +10,8 @@
 /*DALEC_SYNTHETIC SETUP*/
 
 
-int READ_PARI_DATA(PARAMETER_INFO *PI, DATA *CARDADATA,MCMC_OUTPUT *MCOUT,MCMC_OPTIONS *MCOPT, char *CLA[]){
-/*READING IN DALEC_SYNTHETIC CARDADATA*/
+int READ_PARI_DATA(PARAMETER_INFO *PI, DATA *DATA,MCMC_OUTPUT *MCOUT,MCMC_OPTIONS *MCOPT, char *CLA[]){
+/*READING IN DALEC_SYNTHETIC DATA*/
 /*opening file*/
 
 
@@ -27,7 +27,7 @@ else{strcpy(filename,CLA[1]);}
 
 /*defining initial values*
  * Need to perform MCMC run to determine this*/
-FIND_EDC_INITIAL_VALUES(*CARDADATA,PI,MCOPT);
+FIND_EDC_INITIAL_VALUES(*DATA,PI,MCOPT);
 
 
 /*resetting PI-stepsize (as this has been changed)*/
@@ -85,7 +85,7 @@ return 0;
 
 
 /*Enter all fields originally defined with MALLOC*/
-int MEMORY_CLEANUP(DATA CARDADATA, PARAMETER_INFO PI, MCMC_OPTIONS MCOPT, MCMC_OUTPUT MCOUT){
+int MEMORY_CLEANUP(DATA DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCOPT, MCMC_OUTPUT MCOUT){
 
 free(PI.parmin);
 free(PI.parmax);
@@ -94,28 +94,28 @@ free(PI.parfix);
 free(PI.stepsize);
 free(PI.transform);
 
-FREE_DATA_STRUCT(CARDADATA);
+FREE_DATA_STRUCT(DATA);
 /*
-free(CARDADATA.MET);
-free(CARDADATA.LAI);
-free(CARDADATA.NEE);
-free(CARDADATA.WOO);
-free(CARDADATA.GPP);
+free(DATA.MET);
+free(DATA.LAI);
+free(DATA.NEE);
+free(DATA.WOO);
+free(DATA.GPP);
 
 
-free(CARDADATA.M_FLUXES);
-free(CARDADATA.M_LAI);
-free(CARDADATA.M_NEE);
-free(CARDADATA.M_POOLS);
-free(CARDADATA.M_GPP);
+free(DATA.M_FLUXES);
+free(DATA.M_LAI);
+free(DATA.M_NEE);
+free(DATA.M_POOLS);
+free(DATA.M_GPP);
 
-free(CARDADATA.parmin);
-free(CARDADATA.parmax);
+free(DATA.parmin);
+free(DATA.parmax);
 
-if (CARDADATA.ngpp>0){free(CARDADATA.gpppts);}
-if (CARDADATA.nlai>0){free(CARDADATA.laipts);}
-if (CARDADATA.nnee>0){free(CARDADATA.neepts);}
-if (CARDADATA.nwoo>0){free(CARDADATA.woopts);}
+if (DATA.ngpp>0){free(DATA.gpppts);}
+if (DATA.nlai>0){free(DATA.laipts);}
+if (DATA.nnee>0){free(DATA.neepts);}
+if (DATA.nwoo>0){free(DATA.woopts);}
 
 */
 free(MCOUT.best_pars);
@@ -128,15 +128,15 @@ return 0;}
 
 /*this function initializes the PI fields
 It is called from DALEC_ALL_TEMPLATE or equivalent higher level function*/
-int INITIALIZE_PI_STRUCT(PARAMETER_INFO * PI, DATA * CARDADATA, MCMC_OPTIONS *MCO){
+int INITIALIZE_PI_STRUCT(PARAMETER_INFO * PI, DATA * DATA, MCMC_OPTIONS *MCO){
 oksofar("initializing PI stucture");
 /*contains 6 fields with min max log for par and par*/
-PI->parmin=calloc(CARDADATA->nopars,sizeof(double));
-PI->parmax=calloc(CARDADATA->nopars,sizeof(double));
-PI->parini=calloc(CARDADATA->nopars*MCO->nchains,sizeof(double));
-PI->parfix=calloc(CARDADATA->nopars,sizeof(double));
-PI->stepsize=calloc(CARDADATA->nopars,sizeof(double));
-PI->transform=calloc(CARDADATA->nopars,sizeof(int));
+PI->parmin=calloc(DATA->nopars,sizeof(double));
+PI->parmax=calloc(DATA->nopars,sizeof(double));
+PI->parini=calloc(DATA->nopars*MCO->nchains,sizeof(double));
+PI->parfix=calloc(DATA->nopars,sizeof(double));
+PI->stepsize=calloc(DATA->nopars,sizeof(double));
+PI->transform=calloc(DATA->nopars,sizeof(int));
 /*MAtrix double-pointer allocation*/
 oksofar("about to declare matrix");
 oksofar("Just declared matrix");
@@ -146,11 +146,11 @@ oksofar("Just declared matrix");
 oksofar("fields declared");
 
 int n,m;
-PI->npars=CARDADATA->nopars;
-for (n=0;n<CARDADATA->nopars;n++){
-/*copying minimum and maximum parameter values from CARDADATA*/
-PI->parmin[n]=CARDADATA->parmin[n];
-PI->parmax[n]=CARDADATA->parmax[n];
+PI->npars=DATA->nopars;
+for (n=0;n<DATA->nopars;n++){
+/*copying minimum and maximum parameter values from DATA*/
+PI->parmin[n]=DATA->parmin[n];
+PI->parmax[n]=DATA->parmax[n];
 PI->stepsize[n]=0.01;}
 
 /*Try first hardcoding transform*/
