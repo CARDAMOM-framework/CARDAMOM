@@ -46,6 +46,11 @@
 nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS.nc.cbf';
 CBF1100=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
 CBF1100.EWT.values=CBF1100.EWT.values*NaN;
+CBF1100.ET.values=CBF1100.ET.values*NaN;
+CBF1100.GPP.values=CBF1100.GPP.values*NaN;
+CBF1100.NBE.values=CBF1100.NBE.values*NaN;
+CBF1100.LAI.values=CBF1100.LAI.values*NaN;
+CBF1100.ABGB.values=CBF1100.ABGB.values*NaN;
 CBF1100.Mean_Biomass.values=CBF1100.Mean_Biomass.values*NaN;
 CBF1100.Mean_Fire.values=CBF1100.Mean_Fire.values*NaN;
 CBF1100.Mean_LAI.values=CBF1100.Mean_LAI.values*NaN;
