@@ -3,7 +3,7 @@ function CBF=CARDAMOM_READ_NC_CBF_FILE(filename)
 
 
 
-if nargin==0;filename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.nc.cbf';end
+if nargin==0;filename='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbf.nc';end
 
 
 %Step 1. ncinfo
