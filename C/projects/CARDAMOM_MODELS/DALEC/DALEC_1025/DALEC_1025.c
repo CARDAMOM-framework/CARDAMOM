@@ -325,6 +325,28 @@ gpppars[7]=SSRD[n];
 FLUXES[f+F.gpp]=ACM(gpppars,constants)*fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1);
 /*Evapotranspiration*/
 FLUXES[f+F.et]=FLUXES[f+F.gpp]*sqrt(VPD[n])/pars[P.uWUE]+SSRD[n]*pars[P.boese_r];
+
+/*Water pool = Water pool - runoff + prec (mm/day) - ET*/
+     /*printf("%2.1f\n",POOLS[p+S.H2O_PAW]);*/
+     /*PAW total runoff*/
+
+     FLUXES[f+F.q_paw]=pow(POOLS[p+S.H2O_PAW],2)/pars[P.PAW_Qmax]/deltat*(1-pars[P.h2o_xfer]); 
+        /*PAW -> PUW transfer*/
+     FLUXES[f+F.paw2puw]=FLUXES[f+F.q_paw]*pars[P.h2o_xfer]/(1-pars[P.h2o_xfer]);
+     /*PUW runoff*/
+     FLUXES[f+F.q_puw]=pow(POOLS[p+S.H2O_PUW],2)/pars[P.PUW_Qmax]/deltat;
+     /*Maximum water loss at W = pars[P.PAW_Qmax]/2;*/
+     if (POOLS[p+S.H2O_PAW]>pars[P.PAW_Qmax]/2){FLUXES[f+F.q_paw]=(POOLS[p+S.H2O_PAW]-pars[P.PAW_Qmax]/4)/deltat*(1-pars[P.h2o_xfer]);
+        FLUXES[f+F.paw2puw]=(POOLS[p+S.H2O_PAW]-pars[P.PAW_Qmax]/4)/deltat*pars[P.h2o_xfer]/(1-pars[P.h2o_xfer]);}
+     if (POOLS[p+S.H2O_PUW]>pars[P.PUW_Qmax]/2){FLUXES[f+F.q_puw]=(POOLS[p+S.H2O_PUW]-pars[P.PUW_Qmax]/4)/deltat;}
+
+     POOLS[nxp+S.H2O_PAW]=POOLS[p+S.H2O_PAW] + (-FLUXES[f+F.q_paw] - FLUXES[f+F.paw2puw] + PREC[n] - FLUXES[f+F.et])*deltat;
+
+          
+     /*Plant-unavailable water budget*/
+
+        POOLS[nxp+S.H2O_PUW]=POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
+        
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
 FLUXES[f+F.temprate]=exp(pars[P.temp_factor]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp))*((PREC[n]/meanprec-1)*pars[P.moisture]+1);
@@ -365,27 +387,6 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
         POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] +  (FLUXES[f+F.wood_prod] - FLUXES[f+F.wood2lit])*deltat;
         POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.root2lit] - FLUXES[f+F.resp_het_lit] - FLUXES[f+F.lit2som])*deltat; 
         POOLS[nxp+S.C_som]= POOLS[p+S.C_som]+ (FLUXES[f+F.lit2som] - FLUXES[f+F.resp_het_som]+FLUXES[f+F.wood2lit])*deltat;                    
-/*Water pool = Water pool - runoff + prec (mm/day) - ET*/
-	/*printf("%2.1f\n",POOLS[p+S.H2O_PAW]);*/
-	/*PAW total runoff*/
-
-	FLUXES[f+F.q_paw]=pow(POOLS[p+S.H2O_PAW],2)/pars[P.PAW_Qmax]/deltat*(1-pars[P.h2o_xfer]);	
-        /*PAW -> PUW transfer*/
-	FLUXES[f+F.paw2puw]=FLUXES[f+F.q_paw]*pars[P.h2o_xfer]/(1-pars[P.h2o_xfer]);
-	/*PUW runoff*/
-	FLUXES[f+F.q_puw]=pow(POOLS[p+S.H2O_PUW],2)/pars[P.PUW_Qmax]/deltat;
-	/*Maximum water loss at W = pars[P.PAW_Qmax]/2;*/
-	if (POOLS[p+S.H2O_PAW]>pars[P.PAW_Qmax]/2){FLUXES[f+F.q_paw]=(POOLS[p+S.H2O_PAW]-pars[P.PAW_Qmax]/4)/deltat*(1-pars[P.h2o_xfer]);
-        FLUXES[f+F.paw2puw]=(POOLS[p+S.H2O_PAW]-pars[P.PAW_Qmax]/4)/deltat*pars[P.h2o_xfer]/(1-pars[P.h2o_xfer]);}
-	if (POOLS[p+S.H2O_PUW]>pars[P.PUW_Qmax]/2){FLUXES[f+F.q_puw]=(POOLS[p+S.H2O_PUW]-pars[P.PUW_Qmax]/4)/deltat;}
-
-	POOLS[nxp+S.H2O_PAW]=POOLS[p+S.H2O_PAW] + (-FLUXES[f+F.q_paw] - FLUXES[f+F.paw2puw] + PREC[n] - FLUXES[f+F.et])*deltat;
-
-		
-	/*Plant-unavailable water budget*/
-
-        POOLS[nxp+S.H2O_PUW]=POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
-
 
 
 	/*total pool transfers - WITH FIRES*/
