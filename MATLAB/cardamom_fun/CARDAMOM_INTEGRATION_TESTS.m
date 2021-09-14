@@ -44,9 +44,11 @@
 %%%%%*********Test 1 ************ 
 nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS.nc.cbf';
 CBF1100=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
+disp('Successfully read file using "CARDAMOM_READ_NC_CBF_FILE" ...')
 %*********Try writing out
 nccbftestfile='DUMPFILES/MODEL_ID_1100_TEST_ONLY.nc.cbf';
 CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbftestfile);
+disp('Successfully wrote file using "CARDAMOM_WRITE_NC_CBF_FILE" ...')
 %************ set all fields to NAN*****
 CBF1100.EWT.values=CBF1100.EWT.values*NaN;
 CBF1100.ET.values=CBF1100.ET.values*NaN;
