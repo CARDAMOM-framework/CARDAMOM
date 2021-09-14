@@ -96,11 +96,21 @@ int et;   /*Evapotranspiration*/
 int q_paw;   /*PAW runoff*/
 int paw2puw;   /*PAW->PUW transfer*/
 int q_puw;   /*PUW runoff*/
+int target_LAI;   /*LAI environmental target*/
+int t_memory;   /*LAI temp memory*/
+int lambda_max_memory;   /*LAI max memory*/
+int dlambda_dt;   /*dLAI/dt*/
+int temp_thresh;   /*f_temp_thres*/
+int day_thresh;   /*f_dayl_thres*/
+int c_lim_flag;   /*LAI carbon limitation flag*/
+int lai_fire;   /*LAI fire loss*/
+int foliar_fire_frac;   /*C_fol fire loss frac*/
 } DALEC_1025_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
-    30,31
+    30,31,32,33,34,35,36,37,38,39,
+    40,
 };
 
 struct DALEC_1025_POOLS{
@@ -123,8 +133,8 @@ struct DALEC_1025_POOLS S=DALEC_1025_POOLS;
 
 DALECmodel->nopools=8;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=37;
-DALECmodel->nofluxes=32;
+DALECmodel->nopars=48;
+DALECmodel->nofluxes=41;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
