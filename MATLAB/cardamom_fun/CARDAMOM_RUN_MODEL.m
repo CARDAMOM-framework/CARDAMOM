@@ -64,7 +64,7 @@ if iscell(CBF);CBF=CBF{1};end
 if isstruct(CBF)
     %Here MD is a CARDAMOM data structure and PARS is a NxM array with N
     %samples of M parameters
-cbffile=sprintf('%s/tempcardametfile%s.nc.cbf',Dpath,channel);
+cbffile=sprintf('%s/tempcardametfile%s.cbf.nc',Dpath,channel);
 %writing parameters to file
 %writing met drivers to file
 CARDAMOM_WRITE_NC_CBF_FILE(CBF,cbffile);
@@ -81,7 +81,7 @@ if ischar(CBF);
     cbffile=CBF;
     if OPT.MODEL.ID==0;
         
-        if strcmp(CBF(end-6:end),'.nc.cbf')==1
+        if strcmp(CBF(end-6:end),'.cbf.nc')==1
             OPT.MODEL.ID=ncread(CBF,'ID');
         else
         CBF=CARDAMOM_READ_NC_CBF_FILE(cbffile);

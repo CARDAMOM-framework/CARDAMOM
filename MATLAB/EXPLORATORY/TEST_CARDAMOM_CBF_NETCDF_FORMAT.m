@@ -29,7 +29,7 @@ nomet=size(CBF.MET,2);
 %Step 2. write as netcdf file
 
 if nargin<2
-fname='CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE_beta_v2.nc.cbf';delete(fname)
+fname='CARDAMOM/DATA/CARDAMOM_DATA_DRIVERS_EXAMPLE_beta_v2.cbf.nc';delete(fname)
 end
 
 
