@@ -1,5 +1,5 @@
 #pragma once
-#include "DALEC_1005.c"
+#include "DALEC_1017.c"
 
 /*PARAMETER_INFO (typedef struct) must have at least 3 fields
  *  * npars,
@@ -10,10 +10,10 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1005(DATA *CARDADATA)
+int PARS_INFO_1017(DATA *CARDADATA)
 {
 
-struct DALEC_1005_PARAMETERS P=DALEC_1005_PARAMETERS;
+struct DALEC_1017_PARAMETERS P=DALEC_1017_PARAMETERS;
 
 /*Decomposition rate*/
 CARDADATA->parmin[P.tr_lit2soil]=0.00001;
@@ -168,6 +168,38 @@ CARDADATA->parmax[P.i_PUW]=10000;
 /*r: The chosen prior range in r conservatively captures the range of values by Boese et al.(2017)*/
 CARDADATA->parmin[P.boese_r]=0.01;
 CARDADATA->parmax[P.boese_r]=0.3;
+
+/*Tminmin scaling factor*/
+CARDADATA->parmin[P.Tminmin]=258.15;
+CARDADATA->parmax[P.Tminmin]=273.15;
+
+/*Tminmax scaling factor*/
+CARDADATA->parmin[P.Tminmax]=273.15;
+CARDADATA->parmax[P.Tminmax]=288.15;
+
+/*iSWE: initial for state variable SWE snow water equivalent*/
+CARDADATA->parmin[P.i_SWE]=0.000001;
+CARDADATA->parmax[P.i_SWE]=10000;
+
+/*sn1: min threshold for melt*/
+CARDADATA->parmin[P.min_melt]=240;
+CARDADATA->parmax[P.min_melt]=270;
+
+/*sn2: slope*/
+CARDADATA->parmin[P.melt_slope]=0.00001;
+CARDADATA->parmax[P.melt_slope]=1;
+
+/*sn3: snow cover fraction scalar*/
+CARDADATA->parmin[P.scf_scalar]=0.001;
+CARDADATA->parmax[P.scf_scalar]=1000.0;
+
+/*Reference VPD */
+CARDADATA->parmin[P.vpd_ref]=10;
+CARDADATA->parmax[P.vpd_ref]=10000;
+
+/*VPD curvature exponent */
+CARDADATA->parmin[P.vpd_exp]=0.001;
+CARDADATA->parmax[P.vpd_exp]=1000;
 
 return 0;
 

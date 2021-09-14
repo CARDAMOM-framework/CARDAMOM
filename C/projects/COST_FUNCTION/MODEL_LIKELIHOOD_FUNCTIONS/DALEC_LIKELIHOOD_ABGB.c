@@ -22,12 +22,16 @@ for (n=0;n<D.nabgb;n++){dn=D.abgbpts[n];
 /*biomass = totals of labile, foliar, root, wood*/
 //biomass=D.M_POOLS[D.nopools*(dn+1)+0]+D.M_POOLS[D.nopools*(dn+1)+1]+D.M_POOLS[D.nopools*(dn+1)+2]+D.M_POOLS[D.nopools*(dn+1)+3];
 biomass=D.M_ABGB[dn];
+
 /*Model-data mismatch*/
 tot_exp+=pow(log(biomass/D.ABGB[dn])/log(D.otherpriorunc[1]),2);}
+
+
 //tot_exp+=pow(log(max(biomass,0.01)/max(D.WOO[dn],0.01))/log(max(D.otherpriorunc[1],0.1)),2);} /*shuang for correcting -inf*/
 /*adding cost to overall probability estimate*/
 P=P-0.5*tot_exp;
 }
+
 
 return P;
 

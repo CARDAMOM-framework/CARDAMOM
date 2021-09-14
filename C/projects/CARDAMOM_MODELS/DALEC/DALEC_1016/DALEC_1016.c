@@ -4,7 +4,7 @@
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
-struct DALEC_1005_PARAMETERS{
+struct DALEC_1016_PARAMETERS{
 /*DALEC PARAMETERS*/
 int tr_lit2soil;
 int f_auto;
@@ -43,14 +43,21 @@ int h2o_xfer;
 int PUW_Qmax;
 int i_PUW;
 int boese_r;
-} DALEC_1005_PARAMETERS={
+int Tminmin;
+int Tminmax;
+int i_SWE;
+int min_melt;
+int melt_slope;
+int scf_scalar;
+} DALEC_1016_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
-    30,31,32,33,34,35,36
+    30,31,32,33,34,35,36,37,38,39,
+    40,41,42
 };
 
-struct DALEC_1005_FLUXES{
+struct DALEC_1016_FLUXES{
 /*DALEC FLUXES*/
 int gpp;   /*GPP*/
 int temprate;   /*Temprate*/
@@ -84,14 +91,16 @@ int et;   /*Evapotranspiration*/
 int q_paw;   /*PAW runoff*/
 int paw2puw;   /*PAW->PUW transfer*/
 int q_puw;   /*PUW runoff*/
-} DALEC_1005_FLUXES={
+int melt;   /*Snow melt*/
+int scf;   /*Snow cover fraction*/
+} DALEC_1016_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
-    30,31
+    30,31,32,33
 };
 
-struct DALEC_1005_POOLS{
+struct DALEC_1016_POOLS{
 /*DALEC POOLS*/
 int C_lab; /*Labile C*/
 int C_fol; /*Foliar C*/
@@ -101,18 +110,21 @@ int C_lit; /*Litter C*/
 int C_som; /*Soil C*/
 int H2O_PAW; /*Plant available H2O*/
 int H2O_PUW; /*Plant unavailable H2O*/
-} DALEC_1005_POOLS={0,1,2,3,4,5,6,7};
+int H2O_SWE; /*Snow water equivalent*/
+} DALEC_1016_POOLS={
+    0,1,2,3,4,5,6,7,8
+};
 
-int DALEC_1005_MODCONFIG(DALEC * DALECmodel){
+int DALEC_1016_MODCONFIG(DALEC * DALECmodel){
 
-struct DALEC_1005_PARAMETERS P=DALEC_1005_PARAMETERS;
-struct DALEC_1005_FLUXES F=DALEC_1005_FLUXES;
-struct DALEC_1005_POOLS S=DALEC_1005_POOLS;
+struct DALEC_1016_PARAMETERS P=DALEC_1016_PARAMETERS;
+struct DALEC_1016_FLUXES F=DALEC_1016_FLUXES;
+struct DALEC_1016_POOLS S=DALEC_1016_POOLS;
 
-DALECmodel->nopools=8;
-DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=37;
-DALECmodel->nofluxes=32;
+DALECmodel->nopools=9;
+DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
+DALECmodel->nopars=43;
+DALECmodel->nofluxes=34;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
@@ -120,14 +132,14 @@ static OBSOPE OBSOPE;
 INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 
 //Set SUPPORT_OBS values to true if model supports observation operation.
-printf("DALEC_1005_MODCONFIG, Line 22...\n");
+printf("DALEC_1016_MODCONFIG, Line 22...\n");
 OBSOPE.SUPPORT_GPP_OBS=true;
 OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
 OBSOPE.SUPPORT_NBE_OBS=true;
 OBSOPE.SUPPORT_ABGB_OBS=true;
-OBSOPE.SUPPORT_DOM_OBS=true;
-OBSOPE.SUPPORT_EWT_OBS=true;
+OBSOPE.SUPPORT_SOM_OBS=true;
+OBSOPE.SUPPORT_GRACE_EWT_OBS=true;
 OBSOPE.SUPPORT_FIR_OBS=true;
 
 //Provide values required by each OBS operator
@@ -162,18 +174,19 @@ ABGB_pools[3]=S.C_woo;
 OBSOPE.ABGB_pools=ABGB_pools;
 OBSOPE.ABGB_n_pools=4;
 
-//DOM-specific variables
-static int DOM_pools[2]; 
-DOM_pools[0]=S.C_lit;
-DOM_pools[1]=S.C_som;
-OBSOPE.DOM_pools=DOM_pools;
-OBSOPE.DOM_n_pools=2;
+//SOM-specific variables
+static int SOM_pools[2]; 
+SOM_pools[0]=S.C_lit;
+SOM_pools[1]=S.C_som;
+OBSOPE.SOM_pools=SOM_pools;
+OBSOPE.SOM_n_pools=2;
 //H2O-specific variables
-static int EWT_h2o_pools[2];
-EWT_h2o_pools[0]=S.H2O_PAW;
-EWT_h2o_pools[1]=S.H2O_PUW;
-OBSOPE.EWT_h2o_pools=EWT_h2o_pools;
-OBSOPE.EWT_n_h2o_pools=2;
+static int GRACE_EWT_h2o_pools[3];
+GRACE_EWT_h2o_pools[0]=S.H2O_PAW;
+GRACE_EWT_h2o_pools[1]=S.H2O_PUW;
+GRACE_EWT_h2o_pools[2]=S.H2O_SWE;
+OBSOPE.GRACE_EWT_h2o_pools=GRACE_EWT_h2o_pools;
+OBSOPE.GRACE_EWT_n_h2o_pools=3;
 //Fire-specific variables
 OBSOPE.FIR_flux=F.f_total;
 
@@ -183,12 +196,12 @@ return 0;}
 
 
 
-int DALEC_1005(DATA DATA, double const *pars)
+int DALEC_1016(DATA DATA, double const *pars)
 {
 
-struct DALEC_1005_PARAMETERS P=DALEC_1005_PARAMETERS;
-struct DALEC_1005_FLUXES F=DALEC_1005_FLUXES;
-struct DALEC_1005_POOLS S=DALEC_1005_POOLS;
+struct DALEC_1016_PARAMETERS P=DALEC_1016_PARAMETERS;
+struct DALEC_1016_FLUXES F=DALEC_1016_FLUXES;
+struct DALEC_1016_POOLS S=DALEC_1016_POOLS;
 
 double gpppars[11],pi;
 /*C-pools, fluxes, meteorology indices*/
@@ -226,6 +239,7 @@ double *LAI=DATA.M_LAI;
   /*water pools*/
   POOLS[S.H2O_PAW]=pars[P.i_PAW];
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
+  POOLS[S.H2O_SWE]=pars[P.i_SWE];
 
 double *SSRD=DATA.ncdf_data.SSRD.values;
 double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
@@ -236,6 +250,7 @@ double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
 double *VPD=DATA.ncdf_data.VPD.values;
 double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
 double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
+double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
 
 double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
 double meanrad = DATA.ncdf_data.SSRD.reference_mean;
@@ -308,9 +323,22 @@ gpppars[5]=DOY[n];
 gpppars[7]=SSRD[n];
 
 
+/*Temp scaling factor*/
+double g;
+int Tminmin = pars[P.Tminmin] - 273.15; 
+int Tminmax = pars[P.Tminmax] - 273.15;
+if( T2M_MIN[n] < Tminmin ) {
+    g=0;
+}
+else if (T2M_MIN[n] > Tminmax) {
+    g=1;
+}
+else {
+    g=(T2M_MIN[n] - Tminmin)/(Tminmax - Tminmin);
+}
 
 /*GPP*/
-FLUXES[f+F.gpp]=ACM(gpppars,constants)*fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1);
+FLUXES[f+F.gpp]=ACM(gpppars,constants)*fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1)*g;
 /*Evapotranspiration*/
 FLUXES[f+F.et]=FLUXES[f+F.gpp]*sqrt(VPD[n])/pars[P.uWUE]+SSRD[n]*pars[P.boese_r];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
@@ -355,8 +383,12 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
         POOLS[nxp+S.C_som]= POOLS[p+S.C_som]+ (FLUXES[f+F.lit2som] - FLUXES[f+F.resp_het_som]+FLUXES[f+F.wood2lit])*deltat;                    
 /*Water pool = Water pool - runoff + prec (mm/day) - ET*/
 	/*printf("%2.1f\n",POOLS[p+S.H2O_PAW]);*/
+     /*Snow water equivalent*/
+     POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+SNOWFALL[n]*deltat; /*first step snowfall to SWE*/
+     FLUXES[f+F.melt]=fmin(fmax(((T2M_MIN[n]+T2M_MAX[n])/2-(pars[P.min_melt]-273.15))*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
+     POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step remove snowmelt from SWE*/
+     FLUXES[f+F.scf]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);  /*snow cover fraction*/
 	/*PAW total runoff*/
-
 	FLUXES[f+F.q_paw]=pow(POOLS[p+S.H2O_PAW],2)/pars[P.PAW_Qmax]/deltat*(1-pars[P.h2o_xfer]);	
         /*PAW -> PUW transfer*/
 	FLUXES[f+F.paw2puw]=FLUXES[f+F.q_paw]*pars[P.h2o_xfer]/(1-pars[P.h2o_xfer]);
@@ -367,7 +399,7 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
         FLUXES[f+F.paw2puw]=(POOLS[p+S.H2O_PAW]-pars[P.PAW_Qmax]/4)/deltat*pars[P.h2o_xfer]/(1-pars[P.h2o_xfer]);}
 	if (POOLS[p+S.H2O_PUW]>pars[P.PUW_Qmax]/2){FLUXES[f+F.q_puw]=(POOLS[p+S.H2O_PUW]-pars[P.PUW_Qmax]/4)/deltat;}
 
-	POOLS[nxp+S.H2O_PAW]=POOLS[p+S.H2O_PAW] + (-FLUXES[f+F.q_paw] - FLUXES[f+F.paw2puw] + PREC[n] - FLUXES[f+F.et])*deltat;
+	POOLS[nxp+S.H2O_PAW]=POOLS[p+S.H2O_PAW] + (-FLUXES[f+F.q_paw] - FLUXES[f+F.paw2puw] + PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt] - FLUXES[f+F.et])*deltat;
 
 		
 	/*Plant-unavailable water budget*/

@@ -214,6 +214,7 @@ int DALEC_OBSOPE_LAI(DATA * D, OBSOPE * O){
 //int folc_pool,double lcma_pars_index
     
 //GPP timeseries length
+
 int N=D->ncdf_data.TIME_INDEX.length;
 
 //Time varying GPP and mean GPP
@@ -230,6 +231,7 @@ if (SOBS.value!=DEFAULT_DOUBLE_VAL){int n;D->M_Mean_LAI=0;for (n=0;n<N;n++){D->M
 
 
 return 0;}
+
 
 
 

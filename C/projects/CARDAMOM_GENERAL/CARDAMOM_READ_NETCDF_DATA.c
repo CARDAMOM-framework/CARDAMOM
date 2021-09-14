@@ -177,9 +177,10 @@ TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->DOM);
 	DATA->LAT=ncdf_read_single_double_var(ncid, "LAT" );
 
 
-       
-        
-      
+
+	DATA->SNOWFALL.values=ncdf_read_double_var(ncid, "SNOWFALL", &(DATA->SNOWFALL.length));
+		DATA->SNOWFALL.reference_mean=ncdf_read_double_attr(ncid, "SNOWFALL","reference_mean");
+
 	DATA->SSRD.values=ncdf_read_double_var(ncid, "SSRD", &(DATA->SSRD.length));
 		DATA->SSRD.reference_mean=ncdf_read_double_attr(ncid, "SSRD","reference_mean");
 

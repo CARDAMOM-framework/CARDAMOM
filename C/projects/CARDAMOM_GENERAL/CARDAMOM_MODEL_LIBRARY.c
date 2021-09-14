@@ -43,9 +43,12 @@ return 0;}
 //#include "../CARDAMOM_MODELS/DALEC/DALEC_1009/MODEL_INFO_1009.c"
 //#include "../CARDAMOM_MODELS/DALEC/DALEC_1010/MODEL_INFO_1010.c"
 //#include "../CARDAMOM_MODELS/DALEC/DALEC_1011/MODEL_INFO_1011.c"
+//#include "../CARDAMOM_MODELS/DALEC/DALEC_1015/MODEL_INFO_1015.c"
+//#include "../CARDAMOM_MODELS/DALEC/DALEC_1016/MODEL_INFO_1016.c"
+//#include "../CARDAMOM_MODELS/DALEC/DALEC_1017/MODEL_INFO_1017.c"
 //include "../CARDAMOM_MODELS/DALEC/DALEC_1030/MODEL_INFO_1030.c"
 //include "../CARDAMOM_MODELS/DALEC/DALEC_1031/MODEL_INFO_1031.c"
-//include "../CARDAMOM_MODELS/DALEC/DALEC_1032/MODEL_INFO_1032.c"
+//#include "../CARDAMOM_MODELS/DALEC/DALEC_1032/MODEL_INFO_1032.c"
 //include "../CARDAMOM_MODELS/DALEC/DALEC_1040/MODEL_INFO_1040.c"
 #include "../CARDAMOM_MODELS/DALEC/DALEC_1100/MODEL_INFO_1100.c"
 
@@ -86,6 +89,9 @@ if (DATA->ID==0){printf("No model prescribed, expect error!");}
 //else if (DATA->ID==1004  ){MODEL_INFO_1004(DATA);}
 //else if (DATA->ID==1005  ){MODEL_INFO_1005(DATA);}
 //else if (DATA->ID==1009  ){MODEL_INFO_1009(DATA);}
+//else if (DATA->ID==1015  ){MODEL_INFO_1015(DATA);}
+//else if (DATA->ID==1016  ){MODEL_INFO_1016(DATA);}
+//else if (DATA->ID==1017  ){MODEL_INFO_1017(DATA);}
 //else if (DATA->ID==1030  ){MODEL_INFO_1030(DATA);}
 //else if (DATA->ID==1031  ){MODEL_INFO_1031(DATA);}
 //else if (DATA->ID==1032  ){MODEL_INFO_1032(DATA);}
@@ -95,8 +101,9 @@ if (DATA->ID==0){printf("No model prescribed, expect error!");}
 //else if (DATA->ID==1200  ){MODEL_INFO_1200(DATA);}
 else if (DATA->ID==1100  ){MODEL_INFO_1100(DATA);}
 else {status=1;}
-
-
+printf("*******CARDAMOM MODEL LIBRARY DONE****************");
+printf("Model ID = %i loaded & configured...", DATA->ID);
+printf("****************************************************");
 
 return status;}
 

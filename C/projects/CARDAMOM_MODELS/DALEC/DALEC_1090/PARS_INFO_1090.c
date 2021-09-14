@@ -1,5 +1,5 @@
 #pragma once
-#include "DALEC_1005.c"
+#include "DALEC_1090.c"
 
 /*PARAMETER_INFO (typedef struct) must have at least 3 fields
  *  * npars,
@@ -10,10 +10,11 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1005(DATA *CARDADATA)
+int PARS_INFO_1090(DATA *CARDADATA)
 {
 
-struct DALEC_1005_PARAMETERS P=DALEC_1005_PARAMETERS;
+
+struct DALEC_1090_PARAMETERS P=DALEC_1090_PARAMETERS;
 
 /*Decomposition rate*/
 CARDADATA->parmin[P.tr_lit2soil]=0.00001;
@@ -111,15 +112,9 @@ CARDADATA->parmax[P.i_lit]=2000.0;
 CARDADATA->parmin[P.i_soil]=1.0;
 CARDADATA->parmax[P.i_soil]=200000.0;
 
-/*uWUE: GPP*sqrt(VPD)/ET: gC/kgH2o *hPa*/
-/*The chosen prior range in r conservatively captures the range of values by Boese et al.(2017)*/
-
-CARDADATA->parmin[P.uWUE]=0.5;
-CARDADATA->parmax[P.uWUE]=30;
-
-/*Runoff focal point (~maximum soil storage capacity x 4)*/
-CARDADATA->parmin[P.PAW_Qmax]=1;
-CARDADATA->parmax[P.PAW_Qmax]=100000;
+/*Retention parameter (b)*/
+CARDADATA->parmin[P.retention]=1.5;
+CARDADATA->parmax[P.retention]=10;
 
 /*"Wilting point"*/
 CARDADATA->parmin[P.wilting]=1;
@@ -153,21 +148,73 @@ CARDADATA->parmax[P.t_labile]=8;
 CARDADATA->parmin[P.moisture]=0.01;
 CARDADATA->parmax[P.moisture]=1;
 
-/*PAW->PUW runoff fraction*/
-CARDADATA->parmin[P.h2o_xfer]=0.01;
-CARDADATA->parmax[P.h2o_xfer]=1;
+/*Saturated hydraulic conductivity (m/s)*/
+CARDADATA->parmin[P.hydr_cond]=0.0000001;
+CARDADATA->parmax[P.hydr_cond]=0.00001;
 
-/*PUW Runoff focal point (~maximum soil storage capacity x 4)*/
-CARDADATA->parmin[P.PUW_Qmax]=1;
-CARDADATA->parmax[P.PUW_Qmax]=100000;
+/*Maximum infiltration (mm/day)*/
+CARDADATA->parmin[P.max_infil]=1;
+CARDADATA->parmax[P.max_infil]=1e4;
 
 /*PUW pool*/
 CARDADATA->parmin[P.i_PUW]=1;
 CARDADATA->parmax[P.i_PUW]=10000;
 
-/*r: The chosen prior range in r conservatively captures the range of values by Boese et al.(2017)*/
-CARDADATA->parmin[P.boese_r]=0.01;
-CARDADATA->parmax[P.boese_r]=0.3;
+/*PAW porosity*/
+CARDADATA->parmin[P.PAW_por]=0.2;
+CARDADATA->parmax[P.PAW_por]=0.8;
+
+/*PUW porosity*/
+CARDADATA->parmin[P.PUW_por]=0.2;
+CARDADATA->parmax[P.PUW_por]=0.8;
+
+/*Field capacity (negative) potential (-Mpa)*/
+CARDADATA->parmin[P.field_cap]=0.01;
+CARDADATA->parmax[P.field_cap]=0.1;
+
+/*PAW depth (m)*/
+CARDADATA->parmin[P.PAW_z]=0.01;
+CARDADATA->parmax[P.PAW_z]=100;
+
+/*PUW depth (m)*/
+CARDADATA->parmin[P.PUW_z]=0.01;
+CARDADATA->parmax[P.PUW_z]=100;
+
+/*Runoff excess*/
+CARDADATA->parmin[P.Q_excess]=0.01;
+CARDADATA->parmax[P.Q_excess]=1;
+
+/*Medlyn g1*/
+CARDADATA->parmin[P.Med_g1]=1.79;
+CARDADATA->parmax[P.Med_g1]=5.79;
+
+/*Vcmax25*/
+CARDADATA->parmin[P.Vcmax25]=1e-8;
+CARDADATA->parmax[P.Vcmax25]=140;
+
+/*Tminmin scaling factor*/
+CARDADATA->parmin[P.Tminmin]=258.15;
+CARDADATA->parmax[P.Tminmin]=273.15;
+
+/*Tminmax scaling factor*/
+CARDADATA->parmin[P.Tminmax]=273.15;
+CARDADATA->parmax[P.Tminmax]=288.15;
+
+/*aerodynamic conductance*/
+CARDADATA->parmin[P.ga]=1.e-6;
+CARDADATA->parmax[P.ga]=2.0;
+
+/*Tupp*/
+CARDADATA->parmin[P.Tupp]=299.15;
+CARDADATA->parmax[P.Tupp]=318.15;
+
+/*Tdown*/
+CARDADATA->parmin[P.Tdown]=263.15;
+CARDADATA->parmax[P.Tdown]=286.15;
+
+/*C3_frac*/
+CARDADATA->parmin[P.C3_frac]=1e-8;
+CARDADATA->parmax[P.C3_frac]=1.0;
 
 return 0;
 

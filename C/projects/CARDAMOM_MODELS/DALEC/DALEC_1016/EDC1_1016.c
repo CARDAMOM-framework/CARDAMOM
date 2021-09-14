@@ -1,5 +1,5 @@
 #pragma once
-int EDC1_1032(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC1_1016(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
 /*EDCD=EDCD2;*/
@@ -13,7 +13,7 @@ int EDC1_1032(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 16. Foliage CF> wood CF & Foliage CF > Soil CF 
 */
 
-struct DALEC_1032_PARAMETERS P=DALEC_1032_PARAMETERS;
+struct DALEC_1016_PARAMETERS P=DALEC_1016_PARAMETERS;
 
 double meantemp=DATA.meantemp;
 double meanrad=DATA.meanrad;

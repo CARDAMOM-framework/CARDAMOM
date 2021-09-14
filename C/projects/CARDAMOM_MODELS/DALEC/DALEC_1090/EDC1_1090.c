@@ -1,5 +1,5 @@
 #pragma once
-int EDC1_1032(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC1_1090(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
 /*EDCD=EDCD2;*/
@@ -13,7 +13,8 @@ int EDC1_1032(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 16. Foliage CF> wood CF & Foliage CF > Soil CF 
 */
 
-struct DALEC_1032_PARAMETERS P=DALEC_1032_PARAMETERS;
+struct DALEC_1090_PARAMETERS P=DALEC_1090_PARAMETERS;
+
 
 double meantemp=DATA.meantemp;
 double meanrad=DATA.meanrad;
@@ -77,17 +78,12 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[5-1]==1))
 /*EDC No 16* Foliage CF> wood CF & SOM CF*/
 if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[16-1]==1)) & (pars[P.cf_foliar]<pars[P.cf_ligneous] | pars[P.cf_foliar]<pars[P.cf_DOM])){EDC=0;EDCD->PASSFAIL[16-1]=0;}
 
-/*EDC No 17: RD_puw > RD_paw*/
-// if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[17-1]==1)) & (pars[P.PAW_Qmax]<pars[P.P])){EDC=0;EDCD->PASSFAIL[17-1]=0;}
-
-
-
 /*Add any generalisations derivable from EDC2 (post-run checks) here*/
 /*Note: these must be tested to ensure that DALEC2 run is NOT needed */
 
 
-EDCD->pEDC=log((double)EDC);
 
+EDCD->pEDC=log((double)EDC);
 
 
 return EDC;

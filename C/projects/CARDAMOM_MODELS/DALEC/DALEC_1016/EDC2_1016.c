@@ -8,18 +8,19 @@
 #include "stdio.h"
 
 
-int EDC2_1032(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC2_1016(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
-struct DALEC_1032_PARAMETERS P=DALEC_1032_PARAMETERS;
-struct DALEC_1032_FLUXES F=DALEC_1032_FLUXES;
-struct DALEC_1032_POOLS S=DALEC_1032_POOLS;
+struct DALEC_1016_PARAMETERS P=DALEC_1016_PARAMETERS;
+struct DALEC_1016_FLUXES F=DALEC_1016_FLUXES;
+struct DALEC_1016_POOLS S=DALEC_1016_POOLS;
 
 /*Extract DALEC model here*/
 /*Copy model pointer for brevity*/
 DALEC *MODEL=(DALEC *)DATA.MODEL;
 
 double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
+double *SNOW=DATA.ncdf_data.SNOWFALL.values;
 double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 double *POOLS=DATA.M_POOLS;
 double *FLUXES=DATA.M_FLUXES;
@@ -93,11 +94,12 @@ int f=0;
 for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nofluxes+f];}}
 /*Total prec*/
 double TOTAL_PREC=0;
-for (n=0;n<N_timesteps;n++){TOTAL_PREC+=PREC[n];}
+double TOTAL_SNOW=0;
+for (n=0;n<N_timesteps;n++){TOTAL_PREC+=PREC[n];TOTAL_SNOW+=SNOW[n];}
 
 
-double Fin[8];
-double Fout[8];
+double Fin[9];
+double Fout[9];
 double Pstart;
 double Pend;
 /*temporary print switch*/
@@ -129,11 +131,14 @@ Fout[4]=FT[F.resp_het_lit]+FT[F.lit2som]+FT[F.f_lit]+FT[F.fx_lit2som];
 Fin[5]=FT[F.wood2lit]+FT[F.lit2som]+FT[F.fx_woo2som]+FT[F.fx_lit2som];
 Fout[5]=FT[F.resp_het_som]+FT[F.f_som];
 /*PAH2O*/
-Fin[6]=TOTAL_PREC;
+Fin[6]=TOTAL_PREC-TOTAL_SNOW+FT[F.melt];
 Fout[6]=FT[F.et]+FT[F.q_paw]+FT[F.paw2puw];
 /*PUH2O*/
 Fin[7]=FT[F.paw2puw];
 Fout[7]=FT[F.q_puw];
+/*SWE*/
+Fin[8]=TOTAL_SNOW;
+Fout[8]=FT[F.melt];
 
 
 /*Inlcuding H2O pool*/
@@ -188,7 +193,7 @@ EDCD->pEDC=EDCD->pEDC+log(1/(1+exp(10*(pars[P.wilting]-MPOOLS[S.H2O_PAW])/MPOOLS
 /*Additional faults can be stored in positions 35-40*/
 
 /*PRIOR RANGES - ALL POOLS MUST CONFORM*/
-int pidx[]={P.i_labile,P.i_foliar,P.i_root,P.i_wood,P.i_lit,P.i_soil,P.i_PAW,P.i_PUW};
+int pidx[]={P.i_labile,P.i_foliar,P.i_root,P.i_wood,P.i_lit,P.i_soil,P.i_PAW,P.i_PUW,P.i_SWE};
 
 // for (n=0;n<nopools-1;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;}}
 for (n=0;n<nopools;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;EDCD->pEDC=log(0);}}

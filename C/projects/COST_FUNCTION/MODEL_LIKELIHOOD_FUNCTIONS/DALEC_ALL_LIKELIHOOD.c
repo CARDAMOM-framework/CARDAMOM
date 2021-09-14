@@ -105,7 +105,6 @@ OBSOPE *O=&((DALEC *)D.MODEL)->OBSOPE;
 //Observation operator on DALEC variables.
 DALEC_OBSOPE(&D,O);
 
-
 //printf("About to calculate likelihoods...\n");
 
 //printf("O->SUPPORT_LAI_OBS = %d\n",O->SUPPORT_LAI_OBS);
@@ -137,6 +136,7 @@ if (O->SUPPORT_CUE_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_C
 
 
 
+
 /*Note: only use with model ID = 806*/
 //if (D.ID==806){P = P + DALEC_806_MFCF(D);}
 //if (D.ID==807){P = P + DALEC_807_MFCF(D);}
@@ -154,7 +154,6 @@ if (O->SUPPORT_CUE_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_C
 //if (mnpdf<D.otherpriors[6]) {
 //P=P-0.5*pow(log(mnpdf/D.otherpriors[6])/log(D.otherpriorunc[6]),2);
 //}}
-
 if (isnan(P)){P=log(0);}
 return P;}
 
