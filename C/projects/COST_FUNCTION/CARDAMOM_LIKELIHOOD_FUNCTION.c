@@ -55,10 +55,10 @@ default_double_value(&OBS->structural_unc,0);
     
 int n,N=(int)OBS->length;
 OBS->valid_obs_length=0;
-for (n=0;n<N;n++){if (OBS->values[n]!=-9999){OBS->valid_obs_length=OBS->valid_obs_length+1;}}
+for (n=0;n<N;n++){if (OBS->values[n]!=DEFAULT_DOUBLE_VAL){OBS->valid_obs_length=OBS->valid_obs_length+1;}}
 OBS->valid_obs_indices=calloc(OBS->valid_obs_length,sizeof(int));
 int k=0;
-for (n=0;n<N;n++){if (OBS->values[n]!=-9999){OBS->valid_obs_indices[k]=n;k=k+1;}}
+for (n=0;n<N;n++){if (OBS->values[n]!=DEFAULT_DOUBLE_VAL){OBS->valid_obs_indices[k]=n;k=k+1;}}
 
 //Populate uncertainty if no values are provided
 
@@ -160,6 +160,8 @@ OBS.unc = ncdf_read_double_attr(ncid, OBSNAME,"unc");
 OBS.opt_unc_type=ncdf_read_int_attr(ncid, OBSNAME,"opt_unc_type");//absolute, log, percentage
 OBS.min_threshold=ncdf_read_double_attr(ncid, OBSNAME,"min_threshold");
 
+if (isnan(OBS.value)){OBS.value=DEFAULT_DOUBLE_VAL;}
+
 return OBS;
 }
 
@@ -172,6 +174,8 @@ double CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(TIMESERIES_OBS_STRUCT * OBS,double * M
 
 /*Data structure, includes model and data*/
 /*EWT constraint*/
+    double P=0;
+    if (OBS->valid_obs_length>0){
 double tot_exp=0;
 int n,m,dn;
 /*General notes*/
@@ -291,7 +295,7 @@ tot_exp+=pow((oam-mam)/OBS->single_annual_unc,2);}}
 free(mod);free(obs);free(unc);
 
 
-double P=-0.5*tot_exp;
+P=-0.5*tot_exp;}
 // printf("Completed likelihood function...P = %2.2f\n",P);
 // printf("OBS->opt_filter = %i\n",OBS->opt_filter);
 // printf("OBS->opt_unc_type = %i\n",OBS->opt_unc_type);
@@ -316,6 +320,11 @@ return P;
 
 double CARDAMOM_SINGLE_OBS_LIKELIHOOD(SINGLE_OBS_STRUCT * OBS,double MOD){
 
+    
+double P=0;
+
+if (OBS->value!=DEFAULT_DOUBLE_VAL){
+            
 /*Data structure, includes model and data*/
 /*EWT constraint*/
 double tot_exp=0;
@@ -323,6 +332,7 @@ int n,m,dn;
 /*General notes*/
 /* If D.et_annual_unc<1, then ET constraint is occurring on monthly basis*/
 /* For log_et_obs*/
+
 
 
 
@@ -348,11 +358,10 @@ unc=log(unc);}
 
 //Cost function
 //This is the only option available for single value (e.g. time invariant) observations
-tot_exp += pow((mod- obs)/unc,2);
+tot_exp = pow((mod- obs)/unc,2);
 
 
-
-double P=-0.5*tot_exp;
+P=-0.5*tot_exp;}
 // printf("Completed likelihood function...P = %2.2f\n",P);
 // printf("OBS->opt_filter = %i\n",OBS->opt_filter);
 // printf("OBS->opt_unc_type = %i\n",OBS->opt_unc_type);

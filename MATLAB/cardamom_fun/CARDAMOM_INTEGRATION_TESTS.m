@@ -5,14 +5,14 @@
 %cbffilename_old='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbf';
 % %delete(cbffilename);TEST_CARDAMOM_CBF_NETCDF_FORMAT(cbffilename_old,cbffilename);
 % 
-% nccbffilename1000='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.nc.cbf';
+% nccbffilename1000='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbf.nc';
 % 
 % 
 % CBF1000=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1000);
 %  CBF1100=CBF1000(1);
 %  CBF1100.ID.values=1100;
 %  
-%  nccbffilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.nc.cbf';
+%  nccbffilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.cbf.nc';
 % 
 %  CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbffilename1100);
 
@@ -42,11 +42,11 @@
 
 
 %%%%%*********Test 1 ************ 
-nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS.nc.cbf';
+nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS.cbf.nc';
 CBF1100=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
 disp('Successfully read file using "CARDAMOM_READ_NC_CBF_FILE" ...')
 %*********Try writing out
-nccbftestfile='DUMPFILES/MODEL_ID_1100_TEST_ONLY.nc.cbf';
+nccbftestfile='DUMPFILES/MODEL_ID_1100_TEST_ONLY.cbf.nc';
 CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbftestfile);
 disp('Successfully wrote file using "CARDAMOM_WRITE_NC_CBF_FILE" ...')
 %************ set all fields to NAN*****
@@ -70,6 +70,9 @@ CBF1100.EDC.values=0;
 %first test is retrieving parameters. Skip only for partial testing
 retrievepars=1;
 if retrievepars==1
+    
+%     MCO.niterations=1;
+%     MCO.samplerate=1;
      cbrfilename1100='DUMPFILES/MODEL_ID_1100_EXAMPLE.cbr';
     %CBR=CARDAMOM_RUN_MDF(CBF1100,[],cbrfilename1100);
         CBR=CARDAMOM_RUN_MDF(CBF1100);
@@ -93,7 +96,7 @@ end
  cbrfilename1100refmat='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr.mat';
 
  ncdisp(nccbffilename1100)
-nccbftestfile='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY.nc.cbf';
+nccbftestfile='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY.cbf.nc';
 
 
 %testing matlab read-write functions
