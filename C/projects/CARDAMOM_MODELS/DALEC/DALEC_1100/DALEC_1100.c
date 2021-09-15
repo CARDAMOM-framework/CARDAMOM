@@ -230,8 +230,8 @@ OBSOPE.EWT_h2o_pools=EWT_h2o_pools;
 OBSOPE.EWT_n_h2o_pools=3;
 //Fire-specific variables
 OBSOPE.FIR_flux=F.f_total;
-
-OBSOPE.CUE_PARAM=1;
+//CUE parameters
+OBSOPE.CUE_PARAM=P.f_auto;
 
 
 
@@ -243,8 +243,8 @@ return 0;}
 
 
 
-int DALEC_1100(DATA DATA, double const *pars)
-{
+int DALEC_1100(DATA DATA, double const *pars){
+    
 
 
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
@@ -547,6 +547,7 @@ POOLS[nxp+S.H2O_PUW] += (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
     FLUXES[f+F.f_total] = FLUXES[f+F.f_lab] + FLUXES[f+F.f_fol] + FLUXES[f+F.f_roo] + FLUXES[f+F.f_woo] + FLUXES[f+F.f_lit] + FLUXES[f+F.f_som];
 
 }
+
 
 return 0;
 }

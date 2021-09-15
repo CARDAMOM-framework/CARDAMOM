@@ -18,7 +18,7 @@ int EDCSETUP(DATA DATA, struct EDCDIAGNOSTIC ** EDCD){
 /*E.g. INITIATE_EDC_SWITCHES*/
 
 static struct EDCDIAGNOSTIC EDCDmem;
-EDCDmem.DIAG=DATA.EDCDIAG;
+EDCDmem.DIAG=DATA.ncdf_data.EDCDIAG;
 int n;
 /*EDC switches are stored in DATA->parpriors (positions 31-50);*/
 /*switch all on if EDCDIAG<2 , otherwise, switch on/off according to EDCSWITCH*/

@@ -87,7 +87,7 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
     
 
 //Read data
-DATA->NBE=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ABGB");
+DATA->ABGB=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ABGB");
 DATA->CH4=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "CH4");
 DATA->ET=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ET");
 DATA->EWT=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "EWT");
@@ -109,7 +109,6 @@ DATA->Mean_FIR     =READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_FIR");
 // default_int_value(&OBS->opt_filter,0);
 // default_double_value(&OBS->opt_min_threshold,log(0));//minus infinity
 // default_double_value(&OBS->structural_unc,0);
-
 
 
 // Default CH4 options
@@ -154,7 +153,6 @@ default_double_value(&DATA->DOM.single_unc,2);
 default_double_value(&DATA->DOM.min_threshold,10);//gC/m2
 
 
-
 //pre-process obs to save time
 //Only required for timeseries obs
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ABGB);
@@ -168,14 +166,13 @@ TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->DOM);
 
 
 
+printf("Done preprocess");
 
 
-	DATA->EDC=ncdf_read_single_double_var(ncid, "EDC");
-	DATA->EDC_EQF=ncdf_read_single_double_var(ncid, "EDC_EQF");
-	DATA->EDCDIAG=ncdf_read_single_double_var(ncid, "EDCDIAG");
-	DATA->ID=ncdf_read_single_double_var(ncid, "ID" );
-	DATA->LAT=ncdf_read_single_double_var(ncid, "LAT" );
 
+    
+    
+printf("Done reading all other edc ");
 
 
 	DATA->SNOWFALL.values=ncdf_read_double_var(ncid, "SNOWFALL", &(DATA->SNOWFALL.length));
@@ -208,5 +205,28 @@ TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->DOM);
 	DATA->DOY.values=ncdf_read_double_var(ncid, "DOY", &(DATA->DOY.length));
 		DATA->DOY.reference_mean=ncdf_read_double_attr(ncid, "DOY","reference_mean");
 
+        
+        
+        
+        //Summary & derived variables
+// double EDC;
+// double EDCDIAG;
+// double EDC_EQF;
+// double ID;
+// double LAT;
+// double Ntimesteps;
+// double deltat;
+
+	DATA->EDC=ncdf_read_single_double_var(ncid, "EDC");
+    DATA->EDCDIAG=ncdf_read_single_double_var(ncid, "EDCDIAG");
+	DATA->EDC_EQF=ncdf_read_single_double_var(ncid, "EDC_EQF");
+	DATA->ID=ncdf_read_single_double_var(ncid, "ID" );
+	DATA->LAT=ncdf_read_single_double_var(ncid, "LAT" );
+    DATA->Ntimesteps=DATA->TIME_INDEX.length;
+    DATA->deltat=DATA->TIME_INDEX.values[1]-DATA->TIME_INDEX.values[0];
+    DATA->meantemp=DATA->T2M_MIN.reference_mean*0.5 + DATA->T2M_MAX.reference_mean*0.5;
+
+printf("Done reading all data");
+        
 	return 0;
 }

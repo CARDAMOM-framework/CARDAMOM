@@ -46,22 +46,18 @@ double *M_POOLS;
 int *M_EDCD;
 double *M_P;
 /*static data*/
-int nodays;
-double deltat;
-double LAT;
-int ID;
-int noobs;
-int nomet;
+// int nodays;
+// double deltat;
+// double LAT;
+// int ID;
+// int noobs;
+// int nomet;
+//These quantities are autofilled based on model ID
 int nopools;
 int nofluxes;
 int nopars;
 
-//EDCs
-int EDC;
-int EDCDIAG;
 
-
-int PCrotate;
 /*TO DO: include parameter info and model likelihood function fields HERE
 These can then be assigned during call to CARDAMOM_MODEL_LIBRARY*/
 double (*MLF)(struct DATA,double *);
@@ -70,7 +66,7 @@ double *parpriors;
 double *parmin;
 double *parmax;
 char **parname;
-int assemble_model;
+// int assemble_model;
 /*Development in progress: this structure will contain all model-specific fields and memory declarations, making it therefore a flexible storage field for non-global "DATA" fields*/
 void *MODEL;
 

@@ -7,18 +7,18 @@
 
 
 typedef struct TIMESERIES_OBS_STRUCT{
-size_t length;
-double * values;
-size_t unc_length;
-double * unc;
+size_t length;//
+double * values;//Timeseries of observation values
+size_t unc_length;//
+double * unc;//Timeseries of uncertainty values
 int opt_unc_type;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
 int opt_normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
 int opt_filter;//(0 = no filter, 1 = mean only, 2==annual mean & monthly anomaly, 3 = seasonal cycle & inter-annual anomalies). 
-double min_threshold;
-double single_monthly_unc;
-double single_annual_unc;
-double single_mean_unc;
-double single_unc;
+double min_threshold;//Minimum value threshold: model and/or data will be rounded up to this value (default = -inf)
+double single_monthly_unc;//Fields to be used only with Filter=2. 
+double single_annual_unc;//Fields to be used only with Filter=2
+double single_mean_unc;//Fields to be used only with Filter = 1;
+double single_unc;//
 double structural_unc;//this gets added to uncertainty in quadrature.
 //expand as needed
 int valid_obs_length;//number of non-empty obs
@@ -54,36 +54,27 @@ default_double_value(&OBS->structural_unc,0);
     
     
 int n,N=(int)OBS->length;
-
 OBS->valid_obs_length=0;
-
 for (n=0;n<N;n++){if (OBS->values[n]!=-9999){OBS->valid_obs_length=OBS->valid_obs_length+1;}}
-
 OBS->valid_obs_indices=calloc(OBS->valid_obs_length,sizeof(int));
-
 int k=0;
-
 for (n=0;n<N;n++){if (OBS->values[n]!=-9999){OBS->valid_obs_indices[k]=n;k=k+1;}}
 
-
 //Populate uncertainty if no values are provided
-for (k=0;k<OBS->valid_obs_length;k++){
-if (OBS->unc[OBS->valid_obs_indices[k]]==-9999){
 
+
+for (k=0;k<OBS->valid_obs_length;k++){
+
+    if (OBS->unc[OBS->valid_obs_indices[k]]==DEFAULT_DOUBLE_VAL){
 if (OBS->opt_unc_type<2){
 OBS->unc[OBS->valid_obs_indices[k]]=OBS->single_unc;}
-
 else if (OBS->opt_unc_type==2){
 OBS->unc[OBS->valid_obs_indices[k]]=OBS->single_unc*OBS->values[k];}}}
-
 //Scale uncertainty with structural error
-
 if (OBS->structural_unc==DEFAULT_DOUBLE_VAL){OBS->structural_unc=0;}
-
 //Adding structural error
 for (k=0;k<OBS->valid_obs_length;k++){
     OBS->unc[OBS->valid_obs_indices[k]]=sqrt(pow(OBS->unc[OBS->valid_obs_indices[k]],2) + pow(OBS->structural_unc,2));}
-
 
 
 
@@ -108,8 +99,17 @@ strcpy(uncsf,"unc");
 strcat(OBSunc,uncsf);
 
 
-OBS.unc = ncdf_read_double_var(ncid, OBSunc , &OBS.unc_length);
 OBS.values = ncdf_read_double_var(ncid, OBSNAME , &(OBS.length));
+OBS.unc = ncdf_read_double_var(ncid, OBSunc , &(OBS.unc_length));
+
+//Empty array with same dims guaranteed
+if (OBS.unc_length==0){
+        OBS.unc = ncdf_read_double_var(ncid, OBSNAME , &(OBS.unc_length));
+        int n;for (n=0;n<OBS.unc_length;n++){OBS.unc[n]=DEFAULT_DOUBLE_VAL;}}
+        
+        
+        
+
 OBS.opt_unc_type=ncdf_read_int_attr(ncid, OBSNAME,"opt_unc_type");//absolute, log, percentage
 OBS.opt_normalization=ncdf_read_int_attr(ncid, OBSNAME,"opt_normalization");
 OBS.opt_filter=ncdf_read_int_attr(ncid, OBSNAME,"opt_filter");
@@ -155,11 +155,10 @@ printf("OBSNAME = %s\n",OBSNAME);
 
 size_t length;
 
-OBS.value = * ncdf_read_double_var(ncid, OBSNAME , &length );
+OBS.value = ncdf_read_single_double_var(ncid, OBSNAME);
 OBS.unc = ncdf_read_double_attr(ncid, OBSNAME,"unc");
 OBS.opt_unc_type=ncdf_read_int_attr(ncid, OBSNAME,"opt_unc_type");//absolute, log, percentage
 OBS.min_threshold=ncdf_read_double_attr(ncid, OBSNAME,"min_threshold");
-
 
 return OBS;
 }

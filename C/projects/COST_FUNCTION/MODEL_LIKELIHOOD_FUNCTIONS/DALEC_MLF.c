@@ -25,7 +25,7 @@ int n; for (n=0;n<EDCD->nedc;n++){EDCD->PASSFAIL[n]=1;}
 int EDC;
 double P=0,P_p;
 
-EDC=ipow(MODEL->edc1(PARS,DATA, &EDCD),DATA.EDC);
+EDC=ipow(MODEL->edc1(PARS,DATA, &EDCD),DATA.ncdf_data.EDC);
 P=P+log((double)EDC);
 
 
@@ -42,7 +42,7 @@ MODEL->dalec(DATA, PARS);
 
 /*EDC2 check*/
 EDC=MODEL->edc2(PARS, DATA, &EDCD);
-EDC=ipow(EDC,DATA.EDC);
+EDC=ipow(EDC,DATA.ncdf_data.EDC);
 
 /*LIKELIHOOD*/
 P=P+log((double)EDC);
@@ -54,7 +54,7 @@ if (EDC==1){P=P+LIKELIHOOD(DATA);}}
 
 
 /*saving EDCD if EDCDIAG==1*/
-if (DATA.EDCDIAG==1){for (n=0;n<100;n++){DATA.M_EDCD[n]=EDCD.PASSFAIL[n];}}
+if (DATA.ncdf_data.EDCDIAG==1){for (n=0;n<100;n++){DATA.M_EDCD[n]=EDCD.PASSFAIL[n];}}
 
 
 /*saving likelihood P*/
@@ -95,6 +95,8 @@ MODEL->dalec(DATA, PARS);
 /*EDC2 check*/
 EDC=EDC*MODEL->edc2(PARS, DATA, &EDCD);
 
+
+
 /*LIKELIHOOD (log likelihood)*/
 /*EDCs are individually counted*/
 /*Only counted if EDCSWITCH is on*/
@@ -102,11 +104,14 @@ int tot_exp=0;
 for (n=0;n<EDCD.nedc;n++){
 tot_exp+=1-ipow(EDCD.PASSFAIL[n],EDCD.SWITCH[n]);}
 
-P=-0.5*((double)tot_exp*10)*DATA.EDC;
+
+P=-0.5*((double)tot_exp*10)*(double)DATA.ncdf_data.EDC;
 
 
 /*overriding if model likelihood is zero or erroneous*/
+
 double ML=DATA.MLF(DATA,PARS);
+
 if (( isinf(ML)==-1 || isinf(ML)==1 || isnan(ML) )){
 P=P-0.5*10;}
 /*if (DATA->EDC==0 && (isinf(ML)==-1 || isnan(ML))){P=P-0.5*10;}
