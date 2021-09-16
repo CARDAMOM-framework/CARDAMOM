@@ -13,7 +13,7 @@ int MODEL_INFO_1025(DATA * DATA){
 static DALEC DALECmodel;
 
 /*Step 2: Fill structure with model-specific info*/
-DALEC_1005_MODCONFIG(&DALECmodel);
+DALEC_1025_MODCONFIG(&DALECmodel);
 
 /*Short-term: copy quantities into DATA structure to reduce dependencies in CARDAMOM_MODEL_LIBRARY.c*/
 /*Long-term: remove dependencies on DATA.nofluxes... etc. in CARDAMOM_READ_BINARY_DATA and DALEC_ALL_LIKELIHOOD.c*/

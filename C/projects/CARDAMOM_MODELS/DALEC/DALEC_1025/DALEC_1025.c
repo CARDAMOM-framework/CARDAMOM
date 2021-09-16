@@ -1,5 +1,6 @@
 #pragma once
 #include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
+#include "../../../DALEC_CODE/DALEC_ALL/LAI_KNORR.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
@@ -97,11 +98,11 @@ int q_paw;   /*PAW runoff*/
 int paw2puw;   /*PAW->PUW transfer*/
 int q_puw;   /*PUW runoff*/
 int target_LAI;   /*LAI environmental target*/
-int t_memory;   /*LAI temp memory*/
+int T_memory;   /*LAI temp memory*/
 int lambda_max_memory;   /*LAI max memory*/
 int dlambda_dt;   /*dLAI/dt*/
-int temp_thresh;   /*f_temp_thres*/
-int day_thresh;   /*f_dayl_thres*/
+int f_temp_thresh;   /*f_temp_thres*/
+int f_dayl_thresh;   /*f_dayl_thres*/
 int c_lim_flag;   /*LAI carbon limitation flag*/
 int lai_fire;   /*LAI fire loss*/
 int foliar_fire_frac;   /*C_fol fire loss frac*/
@@ -142,7 +143,7 @@ static OBSOPE OBSOPE;
 INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 
 //Set SUPPORT_OBS values to true if model supports observation operation.
-printf("DALEC_1005_MODCONFIG, Line 22...\n");
+// printf("DALEC_1025_MODCONFIG, Line 22...\n");
 OBSOPE.SUPPORT_GPP_OBS=true;
 OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
@@ -212,7 +213,7 @@ struct DALEC_1025_PARAMETERS P=DALEC_1025_PARAMETERS;
 struct DALEC_1025_FLUXES F=DALEC_1025_FLUXES;
 struct DALEC_1025_POOLS S=DALEC_1025_POOLS;
 
-double gpppars[11],pi;
+double gpppars[11],pi,lai_met_list[1],lai_var_list[21];
 /*C-pools, fluxes, meteorology indices*/
 int p=0,f,m,nxp, i;
 int n=0,nn=0;
@@ -335,7 +336,6 @@ gpppars[7]=SSRD[n];
 FLUXES[f+F.gpp]=ACM(gpppars,constants)*fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1);
 /*Evapotranspiration*/
 FLUXES[f+F.et]=FLUXES[f+F.gpp]*sqrt(VPD[n])/pars[P.uWUE]+SSRD[n]*pars[P.boese_r];
-
 /*Water pool = Water pool - runoff + prec (mm/day) - ET*/
      /*printf("%2.1f\n",POOLS[p+S.H2O_PAW]);*/
      /*PAW total runoff*/
@@ -357,6 +357,44 @@ FLUXES[f+F.et]=FLUXES[f+F.gpp]*sqrt(VPD[n])/pars[P.uWUE]+SSRD[n]*pars[P.boese_r]
 
         POOLS[nxp+S.H2O_PUW]=POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
 
+//KNORR LAI//
+if (n==0){
+  /*Initialize phenology memory of air-temperature as some value within mintemp and maxtemp*/
+  // lai_var_list[5]=pars[47]*(DATA.MET[m+2]-DATA.MET[m+1])+DATA.MET[m+1];
+  lai_var_list[5]=pars[P.init_T_mem]*(T2M_MAX[n]-T2M_MIN[n])+T2M_MIN[n];
+  /*Initialize phenology memory of water/structural limitation */
+  // lai_var_list[11]=pars[48]*pars[42];
+  lai_var_list[11]=pars[P.init_LAIW_mem]*pars[42];
+}
+lai_met_list[0]=(T2M_MAX[n]+T2M_MIN[n])/2.0;
+lai_var_list[0]=n;
+lai_var_list[19]=deltat;
+lai_var_list[1]=LAI[n];
+lai_var_list[2]=LAI[n];
+lai_var_list[3]=pars[P.T_phi];
+lai_var_list[4]=pars[P.T_range];
+lai_var_list[6]=pars[P.tau_m]; /*tau_m*/
+lai_var_list[7]=pars[P.plgr]; /*plgr*/
+lai_var_list[8]=pars[P.k_leaf]; /*k_L*/
+lai_var_list[9]=pars[P.lambda_max]; /*lambda_max*/
+lai_var_list[10]=pars[P.tau_W]; /*tau_W*/
+lai_var_list[12]=DATA.ncdf_data.LAT; /*latitude*/
+lai_var_list[13]=DOY[n]; /*day of year*/
+lai_var_list[14]=pi; /*pi*/
+lai_var_list[15]=pars[P.time_c]; /*t_c*/
+lai_var_list[16]=pars[P.time_r]; /*t_r*/
+lai_var_list[17]=(POOLS[p+S.H2O_PAW]+POOLS[nxp+S.H2O_PAW])/2.0;
+lai_var_list[18]=FLUXES[f+F.et];
+// Run Knorr LAI module
+double *LAI_KNORR_OUTPUT = LAI_KNORR(lai_met_list,lai_var_list);
+FLUXES[f+F.target_LAI]=LAI_KNORR_OUTPUT[0];
+FLUXES[f+F.T_memory]=LAI_KNORR_OUTPUT[1];
+FLUXES[f+F.lambda_max_memory]=LAI_KNORR_OUTPUT[2];
+FLUXES[f+F.dlambda_dt]=LAI_KNORR_OUTPUT[3]/deltat;
+FLUXES[f+F.f_temp_thresh]=LAI_KNORR_OUTPUT[4];
+FLUXES[f+F.f_dayl_thresh]=LAI_KNORR_OUTPUT[5];
+lai_var_list[5]=FLUXES[f+F.T_memory];
+lai_var_list[11]=FLUXES[f+F.lambda_max_memory];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
 FLUXES[f+F.temprate]=exp(pars[P.temp_factor]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp))*((PREC[n]/meanprec-1)*pars[P.moisture]+1);
