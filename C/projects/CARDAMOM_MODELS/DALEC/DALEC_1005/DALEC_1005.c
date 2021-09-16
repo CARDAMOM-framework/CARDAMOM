@@ -130,6 +130,11 @@ OBSOPE.SUPPORT_DOM_OBS=true;
 OBSOPE.SUPPORT_EWT_OBS=true;
 OBSOPE.SUPPORT_FIR_OBS=true;
 
+OBSOPE.SUPPORT_CUE_OBS=true;
+OBSOPE.SUPPORT_Cefficiency_OBS=true;
+
+
+
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
@@ -176,6 +181,14 @@ OBSOPE.EWT_h2o_pools=EWT_h2o_pools;
 OBSOPE.EWT_n_h2o_pools=2;
 //Fire-specific variables
 OBSOPE.FIR_flux=F.f_total;
+
+//CUE parameters
+OBSOPE.CUE_PARAM=P.f_auto;
+OBSOPE.Cefficiency_PARAM=P.canopy_eff;
+
+
+
+
 
 DALECmodel->OBSOPE=OBSOPE;
 
