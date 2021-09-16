@@ -149,8 +149,8 @@ OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
 OBSOPE.SUPPORT_NBE_OBS=true;
 OBSOPE.SUPPORT_ABGB_OBS=true;
-OBSOPE.SUPPORT_SOM_OBS=true;
-OBSOPE.SUPPORT_GRACE_EWT_OBS=true;
+OBSOPE.SUPPORT_DOM_OBS=true;
+OBSOPE.SUPPORT_EWT_OBS=true;
 OBSOPE.SUPPORT_FIR_OBS=true;
 
 //Provide values required by each OBS operator
@@ -186,17 +186,17 @@ OBSOPE.ABGB_pools=ABGB_pools;
 OBSOPE.ABGB_n_pools=4;
 
 //SOM-specific variables
-static int SOM_pools[2]; 
-SOM_pools[0]=S.C_lit;
-SOM_pools[1]=S.C_som;
-OBSOPE.SOM_pools=SOM_pools;
-OBSOPE.SOM_n_pools=2;
+static int DOM_pools[2]; 
+DOM_pools[0]=S.C_lit;
+DOM_pools[1]=S.C_som;
+OBSOPE.DOM_pools=DOM_pools;
+OBSOPE.DOM_n_pools=2;
 //H2O-specific variables
-static int GRACE_EWT_h2o_pools[2];
-GRACE_EWT_h2o_pools[0]=S.H2O_PAW;
-GRACE_EWT_h2o_pools[1]=S.H2O_PUW;
-OBSOPE.GRACE_EWT_h2o_pools=GRACE_EWT_h2o_pools;
-OBSOPE.GRACE_EWT_n_h2o_pools=2;
+static int EWT_h2o_pools[2];
+EWT_h2o_pools[0]=S.H2O_PAW;
+EWT_h2o_pools[1]=S.H2O_PUW;
+OBSOPE.EWT_h2o_pools=EWT_h2o_pools;
+OBSOPE.EWT_n_h2o_pools=2;
 //Fire-specific variables
 OBSOPE.FIR_flux=F.f_total;
 
