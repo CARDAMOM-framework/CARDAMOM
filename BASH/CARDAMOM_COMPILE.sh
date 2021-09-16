@@ -78,11 +78,11 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-${COMPILER} ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_ASSEMBLE_MODELS.c -o ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_ASSEMBLE_MODELS.exe -lm ${NETCDF_LIB_FLAGS}
-if [ $? -ne 0 ]; then
-    echo "Error: CARDAMOM_ASSEMBLE_MODELS did not compile Sucessfully. Aborting."
-    exit 1
-fi
+#${COMPILER} ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_ASSEMBLE_MODELS.c -o ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_ASSEMBLE_MODELS.exe -lm ${NETCDF_LIB_FLAGS}
+#if [ $? -ne 0 ]; then
+#    echo "Error: CARDAMOM_ASSEMBLE_MODELS did not compile Sucessfully. Aborting."
+#    exit 1
+#fi
 
 if [[ ! -z "${DEBUG}" ]]; then
   ${COMPILER} ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.c -g -o ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL_debug.exe -lm ${NETCDF_LIB_FLAGS}
