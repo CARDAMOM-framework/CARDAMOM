@@ -80,7 +80,7 @@ if (argc-1<2){seedrandomnumber(CBFfile);}else{seedrandomnumber(CLA[2]);}
 /*defining data structure*/
 DATA DATA;
 /*Initialize data structure - this function is found in CARDAMOM_READ_BINARY_DATA*/
-OK=INITIALIZE_DATA_STRUCT(&DATA);
+//OK=INITIALIZE_DATA_STRUCT(&DATA);
 okcheck(OK,"Main data structure initialized");
 
 /*read cardamom data from file*/
@@ -88,8 +88,8 @@ okcheck(OK,"Main data structure initialized");
 OK=CARDAMOM_READ_BINARY_DATA(CBFfile,&DATA);
 okcheck(OK,"Main data structure read successfully");
 
-printf("CARDAMOM MODEL ID = %i\n",DATA.ID);
-printf("MCMC ID = %i\n",MCOPT.mcmcid);
+printf("CARDAMOM_MDF.c: CARDAMOM MODEL ID = %i\n",DATA.ncdf_data.ID);
+printf("CARDAMOM_MDF.c: MCMC ID = %i\n",MCOPT.mcmcid);
 
 
 /***************PI STRUCTURE AND MLF*****************/
@@ -103,7 +103,7 @@ PARAMETER_INFO PI;
 /*initializing structure with correct PI fields (as required by MHMCMC)*/
 /*Function is in MCMC_MODULES.c*/
 OK=INITIALIZE_PI_STRUCT(&PI,&DATA,&MCOPT);
-okcheck(OK,"Parameter info structure initialized");
+printf("CARDAMOM_MDF.c: Parameter info structure initialized\n");
 
 
 /*choose model likelihood here*/
@@ -115,38 +115,38 @@ okcheck(OK,"Parameter info structure initialized");
 /*READ_PARI_DATA and READ_MCOPT should now be generic for all model types*/
 /*CONTAINS "FIND_EDC_INITIAL_VALUES(*DATA,PI);"*/
 OK=READ_PARI_DATA(&PI, &DATA, &MCOUT, &MCOPT,CLA);
-okcheck(OK,"READ_PARI_DATA successfully executed");
+printf("CARDAMOM_MDF.c: READ_PARI_DATA successfully executed\n");
 
 
 /*calling the MHMCMC here*/
 
-printf("about to start MCMC\n");
-printf("Prescribed option = %i\n",MCOPT.mcmcid);
+printf("CARDAMOM_MDF.c: about to start MCMC\n");
+printf("CARDAMOM_MDF.c: Prescribed option = %i\n",MCOPT.mcmcid);
 switch (MCOPT.mcmcid){
 
 case 119:
-printf("about to start MHMCMC (id = 119)\n");
+printf("CARDAMOM_MDF.c: about to start MHMCMC (id = 119)\n");
 MHMCMC_119(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
-printf("completed MHMCMC 119\n");
+printf("CARDAMOM_MDF.c: completed MHMCMC 119\n");
 break;
 case 2:
-printf("about to start DEMCMC\n");
+printf("CARDAMOM_MDF.c: about to start DEMCMC\n");
 DEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
 break;
 case 3:
 MCOPT.fADAPT=0.05;
-printf("about to start ADEMCMC\n");
+printf(" CARDAMOM_MDF.c: about to start ADEMCMC\n");
 ADEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
 break;
 
-/*printf("DEMCMC temporarily disconnected, need to de-bug, correct and re-introduce");
-printf("completed DEMCMC\n");
+/*printf("CARDAMOM_MDF.c: DEMCMC temporarily disconnected, need to de-bug, correct and re-introduce");
+printf("CARDAMOM_MDF.c: completed DEMCMC\n");
 break;*/
 default:
-printf("Error: no valid mcmcid value prescribed...\n");
+printf("CARDAMOM_MDF.c: Error: no valid mcmcid value prescribed...\n");
 
 }
-printf("MCMC complete\n");
+printf("CARDAMOM_MDF.c: MCMC complete\n");
 /*???????*/
 /*User Defined function needed to clean up memory*/
 MEMORY_CLEANUP(DATA,PI,MCOPT,MCOUT);

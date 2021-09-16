@@ -435,8 +435,9 @@ Files that are Modified:
 5. Refer to section ‘Make a new cost function’ to add your new stream to cost function
 
 
+ 
 
-### Make a new cost function
+### Make a new cost function (soon to be obsolete)
 
 1: Create or copy existing DALEC like function (e.g. copy GPP_LIKELIHOOD.c)
     * E.g. cp DALEC_LIKELIHOOD_GPP.c DALEC_LIKELIHOOD_NEE.c

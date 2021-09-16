@@ -15,18 +15,18 @@ struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
 struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
+
 /*Extract DALEC model here*/
 /*Copy model pointer for brevity*/
 DALEC *MODEL=(DALEC *)DATA.MODEL;
 
-double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
-double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
-double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
+
 double *POOLS=DATA.M_POOLS;
 double *FLUXES=DATA.M_FLUXES;
+double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 double *parmax=DATA.parmax;
-double meantemp=DATA.meantemp;
+double meantemp=DATA.ncdf_data.meantemp;
 
 /*EDCD=EDCD2;*/
 
@@ -44,7 +44,6 @@ int DIAG=EDCD->DIAG;/*1 or 0*/
 
 
 /*FIREBUCKET*/
-int nomet=MODEL->nomet;
 int nopools=MODEL->nopools;
 int nofluxes=MODEL->nofluxes;
 int done=0;
@@ -58,10 +57,14 @@ MPOOLS=calloc(nopools,sizeof(double));
 if (MPOOLS==0){printf("WARNING NULL POINTER");}
 for (n=0;n<nopools;n++){MPOOLS[n]=mean_pool(POOLS,n,N_timesteps+1,nopools);};
 
+
+
 /*deriving mean January pools*/
 /*Assuming COMPLETE years*/
 double *MPOOLSjan;
 /*pool interval*/
+
+
 int dint=(int)floor(N_timesteps/(TIME_INDEX[N_timesteps-1]-TIME_INDEX[0])*365.25);
 /*declaring mean pool array*/
 MPOOLSjan=calloc(nopools,sizeof(double));if (MPOOLSjan==0){printf("WARNING NULL POINTER");}
@@ -94,7 +97,7 @@ for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nof
 /*Total prec*/
 double TOTAL_PREC=0;
 double TOTAL_SNOWFALL=0;
-for (n=0;n<N_timesteps;n++){TOTAL_PREC+=PREC[n];TOTAL_SNOWFALL+=SNOWFALL[n];}
+for (n=0;n<N_timesteps;n++){TOTAL_PREC+=DATA.ncdf_data.TOTAL_PREC.values[n];TOTAL_SNOWFALL+=DATA.ncdf_data.SNOWFALL.values[n];}
 
 
 double Fin[9];

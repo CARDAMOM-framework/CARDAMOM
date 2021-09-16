@@ -17,13 +17,11 @@ int READ_PARI_DATA(PARAMETER_INFO *PI, DATA *DATA,MCMC_OUTPUT *MCOUT,MCMC_OPTION
 
 /*CHANGE4EDDIE*/
 /*this only applies to the native environment - change accordingly to add default file!*/
-char filename[200];
-if (atoi(CLA[0])<1){strcpy(filename,"MCMC_SETUP/TEST_BINARY_DATASET.cbf");}
-else{strcpy(filename,CLA[1]);}
+char filename[1000];strcpy(filename,CLA[1]);
 
 
 
-
+printf("MCMC_MODULES.c READ_PARI_DATA(): file read and copied\n");
 
 /*defining initial values*
  * Need to perform MCMC run to determine this*/
@@ -34,7 +32,7 @@ FIND_EDC_INITIAL_VALUES(*DATA,PI,MCOPT);
 int n;
 for (n=0;n<PI->npars;n++){PI->stepsize[n]=0.0001;}
 
-oksofar("Done with initial parameters");
+printf("CARDAMOM_MDF/MCMC_SETUP/MCMC_MODULES.c: Done with initial parameters");
 
 
 /*This function is in the MCMC folder*/
@@ -129,7 +127,7 @@ return 0;}
 /*this function initializes the PI fields
 It is called from DALEC_ALL_TEMPLATE or equivalent higher level function*/
 int INITIALIZE_PI_STRUCT(PARAMETER_INFO * PI, DATA * DATA, MCMC_OPTIONS *MCO){
-oksofar("initializing PI stucture");
+oksofar("CARDAMOM_MDF/MCMC_SETUP/MCMC_MODULES.c INITIALIZE_PI_STRUCT():  initializing PI stucture");
 /*contains 6 fields with min max log for par and par*/
 PI->parmin=calloc(DATA->nopars,sizeof(double));
 PI->parmax=calloc(DATA->nopars,sizeof(double));
@@ -138,12 +136,10 @@ PI->parfix=calloc(DATA->nopars,sizeof(double));
 PI->stepsize=calloc(DATA->nopars,sizeof(double));
 PI->transform=calloc(DATA->nopars,sizeof(int));
 /*MAtrix double-pointer allocation*/
-oksofar("about to declare matrix");
-oksofar("Just declared matrix");
+oksofar("CARDAMOM_MDF/MCMC_SETUP/MCMC_MODULES.c INITIALIZE_PI_STRUCT(): about to declare matrix");
 
 
 /*defining step size*/
-oksofar("fields declared");
 
 int n,m;
 PI->npars=DATA->nopars;
@@ -159,7 +155,7 @@ PI->transform[14]=2;
 */
 
 
-oksofar("stepsizes initialized");
+oksofar("CARDAMOM_MDF/MCMC_SETUP/MCMC_MODULES.c INITIALIZE_PI_STRUCT(): stepsizes initialized");
 return 0;}
 
 

@@ -126,11 +126,14 @@ for (n=0;n<PI.npars;n++){PARS0[n]=PI.parini[n];}
 memcpy(BESTPARS,PARS0,PI.npars*sizeof(double));
 
 /*STEP 1 - RUN MODEL WITH INITIAL PARAMETERS*/
+
+
 P0=MODEL_LIKELIHOOD(DATA,PI.parini);
+
 /*treating NaN as -inf*/
 if (isnan(P0)){printf("Warning: MLF generated NaN... treating as -Inf");P0=log(0);}
 
-printf("starting likelihood = %e\n",P0);
+
 
 if (isinf(P0)==-1){printf("WARNING! P0=-inf - MHMCMC may get stuck - if so, please check your initial conditions\n");}
 

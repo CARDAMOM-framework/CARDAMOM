@@ -176,10 +176,12 @@ OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
 OBSOPE.SUPPORT_NBE_OBS=true;
 OBSOPE.SUPPORT_ABGB_OBS=true;
-OBSOPE.SUPPORT_SOM_OBS=true;
-OBSOPE.SUPPORT_GRACE_EWT_OBS=true;
+OBSOPE.SUPPORT_DOM_OBS=true;
+OBSOPE.SUPPORT_EWT_OBS=true;
 OBSOPE.SUPPORT_FIR_OBS=true;
 
+
+OBSOPE.SUPPORT_CUE_OBS=true;
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
@@ -212,30 +214,37 @@ ABGB_pools[3]=S.C_woo;
 OBSOPE.ABGB_pools=ABGB_pools;
 OBSOPE.ABGB_n_pools=4;
 
+
 //SOM-specific variables
-static int SOM_pools[2]; 
-SOM_pools[0]=S.C_lit;
-SOM_pools[1]=S.C_som;
-OBSOPE.SOM_pools=SOM_pools;
-OBSOPE.SOM_n_pools=2;
+static int DOM_pools[2]; 
+DOM_pools[0]=S.C_lit;
+DOM_pools[1]=S.C_som;
+OBSOPE.DOM_pools=DOM_pools;
+OBSOPE.DOM_n_pools=2;
 //H2O-specific variables
-static int GRACE_EWT_h2o_pools[3];
-GRACE_EWT_h2o_pools[0]=S.H2O_PAW;
-GRACE_EWT_h2o_pools[1]=S.H2O_PUW;
-GRACE_EWT_h2o_pools[2]=S.H2O_SWE;
-OBSOPE.GRACE_EWT_h2o_pools=GRACE_EWT_h2o_pools;
-OBSOPE.GRACE_EWT_n_h2o_pools=3;
+static int EWT_h2o_pools[3];
+EWT_h2o_pools[0]=S.H2O_PAW;
+EWT_h2o_pools[1]=S.H2O_PUW;
+EWT_h2o_pools[2]=S.H2O_SWE;
+OBSOPE.EWT_h2o_pools=EWT_h2o_pools;
+OBSOPE.EWT_n_h2o_pools=3;
 //Fire-specific variables
 OBSOPE.FIR_flux=F.f_total;
+//CUE parameters
+OBSOPE.CUE_PARAM=P.f_auto;
+
+
 
 DALECmodel->OBSOPE=OBSOPE;
+
+
 
 return 0;}
 
 
 
-int DALEC_1100(DATA DATA, double const *pars)
-{
+int DALEC_1100(DATA DATA, double const *pars){
+    
 
 
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
@@ -262,6 +271,7 @@ double *LAI=DATA.M_LAI;
 // double *NEE=DATA.M_NEE;
 
   /*assigning values to pools*/
+
   /*L,F,R,W,Lit,SOM*/
   POOLS[S.C_lab]=pars[P.i_labile];
   POOLS[S.C_fol]=pars[P.i_foliar];
@@ -425,6 +435,7 @@ FLUXES[f+F.wood2lit] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
 /*root litter production*/
 FLUXES[f+F.root2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
 /*respiration heterotrophic litter*/
+
 FLUXES[f+F.resp_het_lit] = POOLS[p+S.C_lit]*(1-pow(1-FLUXES[f+F.temprate]*pars[P.t_lit],deltat))/deltat;
 /*respiration heterotrophic SOM*/
 FLUXES[f+F.resp_het_som] = POOLS[p+S.C_som]*(1-pow(1-FLUXES[f+F.temprate]*pars[P.t_soil],deltat))/deltat;
@@ -536,6 +547,7 @@ POOLS[nxp+S.H2O_PUW] += (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
     FLUXES[f+F.f_total] = FLUXES[f+F.f_lab] + FLUXES[f+F.f_fol] + FLUXES[f+F.f_roo] + FLUXES[f+F.f_woo] + FLUXES[f+F.f_lit] + FLUXES[f+F.f_som];
 
 }
+
 
 return 0;
 }
