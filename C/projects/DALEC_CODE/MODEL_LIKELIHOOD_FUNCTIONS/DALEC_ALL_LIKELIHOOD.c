@@ -120,12 +120,14 @@ if (D.ID==1011){
 
 /* Function to beginning of run loosely to no source */
 /* Added by G. Quetin 09/07/2021 */
-/*printf("preNEUTRALprob = %2.2f/n",P);*/
-double NEUTRAL_P;
-NEUTRAL_P = DALEC_LIKELIHOOD_NEUTRALSTART(D);
-P = P + NEUTRAL_P;
-/*printf("NEUTRALprob = %2.2f\n",NEUTRAL_P);*/
-
+int neutral_start = 1; /*switch for neutral start*/
+if (neutral_start == 1){
+	/*printf("preNEUTRALprob = %2.2f/n",P);*/
+	double NEUTRAL_P;
+	NEUTRAL_P = DALEC_LIKELIHOOD_NEUTRALSTART(D);
+	P = P + NEUTRAL_P;
+	/*printf("NEUTRALprob = %2.2f\n",NEUTRAL_P);*/
+	}
 
 double mam=0,am=0;
 
