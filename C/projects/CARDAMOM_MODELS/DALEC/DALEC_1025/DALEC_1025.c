@@ -298,6 +298,8 @@ CF[S.C_woo]=pars[P.cf_ligneous];
 CF[S.C_lit]=pars[P.cf_foliar]/2+pars[P.cf_ligneous]/2;
 CF[S.C_som]=pars[P.cf_DOM];
 
+/*foliar carbon transfer intermediate variables*/
+double Fcfolavailable;
 
 /*resilience factor*/
 
@@ -393,17 +395,42 @@ FLUXES[f+F.lambda_max_memory]=LAI_KNORR_OUTPUT[2];
 FLUXES[f+F.dlambda_dt]=LAI_KNORR_OUTPUT[3]/deltat;
 FLUXES[f+F.f_temp_thresh]=LAI_KNORR_OUTPUT[4];
 FLUXES[f+F.f_dayl_thresh]=LAI_KNORR_OUTPUT[5];
-lai_var_list[5]=FLUXES[f+F.T_memory];
-lai_var_list[11]=FLUXES[f+F.lambda_max_memory];
+lai_var_list[5]=FLUXES[f+F.T_memory];  /*Update LAI temperature memory state for next iteration*/
+lai_var_list[11]=FLUXES[f+F.lambda_max_memory];   /*Update water/structural memory state for next iteration*/
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
 FLUXES[f+F.temprate]=exp(pars[P.temp_factor]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp))*((PREC[n]/meanprec-1)*pars[P.moisture]+1);
 /*respiration auto*/
 FLUXES[f+F.resp_auto]=pars[P.f_auto]*FLUXES[f+F.gpp];
 /*leaf production*/
-FLUXES[f+F.fol_prod]=(FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*pars[P.f_foliar];
+// FLUXES[f+F.fol_prod]=(FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*pars[P.f_foliar];
+FLUXES[f+F.fol_prod]=0;
 /*labile production*/
-FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod])*pars[P.f_lab];              
+// FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod])*pars[P.f_lab];
+FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*(pars[P.f_lab]+pars[P.f_foliar]);
+Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]/deltat;
+if (FLUXES[f+F.dlambda_dt]*pars[P.LCMA] > Fcfolavailable){
+  /* flag for carbon availability limitation (0=canopy in senescence, 1=labile C does not limit growth, 2=labile C limits LAI growth) */
+  FLUXES[f+F.c_lim_flag]=2.0;
+  /* flux from labile pool to foliar pool */
+  FLUXES[f+F.lab_release]=Fcfolavailable;
+  /* flux from foliar pool to litter pool */
+  FLUXES[f+F.fol2lit]=0;
+}
+else if (FLUXES[f+F.dlambda_dt]*pars[P.LCMA] < Fcfolavailable && FLUXES[f+F.dlambda_dt]*pars[P.LCMA] > 0){
+  FLUXES[f+F.c_lim_flag]=1.0;
+  /* flux from labile pool to foliar pool */
+  FLUXES[f+F.lab_release]=FLUXES[f+F.dlambda_dt]*pars[P.LCMA];
+  /* flux from foliar pool to litter pool */
+  FLUXES[f+F.fol2lit]=0;
+}
+else {
+  FLUXES[f+F.c_lim_flag]=0.0;
+  /* flux from labile pool to foliar pool */
+  FLUXES[f+F.lab_release]=0;
+  /* flux from foliar pool to litter pool */
+  FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA];
+}
 /*root production*/        
 FLUXES[f+F.root_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod]-FLUXES[f+F.lab_prod])*pars[P.f_root];            
 /*wood production*/       
@@ -413,9 +440,9 @@ FLUXES[f+F.leaffall_fact] = (2/sqrt(pi))*(ff/wf)*exp(-pow(sin((TIME_INDEX[n]-par
 /*Labrelease factor*/
 FLUXES[f+F.lab_release_fact]=(2/sqrt(pi))*(fl/wl)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Bday]+osl)/sf)*sf/wl,2));
 /*labile release - re-arrange order in next versions*/
-FLUXES[f+F.lab_release] = POOLS[p+S.C_lab]*(1-pow(1-FLUXES[f+F.lab_release_fact],deltat))/deltat;
+// FLUXES[f+F.lab_release] = POOLS[p+S.C_lab]*(1-pow(1-FLUXES[f+F.lab_release_fact],deltat))/deltat;
 /*leaf litter production*/       
-FLUXES[f+F.fol2lit] = POOLS[p+S.C_fol]*(1-pow(1-FLUXES[f+F.leaffall_fact],deltat))/deltat;
+// FLUXES[f+F.fol2lit] = POOLS[p+S.C_fol]*(1-pow(1-FLUXES[f+F.leaffall_fact],deltat))/deltat;
 /*wood litter production*/       
 FLUXES[f+F.wood2lit] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
 /*root litter production*/
@@ -430,7 +457,7 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
 /*total pool transfers (no fires yet)*/
 
         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.lab_prod]-FLUXES[f+F.lab_release])*deltat;
-        POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.fol_prod] - FLUXES[f+F.fol2lit] + FLUXES[f+F.lab_release])*deltat;
+        POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.lab_release] - FLUXES[f+F.fol2lit])*deltat;
         POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.root2lit])*deltat;
         POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] +  (FLUXES[f+F.wood_prod] - FLUXES[f+F.wood2lit])*deltat;
         POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.root2lit] - FLUXES[f+F.resp_het_lit] - FLUXES[f+F.lit2som])*deltat; 
