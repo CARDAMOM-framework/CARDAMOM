@@ -403,32 +403,30 @@ FLUXES[f+F.temprate]=exp(pars[P.temp_factor]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp
 /*respiration auto*/
 FLUXES[f+F.resp_auto]=pars[P.f_auto]*FLUXES[f+F.gpp];
 /*leaf production*/
-// FLUXES[f+F.fol_prod]=(FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*pars[P.f_foliar];
 FLUXES[f+F.fol_prod]=0;
 /*labile production*/
-// FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod])*pars[P.f_lab];
 FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*(pars[P.f_lab]+pars[P.f_foliar]);
 Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]/deltat;
 if (FLUXES[f+F.dlambda_dt]*pars[P.LCMA] > Fcfolavailable){
   /* flag for carbon availability limitation (0=canopy in senescence, 1=labile C does not limit growth, 2=labile C limits LAI growth) */
   FLUXES[f+F.c_lim_flag]=2.0;
-  /* flux from labile pool to foliar pool */
+  /* labile release: flux from labile pool to foliar pool */
   FLUXES[f+F.lab_release]=Fcfolavailable;
-  /* flux from foliar pool to litter pool */
+  /* leaf litter production: flux from foliar pool to litter pool */
   FLUXES[f+F.fol2lit]=0;
 }
 else if (FLUXES[f+F.dlambda_dt]*pars[P.LCMA] < Fcfolavailable && FLUXES[f+F.dlambda_dt]*pars[P.LCMA] > 0){
   FLUXES[f+F.c_lim_flag]=1.0;
-  /* flux from labile pool to foliar pool */
+  /* labile release: flux from labile pool to foliar pool */
   FLUXES[f+F.lab_release]=FLUXES[f+F.dlambda_dt]*pars[P.LCMA];
-  /* flux from foliar pool to litter pool */
+  /* leaf litter production: flux from foliar pool to litter pool */
   FLUXES[f+F.fol2lit]=0;
 }
 else {
   FLUXES[f+F.c_lim_flag]=0.0;
-  /* flux from labile pool to foliar pool */
+  /* labile release: flux from labile pool to foliar pool */
   FLUXES[f+F.lab_release]=0;
-  /* flux from foliar pool to litter pool */
+  /* leaf litter production: flux from foliar pool to litter pool */
   FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA];
 }
 /*root production*/        
@@ -439,10 +437,6 @@ FLUXES[f+F.wood_prod] = FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_pro
 FLUXES[f+F.leaffall_fact] = (2/sqrt(pi))*(ff/wf)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Fday]+osf)/sf)*sf/wf,2));
 /*Labrelease factor*/
 FLUXES[f+F.lab_release_fact]=(2/sqrt(pi))*(fl/wl)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Bday]+osl)/sf)*sf/wl,2));
-/*labile release - re-arrange order in next versions*/
-// FLUXES[f+F.lab_release] = POOLS[p+S.C_lab]*(1-pow(1-FLUXES[f+F.lab_release_fact],deltat))/deltat;
-/*leaf litter production*/       
-// FLUXES[f+F.fol2lit] = POOLS[p+S.C_fol]*(1-pow(1-FLUXES[f+F.leaffall_fact],deltat))/deltat;
 /*wood litter production*/       
 FLUXES[f+F.wood2lit] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
 /*root litter production*/
@@ -502,8 +496,20 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
 	/*replace in next version of DALEC_FIRES*/
     FLUXES[f+F.f_total] = FLUXES[f+F.f_lab] + FLUXES[f+F.f_fol] + FLUXES[f+F.f_roo] + FLUXES[f+F.f_woo] + FLUXES[f+F.f_lit] + FLUXES[f+F.f_som];
 
+    /*Fraction of C-foliar lost due to fires*/
+    FLUXES[f+F.foliar_fire_frac] = BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
+    /*Calculate LAI (lambda) lost due to fire
+      - we lose the same fraction of LAI as we do C-foliar 
+      - FE_\Lambda^{(t+1)} = \Lambda^{(t+1)'} * BA ( k_{factor(i)} + (1 - k_{factor(i)}) r )*/
+    // FLUXES[f+F.lai_fire] = FLUXES[f+F.target_LAI]*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
+    FLUXES[f+F.lai_fire] = (POOLS[p+S.C_fol]/pars[P.LCMA])*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
+    /*Subtract fire loss LAI from current LAI*/
+    // FLUXES[f+34] = FLUXES[f+34] - FLUXES[f+39];
 
 }
+
+/*LAI is a CARDAMOM-wide state variable, ensuring available at first/last timestep in general (LAI) form, rather than only as "Cfol/LCMA"*/
+LAI[n+1]=POOLS[nxp+S.C_fol]/pars[P.LCMA];
 
 return 0;
 }
