@@ -59,12 +59,13 @@ TIMESERIES_DRIVER_STRUCT  TIME_INDEX;
 TIMESERIES_DRIVER_STRUCT TOTAL_PREC;
 TIMESERIES_DRIVER_STRUCT VPD;
 TIMESERIES_DRIVER_STRUCT SNOWFALL;
-//Summary & derived variables
+//Summary variables
 int EDC;
 int EDCDIAG;
 double EDC_EQF;
 int ID;
 double LAT;
+//Derived variables (not prescribed)
 int Ntimesteps;
 double deltat;
 double meantemp;

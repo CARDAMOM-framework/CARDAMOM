@@ -9,27 +9,17 @@ function CARDAMOM_WRITE_NC_CBF_FILE(CBF,fname)
         if g=='y';delete(fname);end
     end
 
-    
-%Step 1. get dimensions
-nopars=numel(CBF.PARPRIORS.values);
-notimesteps=numel(CBF.TIME_INDEX.values);
+notimesteps=numel(CBF.time.values);
 
 
     
 %Adjust number as needed. Not urgent for field to dynamically vary
 fieldnames=fields(CBF);
 
-parfields={'PARPRIORS','PARPRIORUNC','OTHERPRIORS','OTHERPRIORSUNC'};
 
 for f=1:numel(fieldnames)
     
-    
-   if sum(strcmp(parfields,fieldnames{f}))
 
-nccreate(fname,fieldnames{f},'Dimensions',{'nopars',nopars},'FillValue',-9999); 
-ncwrite(fname,fieldnames{f},CBF.(fieldnames{f}).values)
-
-   else
        if numel(CBF.(fieldnames{f}).values)==notimesteps
        
        nccreate(fname,fieldnames{f},'Dimensions',{'time',notimesteps},'FillValue',-9999); 
@@ -43,7 +33,6 @@ ncwrite(fname,fieldnames{f},CBF.(fieldnames{f}).values)
        ncwrite(fname,fieldnames{f},CBF.(fieldnames{f}).values);
 
            
-       end
        
    end
    
