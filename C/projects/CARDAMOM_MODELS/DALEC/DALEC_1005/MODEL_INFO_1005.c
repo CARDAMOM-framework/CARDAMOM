@@ -3,7 +3,7 @@
 #include "DALEC_1005.c"
 #include "EDC1_1005.c"
 #include "EDC2_1005.c"
-#include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF_DEDC.c"
+#include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
 #include "../../../CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c"
 
 int MODEL_INFO_1005(DATA * DATA){
@@ -52,7 +52,7 @@ printf("DALECmodel.EDCD->EQF = %2.2f\n",DALECmodel.EDCD->EQF);
 
 /*initializing model*/
 DATA->MODEL=&DALECmodel;
-DATA->MLF=DALEC_MLF_DEDC;
+DATA->MLF=DALEC_MLF;
 
 
 
