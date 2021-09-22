@@ -68,7 +68,7 @@ if retrievepars==1
     
 %     MCO.niterations=1;
 %     MCO.samplerate=1;
-     cbrfilename1100='DUMPFILES/MODEL_ID_1100_EXAMPLE.cbr';
+     cbrfilename1100='DUMPFILES/MODEL_ID_1100_EXAMPLE.cbr.nc';
     %CBR=CARDAMOM_RUN_MDF(CBF1100,[],cbrfilename1100);
         CBR=CARDAMOM_RUN_MDF(CBF1100);
 end
