@@ -7,10 +7,8 @@
 
 
 typedef struct TIMESERIES_OBS_STRUCT{
-size_t length;//
 double * values;//Timeseries of observation values
-size_t unc_length;//
-double * unc;//Timeseries of uncertainty values
+//**********Variable attributes*************
 int opt_unc_type;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
 int opt_normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
 int opt_filter;//(0 = no filter, 1 = mean only, 2==annual mean & monthly anomaly, 3 = seasonal cycle & inter-annual anomalies). 
@@ -20,7 +18,11 @@ double single_annual_unc;//Fields to be used only with Filter=2
 double single_mean_unc;//Fields to be used only with Filter = 1;
 double single_unc;//
 double structural_unc;//this gets added to uncertainty in quadrature.
+//Auxiliary uncertainty variable, separate from timeseries variable
+double * unc;//Timeseries of uncertainty values
 //expand as needed
+size_t length;//
+size_t unc_length;//
 int valid_obs_length;//number of non-empty obs
 int * valid_obs_indices;//indices of non-empty obs
 }TIMESERIES_OBS_STRUCT;

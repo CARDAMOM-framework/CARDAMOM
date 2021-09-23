@@ -96,12 +96,17 @@ DATA->LAI=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "LAI");
 DATA->NBE=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "NBE");
 DATA->DOM=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "DOM");
 
+//Read time-averaged data
+
 DATA->Mean_ABGB=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_ABGB");
-DATA->Mean_GPP      =READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_GPP");
-DATA->Mean_LAI       =READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_LAI");
-DATA->Mean_FIR     =READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_FIR");
+DATA->Mean_GPP=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_GPP");
+DATA->Mean_LAI=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_LAI");
+DATA->Mean_FIR=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_FIR");
 
 
+//Read parameters and single observations
+DATA->PEQ_Cefficiency=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Cefficiency");
+DATA->PEQ_CUE=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_CUE");
 
 //Global defaults: these are set in pre-process if not defined below
 // default_int_value(&OBS->opt_unc_type,0);
@@ -187,8 +192,8 @@ printf("Done reading all other edc ");
 	DATA->T2M_MIN.values=ncdf_read_double_var(ncid, "T2M_MIN", &(DATA->T2M_MIN.length));
 		DATA->T2M_MIN.reference_mean=ncdf_read_double_attr(ncid, "T2M_MIN","reference_mean");
 
-	DATA->TIME_INDEX.values=ncdf_read_double_var(ncid, "TIME_INDEX", &(DATA->TIME_INDEX.length));
-		DATA->TIME_INDEX.reference_mean=ncdf_read_double_attr(ncid, "TIME_INDEX","reference_mean");
+	DATA->TIME_INDEX.values=ncdf_read_double_var(ncid, "time", &(DATA->TIME_INDEX.length));
+		DATA->TIME_INDEX.reference_mean=ncdf_read_double_attr(ncid, "time","reference_mean");
 
 	DATA->TOTAL_PREC.values=ncdf_read_double_var(ncid, "TOTAL_PREC", &(DATA->TOTAL_PREC.length));
 		DATA->TOTAL_PREC.reference_mean=ncdf_read_double_attr(ncid, "TOTAL_PREC","reference_mean");

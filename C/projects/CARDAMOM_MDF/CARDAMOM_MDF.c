@@ -114,11 +114,13 @@ printf("CARDAMOM_MDF.c: Parameter info structure initialized\n");
 
 /*READ_PARI_DATA and READ_MCOPT should now be generic for all model types*/
 /*CONTAINS "FIND_EDC_INITIAL_VALUES(*DATA,PI);"*/
+DATA.edcsearch=1;
 OK=READ_PARI_DATA(&PI, &DATA, &MCOUT, &MCOPT,CLA);
 printf("CARDAMOM_MDF.c: READ_PARI_DATA successfully executed\n");
 
 
 /*calling the MHMCMC here*/
+DATA.edcsearch=0;
 
 printf("CARDAMOM_MDF.c: about to start MCMC\n");
 printf("CARDAMOM_MDF.c: Prescribed option = %i\n",MCOPT.mcmcid);
