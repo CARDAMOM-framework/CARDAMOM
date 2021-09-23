@@ -58,27 +58,60 @@ end
 
 
 %Global attributes
-nccreate(fname,'ID'); ncwrite(fname,'ID',CBF.ID)
-nccreate(fname,'LAT'); ncwrite(fname,'LAT',CBF.LAT)
-nccreate(fname,'EDC'); ncwrite(fname,'EDC',CBF.EDC)
+nccreate(fname,'ID','FillValue',NaN); ncwrite(fname,'ID',CBF.ID)
+ncwriteatt(fname,'ID','coordinates','lon lat')
+
+nccreate(fname,'LAT','FillValue',NaN); ncwrite(fname,'LAT',CBF.LAT)
+ncwriteatt(fname,'LAT','coordinates','lon lat')
+
+nccreate(fname,'EDC','FillValue',NaN); ncwrite(fname,'EDC',CBF.EDC)
+ncwriteatt(fname,'EDC','coordinates','lon lat')
+
+nccreate(fname,'lat','FillValue',NaN); ncwrite(fname,'lat',CBF.LAT)
+ncwriteatt(fname,'lat','long_name','Latitude of Grid Cell Centers')
+ncwriteatt(fname,'lat','standard_name','latitude')
+ncwriteatt(fname,'lat','units','degrees_north')
+ncwriteatt(fname,'lat','axis','Y')
+ncwriteatt(fname,'lat','valid_min','-90.0')
+ncwriteatt(fname,'lat','valid_max','90.0')
+ncwriteatt(fname,'lat','bounds','lat_bnds')
+
+
+nccreate(fname,'lon','FillValue',NaN);
+if isfield(CBF,'LON')==1
+    ncwrite(fname,'lon',CBF.LON)
+else
+    ncwrite(fname,'lon',NaN)
+end
+ncwriteatt(fname,'lon','long_name','Longitude of Grid Cell Centers')
+ncwriteatt(fname,'lon','standard_name','longitude')
+ncwriteatt(fname,'lon','units','degrees_east')
+ncwriteatt(fname,'lon','axis','Y')
+ncwriteatt(fname,'lon','modulo','360.0')
+ncwriteatt(fname,'lon','topology','circular')
+ncwriteatt(fname,'lon','valid_min','-180.0')
+ncwriteatt(fname,'lon','valid_max','180.0')
+ncwriteatt(fname,'lon','bounds','lon_bnds')
 
 %FIX: need this as dimension
 %nccreate(fname,'nodays'); ncwrite(fname,'nodays',nodays)
 
 
 %Adjust number as needed. Not urgent for field to dynamically vary
-nccreate(fname,'PARPRIORS','Dimensions',{'nopars',50}); 
+nccreate(fname,'PARPRIORS','Dimensions',{'nopars',50},'FillValue',NaN); 
 ncwrite(fname,'PARPRIORS',CBF.PARPRIORS)
-nccreate(fname,'PARPRIORUNC','Dimensions',{'nopars'});
+ncwriteatt(fname,'PARPRIORS','coordinates','lon lat')
+nccreate(fname,'PARPRIORUNC','Dimensions',{'nopars'},'FillValue',NaN);
 ncwrite(fname,'PARPRIORUNC',CBF.PARPRIORUNC)
-
+ncwriteatt(fname,'PARPRIORUNC','coordinates','lon lat')
 
 %Adjust number as needed. Not urgent for field to dynamically vary
-nccreate(fname,'OTHERPRIORS','Dimensions',{'nopars',50}); 
+nccreate(fname,'OTHERPRIORS','Dimensions',{'nopars',50},'FillValue',NaN); 
 ncwrite(fname,'OTHERPRIORS',CBF.RAW.OTHERPRIORS)
-nccreate(fname,'OTHERPRIORSUNC','Dimensions',{'nopars'});
+ncwriteatt(fname,'OTHERPRIORS','coordinates','lon lat')
+nccreate(fname,'OTHERPRIORSUNC','Dimensions',{'nopars'},'FillValue',NaN);
 ncwrite(fname,'OTHERPRIORSUNC',CBF.RAW.OTHERPRIORSUNC)
-
+ncwriteatt(fname,'OTHERPRIORSUNC','coordinates','lon lat')
 
 
 
@@ -86,7 +119,6 @@ ncwrite(fname,'OTHERPRIORSUNC',CBF.RAW.OTHERPRIORSUNC)
 %Mean biomass
 nccreate(fname,'Mean_Biomass','FillValue',NaN);
 ncwrite(fname,'Mean_Biomass',CBF.OTHER_OBS.MBiomass.mean)
-% ncwriteatt(fname,'Mean_Biomass','_FillValue',NaN)
 ncwriteatt(fname,'Mean_Biomass','Uncertainty',CBF.OTHER_OBS.MBiomass.unc)
 ncwriteatt(fname,'Mean_Biomass','Uncertainty_Type','factor')
 ncwriteatt(fname,'Mean_Biomass','coordinates','lon lat')
