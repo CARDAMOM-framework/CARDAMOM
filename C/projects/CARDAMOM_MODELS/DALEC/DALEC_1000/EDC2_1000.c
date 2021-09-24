@@ -39,7 +39,6 @@ int DIAG=EDCD->DIAG;/*1 or 0*/
 
 
 /*FIREBUCKET*/
-int nomet=MODEL->nomet;
 int nopools=MODEL->nopools;
 int nofluxes=MODEL->nofluxes;
 int done=0;

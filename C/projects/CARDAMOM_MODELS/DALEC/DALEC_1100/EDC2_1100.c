@@ -15,18 +15,18 @@ struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
 struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
-
 /*Extract DALEC model here*/
 /*Copy model pointer for brevity*/
 DALEC *MODEL=(DALEC *)DATA.MODEL;
 
-
+double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
+double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
+double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 double *POOLS=DATA.M_POOLS;
 double *FLUXES=DATA.M_FLUXES;
-double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 double *parmax=DATA.parmax;
-double meantemp=DATA.ncdf_data.meantemp;
+double meantemp=DATA.meantemp;
 
 /*EDCD=EDCD2;*/
 
@@ -96,8 +96,8 @@ int f=0;
 for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nofluxes+f];}}
 /*Total prec*/
 double TOTAL_PREC=0;
-double TOTAL_SNOWFALL=0;
-for (n=0;n<N_timesteps;n++){TOTAL_PREC+=DATA.ncdf_data.TOTAL_PREC.values[n];TOTAL_SNOWFALL+=DATA.ncdf_data.SNOWFALL.values[n];}
+double TOTAL_SNOW=0;
+for (n=0;n<N_timesteps;n++){TOTAL_PREC+=PREC[n];TOTAL_SNOW+=SNOWFALL[n];}
 
 
 double Fin[9];
@@ -115,32 +115,32 @@ double etol=0.1;
 
 /*Inputs and outputs for each pool*/
 /*labile*/
-Fin[0]=FT[F.lab_prod];
-Fout[0]=FT[F.lab_release]+FT[F.f_lab]+FT[F.fx_lab2lit];
+Fin[S.C_lab]=FT[F.lab_prod];
+Fout[S.C_lab]=FT[F.lab_release]+FT[F.f_lab]+FT[F.fx_lab2lit];
 /*foliar*/
-Fin[1]=FT[F.fol_prod]+FT[F.lab_release];
-Fout[1]=FT[F.fol2lit]+FT[F.f_fol]+FT[F.fx_fol2lit];
+Fin[S.C_fol]=FT[F.fol_prod]+FT[F.lab_release];
+Fout[S.C_fol]=FT[F.fol2lit]+FT[F.f_fol]+FT[F.fx_fol2lit];
 /*root*/
-Fin[2]=FT[F.root_prod];
-Fout[2]=FT[F.root2lit]+FT[F.f_roo]+FT[F.fx_roo2lit];
+Fin[S.C_roo]=FT[F.root_prod];
+Fout[S.C_roo]=FT[F.root2lit]+FT[F.f_roo]+FT[F.fx_roo2lit];
 /*wood*/
-Fin[3]=FT[F.wood_prod];
-Fout[3]=FT[F.wood2lit]+FT[F.f_woo]+FT[F.fx_woo2som];
+Fin[S.C_woo]=FT[F.wood_prod];
+Fout[S.C_woo]=FT[F.wood2lit]+FT[F.f_woo]+FT[F.fx_woo2som];
 /*litter*/
-Fin[4]=FT[F.fol2lit]+FT[F.root2lit]+FT[F.fx_lab2lit]+FT[F.fx_fol2lit]+FT[F.fx_roo2lit];
-Fout[4]=FT[F.resp_het_lit]+FT[F.lit2som]+FT[F.f_lit]+FT[F.fx_lit2som];
+Fin[S.C_lit]=FT[F.fol2lit]+FT[F.root2lit]+FT[F.fx_lab2lit]+FT[F.fx_fol2lit]+FT[F.fx_roo2lit];
+Fout[S.C_lit]=FT[F.resp_het_lit]+FT[F.lit2som]+FT[F.f_lit]+FT[F.fx_lit2som];
 /*som*/
-Fin[5]=FT[F.wood2lit]+FT[F.lit2som]+FT[F.fx_woo2som]+FT[F.fx_lit2som];
-Fout[5]=FT[F.resp_het_som]+FT[F.f_som];
+Fin[S.C_som]=FT[F.wood2lit]+FT[F.lit2som]+FT[F.fx_woo2som]+FT[F.fx_lit2som];
+Fout[S.C_som]=FT[F.resp_het_som]+FT[F.f_som];
 /*PAH2O*/
-Fin[6]=TOTAL_PREC-TOTAL_SNOWFALL+FT[F.melt]-FT[F.q_surf];
-Fout[6]=FT[F.et]+FT[F.q_paw]+FT[F.paw2puw];
+Fin[S.H2O_PAW]=TOTAL_PREC-TOTAL_SNOW+FT[F.melt];
+Fout[S.H2O_PAW]=FT[F.et]+FT[F.q_paw]+FT[F.paw2puw];
 /*PUH2O*/
-Fin[7]=FT[F.paw2puw];
-Fout[7]=FT[F.q_puw];
+Fin[S.H2O_PUW]=FT[F.paw2puw];
+Fout[S.H2O_PUW]=FT[F.q_puw];
 /*SWE*/
-Fin[8]=TOTAL_SNOWFALL;
-Fout[8]=FT[F.melt];
+Fin[S.H2O_SWE]=TOTAL_SNOW;
+Fout[S.H2O_SWE]=FT[F.melt];
 
 
 
