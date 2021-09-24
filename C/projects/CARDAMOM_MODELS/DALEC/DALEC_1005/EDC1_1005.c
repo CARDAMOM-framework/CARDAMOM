@@ -86,7 +86,6 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[16-1]==1)
 /*Note: these must be tested to ensure that DALEC2 run is NOT needed */
 
 
-EDCD->pEDC=log((double)EDC);
 
 
 
