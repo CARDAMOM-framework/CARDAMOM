@@ -267,41 +267,52 @@ See conventions above
 CARDAMOM_RUN_MODEL.m throws out first one, but only because it’s repeat of initial conditions (which are contained in parameter vector).
 
 
-
-
 ## CARDAMOM cost function <a name="cardamom-cost-function"/>
  
- typedef struct TIMESERIES_OBS_STRUCT{
-double * values;//Timeseries of observation values
-//**********Variable attributes*************
-int opt_unc_type;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
-int opt_normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
-int opt_filter;//(0 = no filter, 1 = mean only, 2==annual mean & monthly anomaly, 3 = seasonal cycle & inter-annual anomalies). 
-double min_threshold;//Minimum value threshold: model and/or data will be rounded up to this value (default = -inf)
-double single_monthly_unc;//Fields to be used only with Filter=2. 
-double single_annual_unc;//Fields to be used only with Filter=2
-double single_mean_unc;//Fields to be used only with Filter = 1;
-double single_unc;//
-double structural_unc;//this gets added to uncertainty in quadrature.
-//Auxiliary uncertainty variable, separate from timeseries variable
-double * unc;//Timeseries of uncertainty values
-//expand as needed
-size_t length;//
-size_t unc_length;//
-int valid_obs_length;//number of non-empty obs
-int * valid_obs_indices;//indices of non-empty obs
-}TIMESERIES_OBS_STRUCT;
-<img width="1202" alt="image" src="https://user-images.githubusercontent.com/23563444/135171192-c03b5265-0955-43c1-8eee-68a5c2413d40.png">
+Observation timeseries summary:
 
- 
+“Values”: 
+time-resolved observation values for any time-varying CARDAMOM observations; 
+nectdf dataset with one dimension = number of model timesteps. 
+Attributes described below
+“-9999” or “Nan” values accepted as fill values for missing observations. 
+Any other values are assumed to be “valid observations” 
+
+“Unc”:
+ time-resolved observation value uncertainty; 
+netcdf dataset (with one dimension = number of model timesteps). 
+No attributes. 
+If no “unc” values are provided, then “single_unc” value used to populate “unc”.
+If “unc” values are missing for any valid observations, “single_unc” value is used.
+
+
+“Opt_normalization” 
+Option 0: does nothing, same as -9999 (unless default values are hard-coded, see set of default values).
+Option 1: removes mean from both data and model values prior to model-data residual calculation; so far, only used for assimilation of GRACE data, but can be used for anything (e.g. NBE values, if mean NBE is inaccurate, for example). Units of “option 1” transformation are “unitless”, i.e. relative anomalies from the mean values are inter-comparable. 
+
+Option 2: divides both data and model by their respective mean values. Used for “linear assimilation” of SIF data. Units of “option 2” transformation are in native observation units”, i.e. relative anomalies to zero are inter-comparable, or, in other words the units of the model variable and observed data are irrelevant. 
+
+
+Attributes for “values”.
+
+
  *Opt filter*
- Description: provides ddifferent options for 
+ Description: provides different options for pre-aggregation of data prior to model-data difference calculation. For each option, only subset of fields are required, others will be ignored
  
 ** Option 0**
- - Description: "no filter" no operation on data and model prior to least squares calculation.
- - Requires either (a) time-resolved uncertainty "unc", or (b) single
- - 
- 
+ - Description: "no filter" no operation on data & model prior to least squares model-data residual calculation.
+ - Requires either (a) time-resolved uncertainty ("unc" field), at the temporal resolution or (b) a single uncertainty value (“single_unc” field); see “unc” description for details.
+
+
+**Option 1**
+Description: “mean only” filter calculates mean model and data values at all valid observation timesteps; the mean model and data values are then used in the cost function
+Requires “single_unc”.
+
+** Option 2**
+Description: constrains annual means and seasonal anomalies (Quetin et al., 2020, Bloom et al., 2020)
+Requires “single_monthly_unc” and “single_annual_unc” values
+“single _unc” and/or “unc” are ignored.
+
  
 
 ## The CBF File (CARDAMOM binary input file)<a name="cardamom-cbffile"/>
