@@ -269,6 +269,7 @@ CARDAMOM_RUN_MODEL.m throws out first one, but only because it’s repeat of ini
 
 
 
+## CARDAMOM cost function <a name="cardamom-cost-function"/>
 
 
 ## The CBF File (CARDAMOM binary input file)<a name="cardamom-cbffile"/>
