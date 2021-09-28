@@ -25,6 +25,10 @@
   * Saving output at runtime (Matlab)
 - [CARDAMOM state and flux conventions]
 
+- [CARDAMOM cost function](#cardamom-cost-function)
+  *Options
+
+
 - [The CBF File (CARDAMOM binary input file)](#cardamom-cbffile)
   * CBF Fields
   * [Make a new CBF file](#cardamom-make-cbffile)
