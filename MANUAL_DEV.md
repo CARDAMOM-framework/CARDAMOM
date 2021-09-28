@@ -270,7 +270,39 @@ CARDAMOM_RUN_MODEL.m throws out first one, but only because it’s repeat of ini
 
 
 ## CARDAMOM cost function <a name="cardamom-cost-function"/>
+ 
+ typedef struct TIMESERIES_OBS_STRUCT{
+double * values;//Timeseries of observation values
+//**********Variable attributes*************
+int opt_unc_type;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
+int opt_normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
+int opt_filter;//(0 = no filter, 1 = mean only, 2==annual mean & monthly anomaly, 3 = seasonal cycle & inter-annual anomalies). 
+double min_threshold;//Minimum value threshold: model and/or data will be rounded up to this value (default = -inf)
+double single_monthly_unc;//Fields to be used only with Filter=2. 
+double single_annual_unc;//Fields to be used only with Filter=2
+double single_mean_unc;//Fields to be used only with Filter = 1;
+double single_unc;//
+double structural_unc;//this gets added to uncertainty in quadrature.
+//Auxiliary uncertainty variable, separate from timeseries variable
+double * unc;//Timeseries of uncertainty values
+//expand as needed
+size_t length;//
+size_t unc_length;//
+int valid_obs_length;//number of non-empty obs
+int * valid_obs_indices;//indices of non-empty obs
+}TIMESERIES_OBS_STRUCT;
+<img width="1202" alt="image" src="https://user-images.githubusercontent.com/23563444/135171192-c03b5265-0955-43c1-8eee-68a5c2413d40.png">
 
+ 
+ *Opt filter*
+ Description: provides ddifferent options for 
+ 
+** Option 0**
+ - Description: "no filter" no operation on data and model prior to least squares calculation.
+ - Requires either (a) time-resolved uncertainty "unc", or (b) single
+ - 
+ 
+ 
 
 ## The CBF File (CARDAMOM binary input file)<a name="cardamom-cbffile"/>
 
