@@ -62,6 +62,7 @@ nccbftestfile='DUMPFILES/MODEL_ID_1100_TEST_ONLY.cbf.nc';
 CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbftestfile);
 disp('Successfully wrote file using "CARDAMOM_WRITE_NC_CBF_FILE" ...')
 
+
 %first test is retrieving parameters. Skip only for partial testing
 retrievepars=1;
 if retrievepars==1

@@ -11,11 +11,13 @@ NC.fill_value=-9999;
 
 
 %Step 2. Summary variables
+%Model
 nccreate(NC.fname,'ID'); ncwrite(NC.fname,'ID',1100);
 nccreate(NC.fname,'EDC'); ncwrite(NC.fname,'EDC',1);
 nccreate(NC.fname,'LAT'); ncwrite(NC.fname,'LAT',40.25);
 
 
+%DATA
 %Step 3. Writing all drivers
 Dnames={'BURNED_AREA','CO2','DOY','TOTAL_PREC','SNOWFALL','SSRD','T2M_MIN','T2M_MAX','time','VPD'};
 for n=1:numel(Dnames)
@@ -46,12 +48,17 @@ end
     create_and_write_obs_single_variable(NC,'PEQ_Cefficiency',-9999);
     create_and_write_obs_single_variable(NC,'PEQ_CUE',-9999);
 
+%Fusion
+nccreate(NC.fname,'MCMCID'); 
+ncwrite(NC.fname,'MCMCID',119);
+ncwriteatt(NC.fname,'MCMCID','nITERATIONS',10000);
+ncwriteatt(NC.fname,'MCMCID','nSAMPLES',2000);
+ncwriteatt(NC.fname,'MCMCID','nPRINT',1000);
 
 
 
 
 
-keyboard
 
 
 

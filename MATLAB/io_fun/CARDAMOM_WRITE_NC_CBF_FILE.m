@@ -39,24 +39,23 @@ for f=1:numel(fieldnames)
           disp(fieldnames{f});
 
    %Write attributes related to quantity
-   if isfield(CBF.(fieldnames{f}),'Attributes');
-   natt=numel(CBF.(fieldnames{f}).Attributes);
-   else natt=0;
-   end
+
    
-   if natt>0;
-       for a=1:natt
-           if strcmp(CBF.(fieldnames{f}).Attributes(a).Name,'_FillValue')==0
-       ncwriteatt(fname,fieldnames{f},CBF.(fieldnames{f}).Attributes(a).Name, CBF.(fieldnames{f}).Attributes(a).Value)
+   subfieldnames=fields(CBF.(fieldnames{f}));
+
+       for a=1:numel(subfieldnames);
+           if strcmp(subfieldnames(a),'values')==0
+                ncwriteatt(fname,fieldnames{f},subfieldnames{a}, CBF.(fieldnames{f}).(subfieldnames{a}))
            end
        end
        
-   end
+       
+end
+   
        
    
    
    
-end
 
    
    

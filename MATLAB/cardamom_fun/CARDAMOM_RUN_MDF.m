@@ -1,4 +1,4 @@
-function D=CARDAMOM_RUN_MDF(CBF,MCO,cbrfile,compile,command_only,Cpath,STARTPARS)
+function D=CARDAMOM_RUN_MDF(CBF,cbrfile,compile,command_only,Cpath)
 %This function sets up a CARDAMOM Metropolis-Hastings Markov Chain Monte Carlo (MHMCMC) chain:
 %INPUTS
 % - CBF: a CBF structure OR a CBF filename
@@ -14,32 +14,7 @@ function D=CARDAMOM_RUN_MDF(CBF,MCO,cbrfile,compile,command_only,Cpath,STARTPARS
 % MCO.minstepsize=1e-4
 %
 %See also: CARDAMOM_WRITE_BINARY_FILEFORMAT.m
-%Last modified by A.A. Bloom 2020/01/25
-if nargin<2; MCO=[];end
-
-if isnumeric(MCO) & numel(MCO)==3
-    %Can also provide numerical inputs
-    MCOnum=MCO;clear MCO;MCO.niterations=MCOnum(1);MCO.printrate=MCOnum(2);MCO.samplerate=MCOnum(3);
-elseif isstruct(MCO) | isempty(MCO);
-    
-    MCOin=MCO;
-
-if isfield(MCO,'niterations')==0;MCO.niterations=100000;end
-if isfield(MCO,'printrate')==0;MCO.printrate=1000;end
-if isfield(MCO,'samplerate')==0;MCO.samplerate=MCO.niterations/2000;end
-if isfield(MCO,'minstepsize')==0;MCO.minstepsize=1e-5;end
-if isfield(MCO,'mcmcid')==0;MCO.mcmcid=119;end
-if isfield(MCO,'nadapt')==0;MCO.nadapt=100;end
-disp(MCO);
-if numel(fields(MCO))>6; 
-    disp('*****WARNING*****')
-    disp('Unused fieldnames provided in MCMC options structure "MCO"; while these won''t interfere with CARDAMOM_RUN_MDF, check for typos just in case');
-    disp('******************')
-    keyboard;
-end
-
-end
-
+%Last modified by A.A. Bloom 2021/09/29
 
 cbrtemp=0;cbftemp=0;
 
@@ -88,7 +63,7 @@ end
             
             %mdf command
                        
-                            command_cdea=sprintf('%s/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe %s %s %d %d %d %f %d %d',Cpath,cbffile, cbrfile,MCO.niterations,MCO.printrate,MCO.samplerate,MCO.minstepsize,MCO.mcmcid,MCO.nadapt);
+                            command_cdea=sprintf('%s/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe %s %s',Cpath,cbffile, cbrfile);
                        
                        %run command
                        disp('C executable command');
@@ -100,7 +75,8 @@ if command_only==0
 
                        if uxid>0; error(sprintf('%s\n ERROR!!! the unix execution of the above command failed.',command_cdea));end
 %run results
-D=CARDAMOM_RUN_MODEL(cbffile,cbrfile);
+OPT.compile=0;
+D=CARDAMOM_RUN_MODEL(cbffile,cbrfile,OPT);
     D.run_mode='inverse';        
 
 

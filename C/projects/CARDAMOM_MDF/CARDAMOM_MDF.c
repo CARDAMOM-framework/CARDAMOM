@@ -15,12 +15,85 @@
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
 
 
+
+/*MCMC OPTIONS*/
+int READ_MCOPT(MCMC_OPTIONS *MCOPT, DATA DATA, char *outfile){
+/*number of command line imputs*/
+    
+/*defining MCMC_OPTIONS structure*/
+MCOPT->APPEND=0;
+//MCOPT->nADAPT=100;
+MCOPT->fADAPT=0.5;
+
+
+MCOPT->nOUT=DATA.ncdf_data.MCMCID.nITERATIONS;
+MCOPT->nPRINT=DATA.ncdf_data.MCMCID.nPRINT;
+MCOPT->minstepsize=DATA.ncdf_data.MCMCID.minstepsize;
+MCOPT->mcmcid=DATA.ncdf_data.MCMCID.value;
+MCOPT->nADAPT=DATA.ncdf_data.MCMCID.nADAPT;
+
+if (DATA.ncdf_data.MCMCID.nSAMPLES==DEFAULT_INT_VAL){DATA.ncdf_data.MCMCID.nSAMPLES=2000;}
+
+
+
+if (MCOPT->nOUT==DEFAULT_INT_VAL){MCOPT->nOUT=10000;}
+if (MCOPT->nPRINT==DEFAULT_INT_VAL){MCOPT->nPRINT=1000;}
+if (MCOPT->minstepsize==DEFAULT_DOUBLE_VAL){MCOPT->minstepsize=1e-5;}
+if (MCOPT->mcmcid==DEFAULT_INT_VAL){MCOPT->mcmcid=119;}
+if (MCOPT->nADAPT==DEFAULT_INT_VAL){MCOPT->nADAPT=100;}
+
+//Derive nWRITE from fields
+MCOPT->nWRITE=MCOPT->nOUT/DATA.ncdf_data.MCMCID.nSAMPLES;
+
+
+printf("**********MCMCOPT SUMMARY*******\n");
+
+printf("Number of iterations = %i\n",MCOPT->nOUT);
+printf("Print status every %i iterations \n",MCOPT->nOUT);
+printf("Write parameters every %i iterations \n",MCOPT->nWRITE);
+printf("Number of samples requested (including burn-in) = %i\n",DATA.ncdf_data.MCMCID.nSAMPLES);
+printf("Burn in fraction = %2.2f\n",MCOPT->fADAPT);
+printf("MCMC ID= %i\n",MCOPT->mcmcid);
+
+
+printf("***********************************\n");
+
+
+
+
+MCOPT->randparini=0;
+MCOPT->returnpars=0;
+MCOPT->fixedpars=0;
+char stepfile[1000],startfile[1000];
+strcpy(stepfile,outfile); strcpy(startfile,outfile);
+/*STEP file comes with SUFFIX*/
+/*PARS file no longer does!*/
+/*strcat(outfile,"PARS");*/
+strcat(stepfile,"STEP");
+strcat(startfile,"START");
+/*directory*/
+strcpy(MCOPT->outfile,outfile);
+strcpy(MCOPT->stepfile,stepfile);
+strcpy(MCOPT->startfile,startfile);
+
+
+
+return 0;
+
+}
+
+
+
 int main(int argc,char *CLA[]){
 /*To correctly set-up the MHMCMC*/
 
 /*inputs*/
 /*1. met file in*/
 /*2. results file out*/
+    //Rest is now obsolete
+    
+    
+    
 /*3. number of MCMC solutions requested*/
 /*4. print-to-screen frequency*/
 /*5. write-to-file frequency*/
@@ -33,45 +106,10 @@ int OK;
 /*SETTING number of command line inputs as char in CLA[0]*/
 sprintf(CLA[0],"%d",argc-1);
 /*declaring CARDAMOM Binary Format (.cbf) file*/
-char CBFfile[1000];
-/*setting default filename*/
-/*this mode can be routinely used for testing*/
-if (argc-1<1){strcpy(CBFfile,"MCMC_SETUP/TEST_BINARY_DATASET.cbf");}
-/*otherwise first argument is filename*/
-else {strcpy(CBFfile,CLA[1]);}
-
-
-
-
-
-/*defining MCMC_OPTIONS structure*/
-MCMC_OPTIONS MCOPT;
-
-/*ID=1 adaptive MHMCMC*/
-/*ID=2 DE-MCMC*/
-/*Hard-coding number of chains for now (for DEMCMC)*/
-OK=READ_MCOPT(&MCOPT,CLA);
-if (MCOPT.mcmcid==119){MCOPT.nchains=1;}
-if (MCOPT.mcmcid==3){MCOPT.nchains=100;}
-else if (MCOPT.mcmcid==2){MCOPT.nchains=100;}
-
-
-okcheck(OK,"MDF options structure read successfully");
-
-
-/*defining the MCMC output structure*/
-MCMC_OUTPUT MCOUT;
-
-/*These lines guarantee high frequency random generator seeding*/
-if (argc-1<2){seedrandomnumber(CBFfile);}else{seedrandomnumber(CLA[2]);}
-
-/*Defining all MCMC components*/
-/*USER DEFINED: SETUP MCMC - templates provides*/
-/*NOTE  : READ_PARI_DATA function is stored in DALEC_CDEA_TEMPLATE/MCMC_SETUP/MCMC_MODULES.c*/
-/*TO DO : (a) read DATA first - note that this includes model specific fields, such as nomet, nopars, etc.
-        these are all loaded via the CARDAMOM_MODEL_LIBRARY(DATA) function*/
-/*      : (b) read PI based on DATA*/
-
+char CBFfile[1000], CBRfile[1000];
+//Setting CBF file to equal first argument
+strcpy(CBFfile,CLA[1]);
+strcpy(CBRfile,CLA[2]);
 
 
 
@@ -88,8 +126,44 @@ okcheck(OK,"Main data structure initialized");
 OK=CARDAMOM_READ_BINARY_DATA(CBFfile,&DATA);
 okcheck(OK,"Main data structure read successfully");
 
+//********************************************//
+
+
+
+/*defining MCMC_OPTIONS structure*/
+MCMC_OPTIONS MCOPT;
+
+/*ID=1 adaptive MHMCMC*/
+/*ID=2 DE-MCMC*/
+/*Hard-coding number of chains for now (for DEMCMC)*/
+
+OK=READ_MCOPT(&MCOPT,DATA, CBRfile);
+
+if (MCOPT.mcmcid==119){MCOPT.nchains=1;}
+if (MCOPT.mcmcid==3){MCOPT.nchains=100;}
+else if (MCOPT.mcmcid==2){MCOPT.nchains=100;}
+
+
+okcheck(OK,"MDF options structure read successfully");
+
+
 printf("CARDAMOM_MDF.c: CARDAMOM MODEL ID = %i\n",DATA.ncdf_data.ID);
 printf("CARDAMOM_MDF.c: MCMC ID = %i\n",MCOPT.mcmcid);
+
+/*defining the MCMC output structure*/
+MCMC_OUTPUT MCOUT;
+
+/*These lines guarantee high frequency random generator seeding*/
+if (argc-1<2){seedrandomnumber(CBFfile);}else{seedrandomnumber(CLA[2]);}
+
+/*Defining all MCMC components*/
+/*USER DEFINED: SETUP MCMC - templates provides*/
+/*NOTE  : READ_PARI_DATA function is stored in DALEC_CDEA_TEMPLATE/MCMC_SETUP/MCMC_MODULES.c*/
+/*TO DO : (a) read DATA first - note that this includes model specific fields, such as nomet, nopars, etc.
+        these are all loaded via the CARDAMOM_MODEL_LIBRARY(DATA) function*/
+/*      : (b) read PI based on DATA*/
+
+
 
 
 /***************PI STRUCTURE AND MLF*****************/
