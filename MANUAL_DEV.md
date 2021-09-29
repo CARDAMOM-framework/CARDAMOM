@@ -676,7 +676,29 @@ Burned area [m2/m2]\
 VPD [hPa]\
 Precip. [mm/day]\
 
-###MCMCID fields 
+### MCMCID fields 
+### The MCMCID value determines the MCMC algorith to be used in CARDAMOM. Currently supported options are:
+  - MCMCID = 119: Adaptive Metropolis-Hastings Markov Chain Monte Carlo (Haario et al., 2001)
+  - MCMCID = 3: Assymetric Burn-in Differential evolution MCMC (in prep).
+ - See below for attributes
+ 
+ 
+ #### nITERATIONS attribute (default = 10000)
+ - This determines the number of MCMC iterations (required by both algorithms).
+ - Default value is for testing purposes only. See individual MCMCID recommendations for full simulation configurations.
+ - Recommend choosing a value which is a multiple of "nSAMPLES" attribute
+ 
+ #### nPRINT attribute (default = 1000)
+-  This at determines the MCMC status printout frequency.
+ - An integer value N means the MCMC status will be printed every N iterations.
+ - A value of "0" will switch off status printouts.
+ 
+ #### nSAMPLES attribute (default = 2000)
+ -  This determines number of samples to be output after MCMC completion
+ - This number must be greater or equal to nITERATIONS
+ - These samples *include* the MCMC burn-in phase
+ - We recommend ensuring nITERATIONS is a multiple of nSAMPLES. 
+
  
  
 ### Make new CBF File <a name="cardamom-make-cbffile"/>
