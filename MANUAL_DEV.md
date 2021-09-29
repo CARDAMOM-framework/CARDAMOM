@@ -25,6 +25,10 @@
   * Saving output at runtime (Matlab)
 - [CARDAMOM state and flux conventions]
 
+- [CARDAMOM cost function](#cardamom-cost-function)
+  *Options
+
+
 - [The CBF File (CARDAMOM binary input file)](#cardamom-cbffile)
   * CBF Fields
   * [Make a new CBF file](#cardamom-make-cbffile)
@@ -263,9 +267,53 @@ See conventions above
 CARDAMOM_RUN_MODEL.m throws out first one, but only because it’s repeat of initial conditions (which are contained in parameter vector).
 
 
+## CARDAMOM cost function <a name="cardamom-cost-function"/>
+ 
+Observation timeseries summary:
+
+“Values”: 
+time-resolved observation values for any time-varying CARDAMOM observations; 
+nectdf dataset with one dimension = number of model timesteps. 
+Attributes described below
+“-9999” or “Nan” values accepted as fill values for missing observations. 
+Any other values are assumed to be “valid observations” 
+
+“Unc”:
+ time-resolved observation value uncertainty; 
+netcdf dataset (with one dimension = number of model timesteps). 
+No attributes. 
+If no “unc” values are provided, then “single_unc” value used to populate “unc”.
+If “unc” values are missing for any valid observations, “single_unc” value is used.
 
 
+“Opt_normalization” 
+Option 0: does nothing, same as -9999 (unless default values are hard-coded, see set of default values).
+Option 1: removes mean from both data and model values prior to model-data residual calculation; so far, only used for assimilation of GRACE data, but can be used for anything (e.g. NBE values, if mean NBE is inaccurate, for example). Units of “option 1” transformation are “unitless”, i.e. relative anomalies from the mean values are inter-comparable. 
 
+Option 2: divides both data and model by their respective mean values. Used for “linear assimilation” of SIF data. Units of “option 2” transformation are in native observation units”, i.e. relative anomalies to zero are inter-comparable, or, in other words the units of the model variable and observed data are irrelevant. 
+
+
+Attributes for “values”.
+
+
+ *Opt filter*
+ Description: provides different options for pre-aggregation of data prior to model-data difference calculation. For each option, only subset of fields are required, others will be ignored
+ 
+** Option 0**
+ - Description: "no filter" no operation on data & model prior to least squares model-data residual calculation.
+ - Requires either (a) time-resolved uncertainty ("unc" field), at the temporal resolution or (b) a single uncertainty value (“single_unc” field); see “unc” description for details.
+
+
+**Option 1**
+Description: “mean only” filter calculates mean model and data values at all valid observation timesteps; the mean model and data values are then used in the cost function
+Requires “single_unc”.
+
+** Option 2**
+Description: constrains annual means and seasonal anomalies (Quetin et al., 2020, Bloom et al., 2020)
+Requires “single_monthly_unc” and “single_annual_unc” values
+“single _unc” and/or “unc” are ignored.
+
+ 
 
 ## The CBF File (CARDAMOM binary input file)<a name="cardamom-cbffile"/>
 
