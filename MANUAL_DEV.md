@@ -29,9 +29,9 @@
   *Options
 
 
-- [The CBF File (CARDAMOM binary input file)](#cardamom-cbffile)
-  * CBF Fields
-  * [Make a new CBF file](#cardamom-make-cbffile)
+- [The ".cbf.nc" File (CARDAMOM netcdf input files)](#cardamom-cbffile)
+  * cbf.nc Fields
+  * [Make a new cbf.nc file](#cardamom-make-cbffile)
   
 - [CARDAMOM C developer guide](#cardamom-c-developer-guid)
   * [Intro tips]
@@ -315,32 +315,355 @@ Requires “single_monthly_unc” and “single_annual_unc” values
 
  
 
-## The CBF File (CARDAMOM binary input file)<a name="cardamom-cbffile"/>
+## The "cbf.nc" file (CARDAMOM binary input file)<a name="cardamom-cbffile"/>
 
-*Note: Binary cbf will soon transition to a netcdf format*\\
+*Note: Binary cbf has been replaced by the netcdf format*\\
 
 The CBF file contains information on the model's driving meterology (see Appendix: Standard Inputs) and the observations for constraining the model. In addition, the CBF file contains additional information on what model ID to run, uncertainties of observations, parameter priors and uncertainties, and which EDCs to have on. The driving meteorology is often taken from site level measurements or global reanalysis. See Appendix: Data used in CARDAMOM for datasets used priviously in CARDAMOM.
 
-### CBF Fields
-* OBSinfo
-* PARPRIORS
-* The order of these values are the same as those of the model parameter file
-* PARPRIORUNC
-* The order of these values are the same as those of the model parameter file
-* LAT
-* EDCDIAG
-* OBSUNC
-* MET
-* EDC
-* ID
-* nomet
-* RAW
-* Otherpriors, be careful to check constraints, this is being phased out.
-* noobs
-* OBS
-* OTHER_OBS
-* rc_random_search
-* nodays
+### .cbf.nc Fields
+ 
+ Example file provided in "DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc"
+ 
+Source:
+           DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc
+Format:
+           netcdf4_classic
+Dimensions:
+           time = 192
+Variables:
+    ID             
+           Size:       1x1
+           Dimensions: 
+           Datatype:   double
+    EDC            
+           Size:       1x1
+           Dimensions: 
+           Datatype:   double
+    LAT            
+           Size:       1x1
+           Dimensions: 
+           Datatype:   double
+    BURNED_AREA    
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue     = -9999
+                       reference_mean = 0
+                       info           = 'Burned area'
+                       units          = 'm2/m2'
+    CO2            
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue     = -9999
+                       reference_mean = 386.9943
+                       info           = 'Atmospheric CO2'
+                       units          = 'ppm'
+    DOY            
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue     = -9999
+                       reference_mean = 182.625
+                       info           = 'Day of year'
+                       units          = 'Days'
+    TOTAL_PREC     
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue     = -9999
+                       reference_mean = 1.3699
+                       info           = 'Total precipitation'
+                       units          = 'mm/day'
+    SNOWFALL       
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue     = -9999
+                       reference_mean = 0.77346
+                       info           = 'Snowfall'
+                       units          = 'mm/day'
+    SSRD           
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue     = -9999
+                       reference_mean = 18.7033
+                       info           = 'Global radiation'
+                       units          = 'MJ/m2/d'
+    T2M_MIN        
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue     = -9999
+                       reference_mean = -1.7618
+                       info           = 'Mean daily min. temperature'
+                       units          = 'deg C'
+    T2M_MAX        
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue     = -9999
+                       reference_mean = 8.9766
+                       info           = 'Mean daily max. temperature'
+                       units          = 'deg C'
+    time           
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue     = -9999
+                       reference_mean = 2922
+                       info           = 'Time since Jan 01/01/2000 00:00'
+                       units          = 'Days'
+    VPD            
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue     = -9999
+                       reference_mean = 8.4296
+                       info           = 'VPD'
+                       units          = 'hPA'
+    ABGB           
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue         = -9999
+                       opt_unc_type       = -9999
+                       opt_normalization  = -9999
+                       opt_filter         = -9999
+                       min_threshold      = -9999
+                       single_monthly_unc = -9999
+                       single_annual_unc  = -9999
+                       single_mean_unc    = -9999
+                       single_unc         = -9999
+                       structural_unc     = -9999
+    ABGBunc        
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue = -9999
+    CH4            
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue         = -9999
+                       opt_unc_type       = -9999
+                       opt_normalization  = -9999
+                       opt_filter         = -9999
+                       min_threshold      = -9999
+                       single_monthly_unc = -9999
+                       single_annual_unc  = -9999
+                       single_mean_unc    = -9999
+                       single_unc         = -9999
+                       structural_unc     = -9999
+    CH4unc         
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue = -9999
+    ET             
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue         = -9999
+                       opt_unc_type       = -9999
+                       opt_normalization  = -9999
+                       opt_filter         = -9999
+                       min_threshold      = -9999
+                       single_monthly_unc = -9999
+                       single_annual_unc  = -9999
+                       single_mean_unc    = -9999
+                       single_unc         = -9999
+                       structural_unc     = -9999
+    ETunc          
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue = -9999
+    EWT            
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue         = -9999
+                       opt_unc_type       = -9999
+                       opt_normalization  = -9999
+                       opt_filter         = -9999
+                       min_threshold      = -9999
+                       single_monthly_unc = -9999
+                       single_annual_unc  = -9999
+                       single_mean_unc    = -9999
+                       single_unc         = -9999
+                       structural_unc     = -9999
+    EWTunc         
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue = -9999
+    GPP            
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue         = -9999
+                       opt_unc_type       = -9999
+                       opt_normalization  = -9999
+                       opt_filter         = -9999
+                       min_threshold      = -9999
+                       single_monthly_unc = -9999
+                       single_annual_unc  = -9999
+                       single_mean_unc    = -9999
+                       single_unc         = -9999
+                       structural_unc     = -9999
+    GPPunc         
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue = -9999
+    LAI            
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue         = -9999
+                       opt_unc_type       = -9999
+                       opt_normalization  = -9999
+                       opt_filter         = -9999
+                       min_threshold      = -9999
+                       single_monthly_unc = -9999
+                       single_annual_unc  = -9999
+                       single_mean_unc    = -9999
+                       single_unc         = -9999
+                       structural_unc     = -9999
+    LAIunc         
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue = -9999
+    NBE            
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue         = -9999
+                       opt_unc_type       = -9999
+                       opt_normalization  = -9999
+                       opt_filter         = -9999
+                       min_threshold      = -9999
+                       single_monthly_unc = -9999
+                       single_annual_unc  = -9999
+                       single_mean_unc    = -9999
+                       single_unc         = -9999
+                       structural_unc     = -9999
+    NBEunc         
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue = -9999
+    SOM            
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue         = -9999
+                       opt_unc_type       = -9999
+                       opt_normalization  = -9999
+                       opt_filter         = -9999
+                       min_threshold      = -9999
+                       single_monthly_unc = -9999
+                       single_annual_unc  = -9999
+                       single_mean_unc    = -9999
+                       single_unc         = -9999
+                       structural_unc     = -9999
+    SOMunc         
+           Size:       192x1
+           Dimensions: time
+           Datatype:   double
+           Attributes:
+                       _FillValue = -9999
+    Mean_Biomass   
+           Size:       1x1
+           Dimensions: 
+           Datatype:   double
+           Attributes:
+                       _FillValue    = -9999
+                       unc           = -9999
+                       opt_unc_type  = -9999
+                       min_threshold = -9999
+    Mean_Fire      
+           Size:       1x1
+           Dimensions: 
+           Datatype:   double
+           Attributes:
+                       _FillValue    = -9999
+                       unc           = -9999
+                       opt_unc_type  = -9999
+                       min_threshold = -9999
+    Mean_GPP       
+           Size:       1x1
+           Dimensions: 
+           Datatype:   double
+           Attributes:
+                       _FillValue    = -9999
+                       unc           = -9999
+                       opt_unc_type  = -9999
+                       min_threshold = -9999
+    Mean_LAI       
+           Size:       1x1
+           Dimensions: 
+           Datatype:   double
+           Attributes:
+                       _FillValue    = -9999
+                       unc           = -9999
+                       opt_unc_type  = -9999
+                       min_threshold = -9999
+    PEQ_Cefficiency
+           Size:       1x1
+           Dimensions: 
+           Datatype:   double
+           Attributes:
+                       _FillValue    = -9999
+                       unc           = -9999
+                       opt_unc_type  = -9999
+                       min_threshold = -9999
+    PEQ_CUE        
+           Size:       1x1
+           Dimensions: 
+           Datatype:   double
+           Attributes:
+                       _FillValue    = -9999
+                       unc           = -9999
+                       opt_unc_type  = -9999
+                       min_threshold = -9999
+    MCMCID         
+           Size:       1x1
+           Dimensions: 
+           Datatype:   double
+           Attributes:
+                       nITERATIONS = 10000
+                       nSAMPLES    = 2000
+                       nPRINT      = 1000
 
 *Example Meteorological fields, see Appendix: Standard Inputs for variables and units*\
 Time [Days since Jan 01, 2001]\
@@ -353,6 +676,9 @@ Burned area [m2/m2]\
 VPD [hPa]\
 Precip. [mm/day]\
 
+###MCMCID fields 
+ 
+ 
 ### Make new CBF File <a name="cardamom-make-cbffile"/>
 
 #### Make a new CBF file (Matlab)
