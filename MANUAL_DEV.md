@@ -25,9 +25,13 @@
   * Saving output at runtime (Matlab)
 - [CARDAMOM state and flux conventions]
 
-- [The CBF File (CARDAMOM binary input file)](#cardamom-cbffile)
-  * CBF Fields
-  * [Make a new CBF file](#cardamom-make-cbffile)
+- [CARDAMOM cost function](#cardamom-cost-function)
+  *Options
+
+
+- [The ".cbf.nc" File (CARDAMOM netcdf input files)](#cardamom-cbffile)
+  * cbf.nc Fields
+  * [Make a new cbf.nc file](#cardamom-make-cbffile)
   
 - [CARDAMOM C developer guide](#cardamom-c-developer-guid)
   * [Intro tips]
@@ -263,36 +267,64 @@ See conventions above
 CARDAMOM_RUN_MODEL.m throws out first one, but only because it’s repeat of initial conditions (which are contained in parameter vector).
 
 
+## CARDAMOM cost function <a name="cardamom-cost-function"/>
+ 
+Observation timeseries summary:
+
+“Values”: 
+time-resolved observation values for any time-varying CARDAMOM observations; 
+nectdf dataset with one dimension = number of model timesteps. 
+Attributes described below
+“-9999” or “Nan” values accepted as fill values for missing observations. 
+Any other values are assumed to be “valid observations” 
+
+“Unc”:
+ time-resolved observation value uncertainty; 
+netcdf dataset (with one dimension = number of model timesteps). 
+No attributes. 
+If no “unc” values are provided, then “single_unc” value used to populate “unc”.
+If “unc” values are missing for any valid observations, “single_unc” value is used.
 
 
+“Opt_normalization” 
+Option 0: does nothing, same as -9999 (unless default values are hard-coded, see set of default values).
+Option 1: removes mean from both data and model values prior to model-data residual calculation; so far, only used for assimilation of GRACE data, but can be used for anything (e.g. NBE values, if mean NBE is inaccurate, for example). Units of “option 1” transformation are “unitless”, i.e. relative anomalies from the mean values are inter-comparable. 
+
+Option 2: divides both data and model by their respective mean values. Used for “linear assimilation” of SIF data. Units of “option 2” transformation are in native observation units”, i.e. relative anomalies to zero are inter-comparable, or, in other words the units of the model variable and observed data are irrelevant. 
 
 
-## The CBF File (CARDAMOM binary input file)<a name="cardamom-cbffile"/>
+Attributes for “values”.
 
-*Note: Binary cbf will soon transition to a netcdf format*\\
+
+ *Opt filter*
+ Description: provides different options for pre-aggregation of data prior to model-data difference calculation. For each option, only subset of fields are required, others will be ignored
+ 
+** Option 0**
+ - Description: "no filter" no operation on data & model prior to least squares model-data residual calculation.
+ - Requires either (a) time-resolved uncertainty ("unc" field), at the temporal resolution or (b) a single uncertainty value (“single_unc” field); see “unc” description for details.
+
+
+**Option 1**
+Description: “mean only” filter calculates mean model and data values at all valid observation timesteps; the mean model and data values are then used in the cost function
+Requires “single_unc”.
+
+** Option 2**
+Description: constrains annual means and seasonal anomalies (Quetin et al., 2020, Bloom et al., 2020)
+Requires “single_monthly_unc” and “single_annual_unc” values
+“single _unc” and/or “unc” are ignored.
+
+ 
+
+## The "cbf.nc" file (CARDAMOM binary input file)<a name="cardamom-cbffile"/>
+
+*Note: Binary cbf has been replaced by the netcdf format*\\
 
 The CBF file contains information on the model's driving meterology (see Appendix: Standard Inputs) and the observations for constraining the model. In addition, the CBF file contains additional information on what model ID to run, uncertainties of observations, parameter priors and uncertainties, and which EDCs to have on. The driving meteorology is often taken from site level measurements or global reanalysis. See Appendix: Data used in CARDAMOM for datasets used priviously in CARDAMOM.
 
-### CBF Fields
-* OBSinfo
-* PARPRIORS
-* The order of these values are the same as those of the model parameter file
-* PARPRIORUNC
-* The order of these values are the same as those of the model parameter file
-* LAT
-* EDCDIAG
-* OBSUNC
-* MET
-* EDC
-* ID
-* nomet
-* RAW
-* Otherpriors, be careful to check constraints, this is being phased out.
-* noobs
-* OBS
-* OTHER_OBS
-* rc_random_search
-* nodays
+### .cbf.nc Fields
+ 
+ Example file provided in "DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc"
+ 
 
 *Example Meteorological fields, see Appendix: Standard Inputs for variables and units*\
 Time [Days since Jan 01, 2001]\
@@ -305,6 +337,33 @@ Burned area [m2/m2]\
 VPD [hPa]\
 Precip. [mm/day]\
 
+### MCMCID fields 
+ - MCMCID is a .cbf.nc dataset (see "DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc")
+ - The MCMCID value determines the MCMC algorith to be used in CARDAMOM. Currently supported options are:
+  - MCMCID = 119: Adaptive Metropolis-Hastings Markov Chain Monte Carlo (Haario et al., 2001)
+  - MCMCID = 3: Assymetric Burn-in Differential evolution MCMC (in prep).
+ - See below for attributes
+ - Default MCMCID value is 119
+ 
+ 
+ #### nITERATIONS attribute (default = 10000)
+ - This determines the number of MCMC iterations (required by both algorithms).
+ - Default value is for testing purposes only. See individual MCMCID recommendations for full simulation configurations.
+ - Recommend choosing a value which is a multiple of "nSAMPLES" attribute
+ 
+ #### nPRINT attribute (default = 1000)
+-  This at determines the MCMC status printout frequency.
+ - An integer value N means the MCMC status will be printed every N iterations.
+ - A value of "0" will switch off status printouts.
+ 
+ #### nSAMPLES attribute (default = 2000)
+ -  This determines number of samples to be output after MCMC completion
+ - This number must be greater or equal to nITERATIONS
+ - These samples *include* the MCMC burn-in phase
+ - We recommend ensuring nITERATIONS is a multiple of nSAMPLES. 
+
+ 
+ 
 ### Make new CBF File <a name="cardamom-make-cbffile"/>
 
 #### Make a new CBF file (Matlab)

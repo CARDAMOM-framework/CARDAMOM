@@ -10,8 +10,10 @@
 #include "memory.h"
 #include <math.h>
 #include "CARDAMOM_NETCDF_DATA_STRUCTURE.c"
+//Data
 #include "../COST_FUNCTION/CARDAMOM_LIKELIHOOD_FUNCTION.c"
 #include "NETCDF_AUXILLIARY_FUNCTIONS.c"
+//Fusion
 
 
 #include <netcdf.h>
@@ -123,13 +125,11 @@ default_double_value(&DATA->CH4.single_unc,2);
 default_double_value(&DATA->CH4.min_threshold,10);//gC/m2
 
 // Default CH4 options
-
 default_int_value(&DATA->CH4.opt_unc_type,1);
 default_double_value(&DATA->CH4.single_unc,2);
 default_double_value(&DATA->CH4.min_threshold,1e-5);//mgCH4/m2/d
 
 //Default ET options
-
 default_int_value(&DATA->ET.opt_unc_type,1);
 default_double_value(&DATA->ET.single_unc,2);
 default_double_value(&DATA->ET.min_threshold,0.1);
@@ -231,7 +231,40 @@ printf("Done reading all other edc ");
     DATA->deltat=DATA->TIME_INDEX.values[1]-DATA->TIME_INDEX.values[0];
     DATA->meantemp=DATA->T2M_MIN.reference_mean*0.5 + DATA->T2M_MAX.reference_mean*0.5;
 
+   
 printf("Done reading all data");
+
+
+
+
+MCMCID_STRUCT MCMCID;
+
+// MCOPT->nOUT=DATA.ncdf_data.MCMCID.nOUT;
+// MCOPT->nPRINT=DATA.ncdf_data.MCMCID.nPRINT;
+// MCOPT->nWRITE=DATA.ncdf_data.MCMCID.nWRITE;
+// MCOPT->minstepsize=DATA.ncdf_data.MCMCID.minstepsize;
+// MCOPT->mcmcid=DATA.ncdf_data.MCMCID.value;
+// MCOPT->nADAPT=DATA.ncdf_data.MCMCID.nADAPT;
+
+
+
+MCMCID.value = ncdf_read_single_double_var(ncid, "MCMCID");
+MCMCID.nITERATIONS = ncdf_read_int_attr(ncid, "MCMCID","nITERATIONS");
+MCMCID.nPRINT = ncdf_read_int_attr(ncid, "MCMCID","nPRINT");
+MCMCID.nSAMPLES= ncdf_read_int_attr(ncid, "MCMCID","nSAMPLES");
+MCMCID.nADAPT= ncdf_read_int_attr(ncid, "MCMCID","nADAPT");
+MCMCID.minstepsize=ncdf_read_double_attr(ncid, "MCMCID","minstepsize");
+
+if (isnan(MCMCID.value)){MCMCID.value=DEFAULT_DOUBLE_VAL;}
+
+
+
+DATA->MCMCID=MCMCID;
+
+//
+
+printf("Done reading MCMC valuea and attributes");
+
         
 	return 0;
 }

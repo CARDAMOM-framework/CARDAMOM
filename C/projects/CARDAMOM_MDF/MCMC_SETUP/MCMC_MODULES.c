@@ -7,7 +7,16 @@
 #include "../../CARDAMOM_GENERAL/CARDAMOM_READ_BINARY_DATA.c"
 #include "PROJECT_FUN/FIND_EDC_INITIAL_VALUES.c"
 #include "../../../math_fun/declare_matrix.c"
+#include "../../CARDAMOM_GENERAL/NETCDF_AUXILLIARY_FUNCTIONS.c"
 /*DALEC_SYNTHETIC SETUP*/
+
+
+
+
+
+
+
+
 
 
 int READ_PARI_DATA(PARAMETER_INFO *PI, DATA *DATA,MCMC_OUTPUT *MCOUT,MCMC_OPTIONS *MCOPT, char *CLA[]){
@@ -44,42 +53,49 @@ return 0;
 }
 
 
-/*MCMC OPTIONS*/
-int READ_MCOPT(MCMC_OPTIONS *MCOPT, char *CLA[]){
-/*number of command line imputs*/
-int ncli=atoi(CLA[0]);
+// /*MCMC OPTIONS*/
+// int READ_MCOPT_OBS(MCMC_OPTIONS *MCOPT, char *CLA[]){
+// /*number of command line imputs*/
+// int ncli=atoi(CLA[0]);
+// 
+// /*defining MCMC_OPTIONS structure*/
+// MCOPT->APPEND=0;
+// MCOPT->nADAPT=100;
+// MCOPT->fADAPT=0.5;
+// /*command line (or default) values*/
+// if (ncli<3){MCOPT->nOUT=1000;}else{MCOPT->nOUT=atoi(CLA[3]);};
+// if (ncli<4){MCOPT->nPRINT=1000;}else{MCOPT->nPRINT=atoi(CLA[4]);};
+// if (ncli<5){MCOPT->nWRITE=10;}else{MCOPT->nWRITE=atoi(CLA[5]);};
+// if (ncli<6){MCOPT->minstepsize=1e-7;}else{MCOPT->minstepsize=atof(CLA[6]);};
+// if (ncli<7){MCOPT->mcmcid=1;}else{MCOPT->mcmcid=atof(CLA[7]);};
+// if (ncli<8){MCOPT->nADAPT=100;}else{MCOPT->nADAPT=atoi(CLA[8]);};
+// 
+// MCOPT->randparini=0;
+// MCOPT->returnpars=0;
+// MCOPT->fixedpars=0;
+// char outfile[200], stepfile[200],startfile[200];
+// if (ncli<2){strcpy(outfile,"MOUT_");strcpy(stepfile,"MOUT_");}
+// else{strcpy(outfile,CLA[2]); strcpy(stepfile,CLA[2]); strcpy(startfile,CLA[2]);}
+// /*STEP file comes with SUFFIX*/
+// /*PARS file no longer does!*/
+// /*strcat(outfile,"PARS");*/
+// strcat(stepfile,"STEP");
+// strcat(startfile,"START");
+// /*directory*/
+// strcpy(MCOPT->outfile,outfile);
+// strcpy(MCOPT->stepfile,stepfile);
+// strcpy(MCOPT->startfile,startfile);
+// 
+// return 0;
+// 
+// }
 
-/*defining MCMC_OPTIONS structure*/
-MCOPT->APPEND=0;
-MCOPT->nADAPT=100;
-MCOPT->fADAPT=0.5;
-/*command line (or default) values*/
-if (ncli<3){MCOPT->nOUT=1000;}else{MCOPT->nOUT=atoi(CLA[3]);};
-if (ncli<4){MCOPT->nPRINT=1000;}else{MCOPT->nPRINT=atoi(CLA[4]);};
-if (ncli<5){MCOPT->nWRITE=10;}else{MCOPT->nWRITE=atoi(CLA[5]);};
-if (ncli<6){MCOPT->minstepsize=1e-7;}else{MCOPT->minstepsize=atof(CLA[6]);};
-if (ncli<7){MCOPT->mcmcid=1;}else{MCOPT->mcmcid=atof(CLA[7]);};
-if (ncli<8){MCOPT->nADAPT=100;}else{MCOPT->nADAPT=atoi(CLA[8]);};
 
-MCOPT->randparini=0;
-MCOPT->returnpars=0;
-MCOPT->fixedpars=0;
-char outfile[200], stepfile[200],startfile[200];
-if (ncli<2){strcpy(outfile,"MOUT_");strcpy(stepfile,"MOUT_");}
-else{strcpy(outfile,CLA[2]); strcpy(stepfile,CLA[2]); strcpy(startfile,CLA[2]);}
-/*STEP file comes with SUFFIX*/
-/*PARS file no longer does!*/
-/*strcat(outfile,"PARS");*/
-strcat(stepfile,"STEP");
-strcat(startfile,"START");
-/*directory*/
-strcpy(MCOPT->outfile,outfile);
-strcpy(MCOPT->stepfile,stepfile);
-strcpy(MCOPT->startfile,startfile);
 
-return 0;
 
-}
+// #define DEFAULT_DOUBLE_VAL -9999.0
+// #define DEFAULT_INT_VAL -9999
+
 
 
 /*Enter all fields originally defined with MALLOC*/

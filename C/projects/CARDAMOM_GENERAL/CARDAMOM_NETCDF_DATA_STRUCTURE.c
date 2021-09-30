@@ -1,6 +1,8 @@
 #pragma once
 #include "CARDAMOM_MODULE_IDX.c"
 #include "../COST_FUNCTION/CARDAMOM_LIKELIHOOD_FUNCTION.c"
+//#include "../CARDAMOM_MDF/MCMC_SETUP/MCMC_MODULES.c"
+
 //This is a generic struct for a 1D var.
 typedef struct ONE_DIM_VAR_STRUCT{
 double* values; //NULL if not present
@@ -26,9 +28,33 @@ size_t dimensions[2]; //NOTE: This is NOT a length per row, but a length per dim
 }TWO_DIM_VAR_STRUCT;
 
 
+//This is only structure for datasets read in externally
+typedef struct MCMCID_STRUCT{
+double value;
+int nITERATIONS;
+int nPRINT;
+int nSAMPLES;
+int nADAPT;
+double minstepsize;
+}MCMCID_STRUCT;
+
 
 
 typedef struct NETCDF_DATA{
+    
+    
+ //MODEL
+int ID;    
+int EDC;
+int EDCDIAG;
+double EDC_EQF;
+
+    //DATA
+double LAT;
+double meantemp;
+int Ntimesteps;
+double deltat;
+
 TIMESERIES_DRIVER_STRUCT BURNED_AREA;
 TIMESERIES_DRIVER_STRUCT CO2;
 TIMESERIES_DRIVER_STRUCT DOY;
@@ -60,16 +86,12 @@ TIMESERIES_DRIVER_STRUCT TOTAL_PREC;
 TIMESERIES_DRIVER_STRUCT VPD;
 TIMESERIES_DRIVER_STRUCT SNOWFALL;
 //Summary variables
-int EDC;
-int EDCDIAG;
-double EDC_EQF;
-int ID;
-double LAT;
-//Derived variables (not prescribed)
-int Ntimesteps;
-double deltat;
-double meantemp;
 
+//Derived variables (not prescribed)
+//FUSION
+
+//MCMCID
+MCMCID_STRUCT MCMCID;
 
 
 }NETCDF_DATA;
