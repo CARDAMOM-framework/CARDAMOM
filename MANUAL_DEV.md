@@ -29,9 +29,9 @@
   *Options
 
 
-- [The CBF File (CARDAMOM binary input file)](#cardamom-cbffile)
-  * CBF Fields
-  * [Make a new CBF file](#cardamom-make-cbffile)
+- [The ".cbf.nc" File (CARDAMOM netcdf input files)](#cardamom-cbffile)
+  * cbf.nc Fields
+  * [Make a new cbf.nc file](#cardamom-make-cbffile)
   
 - [CARDAMOM C developer guide](#cardamom-c-developer-guid)
   * [Intro tips]
@@ -315,32 +315,16 @@ Requires “single_monthly_unc” and “single_annual_unc” values
 
  
 
-## The CBF File (CARDAMOM binary input file)<a name="cardamom-cbffile"/>
+## The "cbf.nc" file (CARDAMOM binary input file)<a name="cardamom-cbffile"/>
 
-*Note: Binary cbf will soon transition to a netcdf format*\\
+*Note: Binary cbf has been replaced by the netcdf format*\\
 
 The CBF file contains information on the model's driving meterology (see Appendix: Standard Inputs) and the observations for constraining the model. In addition, the CBF file contains additional information on what model ID to run, uncertainties of observations, parameter priors and uncertainties, and which EDCs to have on. The driving meteorology is often taken from site level measurements or global reanalysis. See Appendix: Data used in CARDAMOM for datasets used priviously in CARDAMOM.
 
-### CBF Fields
-* OBSinfo
-* PARPRIORS
-* The order of these values are the same as those of the model parameter file
-* PARPRIORUNC
-* The order of these values are the same as those of the model parameter file
-* LAT
-* EDCDIAG
-* OBSUNC
-* MET
-* EDC
-* ID
-* nomet
-* RAW
-* Otherpriors, be careful to check constraints, this is being phased out.
-* noobs
-* OBS
-* OTHER_OBS
-* rc_random_search
-* nodays
+### .cbf.nc Fields
+ 
+ Example file provided in "DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc"
+ 
 
 *Example Meteorological fields, see Appendix: Standard Inputs for variables and units*\
 Time [Days since Jan 01, 2001]\
@@ -353,6 +337,33 @@ Burned area [m2/m2]\
 VPD [hPa]\
 Precip. [mm/day]\
 
+### MCMCID fields 
+ - MCMCID is a .cbf.nc dataset (see "DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc")
+ - The MCMCID value determines the MCMC algorith to be used in CARDAMOM. Currently supported options are:
+  - MCMCID = 119: Adaptive Metropolis-Hastings Markov Chain Monte Carlo (Haario et al., 2001)
+  - MCMCID = 3: Assymetric Burn-in Differential evolution MCMC (in prep).
+ - See below for attributes
+ - Default MCMCID value is 119
+ 
+ 
+ #### nITERATIONS attribute (default = 10000)
+ - This determines the number of MCMC iterations (required by both algorithms).
+ - Default value is for testing purposes only. See individual MCMCID recommendations for full simulation configurations.
+ - Recommend choosing a value which is a multiple of "nSAMPLES" attribute
+ 
+ #### nPRINT attribute (default = 1000)
+-  This at determines the MCMC status printout frequency.
+ - An integer value N means the MCMC status will be printed every N iterations.
+ - A value of "0" will switch off status printouts.
+ 
+ #### nSAMPLES attribute (default = 2000)
+ -  This determines number of samples to be output after MCMC completion
+ - This number must be greater or equal to nITERATIONS
+ - These samples *include* the MCMC burn-in phase
+ - We recommend ensuring nITERATIONS is a multiple of nSAMPLES. 
+
+ 
+ 
 ### Make new CBF File <a name="cardamom-make-cbffile"/>
 
 #### Make a new CBF file (Matlab)
