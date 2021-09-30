@@ -46,21 +46,20 @@ nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
 CBF1100=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
 disp('Successfully read file using "CARDAMOM_READ_NC_CBF_FILE" ...')
 %************ set all fields to NAN*****
-CBF1100.EWT.values=CBF1100.EWT.values*NaN;
-CBF1100.ET.values=CBF1100.ET.values*NaN;
-CBF1100.GPP.values=CBF1100.GPP.values*NaN;
-CBF1100.NBE.values=CBF1100.NBE.values*NaN;
-CBF1100.LAI.values=CBF1100.LAI.values*NaN;
-CBF1100.ABGB.values=CBF1100.ABGB.values*NaN;
-CBF1100.Mean_Biomass.values=CBF1100.Mean_Biomass.values*NaN;
-CBF1100.Mean_Fire.values=CBF1100.Mean_Fire.values*NaN;
-CBF1100.Mean_LAI.values=CBF1100.Mean_LAI.values*NaN;
-CBF1100.Mean_GPP.values=CBF1100.Mean_GPP.values*NaN;
-CBF1100.EDC.values=0;
+CBF1100.EDC.values=1;
+CBF1100.MCMCID.nITERATIONS=1e6;
 %*********Try writing out
 nccbftestfile='DUMPFILES/MODEL_ID_1100_TEST_ONLY.cbf.nc';
 CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbftestfile);
 disp('Successfully wrote file using "CARDAMOM_WRITE_NC_CBF_FILE" ...')
+
+
+%Removing time-varying LAI
+CBF1100.LAI.values=NaN;
+%Adding mean LAI constraint
+CBF1100.Mean_LAI.values=3;
+CBF1100.Mean_LAI.unc=1.5;
+CBF1100.Mean_LAI.opt_unc_type=1;
 
 
 %first test is retrieving parameters. Skip only for partial testing
@@ -75,9 +74,27 @@ if retrievepars==1
 end
 
 
+%1005 test
 
-
-
+nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
+CBF1100=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
+CBF1100.EWT.values=CBF1100.EWT.values*NaN;
+CBF1100.ET.values=CBF1100.ET.values*NaN;
+CBF1100.GPP.values=CBF1100.GPP.values*NaN;
+CBF1100.NBE.values=CBF1100.NBE.values*NaN;
+CBF1100.LAI.values=CBF1100.LAI.values*NaN;
+CBF1100.ABGB.values=CBF1100.ABGB.values*NaN;
+CBF1100.Mean_Biomass.values=CBF1100.Mean_Biomass.values*NaN;
+CBF1100.Mean_Fire.values=CBF1100.Mean_Fire.values*NaN;
+CBF1100.Mean_LAI.values=CBF1100.Mean_LAI.values*NaN;
+CBF1100.Mean_GPP.values=CBF1100.Mean_GPP.values*NaN;
+CBF1100.EDC.values=0;
+CBF1005=CBF1100;
+CBF1005.ID.values=1005;
+CBF1005.MCMCID.nITERATIONS=1e6;
+CBR1005=CARDAMOM_RUN_MDF(CBF1005);
+        
+        
 
 
 

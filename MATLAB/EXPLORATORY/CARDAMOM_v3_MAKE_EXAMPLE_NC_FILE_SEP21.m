@@ -114,7 +114,7 @@ ncwriteatt(NC.fname,vname,'structural_unc',-9999);
 
 %Final step. Writing time-varying uncertainty field, populating with -9999 or NaNs
 nccreate(NC.fname,[vname,'unc'],'Dimensions',{'time',NC.nodays},'FillValue',NC.fill_value);
-ncwrite(NC.fname,[vname,'unc'],vvalues*-9999);
+ncwrite(NC.fname,[vname,'unc'],vvalues*0-9999);
 
 
 
