@@ -43,23 +43,61 @@
 
 %%%%%*********Test 1 ************ 
 nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
-CBF1100=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
+CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
 disp('Successfully read file using "CARDAMOM_READ_NC_CBF_FILE" ...')
 %************ set all fields to NAN*****
-CBF1100.EDC.values=1;
-CBF1100.MCMCID.nITERATIONS=1e6;
+CBF.ID.values=1005;
+        CBR=CARDAMOM_RUN_MDF(CBF);
+
+
+        
+        
+        %%%%%*********Test 2 ************ 
+nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
+CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
+disp('Successfully read file using "CARDAMOM_READ_NC_CBF_FILE" ...')
+%************ set all fields to NAN*****
+
+CBF.MCMCID.nITERATIONS=2e5;
+CBF.MCMCID.nSAMPLES=2;
+CBF.ID.values=1005;
+
+        CBR=CARDAMOM_RUN_MDF(CBF);
+%save CBRtest CBR
+        load CBRtest CBR
+        
+        cardamom_vvuq_nccbf_summary(CBF)
+        
+        plot(CBR.GPP); hold on; plot(CBF.GPP.values)
+        plot(CBR.NBE); hold on; plot(CBF.NBE.values)
+        plot(CBR.LAI); hold on; plot(CBF.LAI.values)
+
+%Test model-data fusion for each timeseries.
+
+
+
+        
+        
+
+
 %*********Try writing out
 nccbftestfile='DUMPFILES/MODEL_ID_1100_TEST_ONLY.cbf.nc';
-CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbftestfile);
+CARDAMOM_WRITE_NC_CBF_FILE(CBF,nccbftestfile);
 disp('Successfully wrote file using "CARDAMOM_WRITE_NC_CBF_FILE" ...')
 
 
+%Get single non-inf solution:
+
+
+
+
+
 %Removing time-varying LAI
-CBF1100.LAI.values=NaN;
+CBF.LAI.values=NaN;
 %Adding mean LAI constraint
-CBF1100.Mean_LAI.values=3;
-CBF1100.Mean_LAI.unc=1.5;
-CBF1100.Mean_LAI.opt_unc_type=1;
+CBF.Mean_LAI.values=3;
+CBF.Mean_LAI.unc=1.5;
+CBF.Mean_LAI.opt_unc_type=1;
 
 
 %first test is retrieving parameters. Skip only for partial testing
@@ -70,26 +108,26 @@ if retrievepars==1
 %     MCO.samplerate=1;
      cbrfilename1100='DUMPFILES/MODEL_ID_1100_EXAMPLE.cbr.nc';
     %CBR=CARDAMOM_RUN_MDF(CBF1100,[],cbrfilename1100);
-        CBR=CARDAMOM_RUN_MDF(CBF1100);
+        CBR=CARDAMOM_RUN_MDF(CBF);
 end
 
 
 %1005 test
 
 nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
-CBF1100=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
-CBF1100.EWT.values=CBF1100.EWT.values*NaN;
-CBF1100.ET.values=CBF1100.ET.values*NaN;
-CBF1100.GPP.values=CBF1100.GPP.values*NaN;
-CBF1100.NBE.values=CBF1100.NBE.values*NaN;
-CBF1100.LAI.values=CBF1100.LAI.values*NaN;
-CBF1100.ABGB.values=CBF1100.ABGB.values*NaN;
-CBF1100.Mean_Biomass.values=CBF1100.Mean_Biomass.values*NaN;
-CBF1100.Mean_Fire.values=CBF1100.Mean_Fire.values*NaN;
-CBF1100.Mean_LAI.values=CBF1100.Mean_LAI.values*NaN;
-CBF1100.Mean_GPP.values=CBF1100.Mean_GPP.values*NaN;
-CBF1100.EDC.values=0;
-CBF1005=CBF1100;
+CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
+CBF.EWT.values=CBF.EWT.values*NaN;
+CBF.ET.values=CBF.ET.values*NaN;
+CBF.GPP.values=CBF.GPP.values*NaN;
+CBF.NBE.values=CBF.NBE.values*NaN;
+CBF.LAI.values=CBF.LAI.values*NaN;
+CBF.ABGB.values=CBF.ABGB.values*NaN;
+CBF.Mean_Biomass.values=CBF.Mean_Biomass.values*NaN;
+CBF.Mean_Fire.values=CBF.Mean_Fire.values*NaN;
+CBF.Mean_LAI.values=CBF.Mean_LAI.values*NaN;
+CBF.Mean_GPP.values=CBF.Mean_GPP.values*NaN;
+CBF.EDC.values=0;
+CBF1005=CBF;
 CBF1005.ID.values=1005;
 CBF1005.MCMCID.nITERATIONS=1e6;
 CBR1005=CARDAMOM_RUN_MDF(CBF1005);
@@ -114,25 +152,25 @@ nccbftestfile='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY.cbf.nc';
 
 %testing matlab read-write functions
 
-CBF1100=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
+CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
 
-CBF1100.EWT.values=CBF1100.EWT.values*NaN;
-CBF1100.ABGB.values=CBF1100.ABGB.values*NaN;
-CBF1100.NBE.values=CBF1100.NBE.values*NaN;
-CBF1100.LAI.values=CBF1100.LAI.values*NaN;
-CBF1100.Mean_Biomass.values=CBF1100.Mean_Biomass.values*NaN;
-CBF1100.Mean_Fire.values=CBF1100.Mean_Fire.values*NaN;
-CBF1100.Mean_LAI.values=CBF1100.Mean_LAI.values*NaN;
-CBF1100.Mean_GPP.values=CBF1100.Mean_GPP.values*NaN;
-CBF1100.PARPRIORS.values=CBF1100.PARPRIORS.values*NaN;
-CBF1100.OTHERPRIORS.values=CBF1100.OTHERPRIORS.values*NaN;
-CBF1100.PARPRIORUNC.values=CBF1100.PARPRIORUNC.values*NaN;
-CBF1100.OTHERPRIORSUNC.values=CBF1100.OTHERPRIORSUNC.values*NaN;
-CBF1100.EDC.values=0;
+CBF.EWT.values=CBF.EWT.values*NaN;
+CBF.ABGB.values=CBF.ABGB.values*NaN;
+CBF.NBE.values=CBF.NBE.values*NaN;
+CBF.LAI.values=CBF.LAI.values*NaN;
+CBF.Mean_Biomass.values=CBF.Mean_Biomass.values*NaN;
+CBF.Mean_Fire.values=CBF.Mean_Fire.values*NaN;
+CBF.Mean_LAI.values=CBF.Mean_LAI.values*NaN;
+CBF.Mean_GPP.values=CBF.Mean_GPP.values*NaN;
+CBF.PARPRIORS.values=CBF.PARPRIORS.values*NaN;
+CBF.OTHERPRIORS.values=CBF.OTHERPRIORS.values*NaN;
+CBF.PARPRIORUNC.values=CBF.PARPRIORUNC.values*NaN;
+CBF.OTHERPRIORSUNC.values=CBF.OTHERPRIORSUNC.values*NaN;
+CBF.EDC.values=0;
 
 
 
-CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbftestfile);
+CARDAMOM_WRITE_NC_CBF_FILE(CBF,nccbftestfile);
 %CARDAMOM_RUN_MDF(nccbftestfile)
 CBF1100test=CARDAMOM_READ_NC_CBF_FILE(nccbftestfile);
  
@@ -155,9 +193,9 @@ updateCBROUTref=1;
  end
 
 
-f=fields(CBF1100);cbfioerror=0;
+f=fields(CBF);cbfioerror=0;
 for n=1:numel(f)
-    cbffielddif=nansum(CBF1100test.(f{n}).values- CBF1100.(f{n}).values);
+    cbffielddif=nansum(CBF1100test.(f{n}).values- CBF.(f{n}).values);
     if cbffielddif~=0;disp(sprintf('CBF.%s: Warning, non-zero dif',f{n}));cbfioerror=1;end
 end
 if cbfioerror==0; disp('CARDAMOM READ/WRITE NETCDF functions check out...');
@@ -300,10 +338,10 @@ cost_function_tests=0;
 if cost_function_tests==1;
 
 
-CBF1100=CARDAMOM_READ_BINARY_FILEFORMAT(nccbffilename1100);
-CBR=CARDAMOM_RUN_MODEL(CBF1100,cbrfilename1000);
+CBF=CARDAMOM_READ_BINARY_FILEFORMAT(nccbffilename1100);
+CBR=CARDAMOM_RUN_MODEL(CBF,cbrfilename1000);
 
-CBFcf=cardamomfun_clear_cbf_obs(CBF1100);clear CBF;
+CBFcf=cardamomfun_clear_cbf_obs(CBF);clear CBF;
 cfpars=CBR.PARS(end,:);
 CBRcf=CARDAMOM_RUN_MODEL(CBFcf,cfpars);clear CBR;
 

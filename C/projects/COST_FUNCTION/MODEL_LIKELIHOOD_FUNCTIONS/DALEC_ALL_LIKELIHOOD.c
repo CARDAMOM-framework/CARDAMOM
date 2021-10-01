@@ -6,6 +6,31 @@
 #include "../../CARDAMOM_MODELS/DALEC/DALEC_OBSERVATION_OPERATORS/DALEC_OBSERVATION_OPERATORS.c"
 
 
+
+struct PROBABILITY_INDICES{
+        //Time varying obs
+        int ABGB;
+        int CH4;
+        int ET;
+        int EWT;
+        int GPP;
+        int LAI;
+        int NBE;
+        int DOM;
+        //Mean OBS
+        int Mean_ABGB;
+        int Mean_FIR;
+        int Mean_GPP;
+        int Mean_LAI;
+        //Parameters
+        int PEQ_Cefficiency;
+        int PEQ_CUE;} PROBABILITY_INDICES={
+     0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+    10,11,12,13};
+
+
+
+
 /*Any likelihood functions used in multiple MLF functions are kept here!*/
 
 
@@ -67,21 +92,6 @@ double LIKELIHOOD_P(DATA DATA,double *PARS)
 {
 /*remember - LOG likelihood*/
 double p=0;
-        
-//         ,p_lma,pn;
-// int n;
-// 
-// /*looping through all priors for P*/
-// /*where no prior distribution is used, insert 9999*/
-// for (n=0;n<50;n++){if (DATA.parpriors[n]>-9999 & DATA.parpriorunc[n]!=-9999){
-// if (DATA.parpriorunc[n]>0){
-// /*log-normal if uncertainty value is positive*/
-// p=p-0.5*pow(log(PARS[n]/DATA.parpriors[n])/log(DATA.parpriorunc[n]),2);}
-// else {
-// /*log-normal if uncertainty value is positive*/
-// p=p-0.5*pow((PARS[n]-DATA.parpriors[n])/(DATA.parpriorunc[n]),2);}
-// 
-// }}
 
 return p;}
 
