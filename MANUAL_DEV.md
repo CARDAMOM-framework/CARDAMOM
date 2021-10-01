@@ -309,9 +309,23 @@ Description: “mean only” filter calculates mean model and data values at all
 Requires “single_unc”.
 
 ** Option 2**
-Description: constrains annual means and seasonal anomalies (Quetin et al., 2020, Bloom et al., 2020)
-Requires “single_monthly_unc” and “single_annual_unc” values
-“single _unc” and/or “unc” are ignored.
+Description: constrains annual means and monthly anomalies (Quetin et al., 2020, Bloom et al., 2020)
+- Requires “single_monthly_unc” and “single_annual_unc” values
+- “single _unc” and/or “unc” are ignored.
+- Only use with "opt_unc_type = 0"
+ 
+ 
+** opt_unc_type
+ - Determines uncertainty distribution characteristics, where
+ - Opt = 0 assumes gaussian uncertainty distribution in units of variable
+ - Opt = 1 assumes log-gaussian uncertainty distribution (a.k.a. "uncertainty factor")
+ - Opt = 2 assumes gaussian uncertainty distribution as fraction of variable value.
+   Currently can only be used with "Opt filter" = 0
+ 
+ 
+ //(0 = none, 1 = remove mean, 2 = divide by mean)
+
+ 
 
  
 
