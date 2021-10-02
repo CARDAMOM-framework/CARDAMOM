@@ -133,7 +133,7 @@ Fout[S.C_lit]=FT[F.resp_het_lit]+FT[F.lit2som]+FT[F.f_lit]+FT[F.fx_lit2som];
 Fin[S.C_som]=FT[F.wood2lit]+FT[F.lit2som]+FT[F.fx_woo2som]+FT[F.fx_lit2som];
 Fout[S.C_som]=FT[F.resp_het_som]+FT[F.f_som];
 /*PAH2O*/
-Fin[S.H2O_PAW]=TOTAL_PREC-TOTAL_SNOW+FT[F.melt];
+Fin[S.H2O_PAW]=TOTAL_PREC-FT[F.q_surf]-TOTAL_SNOW+FT[F.melt];
 Fout[S.H2O_PAW]=FT[F.et]+FT[F.q_paw]+FT[F.paw2puw];
 /*PUH2O*/
 Fin[S.H2O_PUW]=FT[F.paw2puw];
