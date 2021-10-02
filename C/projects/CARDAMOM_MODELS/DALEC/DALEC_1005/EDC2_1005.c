@@ -162,9 +162,13 @@ EDCD->EDCPROB[7-1+n]=-0.5*pow(log(Rs)/log(EQF),2);/*-0.5*pow((Rs-Rm)/etol,2);*/
 
 if (psw==1){
 printf("****\n");
+printf("DIAG = %i\n", DIAG);
+printf("EDC = %i\n",EDC);
+printf("EDCD->SWITCH[7-1+n] = %i\n",EDCD->SWITCH[7-1+n]);
 printf("Pool %i EDCDPROB = %f\n",n,EDCD->EDCPROB[7-1+n]);
-printf("Pool %i Fin = %f,Fout = %f\n",n+1,Fin[n],Fout[n]);
-printf("Pool %i Pstart = %f,Pend = %f\n, Pmeanjan=%f\n",n+1,Pstart,Pend,MPOOLSjan[n]);
+printf("Pool %i Fin = %f,Fout = %f\n",n,Fin[n],Fout[n]);
+printf("Pool %i Pstart = %f,Pend = %f\n, Pmeanjan=%f\n",n,Pstart,Pend,MPOOLSjan[n]);
+printf("fabs(log(Rs)) = %f\n",fabs(log(Rs)));
 printf("fabs(log(Fin/Fout)) = %f\n",fabs(log(Fin[n]/Fout[n])));
 printf("fabs(log(Pend/Pstart)) = %f\n",fabs(log(Pend/Pstart)));
 printf("Rm = %f\n",Rm);
@@ -223,7 +227,6 @@ free(MPOOLSjan);
 /*final check confirming EDC = 1 or 0*/
 int Num_EDC=100;
 if (DIAG==1){for (n=0;n<Num_EDC;n++){if (EDCD->PASSFAIL[n]==0){EDC=0;}}}
-
 
 
 

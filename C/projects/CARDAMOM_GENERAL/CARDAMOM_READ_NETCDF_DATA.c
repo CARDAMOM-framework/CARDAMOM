@@ -223,9 +223,16 @@ printf("Done reading all other edc ");
 // double deltat;
 
 	DATA->EDC=ncdf_read_single_double_var(ncid, "EDC");
-    DATA->EDCDIAG=ncdf_read_single_double_var(ncid, "EDCDIAG");
+ 
+    DATA->EDCDIAG=ncdf_read_single_int_var(ncid, "EDCDIAG");
+    default_int_value(&DATA->EDCDIAG,0);
+
+    
 	DATA->EDC_EQF=ncdf_read_single_double_var(ncid, "EDC_EQF");
-	DATA->ID=ncdf_read_single_double_var(ncid, "ID" );
+	    default_double_value(&DATA->EDC_EQF,2);
+
+    
+    DATA->ID=ncdf_read_single_double_var(ncid, "ID" );
 	DATA->LAT=ncdf_read_single_double_var(ncid, "LAT" );
     DATA->Ntimesteps=DATA->TIME_INDEX.length;
     DATA->deltat=DATA->TIME_INDEX.values[1]-DATA->TIME_INDEX.values[0];

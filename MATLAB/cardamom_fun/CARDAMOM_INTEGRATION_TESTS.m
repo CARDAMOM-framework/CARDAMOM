@@ -62,9 +62,17 @@ CBF.MCMCID.nITERATIONS=2e5;
 CBF.MCMCID.nSAMPLES=2;
 CBF.ID.values=1005;
 
+% CBF.MCMCID.nITERATIONS=2e3;
+% CBF.MCMCID.values=3;
+
         CBR=CARDAMOM_RUN_MDF(CBF);
-%save CBRtest CBR
-        load CBRtest CBR
+        
+        %save CBRtest2 CBR
+        
+        
+        load CBRtest2 CBR
+        %Rerun
+        %CBR2=CARDAMOM_RUN_MODEL(CBF,CBR.PARS);
         
         cardamom_vvuq_nccbf_summary(CBF)
         

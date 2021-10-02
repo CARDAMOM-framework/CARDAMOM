@@ -71,9 +71,7 @@ for (n=0;n<100;n++){EDCDmem.SWITCH[n]=1;}
 EDCDmem.EQF=DATA.ncdf_data.EDC_EQF;
 
 printf("EDCD->EQF* = %2.2f\n",EDCDmem.EQF);
-if (EDCDmem.EQF==DEFAULT_DOUBLE_VAL){EDCDmem.EQF=2;}
-//EDCDmem.EQF=2;
-printf("EDCD->EQF = %2.2f\n",EDCDmem.EQF);
+
 
 /*Default structure has all EDC=1, and 100 EDCs*/
 EDCDmem.nedc=100;
