@@ -47,6 +47,7 @@ CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
 disp('Successfully read file using "CARDAMOM_READ_NC_CBF_FILE" ...')
 %************ set all fields to NAN*****
 CBF.ID.values=1005;
+CBF.MCMCID.seed_number=1;
         CBR=CARDAMOM_RUN_MDF(CBF);
 
 
