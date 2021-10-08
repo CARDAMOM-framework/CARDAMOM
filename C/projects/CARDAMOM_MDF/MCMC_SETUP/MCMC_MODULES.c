@@ -144,6 +144,7 @@ return 0;}
 It is called from DALEC_ALL_TEMPLATE or equivalent higher level function*/
 int INITIALIZE_PI_STRUCT(PARAMETER_INFO * PI, DATA * DATA, MCMC_OPTIONS *MCO){
 oksofar("CARDAMOM_MDF/MCMC_SETUP/MCMC_MODULES.c INITIALIZE_PI_STRUCT():  initializing PI stucture");
+oksofar("oksofar1")
 /*contains 6 fields with min max log for par and par*/
 PI->parmin=calloc(DATA->nopars,sizeof(double));
 PI->parmax=calloc(DATA->nopars,sizeof(double));
@@ -152,12 +153,14 @@ PI->parfix=calloc(DATA->nopars,sizeof(double));
 PI->stepsize=calloc(DATA->nopars,sizeof(double));
 PI->transform=calloc(DATA->nopars,sizeof(int));
 /*MAtrix double-pointer allocation*/
-oksofar("CARDAMOM_MDF/MCMC_SETUP/MCMC_MODULES.c INITIALIZE_PI_STRUCT(): about to declare matrix");
+oksofar("oksofar2")
+//oksofar("CARDAMOM_MDF/MCMC_SETUP/MCMC_MODULES.c INITIALIZE_PI_STRUCT(): about to declare matrix");
 
 
 /*defining step size*/
-
+oksofar("oksofar3")
 int n,m;
+oksofar("defined int")
 PI->npars=DATA->nopars;
 for (n=0;n<DATA->nopars;n++){
 /*copying minimum and maximum parameter values from DATA*/
