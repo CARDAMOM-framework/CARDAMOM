@@ -17,23 +17,23 @@ MD1005=CARDAMOM_MODEL_LIBRARY(1005);
 
 LAI=0.1:0.1:10;
 %pars1100=repmat(exp(log(MD.parmin)*0.5+log(MD.parmax)*0.5),[numel(LAI),1]);
-pars1100=repmat(exp(log(MD1100.parmin)*0.5+log(MD1100.parmax)*0.5),[numel(LAI),1]);
+pars1100=repmat(exp(log(MD110.parmin)*0.5+log(MD.parmax)*0.5),[numel(LAI),1]);
 
 
 %ones(numel(LAI),54);
 
-g1=1;
-vcmax25=60;
+g1=2;
+vcmax25=50;
 tminmin=-20+273;
 tminmax=1+273;
 ga=2;
-%Tupp=315;
-Tupp=299;
-%Tdown=275;
-Tdown=263;
+Tupp=315;
+Tdown=275;
 C3_frac=1;
-CI=0.48;
-LSA=0.1;
+CI=0.5;
+LSA=0.5;
+
+
 
 pars1100(:,41)=g1;
 pars1100(:,42)=vcmax25;
@@ -50,6 +50,7 @@ pars1100(:,18)=pars1100(:,16).*LAI';
 
 
 CBR1100=CARDAMOM_RUN_MODEL(CBFsubset1100,pars1100);
+
 
 CBFsubset1005=CBFsubset;CBFsubset1005.ID.values=1005;
 
