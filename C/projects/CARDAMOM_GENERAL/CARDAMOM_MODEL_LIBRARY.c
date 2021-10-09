@@ -91,6 +91,7 @@ if (ID==0){printf("No model prescribed, expect error!");}
 //else if (ID==1004  ){MODEL_INFO_1004(DATA);}
 else if (ID==1005  ){MODEL_INFO_1005(DATA);}
 //else if (ID==1009  ){MODEL_INFO_1009(DATA);}
+else if (ID==1012  ){MODEL_INFO_1012(DATA);}
 else if (ID==1015  ){MODEL_INFO_1015(DATA);}
 else if (ID==1016  ){MODEL_INFO_1016(DATA);}
 else if (ID==1017  ){MODEL_INFO_1017(DATA);}

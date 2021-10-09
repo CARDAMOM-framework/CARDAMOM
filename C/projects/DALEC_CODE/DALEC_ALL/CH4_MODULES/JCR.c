@@ -5,8 +5,8 @@ Ma et al 2021 in prep
 
 //ch4pars[7]={pars[P.PAW_fs],pars[P.S_fv],pars[P.thetas_opt],pars[P.fwc],pars[P.r_ch4],pars[P.Q10ch4],pars[P.q10rhco2]};
 
-//in the brackets are input fed from main module
-double*  JCR(double const *ch4pars, double T2M_MIN, double T2M_MAX, double PAW)
+//in the brackets are input fed from main module, use pointer to a double if output is an array
+double *JCR(double const *ch4pars, double T2M_MIN, double T2M_MAX, double PAW)
 {
 	/* input array already defined above,
   define names for ch4pars elements to be convenient in the JCR module*/
