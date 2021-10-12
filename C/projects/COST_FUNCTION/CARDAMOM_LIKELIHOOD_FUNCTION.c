@@ -13,8 +13,8 @@ int opt_unc_type;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fra
 int opt_normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
 int opt_filter;//(0 = no filter, 1 = mean only, 2==annual mean & monthly anomaly, 3 = seasonal cycle & inter-annual anomalies). 
 double min_threshold;//Minimum value threshold: model and/or data will be rounded up to this value (default = -inf)
-double single_monthly_unc;//Fields to be used only with Filter=2. 
-double single_annual_unc;//Fields to be used only with Filter=2
+double single_monthly_unc;//Fields to be used only with Filter=2 AND opt_unc_type=0;
+double single_annual_unc;//Fields to be used only with Filter=2 AND opt_unc_type=0;
 double single_mean_unc;//Fields to be used only with Filter = 1;
 double single_unc;//
 double structural_unc;//this gets added to uncertainty in quadrature.

@@ -154,7 +154,17 @@ printf("CARDAMOM_MDF.c: MCMC ID = %i\n",MCOPT.mcmcid);
 MCMC_OUTPUT MCOUT;
 
 /*These lines guarantee high frequency random generator seeding*/
-if (argc-1<2){seedrandomnumber(CBFfile);}else{seedrandomnumber(CLA[2]);}
+
+//if (argc-1<2){seedrandomnumber(CBFfile);}else{seedrandomnumber(CLA[2]);}
+
+if (DATA.ncdf_data.MCMCID.seed_number==DEFAULT_INT_VAL){DATA.ncdf_data.MCMCID.seed_number=0;}
+srandom(DATA.ncdf_data.MCMCID.seed_number);
+printf("*******RANDOM NUMBER SEED**********\n");
+printf("Read in from DATA.ncdf_data.MCMCID.seed_number\n");
+printf("(Default value = 0)\n");
+printf("*******Seed = %i**********\n",DATA.ncdf_data.MCMCID.seed_number);
+printf("*******DONE WITH RANDOM NUMBER SEED**********\n");
+
 
 /*Defining all MCMC components*/
 /*USER DEFINED: SETUP MCMC - templates provides*/

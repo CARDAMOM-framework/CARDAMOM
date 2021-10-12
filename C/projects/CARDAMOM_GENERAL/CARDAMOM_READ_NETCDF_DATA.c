@@ -84,8 +84,7 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 // default_double_value(OBS.opt_min_threshold,log(0));//minus infinity
 // default_double_value(OBS.structural_unc,0);
 
-    
-    
+   
     
 
 //Read data
@@ -223,9 +222,16 @@ printf("Done reading all other edc ");
 // double deltat;
 
 	DATA->EDC=ncdf_read_single_double_var(ncid, "EDC");
-    DATA->EDCDIAG=ncdf_read_single_double_var(ncid, "EDCDIAG");
+ 
+    DATA->EDCDIAG=ncdf_read_single_int_var(ncid, "EDCDIAG");
+    default_int_value(&DATA->EDCDIAG,0);
+
+    
 	DATA->EDC_EQF=ncdf_read_single_double_var(ncid, "EDC_EQF");
-	DATA->ID=ncdf_read_single_double_var(ncid, "ID" );
+	    default_double_value(&DATA->EDC_EQF,2);
+
+    
+    DATA->ID=ncdf_read_single_double_var(ncid, "ID" );
 	DATA->LAT=ncdf_read_single_double_var(ncid, "LAT" );
     DATA->Ntimesteps=DATA->TIME_INDEX.length;
     DATA->deltat=DATA->TIME_INDEX.values[1]-DATA->TIME_INDEX.values[0];
@@ -254,6 +260,7 @@ MCMCID.nPRINT = ncdf_read_int_attr(ncid, "MCMCID","nPRINT");
 MCMCID.nSAMPLES= ncdf_read_int_attr(ncid, "MCMCID","nSAMPLES");
 MCMCID.nADAPT= ncdf_read_int_attr(ncid, "MCMCID","nADAPT");
 MCMCID.minstepsize=ncdf_read_double_attr(ncid, "MCMCID","minstepsize");
+MCMCID.seed_number=ncdf_read_double_attr(ncid, "MCMCID","seed_number");
 
 if (isnan(MCMCID.value)){MCMCID.value=DEFAULT_DOUBLE_VAL;}
 
