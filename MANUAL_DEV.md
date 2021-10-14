@@ -848,17 +848,15 @@ General issue: no information on correlation between samples between pixels. How
 Dilemma. Two pixels, one with mean GPP = 0.2 gC/m2/d (desert), and another with GPP = 10 gC/m2/d (rainforest). How to you aggregate IAVs (if at all)? 
 
 
-
-
 ***end of actual "rules"***
 
+ 
+ 
 
 
-
-"
-
-
-
+## Valgrind notes for mac to go
+ 
+ https://github.com/LouisBrunner/valgrind-macos
 
 
 
