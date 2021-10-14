@@ -140,7 +140,7 @@ MCMC_OPTIONS MCOPT;
 OK=READ_MCOPT(&MCOPT,DATA, CBRfile);
 
 if (MCOPT.mcmcid==119){MCOPT.nchains=1;}
-if (MCOPT.mcmcid==3){MCOPT.nchains=100;}
+if (MCOPT.mcmcid==3){MCOPT.nchains=200;}
 else if (MCOPT.mcmcid==2){MCOPT.nchains=100;}
 
 
