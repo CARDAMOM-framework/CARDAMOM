@@ -19,7 +19,7 @@
 /*MCMC OPTIONS*/
 int READ_MCOPT(MCMC_OPTIONS *MCOPT, DATA DATA, char *outfile){
 /*number of command line imputs*/
-    
+
 /*defining MCMC_OPTIONS structure*/
 MCOPT->APPEND=0;
 //MCOPT->nADAPT=100;
@@ -91,16 +91,16 @@ int main(int argc,char *CLA[]){
 /*1. met file in*/
 /*2. results file out*/
     //Rest is now obsolete
-    
-    
-    
+
+
+
 /*3. number of MCMC solutions requested*/
 /*4. print-to-screen frequency*/
 /*5. write-to-file frequency*/
 
 
 /*OK is output flag from all functions*/
-int OK;
+int OK; //Need to initilize!
 
 
 /*SETTING number of command line inputs as char in CLA[0]*/
@@ -241,8 +241,3 @@ MEMORY_CLEANUP(DATA,PI,MCOPT,MCOUT);
 return 0;
 
 }
-
-
-
-
-
