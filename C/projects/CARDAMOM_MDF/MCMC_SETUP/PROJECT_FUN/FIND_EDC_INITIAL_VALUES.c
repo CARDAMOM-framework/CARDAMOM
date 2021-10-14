@@ -51,7 +51,7 @@ MCOPT.mcmcid=3;
 MCOPT.nOUT=1000;/*was 2000*/
 MCOPT.nPRINT=1000;/*was 2000*/
 MCOPT.minstepsize=1e-5;
-MCOPT.nchains=100;
+MCOPT.nchains=200;
 MCOPT.fixedpars=0;
 MCOPT.fADAPT=0;
 //declaring best_pars

@@ -50,9 +50,9 @@ end
 
 %Fusion
 nccreate(NC.fname,'MCMCID'); 
-ncwrite(NC.fname,'MCMCID',119);
-ncwriteatt(NC.fname,'MCMCID','nITERATIONS',10000);
-ncwriteatt(NC.fname,'MCMCID','nSAMPLES',2000);
+ncwrite(NC.fname,'MCMCID',3);
+ncwriteatt(NC.fname,'MCMCID','nITERATIONS',1e6);
+ncwriteatt(NC.fname,'MCMCID','nSAMPLES',20);
 ncwriteatt(NC.fname,'MCMCID','nPRINT',1000);
 ncwriteatt(NC.fname,'MCMCID','seed_number',0);
 

@@ -48,7 +48,11 @@ disp('Successfully read file using "CARDAMOM_READ_NC_CBF_FILE" ...')
 %************ set all fields to NAN*****
 CBF.ID.values=1005;
 CBF.MCMCID.seed_number=1;
-        CBR=CARDAMOM_RUN_MDF(CBF);
+nccbffilename1005='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype_1005.cbf.nc';
+
+CARDAMOM_WRITE_NC_CBF_FILE(CBF,nccbffilename1005);
+
+        CBR=CARDAMOM_RUN_MDF(nccbffilename1005);
 
 
         
