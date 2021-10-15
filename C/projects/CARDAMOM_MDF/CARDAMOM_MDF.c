@@ -58,9 +58,6 @@ printf("MCMC ID= %i\n",MCOPT->mcmcid);
 
 printf("***********************************\n");
 
-
-
-
 MCOPT->randparini=0;
 MCOPT->returnpars=0;
 MCOPT->fixedpars=0;
@@ -99,8 +96,7 @@ int main(int argc,char *CLA[]){
 /*5. write-to-file frequency*/
 
 
-/*OK is output flag from all functions*/
-int OK;
+
 
 
 /*SETTING number of command line inputs as char in CLA[0]*/
@@ -119,12 +115,12 @@ strcpy(CBRfile,CLA[2]);
 DATA DATA;
 /*Initialize data structure - this function is found in CARDAMOM_READ_BINARY_DATA*/
 //OK=INITIALIZE_DATA_STRUCT(&DATA);
-okcheck(OK,"Main data structure initialized");
+//okcheck(OK,"Main data structure initialized");
 
 /*read cardamom data from file*/
 /*Function also performs and displays basic checks*/
-OK=CARDAMOM_READ_BINARY_DATA(CBFfile,&DATA);
-okcheck(OK,"Main data structure read successfully");
+CARDAMOM_READ_BINARY_DATA(CBFfile,&DATA);
+//okcheck(OK,"Main data structure read successfully");
 
 //********************************************//
 
@@ -137,14 +133,14 @@ MCMC_OPTIONS MCOPT;
 /*ID=2 DE-MCMC*/
 /*Hard-coding number of chains for now (for DEMCMC)*/
 
-OK=READ_MCOPT(&MCOPT,DATA, CBRfile);
+READ_MCOPT(&MCOPT,DATA, CBRfile);
 
 if (MCOPT.mcmcid==119){MCOPT.nchains=1;}
 if (MCOPT.mcmcid==3){MCOPT.nchains=200;}
 else if (MCOPT.mcmcid==2){MCOPT.nchains=100;}
 
 
-okcheck(OK,"MDF options structure read successfully");
+printf("MDF options structure read successfully");
 
 
 printf("CARDAMOM_MDF.c: CARDAMOM MODEL ID = %i\n",DATA.ncdf_data.ID);
@@ -186,7 +182,7 @@ PARAMETER_INFO PI;
 
 /*initializing structure with correct PI fields (as required by MHMCMC)*/
 /*Function is in MCMC_MODULES.c*/
-OK=INITIALIZE_PI_STRUCT(&PI,&DATA,&MCOPT);
+INITIALIZE_PI_STRUCT(&PI,&DATA,&MCOPT);
 printf("CARDAMOM_MDF.c: Parameter info structure initialized\n");
 
 
@@ -199,7 +195,7 @@ printf("CARDAMOM_MDF.c: Parameter info structure initialized\n");
 /*READ_PARI_DATA and READ_MCOPT should now be generic for all model types*/
 /*CONTAINS "FIND_EDC_INITIAL_VALUES(*DATA,PI);"*/
 DATA.edcsearch=1;
-OK=READ_PARI_DATA(&PI, &DATA, &MCOUT, &MCOPT,CLA);
+READ_PARI_DATA(&PI, &DATA, &MCOUT, &MCOPT,CLA);
 printf("CARDAMOM_MDF.c: READ_PARI_DATA successfully executed\n");
 
 
