@@ -25,7 +25,7 @@ double *POOLS=DATA.M_POOLS;
 double *FLUXES=DATA.M_FLUXES;
 int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 double *parmax=DATA.parmax;
-double meantemp=DATA.meantemp;
+double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
 
 /*EDCD=EDCD2;*/
 
