@@ -9,10 +9,7 @@ NETCDF_DATA ncdf_data;
 /****Diagnostics****/
 int edcsearch;
 
-/*DRIVERS*/
-double meanprec;
-double meantemp;
-double meanrad;
+
 /*OBS*/
 /*Number of non-empty points in observation timeseries*/
 /*Number of indices can be stored in single obs vector in the future*/

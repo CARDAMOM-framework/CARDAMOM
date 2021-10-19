@@ -25,8 +25,7 @@ double *POOLS=DATA.M_POOLS;
 double *FLUXES=DATA.M_FLUXES;
 int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 double *parmax=DATA.parmax;
-double meantemp=DATA.meantemp;
-
+double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
 /*EDCD=EDCD2;*/
 
 /* EDC2_SUMMARY
@@ -227,7 +226,6 @@ free(MPOOLSjan);
 /*final check confirming EDC = 1 or 0*/
 int Num_EDC=100;
 if (DIAG==1){for (n=0;n<Num_EDC;n++){if (EDCD->PASSFAIL[n]==0){EDC=0;}}}
-
 
 
 /*Returning EDC */
