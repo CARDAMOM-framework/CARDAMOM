@@ -15,8 +15,8 @@ int EDC1_1015(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 
 struct DALEC_1015_PARAMETERS P=DALEC_1015_PARAMETERS;
 
-double meantemp=DATA.meantemp;
-double meanrad=DATA.meanrad;
+double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
+double meanrad = DATA.ncdf_data.SSRD.reference_mean;
 
 
 /*This function was created on 7 Jan 2014*/
@@ -84,9 +84,6 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[16-1]==1)
 
 /*Add any generalisations derivable from EDC2 (post-run checks) here*/
 /*Note: these must be tested to ensure that DALEC2 run is NOT needed */
-
-
-EDCD->pEDC=log((double)EDC);
 
 
 

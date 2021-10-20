@@ -4,6 +4,25 @@ import argparse
 import sys
 import numpy
 
+def obs_attributes_checks(CBF):
+    obs_attribute_errors = 0 
+    for name, variable in CBF.variables.items():   
+        current_var = variable
+        current_name = name 
+        if hasattr(current_var, 'opt_unc_type'): 
+            opt_unc_type_value = getattr(current_var, 'opt_unc_type')
+            if hasattr(current_var, 'single_unc'):
+                single_unc_value=getattr(current_var, 'single_unc')
+                if opt_unc_type_value==1 and single_unc_value<1:
+                    print("Error: Variable " + current_name + " has invalid combination of opt_unc_type==1 and single_unc<1")
+                    obs_attribute_errors = obs_attribute_errors + 1
+            if opt_unc_type_value==1:
+                data=CBF.variables[current_name].getValue()
+                if numpy.any(data)<= 0:
+                    print("Error: Variable " + current_name + " has invalid combination of opt_unc_type==1 and values<=0")
+                    obs_attribute_errors = obs_attribute_errors + 1
+    return obs_attribute_errors
+
 def obs_checks(CBF):
     obs_flag = 0
     print("Checking CBF OBS GPP is positive or valid missing value")
@@ -184,10 +203,14 @@ def main():
     obs_flag=obs_checks(dataset)
     if obs_flag>0:
         print("OBS check failed with total " + str(obs_flag) + "warning(s)") 
+
+    obs_attribute_flag = obs_attributes_checks(dataset)
+    if obs_attribute_flag>0:
+        print("OBS attribute check failed with total " + str(obs_attribute_flag) + "error(s)") 
+    
 #next checks here
 # end main 
 
 if __name__ == "__main__":
     main()
-
 

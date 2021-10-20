@@ -56,6 +56,7 @@ PAR = SRAD/(Ephoton*NA)*1e6;
 
 PAR *= (1. - leaf_refl)*(1. - exp(-VegK*LAI*clumping));
 
+
 T_C = TEMP - t0C;
 
 Kc = 300.*exp(0.074*(T_C - 25.));

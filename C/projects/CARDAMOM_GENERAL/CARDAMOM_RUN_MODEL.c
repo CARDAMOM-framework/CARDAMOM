@@ -49,21 +49,24 @@ int n, nn;
 /*storing command line inputs as 2 files*/
 char metfile[FILE_NAME_MAX_LEN];strncpy(metfile,files[1],FILE_NAME_MAX_LEN-1);
 char parfile[FILE_NAME_MAX_LEN];strncpy(parfile,files[2],FILE_NAME_MAX_LEN-1);
+char ncdffile[FILE_NAME_MAX_LEN];
+if (argc-1>2){strncpy(ncdffile,files[3],FILE_NAME_MAX_LEN-1);}
+else{
+  int ncFilenameLen=strlen(parfile)-4;
+  if (ncFilenameLen > FILE_NAME_MAX_LEN-8){
+    printf("Error on input validation, parfile name too long to create netCDF file name from.\n");
+    exit(1);
+  }
+  strncpy(ncdffile, parfile,ncFilenameLen);
+  strncpy(ncdffile+ncFilenameLen, ".cbr.nc",ncFilenameLen+1); //Write an extra char so strncpy adds a null
+  str_inplace_replace(ncdffile, "//", '/'); //Remove double-slashes
+  str_inplace_replace(ncdffile, ":", '-'); //Remove colons
+}
+
 //Add manditory null terminators just in case we used every char
 metfile[FILE_NAME_MAX_LEN-1]=0;
 parfile[FILE_NAME_MAX_LEN-1]=0;
-
-int ncFilenameLen=strlen(parfile)-4;
-if (ncFilenameLen > FILE_NAME_MAX_LEN-8){
-  printf("Error on input validation, parfile name too long to create netCDF file name from.\n");
-  exit(1);
-}
-char ncdffile[FILE_NAME_MAX_LEN]; strncpy(ncdffile, parfile,ncFilenameLen);
-strncpy(ncdffile+ncFilenameLen, ".nc.cbr",ncFilenameLen+1); //Write an extra char so strncpy adds a null
-str_inplace_replace(ncdffile, "//", '/'); //Remove double-slashes
-str_inplace_replace(ncdffile, ":", '-'); //Remove colons
-
-
+ncdffile[FILE_NAME_MAX_LEN-1]=0;
 
 
 
@@ -74,7 +77,7 @@ DATA CARDADATA;
 *//*Initialize data structure*/
 int OK;
 printf("About to read data structure...");
-OK=INITIALIZE_DATA_STRUCT(&CARDADATA);
+//OK=INITIALIZE_DATA_STRUCT(&CARDADATA);
 okcheck(OK,"CHECK: DATA structure successfully initialized");
 printf("Done with initializing data structure!\n");
 /*step 1 - read the met file & initialize model fields here*/
@@ -120,40 +123,17 @@ double *pars=calloc(CARDADATA.nopars,sizeof(double));
 /*STEP 3 - declaring flux, pool and edc files*/
 /*note - these should be input at command line as variables*/
 
-char fluxfile[1000];
-char poolfile[1000];
-char edcdfile[1000];
-char probfile[1000];
 
-if (argc-1>2){
-strcpy(fluxfile,files[3]);
-strcpy(poolfile,files[4]);
-strcpy(edcdfile,files[5]);
-strcpy(probfile,files[6]);}
-else{
-strcpy(fluxfile,"tempcardafluxfile.bin");
-strcpy(poolfile,"tempcardapoolfile.bin");
-strcpy(edcdfile,"tempcardaedcdfile.bin");
-strcpy(probfile,"tempcardaprobfile.bin");}
-
-
-FILE *fdf=fopen(fluxfile,"wb");
-filediag(fdf,fluxfile);
-FILE *fdp=fopen(poolfile,"wb");
-filediag(fdp,poolfile);
-FILE *fde=fopen(edcdfile,"wb");
-filediag(fde,edcdfile);
-FILE *fdpro=fopen(probfile,"wb");
-filediag(fdpro,probfile);
 
 /*STEP 3.1 - create netCDF output file*/
 int ncid = 0; //This is the netcdf id num
 int ncretval = 0; //This is a reused variable for the return value of ncdf methods.
-ncretval = nc_create(ncdffile,NC_NOCLOBBER, &ncid );
+ncretval = nc_create(ncdffile,NC_CLOBBER, &ncid );
 if (ncretval != NC_NOERR){
   //If nc_create did anything but return no error, then fail
   ERR(ncretval);
 }
+int Ntimesteps=CARDADATA.ncdf_data.Ntimesteps;
 
 
 /*STEP 3.2 - create netCDF output dimensions*/
@@ -162,8 +142,8 @@ FAILONERROR(nc_def_dim(ncid,"Sample",N,&sampleDimID));
 FAILONERROR(nc_def_dim(ncid,"Pool",CARDADATA.nopools,&poolDimID ));
 FAILONERROR(nc_def_dim(ncid,"Flux",CARDADATA.nofluxes,&fluxDimID ));
 //NOTE: this was going to be the NC_UNLIMITED dimension, however due to concerns with support for netcdf classic, it is now fixed, and split into two
-FAILONERROR(nc_def_dim(ncid,"Time_pools",CARDADATA.nodays+1,&timePoolsDimID));
-FAILONERROR(nc_def_dim(ncid,"Time_fluxes",CARDADATA.nodays,&timeFluxesDimID));
+FAILONERROR(nc_def_dim(ncid,"Time_pools",Ntimesteps+1,&timePoolsDimID));
+FAILONERROR(nc_def_dim(ncid,"Time_fluxes",Ntimesteps,&timeFluxesDimID));
 //Hard coded to 1
 const size_t probIdxLen=1;
 FAILONERROR(nc_def_dim(ncid,"Probability Index",probIdxLen,&probIdxDimID ));
@@ -215,24 +195,17 @@ fread(pars,sizeof(double),CARDADATA.nopars,fd);
 /*step 4.2 - running MODEL_LIKELIHOOD_FUNCTION (e.g. DALEC_CDEA_MLF) with parameter vector from file*/
 /*This is stored in CARDADATA.MLF*/
 /*Setting EDCDIAG = 1 to ensure full model run*/
-CARDADATA.EDCDIAG=1;
+CARDADATA.ncdf_data.EDCDIAG=1;
 
 CARDADATA.MLF(CARDADATA,pars);
-/*step 4.3 - writing DALEC fluxes and pools to file*/
-fwrite(CARDADATA.M_FLUXES,sizeof(double),CARDADATA.nodays*CARDADATA.nofluxes,fdf);
-fwrite(CARDADATA.M_POOLS,sizeof(double),(CARDADATA.nodays+1)*CARDADATA.nopools,fdp);
-fwrite(CARDADATA.M_EDCD,sizeof(int),100,fde);
-fwrite(CARDADATA.M_P,sizeof(double),1,fdpro);
-/*writing as double - platform issues related to "int"*/
-/*double MEDCD[100];for (nn=0;nn<100;nn++){MEDCD[nn]=(double)CARDADATA.M_EDCD[nn];};fwrite(MEDCD,sizeof(double),100,fde);
-*/
+
 /*step 4.4 - writing DALEC fluxes and pools to netCDF file*/
 //(with N (Number of samples) being another dimension, applied to all vars)
 
 //Write fluxes
-FAILONERROR(nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,0,0}, (const size_t[]){1,CARDADATA.nodays,CARDADATA.nofluxes}, CARDADATA.M_FLUXES));
+FAILONERROR(nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps,CARDADATA.nofluxes}, CARDADATA.M_FLUXES));
 //Write pools
-FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,CARDADATA.nodays+1,CARDADATA.nopools}, CARDADATA.M_POOLS));
+FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps+1,CARDADATA.nopools}, CARDADATA.M_POOLS));
 //write edcd
 FAILONERROR(nc_put_vara_int(ncid,edcdVarID,(const size_t[]){n,0}, (const size_t[]){1,edcIdxLen}, CARDADATA.M_EDCD));
 //write M_P
@@ -250,10 +223,6 @@ FAILONERROR(nc_put_vara_double(ncid,parsVarId,(const size_t[]){n,0}, (const size
 
 
 /*STEP 5 - close all files*/
-fclose(fdf);
-fclose(fdp);
-fclose(fde);
-fclose(fdpro);
 fclose(fd);
 
 FAILONERROR(nc_close(ncid));

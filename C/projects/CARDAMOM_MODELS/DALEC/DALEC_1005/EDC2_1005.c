@@ -25,8 +25,7 @@ double *POOLS=DATA.M_POOLS;
 double *FLUXES=DATA.M_FLUXES;
 int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 double *parmax=DATA.parmax;
-double meantemp=DATA.meantemp;
-
+double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
 /*EDCD=EDCD2;*/
 
 /* EDC2_SUMMARY
@@ -43,7 +42,6 @@ int DIAG=EDCD->DIAG;/*1 or 0*/
 
 
 /*FIREBUCKET*/
-int nomet=MODEL->nomet;
 int nopools=MODEL->nopools;
 int nofluxes=MODEL->nofluxes;
 int done=0;
@@ -79,8 +77,7 @@ MPOOLSjan[n]=MPOOLSjan[n]+POOLS[nopools*(m*dint)+n]/(N_timesteps/dint+1);}}
 /*EDC no 6*/
 /*0.2*Cf < Cr < 5*Cf*/
 /*Cfoliar : Croot = 5:1 or 1:5*/
-/*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[6-1]==1)) & (MPOOLS[S.C_fol]>MPOOLS[S.C_roo]*5 | MPOOLS[S.C_fol]*5<MPOOLS[S.C_roo])){EDC=ipow(0,EDCD->SWITCH[6-1]);EDCD->PASSFAIL[6-1]=0; }*/
-EDCD->pEDC=EDCD->pEDC-0.5*pow(log(MPOOLS[S.C_fol]/MPOOLS[S.C_roo])/log(2),2);
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[6-1]==1)) & (MPOOLS[S.C_fol]>MPOOLS[S.C_roo]*5 | MPOOLS[S.C_fol]*5<MPOOLS[S.C_roo])){EDC=ipow(0,EDCD->SWITCH[6-1]);EDCD->PASSFAIL[6-1]=0; }
 
 
 /*equilibrium factor (in comparison to C_initial)*/
@@ -111,29 +108,29 @@ double etol=0.1;
 
 /*Inputs and outputs for each pool*/
 /*labile*/
-Fin[0]=FT[F.lab_prod];
-Fout[0]=FT[F.lab_release]+FT[F.f_lab]+FT[F.fx_lab2lit];
+Fin[S.C_lab]=FT[F.lab_prod];
+Fout[S.C_lab]=FT[F.lab_release]+FT[F.f_lab]+FT[F.fx_lab2lit];
 /*foliar*/
-Fin[1]=FT[F.fol_prod]+FT[F.lab_release];
-Fout[1]=FT[F.fol2lit]+FT[F.f_fol]+FT[F.fx_fol2lit];
+Fin[S.C_fol]=FT[F.fol_prod]+FT[F.lab_release];
+Fout[S.C_fol]=FT[F.fol2lit]+FT[F.f_fol]+FT[F.fx_fol2lit];
 /*root*/
-Fin[2]=FT[F.root_prod];
-Fout[2]=FT[F.root2lit]+FT[F.f_roo]+FT[F.fx_roo2lit];
+Fin[S.C_roo]=FT[F.root_prod];
+Fout[S.C_roo]=FT[F.root2lit]+FT[F.f_roo]+FT[F.fx_roo2lit];
 /*wood*/
-Fin[3]=FT[F.wood_prod];
-Fout[3]=FT[F.wood2lit]+FT[F.f_woo]+FT[F.fx_woo2som];
+Fin[S.C_woo]=FT[F.wood_prod];
+Fout[S.C_woo]=FT[F.wood2lit]+FT[F.f_woo]+FT[F.fx_woo2som];
 /*litter*/
-Fin[4]=FT[F.fol2lit]+FT[F.root2lit]+FT[F.fx_lab2lit]+FT[F.fx_fol2lit]+FT[F.fx_roo2lit];
-Fout[4]=FT[F.resp_het_lit]+FT[F.lit2som]+FT[F.f_lit]+FT[F.fx_lit2som];
+Fin[S.C_lit]=FT[F.fol2lit]+FT[F.root2lit]+FT[F.fx_lab2lit]+FT[F.fx_fol2lit]+FT[F.fx_roo2lit];
+Fout[S.C_lit]=FT[F.resp_het_lit]+FT[F.lit2som]+FT[F.f_lit]+FT[F.fx_lit2som];
 /*som*/
-Fin[5]=FT[F.wood2lit]+FT[F.lit2som]+FT[F.fx_woo2som]+FT[F.fx_lit2som];
-Fout[5]=FT[F.resp_het_som]+FT[F.f_som];
+Fin[S.C_som]=FT[F.wood2lit]+FT[F.lit2som]+FT[F.fx_woo2som]+FT[F.fx_lit2som];
+Fout[S.C_som]=FT[F.resp_het_som]+FT[F.f_som];
 /*PAH2O*/
-Fin[6]=TOTAL_PREC;
-Fout[6]=FT[F.et]+FT[F.q_paw]+FT[F.paw2puw];
+Fin[S.H2O_PAW]=TOTAL_PREC;
+Fout[S.H2O_PAW]=FT[F.et]+FT[F.q_paw]+FT[F.paw2puw];
 /*PUH2O*/
-Fin[7]=FT[F.paw2puw];
-Fout[7]=FT[F.q_puw];
+Fin[S.H2O_PUW]=FT[F.paw2puw];
+Fout[S.H2O_PUW]=FT[F.q_puw];
 
 
 /*Inlcuding H2O pool*/
@@ -153,10 +150,9 @@ Rm=Fin[n]/Fout[n];
 /*Theoretical starting input/output*/
 Rs=Rm*MPOOLSjan[n]/Pstart;
 
-// if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[7-1+n]==1))
-// & ((fabs(log(Rs))>log(EQF)) || (fabs(Rs-Rm)>etol)))
-// {EDC=ipow(0,EDCD->SWITCH[7-1+n]);EDCD->PASSFAIL[7-1+n]=0;}
-EDCD->pEDC=EDCD->pEDC-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[7-1+n]==1))
+& ((fabs(log(Rs))>log(EQF)) || (fabs(Rs-Rm)>etol)))
+{EDC=ipow(0,EDCD->SWITCH[7-1+n]);EDCD->PASSFAIL[7-1+n]=0;}
 
 
 /*storing EDCPROB: i.e. the log probability of each EDC based on a gaussian representation*/
@@ -165,9 +161,13 @@ EDCD->EDCPROB[7-1+n]=-0.5*pow(log(Rs)/log(EQF),2);/*-0.5*pow((Rs-Rm)/etol,2);*/
 
 if (psw==1){
 printf("****\n");
+printf("DIAG = %i\n", DIAG);
+printf("EDC = %i\n",EDC);
+printf("EDCD->SWITCH[7-1+n] = %i\n",EDCD->SWITCH[7-1+n]);
 printf("Pool %i EDCDPROB = %f\n",n,EDCD->EDCPROB[7-1+n]);
-printf("Pool %i Fin = %f,Fout = %f\n",n+1,Fin[n],Fout[n]);
-printf("Pool %i Pstart = %f,Pend = %f\n, Pmeanjan=%f\n",n+1,Pstart,Pend,MPOOLSjan[n]);
+printf("Pool %i Fin = %f,Fout = %f\n",n,Fin[n],Fout[n]);
+printf("Pool %i Pstart = %f,Pend = %f\n, Pmeanjan=%f\n",n,Pstart,Pend,MPOOLSjan[n]);
+printf("fabs(log(Rs)) = %f\n",fabs(log(Rs)));
 printf("fabs(log(Fin/Fout)) = %f\n",fabs(log(Fin[n]/Fout[n])));
 printf("fabs(log(Pend/Pstart)) = %f\n",fabs(log(Pend/Pstart)));
 printf("Rm = %f\n",Rm);
@@ -178,11 +178,10 @@ printf("****\n");}}
 
 
 /*Ensuring that wilting point is at or below the mean H2O pool EDC14*/
-// if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[15-1]==1)) & (pars[P.wilting]>MPOOLS[S.H2O_PAW])){EDC=ipow(0,EDCD->SWITCH[15-1]);EDCD->PASSFAIL[15-1]=0;}
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[15-1]==1)) & (pars[P.wilting]>MPOOLS[S.H2O_PAW])){EDC=ipow(0,EDCD->SWITCH[15-1]);EDCD->PASSFAIL[15-1]=0;}
 
 /***********************EDCs done here****************************/
 
-EDCD->pEDC=EDCD->pEDC+log(1/(1+exp(10*(pars[P.wilting]-MPOOLS[S.H2O_PAW])/MPOOLS[S.H2O_PAW])));
 
 
 /*Additional faults can be stored in positions 35-40*/
@@ -190,8 +189,7 @@ EDCD->pEDC=EDCD->pEDC+log(1/(1+exp(10*(pars[P.wilting]-MPOOLS[S.H2O_PAW])/MPOOLS
 /*PRIOR RANGES - ALL POOLS MUST CONFORM*/
 int pidx[]={P.i_labile,P.i_foliar,P.i_root,P.i_wood,P.i_lit,P.i_soil,P.i_PAW,P.i_PUW};
 
-// for (n=0;n<nopools-1;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;}}
-for (n=0;n<nopools;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;EDCD->pEDC=log(0);}}
+for (n=0;n<nopools-1;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;}}
 
 
 int PEDC;
@@ -201,8 +199,7 @@ if (EDC==1 || DIAG==1)
 while ((n<nopools) & (EDC==1 || DIAG==1))
 {nn=0;PEDC=1;while ((nn<N_timesteps+1) & (PEDC==1))
 {if ((POOLS[n+nn*nopools]<0) || isnan(POOLS[n+nn*nopools])==1)
-// {EDC=0;PEDC=0;EDCD->PASSFAIL[35+n]=0;}nn=nn+1;};
-{EDC=0;PEDC=0;EDCD->PASSFAIL[35+n]=0;EDCD->pEDC=log(0);}nn=nn+1;};	
+{EDC=0;PEDC=0;EDCD->PASSFAIL[35+n]=0;}nn=nn+1;};
 n=n+1;
 }
 }
@@ -229,8 +226,6 @@ free(MPOOLSjan);
 /*final check confirming EDC = 1 or 0*/
 int Num_EDC=100;
 if (DIAG==1){for (n=0;n<Num_EDC;n++){if (EDCD->PASSFAIL[n]==0){EDC=0;}}}
-
-
 
 
 /*Returning EDC */

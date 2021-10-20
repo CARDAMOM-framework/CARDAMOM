@@ -1,7 +1,7 @@
 
 #pragma once
-#include "../../../DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
-#include "../../../DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF_beta.c"
+#include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
+//#include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF_beta.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
@@ -11,14 +11,14 @@ int FIND_EDC_INITIAL_VALUES(DATA CARDADATA,PARAMETER_INFO *PI, MCMC_OPTIONS *MCO
 
 /*First: choosing the correct EDC MODEL LIKELIHOOD FUNCTION (EMLF)*/
 
+
+    
 double (*EMLF)(DATA, double *);
 double (*MLF)(DATA, double *);
 
-if (CARDADATA.assemble_model==1){
-EMLF=EDC_DALEC_MLF_beta;
-MLF=DALEC_MLF_beta;}
-else {EMLF=EDC_DALEC_MLF;
-MLF=DALEC_MLF;}
+
+EMLF=EDC_DALEC_MLF;
+MLF=DALEC_MLF;
 
 /*This MCMC is designed to find the best-fit DALEC parameters ONLY*/
 
@@ -29,6 +29,10 @@ MCMC_OUTPUT MCOUT;
 int PEDCC,nn;
 
 
+//option for mcmcid = 3
+int nstartchains=10;
+        
+        
 MCOPT.APPEND=0;
 MCOPT.nADAPT=10;/*was 20*/
 MCOPT.fADAPT=0.5;
@@ -51,7 +55,7 @@ MCOPT.mcmcid=3;
 MCOPT.nOUT=1000;/*was 2000*/
 MCOPT.nPRINT=1000;/*was 2000*/
 MCOPT.minstepsize=1e-5;
-MCOPT.nchains=100;
+MCOPT.nchains=200;
 MCOPT.fixedpars=0;
 MCOPT.fADAPT=0;
 //declaring best_pars
@@ -59,11 +63,10 @@ MCOUT.best_pars=calloc(MCOPT.nchains*PI->npars,sizeof(double));}
 
 
 int OK=INITIALIZE_MCMC_OUTPUT(*PI,&MCOUT,MCOPT);
-okcheck(OK,"CHECK: MCOUT structure initialized,");
+printf("C/projects/CARDAMOM_MDF/MCMC_SETUP/PROJECT_FUN/FIND_EDC_INITIAL_VALUES.c: MCOUT structure initialized\n");
 
 
 
-oksofar("starting MCMC for EDC inipars");
 int n;
 
 printf("PI->npars = %d\n",PI->npars);
@@ -74,7 +77,7 @@ printf("PI->npars = %d\n",PI->npars);
 for (n=0;n<PI->npars;n++){
 PI->stepsize[n]=0.02;
 /*PI->stepsize[n]=0.00005;*/
-PI->parini[n]=CARDADATA.parpriors[n];
+PI->parini[n]=DEFAULT_DOUBLE_VAL;
 PI->parfix[n]=0;
 /*
 if (PI->parini[n]!=-9999 & CARDADATA.edc_random_search<1) {PI->parfix[n]=1;}*/}
@@ -119,6 +122,7 @@ while (PEDC!=0){
 	/*insert prior value option here!*/
 
 	oksofar("Running short MCMC to find x_{EDC} = 1");
+    
 	if (MCOPT.mcmcid==119){MHMCMC_119(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
         if (MCOPT.mcmcid==2){DEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
         if (MCOPT.mcmcid==3){ADEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
@@ -147,7 +151,7 @@ while (PEDC!=0){
 	
 	if (MCOPT.mcmcid==2 && PEDCC>MCOPT.nchains){PEDC=0;}
 	//Guarantee that at least half of chains have non-zero starting probabilities
-	if (MCOPT.mcmcid==3){if (PEDCC>MCOPT.nchains/2){PEDC=0;}else{PEDC=-1;}}
+	if (MCOPT.mcmcid==3){if (PEDCC>nstartchains){PEDC=0;}else{PEDC=-1;}}
 	if (MCOPT.mcmcid==2 || MCOPT.mcmcid==3){MCOPT.randparini=0;}	
 	/*Hard coding*/
 	

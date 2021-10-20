@@ -3,7 +3,7 @@
 #include "DALEC_821.c"
 #include "EDC1_821.c"
 #include "EDC2_821.c"
-#include "../../../DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
+#include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
 
 
 int MODEL_INFO_821(DATA * DATA){

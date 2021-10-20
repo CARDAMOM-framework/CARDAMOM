@@ -17,9 +17,9 @@ int EDC1_821(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 /*17. Jmax/Vmax > .8 and Jmax/Vmax < 1.25*/
 
 
+double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
+double meanrad = DATA.ncdf_data.SSRD.reference_mean;
 
-double meantemp=DATA.meantemp;
-double meanrad=DATA.meanrad;
 
 /*This function was created on 7 Jan 2014*/
 /*Rules here are specified as in Bloom et al., 2014 paper*/

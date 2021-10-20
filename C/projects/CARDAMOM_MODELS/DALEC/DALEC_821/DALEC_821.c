@@ -11,10 +11,10 @@ int DALEC_821_MODCONFIG(DALEC * DALECmodel){
 
 
 
-DALECmodel.nopools=7;
-DALECmodel.nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel.nopars=36;
-DALECmodel.nofluxes=30;
+DALECmodel->nopools=7;
+DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
+DALECmodel->nopars=36;
+DALECmodel->nofluxes=30;
 
 
 //declaring observation operator structure, and filling with DALEC configurations
@@ -29,8 +29,8 @@ OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
 OBSOPE.SUPPORT_NBE_OBS=true;
 OBSOPE.SUPPORT_ABGB_OBS=true;
-OBSOPE.SUPPORT_SOM_OBS=true;
-OBSOPE.SUPPORT_GRACE_EWT_OBS=true;
+OBSOPE.SUPPORT_DOM_OBS=true;
+OBSOPE.SUPPORT_EWT_OBS=true;
 OBSOPE.SUPPORT_FIR_OBS=true;
 
 //Provide values required by each OBS operator
@@ -57,13 +57,13 @@ OBSOPE.ABGB_pools=ABGB_pools;
 OBSOPE.ABGB_n_pools=4;
 
 //SOM-specific variables
-static int SOM_pools[]={4,5}; 
-OBSOPE.SOM_pools=SOM_pools;
-OBSOPE.SOM_n_pools=2;
+static int DOM_pools[]={4,5}; 
+OBSOPE.DOM_pools=DOM_pools;
+OBSOPE.DOM_n_pools=2;
 //H2O-specific variables
-static int GRACE_EWT_h2o_pools[]={6};
-OBSOPE.GRACE_EWT_h2o_pools=GRACE_EWT_h2o_pools;
-OBSOPE.GRACE_EWT_n_h2o_pools=1;
+static int EWT_h2o_pools[]={6};
+OBSOPE.EWT_h2o_pools=EWT_h2o_pools;
+OBSOPE.EWT_n_h2o_pools=1;
 //Fire-specific variables
 OBSOPE.FIR_flux=16;
 
@@ -234,7 +234,7 @@ var_list[6]=0.5;//1.0//208.868; /* k */
 
 met_list[0]=T2M_MIN[n]; /*mintemp, deg C*/
 met_list[1]=T2M_MAX[n]; /*maxtemp, deg C*/
-met_list[2]==CO2[n]; /*co2 in ppm*/
+met_list[2]=CO2[n]; /*co2 in ppm*/
 met_list[3]=SSRD[n]; /*rad (swdown)*/
 met_list[4]=VPD[n]; /*VPD*/
 met_list[5]=DOY[n]; /*DOY*/
@@ -256,7 +256,7 @@ double WUE=FLUXES[f+0]/FLUXES[f+28];
 
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
-FLUXES[f+1]=exp(pars[9]*(0.5*(T2M_MIN[n]+T2M_MAX[n])-DATA.meantemp))*((PREC[n]/meanprec-1)*pars[30]+1);
+FLUXES[f+1]=exp(pars[9]*(0.5*(T2M_MIN[n]+T2M_MAX[n])-meantemp))*((PREC[n]/meanprec-1)*pars[30]+1);
 /*respiration auto*/
 FLUXES[f+2]=pars[1]*FLUXES[f+0];
 /*leaf production*/

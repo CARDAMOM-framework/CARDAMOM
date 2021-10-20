@@ -21,7 +21,7 @@ double *POOLS=DATA.M_POOLS;
 double *FLUXES=DATA.M_FLUXES;
 int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 double *parmax=DATA.parmax;
-double meantemp=DATA.meantemp;
+double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
 
 /*EDCD=EDCD2;*/
 
@@ -193,7 +193,7 @@ double minpool = .0001;
 if (EDC==1 || DIAG==1)
 {double min; int nn;n=0;
 while ((n<nopools) & (EDC==1 || DIAG==1))
-{nn=0;PEDC=1;while ((nn<nodays+1) & (PEDC==1))
+{nn=0;PEDC=1;while ((nn<N_timesteps+1) & (PEDC==1))
 {if ((POOLS[n+nn*nopools]<minpool) || isnan(POOLS[n+nn*nopools])==1)
 {EDC=0;PEDC=0;EDCD->PASSFAIL[35+n]=0;}nn=nn+1;};
 n=n+1;
@@ -214,7 +214,7 @@ if (EDC==1 || DIAG==1){
 	while ((EDC==1 || DIAG==1)){
 		nn=0;
 		PEDC=1;
-		while ((nn<nodays+1) & (PEDC==1)){
+		while ((nn<N_timesteps+1) & (PEDC==1)){
 			/*printf("GPP = %2.2f\n",DATA.M_GPP[nn]);*//*Don't do this too many print outs*/
 			if ((DATA.M_GPP[nn]<minflux) || isnan(DATA.M_GPP[nn])==1){
 				EDC=0;PEDC=0;EDCD->PASSFAIL[36+n]=0;}
