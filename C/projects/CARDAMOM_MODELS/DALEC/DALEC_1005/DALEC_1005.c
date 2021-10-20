@@ -132,6 +132,7 @@ OBSOPE.SUPPORT_FIR_OBS=true;
 
 OBSOPE.SUPPORT_CUE_OBS=true;
 OBSOPE.SUPPORT_Cefficiency_OBS=true;
+OBSOPE.SUPPORT_iniSOM_OBS=true;
 
 
 
@@ -185,6 +186,7 @@ OBSOPE.FIR_flux=F.f_total;
 //CUE parameters
 OBSOPE.CUE_PARAM=P.f_auto;
 OBSOPE.Cefficiency_PARAM=P.canopy_eff;
+OBSOPE.iniSOM_PARAM=P.i_soil;
 
 
 

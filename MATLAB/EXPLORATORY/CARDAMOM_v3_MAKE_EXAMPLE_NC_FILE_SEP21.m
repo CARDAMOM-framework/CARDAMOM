@@ -47,6 +47,7 @@ end
     
     create_and_write_obs_single_variable(NC,'PEQ_Cefficiency',-9999);
     create_and_write_obs_single_variable(NC,'PEQ_CUE',-9999);
+    create_and_write_obs_single_variable(NC,'PEQ_iniSOM',-9999);
 
 %Fusion
 nccreate(NC.fname,'MCMCID'); 

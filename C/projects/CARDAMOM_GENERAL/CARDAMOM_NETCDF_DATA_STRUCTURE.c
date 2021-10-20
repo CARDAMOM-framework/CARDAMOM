@@ -76,6 +76,7 @@ SINGLE_OBS_STRUCT Mean_LAI;
 //Parameters and emergent quantities
 SINGLE_OBS_STRUCT PEQ_Cefficiency;
 SINGLE_OBS_STRUCT PEQ_CUE;
+SINGLE_OBS_STRUCT PEQ_iniSOM;
 
 
 //Drivers

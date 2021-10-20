@@ -43,6 +43,10 @@ bool SUPPORT_CUE_OBS;
 int CUE_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
         
+bool SUPPORT_iniSOM_OBS;
+int iniSOM_PARAM;//This is assuming it's a single parameter
+//Can add more parameters OR options
+
 
 }OBSOPE;
 
@@ -62,6 +66,7 @@ OBSOPE->SUPPORT_FIR_OBS=false;
 
 OBSOPE->SUPPORT_Cefficiency_OBS=false;
 OBSOPE->SUPPORT_CUE_OBS=false;
+OBSOPE->SUPPORT_iniSOM_OBS=false;
 
 
 
@@ -288,6 +293,14 @@ return 0;
 
 }
 
+int DALEC_OBSOPE_iniSOM(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_iniSOM;
+if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_iniSOM=D->M_PARS[O->iniSOM_PARAM];}
+return 0;
+
+}
+
+
 
 ///Full observation operator
 int DALEC_OBSOPE(DATA * D, OBSOPE * O){
@@ -306,9 +319,10 @@ if (O->SUPPORT_FIR_OBS){DALEC_OBSOPE_FIR(D, O);}
 
 if (O->SUPPORT_Cefficiency_OBS){DALEC_OBSOPE_Cefficiency(D, O);}
 if (O->SUPPORT_CUE_OBS){DALEC_OBSOPE_CUE(D, O);}
+if (O->SUPPORT_iniSOM_OBS){DALEC_OBSOPE_iniSOM(D, O);}
 
 
-return 0;}
+return 0;}  
 
 
 

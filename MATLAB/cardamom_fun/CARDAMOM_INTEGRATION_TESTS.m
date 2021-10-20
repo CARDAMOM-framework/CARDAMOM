@@ -38,7 +38,7 @@
 
 
 
-
+disp('DEMO files are created using CARDAMOM_v3_MAKE_EXAMPLE_NC_FILE_SEP21.m')
 
 
 %%%%%*********Test 1 ************ 
