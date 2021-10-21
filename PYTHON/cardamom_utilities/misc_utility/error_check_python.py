@@ -23,103 +23,43 @@ def obs_attributes_checks(CBF):
                     obs_attribute_errors = obs_attribute_errors + 1
     return obs_attribute_errors
 
+def check_variable(CBF,var):
+    if var in CBF.variables:
+        print("Checking CBF OBS {} is positive or valid missing value".format(var))
+        temp = CBF[var][:]
+        subset_temp = temp[temp != -9999]
+        result_temp = any(subset_temp <=0)
+        if (result_temp is True):
+            warnings.warn('CBF OBS {} is negative, file will make CARDAMOM crash'.format(var))
+            return 1
+        else: 
+            print('OK\n')
+            return 0
+    else:
+        print('No variable "{}" in CBF file\n'.format(var))
+        return 0
+
+def check_mean_variable(CBF,var):
+    if var in CBF.variables:
+        print("Checking CBF OTHER OBS {} is positive or valid missing value".format(var))
+        temp = CBF[var][:]
+        result_temp =  (temp != -9999 and temp <=0)
+        if (result_temp is True):
+            warnings.warn('CBF OTHER OBS {} is negative, file will make CARDAMOM crash'.format(var))
+            return 1
+        else: 
+            print('OK\n')
+            return 0
+    else:
+        print('No variable "{}" in CBF file\n'.format(var))
+        return 0
+
 def obs_checks(CBF):
     obs_flag = 0
-    print("Checking CBF OBS GPP is positive or valid missing value")
-    temp = CBF['GPP'][:]
-    subset_temp = temp[temp != -9999]
-    result_temp = any(subset_temp <=0)
-    if (result_temp is True):
-        warnings.warn('CBF OBS GPP is negative, file will make CARDAMOM crash')
-        obs_flag = obs_flag + 1
-    else: 
-        print('OK\n')
-
-    print("Checking CBF OBS LAI is positive or valid missing value")
-    temp = CBF['LAI'][:]
-    subset_temp = temp[temp != -9999]
-    result_temp = any(subset_temp <=0)
-    if (result_temp is True):
-        warnings.warn('CBF OBS LAI is negative, file will make CARDAMOM crash')
-        obs_flag = obs_flag + 1
-    else: 
-        print('OK\n')
-        
-    print("Checking CBF OBS ABGB is positive or valid missing value")
-    temp = CBF['ABGB'][:]
-    subset_temp = temp[temp != -9999]
-    result_temp = any(subset_temp <=0)
-    if (result_temp is True):
-        warnings.warn('CBF OBS ABGB is negative, file will make CARDAMOM crash')
-        obs_flag = obs_flag + 1
-    else: 
-        print('OK\n')
-
-    print("Checking CBF OBS ET is positive or valid missing value")
-    temp = CBF['ET'][:]
-    subset_temp = temp[temp != -9999]
-    result_temp = any(subset_temp <=0)
-    if (result_temp is True):
-        warnings.warn('CBF OBS ET is negative, file will make CARDAMOM crash')
-        obs_flag = obs_flag + 1
-    else: 
-        print('OK\n')
-        
-    print("Checking CBF OBS SOM is positive or valid missing value")
-    temp = CBF['SOM'][:]
-    subset_temp = temp[temp != -9999]
-    result_temp = any(subset_temp <=0)
-    if (result_temp is True):
-        warnings.warn('CBF OBS SOM is negative, file will make CARDAMOM crash')
-        obs_flag = obs_flag + 1
-    else: 
-        print('OK\n')
-
-    print("Checking CBF OBS CH4 is positive or valid missing value")
-    temp = CBF['CH4'][:]
-    subset_temp = temp[temp != -9999]
-    result_temp = any(subset_temp <=0)
-    if (result_temp is True):
-        warnings.warn('CBF OBS CH4 is negative, file will make CARDAMOM crash')
-        obs_flag = obs_flag + 1
-    else: 
-        print('OK\n')
-
-    print("Checking CBF OTHER OBS MBiomass is positive or valid missing value")
-    temp = CBF['Mean_Biomass'][:]
-    result_temp =  (temp != -9999 and temp <=0)
-    if (result_temp is True):
-        warnings.warn('CBF OTHER_OBS MBiomass is negative, file will make CARDAMOM crash')
-        obs_flag = obs_flag + 1
-    else: 
-        print('OK\n')
-    
-    print("Checking CBF OTHER OBS MFire is positive or valid missing value")
-    temp = CBF['Mean_Fire'][:]
-    result_temp =  (temp != -9999 and temp <=0)
-    if (result_temp is True):
-        warnings.warn('CBF OTHER_OBS MFire is negative, file will make CARDAMOM crash')
-        obs_flag = obs_flag + 1
-    else: 
-        print('OK\n')
-
-    print("Checking CBF OTHER OBS MLAI is positive or valid missing value")
-    temp = CBF['Mean_LAI'][:]
-    result_temp =  (temp != -9999 and temp <=0)
-    if (result_temp is True):
-        warnings.warn('CBF OTHER_OBS MLAI is negative, file will make CARDAMOM crash')
-        obs_flag = obs_flag + 1
-    else: 
-        print('OK\n')
-      
-    print("Checking CBF OTHER OBS MGPP is positive or valid missing value")
-    temp = CBF['Mean_GPP'][:]
-    result_temp =  (temp != -9999 and temp <=0)
-    if (result_temp is True):
-        warnings.warn('CBF OTHER_OBS MGPP is negative, file will make CARDAMOM crash')
-        obs_flag = obs_flag + 1
-    else: 
-        print('OK\n')
+    for var in ["GPP","LAI","ABGB","ET","SOM","CH4"]:
+        obs_flag += check_variable(CBF,var)
+    for var in ["Mean_Biomass","Mean_Fire","Mean_LAI","Mean_GPP"]:
+        obs_flag += check_mean_variable(CBF,var)
     return obs_flag
 
 def met_checks(CBF):
