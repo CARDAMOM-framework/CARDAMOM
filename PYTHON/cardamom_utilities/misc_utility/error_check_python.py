@@ -17,7 +17,7 @@ def obs_attributes_checks(CBF):
                     print("Error: Variable " + current_name + " has invalid combination of opt_unc_type==1 and single_unc<1")
                     obs_attribute_errors = obs_attribute_errors + 1
             if opt_unc_type_value==1:
-                data=CBF.variables[current_name].getValue()
+                data=CBF.variables[current_name][:]
                 if numpy.any(data)<= 0:
                     print("Error: Variable " + current_name + " has invalid combination of opt_unc_type==1 and values<=0")
                     obs_attribute_errors = obs_attribute_errors + 1
