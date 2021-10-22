@@ -56,10 +56,6 @@ CARDADATA->parmax[P.t_soil]=0.001;
 CARDADATA->parmin[P.temp_factor]=0.018;
 CARDADATA->parmax[P.temp_factor]=0.08;
 
-/*Canopy Efficiency*/
-CARDADATA->parmin[P.canopy_eff]=5;
-CARDADATA->parmax[P.canopy_eff]=50;
-
 /*Bday*/
 CARDADATA->parmin[P.Bday]=365.25;
 CARDADATA->parmax[P.Bday]=365.25*4;
@@ -223,6 +219,22 @@ CARDADATA->parmax[P.clumping]=1.0;
 /*Leaf single scattering albedo*/
 CARDADATA->parmin[P.leaf_refl]=1e-8;
 CARDADATA->parmax[P.leaf_refl]=1.0;
+
+/*iSWE: initial for state variable SWE snow water equivalent*/
+CARDADATA->parmin[P.i_SWE]=0.000001;
+CARDADATA->parmax[P.i_SWE]=10000;
+
+/*sn1: min threshold for melt*/
+CARDADATA->parmin[P.min_melt]=240;
+CARDADATA->parmax[P.min_melt]=270;
+
+/*sn2: slope*/
+CARDADATA->parmin[P.melt_slope]=0.00001;
+CARDADATA->parmax[P.melt_slope]=1;
+
+/*sn3: snow cover fraction scalar*/
+CARDADATA->parmin[P.scf_scalar]=0.001;
+CARDADATA->parmax[P.scf_scalar]=1000.0;
 
 return 0;
 

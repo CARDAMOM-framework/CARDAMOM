@@ -5,14 +5,14 @@
 %cbffilename_old='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbf';
 % %delete(cbffilename);TEST_CARDAMOM_CBF_NETCDF_FORMAT(cbffilename_old,cbffilename);
 % 
-% nccbffilename1000='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.nc.cbf';
+% nccbffilename1000='CARDAMOM/DATA/MODEL_ID_1000_EXAMPLE.cbf.nc';
 % 
 % 
 % CBF1000=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1000);
 %  CBF1100=CBF1000(1);
 %  CBF1100.ID.values=1100;
 %  
-%  nccbffilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.nc.cbf';
+%  nccbffilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.cbf.nc';
 % 
 %  CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbffilename1100);
 
@@ -38,44 +38,188 @@
 
 
 
-nccbffilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.nc.cbf';
+disp('DEMO files are created using CARDAMOM_v3_MAKE_EXAMPLE_NC_FILE_SEP21.m')
+
+
+%%%%%*********Test 1 ************ 
+nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
+CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
+disp('Successfully read file using "CARDAMOM_READ_NC_CBF_FILE" ...')
+%************ set all fields to NAN*****
+
+nccbffilename1005='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype_1005.cbf.nc';
+nccbffilename821='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype_821.cbf.nc';
+
+ CBF1005=CBF;CBF1005.ID.values=1005;
+ CBF821=CBF;CBF821.ID.values=821;
+%  CBF.MCMCID.values=119;
+%  CBF.MCMCID.nITERATIONS=1e6;
+
+CARDAMOM_WRITE_NC_CBF_FILE(CBF821,nccbffilename821);
+CARDAMOM_WRITE_NC_CBF_FILE(CBF1005,nccbffilename1005);
+
+CBR1005=CARDAMOM_RUN_MDF(nccbffilename1005);
+CBR821=CARDAMOM_RUN_MDF(nccbffilename821);
+
+disp('valgrind ./CARDAMOM/C/projects/CARDAMOM_MDF/CARDAMOM_MDF_debug.exe CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype_1005.cbf.nc testout.cbr')
+
+
+
+
+        
+        
+        %%%%%*********Test 2 ************ 
+nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
+CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
+disp('Successfully read file using "CARDAMOM_READ_NC_CBF_FILE" ...')
+%************ set all fields to NAN*****
+
+CBF.MCMCID.nITERATIONS=2e5;
+CBF.MCMCID.nSAMPLES=2;
+CBF.ID.values=1005;
+
+% CBF.MCMCID.nITERATIONS=2e3;
+% CBF.MCMCID.values=3;
+
+        CBR=CARDAMOM_RUN_MDF(CBF);
+        
+        %save CBRtest2 CBR
+        
+        
+        load CBRtest2 CBR
+        %Rerun
+        %CBR2=CARDAMOM_RUN_MODEL(CBF,CBR.PARS);
+        
+        cardamom_vvuq_nccbf_summary(CBF)
+        
+        plot(CBR.GPP); hold on; plot(CBF.GPP.values)
+        plot(CBR.NBE); hold on; plot(CBF.NBE.values)
+        plot(CBR.LAI); hold on; plot(CBF.LAI.values)
+
+%Test model-data fusion for each timeseries.
+
+
+
+        
+        
+
+
+%*********Try writing out
+nccbftestfile='DUMPFILES/MODEL_ID_1100_TEST_ONLY.cbf.nc';
+CARDAMOM_WRITE_NC_CBF_FILE(CBF,nccbftestfile);
+disp('Successfully wrote file using "CARDAMOM_WRITE_NC_CBF_FILE" ...')
+
+
+%Get single non-inf solution:
+
+
+
+
+
+%Removing time-varying LAI
+CBF.LAI.values=NaN;
+%Adding mean LAI constraint
+CBF.Mean_LAI.values=3;
+CBF.Mean_LAI.unc=1.5;
+CBF.Mean_LAI.opt_unc_type=1;
+
+
+%first test is retrieving parameters. Skip only for partial testing
+retrievepars=1;
+if retrievepars==1
+    
+%     MCO.niterations=1;
+%     MCO.samplerate=1;
+     cbrfilename1100='DUMPFILES/MODEL_ID_1100_EXAMPLE.cbr.nc';
+    %CBR=CARDAMOM_RUN_MDF(CBF1100,[],cbrfilename1100);
+        CBR=CARDAMOM_RUN_MDF(CBF);
+end
+
+
+%1005 test
+
+nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
+CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
+CBF.EWT.values=CBF.EWT.values*NaN;
+CBF.ET.values=CBF.ET.values*NaN;
+CBF.GPP.values=CBF.GPP.values*NaN;
+CBF.NBE.values=CBF.NBE.values*NaN;
+CBF.LAI.values=CBF.LAI.values*NaN;
+CBF.ABGB.values=CBF.ABGB.values*NaN;
+CBF.Mean_Biomass.values=CBF.Mean_Biomass.values*NaN;
+CBF.Mean_Fire.values=CBF.Mean_Fire.values*NaN;
+CBF.Mean_LAI.values=CBF.Mean_LAI.values*NaN;
+CBF.Mean_GPP.values=CBF.Mean_GPP.values*NaN;
+CBF.EDC.values=0;
+CBF1005=CBF;
+CBF1005.ID.values=1005;
+CBF1005.MCMCID.nITERATIONS=1e6;
+CBR1005=CARDAMOM_RUN_MDF(CBF1005);
+        
+        
+
+
+
+
+
+
+
+
+
  cbrfilename1100='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLE.cbr';
  cbrfilename1100ref='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr';
  cbrfilename1100refmat='CARDAMOM/DATA/MODEL_ID_1100_EXAMPLEref.cbr.mat';
 
  ncdisp(nccbffilename1100)
-nccbftestfile='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY.nc.cbf';
+nccbftestfile='CARDAMOM/DATA/MODEL_ID_1100_TEST_ONLY.cbf.nc';
 
 
 %testing matlab read-write functions
 
-CBF1100=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
-CBF1100.EWT.values=CBF1100.EWT.values*NaN;
-CBF1100.Mean_Biomass.values=CBF1100.Mean_Biomass.values*NaN;
-CBF1100.Mean_Fire.values=CBF1100.Mean_Fire.values*NaN;
-CBF1100.Mean_LAI.values=CBF1100.Mean_LAI.values*NaN;
-CBF1100.Mean_GPP.values=CBF1100.Mean_GPP.values*NaN;
-CBF1100.PARPRIORS.values=CBF1100.PARPRIORS.values*NaN;
-CBF1100.OTHERPRIORS.values=CBF1100.OTHERPRIORS.values*NaN;
-CBF1100.PARPRIORUNC.values=CBF1100.PARPRIORUNC.values*NaN;
-CBF1100.OTHERPRIORSUNC.values=CBF1100.OTHERPRIORSUNC.values*NaN;
-CBF1100.EDC.values=0;
+CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
+
+CBF.EWT.values=CBF.EWT.values*NaN;
+CBF.ABGB.values=CBF.ABGB.values*NaN;
+CBF.NBE.values=CBF.NBE.values*NaN;
+CBF.LAI.values=CBF.LAI.values*NaN;
+CBF.Mean_Biomass.values=CBF.Mean_Biomass.values*NaN;
+CBF.Mean_Fire.values=CBF.Mean_Fire.values*NaN;
+CBF.Mean_LAI.values=CBF.Mean_LAI.values*NaN;
+CBF.Mean_GPP.values=CBF.Mean_GPP.values*NaN;
+CBF.PARPRIORS.values=CBF.PARPRIORS.values*NaN;
+CBF.OTHERPRIORS.values=CBF.OTHERPRIORS.values*NaN;
+CBF.PARPRIORUNC.values=CBF.PARPRIORUNC.values*NaN;
+CBF.OTHERPRIORSUNC.values=CBF.OTHERPRIORSUNC.values*NaN;
+CBF.EDC.values=0;
 
 
 
-CARDAMOM_WRITE_NC_CBF_FILE(CBF1100,nccbftestfile);
+CARDAMOM_WRITE_NC_CBF_FILE(CBF,nccbftestfile);
+%CARDAMOM_RUN_MDF(nccbftestfile)
 CBF1100test=CARDAMOM_READ_NC_CBF_FILE(nccbftestfile);
- updateref=1;
- if updateref==1
+ 
+
+
+
+
+updatecbrref=1;
+ if updatecbrref==1
+CARDAMOM_RUN_MDF(CBF1100test,[],cbrfilename1100ref);
+ %save(cbrfilename1100refmat, 'CBRref');
+ end
+
+
+updateCBROUTref=1;
+ if updateCBROUTref==1
  copyfile( cbrfilename1100, cbrfilename1100ref);
   CBRref=CARDAMOM_RUN_MODEL(nccbftestfile,cbrfilename1100ref);
  save(cbrfilename1100refmat, 'CBRref');
  end
 
 
-f=fields(CBF1100);cbfioerror=0;
+f=fields(CBF);cbfioerror=0;
 for n=1:numel(f)
-    cbffielddif=nansum(CBF1100test.(f{n}).values- CBF1100.(f{n}).values);
+    cbffielddif=nansum(CBF1100test.(f{n}).values- CBF.(f{n}).values);
     if cbffielddif~=0;disp(sprintf('CBF.%s: Warning, non-zero dif',f{n}));cbfioerror=1;end
 end
 if cbfioerror==0; disp('CARDAMOM READ/WRITE NETCDF functions check out...');
@@ -218,10 +362,10 @@ cost_function_tests=0;
 if cost_function_tests==1;
 
 
-CBF1100=CARDAMOM_READ_BINARY_FILEFORMAT(nccbffilename1100);
-CBR=CARDAMOM_RUN_MODEL(CBF1100,cbrfilename1000);
+CBF=CARDAMOM_READ_BINARY_FILEFORMAT(nccbffilename1100);
+CBR=CARDAMOM_RUN_MODEL(CBF,cbrfilename1000);
 
-CBFcf=cardamomfun_clear_cbf_obs(CBF1100);clear CBF;
+CBFcf=cardamomfun_clear_cbf_obs(CBF);clear CBF;
 cfpars=CBR.PARS(end,:);
 CBRcf=CARDAMOM_RUN_MODEL(CBFcf,cfpars);clear CBR;
 

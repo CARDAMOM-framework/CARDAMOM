@@ -140,7 +140,7 @@ CARDADATA->parmin[30]=0.01;
 CARDADATA->parmax[30]=1;
 
 /* ball-berry slope m [unitless]*/
-CARDADATA->parmin[31]=2; //Olsen et al. 2010
+CARDADATA->parmin[31]=5; //Olsen et al. 2010
 CARDADATA->parmax[31]=30;//50;
 
 /* ball-berry intercept b [mol m^-2 s^-1]*/
@@ -152,11 +152,11 @@ CARDADATA->parmin[33]=0.4; //Martin et al. 1999
 CARDADATA->parmax[33]=10;
 
 /* Jmax [umol m^-2 s^-1]*/
-CARDADATA->parmin[34]=20;//10; Walker et al. 2014
+CARDADATA->parmin[34]=3;//10; Walker et al. 2014
 CARDADATA->parmax[34]=400;//500;
 
 /* Vmax [umol m^-2 s^-1]*/
-CARDADATA->parmin[35]=10;//10; Walker et al. 2014
+CARDADATA->parmin[35]=3;//10; Walker et al. 2014
 CARDADATA->parmax[35]=400;//200;
 
 /*IWUE: GPP*VPD/ET: gC/kgH2o *hPa*/

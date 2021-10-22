@@ -3,7 +3,7 @@
 #include "DALEC_1100.c"
 #include "EDC1_1100.c"
 #include "EDC2_1100.c"
-#include "../../../DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF_DEDC.c"
+#include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF_DEDC.c"
 #include "../../../CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c"
 
 int MODEL_INFO_1100(DATA * DATA){
@@ -42,7 +42,7 @@ INITIALIZE_PARAMETER_FIELDS(DATA);
 PARS_INFO_1100(DATA);
 
 oksofar("about to declare EDCD");
-printf("DALECmodel.EDCD = %p\n",DALECmodel.EDCD);
+printf("DALECmodel.EDCD = %p\n",DALECmodel.EDCD); //DALECmodel.EDCD Needs to be initilized!
 /*Initialize the EDCD structure*/
 EDCSETUP(*DATA,&DALECmodel.EDCD);
 oksofar("done with declaration");

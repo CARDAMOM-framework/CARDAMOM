@@ -94,7 +94,7 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/DALEC_%i.c',Cpat
          end
      end
 
-if strcmp(linestr,'//***DALEC PARAMETERS***');disp(linestr);k=1;end
+if strcmp(linestr,'/*DALEC PARAMETERS*/');disp(linestr);k=1;end
 
      n=n+1;
 

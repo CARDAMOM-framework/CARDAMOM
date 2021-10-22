@@ -29,7 +29,7 @@
 
     
     
-Dpath='DUMPFILES/';
+Dpath='DUMPFILES';
 
 if nargin<3 | isempty(OPT); OPT=[];end
 if isfield(OPT,'MODEL')==0;
@@ -64,11 +64,11 @@ if iscell(CBF);CBF=CBF{1};end
 if isstruct(CBF)
     %Here MD is a CARDAMOM data structure and PARS is a NxM array with N
     %samples of M parameters
-cbffile=sprintf('%s/tempcardametfile%s.cbf',Dpath,channel);
+cbffile=sprintf('%s/tempcardametfile%s.cbf.nc',Dpath,channel);
 %writing parameters to file
 %writing met drivers to file
-CARDAMOM_WRITE_BINARY_FILEFORMAT(CBF,cbffile);
-OPT.MODEL.ID=CBF.ID;
+CARDAMOM_WRITE_NC_CBF_FILE(CBF,cbffile);
+OPT.MODEL.ID=CBF.ID.values;
 %number of parameter samples
 end
   
@@ -81,7 +81,7 @@ if ischar(CBF);
     cbffile=CBF;
     if OPT.MODEL.ID==0;
         
-        if strcmp(CBF(end-6:end),'.nc.cbf')==1
+        if strcmp(CBF(end-6:end),'.cbf.nc')==1
             OPT.MODEL.ID=ncread(CBF,'ID');
         else
         CBF=CARDAMOM_READ_NC_CBF_FILE(cbffile);
@@ -107,8 +107,6 @@ end
 %default value is PARS=[];
 %if so, uses last parameter file
 %This is for testing purposes only.
-if nargin<2;PARS=[];end
-if isempty(PARS);PARS=sprintf('%s/tempcardaparfile%i.bin',Dpath,channel);disp('********');disp('***No PARS provided, using sample set (for testing only)***');disp('********');end
 
 
 
@@ -132,10 +130,7 @@ if isempty(PARS);PARS=sprintf('%s/tempcardaparfile%i.bin',Dpath,channel);disp('*
 %enter exact compilation code HERE:
 
 if OPT.STORE==0
-fluxfile=sprintf('%s/tempcardafluxfile%s.bin',Dpath,channel);
-poolfile=sprintf('%s/tempcardapoolfile%s.bin',Dpath,channel);
-edcdfile=sprintf('%s/tempcardaedcdfile%s.bin',Dpath,channel);
-probfile=sprintf('%s/tempcardaprobfile%s.bin',Dpath,channel);
+fluxfile=sprintf('%s/tempcardafluxfile%s.cbr.nc',Dpath,channel);
 parfile=sprintf('%s/tempcardaparfile%s.bin',Dpath,channel);
 
 else
@@ -149,10 +144,7 @@ else
     
     
     fluxfile=sprintf('%s/%s_auxi.bin',storepath, fname);storefilestatus(1) = isfile(fluxfile);
-    poolfile=sprintf('%s/%s_pool.bin',storepath, fname);storefilestatus(2) = isfile(poolfile);
-    edcdfile=sprintf('%s/%s_edcd.bin',storepath, fname);storefilestatus(3) = isfile(edcdfile);
-    probfile=sprintf('%s/%s_prob.bin',storepath, fname);storefilestatus(4) = isfile(probfile);
-    parfile=sprintf('%s/%s_pars.bin',storepath, fname);storefilestatus(5) = isfile(probfile);
+    parfile=sprintf('%s/%s_pars.bin',storepath, fname);storefilestatus(5) = isfile(parfile);
 
     nostorefiles=0;
     if sum(double(storefilestatus))<5; nostorefiles=1;end
@@ -183,7 +175,7 @@ fclose(fd);
 
 
 
-command_str=sprintf('%s/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.exe %s %s %s %s %s %s',OPT.Cpath, cbffile,parfile,fluxfile,poolfile,edcdfile,probfile);
+command_str=sprintf('%s/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.exe %s %s %s',OPT.Cpath, cbffile,parfile,fluxfile);
                        %run command
                        disp('C executable command');
                        disp(command_str);
@@ -215,15 +207,18 @@ N=size(PARS,1);
  disp('***************NOTE: CARDAMOM_RUN_MODEL changed output dims on July 21 2014*************************')
 
 Nd=0;%size(CBF.MET,1);Nd = 0 allowed, since readbinarymat can figure out how many met timesteps needed
-CBR.FLUXES=permute(readbinarymat(fluxfile,[Nd*0,OPT.MODEL.MA.nofluxes,N]),[3,2,1]);
+%CBR.FLUXES=permute(readbinarymat(fluxfile,[Nd*0,OPT.MODEL.MA.nofluxes,N]),[3,2,1]);
+CBR.FLUXES=permute(ncread(fluxfile,'FLUXES'),[3,2,1]);
 %for fluxes consistent with pools: removing first pool AS IT IS CONSISTENT
 %with pool start values
-CBR.POOLS=permute(readbinarymat(poolfile,[(Nd+1)*0,OPT.MODEL.MA.nopools,N]),[3,2,1]);
+%CBR.POOLS=permute(readbinarymat(poolfile,[(Nd+1)*0,OPT.MODEL.MA.nopools,N]),[3,2,1]);
+CBR.POOLS=permute(ncread(fluxfile,'POOLS'),[3,2,1]);
 CBR.POOLS=CBR.POOLS(:,2:end,:);
 %reading EDC diagnostics
-CBR.EDCDIAG=permute(readbinarymat(edcdfile,[1,100,N],2),[3,1,2]);
+%CBR.EDCDIAG=permute(readbinarymat(edcdfile,[1,100,N],2),[3,1,2]);
+CBR.EDCDIAG=permute(ncread(fluxfile,'EDCD'),[3,1,2]);
 %reading probability fields
-CBR.PROB=readbinarymat(probfile,[1,N]);
+CBR.PROB=ncread(fluxfile,'PROB')';
 %storing parameters (for completeness)
 CBR.PARS=PARS;
 %extras
@@ -239,13 +234,14 @@ disp('Step 3:ALL CARDAMOM_RUN_MODEL.c outputs successfully loaded!');
 %That would be NBE (Net Biospheric Exchange).
 %Shuang made changes here, modified Rh scheme (1010 and 1011) use different
 %fluxes,consistant with DALEC source code, April 2021
-if OPT.MODEL.ID==1010 || OPT.MODEL.ID==1011 
+if OPT.MODEL.ID==1010 || OPT.MODEL.ID==1011 || OPT.MODEL.ID==1012
     CBR.NEE=sum(CBR.FLUXES(:,:,[3,37]),3)-CBR.FLUXES(:,:,1);
+    if OPT.MODEL.ID>1;CBR.NBE=sum(CBR.FLUXES(:,:,[3,37]),3)-CBR.FLUXES(:,:,1)+CBR.FLUXES(:,:,17);else CBR.NBE=CBR.NEE;end
 else
     CBR.NEE=sum(CBR.FLUXES(:,:,[3,13,14]),3)-CBR.FLUXES(:,:,1);
+    if OPT.MODEL.ID>1;CBR.NBE=sum(CBR.FLUXES(:,:,[3,13,14]),3)-CBR.FLUXES(:,:,1)+CBR.FLUXES(:,:,17);else CBR.NBE=CBR.NEE;end
 end
 
-if OPT.MODEL.ID>1;CBR.NBE=sum(CBR.FLUXES(:,:,[3,13,14]),3)-CBR.FLUXES(:,:,1)+CBR.FLUXES(:,:,17);else CBR.NBE=CBR.NEE;end
 %Fossil fuel option 
 if OPT.MODEL.ID==1200; CBR.FF= CBR.FLUXES(:,:,31);end
 
@@ -357,7 +353,11 @@ end
     %Export fire C emissions
     CBR.FIR=CBR.FLUXES(:,:,17);
     %Export respiration
-    CBR.RHE=sum(CBR.FLUXES(:,:,13:14),3);
+    if OPT.MODEL.ID==1010 || OPT.MODEL.ID==1011 || OPT.MODEL.ID==1012  % shuang added for DALEC-JCR models 
+        CBR.RHE=sum(CBR.FLUXES(:,:,37),3);
+    else
+        CBR.RHE=sum(CBR.FLUXES(:,:,13:14),3);
+    end
     %Export autotrophic respiration
     CBR.RAU=sum(CBR.FLUXES(:,:,3),3);
 

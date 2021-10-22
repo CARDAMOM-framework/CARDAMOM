@@ -3,7 +3,7 @@
 #include "DALEC_1005.c"
 #include "EDC1_1005.c"
 #include "EDC2_1005.c"
-#include "../../../DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
+#include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
 #include "../../../CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c"
 
 int MODEL_INFO_1005(DATA * DATA){
@@ -13,10 +13,7 @@ int MODEL_INFO_1005(DATA * DATA){
 static DALEC DALECmodel;
 
 /*Step 2: Fill structure with model-specific info*/
-DALECmodel.nopools=8;
-DALECmodel.nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel.nopars=37;
-DALECmodel.nofluxes=32;
+DALEC_1005_MODCONFIG(&DALECmodel);
 
 /*Short-term: copy quantities into DATA structure to reduce dependencies in CARDAMOM_MODEL_LIBRARY.c*/
 /*Long-term: remove dependencies on DATA.nofluxes... etc. in CARDAMOM_READ_BINARY_DATA and DALEC_ALL_LIKELIHOOD.c*/

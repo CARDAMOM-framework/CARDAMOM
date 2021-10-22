@@ -25,8 +25,8 @@ OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
 OBSOPE.SUPPORT_NBE_OBS=true;
 OBSOPE.SUPPORT_ABGB_OBS=true;
-OBSOPE.SUPPORT_SOM_OBS=true;
-OBSOPE.SUPPORT_GRACE_EWT_OBS=true;
+OBSOPE.SUPPORT_DOM_OBS=true;
+OBSOPE.SUPPORT_EWT_OBS=true;
 OBSOPE.SUPPORT_FIR_OBS=true;
 
 //Provide values required by each OBS operator
@@ -52,14 +52,14 @@ static int ABGB_pools[]={0,1,2,3};
 OBSOPE.ABGB_pools=ABGB_pools;
 OBSOPE.ABGB_n_pools=4;
 
-//SOM-specific variables
-static int SOM_pools[]={4,5}; 
-OBSOPE.SOM_pools=SOM_pools;
-OBSOPE.SOM_n_pools=2;
+//DOM-specific variables
+static int DOM_pools[]={4,5}; 
+OBSOPE.DOM_pools=DOM_pools;
+OBSOPE.DOM_n_pools=2;
 //H2O-specific variables
-static int GRACE_EWT_h2o_pools[]={6,7};
-OBSOPE.GRACE_EWT_h2o_pools=GRACE_EWT_h2o_pools;
-OBSOPE.GRACE_EWT_n_h2o_pools=2;
+static int EWT_h2o_pools[]={6,7};
+OBSOPE.EWT_h2o_pools=EWT_h2o_pools;
+OBSOPE.EWT_n_h2o_pools=2;
 //Fire-specific variables
 OBSOPE.FIR_flux=16;
 
@@ -102,7 +102,7 @@ double *LAI=DATA.M_LAI;
 //double *NEE=DATA.M_NEE;
 
   /*assigning values to pools*/
-  /*L,F,R,W,Lit,SOM*/
+  /*L,F,R,W,Lit,DOM*/
   POOLS[0]=pars[17];
   POOLS[1]=pars[18];
   POOLS[2]=pars[19];

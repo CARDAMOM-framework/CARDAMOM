@@ -25,7 +25,6 @@ int t_root;
 int t_lit;
 int t_soil;
 int temp_factor;
-int canopy_eff;
 int Bday;
 int f_lab;
 int labile_rel;
@@ -66,13 +65,17 @@ int Tdown;
 int C3_frac;
 int clumping;
 int leaf_refl;
+int i_SWE;
+int min_melt;
+int melt_slope;
+int scf_scalar;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
-    50
+    50,51,52,53
 };
 
 struct DALEC_1100_FLUXES{
@@ -112,12 +115,18 @@ int q_puw;   /*PUW runoff*/
 int q_surf;   /*Surface runoff*/
 int transp;   /*Transpiration*/
 int evap;   /*Evaporation*/
+int melt;   /*Snow melt*/
+int scf;   /*Snow cover fraction*/
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
-    30,31,32,33,34
+    30,31,32,33,34,35,36
 };
+
+
+
+
 
 struct DALEC_1100_POOLS{
 /*DALEC POOLS*/
@@ -129,7 +138,18 @@ int C_lit; /*Litter C*/
 int C_som; /*Soil C*/
 int H2O_PAW; /*Plant available H2O*/
 int H2O_PUW; /*Plant unavailable H2O*/
-} DALEC_1100_POOLS={0,1,2,3,4,5,6,7};
+int H2O_SWE; /*Snow water equivalent*/
+} DALEC_1100_POOLS={
+    0,1,2,3,4,5,6,7,8
+};
+
+/*
+struct POOLS_INFO{
+int n_input_fluxes
+int n_output_fluxes
+int * input_fluxes
+int * output_fluxes}
+*/
 
 
 
@@ -140,10 +160,10 @@ struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
 struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
-DALECmodel->nopools=8;
-DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=51;
-DALECmodel->nofluxes=35;
+DALECmodel->nopools=9;
+DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
+DALECmodel->nopars=54;
+DALECmodel->nofluxes=37;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
@@ -151,16 +171,17 @@ static OBSOPE OBSOPE;
 INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 
 //Set SUPPORT_OBS values to true if model supports observation operation.
-printf("DALEC_1100_MODCONFIG, Line 22...\n");
 OBSOPE.SUPPORT_GPP_OBS=true;
 OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
 OBSOPE.SUPPORT_NBE_OBS=true;
 OBSOPE.SUPPORT_ABGB_OBS=true;
-OBSOPE.SUPPORT_SOM_OBS=true;
-OBSOPE.SUPPORT_GRACE_EWT_OBS=true;
+OBSOPE.SUPPORT_DOM_OBS=true;
+OBSOPE.SUPPORT_EWT_OBS=true;
 OBSOPE.SUPPORT_FIR_OBS=true;
 
+
+OBSOPE.SUPPORT_CUE_OBS=true;
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
@@ -193,30 +214,37 @@ ABGB_pools[3]=S.C_woo;
 OBSOPE.ABGB_pools=ABGB_pools;
 OBSOPE.ABGB_n_pools=4;
 
+
 //SOM-specific variables
-static int SOM_pools[2]; 
-SOM_pools[0]=S.C_lit;
-SOM_pools[1]=S.C_som;
-OBSOPE.SOM_pools=SOM_pools;
-OBSOPE.SOM_n_pools=2;
+static int DOM_pools[2]; 
+DOM_pools[0]=S.C_lit;
+DOM_pools[1]=S.C_som;
+OBSOPE.DOM_pools=DOM_pools;
+OBSOPE.DOM_n_pools=2;
 //H2O-specific variables
-static int GRACE_EWT_h2o_pools[2];
-GRACE_EWT_h2o_pools[0]=S.H2O_PAW;
-GRACE_EWT_h2o_pools[1]=S.H2O_PUW;
-OBSOPE.GRACE_EWT_h2o_pools=GRACE_EWT_h2o_pools;
-OBSOPE.GRACE_EWT_n_h2o_pools=2;
+static int EWT_h2o_pools[3];
+EWT_h2o_pools[0]=S.H2O_PAW;
+EWT_h2o_pools[1]=S.H2O_PUW;
+EWT_h2o_pools[2]=S.H2O_SWE;
+OBSOPE.EWT_h2o_pools=EWT_h2o_pools;
+OBSOPE.EWT_n_h2o_pools=3;
 //Fire-specific variables
 OBSOPE.FIR_flux=F.f_total;
+//CUE parameters
+OBSOPE.CUE_PARAM=P.f_auto;
+
+
 
 DALECmodel->OBSOPE=OBSOPE;
+
+
 
 return 0;}
 
 
 
-int DALEC_1100(DATA DATA, double const *pars)
-{
-
+int DALEC_1100(DATA DATA, double const *pars){
+    
 
 
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
@@ -236,8 +264,6 @@ double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.va
 int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 
 
- double constants[10]={pars[P.canopy_eff],0.0156935,4.22273,208.868,0.0453194,0.37836,7.19298, 0.011136,2.1001,0.789798};
-
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
 double *FLUXES=DATA.M_FLUXES;
 double *POOLS=DATA.M_POOLS;
@@ -245,6 +271,7 @@ double *LAI=DATA.M_LAI;
 // double *NEE=DATA.M_NEE;
 
   /*assigning values to pools*/
+
   /*L,F,R,W,Lit,SOM*/
   POOLS[S.C_lab]=pars[P.i_labile];
   POOLS[S.C_fol]=pars[P.i_foliar];
@@ -255,6 +282,7 @@ double *LAI=DATA.M_LAI;
   /*water pools*/
   POOLS[S.H2O_PAW]=pars[P.i_PAW];
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
+  POOLS[S.H2O_SWE]=pars[P.i_SWE];
 
 double *SSRD=DATA.ncdf_data.SSRD.values;
 double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
@@ -265,6 +293,7 @@ double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
 double *VPD=DATA.ncdf_data.VPD.values;
 double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
 double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
+double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
 
 double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
 double meanrad = DATA.ncdf_data.SSRD.reference_mean;
@@ -344,9 +373,11 @@ double AST = LST+ET1;
 double h = (AST-12*60)/4; //hour angle
 double alpha = asin((sin(pi/180*DATA.ncdf_data.LAT)*sin(pi/180*DA)+cos(pi/180*DATA.ncdf_data.LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
 double zenith_angle = 90-alpha;
-double LAD = 1.0; //leaf angle distribution
-double VegK = sqrt(pow(LAD,2)+ pow(tan(zenith_angle/180*pi),2))/(LAD+1.774*pow((1+1.182),-0.733)); //Campbell and Norman 1998
+// double LAD = 1.0; //leaf angle distribution
+//double VegK = sqrt(pow(LAD,2)+ pow(tan(zenith_angle/180*pi),2))/(LAD+1.774*pow((1+1.182),-0.733)); //Campbell and Norman 1998
 
+double LAD = 0.5; //leaf angle distribution
+double VegK = LAD/cos(zenith_angle/180*pi);
 
 /*Temp scaling factor*/
 double g;
@@ -406,6 +437,7 @@ FLUXES[f+F.wood2lit] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
 /*root litter production*/
 FLUXES[f+F.root2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
 /*respiration heterotrophic litter*/
+
 FLUXES[f+F.resp_het_lit] = POOLS[p+S.C_lit]*(1-pow(1-FLUXES[f+F.temprate]*pars[P.t_lit],deltat))/deltat;
 /*respiration heterotrophic SOM*/
 FLUXES[f+F.resp_het_som] = POOLS[p+S.C_som]*(1-pow(1-FLUXES[f+F.temprate]*pars[P.t_soil],deltat))/deltat;
@@ -421,11 +453,18 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
         POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.root2lit] - FLUXES[f+F.resp_het_lit] - FLUXES[f+F.lit2som])*deltat; 
         POOLS[nxp+S.C_som]= POOLS[p+S.C_som]+ (FLUXES[f+F.lit2som] - FLUXES[f+F.resp_het_som]+FLUXES[f+F.wood2lit])*deltat;                    
 
+
+/*Snow water equivalent*/
+POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+SNOWFALL[n]*deltat; /*first step snowfall to SWE*/
+FLUXES[f+F.melt]=fmin(fmax(((T2M_MIN[n]+T2M_MAX[n])/2-(pars[P.min_melt]-273.15))*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
+POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step remove snowmelt from SWE*/
+FLUXES[f+F.scf]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);  /*snow cover fraction*/
+
 // Infiltration (mm/day)
-double infil = pars[P.max_infil]*(1 - exp(-PREC[n]/pars[P.max_infil]));
+double infil = pars[P.max_infil]*(1 - exp(-(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt])/pars[P.max_infil]));
 
 // Surface runoff (mm/day)
-FLUXES[f+F.q_surf] = PREC[n] - infil;
+FLUXES[f+F.q_surf] = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]) - infil;
 
 // Update pools, including infiltration
 POOLS[nxp+S.H2O_PAW] = POOLS[p+S.H2O_PAW] + deltat*infil;
@@ -468,6 +507,7 @@ FLUXES[f+F.paw2puw] = xfer*1000*3600*24;
 POOLS[nxp+S.H2O_PAW] += (-FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
 POOLS[nxp+S.H2O_PUW] += (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
 
+
 	/*total pool transfers - WITH FIRES*/
 	/*first fluxes*/
 
@@ -509,6 +549,7 @@ POOLS[nxp+S.H2O_PUW] += (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
     FLUXES[f+F.f_total] = FLUXES[f+F.f_lab] + FLUXES[f+F.f_fol] + FLUXES[f+F.f_roo] + FLUXES[f+F.f_woo] + FLUXES[f+F.f_lit] + FLUXES[f+F.f_som];
 
 }
+
 
 return 0;
 }
