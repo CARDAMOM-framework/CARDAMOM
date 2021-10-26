@@ -7,6 +7,7 @@
 #include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2CON.c"
 #include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI.c"
 #include "../../../DALEC_CODE/DALEC_ALL/LIU_An_et.c"
+#include "../../../DALEC_CODE/DALEC_ALL/LAI_KNORR.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
@@ -69,13 +70,25 @@ int i_SWE;
 int min_melt;
 int melt_slope;
 int scf_scalar;
+int T_phi;
+int T_range;
+int tau_m;
+int plgr;
+int k_leaf;
+int lambda_max;
+int tau_W;
+int time_c;
+int time_r;
+int init_T_mem;
+int init_LAIW_mem;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
-    50,51,52,53
+    50,51,52,53,54,55,56,57,58,59,
+    60,61,62,63,64
 };
 
 struct DALEC_1100_FLUXES{
