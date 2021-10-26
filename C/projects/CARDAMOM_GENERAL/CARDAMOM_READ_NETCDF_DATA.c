@@ -135,7 +135,7 @@ default_double_value(&DATA->ET.single_unc,2);
 default_double_value(&DATA->ET.min_threshold,0.1);
 
 //Default EWT options;
-default_double_value(&DATA->EWT.single_unc,2);
+default_double_value(&DATA->EWT.single_unc,50);//mm
 default_int_value(&DATA->EWT.opt_normalization,1);
 
 //Default GPP options
