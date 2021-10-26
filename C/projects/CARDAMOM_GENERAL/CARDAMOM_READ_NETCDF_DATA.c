@@ -118,11 +118,11 @@ DATA->PEQ_iniSOM=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSOM");
 // default_double_value(&OBS->structural_unc,0);
 
 
-// Default CH4 options
+// Default ABGB options
 
-default_int_value(&DATA->CH4.opt_unc_type,1);
-default_double_value(&DATA->CH4.single_unc,2);
-default_double_value(&DATA->CH4.min_threshold,10);//gC/m2
+default_int_value(&DATA->ABGB.opt_unc_type,1);
+default_double_value(&DATA->ABGB.single_unc,2);
+default_double_value(&DATA->ABGB.min_threshold,10);//gC/m2
 
 // Default CH4 options
 default_int_value(&DATA->CH4.opt_unc_type,1);
