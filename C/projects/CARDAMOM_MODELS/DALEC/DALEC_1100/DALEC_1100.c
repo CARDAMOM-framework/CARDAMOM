@@ -130,11 +130,21 @@ int transp;   /*Transpiration*/
 int evap;   /*Evaporation*/
 int melt;   /*Snow melt*/
 int scf;   /*Snow cover fraction*/
+int target_LAI;   /*LAI environmental target*/
+int T_memory;   /*LAI temp memory*/
+int lambda_max_memory;   /*LAI max memory*/
+int dlambda_dt;   /*dLAI/dt*/
+int f_temp_thresh;   /*f_temp_thres*/
+int f_dayl_thresh;   /*f_dayl_thres*/
+int c_lim_flag;   /*LAI carbon limitation flag*/
+int lai_fire;   /*LAI fire loss*/
+int foliar_fire_frac;   /*C_fol fire loss frac*/
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
-    30,31,32,33,34,35,36
+    30,31,32,33,34,35,36,37,38,39,
+    40,41,42,43,44,45
 };
 
 
@@ -175,8 +185,8 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=9;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=54;
-DALECmodel->nofluxes=37;
+DALECmodel->nopars=65;
+DALECmodel->nofluxes=46;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
