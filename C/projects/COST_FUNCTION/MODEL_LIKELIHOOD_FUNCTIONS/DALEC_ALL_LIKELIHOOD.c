@@ -115,6 +115,8 @@ DALEC_OBSOPE(&D,O);
 
 //printf("About to calculate likelihoods...\n");
 
+
+
 //printf("O->SUPPORT_LAI_OBS = %d\n",O->SUPPORT_LAI_OBS);
 
 //if (O->SUPPORT_ET_OBS){   P=P+DALEC_LIKELIHOOD_ET(D);}

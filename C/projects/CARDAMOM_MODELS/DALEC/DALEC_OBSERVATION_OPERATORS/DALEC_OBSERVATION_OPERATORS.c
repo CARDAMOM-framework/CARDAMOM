@@ -222,6 +222,8 @@ int DALEC_OBSOPE_LAI(DATA * D, OBSOPE * O){
 
 int N=D->ncdf_data.TIME_INDEX.length;
 
+
+
 //Time varying GPP and mean GPP
 TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.LAI;
 SINGLE_OBS_STRUCT SOBS=D->ncdf_data.Mean_LAI;

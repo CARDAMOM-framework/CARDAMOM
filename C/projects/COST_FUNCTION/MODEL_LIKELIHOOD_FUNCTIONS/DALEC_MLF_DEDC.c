@@ -6,6 +6,9 @@
 
 double DALEC_MLF_DEDC(DATA DATA,double *PARS){
 
+    memcpy(DATA.M_PARS, PARS, DATA.nopars*sizeof(double));
+
+ 
 
 /*Copy model pointer for brevity*/
 DALEC *MODEL=(DALEC *)DATA.MODEL;
