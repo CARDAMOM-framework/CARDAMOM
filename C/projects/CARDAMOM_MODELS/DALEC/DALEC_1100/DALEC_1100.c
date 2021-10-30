@@ -369,6 +369,7 @@ double B = (DOY[n]-81)*2*pi/365.;
 double ET1 = 9.87*sin(2*B)-7.53*cos(B)-1.5*sin(B);
 double DA = 23.45*sin((284+DOY[n])*2*pi/365); //Deviation angle
 double LST = (int) (DOY[n]*24*60) % (24*60);
+LST=0.5*24*60;
 double AST = LST+ET1;
 double h = (AST-12*60)/4; //hour angle
 double alpha = asin((sin(pi/180*DATA.ncdf_data.LAT)*sin(pi/180*DA)+cos(pi/180*DATA.ncdf_data.LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
