@@ -40,7 +40,8 @@ end
     create_and_write_obs_single_variable(NC,'Mean_Biomass',-9999);
     create_and_write_obs_single_variable(NC,'Mean_Fire',-9999);
     create_and_write_obs_single_variable(NC,'Mean_GPP',-9999);
-    create_and_write_obs_single_variable(NC,'Mean_LAI',-9999);
+    create_and_write_obs_single_variable(NC,'Mean_LAI',3);%
+    ncwriteatt(NC,'Mean_LAI','unc',1.5);
 
     
     %Put parameter constraint examples
@@ -762,6 +763,8 @@ end
 
 function LAI=LAI_data
 
+
+%%%WARNING: all set to NaNs
 LAI=[
          NaN
        NaN
@@ -956,6 +959,7 @@ LAI=[
        NaN
        NaN];
 
+   LAI=LAI*NaN;
 
 end
 

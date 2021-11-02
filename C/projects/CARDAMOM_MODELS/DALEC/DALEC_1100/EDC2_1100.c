@@ -166,8 +166,9 @@ Rs=Rm*MPOOLSjan[n]/Pstart;
 /*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[7-1+n]==1))
 & ((fabs(log(Rs))>log(EQF)) || (fabs(Rs-Rm)>etol)))
 {EDC=ipow(0,EDCD->SWITCH[7-1+n]);EDCD->PASSFAIL[7-1+n]=0;}*/
+if (Fin[n] > 0){
 EDCD->pEDC=EDCD->pEDC-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
-
+}
 /*storing EDCPROB: i.e. the log probability of each EDC based on a gaussian representation*/
 /*of each constraint*/
 EDCD->EDCPROB[7-1+n]=-0.5*pow(log(Rs)/log(EQF),2);/*-0.5*pow((Rs-Rm)/etol,2);*/

@@ -62,6 +62,18 @@
 
 
 
+	int DEFAULT_REFERENCE_MEAN(TIMESERIES_DRIVER_STRUCT  * DRI){
+   if (DRI->reference_mean==DEFAULT_DOUBLE_VAL){
+     int n;DRI->reference_mean=0;
+     for (n=0;n<DRI->length;n++){
+     DRI->reference_mean+=DRI->values[n]/(double)DRI->length;}
+     }
+     
+     return 0;
+   }
+
+
+
 int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 {
 	int retval =0; //Return value variable for NCDF calls.
@@ -71,8 +83,7 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
  	}
 
 
-
-	
+       
 
     
     
@@ -182,33 +193,48 @@ printf("Done reading all other edc ");
 
 	DATA->SNOWFALL.values=ncdf_read_double_var(ncid, "SNOWFALL", &(DATA->SNOWFALL.length));
 		DATA->SNOWFALL.reference_mean=ncdf_read_double_attr(ncid, "SNOWFALL","reference_mean");
+        DEFAULT_REFERENCE_MEAN(&DATA->SNOWFALL);
 
 	DATA->SSRD.values=ncdf_read_double_var(ncid, "SSRD", &(DATA->SSRD.length));
 		DATA->SSRD.reference_mean=ncdf_read_double_attr(ncid, "SSRD","reference_mean");
+                DEFAULT_REFERENCE_MEAN(&DATA->SSRD);
+
 
 	DATA->T2M_MAX.values=ncdf_read_double_var(ncid, "T2M_MAX", &(DATA->T2M_MAX.length));
 		DATA->T2M_MAX.reference_mean=ncdf_read_double_attr(ncid, "T2M_MAX","reference_mean");
+                        DEFAULT_REFERENCE_MEAN(&DATA->T2M_MAX);
+
 
 	DATA->T2M_MIN.values=ncdf_read_double_var(ncid, "T2M_MIN", &(DATA->T2M_MIN.length));
 		DATA->T2M_MIN.reference_mean=ncdf_read_double_attr(ncid, "T2M_MIN","reference_mean");
+                        DEFAULT_REFERENCE_MEAN(&DATA->T2M_MIN);
+
 
 	DATA->TIME_INDEX.values=ncdf_read_double_var(ncid, "time", &(DATA->TIME_INDEX.length));
-		DATA->TIME_INDEX.reference_mean=ncdf_read_double_attr(ncid, "time","reference_mean");
+		//DATA->TIME_INDEX.reference_mean=ncdf_read_double_attr(ncid, "time","reference_mean");
+
 
 	DATA->TOTAL_PREC.values=ncdf_read_double_var(ncid, "TOTAL_PREC", &(DATA->TOTAL_PREC.length));
 		DATA->TOTAL_PREC.reference_mean=ncdf_read_double_attr(ncid, "TOTAL_PREC","reference_mean");
+                                DEFAULT_REFERENCE_MEAN(&DATA->TOTAL_PREC);
+
 
 	DATA->VPD.values=ncdf_read_double_var(ncid, "VPD", &(DATA->VPD.length));
 		DATA->VPD.reference_mean=ncdf_read_double_attr(ncid, "VPD","reference_mean");
+                                DEFAULT_REFERENCE_MEAN(&DATA->VPD);
 
 	DATA->BURNED_AREA.values=ncdf_read_double_var(ncid, "BURNED_AREA", &(DATA->BURNED_AREA.length));
                 DATA->BURNED_AREA.reference_mean=ncdf_read_double_attr(ncid, "BURNED_AREA","reference_mean");
+                                                DEFAULT_REFERENCE_MEAN(&DATA->BURNED_AREA);
+
 
 	DATA->CO2.values=ncdf_read_double_var(ncid, "CO2", &(DATA->CO2.length));
 		DATA->CO2.reference_mean=ncdf_read_double_attr(ncid, "CO2","reference_mean");
+                                                DEFAULT_REFERENCE_MEAN(&DATA->CO2);
 
+        
 	DATA->DOY.values=ncdf_read_double_var(ncid, "DOY", &(DATA->DOY.length));
-		DATA->DOY.reference_mean=ncdf_read_double_attr(ncid, "DOY","reference_mean");
+		//DATA->DOY.reference_mean=ncdf_read_double_attr(ncid, "DOY","reference_mean");
 
         
         
