@@ -236,49 +236,6 @@ CARDADATA->parmax[P.melt_slope]=1;
 CARDADATA->parmin[P.scf_scalar]=0.001;
 CARDADATA->parmax[P.scf_scalar]=1000.0;
 
-/*Mean temperature at leaf onset (T_phi) (degrees kelvin)*/
-CARDADATA->parmin[P.T_phi]=268.15;
-CARDADATA->parmax[P.T_phi]=323.15;
-
-/*Spatial range of mean temperature at leaf onset (T_r) (degrees C or degrees kelvin)*/
-CARDADATA->parmin[P.T_range]=0.1;
-CARDADATA->parmax[P.T_range]=10.0;
-
-/*Averaging period for temperature growth trigger T (time units of model), usually kept constant*/
-CARDADATA->parmin[P.tau_m]=1.0;
-CARDADATA->parmax[P.tau_m]=1.01;
-
-/*LAI linear growth constant (inverse of model time units; e.g. days-1 or months-1)*/
-CARDADATA->parmin[P.plgr]=0.001;
-CARDADATA->parmax[P.plgr]=0.5;
-
-/*Inverse of leaf longevity during senescence period (inverse of model time units; e.g. days-1 or months-1)*/
-CARDADATA->parmin[P.k_leaf]=0.001;
-CARDADATA->parmax[P.k_leaf]=0.5;
-
-/*Intrinsic maximum LAI (m^2 m^-2)*/
-CARDADATA->parmin[P.lambda_max]=0.1;
-CARDADATA->parmax[P.lambda_max]=10.0;
-
-/*Target survival time for LAI under water-deficit conditions (days; or same unit as ET and PAW)*/
-CARDADATA->parmin[P.tau_W]=0.1;
-CARDADATA->parmax[P.tau_W]=300;
-
-/*Mean daylength at leaf shedding (t_c; in units of hours sunlight per day)*/
-CARDADATA->parmin[P.time_c]=2;
-CARDADATA->parmax[P.time_c]=22;
-
-/*Spatial range of mean daylength at leaf shedding (t_r)*/
-CARDADATA->parmin[P.time_r]=0.1;
-CARDADATA->parmax[P.time_r]=6.0;
-
-/*initialization of temperature memory (fractional value between mintemp and maxtemp at t=0)*/
-CARDADATA->parmin[P.init_T_mem]=0.01;
-CARDADATA->parmax[P.init_T_mem]=1;
-
-/*initialization of water/structural memory (fractional value of intrinsic maximum LAI)*/
-CARDADATA->parmin[P.init_LAIW_mem]=0.01;
-CARDADATA->parmax[P.init_LAIW_mem]=1;
 
 return 0;
 
