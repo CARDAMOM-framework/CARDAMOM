@@ -36,8 +36,9 @@ end
 
 
 %Set some recommended uncertainties
-ncwriteatt(NC.fname,'SCF','opt_unc_type',1);
+ncwriteatt(NC.fname,'SCF','opt_unc_type',2);
     ncwriteatt(NC.fname,'SCF','single_unc',1.5);
+    ncwriteatt(NC.fname,'SCF','min_threshold',0.05);
 
 
 
