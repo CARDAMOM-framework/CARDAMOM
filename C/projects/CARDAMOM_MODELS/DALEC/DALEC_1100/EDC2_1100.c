@@ -102,8 +102,8 @@ double TOTAL_SNOW=0;
 for (n=0;n<N_timesteps;n++){TOTAL_PREC+=PREC[n];TOTAL_SNOW+=SNOWFALL[n];}
 
 
-double Fin[9];
-double Fout[9];
+double Fin[10];
+double Fout[10];
 double Pstart;
 double Pend;
 /*temporary print switch*/
