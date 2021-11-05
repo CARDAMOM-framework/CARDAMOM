@@ -203,16 +203,17 @@ OBSOPE.LAI_LCMA=P.LCMA;
 //ET variabiles
 OBSOPE.ET_flux=F.et;
 //NBE-specific variables
-static int NBE_fluxes[5];
+static int NBE_fluxes[6];
 NBE_fluxes[0]=F.gpp;
 NBE_fluxes[1]=F.resp_auto;
-NBE_fluxes[2]=F.resp_het_lit;
-NBE_fluxes[3]=F.resp_het_som;
-NBE_fluxes[4]=F.f_total;
+NBE_fluxes[2]=F.resp_het_cwd;
+NBE_fluxes[3]=F.resp_het_lit;
+NBE_fluxes[4]=F.resp_het_som;
+NBE_fluxes[5]=F.f_total;
 OBSOPE.NBE_fluxes=NBE_fluxes;
-static double NBE_flux_signs[]={-1.,1.,1.,1.,1.};
+static double NBE_flux_signs[]={-1.,1.,1.,1.,1.,1.};
 OBSOPE.NBE_flux_signs=NBE_flux_signs;
-OBSOPE.NBE_n_fluxes=5;
+OBSOPE.NBE_n_fluxes=6;
 
 //ABGB-specific variables
 static int ABGB_pools[4];
@@ -468,7 +469,7 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
         POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] +  (FLUXES[f+F.wood_prod] - FLUXES[f+F.wood2cwd])*deltat;
         POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.wood2cwd] - FLUXES[f+F.resp_het_cwd] - FLUXES[f+F.cwd2som])*deltat; 
         POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.root2lit] - FLUXES[f+F.resp_het_lit] - FLUXES[f+F.lit2som])*deltat; 
-        POOLS[nxp+S.C_som]= POOLS[p+S.C_som]+ (FLUXES[f+F.lit2som] - FLUXES[f+F.resp_het_som]+FLUXES[f+F.wood2cwd])*deltat;                    
+        POOLS[nxp+S.C_som]= POOLS[p+S.C_som]+ (FLUXES[f+F.lit2som] - FLUXES[f+F.resp_het_som]+FLUXES[f+F.cwd2som])*deltat;                    
 
 
 /*Snow water equivalent*/
