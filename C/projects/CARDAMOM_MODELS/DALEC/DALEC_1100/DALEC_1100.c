@@ -7,6 +7,7 @@
 #include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2CON.c"
 #include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI.c"
 #include "../../../DALEC_CODE/DALEC_ALL/LIU_An_et.c"
+#include "../../../DALEC_CODE/DALEC_ALL/CH4_MODULES/JCR.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
@@ -26,7 +27,7 @@ int t_root;
 int t_lit;
 int t_cwd;
 int t_soil;
-int temp_factor;
+int Q10rhco2;
 int Bday;
 int f_lab;
 int labile_rel;
@@ -72,13 +73,20 @@ int i_SWE;
 int min_melt;
 int melt_slope;
 int scf_scalar;
+int PAW_fs;
+int S_fv;
+int thetas_opt;
+int fwc;
+int r_ch4;
+int Q10ch4;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
-    50,51,52,53,54,55,56
+    50,51,52,53,54,55,56,57,58,59,
+    60,61,62
 };
 
 struct DALEC_1100_FLUXES{
@@ -124,12 +132,27 @@ int transp;   /*Transpiration*/
 int evap;   /*Evaporation*/
 int melt;   /*Snow melt*/
 int scf;   /*Snow cover fraction*/
+int ae_rh_cwd; /*Aerobic Rh from coarse woody debris*/
+int ae_rh_lit; /*Aerobic Rh from litter*/
+int ae_rh_som; /*aerobic Rh from SOM*/
+int an_rh_cwd; /*anaerobic Rh from coarse woody debris*/
+int an_rh_lit; /*anaerobic Rh from litter*/
+int an_rh_som; /*anaerobic Rh from SOM*/
+int rh_co2; /* */
+int rh_ch4; /* */
+int fV; /* Volumetric fraction of aerobic Rh */
+int fT; /*Temperature scaler*/
+int fW; /*Water scaler*/
+int fCH4; /*CH4 fraction in anaerobic C decomposition*/
+int soil_moist; /*thetas = PAW/PAW_fs fraction*/
+
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
-    40
+    40,41,42,43,44,45,46,47,48,49,
+    50,51,52,53
 };
 
 
@@ -171,8 +194,8 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=10;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=57;
-DALECmodel->nofluxes=41;
+DALECmodel->nopars=63;
+DALECmodel->nofluxes=54;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
@@ -188,7 +211,7 @@ OBSOPE.SUPPORT_ABGB_OBS=true;
 OBSOPE.SUPPORT_DOM_OBS=true;
 OBSOPE.SUPPORT_EWT_OBS=true;
 OBSOPE.SUPPORT_FIR_OBS=true;
-
+OBSOPE.SUPPORT_CH4_OBS=true;
 
 OBSOPE.SUPPORT_CUE_OBS=true;
 //Provide values required by each OBS operator
@@ -203,17 +226,15 @@ OBSOPE.LAI_LCMA=P.LCMA;
 //ET variabiles
 OBSOPE.ET_flux=F.et;
 //NBE-specific variables
-static int NBE_fluxes[6];
+static int NBE_fluxes[4];
 NBE_fluxes[0]=F.gpp;
 NBE_fluxes[1]=F.resp_auto;
-NBE_fluxes[2]=F.resp_het_cwd;
-NBE_fluxes[3]=F.resp_het_lit;
-NBE_fluxes[4]=F.resp_het_som;
-NBE_fluxes[5]=F.f_total;
+NBE_fluxes[2]=F.rh_co2;
+NBE_fluxes[3]=F.f_total;
 OBSOPE.NBE_fluxes=NBE_fluxes;
-static double NBE_flux_signs[]={-1.,1.,1.,1.,1.,1.};
+static double NBE_flux_signs[]={-1.,1.,1.,1.};
 OBSOPE.NBE_flux_signs=NBE_flux_signs;
-OBSOPE.NBE_n_fluxes=6;
+OBSOPE.NBE_n_fluxes=4;
 
 //ABGB-specific variables
 static int ABGB_pools[4];
@@ -311,7 +332,9 @@ double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MI
 double meanrad = DATA.ncdf_data.SSRD.reference_mean;
 double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
 
-
+/* jc prep input for methane module*/
+double ch4pars[8]={pars[P.PAW_fs],pars[P.S_fv],pars[P.thetas_opt],pars[P.fwc],pars[P.r_ch4],pars[P.Q10ch4],pars[P.Q10rhco2],meantemp};
+ 
 
 /*constants for exponents of leaffall and labrelease factors*/
 /*width*/
@@ -427,7 +450,7 @@ FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
 
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
-FLUXES[f+F.temprate]=exp(pars[P.temp_factor]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp))*((PREC[n]/meanprec-1)*pars[P.moisture]+1);
+FLUXES[f+F.temprate]=pow(pars[P.Q10rhco2],(0.5*(T2M_MIN[n]+T2M_MAX[n])-meantemp)/10)*((PREC[n]/meanprec-1)*pars[P.moisture]+1);
 /*respiration auto*/
 FLUXES[f+F.resp_auto]=pars[P.f_auto]*FLUXES[f+F.gpp];
 /*leaf production*/
@@ -452,10 +475,46 @@ FLUXES[f+F.wood2cwd] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
 FLUXES[f+F.root2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
 /*respiration heterotrophic CWD*/
 FLUXES[f+F.resp_het_cwd] = POOLS[p+S.C_cwd]*(1-pow(1-FLUXES[f+F.temprate]*pars[P.t_cwd],deltat))/deltat;
-/*respiration heterotrophic litter*/
+/*nominaly there, not actual fluxes respiration heterotrophic litter*/
 FLUXES[f+F.resp_het_lit] = POOLS[p+S.C_lit]*(1-pow(1-FLUXES[f+F.temprate]*pars[P.t_lit],deltat))/deltat;
-/*respiration heterotrophic SOM*/
+/*nominaly there, not actual fluxes respiration heterotrophic SOM*/
 FLUXES[f+F.resp_het_som] = POOLS[p+S.C_som]*(1-pow(1-FLUXES[f+F.temprate]*pars[P.t_soil],deltat))/deltat;
+
+/*-----------------------------------------------------------------------*/
+/*jc calculate aerobic and anaerobic respirations*/
+double *jcr_o = JCR(ch4pars,T2M_MIN[n],T2M_MAX[n],POOLS[S.H2O_PAW]);
+//outputformat
+//jcr_o 0-4 thetas,fT,fV,fW,fCH4; /*jc*/ /* output from JCR module */
+/* aerobic Rh from coarse woody debris*/
+FLUXES[f+F.ae_rh_cwd] = POOLS[p+S.C_cwd]*(1-pow(1-jcr_o[3]*jcr_o[1]*jcr_o[2]*pars[P.t_cwd],deltat))/deltat;
+/* anaerobic Rh from litter*/
+FLUXES[f+F.an_rh_lit] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.fwc]*jcr_o[1]*(1-jcr_o[2])*pars[P.t_lit],deltat))/deltat;
+/* aerobic Rh from SOM*/
+FLUXES[f+F.ae_rh_som] = POOLS[p+S.C_som]*(1-pow(1-jcr_o[3]*jcr_o[1]*jcr_o[2]*pars[P.t_soil],deltat))/deltat;
+/* aerobic Rh from coarse woody debris*/
+FLUXES[f+F.ae_rh_cwd] = POOLS[p+S.C_cwd]*(1-pow(1-jcr_o[3]*jcr_o[1]*jcr_o[2]*pars[P.t_cwd],deltat))/deltat;
+/* anaerobic Rh from litter*/
+FLUXES[f+F.an_rh_lit] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.fwc]*jcr_o[1]*(1-jcr_o[2])*pars[P.t_lit],deltat))/deltat;
+/* anaerobic Rh from SOM*/
+FLUXES[f+F.an_rh_som] = POOLS[p+S.C_som]*(1-pow(1-pars[P.fwc]*jcr_o[1]*(1-jcr_o[2])*pars[P.t_soil],deltat))/deltat;
+/* Rh_CO2*/
+FLUXES[f+F.rh_co2] = (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_som])*1+(FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_som])*(1-jcr_o[4]);
+/* Rh_CH4*/
+FLUXES[f+F.rh_ch4] = (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_som])*0+(FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_som])*jcr_o[4];
+/* fV Volumetric fraction of aerobic Rh*/
+FLUXES[f+F.fV] = jcr_o[2];
+/* fT Temperature scaler*/
+FLUXES[f+F.fT] = jcr_o[1];
+/* fW Water scaler*/
+FLUXES[f+F.fW] = jcr_o[3];
+/* fCH4 CH4 fraction*/
+FLUXES[f+F.fCH4] = jcr_o[4];
+/* PAW/PAW_fs thetas*/
+FLUXES[f+F.soil_moist] = jcr_o[0];
+/* CH4 production=TEMP*RH*WEXT*Q10 */
+/*FLUXES[f+32] = ch4pars[0]*(FLUXES[f+12]+FLUXES[f+13])*pow(ch4pars[1],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-15)/10)*ch4pars[2];*/
+/*----------------------  end of JCR  --------------------------------------------*/
+
 /*CWD to SOM*/
 FLUXES[f+F.cwd2som] = POOLS[p+S.C_cwd]*(1-pow(1-pars[P.tr_cwd2som]*FLUXES[f+F.temprate],deltat))/deltat;
 /*litter to SOM*/
@@ -467,9 +526,11 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
         POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.fol_prod] - FLUXES[f+F.fol2lit] + FLUXES[f+F.lab_release])*deltat;
         POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.root2lit])*deltat;
         POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] +  (FLUXES[f+F.wood_prod] - FLUXES[f+F.wood2cwd])*deltat;
-        POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.wood2cwd] - FLUXES[f+F.resp_het_cwd] - FLUXES[f+F.cwd2som])*deltat; 
-        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.root2lit] - FLUXES[f+F.resp_het_lit] - FLUXES[f+F.lit2som])*deltat; 
-        POOLS[nxp+S.C_som]= POOLS[p+S.C_som]+ (FLUXES[f+F.lit2som] - FLUXES[f+F.resp_het_som]+FLUXES[f+F.cwd2som])*deltat;                    
+        POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.wood2cwd] - FLUXES[f+F.ae_rh_cwd]-FLUXES[f+F.an_rh_cwd]-FLUXES[f+F.cwd2som])*deltat;
+        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.root2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som])*deltat;
+        POOLS[nxp+S.C_som] = POOLS[p+S.C_som] + (FLUXES[f+F.lit2som] - FLUXES[f+F.ae_rh_som] - FLUXES[f+F.an_rh_som] + FLUXES[f+F.cwd2som])*deltat;
+
+
 
 
 /*Snow water equivalent*/
