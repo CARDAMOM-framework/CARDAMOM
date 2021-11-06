@@ -60,9 +60,9 @@ CARDADATA->parmax[P.t_cwd]=0.005;
 CARDADATA->parmin[P.t_soil]=0.0000001;
 CARDADATA->parmax[P.t_soil]=0.001;
 
-/*Temp factor* = Q10 = 1.2-1.6*/
-CARDADATA->parmin[P.temp_factor]=0.018;
-CARDADATA->parmax[P.temp_factor]=0.08;
+/*\Q10 = 1.2-2.0*/
+CARDADATA->parmin[P.Q10rhco2]=1.2;
+CARDADATA->parmax[P.Q10rhco2]=2.0;
 
 /*Bday*/
 CARDADATA->parmin[P.Bday]=365.25;
@@ -247,6 +247,31 @@ CARDADATA->parmax[P.melt_slope]=1;
 /*sn3: snow cover fraction scalar*/
 CARDADATA->parmin[P.scf_scalar]=0.001;
 CARDADATA->parmax[P.scf_scalar]=1000.0;
+
+/* jc PAW_fs   fully saturated PAW*/
+CARDADATA->parmin[P.PAW_fs]=10.0;
+CARDADATA->parmax[P.PAW_fs]=100000.0;
+
+/* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)*/
+/*jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
+CARDADATA->parmin[P.S_fv]=1;
+CARDADATA->parmax[P.S_fv]=100.0;
+
+/* jc thetas_opt   optimum thetas for water scaler fW*/
+CARDADATA->parmin[P.thetas_opt]=0.2;
+CARDADATA->parmax[P.thetas_opt]=1.0;
+
+/* jc fwc the water scaler fW value at the end point C  */
+CARDADATA->parmin[P.fwc]=0.01;
+CARDADATA->parmax[P.fwc]=1.0;
+
+/* jc r_ch4   CH4:CO2 conversion ratio*/
+CARDADATA->parmin[P.r_ch4]=0.001;
+CARDADATA->parmax[P.r_ch4]=0.9;
+
+/* jc Q10ch4 Q10 for CH4 production  */
+CARDADATA->parmin[P.Q10ch4]=1.0;
+CARDADATA->parmax[P.Q10ch4]=3.0;
 
 return 0;
 
