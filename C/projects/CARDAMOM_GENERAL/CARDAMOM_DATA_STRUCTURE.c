@@ -21,6 +21,7 @@ double *M_PARS;
 double *M_ABGB;
 double *M_CH4;
 double *M_ET;
+double *M_ROFF;
 double *M_EWT;
 double *M_GPP;
 double *M_LAI;

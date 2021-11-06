@@ -206,6 +206,7 @@ INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 OBSOPE.SUPPORT_GPP_OBS=true;
 OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
+OBSOPE.SUPPORT_ROFF_OBS=true;
 OBSOPE.SUPPORT_NBE_OBS=true;
 OBSOPE.SUPPORT_ABGB_OBS=true;
 OBSOPE.SUPPORT_DOM_OBS=true;
@@ -225,6 +226,15 @@ OBSOPE.LAI_foliar_pool=S.C_fol;
 OBSOPE.LAI_LCMA=P.LCMA;
 //ET variabiles
 OBSOPE.ET_flux=F.et;
+//Runoff variables
+static int ROFF_fluxes[3];
+ROFF_fluxes[0]=F.q_paw;
+ROFF_fluxes[1]=F.q_puw;
+ROFF_fluxes[2]=F.q_surf;
+OBSOPE.ROFF_fluxes=ROFF_fluxes;
+static double ROFF_flux_signs[]={1.,1.,1.};
+OBSOPE.ROFF_flux_signs=ROFF_flux_signs;
+OBSOPE.ROFF_n_fluxes=3;
 //NBE-specific variables
 static int NBE_fluxes[4];
 NBE_fluxes[0]=F.gpp;
