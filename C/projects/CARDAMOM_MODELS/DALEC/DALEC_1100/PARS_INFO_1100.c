@@ -16,9 +16,13 @@ int PARS_INFO_1100(DATA *CARDADATA)
 
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 
-/*Decomposition rate*/
+/*Litter decomposition rate*/
 CARDADATA->parmin[P.tr_lit2soil]=0.00001;
 CARDADATA->parmax[P.tr_lit2soil]=0.01;
+
+/*CWD decomposition rate*/
+CARDADATA->parmin[P.tr_cwd2som]=0.00001;
+CARDADATA->parmax[P.tr_cwd2som]=0.01;
 
 /*Fraction of GPP respired*/
 CARDADATA->parmin[P.f_auto]=0.2;
@@ -47,6 +51,10 @@ CARDADATA->parmax[P.t_root]=0.01;
 /*TOR litter*/
 CARDADATA->parmin[P.t_lit]=0.0001;
 CARDADATA->parmax[P.t_lit]=0.01;
+
+/*TOR CWD*/
+CARDADATA->parmin[P.t_cwd]=0.00005;
+CARDADATA->parmax[P.t_cwd]=0.005;
 
 /*TOR SOM*/
 CARDADATA->parmin[P.t_soil]=0.0000001;
@@ -100,6 +108,10 @@ CARDADATA->parmax[P.i_root]=2000.0;
 CARDADATA->parmin[P.i_wood]=1.0;
 CARDADATA->parmax[P.i_wood]=100000.0;
 
+/*C CWD*/
+CARDADATA->parmin[P.i_cwd]=1.0;
+CARDADATA->parmax[P.i_cwd]=100000.0;
+
 /*C litter*/
 CARDADATA->parmin[P.i_lit]=1.0;
 CARDADATA->parmax[P.i_lit]=2000.0;
@@ -149,8 +161,8 @@ CARDADATA->parmin[P.hydr_cond]=0.0000001;
 CARDADATA->parmax[P.hydr_cond]=0.00001;
 
 /*Maximum infiltration (mm/day)*/
-CARDADATA->parmin[P.max_infil]=0.0005;
-CARDADATA->parmax[P.max_infil]=50;
+CARDADATA->parmin[P.max_infil]=0.01;
+CARDADATA->parmax[P.max_infil]=100;
 
 /*PUW pool*/
 CARDADATA->parmin[P.i_PUW]=1;
