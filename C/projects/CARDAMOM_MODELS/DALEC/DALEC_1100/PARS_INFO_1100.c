@@ -248,10 +248,6 @@ CARDADATA->parmax[P.melt_slope]=1;
 CARDADATA->parmin[P.scf_scalar]=0.001;
 CARDADATA->parmax[P.scf_scalar]=1000.0;
 
-/* jc PAW_fs   fully saturated PAW*/
-CARDADATA->parmin[P.PAW_fs]=10.0;
-CARDADATA->parmax[P.PAW_fs]=100000.0;
-
 /* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)*/
 /*jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
 CARDADATA->parmin[P.S_fv]=1;
