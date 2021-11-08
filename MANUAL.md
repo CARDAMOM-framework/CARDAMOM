@@ -583,7 +583,8 @@ Example: Check GPP, ET, LAI and biomass observations (which are physically only 
 + Opt for cost function coniguration which tolerates negative values (not recommended unless necessary).
 
 
-
+## Troubleshooting new C code
+-make sure new array is declared with malloc or calloc
 
 
 ## Appendix <a name="appendix"/>
