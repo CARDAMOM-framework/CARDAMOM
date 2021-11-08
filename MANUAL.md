@@ -43,6 +43,7 @@
   * [Frequently encountered issues & solutions (FEIs…?)]
 
 - [Troubleshooting CARDAMOM runs: "my CARDAMOM run doesn't work”](#troubleshoot)
+  * [Troubleshooting new C code]
 
 - [Appendix](#appendix)
   * [CARDAMOM model library](#cardamom-model-library)
@@ -583,7 +584,7 @@ Example: Check GPP, ET, LAI and biomass observations (which are physically only 
 + Opt for cost function coniguration which tolerates negative values (not recommended unless necessary).
 
 
-## Troubleshooting new C code
+### Troubleshooting new C code
 -make sure new array is declared with malloc or calloc
 
 
