@@ -18,42 +18,42 @@ MD1005=CARDAMOM_MODEL_LIBRARY(1005);
 LAI=0.1:0.1:10;
 %pars1100=repmat(exp(log(MD.parmin)*0.5+log(MD.parmax)*0.5),[numel(LAI),1]);
 pars1100=repmat(exp(log(MD1100.parmin)*0.5+log(MD1100.parmax)*0.5),[numel(LAI),1]);
+pars1005=repmat(exp(log(MD1005.parmin)*0.5+log(MD1005.parmax)*0.5),[numel(LAI),1]);
 
 
 %ones(numel(LAI),54);
 
-g1=1;
+g1=4.;
 vcmax25=60;
 tminmin=-20+273;
 tminmax=1+273;
-ga=2;
+ga=2.;
 %Tupp=315;
 Tupp=299;
 %Tdown=275;
 Tdown=263;
-C3_frac=1;
+C3_frac=1.;
 CI=0.48;
 LSA=0.1;
 
-pars1100(:,41)=g1;
-pars1100(:,42)=vcmax25;
-pars1100(:,43)=tminmin;
-pars1100(:,44)=tminmax;
-pars1100(:,45)=ga;
-pars1100(:,46)=Tupp;
-pars1100(:,47)=Tdown;
-pars1100(:,48)=C3_frac;
-pars1100(:,49)=CI;
-pars1100(:,50)=LSA;
-pars1100(:,16)=100;%LCMA
-pars1100(:,18)=pars1100(:,16).*LAI';
-
+pars1100(:,44)=g1;
+pars1100(:,45)=vcmax25;
+pars1100(:,46)=tminmin;
+pars1100(:,47)=tminmax;
+pars1100(:,48)=ga;
+pars1100(:,49)=Tupp;
+pars1100(:,50)=Tdown;
+pars1100(:,51)=C3_frac;
+pars1100(:,52)=CI;
+pars1100(:,53)=LSA;
+pars1100(:,18)=100;%LCMA
+pars1100(:,20)=pars1100(:,18).*LAI';
 
 CBR1100=CARDAMOM_RUN_MODEL(CBFsubset1100,pars1100);
 
 CBFsubset1005=CBFsubset;CBFsubset1005.ID.values=1005;
 
-pars1005=ones(numel(LAI),37);
+%pars1005=ones(numel(LAI),37);
 pars1005(:,17)=100;
 pars1005(:,11)=20;
 pars1005(:,19)=pars1005(:,17).*LAI';
@@ -71,8 +71,9 @@ xlabel('LAI [m2/m2]')
 ylabel('GPP [gC/m2/d]')
 subplot(2,2,2)
 hold on
-plot(LAI,CBR1100.GPP,'b.-');
-legend('New GPP','ACM GPP')
+plot(LAI,CBR1100.ET,'b.-');
+plot(LAI,CBR1005.ET,'r.-');
+legend('New ET','ACM ET')
 xlabel('LAI [m2/m2]')
-ylabel('GPP [gC/m2/d]')
+ylabel('ET [mm/d]')
 
