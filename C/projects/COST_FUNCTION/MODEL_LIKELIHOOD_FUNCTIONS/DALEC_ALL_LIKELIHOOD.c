@@ -12,6 +12,7 @@ struct PROBABILITY_INDICES{
         int ABGB;
         int CH4;
         int ET;
+        int ROFF;
         int EWT;
         int GPP;
         int LAI;
@@ -26,7 +27,7 @@ struct PROBABILITY_INDICES{
         int PEQ_Cefficiency;
         int PEQ_CUE;} PROBABILITY_INDICES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-    10,11,12,13};
+    10,11,12,13,14};
 
 
 
@@ -115,12 +116,15 @@ DALEC_OBSOPE(&D,O);
 
 //printf("About to calculate likelihoods...\n");
 
+
+
 //printf("O->SUPPORT_LAI_OBS = %d\n",O->SUPPORT_LAI_OBS);
 
 //if (O->SUPPORT_ET_OBS){   P=P+DALEC_LIKELIHOOD_ET(D);}
 if (O->SUPPORT_ABGB_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ABGB, D.M_ABGB);};
 if (O->SUPPORT_CH4_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.CH4, D.M_CH4);};
 if (O->SUPPORT_ET_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ET, D.M_ET);};
+if (O->SUPPORT_ROFF_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ROFF, D.M_ROFF);};
 if (O->SUPPORT_EWT_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.EWT, D.M_EWT);};
 if (O->SUPPORT_GPP_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.GPP, D.M_GPP);};
 if (O->SUPPORT_LAI_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.LAI, D.M_LAI);};

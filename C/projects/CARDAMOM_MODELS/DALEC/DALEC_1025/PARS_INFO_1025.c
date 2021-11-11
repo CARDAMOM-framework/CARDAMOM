@@ -1,5 +1,5 @@
 #pragma once
-#include "DALEC_1060.c"
+#include "DALEC_1025.c"
 
 /*PARAMETER_INFO (typedef struct) must have at least 3 fields
  *  * npars,
@@ -10,10 +10,10 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1060(DATA *CARDADATA)
+int PARS_INFO_1025(DATA *CARDADATA)
 {
 
-struct DALEC_1060_PARAMETERS P=DALEC_1060_PARAMETERS;
+struct DALEC_1025_PARAMETERS P=DALEC_1025_PARAMETERS;
 
 /*Decomposition rate*/
 CARDADATA->parmin[P.tr_lit2soil]=0.00001;
@@ -112,12 +112,14 @@ CARDADATA->parmin[P.i_soil]=1.0;
 CARDADATA->parmax[P.i_soil]=200000.0;
 
 /*uWUE: GPP*sqrt(VPD)/ET: gC/kgH2o *hPa*/
+/*The chosen prior range in r conservatively captures the range of values by Boese et al.(2017)*/
+
 CARDADATA->parmin[P.uWUE]=0.5;
 CARDADATA->parmax[P.uWUE]=30;
 
-/*Retention parameter (b)*/
-CARDADATA->parmin[P.retention]=1.5;
-CARDADATA->parmax[P.retention]=10;
+/*Runoff focal point (~maximum soil storage capacity x 4)*/
+CARDADATA->parmin[P.PAW_Qmax]=1;
+CARDADATA->parmax[P.PAW_Qmax]=100000;
 
 /*"Wilting point"*/
 CARDADATA->parmin[P.wilting]=1;
@@ -151,13 +153,13 @@ CARDADATA->parmax[P.t_labile]=8;
 CARDADATA->parmin[P.moisture]=0.01;
 CARDADATA->parmax[P.moisture]=1;
 
-/*Saturated hydraulic conductivity (m/s)*/
-CARDADATA->parmin[P.hydr_cond]=0.0000001;
-CARDADATA->parmax[P.hydr_cond]=0.00001;
+/*PAW->PUW runoff fraction*/
+CARDADATA->parmin[P.h2o_xfer]=0.01;
+CARDADATA->parmax[P.h2o_xfer]=1;
 
-/*Maximum infiltration (mm/day)*/
-CARDADATA->parmin[P.max_infil]=0.01;
-CARDADATA->parmax[P.max_infil]=100;
+/*PUW Runoff focal point (~maximum soil storage capacity x 4)*/
+CARDADATA->parmin[P.PUW_Qmax]=1;
+CARDADATA->parmax[P.PUW_Qmax]=100000;
 
 /*PUW pool*/
 CARDADATA->parmin[P.i_PUW]=1;
@@ -167,37 +169,49 @@ CARDADATA->parmax[P.i_PUW]=10000;
 CARDADATA->parmin[P.boese_r]=0.01;
 CARDADATA->parmax[P.boese_r]=0.3;
 
-/*Reference VPD */
-CARDADATA->parmin[P.vpd_ref]=10;
-CARDADATA->parmax[P.vpd_ref]=10000;
+/*Mean temperature at leaf onset (T_phi) (degrees kelvin)*/
+CARDADATA->parmin[P.T_phi]=268.15;
+CARDADATA->parmax[P.T_phi]=323.15;
 
-/*VPD curvature exponent */
-CARDADATA->parmin[P.vpd_exp]=0.001;
-CARDADATA->parmax[P.vpd_exp]=1000;
+/*Spatial range of mean temperature at leaf onset (T_r) (degrees C or degrees kelvin)*/
+CARDADATA->parmin[P.T_range]=0.1;
+CARDADATA->parmax[P.T_range]=10.0;
 
-/*PAW porosity*/
-CARDADATA->parmin[P.PAW_por]=0.2;
-CARDADATA->parmax[P.PAW_por]=0.8;
+/*Averaging period for temperature growth trigger T (time units of model), usually kept constant*/
+CARDADATA->parmin[P.tau_m]=1.0;
+CARDADATA->parmax[P.tau_m]=1.01;
 
-/*PUW porosity*/
-CARDADATA->parmin[P.PUW_por]=0.2;
-CARDADATA->parmax[P.PUW_por]=0.8;
+/*LAI linear growth constant (inverse of model time units; e.g. days-1 or months-1)*/
+CARDADATA->parmin[P.plgr]=0.001;
+CARDADATA->parmax[P.plgr]=0.5;
 
-/*Field capacity (negative) potential (-Mpa)*/
-CARDADATA->parmin[P.field_cap]=0.01;
-CARDADATA->parmax[P.field_cap]=0.1;
+/*Inverse of leaf longevity during senescence period (inverse of model time units; e.g. days-1 or months-1)*/
+CARDADATA->parmin[P.k_leaf]=0.001;
+CARDADATA->parmax[P.k_leaf]=0.5;
 
-/*PAW depth (m)*/
-CARDADATA->parmin[P.PAW_z]=0.01;
-CARDADATA->parmax[P.PAW_z]=100;
+/*Intrinsic maximum LAI (m^2 m^-2)*/
+CARDADATA->parmin[P.lambda_max]=0.1;
+CARDADATA->parmax[P.lambda_max]=10.0;
 
-/*PUW depth (m)*/
-CARDADATA->parmin[P.PUW_z]=0.01;
-CARDADATA->parmax[P.PUW_z]=100;
+/*Target survival time for LAI under water-deficit conditions (days; or same unit as ET and PAW)*/
+CARDADATA->parmin[P.tau_W]=0.1;
+CARDADATA->parmax[P.tau_W]=300;
 
-/*Runoff excess*/
-CARDADATA->parmin[P.Q_excess]=0.01;
-CARDADATA->parmax[P.Q_excess]=1;
+/*Mean daylength at leaf shedding (t_c; in units of hours sunlight per day)*/
+CARDADATA->parmin[P.time_c]=2;
+CARDADATA->parmax[P.time_c]=22;
+
+/*Spatial range of mean daylength at leaf shedding (t_r)*/
+CARDADATA->parmin[P.time_r]=0.1;
+CARDADATA->parmax[P.time_r]=6.0;
+
+/*initialization of temperature memory (fractional value between mintemp and maxtemp at t=0)*/
+CARDADATA->parmin[P.init_T_mem]=0.01;
+CARDADATA->parmax[P.init_T_mem]=1;
+
+/*initialization of water/structural memory (fractional value of intrinsic maximum LAI)*/
+CARDADATA->parmin[P.init_LAIW_mem]=0.01;
+CARDADATA->parmax[P.init_LAIW_mem]=1;
 
 return 0;
 

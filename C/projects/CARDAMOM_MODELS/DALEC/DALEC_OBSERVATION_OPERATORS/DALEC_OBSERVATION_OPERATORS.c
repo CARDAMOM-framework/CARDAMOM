@@ -16,6 +16,10 @@ int LAI_foliar_pool;
 int LAI_LCMA;
 bool SUPPORT_ET_OBS;
 int ET_flux;
+bool SUPPORT_ROFF_OBS;
+int * ROFF_fluxes;
+double *ROFF_flux_signs;
+int ROFF_n_fluxes;
 bool SUPPORT_NBE_OBS;
 int * NBE_fluxes;
 double *NBE_flux_signs;
@@ -43,6 +47,10 @@ bool SUPPORT_CUE_OBS;
 int CUE_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
         
+bool SUPPORT_iniSOM_OBS;
+int iniSOM_PARAM;//This is assuming it's a single parameter
+//Can add more parameters OR options
+
 
 }OBSOPE;
 
@@ -53,6 +61,7 @@ OBSOPE->SUPPORT_CH4_OBS=false;
 OBSOPE->SUPPORT_GPP_OBS=false;
 OBSOPE->SUPPORT_LAI_OBS=false;
 OBSOPE->SUPPORT_ET_OBS=false;
+OBSOPE->SUPPORT_ROFF_OBS=false;
 OBSOPE->SUPPORT_NBE_OBS=false;
 OBSOPE->SUPPORT_ABGB_OBS=false;
 OBSOPE->SUPPORT_DOM_OBS=false;
@@ -62,6 +71,7 @@ OBSOPE->SUPPORT_FIR_OBS=false;
 
 OBSOPE->SUPPORT_Cefficiency_OBS=false;
 OBSOPE->SUPPORT_CUE_OBS=false;
+OBSOPE->SUPPORT_iniSOM_OBS=false;
 
 
 
@@ -122,6 +132,23 @@ if (TOBS.valid_obs_length>0){int n;for (n=0;n<N;n++){D->M_ET[n]=D->M_FLUXES[D->n
 
 return 0;}
 
+// Runoff operator
+
+int DALEC_OBSOPE_ROFF(DATA * D, OBSOPE * O){
+
+int N=D->ncdf_data.TIME_INDEX.length;
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.ROFF;
+
+
+if (TOBS.valid_obs_length>0){
+int n,nn;
+for (n=0;n<N;n++){
+D->M_ROFF[n]=0;
+for (nn=0;nn<O->ROFF_n_fluxes;nn++){
+D->M_ROFF[n]+=D->M_FLUXES[D->nofluxes*n+O->ROFF_fluxes[nn]]*O->ROFF_flux_signs[nn];}}};
+
+
+return 0;}
 
 
 
@@ -217,6 +244,8 @@ int DALEC_OBSOPE_LAI(DATA * D, OBSOPE * O){
 
 int N=D->ncdf_data.TIME_INDEX.length;
 
+
+
 //Time varying GPP and mean GPP
 TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.LAI;
 SINGLE_OBS_STRUCT SOBS=D->ncdf_data.Mean_LAI;
@@ -288,6 +317,14 @@ return 0;
 
 }
 
+int DALEC_OBSOPE_iniSOM(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_iniSOM;
+if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_iniSOM=D->M_PARS[O->iniSOM_PARAM];}
+return 0;
+
+}
+
+
 
 ///Full observation operator
 int DALEC_OBSOPE(DATA * D, OBSOPE * O){
@@ -296,6 +333,7 @@ if (O->SUPPORT_CH4_OBS){DALEC_OBSOPE_CH4(D, O);}
 if (O->SUPPORT_GPP_OBS){DALEC_OBSOPE_GPP(D, O);}
 if (O->SUPPORT_LAI_OBS){DALEC_OBSOPE_LAI(D, O);}
 if (O->SUPPORT_ET_OBS){DALEC_OBSOPE_ET(D, O);}
+if (O->SUPPORT_ROFF_OBS){DALEC_OBSOPE_ROFF(D, O);}
 if (O->SUPPORT_NBE_OBS){DALEC_OBSOPE_NBE(D, O);}
 if (O->SUPPORT_ABGB_OBS){DALEC_OBSOPE_ABGB(D, O);}
 if (O->SUPPORT_DOM_OBS){DALEC_OBSOPE_DOM(D, O);}
@@ -306,9 +344,10 @@ if (O->SUPPORT_FIR_OBS){DALEC_OBSOPE_FIR(D, O);}
 
 if (O->SUPPORT_Cefficiency_OBS){DALEC_OBSOPE_Cefficiency(D, O);}
 if (O->SUPPORT_CUE_OBS){DALEC_OBSOPE_CUE(D, O);}
+if (O->SUPPORT_iniSOM_OBS){DALEC_OBSOPE_iniSOM(D, O);}
 
 
-return 0;}
+return 0;}  
 
 
 

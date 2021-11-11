@@ -16,9 +16,13 @@ int PARS_INFO_1100(DATA *CARDADATA)
 
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 
-/*Decomposition rate*/
+/*Litter decomposition rate*/
 CARDADATA->parmin[P.tr_lit2soil]=0.00001;
 CARDADATA->parmax[P.tr_lit2soil]=0.01;
+
+/*CWD decomposition rate*/
+CARDADATA->parmin[P.tr_cwd2som]=0.00001;
+CARDADATA->parmax[P.tr_cwd2som]=0.01;
 
 /*Fraction of GPP respired*/
 CARDADATA->parmin[P.f_auto]=0.2;
@@ -48,13 +52,17 @@ CARDADATA->parmax[P.t_root]=0.01;
 CARDADATA->parmin[P.t_lit]=0.0001;
 CARDADATA->parmax[P.t_lit]=0.01;
 
+/*TOR CWD*/
+CARDADATA->parmin[P.t_cwd]=0.00005;
+CARDADATA->parmax[P.t_cwd]=0.005;
+
 /*TOR SOM*/
 CARDADATA->parmin[P.t_soil]=0.0000001;
 CARDADATA->parmax[P.t_soil]=0.001;
 
-/*Temp factor* = Q10 = 1.2-1.6*/
-CARDADATA->parmin[P.temp_factor]=0.018;
-CARDADATA->parmax[P.temp_factor]=0.08;
+/*\Q10 = 1.2-2.0*/
+CARDADATA->parmin[P.Q10rhco2]=1.2;
+CARDADATA->parmax[P.Q10rhco2]=2.0;
 
 /*Bday*/
 CARDADATA->parmin[P.Bday]=365.25;
@@ -99,6 +107,10 @@ CARDADATA->parmax[P.i_root]=2000.0;
 /*C_wood*/
 CARDADATA->parmin[P.i_wood]=1.0;
 CARDADATA->parmax[P.i_wood]=100000.0;
+
+/*C CWD*/
+CARDADATA->parmin[P.i_cwd]=1.0;
+CARDADATA->parmax[P.i_cwd]=100000.0;
 
 /*C litter*/
 CARDADATA->parmin[P.i_lit]=1.0;
@@ -150,7 +162,7 @@ CARDADATA->parmax[P.hydr_cond]=0.00001;
 
 /*Maximum infiltration (mm/day)*/
 CARDADATA->parmin[P.max_infil]=1;
-CARDADATA->parmax[P.max_infil]=1e4;
+CARDADATA->parmax[P.max_infil]=100;
 
 /*PUW pool*/
 CARDADATA->parmin[P.i_PUW]=1;
@@ -235,6 +247,27 @@ CARDADATA->parmax[P.melt_slope]=1;
 /*sn3: snow cover fraction scalar*/
 CARDADATA->parmin[P.scf_scalar]=0.001;
 CARDADATA->parmax[P.scf_scalar]=1000.0;
+
+/* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)*/
+/*jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
+CARDADATA->parmin[P.S_fv]=1;
+CARDADATA->parmax[P.S_fv]=100.0;
+
+/* jc thetas_opt   optimum thetas for water scaler fW*/
+CARDADATA->parmin[P.thetas_opt]=0.2;
+CARDADATA->parmax[P.thetas_opt]=1.0;
+
+/* jc fwc the water scaler fW value at the end point C  */
+CARDADATA->parmin[P.fwc]=0.01;
+CARDADATA->parmax[P.fwc]=1.0;
+
+/* jc r_ch4   CH4:CO2 conversion ratio*/
+CARDADATA->parmin[P.r_ch4]=0.001;
+CARDADATA->parmax[P.r_ch4]=0.9;
+
+/* jc Q10ch4 Q10 for CH4 production  */
+CARDADATA->parmin[P.Q10ch4]=1.0;
+CARDADATA->parmax[P.Q10ch4]=3.0;
 
 return 0;
 

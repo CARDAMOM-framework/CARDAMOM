@@ -38,7 +38,7 @@
 
 
 
-
+disp('DEMO files are created using CARDAMOM_v3_MAKE_EXAMPLE_NC_FILE_SEP21.m')
 
 
 %%%%%*********Test 1 ************ 
@@ -46,13 +46,24 @@ nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
 CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
 disp('Successfully read file using "CARDAMOM_READ_NC_CBF_FILE" ...')
 %************ set all fields to NAN*****
-CBF.ID.values=1005;
-CBF.MCMCID.seed_number=1;
+
 nccbffilename1005='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype_1005.cbf.nc';
+nccbffilename821='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype_821.cbf.nc';
 
-CARDAMOM_WRITE_NC_CBF_FILE(CBF,nccbffilename1005);
+ CBF1005=CBF;CBF1005.ID.values=1005;
+ CBF821=CBF;CBF821.ID.values=821;
+%  CBF.MCMCID.values=119;
+%  CBF.MCMCID.nITERATIONS=1e6;
 
-        CBR=CARDAMOM_RUN_MDF(nccbffilename1005);
+CARDAMOM_WRITE_NC_CBF_FILE(CBF821,nccbffilename821);
+CARDAMOM_WRITE_NC_CBF_FILE(CBF1005,nccbffilename1005);
+
+CBR1005=CARDAMOM_RUN_MDF(nccbffilename1005);
+CBR821=CARDAMOM_RUN_MDF(nccbffilename821);
+
+disp('valgrind ./CARDAMOM/C/projects/CARDAMOM_MDF/CARDAMOM_MDF_debug.exe CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype_1005.cbf.nc testout.cbr')
+
+
 
 
         

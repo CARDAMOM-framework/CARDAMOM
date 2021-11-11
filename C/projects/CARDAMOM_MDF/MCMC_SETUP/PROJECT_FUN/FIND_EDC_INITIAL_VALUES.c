@@ -29,6 +29,10 @@ MCMC_OUTPUT MCOUT;
 int PEDCC,nn;
 
 
+//option for mcmcid = 3
+int nstartchains=10;
+        
+        
 MCOPT.APPEND=0;
 MCOPT.nADAPT=10;/*was 20*/
 MCOPT.fADAPT=0.5;
@@ -147,7 +151,7 @@ while (PEDC!=0){
 	
 	if (MCOPT.mcmcid==2 && PEDCC>MCOPT.nchains){PEDC=0;}
 	//Guarantee that at least half of chains have non-zero starting probabilities
-	if (MCOPT.mcmcid==3){if (PEDCC>MCOPT.nchains/2){PEDC=0;}else{PEDC=-1;}}
+	if (MCOPT.mcmcid==3){if (PEDCC>nstartchains){PEDC=0;}else{PEDC=-1;}}
 	if (MCOPT.mcmcid==2 || MCOPT.mcmcid==3){MCOPT.randparini=0;}	
 	/*Hard coding*/
 	

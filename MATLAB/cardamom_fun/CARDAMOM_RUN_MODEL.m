@@ -1,4 +1,4 @@
- function [CBR,CBF]=CARDAMOM_RUN_MODEL(CBF,PARS,OPT);
+ function [CBR,CBF]=CARDAMOM_RUN_MODEL(CBFin,PARS,OPT);
 %CBR=CARDAMOM_RUN_MODEL(CBF,PARS,compile,extended)
 %
 %INPUTS:
@@ -24,7 +24,7 @@
 
 
 %"STORE" option allows for files to be stored and to be re-read later on
-
+CBF=CBFin;
 
 
     
@@ -87,7 +87,7 @@ if ischar(CBF);
         CBF=CARDAMOM_READ_NC_CBF_FILE(cbffile);
     %parameter file
     %
-        OPT.MODEL.ID=CBF.ID;
+        OPT.MODEL.ID=CBF.ID.values;
         end
     end
     %MA=CARDAMOM_MODEL_LIBRARY_OLD(CBF);
@@ -254,6 +254,9 @@ if OPT.extended==1
     if OPT.MODEL.ID==101;
         %LMA is par 11
     CBR.LAI=CBR.POOLS(:,:,2)./repmat(PARS(:,11),[1,size(CBR.POOLS(:,:,2),2)]);
+    elseif OPT.MODEL.ID==1100;
+        %LMA is par 11
+    CBR.LAI=CBR.POOLS(:,:,2)./repmat(PARS(:,16),[1,size(CBR.POOLS(:,:,2),2)]);
     else
         %LMA is par 17
           CBR.LAI=CBR.POOLS(:,:,2)./repmat(PARS(:,17),[1,size(CBR.POOLS(:,:,2),2)]);
@@ -341,7 +344,7 @@ end
     
     
 
-if any(ismember([809,811,812,813,1000,1001,1002,1003,1005,1009,1030,1031,1032,1060],OPT.MODEL.ID))
+if any(ismember([809,811,812,813,1000,1001,1002,1003,1005,1009,1030,1031,1032,1060,1100,1012],OPT.MODEL.ID))
 
     %export ET 
     CBR.ET=CBR.FLUXES(:,:,29);

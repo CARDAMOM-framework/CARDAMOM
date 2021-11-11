@@ -21,7 +21,7 @@ if nargin<2;MA=[];end
 if nargin<3;reread=0;end
 
 %if isstruct(ID);MA=ID;ID=MA.ID;end
-if isstruct(ID);ID=ID.ID;end
+if isstruct(ID);ID=ID.values;end
 dumpfile=sprintf('DUMPFILES/CARDAMOM_MODEL_LIBRARY_ID=%i.mat',ID);
 %TO DO: access new model types here (805 etc.) eventually making access to
 %CARDAMOM_MODEL_LIBRARY.c obsolete

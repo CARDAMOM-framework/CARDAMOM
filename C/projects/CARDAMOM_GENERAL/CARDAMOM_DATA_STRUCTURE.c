@@ -9,10 +9,7 @@ NETCDF_DATA ncdf_data;
 /****Diagnostics****/
 int edcsearch;
 
-/*DRIVERS*/
-double meanprec;
-double meantemp;
-double meanrad;
+
 /*OBS*/
 /*Number of non-empty points in observation timeseries*/
 /*Number of indices can be stored in single obs vector in the future*/
@@ -24,6 +21,7 @@ double *M_PARS;
 double *M_ABGB;
 double *M_CH4;
 double *M_ET;
+double *M_ROFF;
 double *M_EWT;
 double *M_GPP;
 double *M_LAI;
@@ -39,6 +37,7 @@ double M_ABGB_t0;
 //Parameters and emergent quantities
 double M_PEQ_Cefficiency;
 double M_PEQ_CUE;
+double M_PEQ_iniSOM;
 
 
 

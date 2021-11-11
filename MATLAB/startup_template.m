@@ -8,7 +8,6 @@ setenv('CARDAMOM_C_PATH','CARDAMOM_2.1.6c/C');
 setenv('CARDAMOM_DATA_PATH','CARDAMOM_2.1.6c/DATA');
 setenv('CARDAMOM_PATH','CARDAMOM_2.1.6c/');
 
-
 %****CARDAMOM matlab directory****
 addpath(genpath('CARDAMOM_2.1.6c/MATLAB/'));savepath
 

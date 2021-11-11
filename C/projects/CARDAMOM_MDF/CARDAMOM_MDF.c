@@ -58,9 +58,6 @@ printf("MCMC ID= %i\n",MCOPT->mcmcid);
 
 printf("***********************************\n");
 
-
-
-
 MCOPT->randparini=0;
 MCOPT->returnpars=0;
 MCOPT->fixedpars=0;
@@ -119,12 +116,12 @@ strcpy(CBRfile,CLA[2]);
 DATA DATA;
 /*Initialize data structure - this function is found in CARDAMOM_READ_BINARY_DATA*/
 //OK=INITIALIZE_DATA_STRUCT(&DATA);
-okcheck(OK,"Main data structure initialized");
+//okcheck(OK,"Main data structure initialized");
 
 /*read cardamom data from file*/
 /*Function also performs and displays basic checks*/
-OK=CARDAMOM_READ_BINARY_DATA(CBFfile,&DATA);
-okcheck(OK,"Main data structure read successfully");
+CARDAMOM_READ_BINARY_DATA(CBFfile,&DATA);
+//okcheck(OK,"Main data structure read successfully");
 
 //********************************************//
 
@@ -137,14 +134,14 @@ MCMC_OPTIONS MCOPT;
 /*ID=2 DE-MCMC*/
 /*Hard-coding number of chains for now (for DEMCMC)*/
 
-OK=READ_MCOPT(&MCOPT,DATA, CBRfile);
+READ_MCOPT(&MCOPT,DATA, CBRfile);
 
 if (MCOPT.mcmcid==119){MCOPT.nchains=1;}
 if (MCOPT.mcmcid==3){MCOPT.nchains=200;}
 else if (MCOPT.mcmcid==2){MCOPT.nchains=100;}
 
 
-okcheck(OK,"MDF options structure read successfully");
+printf("MDF options structure read successfully");
 
 
 printf("CARDAMOM_MDF.c: CARDAMOM MODEL ID = %i\n",DATA.ncdf_data.ID);
@@ -186,7 +183,7 @@ PARAMETER_INFO PI;
 
 /*initializing structure with correct PI fields (as required by MHMCMC)*/
 /*Function is in MCMC_MODULES.c*/
-OK=INITIALIZE_PI_STRUCT(&PI,&DATA,&MCOPT);
+INITIALIZE_PI_STRUCT(&PI,&DATA,&MCOPT);
 printf("CARDAMOM_MDF.c: Parameter info structure initialized\n");
 
 
@@ -199,7 +196,7 @@ printf("CARDAMOM_MDF.c: Parameter info structure initialized\n");
 /*READ_PARI_DATA and READ_MCOPT should now be generic for all model types*/
 /*CONTAINS "FIND_EDC_INITIAL_VALUES(*DATA,PI);"*/
 DATA.edcsearch=1;
-OK=READ_PARI_DATA(&PI, &DATA, &MCOUT, &MCOPT,CLA);
+READ_PARI_DATA(&PI, &DATA, &MCOUT, &MCOPT,CLA);
 printf("CARDAMOM_MDF.c: READ_PARI_DATA successfully executed\n");
 
 
@@ -225,6 +222,7 @@ printf(" CARDAMOM_MDF.c: about to start ADEMCMC\n");
 ADEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
 break;
 
+
 /*printf("CARDAMOM_MDF.c: DEMCMC temporarily disconnected, need to de-bug, correct and re-introduce");
 printf("CARDAMOM_MDF.c: completed DEMCMC\n");
 break;*/
@@ -232,7 +230,27 @@ default:
 printf("CARDAMOM_MDF.c: Error: no valid mcmcid value prescribed...\n");
 
 }
-printf("CARDAMOM_MDF.c: MCMC complete\n");
+// printf("CARDAMOM_MDF.c: MCMC complete\n");
+// printf("DATA.M_P[0] = %2.2f\n",DATA.M_P[0]);
+// printf("DATA.LAI.values[0] = %2.2f\n",DATA.ncdf_data.LAI.values[0]);
+// printf("DATA.LAI.values[24] = %2.2f\n",DATA.ncdf_data.LAI.values[24]);
+// printf("DATA.M_POOLS[1] = %2.2f\n",DATA.M_POOLS[1]);
+// printf("DATA.ncdf_data.LAI.opt_unc_type=%i\n",DATA.ncdf_data.LAI.opt_unc_type);
+// printf("DATA.ncdf_data.LAI.opt_normalization=%i\n",DATA.ncdf_data.LAI.opt_normalization);
+// printf("DATA.ncdf_data.LAI.opt_filter=%i\n",DATA.ncdf_data.LAI.opt_filter);
+// printf("DATA.ncdf_data.LAI.min_threshold=%2.2f\n",DATA.ncdf_data.LAI.min_threshold);
+// printf("DATA.ncdf_data.LAI.single_monthly_unc=%2.2f\n",DATA.ncdf_data.LAI.single_monthly_unc);
+// printf("DATA.ncdf_data.LAI.single_annual_unc=%2.2f\n",DATA.ncdf_data.LAI.single_annual_unc);
+// printf("DATA.ncdf_data.LAI.single_mean_unc=%2.2f\n",DATA.ncdf_data.LAI.single_mean_unc);
+// printf("DATA.ncdf_data.LAI.single_unc=%2.2f\n",DATA.ncdf_data.LAI.single_unc);
+// printf("DATA.ncdf_data.LAI.structural_unc=%2.2f\n",DATA.ncdf_data.LAI.structural_unc);
+// printf("DATA.ncdf_data.LAI.unc[24]=%f\n",DATA.ncdf_data.LAI.unc[24]);
+// printf("DATA.ncdf_data.LAI.length=%i\n",(int)DATA.ncdf_data.LAI.length);
+// printf("DATA.ncdf_data.LAI.unc_length=%i\n",(int)DATA.ncdf_data.LAI.unc_length);
+// printf("DATA.ncdf_data.LAI.valid_obs_length=%i\n",(int)DATA.ncdf_data.LAI.valid_obs_length);
+// double * values;//Timeseries of observation values
+
+
 /*???????*/
 /*User Defined function needed to clean up memory*/
 MEMORY_CLEANUP(DATA,PI,MCOPT,MCOUT);
