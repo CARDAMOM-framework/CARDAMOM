@@ -24,10 +24,10 @@ pars1005=repmat(exp(log(MD1005.parmin)*0.5+log(MD1005.parmax)*0.5),[numel(LAI),1
 %ones(numel(LAI),54);
 
 g1=4.;
-vcmax25=60;
+vcmax25=43;
 tminmin=-20+273;
 tminmax=1+273;
-ga=2.;
+ga=2.0;
 %Tupp=315;
 Tupp=299;
 %Tdown=275;
@@ -35,6 +35,7 @@ Tdown=263;
 C3_frac=1.;
 CI=0.48;
 LSA=0.1;
+max_infilt=.1;
 
 pars1100(:,44)=g1;
 pars1100(:,45)=vcmax25;
@@ -46,6 +47,7 @@ pars1100(:,50)=Tdown;
 pars1100(:,51)=C3_frac;
 pars1100(:,52)=CI;
 pars1100(:,53)=LSA;
+pars1100(:,35)=max_infilt;
 pars1100(:,18)=100;%LCMA
 pars1100(:,20)=pars1100(:,18).*LAI';
 
@@ -71,9 +73,18 @@ xlabel('LAI [m2/m2]')
 ylabel('GPP [gC/m2/d]')
 subplot(2,2,2)
 hold on
-plot(LAI,CBR1100.ET,'b.-');
+%plot(LAI,CBR1100.ET,'b.-');
+plot(LAI,CBR1100.FLUXES(:,:,33),'b.-');
 plot(LAI,CBR1005.ET,'r.-');
 legend('New ET','ACM ET')
+xlabel('LAI [m2/m2]')
+ylabel('ET [mm/d]')
+subplot(2,2,3)
+hold on
+%plot(LAI,CBR1100.ET,'b.-');
+plot(LAI,CBR1100.FLUXES(:,:,38),'b.-');
+plot(LAI,CBR1100.FLUXES(:,:,39),'r.-');
+legend('New T','New E')
 xlabel('LAI [m2/m2]')
 ylabel('ET [mm/d]')
 

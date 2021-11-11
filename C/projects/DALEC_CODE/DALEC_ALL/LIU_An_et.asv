@@ -112,10 +112,11 @@ double evap; // evaporation
 double Psurf = 100.0; //Surface pressure in kPa
 double VPD_kPa = VPD*Psurf; //100.0 kPa = 1000.0 hPa => Surface pressure
 
+//ga = ga/0.02405; //correction factor
+
 sV = 0.04145*exp(0.06088*T_C); 
 
 SRADg = (1. - leaf_refl)*SRAD*exp(-VegK*LAI*clumping);
-SRAD = (1. - leaf_refl)*SRAD;
 
 petVnum = (sV*(SRAD-SRADg)+1.225*1000*VPD_kPa*ga)*(SRAD)/(lambda0*60*60);
 petVnumB = 1.26*(sV*SRADg)/(sV+gammaV)/lambda0*60*60; //from mm.hr-1 
