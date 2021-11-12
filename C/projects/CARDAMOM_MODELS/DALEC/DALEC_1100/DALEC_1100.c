@@ -370,7 +370,7 @@ double osl=offset(pars[P.t_labile],wl);
 double sf=365.25/pi;
 
 /*Combustion factors*/
-double CF[6];
+double CF[7];//AAB changed this
 CF[S.C_lab]=pars[P.cf_ligneous];
 CF[S.C_fol]=pars[P.cf_foliar];
 CF[S.C_roo]=pars[P.cf_ligneous];
@@ -441,7 +441,8 @@ else {
 }
 
 // H2O stress scaling factor
-double beta = fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1);
+	//We're also multiplying beta by cold-weather stress 
+double beta = fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1)*g;
 
 // GPP, T, and E from LIU_An_et
 // Annual radiation, VPD in kPa, mean T in K
@@ -450,7 +451,7 @@ double *LIU_An_et_out = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10,
     LAI[n], pars[P.ga], VegK, pars[P.Tupp], pars[P.Tdown], pars[P.C3_frac],
     pars[P.clumping], pars[P.leaf_refl]);
 // GPP
-FLUXES[f+F.gpp] = LIU_An_et_out[0]*g;
+FLUXES[f+F.gpp] = LIU_An_et_out[0];
 //transpiration//
 FLUXES[f+F.transp] = LIU_An_et_out[1];
 //evaporation//
