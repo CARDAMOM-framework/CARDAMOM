@@ -161,7 +161,7 @@ CARDADATA->parmin[P.hydr_cond]=0.0000001;
 CARDADATA->parmax[P.hydr_cond]=0.00001;
 
 /*Maximum infiltration (mm/day)*/
-CARDADATA->parmin[P.max_infil]=0.01;
+CARDADATA->parmin[P.max_infil]=1;
 CARDADATA->parmax[P.max_infil]=100;
 
 /*PUW pool*/
@@ -247,10 +247,6 @@ CARDADATA->parmax[P.melt_slope]=1;
 /*sn3: snow cover fraction scalar*/
 CARDADATA->parmin[P.scf_scalar]=0.001;
 CARDADATA->parmax[P.scf_scalar]=1000.0;
-
-/* jc PAW_fs   fully saturated PAW*/
-CARDADATA->parmin[P.PAW_fs]=10.0;
-CARDADATA->parmax[P.PAW_fs]=100000.0;
 
 /* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)*/
 /*jc new name for this par is S_fv, scalar for aerobic volumetric fraction */

@@ -73,7 +73,6 @@ int i_SWE;
 int min_melt;
 int melt_slope;
 int scf_scalar;
-int PAW_fs;
 int S_fv;
 int thetas_opt;
 int fwc;
@@ -86,7 +85,7 @@ int Q10ch4;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62
+    60,61
 };
 
 struct DALEC_1100_FLUXES{
@@ -194,7 +193,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=10;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=63;
+DALECmodel->nopars=62;
 DALECmodel->nofluxes=54;
 
 //declaring observation operator structure, and filling with DALEC configurations
@@ -343,7 +342,8 @@ double meanrad = DATA.ncdf_data.SSRD.reference_mean;
 double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
 
 /* jc prep input for methane module*/
-double ch4pars[8]={pars[P.PAW_fs],pars[P.S_fv],pars[P.thetas_opt],pars[P.fwc],pars[P.r_ch4],pars[P.Q10ch4],pars[P.Q10rhco2],meantemp};
+double PAW_fs = HYDROFUN_MOI2EWT(1,pars[P.PAW_por],pars[P.PAW_z]);
+double ch4pars[8]={PAW_fs,pars[P.S_fv],pars[P.thetas_opt],pars[P.fwc],pars[P.r_ch4],pars[P.Q10ch4],pars[P.Q10rhco2],meantemp};
  
 
 /*constants for exponents of leaffall and labrelease factors*/
@@ -420,7 +420,7 @@ double AST = LST+ET1;
 double h = (AST-12*60)/4; //hour angle
 double alpha = asin((sin(pi/180*DATA.ncdf_data.LAT)*sin(pi/180*DA)+cos(pi/180*DATA.ncdf_data.LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
 double zenith_angle = 90-alpha;
-// double LAD = 1.0; //leaf angle distribution
+//double LAD = 1.0; //leaf angle distribution
 //double VegK = sqrt(pow(LAD,2)+ pow(tan(zenith_angle/180*pi),2))/(LAD+1.774*pow((1+1.182),-0.733)); //Campbell and Norman 1998
 
 double LAD = 0.5; //leaf angle distribution

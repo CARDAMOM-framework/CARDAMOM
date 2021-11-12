@@ -96,6 +96,8 @@ int main(int argc,char *CLA[]){
 /*5. write-to-file frequency*/
 
 
+/*OK is output flag from all functions*/
+int OK = 0; //Need to initilize!
 
 
 /*SETTING number of command line inputs as char in CLA[0]*/
