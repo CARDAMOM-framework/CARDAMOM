@@ -209,8 +209,8 @@ CARDADATA->parmin[P.Tminmax]=273.15;
 CARDADATA->parmax[P.Tminmax]=288.15;
 
 /*aerodynamic conductance*/
-CARDADATA->parmin[P.ga]=1.e-6;
-CARDADATA->parmax[P.ga]=2.0;
+CARDADATA->parmin[P.ga]=0.01;
+CARDADATA->parmax[P.ga]=10.0;
 
 /*Tupp*/
 CARDADATA->parmin[P.Tupp]=299.15;
