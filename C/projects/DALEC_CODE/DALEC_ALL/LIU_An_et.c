@@ -110,7 +110,7 @@ double gs; //stomatal conductance
 double transp; // transpiration
 double evap; // evaporation
 double Psurf = 100.0; //Surface pressure in kPa
-double VPD_kPa = VPD*Psurf; //100.0 kPa = 1000.0 hPa => Surface pressure
+double VPD_kPa = VPD;//*Psurf; //100.0 kPa = 1000.0 hPa => Surface pressure
 
 sV = 0.04145*exp(0.06088*T_C); 
 
