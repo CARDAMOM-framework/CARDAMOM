@@ -360,7 +360,7 @@ double fl=(log(pars[P.t_labile])-log(pars[P.t_labile]-1))/2;
 
 
 // Porosity scaling factor (see line 124 of HESS paper)
-double psi_porosity = -0.117*9.8/1000;
+double psi_porosity = -0.117;
 
 /*additional offset*/
 double osf=offset(pars[P.t_foliar],wf);
@@ -582,8 +582,8 @@ sm_PAW -= drain_PAW;
 sm_PUW -= drain_PUW;
 
 // Convert to conductivity
-double k_PAW = HYDROFUN_MOI2CON(sm_PAW,pars[P.hydr_cond],pars[P.hydr_cond]);
-double k_PUW = HYDROFUN_MOI2CON(sm_PUW,pars[P.hydr_cond],pars[P.hydr_cond]);
+double k_PAW = HYDROFUN_MOI2CON(sm_PAW,pars[P.hydr_cond],pars[P.retention]);
+double k_PUW = HYDROFUN_MOI2CON(sm_PUW,pars[P.hydr_cond],pars[P.retention]);
 
 // Convert to potential
 double psi_PAW = HYDROFUN_MOI2PSI(sm_PAW,psi_porosity,pars[P.hydr_cond]);
