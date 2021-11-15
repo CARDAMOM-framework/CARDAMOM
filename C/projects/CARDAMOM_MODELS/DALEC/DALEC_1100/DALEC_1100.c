@@ -78,6 +78,7 @@ int thetas_opt;
 int fwc;
 int r_ch4;
 int Q10ch4;
+int maxPevap;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -85,7 +86,7 @@ int Q10ch4;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61
+    60,61,62
 };
 
 struct DALEC_1100_FLUXES{
@@ -193,7 +194,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=10;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=62;
+DALECmodel->nopars=63;
 DALECmodel->nofluxes=54;
 
 //declaring observation operator structure, and filling with DALEC configurations
@@ -442,14 +443,15 @@ else {
 
 // H2O stress scaling factor
 	//We're also multiplying beta by cold-weather stress 
-double beta = fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1)*g;
+double beta = fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1.);
+       beta = fmin(beta,g);
 
 // GPP, T, and E from LIU_An_et
 // Annual radiation, VPD in kPa, mean T in K
 double *LIU_An_et_out = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 
     273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), pars[P.Vcmax25], CO2[n], beta, pars[P.Med_g1], 
     LAI[n], pars[P.ga], VegK, pars[P.Tupp], pars[P.Tdown], pars[P.C3_frac],
-    pars[P.clumping], pars[P.leaf_refl]);
+    pars[P.clumping], pars[P.leaf_refl], pars[P.maxPevap], PREC[n]);
 // GPP
 FLUXES[f+F.gpp] = LIU_An_et_out[0];
 //transpiration//
