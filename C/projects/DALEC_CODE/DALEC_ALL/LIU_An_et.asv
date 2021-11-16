@@ -112,7 +112,7 @@ double transp; // transpiration
 double evap; // evaporation
 double Psurf = 100.0; //Surface pressure in kPa
 double VPD_kPa = VPD;//*Psurf; //100.0 kPa = 1000.0 hPa => Surface pressure
-double evap_scale_factpr;
+doubevap_scale_factpr
 
 sV = 0.04145*exp(0.06088*T_C); 
 
@@ -138,8 +138,7 @@ r[1] = transp*24; //from mm.hr-1 to mm.day-1
 
 
 
-evap_scale_factpr = fmin(maxPevap/precip, 1.);
-
+evap_scale_factpr = fmin(maxPevap/precip, 1);
 
 evap = petVnumB*evap_scale_factpr;
 

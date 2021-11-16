@@ -234,9 +234,12 @@ disp('Step 3:ALL CARDAMOM_RUN_MODEL.c outputs successfully loaded!');
 %That would be NBE (Net Biospheric Exchange).
 %Shuang made changes here, modified Rh scheme (1010 and 1011) use different
 %fluxes,consistant with DALEC source code, April 2021
-if OPT.MODEL.ID==1010 || OPT.MODEL.ID==1011 || OPT.MODEL.ID==1012
+if OPT.MODEL.ID==1010 || OPT.MODEL.ID==1011 || OPT.MODEL.ID==1012 
     CBR.NEE=sum(CBR.FLUXES(:,:,[3,37]),3)-CBR.FLUXES(:,:,1);
     if OPT.MODEL.ID>1;CBR.NBE=sum(CBR.FLUXES(:,:,[3,37]),3)-CBR.FLUXES(:,:,1)+CBR.FLUXES(:,:,17);else CBR.NBE=CBR.NEE;end
+elseif OPT.MODEL.ID==1100
+    CBR.NEE=sum(CBR.FLUXES(:,:,[3,48]),3)-CBR.FLUXES(:,:,1);
+    if OPT.MODEL.ID>1;CBR.NBE=sum(CBR.FLUXES(:,:,[3,48]),3)-CBR.FLUXES(:,:,1)+CBR.FLUXES(:,:,19);else CBR.NBE=CBR.NEE;end
 else
     CBR.NEE=sum(CBR.FLUXES(:,:,[3,13,14]),3)-CBR.FLUXES(:,:,1);
     if OPT.MODEL.ID>1;CBR.NBE=sum(CBR.FLUXES(:,:,[3,13,14]),3)-CBR.FLUXES(:,:,1)+CBR.FLUXES(:,:,17);else CBR.NBE=CBR.NEE;end
@@ -255,8 +258,8 @@ if OPT.extended==1
         %LMA is par 11
     CBR.LAI=CBR.POOLS(:,:,2)./repmat(PARS(:,11),[1,size(CBR.POOLS(:,:,2),2)]);
     elseif OPT.MODEL.ID==1100;
-        %LMA is par 11
-    CBR.LAI=CBR.POOLS(:,:,2)./repmat(PARS(:,16),[1,size(CBR.POOLS(:,:,2),2)]);
+        %LMA is par 18
+    CBR.LAI=CBR.POOLS(:,:,2)./repmat(PARS(:,18),[1,size(CBR.POOLS(:,:,2),2)]);
     else
         %LMA is par 17
           CBR.LAI=CBR.POOLS(:,:,2)./repmat(PARS(:,17),[1,size(CBR.POOLS(:,:,2),2)]);
@@ -344,20 +347,26 @@ end
     
     
 
-if any(ismember([809,811,812,813,1000,1001,1002,1003,1005,1009,1030,1031,1032,1060,1100,1012],OPT.MODEL.ID))
+if any(ismember([809,811,812,813,1000,1001,1002,1003,1005,1009,1030,1031,1032,1060,1012],OPT.MODEL.ID))
 
     %export ET 
     CBR.ET=CBR.FLUXES(:,:,29);
-
-    
+elseif any(ismember(1100,OPT.MODEL.ID))
+    CBR.ET=CBR.FLUXES(:,:,33);
 end
 
 
     %Export fire C emissions
-    CBR.FIR=CBR.FLUXES(:,:,17);
+    if OPT.MODEL.ID==1100
+        CBR.FIR=CBR.FLUXES(:,:,19);
+    else
+        CBR.FIR=CBR.FLUXES(:,:,17);
+    end
     %Export respiration
     if OPT.MODEL.ID==1010 || OPT.MODEL.ID==1011 || OPT.MODEL.ID==1012  % shuang added for DALEC-JCR models 
         CBR.RHE=sum(CBR.FLUXES(:,:,37),3);
+    elseif OPT.MODEL.ID==1100
+        CBR.RHE=sum(CBR.FLUXES(:,:,48),3);
     else
         CBR.RHE=sum(CBR.FLUXES(:,:,13:14),3);
     end

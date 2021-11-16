@@ -1,5 +1,6 @@
 *~
 .DS_Store
+*.asv
 *.exe
 *.exe.*
 *.swp

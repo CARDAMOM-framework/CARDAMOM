@@ -102,6 +102,7 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 DATA->ABGB=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ABGB");
 DATA->CH4=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "CH4");
 DATA->ET=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ET");
+DATA->ROFF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ROFF");
 DATA->EWT=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "EWT");
 DATA->GPP=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "GPP");
 DATA->LAI=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "LAI");
@@ -145,6 +146,11 @@ default_int_value(&DATA->ET.opt_unc_type,1);
 default_double_value(&DATA->ET.single_unc,2);
 default_double_value(&DATA->ET.min_threshold,0.1);
 
+//Default ROFF options
+default_int_value(&DATA->ROFF.opt_unc_type,1);
+default_double_value(&DATA->ROFF.single_unc,2);
+default_double_value(&DATA->ROFF.min_threshold,0.1);
+
 //Default EWT options;
 default_double_value(&DATA->EWT.single_unc,50);//mm
 default_int_value(&DATA->EWT.opt_normalization,1);
@@ -174,6 +180,7 @@ default_double_value(&DATA->DOM.min_threshold,10);//gC/m2
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ABGB);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->CH4);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ET);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ROFF);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->EWT);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->GPP);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->LAI);

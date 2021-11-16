@@ -269,9 +269,9 @@ CARDADATA->parmax[P.r_ch4]=0.9;
 CARDADATA->parmin[P.Q10ch4]=1.0;
 CARDADATA->parmax[P.Q10ch4]=3.0;
 
-/* maxPevap in mm/day*/
-CARDADATA->parmin[P.maxPevap]=0.01;
-CARDADATA->parmax[P.maxPevap]=20;
+/* mamaxPevap*/
+CARDADATA->parmin[P.maxPevap]=1.0;
+CARDADATA->parmax[P.maxPevap]=3.0;
 
 return 0;
 

@@ -1,4 +1,4 @@
-function CARDAMOM_v3_MAKE_EXAMPLE_NC_FILE_SEP21
+function CARDAMOM_v3_MAKE_DEMO_NC_FILE_NOV21
 
 %Step 1. start netcdf file
 %Step 0. Load time data
@@ -35,13 +35,20 @@ for n=1:numel(Dnames)
 end
 
 
+%Set some recommended uncertainties
+ncwriteatt(NC.fname,'SCF','opt_unc_type',2);
+    ncwriteatt(NC.fname,'SCF','single_unc',1.5);
+    ncwriteatt(NC.fname,'SCF','min_threshold',0.05);
+
+
+
 
 %Step 5. 
     create_and_write_obs_single_variable(NC,'Mean_Biomass',-9999);
     create_and_write_obs_single_variable(NC,'Mean_Fire',-9999);
     create_and_write_obs_single_variable(NC,'Mean_GPP',-9999);
     create_and_write_obs_single_variable(NC,'Mean_LAI',3);%
-    ncwriteatt(NC,'Mean_LAI','unc',1.5);
+    ncwriteatt(NC.fname,'Mean_LAI','unc',1.5);
 
     
     %Put parameter constraint examples
