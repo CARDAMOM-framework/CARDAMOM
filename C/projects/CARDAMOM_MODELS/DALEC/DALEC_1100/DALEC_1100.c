@@ -360,7 +360,7 @@ double fl=(log(pars[P.t_labile])-log(pars[P.t_labile]-1))/2;
 
 
 // Porosity scaling factor (see line 124 of HESS paper)
-double psi_porosity = -0.117;
+double psi_porosity = -0.117/100;
 
 /*additional offset*/
 double osf=offset(pars[P.t_foliar],wf);
