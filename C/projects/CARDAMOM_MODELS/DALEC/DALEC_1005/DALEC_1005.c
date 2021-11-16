@@ -81,9 +81,9 @@ int fx_roo2lit;   /*Fire transfer root to litter*/
 int fx_woo2som;   /*Fire transfer wood to soil*/
 int fx_lit2som;   /*Fire transfer litter to soil*/
 int et;   /*Evapotranspiration*/
-int q_paw;   /*PAW runoff*/
-int paw2puw;   /*PAW->PUW transfer*/
-int q_puw;   /*PUW runoff*/
+int q_paw;   /*Plant-available water drainage*/
+int paw2puw;   /*Plant-available water to plant-unavailable water transfer*/
+int q_puw;   /*Plant-unavailable water runoff*/
 } DALEC_1005_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
