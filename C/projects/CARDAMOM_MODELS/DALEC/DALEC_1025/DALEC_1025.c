@@ -1,6 +1,7 @@
 #pragma once
 #include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
 #include "../../../DALEC_CODE/DALEC_ALL/LAI_KNORR.c"
+#include "../../../DALEC_CODE/DALEC_ALL/LAI_KNORR_funcs.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
@@ -407,18 +408,10 @@ FLUXES[f+F.fol_prod]=0;
 /*labile production*/
 FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*(pars[P.f_lab]+pars[P.f_foliar]);
 Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]/deltat;
-if (FLUXES[f+F.dlambda_dt]*pars[P.LCMA] > Fcfolavailable){
+if (FLUXES[f+F.dlambda_dt] > 0){
+  FLUXES[f+F.lab_release]=MinQuadraticSmooth(Fcfolavailable, FLUXES[f+F.dlambda_dt]*pars[P.LCMA], 0.99);
   /* flag for carbon availability limitation (0=canopy in senescence, 1=labile C does not limit growth, 2=labile C limits LAI growth) */
   FLUXES[f+F.c_lim_flag]=2.0;
-  /* labile release: flux from labile pool to foliar pool */
-  FLUXES[f+F.lab_release]=Fcfolavailable;
-  /* leaf litter production: flux from foliar pool to litter pool */
-  FLUXES[f+F.fol2lit]=0;
-}
-else if (FLUXES[f+F.dlambda_dt]*pars[P.LCMA] < Fcfolavailable && FLUXES[f+F.dlambda_dt]*pars[P.LCMA] > 0){
-  FLUXES[f+F.c_lim_flag]=1.0;
-  /* labile release: flux from labile pool to foliar pool */
-  FLUXES[f+F.lab_release]=FLUXES[f+F.dlambda_dt]*pars[P.LCMA];
   /* leaf litter production: flux from foliar pool to litter pool */
   FLUXES[f+F.fol2lit]=0;
 }
