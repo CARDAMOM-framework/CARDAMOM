@@ -277,7 +277,7 @@ OBSOPE.FIR_flux=F.f_total;
 //CUE parameters
 OBSOPE.CUE_PARAM=P.f_auto;
 //C3frac parameters
-OBSOPE.C3frac_PARAM=P.f_auto;
+OBSOPE.C3frac_PARAM=P.C3_frac;
 //Initial Snow parameter
 OBSOPE.iniSnow_PARAM=P.i_SWE;
 
