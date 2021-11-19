@@ -216,6 +216,7 @@ OBSOPE.SUPPORT_CH4_OBS=true;
 
 OBSOPE.SUPPORT_CUE_OBS=true;
 OBSOPE.SUPPORT_C3frac_OBS=true;
+OBSOPE.SUPPORT_iniSnow_OBS=true;
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
@@ -277,6 +278,8 @@ OBSOPE.FIR_flux=F.f_total;
 OBSOPE.CUE_PARAM=P.f_auto;
 //C3frac parameters
 OBSOPE.C3frac_PARAM=P.f_auto;
+//Initial Snow parameter
+OBSOPE.iniSnow_PARAM=P.i_SWE;
 
 
 

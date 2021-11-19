@@ -38,6 +38,7 @@ double M_ABGB_t0;
 double M_PEQ_Cefficiency;
 double M_PEQ_CUE;
 double M_PEQ_C3frac;
+double M_PEQ_iniSnow;
 double M_PEQ_iniSOM;
 
 
