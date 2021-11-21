@@ -78,6 +78,7 @@ int thetas_opt;
 int fwc;
 int r_ch4;
 int Q10ch4;
+int maxPevap;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -85,7 +86,7 @@ int Q10ch4;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61
+    60,61,62
 };
 
 struct DALEC_1100_FLUXES{
@@ -193,7 +194,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=10;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=62;
+DALECmodel->nopars=63;
 DALECmodel->nofluxes=54;
 
 //declaring observation operator structure, and filling with DALEC configurations
@@ -214,6 +215,9 @@ OBSOPE.SUPPORT_FIR_OBS=true;
 OBSOPE.SUPPORT_CH4_OBS=true;
 
 OBSOPE.SUPPORT_CUE_OBS=true;
+OBSOPE.SUPPORT_C3frac_OBS=true;
+OBSOPE.SUPPORT_iniSnow_OBS=true;
+OBSOPE.SUPPORT_iniSOM_OBS=true;
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
@@ -273,6 +277,12 @@ OBSOPE.EWT_n_h2o_pools=3;
 OBSOPE.FIR_flux=F.f_total;
 //CUE parameters
 OBSOPE.CUE_PARAM=P.f_auto;
+//C3frac parameters
+OBSOPE.C3frac_PARAM=P.C3_frac;
+//Initial Snow parameter
+OBSOPE.iniSnow_PARAM=P.i_SWE;
+//Initial SOM parameter
+OBSOPE.iniSOM_PARAM=P.i_soil;
 
 
 
@@ -359,7 +369,7 @@ double fl=(log(pars[P.t_labile])-log(pars[P.t_labile]-1))/2;
 
 
 // Porosity scaling factor (see line 124 of HESS paper)
-double psi_porosity = -0.117;
+double psi_porosity = -0.117/100;
 
 /*additional offset*/
 double osf=offset(pars[P.t_foliar],wf);
@@ -442,14 +452,15 @@ else {
 
 // H2O stress scaling factor
 	//We're also multiplying beta by cold-weather stress 
-double beta = fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1)*g;
+double beta = fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1.);
+       beta = fmin(beta,g);
 
 // GPP, T, and E from LIU_An_et
 // Annual radiation, VPD in kPa, mean T in K
 double *LIU_An_et_out = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 
     273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), pars[P.Vcmax25], CO2[n], beta, pars[P.Med_g1], 
     LAI[n], pars[P.ga], VegK, pars[P.Tupp], pars[P.Tdown], pars[P.C3_frac],
-    pars[P.clumping], pars[P.leaf_refl]);
+    pars[P.clumping], pars[P.leaf_refl], pars[P.maxPevap], PREC[n]);
 // GPP
 FLUXES[f+F.gpp] = LIU_An_et_out[0];
 //transpiration//
@@ -580,12 +591,12 @@ sm_PAW -= drain_PAW;
 sm_PUW -= drain_PUW;
 
 // Convert to conductivity
-double k_PAW = HYDROFUN_MOI2CON(sm_PAW,pars[P.hydr_cond],pars[P.hydr_cond]);
-double k_PUW = HYDROFUN_MOI2CON(sm_PUW,pars[P.hydr_cond],pars[P.hydr_cond]);
+double k_PAW = HYDROFUN_MOI2CON(sm_PAW,pars[P.hydr_cond],pars[P.retention]);
+double k_PUW = HYDROFUN_MOI2CON(sm_PUW,pars[P.hydr_cond],pars[P.retention]);
 
 // Convert to potential
-double psi_PAW = HYDROFUN_MOI2PSI(sm_PAW,psi_porosity,pars[P.hydr_cond]);
-double psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[P.hydr_cond]);
+double psi_PAW = HYDROFUN_MOI2PSI(sm_PAW,psi_porosity,pars[P.retention]);
+double psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[P.retention]);
 
 // Calculate inter-pool transfer in m/s (positive is PAW to PUW)
 double xfer = 1000 * sqrt(k_PAW*k_PUW) * (1000*(psi_PAW-psi_PUW)/(9.8*0.5*(pars[P.PAW_z]+pars[P.PUW_z])) + 1);
