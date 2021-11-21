@@ -1,7 +1,7 @@
 %STep 1. Load US-NR1
 
 
-nccbffilename1100='../DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
+nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
 
 CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
 
@@ -23,11 +23,11 @@ pars1005=repmat(exp(log(MD1005.parmin)*0.5+log(MD1005.parmax)*0.5),[numel(LAI),1
 
 %ones(numel(LAI),54);
 
-g1=4.;
+g1=1.;
 vcmax25=43;
 tminmin=-20+273;
 tminmax=1+273;
-ga=2.0;
+ga=0.1;
 %Tupp=315;
 Tupp=299;
 %Tdown=275;
@@ -76,6 +76,7 @@ hold on
 %plot(LAI,CBR1100.ET,'b.-');
 plot(LAI,CBR1100.FLUXES(:,:,33),'b.-');
 plot(LAI,CBR1005.ET,'r.-');
+plot(xlim,[3,3],'k--');
 legend('New ET','ACM ET')
 xlabel('LAI [m2/m2]')
 ylabel('ET [mm/d]')
@@ -84,6 +85,7 @@ hold on
 %plot(LAI,CBR1100.ET,'b.-');
 plot(LAI,CBR1100.FLUXES(:,:,38),'b.-');
 plot(LAI,CBR1100.FLUXES(:,:,39),'r.-');
+plot(xlim,[3,3],'k--');
 legend('New T','New E')
 xlabel('LAI [m2/m2]')
 ylabel('ET [mm/d]')
