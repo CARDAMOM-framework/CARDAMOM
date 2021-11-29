@@ -206,15 +206,19 @@ INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 OBSOPE.SUPPORT_GPP_OBS=true;
 OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
-OBSOPE.SUPPORT_ROFF_OBS=true;
 OBSOPE.SUPPORT_NBE_OBS=true;
 OBSOPE.SUPPORT_ABGB_OBS=true;
 OBSOPE.SUPPORT_DOM_OBS=true;
 OBSOPE.SUPPORT_EWT_OBS=true;
 OBSOPE.SUPPORT_FIR_OBS=true;
 OBSOPE.SUPPORT_CH4_OBS=true;
+OBSOPE.SUPPORT_ROFF_OBS=true;
+
 
 OBSOPE.SUPPORT_CUE_OBS=true;
+OBSOPE.SUPPORT_C3frac_OBS=true;
+OBSOPE.SUPPORT_iniSnow_OBS=true;
+OBSOPE.SUPPORT_iniSOM_OBS=true;
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
@@ -274,6 +278,12 @@ OBSOPE.EWT_n_h2o_pools=3;
 OBSOPE.FIR_flux=F.f_total;
 //CUE parameters
 OBSOPE.CUE_PARAM=P.f_auto;
+//C3frac parameters
+OBSOPE.C3frac_PARAM=P.C3_frac;
+//Initial Snow parameter
+OBSOPE.iniSnow_PARAM=P.i_SWE;
+//Initial SOM parameter
+OBSOPE.iniSOM_PARAM=P.i_soil;
 
 
 
@@ -450,7 +460,7 @@ double beta = fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1.);
 // Annual radiation, VPD in kPa, mean T in K
 double *LIU_An_et_out = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 
     273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), pars[P.Vcmax25], CO2[n], beta, pars[P.Med_g1], 
-    LAI[n], pars[P.ga], VegK, pars[P.Tupp], pars[P.Tdown], pars[P.C3_frac],
+    LAI[n], pars[P.ga], VegK, pars[P.Tupp], pars[P.Tdown], 1., // pars[P.C3_frac],
     pars[P.clumping], pars[P.leaf_refl], pars[P.maxPevap], PREC[n]);
 // GPP
 FLUXES[f+F.gpp] = LIU_An_et_out[0];
@@ -587,8 +597,8 @@ double k_PAW = HYDROFUN_MOI2CON(sm_PAW,pars[P.hydr_cond],pars[P.retention]);
 double k_PUW = HYDROFUN_MOI2CON(sm_PUW,pars[P.hydr_cond],pars[P.retention]);
 
 // Convert to potential
-double psi_PAW = HYDROFUN_MOI2PSI(sm_PAW,psi_porosity,pars[P.hydr_cond]);
-double psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[P.hydr_cond]);
+double psi_PAW = HYDROFUN_MOI2PSI(sm_PAW,psi_porosity,pars[P.retention]);
+double psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[P.retention]);
 
 // Calculate inter-pool transfer in m/s (positive is PAW to PUW)
 double xfer = 1000 * sqrt(k_PAW*k_PUW) * (1000*(psi_PAW-psi_PUW)/(9.8*0.5*(pars[P.PAW_z]+pars[P.PUW_z])) + 1);

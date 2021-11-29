@@ -20,13 +20,14 @@ double *M_PARS;
 //MODEL FIELDS: these need to be consistent with cost function terms
 double *M_ABGB;
 double *M_CH4;
+double *M_CWOO;
+double *M_DOM;
 double *M_ET;
-double *M_ROFF;
 double *M_EWT;
 double *M_GPP;
 double *M_LAI;
 double *M_NBE;
-double *M_DOM;
+double *M_ROFF;
 //Mean values
 double M_Mean_ABGB;
 double M_Mean_FIR;
@@ -37,6 +38,8 @@ double M_ABGB_t0;
 //Parameters and emergent quantities
 double M_PEQ_Cefficiency;
 double M_PEQ_CUE;
+double M_PEQ_C3frac;
+double M_PEQ_iniSnow;
 double M_PEQ_iniSOM;
 
 

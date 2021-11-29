@@ -1,7 +1,7 @@
 %STep 1. Load US-NR1
 
 
-nccbffilename1100='../DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
+nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
 
 CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
 
@@ -79,6 +79,7 @@ hold on
 %plot(LAI,CBR1100.ET,'b.-');
 plot(LAI,CBR1100.FLUXES(:,:,33),'b.-');
 plot(LAI,CBR1005.ET,'r.-');
+plot(xlim,[3,3],'k--');
 legend('New ET','ACM ET')
 xlabel('LAI [m2/m2]')
 ylabel('ET [mm/d]')
@@ -87,6 +88,7 @@ hold on
 %plot(LAI,CBR1100.ET,'b.-');
 plot(LAI,CBR1100.FLUXES(:,:,38),'b.-');
 plot(LAI,CBR1100.FLUXES(:,:,39),'r.-');
+plot(xlim,[3,3],'k--');
 legend('New T','New E')
 xlabel('LAI [m2/m2]')
 ylabel('ET [mm/d]')

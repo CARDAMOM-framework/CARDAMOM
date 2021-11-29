@@ -225,7 +225,7 @@ CARDADATA->parmin[P.C3_frac]=1e-8;
 CARDADATA->parmax[P.C3_frac]=1.0;
 
 /*Clumping index*/
-CARDADATA->parmin[P.clumping]=1e-8;
+CARDADATA->parmin[P.clumping]=0.35;
 CARDADATA->parmax[P.clumping]=1.0;
 
 /*Leaf single scattering albedo*/
