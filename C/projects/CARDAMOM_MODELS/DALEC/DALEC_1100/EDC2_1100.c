@@ -120,7 +120,7 @@ double etol=0.1;
 Fin[S.C_lab]=FT[F.lab_prod];
 Fout[S.C_lab]=FT[F.lab_release]+FT[F.f_lab]+FT[F.fx_lab2lit];
 /*foliar*/
-Fin[S.C_fol]=FT[F.fol_prod]+FT[F.lab_release];
+Fin[S.C_fol]=FT[F.lab_release];
 Fout[S.C_fol]=FT[F.fol2lit]+FT[F.f_fol]+FT[F.fx_fol2lit];
 /*root*/
 Fin[S.C_roo]=FT[F.root_prod];
