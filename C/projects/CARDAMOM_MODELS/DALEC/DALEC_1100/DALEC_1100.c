@@ -21,7 +21,6 @@ struct DALEC_1100_PARAMETERS{
 int tr_lit2soil;
 int tr_cwd2som;
 int f_auto;
-int f_foliar;
 int f_root;
 int t_wood;
 int t_root;
@@ -93,7 +92,7 @@ int init_LAIW_mem;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64,65,66,67
+    60,61,62,63,64,65,66
 };
 
 struct DALEC_1100_FLUXES{
@@ -524,7 +523,7 @@ FLUXES[f+F.temprate]=pow(pars[P.Q10rhco2],(0.5*(T2M_MIN[n]+T2M_MAX[n])-meantemp)
 /*respiration auto*/
 FLUXES[f+F.resp_auto]=pars[P.f_auto]*FLUXES[f+F.gpp];
 /*labile production*/
-FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*(pars[P.f_lab]+pars[P.f_foliar]);
+FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*(pars[P.f_lab]);
 
 //KNORR LAI//
 if (n==0){
