@@ -18,55 +18,53 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
 struct DALEC_1100_PARAMETERS{
 /*DALEC PARAMETERS*/
-int tr_lit2soil; //1
-int tr_cwd2som; //2
-int f_auto; //3
-int f_foliar; //4
-int f_root; //5
-int t_foliar; //6
-int t_wood; //7
-int t_root; //8
-int t_lit; //9
-int t_cwd; //10
-int t_soil; //11
-int Q10rhco2; //12
-int f_lab; //14
-int LCMA; //18
-int i_labile; //19
-int i_foliar; //20
-int i_root; //21
-int i_wood; //22
-int i_cwd; //23
-int i_lit; //24
-int i_soil; //25
-int retention; //26
-int wilting; //1
-int i_PAW; //1
-int cf_foliar; //1
-int cf_ligneous; //1
-int cf_DOM; //1
-int resilience; //1
-int t_labile; //1
-int moisture; //1
-int hydr_cond; //1
-int max_infil; //1
-int i_PUW; //1
-int PAW_por; //1
-int PUW_por; //1
-int field_cap; //1
-int PAW_z; //1
-int PUW_z; //1
-int Q_excess; //1
-int Med_g1; //1
-int Vcmax25; //1
-int Tminmin; //1
-int Tminmax; //1
-int ga; //1
-int Tupp; //1
-int Tdown; //1
-int C3_frac; //1
-int clumping; //1
-int leaf_refl; //1
+int tr_lit2soil;
+int tr_cwd2som;
+int f_auto;
+int f_foliar;
+int f_root;
+int t_wood;
+int t_root;
+int t_lit;
+int t_cwd;
+int t_soil;
+int Q10rhco2;
+int f_lab;
+int LCMA;
+int i_labile;
+int i_foliar;
+int i_root;
+int i_wood;
+int i_cwd;
+int i_lit;
+int i_soil;
+int retention;
+int wilting;
+int i_PAW;
+int cf_foliar;
+int cf_ligneous;
+int cf_DOM;
+int resilience;
+int moisture;
+int hydr_cond;
+int max_infil;
+int i_PUW;
+int PAW_por;
+int PUW_por;
+int field_cap;
+int PAW_z;
+int PUW_z;
+int Q_excess;
+int Med_g1;
+int Vcmax25;
+int Tminmin;
+int Tminmax;
+int ga;
+int Tupp;
+int Tdown;
+int C3_frac;
+int clumping;
+int leaf_refl;
 int i_SWE;
 int min_melt;
 int melt_slope;
@@ -95,7 +93,7 @@ int init_LAIW_mem;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64,65,66,67,68,69
+    60,61,62,63,64,65,66,67
 };
 
 struct DALEC_1100_FLUXES{
@@ -369,30 +367,9 @@ double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
 /* jc prep input for methane module*/
 double PAW_fs = HYDROFUN_MOI2EWT(1,pars[P.PAW_por],pars[P.PAW_z]);
 double ch4pars[8]={PAW_fs,pars[P.S_fv],pars[P.thetas_opt],pars[P.fwc],pars[P.r_ch4],pars[P.Q10ch4],pars[P.Q10rhco2],meantemp};
- 
-
-/*constants for exponents of leaffall and labrelease factors*/
-/*width*/
-// double wf=pars[P.leaf_fall]*sqrt(2)/2;
-// double wl=pars[P.labile_rel]*sqrt(2)/2;
-
-
-/*factor*/
-// double ff=(log(pars[P.t_foliar])-log(pars[P.t_foliar]-1))/2;
-/*double fl=(log(1.001)-log(0.001))/2;*/
-// double fl=(log(pars[P.t_labile])-log(pars[P.t_labile]-1))/2;
-
 
 // Porosity scaling factor (see line 124 of HESS paper)
 double psi_porosity = -0.117/100;
-
-/*additional offset*/
-// double osf=offset(pars[P.t_foliar],wf);
-// double osl=offset(pars[P.t_labile],wl);
-
-
-/*scaling to biyearly sine curve*/
-// double sf=365.25/pi;
 
 /*Combustion factors*/
 double CF[7];//AAB changed this
@@ -552,10 +529,8 @@ FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*(pars[P.f_lab]+pa
 //KNORR LAI//
 if (n==0){
   /*Initialize phenology memory of air-temperature as some value within mintemp and maxtemp*/
-  // lai_var_list[5]=pars[47]*(DATA.MET[m+2]-DATA.MET[m+1])+DATA.MET[m+1];
   lai_var_list[5]=pars[P.init_T_mem]*(T2M_MAX[n]-T2M_MIN[n])+T2M_MIN[n];
   /*Initialize phenology memory of water/structural limitation */
-  // lai_var_list[11]=pars[48]*pars[42];
   lai_var_list[11]=pars[P.init_LAIW_mem]*pars[P.lambda_max];
 }
 lai_met_list[0]=(T2M_MAX[n]+T2M_MIN[n])/2.0;
@@ -565,16 +540,16 @@ lai_var_list[1]=LAI[n];
 lai_var_list[2]=LAI[n];
 lai_var_list[3]=pars[P.T_phi];
 lai_var_list[4]=pars[P.T_range];
-lai_var_list[6]=pars[P.tau_m]; /*tau_m*/
-lai_var_list[7]=pars[P.plgr]; /*plgr*/
-lai_var_list[8]=pars[P.k_leaf]; /*k_L*/
-lai_var_list[9]=pars[P.lambda_max]; /*lambda_max*/
-lai_var_list[10]=pars[P.tau_W]; /*tau_W*/
-lai_var_list[12]=DATA.ncdf_data.LAT; /*latitude*/
-lai_var_list[13]=DOY[n]; /*day of year*/
-lai_var_list[14]=pi; /*pi*/
-lai_var_list[15]=pars[P.time_c]; /*t_c*/
-lai_var_list[16]=pars[P.time_r]; /*t_r*/
+lai_var_list[6]=pars[P.tau_m];
+lai_var_list[7]=pars[P.plgr];
+lai_var_list[8]=pars[P.k_leaf];
+lai_var_list[9]=pars[P.lambda_max];
+lai_var_list[10]=pars[P.tau_W];
+lai_var_list[12]=DATA.ncdf_data.LAT;
+lai_var_list[13]=DOY[n];
+lai_var_list[14]=pi;
+lai_var_list[15]=pars[P.time_c];
+lai_var_list[16]=pars[P.time_r];
 lai_var_list[17]=(POOLS[p+S.H2O_PAW]+POOLS[nxp+S.H2O_PAW])/2.0;
 lai_var_list[18]=FLUXES[f+F.et];
 // // Run Knorr LAI module
