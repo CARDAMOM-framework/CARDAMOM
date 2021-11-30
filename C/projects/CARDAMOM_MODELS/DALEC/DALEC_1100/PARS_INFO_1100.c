@@ -64,25 +64,9 @@ CARDADATA->parmax[P.t_soil]=0.001;
 CARDADATA->parmin[P.Q10rhco2]=1.2;
 CARDADATA->parmax[P.Q10rhco2]=2.0;
 
-/*Bday*/
-CARDADATA->parmin[P.Bday]=365.25;
-CARDADATA->parmax[P.Bday]=365.25*4;
-
 /*Fraction to Clab*/
 CARDADATA->parmin[P.f_lab]=0.01;
 CARDADATA->parmax[P.f_lab]=0.5;
-
-/*Clab Release period*/
-CARDADATA->parmin[P.labile_rel]=365.25/12;
-CARDADATA->parmax[P.labile_rel]=100;
-
-/*Fday*/
-CARDADATA->parmin[P.Fday]=365.25;
-CARDADATA->parmax[P.Fday]=365.25*4;
-
-/*Leaf fall period*/
-CARDADATA->parmin[P.leaf_fall]=365.25/12;
-CARDADATA->parmax[P.leaf_fall]=150;
 
 /*LMCA*/
 /*Kattge et al. 2011*/

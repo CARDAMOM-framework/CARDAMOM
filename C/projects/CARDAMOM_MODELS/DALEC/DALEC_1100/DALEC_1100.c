@@ -18,59 +18,55 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
 struct DALEC_1100_PARAMETERS{
 /*DALEC PARAMETERS*/
-int tr_lit2soil;
-int tr_cwd2som;
-int f_auto;
-int f_foliar;
-int f_root;
-int t_foliar;
-int t_wood;
-int t_root;
-int t_lit;
-int t_cwd;
-int t_soil;
-int Q10rhco2;
-int Bday;
-int f_lab;
-int labile_rel;
-int Fday;
-int leaf_fall;
-int LCMA;
-int i_labile;
-int i_foliar;
-int i_root;
-int i_wood;
-int i_cwd;
-int i_lit;
-int i_soil;
-int retention;
-int wilting;
-int i_PAW;
-int cf_foliar;
-int cf_ligneous;
-int cf_DOM;
-int resilience;
-int t_labile;
-int moisture;
-int hydr_cond;
-int max_infil;
-int i_PUW;
-int PAW_por;
-int PUW_por;
-int field_cap;
-int PAW_z;
-int PUW_z;
-int Q_excess;
-int Med_g1;
-int Vcmax25;
-int Tminmin;
-int Tminmax;
-int ga;
-int Tupp;
-int Tdown;
-int C3_frac;
-int clumping;
-int leaf_refl;
+int tr_lit2soil; //1
+int tr_cwd2som; //2
+int f_auto; //3
+int f_foliar; //4
+int f_root; //5
+int t_foliar; //6
+int t_wood; //7
+int t_root; //8
+int t_lit; //9
+int t_cwd; //10
+int t_soil; //11
+int Q10rhco2; //12
+int f_lab; //14
+int LCMA; //18
+int i_labile; //19
+int i_foliar; //20
+int i_root; //21
+int i_wood; //22
+int i_cwd; //23
+int i_lit; //24
+int i_soil; //25
+int retention; //26
+int wilting; //1
+int i_PAW; //1
+int cf_foliar; //1
+int cf_ligneous; //1
+int cf_DOM; //1
+int resilience; //1
+int t_labile; //1
+int moisture; //1
+int hydr_cond; //1
+int max_infil; //1
+int i_PUW; //1
+int PAW_por; //1
+int PUW_por; //1
+int field_cap; //1
+int PAW_z; //1
+int PUW_z; //1
+int Q_excess; //1
+int Med_g1; //1
+int Vcmax25; //1
+int Tminmin; //1
+int Tminmax; //1
+int ga; //1
+int Tupp; //1
+int Tdown; //1
+int C3_frac; //1
+int clumping; //1
+int leaf_refl; //1
 int i_SWE;
 int min_melt;
 int melt_slope;
@@ -99,8 +95,7 @@ int init_LAIW_mem;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64,65,66,67,68,69,
-    70,71,72,73
+    60,61,62,63,64,65,66,67,68,69
 };
 
 struct DALEC_1100_FLUXES{
@@ -382,26 +377,26 @@ double ch4pars[8]={PAW_fs,pars[P.S_fv],pars[P.thetas_opt],pars[P.fwc],pars[P.r_c
 
 /*constants for exponents of leaffall and labrelease factors*/
 /*width*/
-double wf=pars[P.leaf_fall]*sqrt(2)/2;
-double wl=pars[P.labile_rel]*sqrt(2)/2;
+// double wf=pars[P.leaf_fall]*sqrt(2)/2;
+// double wl=pars[P.labile_rel]*sqrt(2)/2;
 
 
 /*factor*/
-double ff=(log(pars[P.t_foliar])-log(pars[P.t_foliar]-1))/2;
+// double ff=(log(pars[P.t_foliar])-log(pars[P.t_foliar]-1))/2;
 /*double fl=(log(1.001)-log(0.001))/2;*/
-double fl=(log(pars[P.t_labile])-log(pars[P.t_labile]-1))/2;
+// double fl=(log(pars[P.t_labile])-log(pars[P.t_labile]-1))/2;
 
 
 // Porosity scaling factor (see line 124 of HESS paper)
 double psi_porosity = -0.117/100;
 
 /*additional offset*/
-double osf=offset(pars[P.t_foliar],wf);
-double osl=offset(pars[P.t_labile],wl);
+// double osf=offset(pars[P.t_foliar],wf);
+// double osl=offset(pars[P.t_labile],wl);
 
 
 /*scaling to biyearly sine curve*/
-double sf=365.25/pi;
+// double sf=365.25/pi;
 
 /*Combustion factors*/
 double CF[7];//AAB changed this
@@ -623,9 +618,9 @@ FLUXES[f+F.root_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_pr
 /*wood production*/       
 FLUXES[f+F.wood_prod] = FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.lab_prod]; 
 /*leaf fall factor*/
-FLUXES[f+F.leaffall_fact] = (2/sqrt(pi))*(ff/wf)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Fday]+osf)/sf)*sf/wf,2));
+// FLUXES[f+F.leaffall_fact] = (2/sqrt(pi))*(ff/wf)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Fday]+osf)/sf)*sf/wf,2));
 /*Labrelease factor*/
-FLUXES[f+F.lab_release_fact]=(2/sqrt(pi))*(fl/wl)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Bday]+osl)/sf)*sf/wl,2));
+// FLUXES[f+F.lab_release_fact]=(2/sqrt(pi))*(fl/wl)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Bday]+osl)/sf)*sf/wl,2));
 /*labile release - re-arrange order in next versions*/
 // FLUXES[f+F.lab_release] = POOLS[p+S.C_lab]*(1-pow(1-FLUXES[f+F.lab_release_fact],deltat))/deltat;
 /*leaf litter production*/       
