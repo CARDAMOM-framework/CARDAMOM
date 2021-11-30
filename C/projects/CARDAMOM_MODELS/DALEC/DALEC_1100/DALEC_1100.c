@@ -205,8 +205,8 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=10;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=74;
-DALECmodel->nofluxes=63;
+DALECmodel->nopars=67;
+DALECmodel->nofluxes=60;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
