@@ -54,6 +54,7 @@ return 0;}
 //#include "../CARDAMOM_MODELS/DALEC/DALEC_1040/MODEL_INFO_1040.c"
 #include "../CARDAMOM_MODELS/DALEC/DALEC_1060/MODEL_INFO_1060.c"
 #include "../CARDAMOM_MODELS/DALEC/DALEC_1100/MODEL_INFO_1100.c"
+#include "../CARDAMOM_MODELS/DALEC/DALEC_1101/MODEL_INFO_1101.c"
 
 /*This function attributes model specific variables based
  * on the ID number stored in ID*/
@@ -107,6 +108,7 @@ else if (ID==1060  ){MODEL_INFO_1060(DATA);}
 //else if (ID==1011  ){MODEL_INFO_1011(DATA);}
 //else if (ID==1200  ){MODEL_INFO_1200(DATA);}
 else if (ID==1100  ){MODEL_INFO_1100(DATA);}
+else if (ID==1101  ){MODEL_INFO_1101(DATA);}
 else {status=1;}
 printf("*******CARDAMOM MODEL LIBRARY DONE****************\n");
 printf("Model ID = %i loaded & configured...", ID);
