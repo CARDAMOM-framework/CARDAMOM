@@ -154,7 +154,10 @@ if strcmp(linestr,'/*DALEC POOLS*/');disp(linestr);k=1;end
  
 
  
- 
+  
+ MA.PARAMETER_IDs=P;
+MA.FLUX_IDs=F;
+MA.POOL_IDs=S;
  
  
  
@@ -218,6 +221,9 @@ end
  MA.par2nor=@(pars) log(pars./repmat(MA.parmin,[size(pars,1),1]))./log(repmat(MA.parmax./MA.parmin,[size(pars,1),1]));
  MA.nor2par=@(npars) repmat(MA.parmin,[size(npars,1),1]).*(repmat(MA.parmax,[size(npars,1),1])./repmat(MA.parmin,[size(npars,1),1])).^npars;
 
+
+
+
 save(dumpfile,'MA');
 else
     MAall=MA;
@@ -225,11 +231,9 @@ else
 end
 
 MA.ID=ID;
-MA.PARAMETER_IDs=P;
-MA.FLUX_IDs=F;
-MA.POOL_IDs=S;
 
 
+%hellop
 end
 
 

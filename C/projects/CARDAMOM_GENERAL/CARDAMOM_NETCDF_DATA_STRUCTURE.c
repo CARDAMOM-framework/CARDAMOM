@@ -56,6 +56,9 @@ double meantemp;
 int Ntimesteps;
 double deltat;
 
+//SZA
+double * SZA;
+
 TIMESERIES_DRIVER_STRUCT BURNED_AREA;
 TIMESERIES_DRIVER_STRUCT CO2;
 TIMESERIES_DRIVER_STRUCT DOY;
