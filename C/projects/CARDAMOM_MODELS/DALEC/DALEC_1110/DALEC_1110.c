@@ -162,16 +162,28 @@ int maxPevap2;
 struct DALEC_1110_FLUXES{
 /*DALEC FLUXES*/
 int gpp;   /*GPP*/
+int gpp;   /*GPP*/
+int temprate;   /*Temprate*/
 int temprate;   /*Temprate*/
 int resp_auto;   /*Autotrophic respiration*/
+int resp_auto;   /*Autotrophic respiration*/
+int fol_prod;   /*Foliar production*/
 int fol_prod;   /*Foliar production*/
 int lab_prod;   /*Labile production*/
+int lab_prod;   /*Labile production*/
+int root_prod;   /*Root production*/
 int root_prod;   /*Root production*/
 int wood_prod;   /*Wood production*/
+int wood_prod;   /*Wood production*/
+int lab_release;   /*Labile release*/
 int lab_release;   /*Labile release*/
 int leaffall_fact;   /*Leaffall factor*/
+int leaffall_fact;   /*Leaffall factor*/
+int fol2lit;   /*Foliar decomposition*/
 int fol2lit;   /*Foliar decomposition*/
 int wood2cwd;   /*Wood decomposition*/
+int wood2cwd;   /*Wood decomposition*/
+int root2lit;   /*Root decomposition*/
 int root2lit;   /*Root decomposition*/
 int resp_het_cwd;   /*Coarse woody debris heterotrophic respiration*/
 int resp_het_lit;   /*Litter heterotrophic respiration*/
