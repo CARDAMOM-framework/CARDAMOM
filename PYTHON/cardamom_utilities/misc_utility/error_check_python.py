@@ -22,8 +22,38 @@ def obs_attributes_checks(CBF):
                 if numpy.any(data)<= 0:
                     print("Error: Variable " + current_name + " has invalid combination of opt_unc_type==1 and values<=0")
                     obs_attribute_errors = obs_attribute_errors + 1
+        # check opt_filter             
+        if hasattr(current_var, 'opt_filter'): 
+            opt_filter_value = getattr(current_var, 'opt_filter')
+            if hasattr(current_var, 'single_mean_unc'):
+                single_mean_unc=getattr(current_var, 'single_mean_unc')
+            # check if opt_filter ==1 and single_mean_unc is -9999 or NaN
+                if opt_filter_value==1 and single_mean_unc==-9999:
+                    print("Error: Variable " + current_name + " has invalid combination of opt_filter=" + str(opt_filter_value) + " and single_mean_unc="+ str(single_mean_unc))
+                    obs_attribute_errors = obs_attribute_errors + 1
+                if opt_filter_value==1 and numpy.isnan(single_mean_unc)==True:
+                    print("Error: Variable " + current_name + " has invalid combination of opt_filter=" + str(opt_filter_value) + " and single_mean_unc="+ str(single_mean_unc))
+                    obs_attribute_errors = obs_attribute_errors + 1
+            # check if opt_filter ==2 and single_annual_unc is -9999 or NaN
+            if hasattr(current_var, 'single_annual_unc'):    
+                single_annual_unc=getattr(current_var, 'single_annual_unc')
+                if opt_filter_value==2 and single_annual_unc==-9999:
+                    print("Error: Variable " + current_name + " has invalid combination of opt_filter=" + str(opt_filter_value) + " and single_annual_unc="+ str(single_annual_unc))
+                    obs_attribute_errors = obs_attribute_errors + 1
+                if opt_filter_value==2 and numpy.isnan(single_annual_unc)==True:
+                    print("Error: Variable " + current_name + " has invalid combination of opt_filter="+ str(opt_filter_value) + " and single_annual_unc="+ str(single_annual_unc))
+                    obs_attribute_errors = obs_attribute_errors + 1
+            # check if opt_filter ==2 and single_monthly_unc is -9999 or NaN
+            if hasattr(current_var, 'single_monthly_unc'):    
+                single_monthly_unc=getattr(current_var, 'single_monthly_unc') 
+                if opt_filter_value==2 and single_monthly_unc==-9999:
+                    print("Error: Variable " + current_name + " has invalid combination of opt_filter="+ str(opt_filter_value) + " and single_monthly_unc=" +str(single_monthly_unc))
+                    obs_attribute_errors = obs_attribute_errors + 1
+                if opt_filter_value==2 and numpy.isnan(single_monthly_unc)==True:
+                    print("Error: Variable " + current_name + " has invalid combination of opt_filter=" + str(opt_filter_value) + " and single_monthly_unc=" + str(single_monthly_unc))
+                    obs_attribute_errors = obs_attribute_errors + 1
     return obs_attribute_errors
-    
+
 # check all variables and their attribute are type double    
 def vars_attributes_datatype_checks(CBF):
     vars_datatype_errors = 0
@@ -211,20 +241,20 @@ def main():
     print("OBS checks")    
     obs_flag=obs_checks(dataset)
     if obs_flag>0:
-        print("OBS check failed with total " + str(obs_flag) + "warning(s)") 
+        print("OBS check failed with total " + str(obs_flag) + " warning(s)") 
 
     obs_attribute_flag = obs_attributes_checks(dataset)
     if obs_attribute_flag>0:
-        print("OBS attribute check failed with total " + str(obs_attribute_flag) + "error(s)") 
+        print("OBS attribute check failed with total " + str(obs_attribute_flag) + " error(s)") 
 
     print("Driver checks")
     driver_flag = driver_checks(dataset)
     if driver_flag>0:
-        print("Driver check failed with total " + str(driver_flag) + "warning(s)") 
+        print("Driver check failed with total " + str(driver_flag) + " warning(s)") 
     
     datatype_flag = vars_attributes_datatype_checks(dataset)
     if datatype_flag>0:
-        print("Datatype check failed with total " + str(datatype_flag) + "error(s)") 
+        print("Datatype check failed with total " + str(datatype_flag) + " error(s)") 
     
     
     dataset.close()
