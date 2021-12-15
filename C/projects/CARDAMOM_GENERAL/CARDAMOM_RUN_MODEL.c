@@ -197,7 +197,53 @@ fread(pars,sizeof(double),CARDADATA.nopars,fd);
 /*Setting EDCDIAG = 1 to ensure full model run*/
 CARDADATA.ncdf_data.EDCDIAG=1;
 
+
 CARDADATA.MLF(CARDADATA,pars);
+
+
+// printf("DATA.M_P[0] = %2.2f\n",CARDADATA.M_P[0]);
+// printf("DATA.LAI.values[0] = %2.2f\n",CARDADATA.ncdf_data.LAI.values[0]);
+// printf("DATA.LAI.values[24] = %2.2f\n",CARDADATA.ncdf_data.LAI.values[24]);
+// printf("DATA.M_POOLS[1] = %2.2f\n",CARDADATA.M_POOLS[1]);
+// printf("CARDADATA.ncdf_data.LAI.opt_unc_type=%i\n",CARDADATA.ncdf_data.LAI.opt_unc_type);
+// printf("CARDADATA.ncdf_data.LAI.opt_normalization=%i\n",CARDADATA.ncdf_data.LAI.opt_normalization);
+// printf("CARDADATA.ncdf_data.LAI.opt_filter=%i\n",CARDADATA.ncdf_data.LAI.opt_filter);
+// printf("CARDADATA.ncdf_data.LAI.min_threshold=%2.2f\n",CARDADATA.ncdf_data.LAI.min_threshold);
+// printf("CARDADATA.ncdf_data.LAI.single_monthly_unc=%2.2f\n",CARDADATA.ncdf_data.LAI.single_monthly_unc);
+// printf("CARDADATA.ncdf_data.LAI.single_annual_unc=%2.2f\n",CARDADATA.ncdf_data.LAI.single_annual_unc);
+// printf("CARDADATA.ncdf_data.LAI.single_mean_unc=%2.2f\n",CARDADATA.ncdf_data.LAI.single_mean_unc);
+// printf("CARDADATA.ncdf_data.LAI.single_unc=%2.2f\n",CARDADATA.ncdf_data.LAI.single_unc);
+// printf("CARDADATA.ncdf_data.LAI.structural_unc=%2.2f\n",CARDADATA.ncdf_data.LAI.structural_unc);
+// printf("CARDADATA.ncdf_data.LAI.unc[24]=%f\n",CARDADATA.ncdf_data.LAI.unc[24]);
+// printf("CARDADATA.ncdf_data.LAI.length=%i\n",(int)CARDADATA.ncdf_data.LAI.length);
+// printf("CARDADATA.ncdf_data.LAI.unc_length=%i\n",(int)CARDADATA.ncdf_data.LAI.unc_length);
+// printf("CARDADATA.ncdf_data.LAI.valid_obs_length=%i\n",(int)CARDADATA.ncdf_data.LAI.valid_obs_length);
+// 
+
+// for (nn=0;nn<192;nn++){printf("%2.3f ",CARDADATA.M_POOLS[1+nn*9]);}
+// printf("\n");
+// for (nn=0;nn<54;nn++){printf("%2.3f ",CARDADATA.M_PARS[nn]);}
+// printf("\n");
+
+
+// double * values;//Timeseries of observation values
+// //**********Variable attributes*************
+// int opt_unc_type;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
+// int opt_normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
+// int opt_filter;//(0 = no filter, 1 = mean only, 2==annual mean & monthly anomaly, 3 = seasonal cycle & inter-annual anomalies). 
+// double min_threshold;//Minimum value threshold: model and/or data will be rounded up to this value (default = -inf)
+// double single_monthly_unc;//Fields to be used only with Filter=2 AND opt_unc_type=0;
+// double single_annual_unc;//Fields to be used only with Filter=2 AND opt_unc_type=0;
+// double single_mean_unc;//Fields to be used only with Filter = 1;
+// double single_unc;//
+// double structural_unc;//this gets added to uncertainty in quadrature.
+// //Auxiliary uncertainty variable, separate from timeseries variable
+// double * unc;//Timeseries of uncertainty values
+// //expand as needed
+// size_t length;//
+// size_t unc_length;//
+// int valid_obs_length;//number of non-empty obs
+// int * valid_obs_indices;//indices of non-empty obs
 
 /*step 4.4 - writing DALEC fluxes and pools to netCDF file*/
 //(with N (Number of samples) being another dimension, applied to all vars)

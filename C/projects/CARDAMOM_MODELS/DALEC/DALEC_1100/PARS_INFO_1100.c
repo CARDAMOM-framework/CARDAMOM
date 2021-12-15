@@ -16,25 +16,21 @@ int PARS_INFO_1100(DATA *CARDADATA)
 
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 
-/*Decomposition rate*/
+/*Litter decomposition rate*/
 CARDADATA->parmin[P.tr_lit2soil]=0.00001;
 CARDADATA->parmax[P.tr_lit2soil]=0.01;
+
+/*CWD decomposition rate*/
+CARDADATA->parmin[P.tr_cwd2som]=0.00001;
+CARDADATA->parmax[P.tr_cwd2som]=0.01;
 
 /*Fraction of GPP respired*/
 CARDADATA->parmin[P.f_auto]=0.2;
 CARDADATA->parmax[P.f_auto]=0.8;
 
-/*Fraction of (1-fgpp) to foliage*/
-CARDADATA->parmin[P.f_foliar]=0.01;
-CARDADATA->parmax[P.f_foliar]=0.5;
-
 /*Fraction of (1-fgpp) to roots*/
 CARDADATA->parmin[P.f_root]=0.01;
 CARDADATA->parmax[P.f_root]=1;
-
-/*Leaf Lifespan*/
-CARDADATA->parmin[P.t_foliar]=1.001;
-CARDADATA->parmax[P.t_foliar]=8;
 
 /*TOR wood* - 1% loss per year value*/
 CARDADATA->parmin[P.t_wood]=0.000025;
@@ -48,33 +44,21 @@ CARDADATA->parmax[P.t_root]=0.01;
 CARDADATA->parmin[P.t_lit]=0.0001;
 CARDADATA->parmax[P.t_lit]=0.01;
 
+/*TOR CWD*/
+CARDADATA->parmin[P.t_cwd]=0.00005;
+CARDADATA->parmax[P.t_cwd]=0.005;
+
 /*TOR SOM*/
 CARDADATA->parmin[P.t_soil]=0.0000001;
 CARDADATA->parmax[P.t_soil]=0.001;
 
-/*Temp factor* = Q10 = 1.2-1.6*/
-CARDADATA->parmin[P.temp_factor]=0.018;
-CARDADATA->parmax[P.temp_factor]=0.08;
-
-/*Bday*/
-CARDADATA->parmin[P.Bday]=365.25;
-CARDADATA->parmax[P.Bday]=365.25*4;
+/*\Q10 = 1.2-2.0*/
+CARDADATA->parmin[P.Q10rhco2]=1.2;
+CARDADATA->parmax[P.Q10rhco2]=2.0;
 
 /*Fraction to Clab*/
 CARDADATA->parmin[P.f_lab]=0.01;
 CARDADATA->parmax[P.f_lab]=0.5;
-
-/*Clab Release period*/
-CARDADATA->parmin[P.labile_rel]=365.25/12;
-CARDADATA->parmax[P.labile_rel]=100;
-
-/*Fday*/
-CARDADATA->parmin[P.Fday]=365.25;
-CARDADATA->parmax[P.Fday]=365.25*4;
-
-/*Leaf fall period*/
-CARDADATA->parmin[P.leaf_fall]=365.25/12;
-CARDADATA->parmax[P.leaf_fall]=150;
 
 /*LMCA*/
 /*Kattge et al. 2011*/
@@ -99,6 +83,10 @@ CARDADATA->parmax[P.i_root]=2000.0;
 /*C_wood*/
 CARDADATA->parmin[P.i_wood]=1.0;
 CARDADATA->parmax[P.i_wood]=100000.0;
+
+/*C CWD*/
+CARDADATA->parmin[P.i_cwd]=1.0;
+CARDADATA->parmax[P.i_cwd]=100000.0;
 
 /*C litter*/
 CARDADATA->parmin[P.i_lit]=1.0;
@@ -136,10 +124,6 @@ CARDADATA->parmax[P.cf_DOM]=1;
 CARDADATA->parmin[P.resilience]=0.01;
 CARDADATA->parmax[P.resilience]=1;
 
-/*Lab pool lifespan*/
-CARDADATA->parmin[P.t_labile]=1.001;
-CARDADATA->parmax[P.t_labile]=8;
-
 /*Moisture factor*/
 CARDADATA->parmin[P.moisture]=0.01;
 CARDADATA->parmax[P.moisture]=1;
@@ -150,7 +134,7 @@ CARDADATA->parmax[P.hydr_cond]=0.00001;
 
 /*Maximum infiltration (mm/day)*/
 CARDADATA->parmin[P.max_infil]=1;
-CARDADATA->parmax[P.max_infil]=1e4;
+CARDADATA->parmax[P.max_infil]=100;
 
 /*PUW pool*/
 CARDADATA->parmin[P.i_PUW]=1;
@@ -197,8 +181,8 @@ CARDADATA->parmin[P.Tminmax]=273.15;
 CARDADATA->parmax[P.Tminmax]=288.15;
 
 /*aerodynamic conductance*/
-CARDADATA->parmin[P.ga]=1.e-6;
-CARDADATA->parmax[P.ga]=2.0;
+CARDADATA->parmin[P.ga]=0.01;
+CARDADATA->parmax[P.ga]=10.0;
 
 /*Tupp*/
 CARDADATA->parmin[P.Tupp]=299.15;
@@ -213,7 +197,7 @@ CARDADATA->parmin[P.C3_frac]=1e-8;
 CARDADATA->parmax[P.C3_frac]=1.0;
 
 /*Clumping index*/
-CARDADATA->parmin[P.clumping]=1e-8;
+CARDADATA->parmin[P.clumping]=0.35;
 CARDADATA->parmax[P.clumping]=1.0;
 
 /*Leaf single scattering albedo*/
@@ -235,6 +219,75 @@ CARDADATA->parmax[P.melt_slope]=1;
 /*sn3: snow cover fraction scalar*/
 CARDADATA->parmin[P.scf_scalar]=0.001;
 CARDADATA->parmax[P.scf_scalar]=1000.0;
+
+/* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)*/
+/*jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
+CARDADATA->parmin[P.S_fv]=1;
+CARDADATA->parmax[P.S_fv]=100.0;
+
+/* jc thetas_opt   optimum thetas for water scaler fW*/
+CARDADATA->parmin[P.thetas_opt]=0.2;
+CARDADATA->parmax[P.thetas_opt]=1.0;
+
+/* jc fwc the water scaler fW value at the end point C  */
+CARDADATA->parmin[P.fwc]=0.01;
+CARDADATA->parmax[P.fwc]=1.0;
+
+/* jc r_ch4   CH4:CO2 conversion ratio*/
+CARDADATA->parmin[P.r_ch4]=0.001;
+CARDADATA->parmax[P.r_ch4]=0.9;
+
+/* jc Q10ch4 Q10 for CH4 production  */
+CARDADATA->parmin[P.Q10ch4]=1.0;
+CARDADATA->parmax[P.Q10ch4]=3.0;
+
+/* maxPevap in mm/day*/
+CARDADATA->parmin[P.maxPevap]=0.01;
+CARDADATA->parmax[P.maxPevap]=20;
+
+/*Mean temperature at leaf onset (T_phi) (degrees kelvin)*/
+CARDADATA->parmin[P.T_phi]=268.15;
+CARDADATA->parmax[P.T_phi]=323.15;
+
+/*Spatial range of mean temperature at leaf onset (T_r) (degrees C or degrees kelvin)*/
+CARDADATA->parmin[P.T_range]=0.1;
+CARDADATA->parmax[P.T_range]=10.0;
+
+/*Averaging period for temperature growth trigger T (time units of model), usually kept constant*/
+CARDADATA->parmin[P.tau_m]=1.0;
+CARDADATA->parmax[P.tau_m]=1.01;
+
+/*LAI linear growth constant (inverse of model time units; e.g. days-1 or months-1)*/
+CARDADATA->parmin[P.plgr]=0.001;
+CARDADATA->parmax[P.plgr]=0.5;
+
+/*Inverse of leaf longevity during senescence period (inverse of model time units; e.g. days-1 or months-1)*/
+CARDADATA->parmin[P.k_leaf]=0.001;
+CARDADATA->parmax[P.k_leaf]=0.5;
+
+/*Intrinsic maximum LAI (m^2 m^-2)*/
+CARDADATA->parmin[P.lambda_max]=0.1;
+CARDADATA->parmax[P.lambda_max]=10.0;
+
+/*Target survival time for LAI under water-deficit conditions (days; or same unit as ET and PAW)*/
+CARDADATA->parmin[P.tau_W]=0.1;
+CARDADATA->parmax[P.tau_W]=300;
+
+/*Mean daylength at leaf shedding (t_c; in units of hours sunlight per day)*/
+CARDADATA->parmin[P.time_c]=2;
+CARDADATA->parmax[P.time_c]=22;
+
+/*Spatial range of mean daylength at leaf shedding (t_r)*/
+CARDADATA->parmin[P.time_r]=0.1;
+CARDADATA->parmax[P.time_r]=6.0;
+
+/*initialization of temperature memory (fractional value between mintemp and maxtemp at t=0)*/
+CARDADATA->parmin[P.init_T_mem]=0.01;
+CARDADATA->parmax[P.init_T_mem]=1;
+
+/*initialization of water/structural memory (fractional value of intrinsic maximum LAI)*/
+CARDADATA->parmin[P.init_LAIW_mem]=0.01;
+CARDADATA->parmax[P.init_LAIW_mem]=1;
 
 return 0;
 

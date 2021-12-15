@@ -33,7 +33,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   double lambda_next;
 
   meantemp=(double)met_list[0];
-  n=(double)var_list[0];
+  n=1.0; /*(double)var_list[0];*/
   deltat=(double)var_list[19];
   lambda=(double)var_list[2];
   T_init=(double)0.0;

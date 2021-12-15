@@ -72,12 +72,14 @@ int DYNAMIC_DATA_MEMORY_ALLOCATION(DATA * DATA){
 int Ntimesteps=DATA->ncdf_data.Ntimesteps;
 DATA->M_ABGB=calloc(Ntimesteps,sizeof(double));
 DATA->M_CH4=calloc(Ntimesteps,sizeof(double));
+DATA->M_CWOO=calloc(Ntimesteps,sizeof(double));
 DATA->M_DOM=calloc(Ntimesteps,sizeof(double));
-DATA->M_EWT=calloc(Ntimesteps,sizeof(double));
 DATA->M_ET=calloc(Ntimesteps,sizeof(double));
+DATA->M_EWT=calloc(Ntimesteps,sizeof(double));
 DATA->M_LAI=calloc(Ntimesteps,sizeof(double));
 DATA->M_GPP=calloc(Ntimesteps,sizeof(double));
 DATA->M_NBE=calloc(Ntimesteps,sizeof(double));
+DATA->M_ROFF=calloc(Ntimesteps,sizeof(double));
 
     
 
@@ -190,6 +192,7 @@ free(DATA.M_ABGB);
 free(DATA.M_CH4);
 free(DATA.M_DOM);
 free(DATA.M_ET);
+free(DATA.M_ROFF);
 free(DATA.M_EWT);
 free(DATA.M_GPP);
 free(DATA.M_LAI);

@@ -25,6 +25,8 @@ double delta_sm = fmax(sm - sm_field,0);
 // potential of layer
 double psi = HYDROFUN_MOI2PSI(sm,psi_porosity,b);
 
+  
+  //Matlab line Massoud et al.  D= frac_Qexcess * (1- (PARS.psiporosity-min(max(STATES.PSI(t,:),PARS.psifield),PARS.psiporosity))./(PARS.psiporosity-PARS.psifield)).*(SMdelta);
 // calculate drainage (equals zero if change in soil moisture is zero)
 double drainage = delta_sm * Qexcess * (1 - (psi_porosity - fmin(fmax(psi,psi_field),psi_porosity))/(psi_porosity-psi_field));
 

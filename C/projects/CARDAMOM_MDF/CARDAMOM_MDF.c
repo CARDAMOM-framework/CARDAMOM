@@ -96,6 +96,8 @@ int main(int argc,char *CLA[]){
 /*5. write-to-file frequency*/
 
 
+/*OK is output flag from all functions*/
+int OK = 0; //Need to initilize!
 
 
 /*SETTING number of command line inputs as char in CLA[0]*/
@@ -220,6 +222,7 @@ printf(" CARDAMOM_MDF.c: about to start ADEMCMC\n");
 ADEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
 break;
 
+
 /*printf("CARDAMOM_MDF.c: DEMCMC temporarily disconnected, need to de-bug, correct and re-introduce");
 printf("CARDAMOM_MDF.c: completed DEMCMC\n");
 break;*/
@@ -227,7 +230,27 @@ default:
 printf("CARDAMOM_MDF.c: Error: no valid mcmcid value prescribed...\n");
 
 }
-printf("CARDAMOM_MDF.c: MCMC complete\n");
+// printf("CARDAMOM_MDF.c: MCMC complete\n");
+// printf("DATA.M_P[0] = %2.2f\n",DATA.M_P[0]);
+// printf("DATA.LAI.values[0] = %2.2f\n",DATA.ncdf_data.LAI.values[0]);
+// printf("DATA.LAI.values[24] = %2.2f\n",DATA.ncdf_data.LAI.values[24]);
+// printf("DATA.M_POOLS[1] = %2.2f\n",DATA.M_POOLS[1]);
+// printf("DATA.ncdf_data.LAI.opt_unc_type=%i\n",DATA.ncdf_data.LAI.opt_unc_type);
+// printf("DATA.ncdf_data.LAI.opt_normalization=%i\n",DATA.ncdf_data.LAI.opt_normalization);
+// printf("DATA.ncdf_data.LAI.opt_filter=%i\n",DATA.ncdf_data.LAI.opt_filter);
+// printf("DATA.ncdf_data.LAI.min_threshold=%2.2f\n",DATA.ncdf_data.LAI.min_threshold);
+// printf("DATA.ncdf_data.LAI.single_monthly_unc=%2.2f\n",DATA.ncdf_data.LAI.single_monthly_unc);
+// printf("DATA.ncdf_data.LAI.single_annual_unc=%2.2f\n",DATA.ncdf_data.LAI.single_annual_unc);
+// printf("DATA.ncdf_data.LAI.single_mean_unc=%2.2f\n",DATA.ncdf_data.LAI.single_mean_unc);
+// printf("DATA.ncdf_data.LAI.single_unc=%2.2f\n",DATA.ncdf_data.LAI.single_unc);
+// printf("DATA.ncdf_data.LAI.structural_unc=%2.2f\n",DATA.ncdf_data.LAI.structural_unc);
+// printf("DATA.ncdf_data.LAI.unc[24]=%f\n",DATA.ncdf_data.LAI.unc[24]);
+// printf("DATA.ncdf_data.LAI.length=%i\n",(int)DATA.ncdf_data.LAI.length);
+// printf("DATA.ncdf_data.LAI.unc_length=%i\n",(int)DATA.ncdf_data.LAI.unc_length);
+// printf("DATA.ncdf_data.LAI.valid_obs_length=%i\n",(int)DATA.ncdf_data.LAI.valid_obs_length);
+// double * values;//Timeseries of observation values
+
+
 /*???????*/
 /*User Defined function needed to clean up memory*/
 MEMORY_CLEANUP(DATA,PI,MCOPT,MCOUT);

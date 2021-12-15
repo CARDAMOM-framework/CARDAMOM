@@ -132,6 +132,7 @@ OBSOPE.SUPPORT_ABGB_OBS=true;
 OBSOPE.SUPPORT_DOM_OBS=true;
 OBSOPE.SUPPORT_EWT_OBS=true;
 OBSOPE.SUPPORT_FIR_OBS=true;
+OBSOPE.SUPPORT_ROFF_OBS=true;
 
 OBSOPE.SUPPORT_CUE_OBS=true;
 OBSOPE.SUPPORT_Cefficiency_OBS=true;
@@ -147,6 +148,12 @@ OBSOPE.LAI_foliar_pool=S.C_fol;
 OBSOPE.LAI_LCMA=P.LCMA;
 //ET variabiles
 OBSOPE.ET_flux=F.et;
+//Runoff variables
+static int ROFF_fluxes[2];
+ROFF_fluxes[0]=F.q_paw;
+ROFF_fluxes[1]=F.q_puw;
+OBSOPE.ROFF_fluxes=ROFF_fluxes;
+OBSOPE.ROFF_n_fluxes=2;
 //NBE-specific variables
 static int NBE_fluxes[5];
 NBE_fluxes[0]=F.gpp;
@@ -185,7 +192,10 @@ OBSOPE.FIR_flux=F.f_total;
 
 //CUE parameters
 OBSOPE.CUE_PARAM=P.f_auto;
+//Cefficiency parameters
 OBSOPE.Cefficiency_PARAM=P.canopy_eff;
+//Initial SOM parameter
+OBSOPE.iniSOM_PARAM=P.i_soil;
 
 DALECmodel->OBSOPE=OBSOPE;
 

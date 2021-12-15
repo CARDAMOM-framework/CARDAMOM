@@ -81,9 +81,9 @@ int fx_roo2lit;   /*Fire transfer root to litter*/
 int fx_woo2som;   /*Fire transfer wood to soil*/
 int fx_lit2som;   /*Fire transfer litter to soil*/
 int et;   /*Evapotranspiration*/
-int q_paw;   /*PAW runoff*/
-int paw2puw;   /*PAW->PUW transfer*/
-int q_puw;   /*PUW runoff*/
+int q_paw;   /*Plant-available water drainage*/
+int paw2puw;   /*Plant-available water to plant-unavailable water transfer*/
+int q_puw;   /*Plant-unavailable water runoff*/
 } DALEC_1005_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -121,14 +121,15 @@ INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 
 //Set SUPPORT_OBS values to true if model supports observation operation.
 printf("DALEC_1005_MODCONFIG, Line 22...\n");
-OBSOPE.SUPPORT_GPP_OBS=true;
-OBSOPE.SUPPORT_LAI_OBS=true;
-OBSOPE.SUPPORT_ET_OBS=true;
-OBSOPE.SUPPORT_NBE_OBS=true;
 OBSOPE.SUPPORT_ABGB_OBS=true;
+OBSOPE.SUPPORT_CWOO_OBS=true;
 OBSOPE.SUPPORT_DOM_OBS=true;
+OBSOPE.SUPPORT_ET_OBS=true;
 OBSOPE.SUPPORT_EWT_OBS=true;
 OBSOPE.SUPPORT_FIR_OBS=true;
+OBSOPE.SUPPORT_GPP_OBS=true;
+OBSOPE.SUPPORT_LAI_OBS=true;
+OBSOPE.SUPPORT_NBE_OBS=true;
 
 OBSOPE.SUPPORT_CUE_OBS=true;
 OBSOPE.SUPPORT_Cefficiency_OBS=true;
@@ -167,6 +168,12 @@ ABGB_pools[2]=S.C_roo;
 ABGB_pools[3]=S.C_woo;
 OBSOPE.ABGB_pools=ABGB_pools;
 OBSOPE.ABGB_n_pools=4;
+
+//ABGB-specific variables
+static int CWOO_pools[1];
+CWOO_pools[0]=S.C_woo;
+OBSOPE.ABGB_pools=ABGB_pools;
+OBSOPE.ABGB_n_pools=1;
 
 //DOM-specific variables
 static int DOM_pools[2]; 

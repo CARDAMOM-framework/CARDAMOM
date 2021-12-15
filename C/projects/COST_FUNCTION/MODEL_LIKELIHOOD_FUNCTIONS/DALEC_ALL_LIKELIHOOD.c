@@ -12,6 +12,7 @@ struct PROBABILITY_INDICES{
         int ABGB;
         int CH4;
         int ET;
+        int ROFF;
         int EWT;
         int GPP;
         int LAI;
@@ -24,9 +25,11 @@ struct PROBABILITY_INDICES{
         int Mean_LAI;
         //Parameters
         int PEQ_Cefficiency;
-        int PEQ_CUE;} PROBABILITY_INDICES={
+        int PEQ_CUE;
+        int PEQ_iniSnow;
+        int PEQ_C3frac;} PROBABILITY_INDICES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-    10,11,12,13};
+    10,11,12,13,14,15,16};
 
 
 
@@ -115,12 +118,15 @@ DALEC_OBSOPE(&D,O);
 
 //printf("About to calculate likelihoods...\n");
 
+
+
 //printf("O->SUPPORT_LAI_OBS = %d\n",O->SUPPORT_LAI_OBS);
 
 //if (O->SUPPORT_ET_OBS){   P=P+DALEC_LIKELIHOOD_ET(D);}
 if (O->SUPPORT_ABGB_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ABGB, D.M_ABGB);};
 if (O->SUPPORT_CH4_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.CH4, D.M_CH4);};
 if (O->SUPPORT_ET_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ET, D.M_ET);};
+if (O->SUPPORT_ROFF_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ROFF, D.M_ROFF);};
 if (O->SUPPORT_EWT_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.EWT, D.M_EWT);};
 if (O->SUPPORT_GPP_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.GPP, D.M_GPP);};
 if (O->SUPPORT_LAI_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.LAI, D.M_LAI);};
@@ -139,6 +145,8 @@ if (O->SUPPORT_LAI_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_
 //Parameters and emergent quantities
 if (O->SUPPORT_Cefficiency_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_Cefficiency, D.M_PEQ_Cefficiency);};
 if (O->SUPPORT_CUE_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_CUE, D.M_PEQ_CUE);};
+if (O->SUPPORT_iniSnow_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_iniSnow, D.M_PEQ_iniSnow);};
+if (O->SUPPORT_C3frac_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_C3frac, D.M_PEQ_C3frac);};
 
 
 

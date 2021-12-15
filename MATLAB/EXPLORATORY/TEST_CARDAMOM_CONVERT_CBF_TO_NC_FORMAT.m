@@ -248,6 +248,8 @@ nccreate(fname,'ABGB','Dimensions',{'time',nodays},'FillValue',-9999);
 nccreate(fname,'ABGBunc','Dimensions',{'time',nodays},'FillValue',-9999);
 % ncwriteatt(fname,'ABGB','Description','Above- and below-ground biomass')
 % ncwriteatt(fname,'ABGB','info',CBF.OBSUNC.ABGB.info)
+%Writing variable 
+ncwrite_if_exists(fname,'ABGB',CBF.OBS.ABGB);
 ncwriteatt(fname,'ABGB','opt_unc_type',-9999)
 ncwriteatt(fname,'ABGB','opt_normalization',-9999)
 ncwriteatt(fname,'ABGB','opt_filter',-9999)

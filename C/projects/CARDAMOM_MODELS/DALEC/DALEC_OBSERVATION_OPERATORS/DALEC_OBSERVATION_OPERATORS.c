@@ -10,16 +10,26 @@ bool SUPPORT_CH4_OBS;
 //Need to fill this out...
 int CH4_flux;
 bool SUPPORT_GPP_OBS;
+//Woody C (CWOO)
+bool SUPPORT_CWOO_OBS;
+int * CWOO_pools;
+int CWOO_n_pools;
+//Gross primary productivity (GPP)
 int GPP_flux;
 bool SUPPORT_LAI_OBS;
 int LAI_foliar_pool;
 int LAI_LCMA;
 bool SUPPORT_ET_OBS;
 int ET_flux;
+bool SUPPORT_ROFF_OBS;
+int * ROFF_fluxes;
+double *ROFF_flux_signs;
+int ROFF_n_fluxes;
 bool SUPPORT_NBE_OBS;
 int * NBE_fluxes;
 double *NBE_flux_signs;
 int NBE_n_fluxes;
+//ABove and below ground biomass
 bool SUPPORT_ABGB_OBS;
 int * ABGB_pools;
 int ABGB_n_pools;
@@ -43,6 +53,14 @@ bool SUPPORT_CUE_OBS;
 int CUE_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
         
+bool SUPPORT_C3frac_OBS;
+int C3frac_PARAM;//This is assuming it's a single parameter
+//Can add more parameters OR options
+        
+bool SUPPORT_iniSnow_OBS;
+int iniSnow_PARAM;//This is assuming it's a single parameter
+//Can add more parameters OR options
+        
 bool SUPPORT_iniSOM_OBS;
 int iniSOM_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
@@ -53,19 +71,23 @@ int iniSOM_PARAM;//This is assuming it's a single parameter
 
 int INITIALIZE_OBSOPE_SUPPORT(OBSOPE * OBSOPE){
 
-OBSOPE->SUPPORT_CH4_OBS=false;
-OBSOPE->SUPPORT_GPP_OBS=false;
-OBSOPE->SUPPORT_LAI_OBS=false;
-OBSOPE->SUPPORT_ET_OBS=false;
-OBSOPE->SUPPORT_NBE_OBS=false;
 OBSOPE->SUPPORT_ABGB_OBS=false;
+OBSOPE->SUPPORT_CH4_OBS=false;
+OBSOPE->SUPPORT_CWOO_OBS=false;
 OBSOPE->SUPPORT_DOM_OBS=false;
+OBSOPE->SUPPORT_ET_OBS=false;
 OBSOPE->SUPPORT_EWT_OBS=false;
 OBSOPE->SUPPORT_FIR_OBS=false;
+OBSOPE->SUPPORT_GPP_OBS=false;
+OBSOPE->SUPPORT_LAI_OBS=false;
+OBSOPE->SUPPORT_NBE_OBS=false;
+OBSOPE->SUPPORT_ROFF_OBS=false;
 
 
 OBSOPE->SUPPORT_Cefficiency_OBS=false;
 OBSOPE->SUPPORT_CUE_OBS=false;
+OBSOPE->SUPPORT_C3frac_OBS=false;
+OBSOPE->SUPPORT_iniSnow_OBS=false;
 OBSOPE->SUPPORT_iniSOM_OBS=false;
 
 
@@ -127,6 +149,23 @@ if (TOBS.valid_obs_length>0){int n;for (n=0;n<N;n++){D->M_ET[n]=D->M_FLUXES[D->n
 
 return 0;}
 
+// Runoff operator
+
+int DALEC_OBSOPE_ROFF(DATA * D, OBSOPE * O){
+
+int N=D->ncdf_data.TIME_INDEX.length;
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.ROFF;
+
+
+if (TOBS.valid_obs_length>0){
+int n,nn;
+for (n=0;n<N;n++){
+D->M_ROFF[n]=0;
+for (nn=0;nn<O->ROFF_n_fluxes;nn++){
+D->M_ROFF[n]+=D->M_FLUXES[D->nofluxes*n+O->ROFF_fluxes[nn]];}}};
+
+
+return 0;}
 
 
 
@@ -222,6 +261,8 @@ int DALEC_OBSOPE_LAI(DATA * D, OBSOPE * O){
 
 int N=D->ncdf_data.TIME_INDEX.length;
 
+
+
 //Time varying GPP and mean GPP
 TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.LAI;
 SINGLE_OBS_STRUCT SOBS=D->ncdf_data.Mean_LAI;
@@ -239,6 +280,36 @@ return 0;}
 
 
 
+
+
+
+int DALEC_OBSOPE_CWOO(DATA * D, OBSOPE * O){
+
+int N=D->ncdf_data.TIME_INDEX.length;
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.CWOO;
+
+
+
+if (TOBS.valid_obs_length>0){
+//declare constanta
+int p,nxp,n,nn;
+//loop through days
+for (n=0;n<N;n++){
+//declarations
+
+//indices
+nxp=D->nopools*(n+1);p=D->nopools*n;
+
+//inialize
+D->M_CWOO[n]=0;
+//loop through pools
+for (nn=0;nn<O->CWOO_n_pools;nn++){
+D->M_CWOO[n]+=(D->M_CWOO[p+O->CWOO_pools[nn]]+D->M_CWOO[nxp+O->CWOO_pools[nn]])*0.5;}
+}}
+
+
+return 0;
+}
 
 
 
@@ -293,6 +364,19 @@ return 0;
 
 }
 
+int DALEC_OBSOPE_C3frac(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_C3frac;
+if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_C3frac=D->M_PARS[O->C3frac_PARAM];}
+return 0;
+
+}
+
+int DALEC_OBSOPE_iniSnow(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_iniSnow;
+if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_iniSnow=D->M_PARS[O->iniSnow_PARAM];}
+return 0;
+
+}
 int DALEC_OBSOPE_iniSOM(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_iniSOM;
 if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_iniSOM=D->M_PARS[O->iniSOM_PARAM];}
@@ -305,12 +389,14 @@ return 0;
 ///Full observation operator
 int DALEC_OBSOPE(DATA * D, OBSOPE * O){
 
+if (O->SUPPORT_ABGB_OBS){DALEC_OBSOPE_ABGB(D, O);}
 if (O->SUPPORT_CH4_OBS){DALEC_OBSOPE_CH4(D, O);}
+if (O->SUPPORT_CWOO_OBS){DALEC_OBSOPE_CWOO(D, O);}
 if (O->SUPPORT_GPP_OBS){DALEC_OBSOPE_GPP(D, O);}
 if (O->SUPPORT_LAI_OBS){DALEC_OBSOPE_LAI(D, O);}
 if (O->SUPPORT_ET_OBS){DALEC_OBSOPE_ET(D, O);}
+if (O->SUPPORT_ROFF_OBS){DALEC_OBSOPE_ROFF(D, O);}
 if (O->SUPPORT_NBE_OBS){DALEC_OBSOPE_NBE(D, O);}
-if (O->SUPPORT_ABGB_OBS){DALEC_OBSOPE_ABGB(D, O);}
 if (O->SUPPORT_DOM_OBS){DALEC_OBSOPE_DOM(D, O);}
 if (O->SUPPORT_EWT_OBS){DALEC_OBSOPE_EWT(D, O);}
 if (O->SUPPORT_FIR_OBS){DALEC_OBSOPE_FIR(D, O);}
@@ -319,6 +405,8 @@ if (O->SUPPORT_FIR_OBS){DALEC_OBSOPE_FIR(D, O);}
 
 if (O->SUPPORT_Cefficiency_OBS){DALEC_OBSOPE_Cefficiency(D, O);}
 if (O->SUPPORT_CUE_OBS){DALEC_OBSOPE_CUE(D, O);}
+if (O->SUPPORT_C3frac_OBS){DALEC_OBSOPE_C3frac(D, O);}
+if (O->SUPPORT_iniSnow_OBS){DALEC_OBSOPE_iniSnow(D, O);}
 if (O->SUPPORT_iniSOM_OBS){DALEC_OBSOPE_iniSOM(D, O);}
 
 

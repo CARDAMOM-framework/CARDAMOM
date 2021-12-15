@@ -1,7 +1,8 @@
 #pragma once
 double * LIU_An_et(double SRAD, double VPD, double TEMP, double vcmax25, double co2, 
 	double beta_factor, double g1, double LAI, double ga, double VegK, double Tupp, 
-	double Tdown, double C3_frac, double clumping, double leaf_refl){
+	double Tdown, double C3_frac, double clumping, double leaf_refl, double maxPevap,
+    double precip){
 //double LIU_An(double const *gpppars, double const *consts, double const *pars, double const beta){
 
 //double SRAD = 12.*gpppars[7]; //Shortwave downward radiation
@@ -19,7 +20,7 @@ double t0C = 273.15;//C to kelvin
 double Ephoton = 2.0e-25/500.0e-9;// Planck constant times speed of light (J.s*m.s-1) divided by light wavelength (m)
 double NA = 6.02e23;// Avogadro's constant /mol
 double R = 8.31e-3;//Gas constant, kJ/mol/K
-double lambda0 = 2.26*10e6;
+double lambda0 = 2.26e6;
 double gammaV = 100*1005/(lambda0*0.622);
 
 
@@ -95,8 +96,8 @@ An_C4 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 An = C3_frac*(An_C3) + (1. - C3_frac)*(An_C4);
 
 //To scale from leaf to canopy, comment out the following line and uncomment the one after
-double canopy_scale = 1.;
-// double canopy_scale = (1. - exp(-VegK*LAI*clumping))/(VegK) 
+//double canopy_scale = 1.;
+double canopy_scale = (1. - exp(-VegK*LAI*clumping))/(VegK); 
 
 r[0] = An*canopy_scale*(12.e-6)*(24.*60.*60.); //from umolCO2m-2s-1 to gCm-2day-1
 
@@ -110,20 +111,22 @@ double gs; //stomatal conductance
 double transp; // transpiration
 double evap; // evaporation
 double Psurf = 100.0; //Surface pressure in kPa
-double VPD_kPa = VPD*Psurf; //100.0 kPa = 1000.0 hPa => Surface pressure
-
-ga = ga/0.02405; //correction factor
+double VPD_kPa = VPD;//*Psurf; //100.0 kPa = 1000.0 hPa => Surface pressure
+double evap_scale_factpr;
 
 sV = 0.04145*exp(0.06088*T_C); 
 
 SRADg = (1. - leaf_refl)*SRAD*exp(-VegK*LAI*clumping);
+SRAD = (1. - leaf_refl)*SRAD;
 
-petVnum = (sV*(SRAD-SRADg)+1.225*1000*VPD_kPa*ga)*(SRAD)/(lambda0*60*60);
+petVnum = (sV*(SRAD-SRADg)+1.225*1000*VPD_kPa*ga)/lambda0*60*60;
 petVnumB = 1.26*(sV*SRADg)/(sV+gammaV)/lambda0*60*60; //from mm.hr-1 
 
-if(beta_factor>0 && SRAD >0){
+if(beta_factor > 0 && SRAD >0){
 
-gs = (1.6*An)/((co2-ci)*LAI*0.02405); 
+gs = 1.6*An/(co2-ci)*LAI*0.02405; 
+
+//transp = petVnum/(sV+gammaV*(1+ga*(1/ga+1/gs)));
 transp = petVnum/(sV+gammaV*(1+ga*(1/ga+1/gs)));
 
 }
@@ -133,7 +136,14 @@ transp = 0.0;
 
 r[1] = transp*24; //from mm.hr-1 to mm.day-1
 
-evap = petVnumB;
+
+
+evap_scale_factpr = fmin(maxPevap/precip, 1.);
+
+
+evap = petVnumB*evap_scale_factpr;
+
+//evap = petVnumB;
 
 r[2] = evap*24; //from mm.hr-1 to mm.day-1
 
