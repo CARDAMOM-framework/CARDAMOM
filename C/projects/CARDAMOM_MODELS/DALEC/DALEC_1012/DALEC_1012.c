@@ -399,7 +399,7 @@ FLUXES[f+F.resp_het_lit] = POOLS[p+S.C_lit]*(1-pow(1-FLUXES[f+F.temprate]*pars[P
 FLUXES[f+F.resp_het_som] = POOLS[p+S.C_som]*(1-pow(1-FLUXES[f+F.temprate]*pars[P.t_som],deltat))/deltat;
 /*-----------------------------------------------------------------------*/
 /*jc calculate aerobic and anaerobic respirations*/
-double *jcr_o = JCR(ch4pars,T2M_MIN[n],T2M_MAX[n],POOLS[S.H2O_PAW]);
+double *jcr_o = JCR(ch4pars,T2M_MIN[n],T2M_MAX[n],POOLS[p+S.H2O_PAW]);
 //outputformat
 //jcr_o 0-4 thetas,fT,fV,fW,fCH4; /*jc*/ /* output from JCR module */
 /*32 aerobic Rh from litter*/
