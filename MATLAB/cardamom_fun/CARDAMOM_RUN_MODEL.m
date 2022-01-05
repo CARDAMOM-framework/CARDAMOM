@@ -206,7 +206,10 @@ end
 %READ AND PROCESS OUTPUTS
 if OPT.MODEL.ID==1101
     CBR=PROCESS_OUTPUTS_1101(CBR,OPT);
-else
+elseif OPT.MODEL.ID==1080
+        CBR=PROCESS_OUTPUTS_1080(CBR,OPT);
+
+else 
     CBR=PROCESS_OUTPUTS_OLD(CBR,OPT);
 end
  
@@ -331,6 +334,69 @@ end
  end
 
 
+function CBR=PROCESS_OUTPUTS_1080(CBR,OPT);
+MD=CARDAMOM_MODEL_LIBRARY(OPT.MODEL.ID);
+
+%STEP 4. Arrange data in structure
+%NEE = Resp - GPP. 
+%This flux CORRECTLY does not include fires.
+%That would be NBE (Net Biospheric Exchange).
+%Shuang made changes here, modified Rh scheme (1010 and 1011) use different
+%fluxes,consistant with DALEC source code, April 2021
+
+
+CBR.NBE=CBR.FLUXES(:,:,MD.FLUX_IDs.nbe);
+
+CBR.GPP=CBR.FLUXES(:,:,MD.FLUX_IDs.gpp);
+
+CBR.ET=CBR.FLUXES(:,:,MD.FLUX_IDs.et);
+
+
+
+
+
+if OPT.extended==1
+    
+
+        %LMA is par 11
+    CBR.LAI1=CBR.POOLS(:,:,MD.POOL_IDs.C_fol_1)./CBR.PARS(:,MD.PARAMETER_IDs.LCMA_1);
+    CBR.LAI2=CBR.POOLS(:,:,MD.POOL_IDs.C_fol_2)./CBR.PARS(:,MD.PARAMETER_IDs.LCMA_2);
+    CBR.LAI=    (CBR.LAI1+    CBR.LAI2)*0.5;
+   
+            %LMA is par 11
+    CBR.GPP1=CBR.FLUXES(:,:,MD.FLUX_IDs.gpp_1);
+    CBR.GPP2=CBR.FLUXES(:,:,MD.FLUX_IDs.gpp_2);
+    
+       CBR.ET1=CBR.FLUXES(:,:,MD.FLUX_IDs.et_1);
+    CBR.ET2=CBR.FLUXES(:,:,MD.FLUX_IDs.et_2);
+   
+    
+end
+    
+
+
+CBR.ALLOC.f_auto_1= CBR.PARS(:,MD.PARAMETER_IDs.f_auto_1);
+CBR.ALLOC.f_auto_2= CBR.PARS(:,MD.PARAMETER_IDs.f_auto_2);
+CBR.ALLOC.f_ffol_1= CBR.PARS(:,MD.PARAMETER_IDs.f_auto_1);
+CBR.ALLOC.f_ffol_2= CBR.PARS(:,MD.PARAMETER_IDs.f_auto_2);
+
+%CONTINUE
+% AF.ffol = CBR.PARS(:,3).*(1- AF.fauto);
+% AF.flab= CBR.PARS(:,13).*(1- AF.fauto - AF.ffol);
+%  AF.froo= CBR.PARS(:,4).*(1- AF.fauto - AF.ffol - AF.flab);
+% AF.fwoo= 1 - AF.fauto - AF.ffol - AF.flab - AF.froo;
+% 
+% AF.all=[AF.fauto,AF.ffol,AF.flab,AF.froo,AF.fwoo];
+
+
+
+ CBR.run_mode='forward';        
+ 
+ 
+ 
+
+ end
+
 
  
 function CBR=PROCESS_OUTPUTS_OLD(CBR,OPT);
@@ -364,13 +430,13 @@ if OPT.extended==1
 %LAI
     if OPT.MODEL.ID==101;
         %LMA is par 11
-    CBR.LAI=CBR.POOLS(:,:,2)./repmat(PARS(:,11),[1,size(CBR.POOLS(:,:,2),2)]);
+    CBR.LAI=CBR.POOLS(:,:,2)./repmat(CBR.PARS(:,11),[1,size(CBR.POOLS(:,:,2),2)]);
     elseif OPT.MODEL.ID==1100;
         %LMA is par 18
-    CBR.LAI=CBR.POOLS(:,:,2)./repmat(PARS(:,18),[1,size(CBR.POOLS(:,:,2),2)]);
+    CBR.LAI=CBR.POOLS(:,:,2)./repmat(CBR.PARS(:,18),[1,size(CBR.POOLS(:,:,2),2)]);
     else
         %LMA is par 17
-          CBR.LAI=CBR.POOLS(:,:,2)./repmat(PARS(:,17),[1,size(CBR.POOLS(:,:,2),2)]);
+          CBR.LAI=CBR.POOLS(:,:,2)./repmat(CBR.PARS(:,17),[1,size(CBR.POOLS(:,:,2),2)]);
 
     end
     
@@ -378,13 +444,13 @@ if OPT.extended==1
   %Water stress
   if size(CBR.POOLS,3)>6
       if OPT.MODEL.ID<=8 | any(ismember([801,802,803,804,805,806,807,808,809,810,811,812,813,10,1000,1001,1002,1003,1005,1009],OPT.MODEL.ID))
-    CBR.H2OSTRESS=min([PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);
+    CBR.H2OSTRESS=min([CBR.PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(CBR.PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);
     elseif OPT.MODEL.ID==1030 | OPT.MODEL.ID==1031 | OPT.MODEL.ID==1032 | OPT.MODEL.ID==1060;
-        CBR.PAWSTRESS=min([PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);        
+        CBR.PAWSTRESS=min([CBR.PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(CBR.PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);        
         CBR.VPDSTRESS=1./(1+repmat(CBF.MET(:,8)',[size(CBR.PARS(:,37),1),1])./repmat(CBR.PARS(:,37),[1,size(CBF.MET(:,8),1)]));
         CBR.H2OSTRESS=CBR.PAWSTRESS.*CBR.VPDSTRESS;
       elseif OPT.MODEL.ID==9
-          CBR.H2OSTRESS=1-exp(-[PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]));
+          CBR.H2OSTRESS=1-exp(-[CBR.PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(CBR.PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]));
       end
 end
 end
