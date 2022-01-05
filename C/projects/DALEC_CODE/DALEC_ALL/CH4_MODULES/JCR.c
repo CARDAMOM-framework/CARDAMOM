@@ -24,6 +24,9 @@ double *JCR(double const *ch4pars, double T2M_MIN, double T2M_MAX, double PAW)
     /*Apprximate for soil mointure percentage = PAW/PAW_fs*/
     thetas = PAW/PAW_fs;
     jcr_o[0] = thetas;
+    // printf("PAW in JCR is %lf/", PAW);
+    // printf("PAW_fs in JCR is %lf/", PAW_fs);
+    // printf("thetas in JCR is %lf/", thetas);
     /*tunable scaler describing the shape of the curve: PAW/PAW_fs against fractional volume of aerobic respiratio*/
     S_fv=ch4pars[2];
     /*optimum water scaler (fW), where the maximum respiration is achieved without limitation from water

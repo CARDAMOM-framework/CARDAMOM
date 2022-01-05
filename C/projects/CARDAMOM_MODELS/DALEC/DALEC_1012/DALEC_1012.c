@@ -78,7 +78,7 @@ int root_prod;   /*Root production*/
 int wood_prod;   /*Wood production*/
 int lab_release;   /*Labile release*/
 int leaffall_fact;   /*Leaffall factor*/
-int fol2lit; /*leaflitter_production*/
+int fol2lit; /*leaflitter_production 10 */
 int wood2lit; /*woodlitter_production*/
 int root2lit;   /*rootlitter_production*/
 int resp_het_lit;   /*nominaly there, not actual fluxes Litter heterotrophic respiration*/
@@ -88,7 +88,7 @@ int lab_release_fact;   /*Labile release factor*/
 int f_total;   /*Flux total*/
 int f_lab;   /*Labile fire loss*/
 int f_fol;   /*Foliar fire loss*/
-int f_roo;   /*Wood fire loss*/
+int f_roo;   /*Wood fire loss 20 */
 int f_woo;   /*Root fire loss*/
 int f_lit;   /*Litter fire loss*/
 int f_som;   /*Soil fire loss*/
@@ -98,7 +98,7 @@ int fx_roo2lit;   /*Fire transfer root to litter*/
 int fx_woo2som;   /*Fire transfer wood to soil*/
 int fx_lit2som;   /*Fire transfer litter to soil*/
 int et;   /*Evapotranspiration  Boese et al 2017 and Yan et al 2021*/
-int q_paw;   /*PAW runoff*/
+int q_paw;   /*PAW runoff 30 */
 int paw2puw;   /*PAW->PUW transfer*/
 int q_puw;   /*PUW runoff*/
 int ae_rh_lit; /*Aerobic Rh from litter*/
@@ -108,7 +108,7 @@ int an_rh_som; /*anaerobic Rh from SOM*/
 int rh_co2; /* */
 int rh_ch4; /* */
 int fV; /* Volumetric fraction of aerobic Rh */
-int fT; /*Temperature scaler*/
+int fT; /*Temperature scaler 40 */
 int fW; /*Water scaler*/
 int fCH4; /*CH4 fraction in anaerobic C decomposition*/
 int soil_moist; /*thetas = PAW/PAW_fs fraction*/
@@ -399,7 +399,7 @@ FLUXES[f+F.resp_het_lit] = POOLS[p+S.C_lit]*(1-pow(1-FLUXES[f+F.temprate]*pars[P
 FLUXES[f+F.resp_het_som] = POOLS[p+S.C_som]*(1-pow(1-FLUXES[f+F.temprate]*pars[P.t_som],deltat))/deltat;
 /*-----------------------------------------------------------------------*/
 /*jc calculate aerobic and anaerobic respirations*/
-double *jcr_o = JCR(ch4pars,T2M_MIN[n],T2M_MAX[n],POOLS[S.H2O_PAW]);
+double *jcr_o = JCR(ch4pars,T2M_MIN[n],T2M_MAX[n],POOLS[p+S.H2O_PAW]);
 //outputformat
 //jcr_o 0-4 thetas,fT,fV,fW,fCH4; /*jc*/ /* output from JCR module */
 /*32 aerobic Rh from litter*/
