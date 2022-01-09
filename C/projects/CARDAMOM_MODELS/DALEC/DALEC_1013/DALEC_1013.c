@@ -188,8 +188,8 @@ gpppars[7]=DATA.MET[m+3];
     /*Plant available water when the soil is fully saturated*/
     PAW_fs=pars[36];
     /*Apprximate for soil moisture percentage = PAW/PAW_fs*/
-    // thetas = fmin(POOLS[p+6]/PAW_fs,1);
-    thetas = POOLS[p+6]/PAW_fs;
+    thetas = fmin(POOLS[p+6]/PAW_fs,1);
+    // thetas = POOLS[p+6]/PAW_fs;
     /*tunable scaler describing the shape of the curve: PAW/PAW_fs against fractional volume of aerobic respiratio*/
     N=pars[37];
     /*optimum water scaler (fW), where the maximum respiration is achieved without limitation from water
