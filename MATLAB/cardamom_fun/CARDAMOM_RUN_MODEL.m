@@ -234,7 +234,7 @@ disp('Step 3:ALL CARDAMOM_RUN_MODEL.c outputs successfully loaded!');
 %That would be NBE (Net Biospheric Exchange).
 %Shuang made changes here, modified Rh scheme (1010 and 1011) use different
 %fluxes,consistant with DALEC source code, April 2021
-if OPT.MODEL.ID==1010 || OPT.MODEL.ID==1011 
+if OPT.MODEL.ID==1010 || OPT.MODEL.ID==1011 || OPT.MODEL.ID==1013
     CBR.NEE=sum(CBR.FLUXES(:,:,[3,37]),3)-CBR.FLUXES(:,:,1);
 else
     CBR.NEE=sum(CBR.FLUXES(:,:,[3,13,14]),3)-CBR.FLUXES(:,:,1);
@@ -340,7 +340,7 @@ end
     
     
 
-if any(ismember([809,811,812,813,1000,1001,1002,1003,1005,1009,1010,1011,1030,1031,1032],OPT.MODEL.ID))
+if any(ismember([809,811,812,813,1000,1001,1002,1003,1005,1009,1010,1011,1013,1030,1031,1032],OPT.MODEL.ID))
 
     %export ET 
     CBR.ET=CBR.FLUXES(:,:,29);
@@ -352,7 +352,12 @@ end
     %Export fire C emissions
     CBR.FIR=CBR.FLUXES(:,:,17);
     %Export respiration
+    if any(ismember([1010,1011,1013],OPT.MODEL.ID))
+    CBR.RHE=CBR.FLUXES(:,:,37);
+    else
     CBR.RHE=sum(CBR.FLUXES(:,:,13:14),3);
+    end
+    
     %Export autotrophic respiration
     CBR.RAU=sum(CBR.FLUXES(:,:,3),3);
 
