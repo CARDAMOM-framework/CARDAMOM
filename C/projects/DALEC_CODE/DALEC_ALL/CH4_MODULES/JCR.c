@@ -22,7 +22,7 @@ double *JCR(double const *ch4pars, double T2M_MIN, double T2M_MAX, double PAW)
     /*Plant available water when the soil is fully saturated*/
     PAW_fs=ch4pars[1];
     /*Apprximate for soil mointure percentage = PAW/PAW_fs*/
-    thetas = PAW/PAW_fs;
+    thetas = fmin(PAW/PAW_fs,1);
     jcr_o[0] = thetas;
     // printf("PAW in JCR is %lf/", PAW);
     // printf("PAW_fs in JCR is %lf/", PAW_fs);
