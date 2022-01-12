@@ -12,7 +12,7 @@ double *JCR(double const *ch4pars, double T2M_MIN, double T2M_MAX, double thetas
   define names for ch4pars elements to be convenient in the JCR module*/
   double PAW_fs,S_fv,thetas_opt,fwc,r_ch4,Q10ch4,Q10rhco2,meantemp; /*jc*/
 	// output array and corresponding elements
-  static double jcr_o[5];
+  static double jcr_o[4];
   double fT,fV,fW,fCH4; /*jc*/
   // the rest in JCR
   double fW1,fW2,fT_ch4,theta_ae;
@@ -39,12 +39,12 @@ double *JCR(double const *ch4pars, double T2M_MIN, double T2M_MAX, double thetas
     //fT = exp(pars[9]*(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-meantemp)); 
     //Q10 method
     fT = pow(Q10rhco2,(0.5*(T2M_MIN+T2M_MAX)-meantemp)/10); 
-    jcr_o[1] = fT;
+    jcr_o[0] = fT;
     //fT = pow(pars[9],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-meantemp)/10);
     /* fV Volumetric factor seperating aerobic and anaerobic respiration */
     /* statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs) */
     fV = fmax(0,(1-pow(thetas,S_fv)));
-    jcr_o[2] = fV;
+    jcr_o[1] = fV;
     /* fW soil moisture scaler is a function of theta_ae*/
     theta_ae = ((thetas-1)/fV +1);
     fW1 = 1/thetas_opt*theta_ae;
@@ -55,7 +55,7 @@ double *JCR(double const *ch4pars, double T2M_MIN, double T2M_MAX, double thetas
       fW = fW2;}
     else{
       fW = 0;}
-	  jcr_o[3] = fW;
+	  jcr_o[2] = fW;
 	/* fCH4*/
     // fT_ch4 = exp(Q10ch4*(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-meantemp));
     fT_ch4 = pow(Q10ch4,(0.5*(T2M_MIN+T2M_MAX)-meantemp)/10);
@@ -65,7 +65,7 @@ double *JCR(double const *ch4pars, double T2M_MIN, double T2M_MAX, double thetas
     manually put the upper limit 1 here mainly based on the mass balance, but notice that DIC is not
     considered to contribute when the current timestep Rh is depeleted by CH4. I think it's good for
     now. Can think about DIC pool meanwhile */
-    jcr_o[4] = fCH4;
+    jcr_o[3] = fCH4;
 /*-----------------------------------------------------------------------*/
 
 

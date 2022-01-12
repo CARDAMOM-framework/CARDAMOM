@@ -402,31 +402,31 @@ FLUXES[f+F.resp_het_som] = POOLS[p+S.C_som]*(1-pow(1-FLUXES[f+F.temprate]*pars[P
 double thetas = fmin(POOLS[p+S.H2O_PAW]/pars[P.PAW_fs],1);
 double *jcr_o = JCR(ch4pars,T2M_MIN[n],T2M_MAX[n],thetas);
 //outputformat
-//jcr_o 0-4 thetas,fT,fV,fW,fCH4; /*jc*/ /* output from JCR module */
+//jcr_o 0-3 fT,fV,fW,fCH4; /*jc*/ /* output from JCR module */
 /*32 aerobic Rh from litter*/
-FLUXES[f+F.ae_rh_lit] = POOLS[p+S.C_lit]*(1-pow(1-jcr_o[3]*jcr_o[1]*jcr_o[2]*pars[P.t_lit],deltat))/deltat;
+FLUXES[f+F.ae_rh_lit] = POOLS[p+S.C_lit]*(1-pow(1-jcr_o[2]*jcr_o[0]*jcr_o[1]*pars[P.t_lit],deltat))/deltat;
 /*33 aerobic Rh from SOM*/
-FLUXES[f+F.ae_rh_som] = POOLS[p+S.C_som]*(1-pow(1-jcr_o[3]*jcr_o[1]*jcr_o[2]*pars[P.t_som],deltat))/deltat;
+FLUXES[f+F.ae_rh_som] = POOLS[p+S.C_som]*(1-pow(1-jcr_o[2]*jcr_o[0]*jcr_o[1]*pars[P.t_som],deltat))/deltat;
 /*34 anaerobic Rh from litter*/
-//FLUXES[f+34] = POOLS[p+S.C_lit]*(1-pow(1-1*fT*(1-jcr_o[2])*pars[P.t_lit],deltat))/deltat;
-FLUXES[f+F.an_rh_lit] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.fwc]*jcr_o[1]*(1-jcr_o[2])*pars[P.t_lit],deltat))/deltat;
+//FLUXES[f+34] = POOLS[p+S.C_lit]*(1-pow(1-1*fT*(1-jcr_o[1])*pars[P.t_lit],deltat))/deltat;
+FLUXES[f+F.an_rh_lit] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.fwc]*jcr_o[0]*(1-jcr_o[1])*pars[P.t_lit],deltat))/deltat;
 /*35 anaerobic Rh from SOM*/
-//FLUXES[f+] = POOLS[p+S.C_som]*(1-pow(1-1*fT*(1-jcr_o[2])*pars[P.t_som],deltat))/deltat;
-FLUXES[f+F.an_rh_som] = POOLS[p+S.C_som]*(1-pow(1-pars[P.fwc]*jcr_o[1]*(1-jcr_o[2])*pars[P.t_som],deltat))/deltat;
+//FLUXES[f+] = POOLS[p+S.C_som]*(1-pow(1-1*fT*(1-jcr_o[1])*pars[P.t_som],deltat))/deltat;
+FLUXES[f+F.an_rh_som] = POOLS[p+S.C_som]*(1-pow(1-pars[P.fwc]*jcr_o[0]*(1-jcr_o[1])*pars[P.t_som],deltat))/deltat;
 /*36 Rh_CO2*/
-FLUXES[f+F.rh_co2] = (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_som])*1+(FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_som])*(1-jcr_o[4]);
+FLUXES[f+F.rh_co2] = (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_som])*1+(FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_som])*(1-jcr_o[3]);
 /*37 Rh_CH4*/
-FLUXES[f+F.rh_ch4] = (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_som])*0+(FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_som])*jcr_o[4];
+FLUXES[f+F.rh_ch4] = (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_som])*0+(FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_som])*jcr_o[3];
 /*38 fV Volumetric fraction of aerobic Rh*/
-FLUXES[f+F.fV] = jcr_o[2];
+FLUXES[f+F.fV] = jcr_o[1];
 /*39 fT Temperature scaler*/
-FLUXES[f+F.fT] = jcr_o[1];
+FLUXES[f+F.fT] = jcr_o[0];
 /*40 fW Water scaler*/
-FLUXES[f+F.fW] = jcr_o[3];
+FLUXES[f+F.fW] = jcr_o[2];
 /*41 fCH4 CH4 fraction*/
-FLUXES[f+F.fCH4] = jcr_o[4];
+FLUXES[f+F.fCH4] = jcr_o[3];
 /*42 PAW/PAW_fs thetas*/
-FLUXES[f+F.soil_moist] = jcr_o[0];
+FLUXES[f+F.soil_moist] = thetas;
 /* CH4 production=TEMP*RH*WEXT*Q10 */
 /*FLUXES[f+32] = ch4pars[0]*(FLUXES[f+12]+FLUXES[f+13])*pow(ch4pars[1],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-15)/10)*ch4pars[2];*/
 /*----------------------  end of JCR  --------------------------------------------*/

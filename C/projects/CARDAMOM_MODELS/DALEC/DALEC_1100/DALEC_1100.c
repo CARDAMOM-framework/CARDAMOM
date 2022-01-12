@@ -18,7 +18,7 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
 struct DALEC_1100_PARAMETERS{
 /*DALEC PARAMETERS*/
-int tr_lit2soil;
+int tr_lit2som;
 int tr_cwd2som;
 int f_auto;
 int f_root;
@@ -26,7 +26,7 @@ int t_wood;
 int t_root;
 int t_lit;
 int t_cwd;
-int t_soil;
+int t_som;
 int Q10rhco2;
 int f_lab;
 int LCMA;
@@ -36,7 +36,7 @@ int i_root;
 int i_wood;
 int i_cwd;
 int i_lit;
-int i_soil;
+int i_som;
 int retention;
 int wilting;
 int i_PAW;
@@ -294,7 +294,7 @@ OBSOPE.C3frac_PARAM=P.C3_frac;
 //Initial Snow parameter
 OBSOPE.iniSnow_PARAM=P.i_SWE;
 //Initial SOM parameter
-OBSOPE.iniSOM_PARAM=P.i_soil;
+OBSOPE.iniSOM_PARAM=P.i_som;
 
 
 
@@ -342,7 +342,7 @@ double *LAI=DATA.M_LAI;
   POOLS[S.C_woo]=pars[P.i_wood];
   POOLS[S.C_cwd]=pars[P.i_cwd];
   POOLS[S.C_lit]=pars[P.i_lit];
-  POOLS[S.C_som]=pars[P.i_soil];
+  POOLS[S.C_som]=pars[P.i_som];
   /*water pools*/
   POOLS[S.H2O_PAW]=pars[P.i_PAW];
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
@@ -596,40 +596,40 @@ FLUXES[f+F.resp_het_cwd] = POOLS[p+S.C_cwd]*(1-pow(1-FLUXES[f+F.temprate]*pars[P
 /*nominaly there, not actual fluxes respiration heterotrophic litter*/
 FLUXES[f+F.resp_het_lit] = POOLS[p+S.C_lit]*(1-pow(1-FLUXES[f+F.temprate]*pars[P.t_lit],deltat))/deltat;
 /*nominaly there, not actual fluxes respiration heterotrophic SOM*/
-FLUXES[f+F.resp_het_som] = POOLS[p+S.C_som]*(1-pow(1-FLUXES[f+F.temprate]*pars[P.t_soil],deltat))/deltat;
+FLUXES[f+F.resp_het_som] = POOLS[p+S.C_som]*(1-pow(1-FLUXES[f+F.temprate]*pars[P.t_som],deltat))/deltat;
 
 /*-----------------------------------------------------------------------*/
 /*jc calculate aerobic and anaerobic respirations*/
 double thetas = HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);
 double *jcr_o = JCR(ch4pars,T2M_MIN[n],T2M_MAX[n],thetas);
 //outputformat
-//jcr_o 0-4 thetas,fT,fV,fW,fCH4; /*jc*/ /* output from JCR module */
+//jcr_o 0-3 fT,fV,fW,fCH4; /*jc*/ /* output from JCR module */
 /* aerobic Rh from coarse woody debris*/
-FLUXES[f+F.ae_rh_cwd] = POOLS[p+S.C_cwd]*(1-pow(1-jcr_o[3]*jcr_o[1]*jcr_o[2]*pars[P.t_cwd],deltat))/deltat;
-/* anaerobic Rh from litter*/
-FLUXES[f+F.an_rh_lit] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.fwc]*jcr_o[1]*(1-jcr_o[2])*pars[P.t_lit],deltat))/deltat;
+FLUXES[f+F.ae_rh_cwd] = POOLS[p+S.C_cwd]*(1-pow(1-jcr_o[2]*jcr_o[0]*jcr_o[1]*pars[P.t_cwd],deltat))/deltat;
+/* aerobic Rh from litter*/
+FLUXES[f+F.ae_rh_lit] = POOLS[p+S.C_lit]*(1-pow(1-jcr_o[2]*jcr_o[0]*jcr_o[1]*pars[P.t_lit],deltat))/deltat;
 /* aerobic Rh from SOM*/
-FLUXES[f+F.ae_rh_som] = POOLS[p+S.C_som]*(1-pow(1-jcr_o[3]*jcr_o[1]*jcr_o[2]*pars[P.t_soil],deltat))/deltat;
+FLUXES[f+F.ae_rh_som] = POOLS[p+S.C_som]*(1-pow(1-jcr_o[2]*jcr_o[0]*jcr_o[1]*pars[P.t_som],deltat))/deltat;
 /* aerobic Rh from coarse woody debris*/
-FLUXES[f+F.ae_rh_cwd] = POOLS[p+S.C_cwd]*(1-pow(1-jcr_o[3]*jcr_o[1]*jcr_o[2]*pars[P.t_cwd],deltat))/deltat;
+FLUXES[f+F.an_rh_cwd] = POOLS[p+S.C_cwd]*(1-pow(1-pars[P.fwc]*jcr_o[0]*(1-jcr_o[1])*pars[P.t_cwd],deltat))/deltat;
 /* anaerobic Rh from litter*/
-FLUXES[f+F.an_rh_lit] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.fwc]*jcr_o[1]*(1-jcr_o[2])*pars[P.t_lit],deltat))/deltat;
+FLUXES[f+F.an_rh_lit] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.fwc]*jcr_o[0]*(1-jcr_o[1])*pars[P.t_lit],deltat))/deltat;
 /* anaerobic Rh from SOM*/
-FLUXES[f+F.an_rh_som] = POOLS[p+S.C_som]*(1-pow(1-pars[P.fwc]*jcr_o[1]*(1-jcr_o[2])*pars[P.t_soil],deltat))/deltat;
+FLUXES[f+F.an_rh_som] = POOLS[p+S.C_som]*(1-pow(1-pars[P.fwc]*jcr_o[0]*(1-jcr_o[1])*pars[P.t_som],deltat))/deltat;
 /* Rh_CO2*/
-FLUXES[f+F.rh_co2] = (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.ae_rh_som])*1+(FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*(1-jcr_o[4]);
+FLUXES[f+F.rh_co2] = (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.ae_rh_som])*1+(FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*(1-jcr_o[3]);
 /* Rh_CH4*/
-FLUXES[f+F.rh_ch4] = (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.ae_rh_som])*0+(FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*jcr_o[4];
+FLUXES[f+F.rh_ch4] = (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.ae_rh_som])*0+(FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*jcr_o[3];
 /* fV Volumetric fraction of aerobic Rh*/
-FLUXES[f+F.fV] = jcr_o[2];
+FLUXES[f+F.fV] = jcr_o[1];
 /* fT Temperature scaler*/
-FLUXES[f+F.fT] = jcr_o[1];
+FLUXES[f+F.fT] = jcr_o[0];
 /* fW Water scaler*/
-FLUXES[f+F.fW] = jcr_o[3];
+FLUXES[f+F.fW] = jcr_o[2];
 /* fCH4 CH4 fraction*/
-FLUXES[f+F.fCH4] = jcr_o[4];
+FLUXES[f+F.fCH4] = jcr_o[3];
 /* PAW/PAW_fs thetas*/
-FLUXES[f+F.soil_moist] = jcr_o[0];
+FLUXES[f+F.soil_moist] = thetas;
 /* CH4 production=TEMP*RH*WEXT*Q10 */
 /*FLUXES[f+32] = ch4pars[0]*(FLUXES[f+12]+FLUXES[f+13])*pow(ch4pars[1],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-15)/10)*ch4pars[2];*/
 /*----------------------  end of JCR  --------------------------------------------*/
@@ -637,7 +637,7 @@ FLUXES[f+F.soil_moist] = jcr_o[0];
 /*CWD to SOM*/
 FLUXES[f+F.cwd2som] = POOLS[p+S.C_cwd]*(1-pow(1-pars[P.tr_cwd2som]*FLUXES[f+F.temprate],deltat))/deltat;
 /*litter to SOM*/
-FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.temprate],deltat))/deltat;
+FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2som]*FLUXES[f+F.temprate],deltat))/deltat;
 
 /*total pool transfers (no fires yet)*/
 
