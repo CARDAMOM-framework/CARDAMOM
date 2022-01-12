@@ -293,7 +293,7 @@ double meanrad = DATA.ncdf_data.SSRD.reference_mean;
 double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
 
 /* jc prep input for methane module*/
-double ch4pars[8]={pars[P.PAW_fs],pars[P.S_fv],pars[P.thetas_opt],pars[P.fwc],pars[P.r_ch4],pars[P.Q10ch4],pars[P.Q10rhco2],meantemp};
+double ch4pars[7]={pars[P.S_fv],pars[P.thetas_opt],pars[P.fwc],pars[P.r_ch4],pars[P.Q10ch4],pars[P.Q10rhco2],meantemp};
 
 /*constants for exponents of leaffall and labrelease factors*/
 /*width*/
@@ -399,7 +399,8 @@ FLUXES[f+F.resp_het_lit] = POOLS[p+S.C_lit]*(1-pow(1-FLUXES[f+F.temprate]*pars[P
 FLUXES[f+F.resp_het_som] = POOLS[p+S.C_som]*(1-pow(1-FLUXES[f+F.temprate]*pars[P.t_som],deltat))/deltat;
 /*-----------------------------------------------------------------------*/
 /*jc calculate aerobic and anaerobic respirations*/
-double *jcr_o = JCR(ch4pars,T2M_MIN[n],T2M_MAX[n],POOLS[p+S.H2O_PAW]);
+double thetas = fmin(POOLS[p+S.H2O_PAW]/pars[P.PAW_fs],1);
+double *jcr_o = JCR(ch4pars,T2M_MIN[n],T2M_MAX[n],thetas);
 //outputformat
 //jcr_o 0-4 thetas,fT,fV,fW,fCH4; /*jc*/ /* output from JCR module */
 /*32 aerobic Rh from litter*/

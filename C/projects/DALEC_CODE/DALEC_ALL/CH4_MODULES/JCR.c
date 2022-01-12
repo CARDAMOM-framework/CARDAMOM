@@ -3,44 +3,36 @@
 Ma et al 2021 in prep
 */
 
-//ch4pars[7]={pars[P.PAW_fs],pars[P.S_fv],pars[P.thetas_opt],pars[P.fwc],pars[P.r_ch4],pars[P.Q10ch4],pars[P.q10rhco2]};
+//ch4pars[7]={pars[P.S_fv],pars[P.thetas_opt],pars[P.fwc],pars[P.r_ch4],pars[P.Q10ch4],pars[P.q10rhco2],meantemp};
 
 //in the brackets are input fed from main module, use pointer to a double if output is an array
-double *JCR(double const *ch4pars, double T2M_MIN, double T2M_MAX, double PAW)
+double *JCR(double const *ch4pars, double T2M_MIN, double T2M_MAX, double thetas)
 {
 	/* input array already defined above,
   define names for ch4pars elements to be convenient in the JCR module*/
   double PAW_fs,S_fv,thetas_opt,fwc,r_ch4,Q10ch4,Q10rhco2,meantemp; /*jc*/
 	// output array and corresponding elements
   static double jcr_o[5];
-  double thetas,fT,fV,fW,fCH4; /*jc*/
+  double fT,fV,fW,fCH4; /*jc*/
   // the rest in JCR
   double fW1,fW2,fT_ch4,theta_ae;
 
 	/*-----------------------------------------------------------------------*/
 	/*jc get env. scalers ready*/
-    /*Plant available water when the soil is fully saturated*/
-    PAW_fs=ch4pars[1];
-    /*Apprximate for soil mointure percentage = PAW/PAW_fs*/
-    thetas = fmin(PAW/PAW_fs,1);
-    jcr_o[0] = thetas;
-    // printf("PAW in JCR is %lf/", PAW);
-    // printf("PAW_fs in JCR is %lf/", PAW_fs);
-    // printf("thetas in JCR is %lf/", thetas);
     /*tunable scaler describing the shape of the curve: PAW/PAW_fs against fractional volume of aerobic respiratio*/
-    S_fv=ch4pars[2];
+    S_fv=ch4pars[0];
     /*optimum water scaler (fW), where the maximum respiration is achieved without limitation from water
     it is the highest point in the function of PAW/PAW_fs against water scaler (fW)*/
-    thetas_opt=ch4pars[3];
+    thetas_opt=ch4pars[1];
     /*the lowest point of water scaler when the soil is fully saturated,
      in the function of PAW/PAW_fs against water scaler (fW)*/
-    fwc=ch4pars[4];
+    fwc=ch4pars[2];
     /*potential ratio of CO2 converted to CH4*/
-    r_ch4=ch4pars[5];
+    r_ch4=ch4pars[3];
     /*Q10 of methane production*/
-    Q10ch4=ch4pars[6];
-    Q10rhco2=ch4pars[7];
-    meantemp=ch4pars[8];
+    Q10ch4=ch4pars[4];
+    Q10rhco2=ch4pars[5];
+    meantemp=ch4pars[6];
     /* fT Temperature factor on respiration */
     // fT = fmin(1,exp(pars[9]*(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-meantemp)));
     //arrhenius method
