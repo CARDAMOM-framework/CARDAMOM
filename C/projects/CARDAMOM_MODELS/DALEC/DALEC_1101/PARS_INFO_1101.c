@@ -17,8 +17,8 @@ int PARS_INFO_1101(DATA *CARDADATA)
 struct DALEC_1101_PARAMETERS P=DALEC_1101_PARAMETERS;
 
 /*Litter decomposition rate*/
-CARDADATA->parmin[P.tr_lit2soil]=0.00001;
-CARDADATA->parmax[P.tr_lit2soil]=0.01;
+CARDADATA->parmin[P.tr_lit2som]=0.00001;
+CARDADATA->parmax[P.tr_lit2som]=0.01;
 
 /*CWD decomposition rate*/
 CARDADATA->parmin[P.tr_cwd2som]=0.00001;
@@ -57,8 +57,8 @@ CARDADATA->parmin[P.t_cwd]=0.00005;
 CARDADATA->parmax[P.t_cwd]=0.005;
 
 /*TOR SOM*/
-CARDADATA->parmin[P.t_soil]=0.0000001;
-CARDADATA->parmax[P.t_soil]=0.001;
+CARDADATA->parmin[P.t_som]=0.0000001;
+CARDADATA->parmax[P.t_som]=0.001;
 
 /*\Q10 = 1.2-2.0*/
 CARDADATA->parmin[P.Q10rhco2]=1.2;
@@ -117,8 +117,8 @@ CARDADATA->parmin[P.i_lit]=1.0;
 CARDADATA->parmax[P.i_lit]=2000.0;
 
 /*C_som*/
-CARDADATA->parmin[P.i_soil]=1.0;
-CARDADATA->parmax[P.i_soil]=200000.0;
+CARDADATA->parmin[P.i_som]=1.0;
+CARDADATA->parmax[P.i_som]=200000.0;
 
 /*Retention parameter (b)*/
 CARDADATA->parmin[P.retention]=1.5;
