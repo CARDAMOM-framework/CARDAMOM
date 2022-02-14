@@ -215,7 +215,7 @@ CARDADATA->parmax[P.init_LAIW_mem]=1;
 
 /*Inverse of leaf longevity at any period i.e. background turnover (days-1)*/
 CARDADATA->parmin[P.t_foliar]=0.001;
-CARDADATA->parmax[P.t_foliar]=0.5;
+CARDADATA->parmax[P.t_foliar]=0.1;
 
 return 0;
 
