@@ -13,7 +13,7 @@
 /*Same as MHMCMC, except following differences:*/
 /*N chains (N>=3)*/
 
-double *ADEMCMC(
+double *ADEMCMC_301(
 double (MODEL_LIKELIHOOD)(DATA, double *),
 DATA DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCO, MCMC_OUTPUT *MCOUT){
 
@@ -83,6 +83,7 @@ double *PARS,*pars_new,*BESTPARS, *BESTP;
 PARS=calloc(PI.npars*NC,sizeof(double));
 pars_new=calloc(PI.npars,sizeof(double));
 BESTPARS=calloc(PI.npars*NC,sizeof(double));
+PARS0=calloc(PI.npars*NC,sizeof(double));
 BESTP=calloc(NC,sizeof(double));
 /*All accepted parameters*/
 /*This is now the last N parameter vectors
@@ -145,11 +146,14 @@ for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
 	
 	//PI.stepsize[0]=1e-1-(1e-1-1)*(double)(n % 10 == 0);
 	
+    memcpy(PARS0,PARS,PI.npars*NC*sizeof(double));
+
+    
 	for (nn=0;nn<NC;nn++){
 
 	//ADEMCMC
 	if ((double)N.ITER<(double)MCO.nOUT*MCO.fADAPT){
-        withinrange=STEP_ADEMCMC(PARS,pars_new,PI,nn,NC,&gratio);
+        withinrange=STEP_ADEMCMC(PARS0,pars_new,PI,nn,NC,&gratio);
 	}
 	//Standard DEMCMC
 	else {
@@ -157,7 +161,7 @@ for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
         PI.stepsize[0]=1 - (1-2.38/sqrt(2*PI.npars)/10)*(double)((double)(random()/RAND_MAX)<0.9);
 	/*take a step (DE-MCMC style)*/
 	PI.stepsize[0]=PI.stepsize[0];
-	withinrange=STEP_DEMCMC(PARS,pars_new,PI,nn,NC);
+	withinrange=STEP_DEMCMC(PARS0,pars_new,PI,nn,NC);
 	gratio=0;
 	}
 
@@ -181,10 +185,11 @@ if (P_new-P[nn]+gratio>lr || (isinf(P_new)==0 && isinf(P[nn]) && withinrange==1)
 
 		for (n=0;n<PI.npars;n++){
 		PARS[n+nn*PI.npars]=pars_new[n];}
+	P[nn]=P_new;
 		if (P_new>=BESTP[nn]){for (n=0;n<PI.npars;n++){BESTPARS[n + nn*PI.npars]=pars_new[n];BESTP[nn]=P_new;}
 		if (P_new==0 && P_new>P[nn] ){printf("Found bestpars, prob = %2.1f, chain = %i\n",BESTP[nn],nn);}
 		}
-		P[nn]=P_new;}
+	}
 	}
 	
 	/*regularly write results*/
@@ -208,8 +213,8 @@ WRITE_DEMCMC_RESULTS(PARS,PI,MCO);}
 
 
 	
-}
-//End of iteration loop	
+	}
+	
 	
 
 /*filling in MCOUT details*/
@@ -225,6 +230,7 @@ MCOUT->complete=1;
 free(BESTPARS);
 free(BESTP);
 free(PARS);
+free(PARS0);
 free(pars_new);
 free(P);
 printf("DEMCMC DONE\n");
