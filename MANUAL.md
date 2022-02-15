@@ -1,7 +1,7 @@
 
 
 # CARDAMOM framework version 2.2 collaborative manual
-
+# WARNING: This is not the collaborative manual anymore, this was intended for public release only, now obsolete
 
 ***THIS MANUAL IS WORK IN PROGRESS (!)*** *This is the manual for the JPL, Stanford & UCSB CARDAMOM framework. Consult README.md file for general details on versions, publications,  and the University of Edinburgh/NCEO (UK) CARDAMOM code.*
 
