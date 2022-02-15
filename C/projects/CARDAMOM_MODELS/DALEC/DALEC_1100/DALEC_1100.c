@@ -364,8 +364,6 @@ double meanrad = DATA.ncdf_data.SSRD.reference_mean;
 double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
 
 /* jc prep input for methane module*/
-    // printf("PAW in JCR is %lf/", POOLS[S.H2O_PAW]);
-    // printf("PAW_fs in JCR is %lf/", PAW_fs);
 double ch4pars[7]={pars[P.S_fv],pars[P.thetas_opt],pars[P.fwc],pars[P.r_ch4],pars[P.Q10ch4],pars[P.Q10rhco2],meantemp};
 
 // Porosity scaling factor (see line 124 of HESS paper)
