@@ -359,6 +359,11 @@ double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
 double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
 
+//Place holder for Tskin - this needs to be replaced by the actual Tskin
+double *TSKIN=DATA.ncdf_data.T2M_MIN.values;
+//Place holder for Incident longwave radiation - this needs to be replaced by the actual LWin
+double *LWIN=DATA.ncdf_data.SSRD.values;
+
 double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
 double meanrad = DATA.ncdf_data.SSRD.reference_mean;
 double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
@@ -465,6 +470,29 @@ FLUXES[f+F.transp] = LIU_An_et_out[1];
 FLUXES[f+F.evap] = LIU_An_et_out[2];
 // Evapotranspiration
 FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
+
+//Energy balance: Rn = LE + H - G
+// Rn = SWin - SWout + LWin - LWout
+double SWin = SSRD[n]*1e6/(24*3600);
+double SWout = SWin*pars[P.leaf_refl];
+double LWin = LWIN[n];
+//Stefan–Boltzmann constant
+double sigma = 5.67*1e-8;
+double LWout = sigma*pow(TSKIN[n],4.)
+//Net radiation
+double Rn = SWin - SWout + LWin - LWout;
+//Latent heat of Vaporization J kg-1 
+double lambda = 2.501*1e6; 
+//Latente heat
+double LE = lambda*FLUXES[f+F.et];
+//specific heat capacity of dry air J kg -1 K -1
+double cp = 1.00464*1e3;
+//reference temperature
+double ref_temp = 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]);
+//Sensible heat 
+double H = cp*(TSKIN[n] - ref_temp)*pars[P.ga];
+//soil heat flux 
+double G = Rn - H - LE; 
 
 /*Snow water equivalent*/
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+SNOWFALL[n]*deltat; /*first step snowfall to SWE*/
