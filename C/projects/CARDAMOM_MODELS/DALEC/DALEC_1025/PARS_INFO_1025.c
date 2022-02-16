@@ -31,10 +31,6 @@ CARDADATA->parmax[P.f_foliar]=0.5;
 CARDADATA->parmin[P.f_root]=0.01;
 CARDADATA->parmax[P.f_root]=1;
 
-/*Leaf Lifespan*/
-CARDADATA->parmin[P.t_foliar]=1.001;
-CARDADATA->parmax[P.t_foliar]=8;
-
 /*TOR wood* - 1% loss per year value*/
 CARDADATA->parmin[P.t_wood]=0.000025;
 CARDADATA->parmax[P.t_wood]=0.001;
