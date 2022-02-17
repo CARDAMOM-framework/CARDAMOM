@@ -213,10 +213,6 @@ CARDADATA->parmax[P.init_T_mem]=1;
 CARDADATA->parmin[P.init_LAIW_mem]=0.01;
 CARDADATA->parmax[P.init_LAIW_mem]=1;
 
-/*initialization of water/structural memory (fractional value of intrinsic maximum LAI)*/
-CARDADATA->parmin[P.t_foliar]=0.001;
-CARDADATA->parmax[P.t_foliar]=0.1;
-
 return 0;
 
 }
