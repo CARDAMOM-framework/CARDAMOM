@@ -157,13 +157,15 @@ int f_dayl_thresh;   /*f_dayl_thres*/
 int c_lim_flag;   /*LAI carbon limitation flag*/
 int lai_fire;   /*LAI fire loss*/
 int foliar_fire_frac;   /*C_fol fire loss frac*/
+int t_foliar;   
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
-    50,51,52,53,54,55,56,57,58,59
+    50,51,52,53,54,55,56,57,58,59,
+    60
 };
 
 
@@ -570,14 +572,14 @@ if (FLUXES[f+F.dlambda_dt] > 0){
   /* flag for carbon availability limitation (0=canopy in senescence, 1=labile C does not limit growth, 2=labile C limits LAI growth) */
   FLUXES[f+F.c_lim_flag]=2.0;
   /* leaf litter production: flux from foliar pool to litter pool */
-  FLUXES[f+F.fol2lit]=0;
+  FLUXES[f+F.fol2lit]=POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))/deltat;
 }
 else {
   FLUXES[f+F.c_lim_flag]=0.0;
   /* labile release: flux from labile pool to foliar pool */
   FLUXES[f+F.lab_release]=0;
   /* leaf litter production: flux from foliar pool to litter pool */
-  FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA];
+  FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA]+POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))/deltat;
 }
 
 
