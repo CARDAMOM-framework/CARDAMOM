@@ -27,11 +27,11 @@ dumpfile=sprintf('DUMPFILES/CARDAMOM_MODEL_LIBRARY_ID=%i.mat',ID);
 %CARDAMOM_MODEL_LIBRARY.c obsolete
 
 
-
-if reread==1
-%*****Step 0. Re-run CARDAMOM_ASSEMBLE_MODELS.exe
-unix(sprintf('./%s/projects/CARDAMOM_GENERAL/CARDAMOM_ASSEMBLE_MODELS.exe %s',Cpath,Cpath));
-end
+% 
+% if reread==1
+% %*****Step 0. Re-run CARDAMOM_ASSEMBLE_MODELS.exe
+% unix(sprintf('./%s/projects/CARDAMOM_GENERAL/CARDAMOM_ASSEMBLE_MODELS.exe %s',Cpath,Cpath));
+% end
 
 %*****Step 1. find path for model info*****
 filename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/DALEC_%i.c',Cpath,ID,ID);
@@ -79,6 +79,8 @@ else
 %Find parameter info here *******
 parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/DALEC_%i.c',Cpath,ID,ID);
  D=importdata(parfilename,'');
+ 
+%'/*DALEC PARAMETERS*/'
  k=0;n=1;p=0;
  while k<2;
           linestr=D{n};
@@ -86,7 +88,7 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/DALEC_%i.c',Cpat
      if k==1
          if strcmp(linestr(1:4),'int ')
          %Assumes "int " (4 characters) is removed
-         eval(sprintf('P.%s = %i;',linestr(5:find(linestr==';',1)-1),  p));
+         eval(sprintf('P.%s = %i +1;',linestr(5:find(linestr==';',1)-1),  p));
          p=p+1;
          else
              k=2;
@@ -102,6 +104,61 @@ if strcmp(linestr,'/*DALEC PARAMETERS*/');disp(linestr);k=1;end
  end
  
 
+ 
+%'/*DALEC FLUXES*/'
+ k=0;n=1;p=0;
+ while k<2;
+          linestr=D{n};
+
+     if k==1
+         if strcmp(linestr(1:4),'int ')
+         %Assumes "int " (4 characters) is removed
+         eval(sprintf('F.%s = %i +1;',linestr(5:find(linestr==';',1)-1),  p));
+         p=p+1;
+         else
+             k=2;
+         
+         end
+     end
+
+if strcmp(linestr,'/*DALEC FLUXES*/');disp(linestr);k=1;end
+
+     n=n+1;
+
+
+ end
+ 
+
+%'/*DALEC POOLS*/'
+ k=0;n=1;p=0;
+ while k<2;
+          linestr=D{n};
+
+     if k==1
+         if strcmp(linestr(1:4),'int ')
+         %Assumes "int " (4 characters) is removed
+         eval(sprintf('S.%s = %i + 1;',linestr(5:find(linestr==';',1)-1),  p));
+         p=p+1;
+         else
+             k=2;
+         
+         end
+     end
+
+if strcmp(linestr,'/*DALEC POOLS*/');disp(linestr);k=1;end
+
+     n=n+1;
+
+
+ end
+ 
+
+ 
+  
+ MA.PARAMETER_IDs=P;
+MA.FLUX_IDs=F;
+MA.POOL_IDs=S;
+ 
  
  
 
@@ -164,6 +221,9 @@ end
  MA.par2nor=@(pars) log(pars./repmat(MA.parmin,[size(pars,1),1]))./log(repmat(MA.parmax./MA.parmin,[size(pars,1),1]));
  MA.nor2par=@(npars) repmat(MA.parmin,[size(npars,1),1]).*(repmat(MA.parmax,[size(npars,1),1])./repmat(MA.parmin,[size(npars,1),1])).^npars;
 
+
+
+
 save(dumpfile,'MA');
 else
     MAall=MA;
@@ -172,6 +232,8 @@ end
 
 MA.ID=ID;
 
+
+%hellop
 end
 
 

@@ -8,12 +8,12 @@
 #include "stdio.h"
 
 
-int EDC2_1100(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC2_1101(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
-struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
-struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
-struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
+struct DALEC_1101_PARAMETERS P=DALEC_1101_PARAMETERS;
+struct DALEC_1101_FLUXES F=DALEC_1101_FLUXES;
+struct DALEC_1101_POOLS S=DALEC_1101_POOLS;
 
 /*Extract DALEC model here*/
 /*Copy model pointer for brevity*/
@@ -120,7 +120,7 @@ double etol=0.1;
 Fin[S.C_lab]=FT[F.lab_prod];
 Fout[S.C_lab]=FT[F.lab_release]+FT[F.f_lab]+FT[F.fx_lab2lit];
 /*foliar*/
-Fin[S.C_fol]=FT[F.lab_release];
+Fin[S.C_fol]=FT[F.fol_prod]+FT[F.lab_release];
 Fout[S.C_fol]=FT[F.fol2lit]+FT[F.f_fol]+FT[F.fx_fol2lit];
 /*root*/
 Fin[S.C_roo]=FT[F.root_prod];

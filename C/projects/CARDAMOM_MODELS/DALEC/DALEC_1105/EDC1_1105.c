@@ -1,5 +1,5 @@
 #pragma once
-int EDC1_1100(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC1_1105(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
 /*EDCD=EDCD2;*/
@@ -13,7 +13,7 @@ int EDC1_1100(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 16. Foliage CF> wood CF & Foliage CF > Soil CF 
 */
 
-struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
+struct DALEC_1105_PARAMETERS P=DALEC_1105_PARAMETERS;
 
 
 double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;

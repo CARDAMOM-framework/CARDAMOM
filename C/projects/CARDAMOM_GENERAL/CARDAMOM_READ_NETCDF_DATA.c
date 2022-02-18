@@ -271,10 +271,30 @@ printf("Done reading all other edc ");
     
     DATA->ID=ncdf_read_single_double_var(ncid, "ID" );
 	DATA->LAT=ncdf_read_single_double_var(ncid, "LAT" );
+    
+    //Pre-processing
+    //Ntimesteps
     DATA->Ntimesteps=DATA->TIME_INDEX.length;
+    //Delta T
     DATA->deltat=DATA->TIME_INDEX.values[1]-DATA->TIME_INDEX.values[0];
+    //Mean temp
     DATA->meantemp=DATA->T2M_MIN.reference_mean*0.5 + DATA->T2M_MAX.reference_mean*0.5;
-
+    //Solar Zenith Angle
+    DATA->SZA=(double *)calloc(DATA->Ntimesteps, sizeof(double));
+    int n;
+    double pi=3.1415927;
+    for (n=0;n<DATA->Ntimesteps;n++){
+    /*Calculate light extinction coefficient*/
+double B = (DATA->DOY.values[n]-81)*2*pi/365.;
+double ET1 = 9.87*sin(2*B)-7.53*cos(B)-1.5*sin(B);
+double DA = 23.45*sin((284+DATA->DOY.values[n])*2*pi/365); //Deviation angle
+//double LST = (int) (DOY[n]*24*60) % (24*60);
+double LST=0.5*24*60;
+double AST = LST+ET1;
+double h = (AST-12*60)/4; //hour angle
+double alpha = asin((sin(pi/180*DATA->LAT)*sin(pi/180*DA)+cos(pi/180*DATA->LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
+ DATA->SZA[n] = 90-alpha;}
+    
    
 printf("Done reading all data");
 

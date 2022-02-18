@@ -8,12 +8,12 @@
 #include "stdio.h"
 
 
-int EDC2_1100(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC2_1103(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
-struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
-struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
-struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
+struct DALEC_1103_PARAMETERS P=DALEC_1103_PARAMETERS;
+struct DALEC_1103_FLUXES F=DALEC_1103_FLUXES;
+struct DALEC_1103_POOLS S=DALEC_1103_POOLS;
 
 /*Extract DALEC model here*/
 /*Copy model pointer for brevity*/
@@ -120,7 +120,7 @@ double etol=0.1;
 Fin[S.C_lab]=FT[F.lab_prod];
 Fout[S.C_lab]=FT[F.lab_release]+FT[F.f_lab]+FT[F.fx_lab2lit];
 /*foliar*/
-Fin[S.C_fol]=FT[F.lab_release];
+Fin[S.C_fol]=FT[F.fol_prod]+FT[F.lab_release];
 Fout[S.C_fol]=FT[F.fol2lit]+FT[F.f_fol]+FT[F.fx_fol2lit];
 /*root*/
 Fin[S.C_roo]=FT[F.root_prod];
@@ -201,7 +201,7 @@ EDCD->pEDC=EDCD->pEDC+log(1/(1+exp(10*(pars[P.wilting]-MPOOLS[S.H2O_PAW])/MPOOLS
 /*Additional faults can be stored in positions 35-40*/
 
 /*PRIOR RANGES - ALL POOLS MUST CONFORM*/
-int pidx[]={P.i_labile,P.i_foliar,P.i_root,P.i_wood,P.i_cwd,P.i_lit,P.i_som,P.i_PAW,P.i_PUW,P.i_SWE};
+int pidx[]={P.i_labile,P.i_foliar,P.i_root,P.i_wood,P.i_cwd,P.i_lit,P.i_soil,P.i_PAW,P.i_PUW,P.i_SWE};
 
 /*for (n=0;n<nopools-1;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;}}*/
 for (n=0;n<nopools;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;EDCD->pEDC=log(0);}}

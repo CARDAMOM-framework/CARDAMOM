@@ -1,5 +1,5 @@
 #pragma once
-int EDC1_1100(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC1_1103(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
 /*EDCD=EDCD2;*/
@@ -13,7 +13,7 @@ int EDC1_1100(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 16. Foliage CF> wood CF & Foliage CF > Soil CF 
 */
 
-struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
+struct DALEC_1103_PARAMETERS P=DALEC_1103_PARAMETERS;
 
 
 double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
@@ -33,35 +33,35 @@ int DIAG=EDCD->DIAG;
 /*obsolete edcc constant was kept here*/
 /*deriving true allocation fractions*/
 double const fauto=pars[P.f_auto];
-// double const ffol=(1-fauto)*pars[P.f_foliar];
-double const flab=(1-fauto)*pars[P.f_lab];
-double const froot=(1-fauto-flab)*pars[P.f_root];
-double const fwood=1-fauto-flab-froot;
+double const ffol=(1-fauto)*pars[P.f_foliar];
+double const flab=(1-fauto-ffol)*pars[P.f_lab];
+double const froot=(1-fauto-ffol-flab)*pars[P.f_root];
+double const fwood=1-fauto-ffol-flab-froot;
 /*fraction of GPP som under equilibrium conditions*/
-double const fsom=fwood+(froot+flab)*pars[P.tr_lit2som]/(pars[P.tr_lit2som]+pars[P.t_lit]);
+double const fsom=fwood+(froot+flab+ffol)*pars[P.tr_lit2soil]/(pars[P.tr_lit2soil]+pars[P.t_lit]);
 
 /*yearly leaf loss fraction*/
-// double torfol=1/(pars[P.t_foliar]*365.25);
+double torfol=1/(pars[P.t_foliar]*365.25);
 
 
 
 /*EDC CHECK NO 1*/
 /*TOR_LIT faster than TOR_SOM*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[1-1]==1)) & (pars[P.t_som]>pars[P.t_lit])){EDC=0;EDCD->PASSFAIL[1-1]=0;}
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[1-1]==1)) & (pars[P.t_soil]>pars[P.t_lit])){EDC=0;EDCD->PASSFAIL[1-1]=0;}
 
 /*EDC CHECK NO 2*/
 /*Litter2SOM greater than SOM to Atm. rate*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[2-1]==1)) & (pars[P.tr_lit2som]<pars[P.t_som])){EDC=0;EDCD->PASSFAIL[2-1]=0;}
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[2-1]==1)) & (pars[P.tr_lit2soil]<pars[P.t_soil])){EDC=0;EDCD->PASSFAIL[2-1]=0;}
 
 /*EDC CHECK NO 3*/
 /*TOR_FOL faster than TOR_WOOD */
-// if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[3-1]==1)) & (pars[P.t_wood]>torfol)){EDC=0;EDCD->PASSFAIL[3-1]=0;}
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[3-1]==1)) & (pars[P.t_wood]>torfol)){EDC=0;EDCD->PASSFAIL[3-1]=0;}
 
 /*EDC CHECK NO 4*/
 /*Root turnover greater than SOM turnover at meantemp*/
 /*same as this*/
 /*\text{EDC 4: }(1-\pavii)^{365} > \Pi_{i=1}^{365} (1-\paix \tratei)*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1)) & (pars[P.t_root]<pars[P.t_som]*pow(pars[P.Q10rhco2],meantemp/10))){EDC=0;EDCD->PASSFAIL[4-1]=0;}
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1)) & (pars[P.t_root]<pars[P.t_soil]*pow(pars[P.Q10rhco2],meantemp/10))){EDC=0;EDCD->PASSFAIL[4-1]=0;}
 /*EDC no 5 is addressed in EDC2_FIREBUCKET.c*/
 
 /*EDC CHECK NO 6*/
@@ -71,7 +71,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1))
 
 /*EDC CHECK NO 5*/
 /*Allocation to canopy is comparable to allocation to fine roots*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[5-1]==1)) & ((flab)>5*froot | (flab)*5<froot)){EDC=0;EDCD->PASSFAIL[5-1]=0;}
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[5-1]==1)) & ((ffol+flab)>5*froot | (ffol+flab)*5<froot)){EDC=0;EDCD->PASSFAIL[5-1]=0;}
 
 /*EDC No 16* Foliage CF> wood CF & SOM CF*/
 if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[16-1]==1)) & (pars[P.cf_foliar]<pars[P.cf_ligneous] | pars[P.cf_foliar]<pars[P.cf_DOM])){EDC=0;EDCD->PASSFAIL[16-1]=0;}

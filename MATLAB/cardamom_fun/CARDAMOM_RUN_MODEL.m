@@ -199,9 +199,34 @@ end
 
 
 end
+
+%Read outputs
+ CBR=READ_OUTPUTS(PARS,fluxfile,OPT);
+
+%READ AND PROCESS OUTPUTS
+if OPT.MODEL.ID==1101
+    CBR=PROCESS_OUTPUTS_1101(CBR,OPT);
+elseif OPT.MODEL.ID==1080
+        CBR=PROCESS_OUTPUTS_1080(CBR,OPT);
+
+else 
+    CBR=PROCESS_OUTPUTS_OLD(CBR,OPT);
+end
+ 
+ if OPT.STORE==0
+delete(sprintf('%s/tempcar*%s*',Dpath,channel));
+ end
+
+
+ end
+ 
+ 
+ 
+ function CBR=READ_OUTPUTS(PARS,fluxfile,OPT)
+ 
+ 
 %STEP 3. Read binary data file
 N=size(PARS,1);
-
 
 
  disp('***************NOTE: CARDAMOM_RUN_MODEL changed output dims on July 21 2014*************************')
@@ -228,6 +253,155 @@ CBR.START=ANCILLARY.START;
 CBR.chainid=ANCILLARY.chainid;end
 
 disp('Step 3:ALL CARDAMOM_RUN_MODEL.c outputs successfully loaded!');
+end
+ 
+function CBR=PROCESS_OUTPUTS_1101(CBR,OPT);
+MD=CARDAMOM_MODEL_LIBRARY(OPT.MODEL.ID);
+
+%STEP 4. Arrange data in structure
+%NEE = Resp - GPP. 
+%This flux CORRECTLY does not include fires.
+%That would be NBE (Net Biospheric Exchange).
+%Shuang made changes here, modified Rh scheme (1010 and 1011) use different
+%fluxes,consistant with DALEC source code, April 2021
+
+
+CBR.NBE=sum(CBR.FLUXES(:,:,[MD.FLUX_IDs.resp_auto,MD.FLUX_IDs.rh_co2,MD.FLUX_IDs.f_total]),3) - CBR.FLUXES(:,:,MD.FLUX_IDs.gpp);
+
+CBR.GPP=CBR.FLUXES(:,:,MD.FLUX_IDs.gpp);
+
+CBR.ET=CBR.FLUXES(:,:,MD.FLUX_IDs.et);
+
+
+
+if OPT.extended==1
+    
+
+        %LMA is par 11
+    CBR.LAI=CBR.POOLS(:,:,MD.POOL_IDs.C_fol)./CBR.PARS(:,MD.PARAMETER_IDs.LCMA);
+   
+    
+    
+end
+    
+
+
+% keyboard;
+% 
+% 
+% DR.deltat=deltat;
+% 
+% %LAI
+
+
+%*************Exporting info on fluxes and pools****************
+% if OPT.extended==2 &OPT.MODEL.ID==1;
+%     CBR.fluxnames={'1. GPP','2. temperature factor (*)','3. Rauto','4. GPP->Foliar','5. GPP->Labile','6. GPP->Root','7. GPP->Wood','8. Labile->Foliar','9. Leaf fall factor (*)','10. Leaf->Litter','11. Wood->SOC','12. Root->Litter','13. Heterotrophic Respiration (litter)',...
+%         '14. Heterotrophic respiration (SOC)','15. Litter->SOM','16. Labile release factor (*)','17. Fires','18.Fires (labile)','19.Fires (foliar)','20.Fires (root)','21.Fires (wood)','22.Fires (litter)','23.Fires (SOC)','24. Fire mortality: Labile -> Litter','25. Fire mortality: Foliar -> Litter',...
+%         '26. Fire mortality: Root -> Litter','27. Fire mortality: Wood -> SOC','28. Fire mortality: Litter -> SOC'};
+%     CBR.poolnames={'Labile','Foliar','Root','Wood','Litter','SOM'};
+%     CBR.parameternames={'P1. Litter transfer to SOC at 0C (*)','P2. GPP->Rauto (**)','P3. GPP->Foliar (**)','P4. GPP->Root (**)','P5. 1 / (annual leaf loss fraction)','P6. Root turnover (*)','P7. Wood turnover (*)','P8. Litter turnover at 0C (*)',...
+%         '9. SOC turnover at 0C (*)','P10. Temperature dependence exponent factor','P11. Canopy efficiency','P12. Leaf onset day','P13. GPP->Labile (**)','P14. Leaf onset period (days)','P15. Leaf fall day','P16. Leaf fall period','P17. Leaf Carbon mass per area',...
+%         '18. Labile C at t=0','P19. Foliar C at t=0','P20. Root C at t=0','P21. Wood C at t=0','P22. Litter C at t=0','P23. SOC C at t=0'};
+%     CBR.parameter_details{1}='(*) Turnover rates are daily: composite turnover rates (e.g. aggregated monthly turnover) can be calculated as 1-(1-tor)^timestep (NOTE: CARDAMOM timestep = 31 days)';
+%     CBR.parameter_details{2}='(**) Net allocation fractions can be derived from parameters P2,P3,P4,P13 (marked as **) as follows: Frau = P2; Flab = (1- Frau)*P13; Ffol = (1-Frau - Flab)*P3; Froo = (1-Frau - Flab - Ffol)*P4;Fwoo = 1-Frau - Flab - Ffol - Fwoo;';
+%     CBR.flux_details{1}='All fluxes are gC m-2 day-1; All quantities are fluxes except those denoted as (*)';
+%     CBR.general_info={'See Bloom & Williams 2015 (doi:10.5194/bg-12-1299-2015) and Bloom et al., 2016 (doi:10.5194/bg-12-1299-2015)'};
+%     %Correct "dates bug" here
+%     %Note: dates are internally consistent and therefore "dates bug" does not affect output/results/conclusions.
+%     CBR.DRIVERS=CBF.MET;CBR.DRIVERS(:,[1,5])=CBR.DRIVERS(:,[1,5])+1;
+%     CBR.PARS(:,[12,15])=mod(CBR.PARS(:,[12,15])+1,365.25);
+%     CBR.driver_names={'Timestep (days since Jan 1 2001 00:00)','Min temperature [C]','Max temperature [C]','Global Radiation [MJ/m2/day]','CO2 [ppm]','Day of year','Burned Area'};
+%     CBR.NBE=CBR.NBE;
+%     CBR.NBE_details={'Net Biospheric Exchange [gC m-2 day-1] = Rauto + Rhet + Fires - GPP'};
+%     CBR=rmfield(CBR,'PROB');CBR=rmfield(CBR,'EDCDIAG');CBR=rmfield(CBR,'NEE');CBR=rmfield(CBR,'GPP');
+% end
+
+
+
+% 
+% Obsolete, is currently incompatible with script.
+% if OPT.command_only==1;
+%     CBR=command_str;
+% end
+
+
+ CBR.run_mode='forward';        
+ 
+ 
+ 
+
+ end
+
+
+function CBR=PROCESS_OUTPUTS_1080(CBR,OPT);
+MD=CARDAMOM_MODEL_LIBRARY(OPT.MODEL.ID);
+
+%STEP 4. Arrange data in structure
+%NEE = Resp - GPP. 
+%This flux CORRECTLY does not include fires.
+%That would be NBE (Net Biospheric Exchange).
+%Shuang made changes here, modified Rh scheme (1010 and 1011) use different
+%fluxes,consistant with DALEC source code, April 2021
+
+
+CBR.NBE=CBR.FLUXES(:,:,MD.FLUX_IDs.nbe);
+
+CBR.GPP=CBR.FLUXES(:,:,MD.FLUX_IDs.gpp);
+
+CBR.ET=CBR.FLUXES(:,:,MD.FLUX_IDs.et);
+
+
+
+
+
+if OPT.extended==1
+    
+
+        %LMA is par 11
+    CBR.LAI1=CBR.POOLS(:,:,MD.POOL_IDs.C_fol_1)./CBR.PARS(:,MD.PARAMETER_IDs.LCMA_1);
+    CBR.LAI2=CBR.POOLS(:,:,MD.POOL_IDs.C_fol_2)./CBR.PARS(:,MD.PARAMETER_IDs.LCMA_2);
+    CBR.LAI=    (CBR.LAI1+    CBR.LAI2)*0.5;
+   
+            %LMA is par 11
+    CBR.GPP1=CBR.FLUXES(:,:,MD.FLUX_IDs.gpp_1);
+    CBR.GPP2=CBR.FLUXES(:,:,MD.FLUX_IDs.gpp_2);
+    
+       CBR.ET1=CBR.FLUXES(:,:,MD.FLUX_IDs.et_1);
+    CBR.ET2=CBR.FLUXES(:,:,MD.FLUX_IDs.et_2);
+   
+    
+end
+    
+
+
+CBR.ALLOC.f_auto_1= CBR.PARS(:,MD.PARAMETER_IDs.f_auto_1);
+CBR.ALLOC.f_auto_2= CBR.PARS(:,MD.PARAMETER_IDs.f_auto_2);
+CBR.ALLOC.f_ffol_1= CBR.PARS(:,MD.PARAMETER_IDs.f_auto_1);
+CBR.ALLOC.f_ffol_2= CBR.PARS(:,MD.PARAMETER_IDs.f_auto_2);
+
+%CONTINUE
+% AF.ffol = CBR.PARS(:,3).*(1- AF.fauto);
+% AF.flab= CBR.PARS(:,13).*(1- AF.fauto - AF.ffol);
+%  AF.froo= CBR.PARS(:,4).*(1- AF.fauto - AF.ffol - AF.flab);
+% AF.fwoo= 1 - AF.fauto - AF.ffol - AF.flab - AF.froo;
+% 
+% AF.all=[AF.fauto,AF.ffol,AF.flab,AF.froo,AF.fwoo];
+
+
+
+ CBR.run_mode='forward';        
+ 
+ 
+ 
+
+ end
+
+
+ 
+function CBR=PROCESS_OUTPUTS_OLD(CBR,OPT);
+MD=CARDAMOM_MODEL_LIBRARY(OPT.MODEL.ID);
+
 %STEP 4. Arrange data in structure
 %NEE = Resp - GPP. 
 %This flux CORRECTLY does not include fires.
@@ -256,13 +430,13 @@ if OPT.extended==1
 %LAI
     if OPT.MODEL.ID==101;
         %LMA is par 11
-    CBR.LAI=CBR.POOLS(:,:,2)./repmat(PARS(:,11),[1,size(CBR.POOLS(:,:,2),2)]);
+    CBR.LAI=CBR.POOLS(:,:,2)./repmat(CBR.PARS(:,11),[1,size(CBR.POOLS(:,:,2),2)]);
     elseif OPT.MODEL.ID==1100;
         %LMA is par 18
-    CBR.LAI=CBR.POOLS(:,:,2)./repmat(PARS(:,18),[1,size(CBR.POOLS(:,:,2),2)]);
+    CBR.LAI=CBR.POOLS(:,:,2)./repmat(CBR.PARS(:,18),[1,size(CBR.POOLS(:,:,2),2)]);
     else
         %LMA is par 17
-          CBR.LAI=CBR.POOLS(:,:,2)./repmat(PARS(:,17),[1,size(CBR.POOLS(:,:,2),2)]);
+          CBR.LAI=CBR.POOLS(:,:,2)./repmat(CBR.PARS(:,17),[1,size(CBR.POOLS(:,:,2),2)]);
 
     end
     
@@ -270,13 +444,13 @@ if OPT.extended==1
   %Water stress
   if size(CBR.POOLS,3)>6
       if OPT.MODEL.ID<=8 | any(ismember([801,802,803,804,805,806,807,808,809,810,811,812,813,10,1000,1001,1002,1003,1005,1009],OPT.MODEL.ID))
-    CBR.H2OSTRESS=min([PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);
+    CBR.H2OSTRESS=min([CBR.PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(CBR.PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);
     elseif OPT.MODEL.ID==1030 | OPT.MODEL.ID==1031 | OPT.MODEL.ID==1032 | OPT.MODEL.ID==1060;
-        CBR.PAWSTRESS=min([PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);        
+        CBR.PAWSTRESS=min([CBR.PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(CBR.PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]),1);        
         CBR.VPDSTRESS=1./(1+repmat(CBF.MET(:,8)',[size(CBR.PARS(:,37),1),1])./repmat(CBR.PARS(:,37),[1,size(CBF.MET(:,8),1)]));
         CBR.H2OSTRESS=CBR.PAWSTRESS.*CBR.VPDSTRESS;
       elseif OPT.MODEL.ID==9
-          CBR.H2OSTRESS=1-exp(-[PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]));
+          CBR.H2OSTRESS=1-exp(-[CBR.PARS(:,27), CBR.POOLS(:,1:end-1,7)]./repmat(CBR.PARS(:,26),[1,size(CBR.POOLS(:,:,2),2)]));
       end
 end
 end
@@ -374,79 +548,23 @@ end
     CBR.RAU=sum(CBR.FLUXES(:,:,3),3);
 
 
-% 
-% %NEE NEE[n]=(-FLUXES[f+0]+FLUXES[f+2]+FLUXES[f+12]+FLUXES[f+13]);
-% 
-%  DR.NEE=permute(sum(FLUXES([3,13,14],:,:),1)-FLUXES(1,:,:),[3,2,1]);
-% 
-% %FLUXES
-% 
-% DR.GPP=permute(FLUXES(1,:,:),[3,2,1]); 
-% DR.temprate=FLUXES(2,:);
-% DR.respiration_auto=FLUXES(3,:); PIN
-% 
-% DR.leaf_production=FLUXES(4,:); PIN(4,:)=[0,1,0,0,0,0];
-% DR.labile_production=FLUXES(5,:); PIN(
-% DR.root_production=FLUXES(6,:);
-% DR.wood_production=FLUXES(7,:);
-% DR.labile_release=FLUXES(8,:);
-% DR.leaffall_factor=FLUXES(9,:);
-% DR.leaflitter_production=FLUXES(10,:);
-% DR.woodlitter_production=FLUXES(11,:);
-% DR.rootlitter_production=FLUXES(12,:);
-% DR.respiration_het_litter=FLUXES(13,:);
-% DR.respiration_het_som=FLUXES(14,:);
-% DR.litter2som=FLUXES(15,:);
-% DR.Reco=FLUXES(14,:)+FLUXES(13,:)+FLUXES(3,:);
-% DR.Rhet=FLUXES(14,:)+FLUXES(13,:);
-% DR.Rauto=FLUXES(3,:);
-% DR.NPP=FLUXES(1,:)-FLUXES(3,:);
-% DR.labrelease_factor=FLUXES(16,:);
-% (FIRE FLUXES)
-% DR.fires=FLUXES(17,:);
-% DR.fire_per_pool = FLUXES(18:23); %pool to atmosphere (lab, fol, roo, woo, lit, som)
-% DR.fire_transfers = FLUXES(24:28); % pool to litter (and litter to SOM).(lab, fol, roo, woo, lit)
-% 
-% 
-% %POOLS
-% 
-% DR.C_labile=POOLS(1,:);
-% DR.C_foliar=POOLS(2,:);
-% DR.C_root=POOLS(3,:);
-% DR.C_wood=POOLS(4,:);
-% DR.C_litter=POOLS(5,:);
-% DR.C_som=POOLS(6,:);
-% DR.POOLS=POOLS;
-% DR.Biomass=sum(POOLS,1);
-% 
-% 
-% 
-% 
-% DR.EDC=sum(EDCDIAG)==numel(EDCDIAG);
-% DR.EDCDIAG=EDCDIAG;
-% %ALSO SAVING PARAMETERS, and MET FOR REFERENCE
-% DR.parameters=PARS;
-% DR.MET=metdata;
 
 
-
-
-if OPT.command_only==1;
-    CBR=command_str;
-end
+% 
+% Obsolete, is currently incompatible with script.
+% if OPT.command_only==1;
+%     CBR=command_str;
+% end
 
 
  CBR.run_mode='forward';        
  
  
  
- 
- if OPT.STORE==0
-delete(sprintf('%s/tempcar*%s*',Dpath,channel));
+
  end
 
 
- end
 
 
 
