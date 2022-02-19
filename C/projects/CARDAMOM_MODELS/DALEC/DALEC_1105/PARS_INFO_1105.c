@@ -1,5 +1,5 @@
 #pragma once
-#include "DALEC_1100.c"
+#include "DALEC_1105.c"
 
 /*PARAMETER_INFO (typedef struct) must have at least 3 fields
  *  * npars,
@@ -10,11 +10,11 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1100(DATA *CARDADATA)
+int PARS_INFO_1105(DATA *CARDADATA)
 {
 
 
-struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
+struct DALEC_1105_PARAMETERS P=DALEC_1105_PARAMETERS;
 
 /*Litter decomposition rate*/
 CARDADATA->parmin[P.tr_lit2som]=0.00001;
