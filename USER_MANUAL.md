@@ -10,6 +10,9 @@
 [If you’re making any edits, add your name here!]
 
 
+## Ad-hoc material to "file" away in manual contents
+### Fill value conventions
+
 
 ## Table of Contents
 - [Getting Started With CARDAMOM](#-getting-started)
