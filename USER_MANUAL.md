@@ -11,7 +11,8 @@
 
 
 ## Ad-hoc material to "file" away in manual contents
-### Fill value conventions
+### Fill value conventions: Nans and -9999
+### DOM = all dead organic C states, SOM = only DALEC soil 
 
 
 ## Table of Contents
