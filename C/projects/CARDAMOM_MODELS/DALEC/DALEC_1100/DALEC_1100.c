@@ -471,10 +471,17 @@ FLUXES[f+F.evap] = LIU_An_et_out[2];
 // Evapotranspiration
 FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
 
+/*Snow water equivalent*/
+POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+SNOWFALL[n]*deltat; /*first step snowfall to SWE*/
+FLUXES[f+F.melt]=fmin(fmax(((T2M_MIN[n]+T2M_MAX[n])/2-(pars[P.min_melt]-273.15))*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
+POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step remove snowmelt from SWE*/
+FLUXES[f+F.scf]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);  /*snow cover fraction*/
+
 //Energy balance: Rn = LE + H - G
 // Rn = SWin - SWout + LWin - LWout
 double SWin = SSRD[n]*1e6/(24*3600);
-double SWout = SWin*pars[P.leaf_refl];
+//Weighted average of surface albedo considering SW snow albedo as 0.9
+double SWout = (1. - FLUXES[f+F.scf])*(SWin*pars[P.leaf_refl]) + FLUXES[f+F.scf]*(SWin*0.9);
 double LWin = LWIN[n];
 //Stefan–Boltzmann constant
 double sigma = 5.67*1e-8;
@@ -494,11 +501,8 @@ double H = cp*(TSKIN[n] - ref_temp)*pars[P.ga];
 //soil heat flux 
 double G = Rn - H - LE; 
 
-/*Snow water equivalent*/
-POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+SNOWFALL[n]*deltat; /*first step snowfall to SWE*/
-FLUXES[f+F.melt]=fmin(fmax(((T2M_MIN[n]+T2M_MAX[n])/2-(pars[P.min_melt]-273.15))*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
-POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step remove snowmelt from SWE*/
-FLUXES[f+F.scf]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);  /*snow cover fraction*/
+
+
 
 // Infiltration (mm/day)
 double infil = pars[P.max_infil]*(1 - exp(-(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt])/pars[P.max_infil]));
