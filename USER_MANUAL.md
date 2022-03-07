@@ -10,6 +10,10 @@
 [If you’re making any edits, add your name here!]
 
 
+## Ad-hoc material to "file" away in manual contents
+### Fill value conventions: Nans and -9999
+### DOM = all dead organic C states, SOM = only DALEC soil 
+
 
 ## Table of Contents
 - [Getting Started With CARDAMOM](#-getting-started)
