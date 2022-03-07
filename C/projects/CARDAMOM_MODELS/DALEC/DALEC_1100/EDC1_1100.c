@@ -38,7 +38,7 @@ double const flab=(1-fauto)*pars[P.f_lab];
 double const froot=(1-fauto-flab)*pars[P.f_root];
 double const fwood=1-fauto-flab-froot;
 /*fraction of GPP som under equilibrium conditions*/
-double const fsom=fwood+(froot+flab)*pars[P.tr_lit2soil]/(pars[P.tr_lit2soil]+pars[P.t_lit]);
+double const fsom=fwood+(froot+flab)*pars[P.tr_lit2som]/(pars[P.tr_lit2som]+pars[P.t_lit]);
 
 /*yearly leaf loss fraction*/
 // double torfol=1/(pars[P.t_foliar]*365.25);
@@ -47,11 +47,11 @@ double const fsom=fwood+(froot+flab)*pars[P.tr_lit2soil]/(pars[P.tr_lit2soil]+pa
 
 /*EDC CHECK NO 1*/
 /*TOR_LIT faster than TOR_SOM*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[1-1]==1)) & (pars[P.t_soil]>pars[P.t_lit])){EDC=0;EDCD->PASSFAIL[1-1]=0;}
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[1-1]==1)) & (pars[P.t_som]>pars[P.t_lit])){EDC=0;EDCD->PASSFAIL[1-1]=0;}
 
 /*EDC CHECK NO 2*/
 /*Litter2SOM greater than SOM to Atm. rate*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[2-1]==1)) & (pars[P.tr_lit2soil]<pars[P.t_soil])){EDC=0;EDCD->PASSFAIL[2-1]=0;}
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[2-1]==1)) & (pars[P.tr_lit2som]<pars[P.t_som])){EDC=0;EDCD->PASSFAIL[2-1]=0;}
 
 /*EDC CHECK NO 3*/
 /*TOR_FOL faster than TOR_WOOD */
@@ -61,7 +61,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[2-1]==1))
 /*Root turnover greater than SOM turnover at meantemp*/
 /*same as this*/
 /*\text{EDC 4: }(1-\pavii)^{365} > \Pi_{i=1}^{365} (1-\paix \tratei)*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1)) & (pars[P.t_root]<pars[P.t_soil]*pow(pars[P.Q10rhco2],meantemp/10))){EDC=0;EDCD->PASSFAIL[4-1]=0;}
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1)) & (pars[P.t_root]<pars[P.t_som]*pow(pars[P.Q10rhco2],meantemp/10))){EDC=0;EDCD->PASSFAIL[4-1]=0;}
 /*EDC no 5 is addressed in EDC2_FIREBUCKET.c*/
 
 /*EDC CHECK NO 6*/

@@ -88,7 +88,7 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/DALEC_%i.c',Cpat
      if k==1
          if strcmp(linestr(1:4),'int ')
          %Assumes "int " (4 characters) is removed
-         eval(sprintf('P.%s = %i;',linestr(5:find(linestr==';',1)-1),  p));
+         eval(sprintf('P.%s = %i +1;',linestr(5:find(linestr==';',1)-1),  p));
          p=p+1;
          else
              k=2;
@@ -113,7 +113,7 @@ if strcmp(linestr,'/*DALEC PARAMETERS*/');disp(linestr);k=1;end
      if k==1
          if strcmp(linestr(1:4),'int ')
          %Assumes "int " (4 characters) is removed
-         eval(sprintf('F.%s = %i;',linestr(5:find(linestr==';',1)-1),  p));
+         eval(sprintf('F.%s = %i +1;',linestr(5:find(linestr==';',1)-1),  p));
          p=p+1;
          else
              k=2;
@@ -137,7 +137,7 @@ if strcmp(linestr,'/*DALEC FLUXES*/');disp(linestr);k=1;end
      if k==1
          if strcmp(linestr(1:4),'int ')
          %Assumes "int " (4 characters) is removed
-         eval(sprintf('S.%s = %i;',linestr(5:find(linestr==';',1)-1),  p));
+         eval(sprintf('S.%s = %i + 1;',linestr(5:find(linestr==';',1)-1),  p));
          p=p+1;
          else
              k=2;

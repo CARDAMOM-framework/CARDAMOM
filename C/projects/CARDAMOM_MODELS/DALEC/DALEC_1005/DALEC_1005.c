@@ -172,8 +172,8 @@ OBSOPE.ABGB_n_pools=4;
 //ABGB-specific variables
 static int CWOO_pools[1];
 CWOO_pools[0]=S.C_woo;
-OBSOPE.ABGB_pools=ABGB_pools;
-OBSOPE.ABGB_n_pools=1;
+OBSOPE.CWOO_pools=CWOO_pools;
+OBSOPE.CWOO_n_pools=1;
 
 //DOM-specific variables
 static int DOM_pools[2]; 

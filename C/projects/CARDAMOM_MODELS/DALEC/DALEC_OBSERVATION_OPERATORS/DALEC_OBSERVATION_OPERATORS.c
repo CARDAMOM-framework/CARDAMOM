@@ -66,6 +66,10 @@ int iniSOM_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
 
 
+//Inbuilt observation operators. These are derived inside model
+bool SUPPORT_iLAI_OBS;
+
+
 }OBSOPE;
 
 
@@ -89,8 +93,9 @@ OBSOPE->SUPPORT_CUE_OBS=false;
 OBSOPE->SUPPORT_C3frac_OBS=false;
 OBSOPE->SUPPORT_iniSnow_OBS=false;
 OBSOPE->SUPPORT_iniSOM_OBS=false;
+//In-built observation operators
 
-
+OBSOPE->SUPPORT_iLAI_OBS=false;
 
 return 0;
 }

@@ -16,7 +16,7 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
 
 
-struct DALEC_1100_PARAMETERS{
+struct DALEC_1105_PARAMETERS{
 /*DALEC PARAMETERS*/
 int tr_lit2som;
 int tr_cwd2som;
@@ -85,7 +85,7 @@ int time_c;
 int time_r;
 int init_T_mem;
 int init_LAIW_mem;
-} DALEC_1100_PARAMETERS={
+} DALEC_1105_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
@@ -95,7 +95,7 @@ int init_LAIW_mem;
     60,61,62,63,64,65,66
 };
 
-struct DALEC_1100_FLUXES{
+struct DALEC_1105_FLUXES{
 /*DALEC FLUXES*/
 int gpp;   /*GPP*/
 int temprate;   /*Temprate*/
@@ -157,7 +157,7 @@ int f_dayl_thresh;   /*f_dayl_thres*/
 int c_lim_flag;   /*LAI carbon limitation flag*/
 int lai_fire;   /*LAI fire loss*/
 int foliar_fire_frac;   /*C_fol fire loss frac*/
-} DALEC_1100_FLUXES={
+} DALEC_1105_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
@@ -170,7 +170,7 @@ int foliar_fire_frac;   /*C_fol fire loss frac*/
 
 
 
-struct DALEC_1100_POOLS{
+struct DALEC_1105_POOLS{
 /*DALEC POOLS*/
 int C_lab; /*Labile C*/
 int C_fol; /*Foliar C*/
@@ -182,7 +182,7 @@ int C_som; /*Soil C*/
 int H2O_PAW; /*Plant available H2O*/
 int H2O_PUW; /*Plant unavailable H2O*/
 int H2O_SWE; /*Snow water equivalent*/
-} DALEC_1100_POOLS={
+} DALEC_1105_POOLS={
     0,1,2,3,4,5,6,7,8,9
 };
 
@@ -196,12 +196,12 @@ int * output_fluxes}
 
 
 
-int DALEC_1100_MODCONFIG(DALEC * DALECmodel){
+int DALEC_1105_MODCONFIG(DALEC * DALECmodel){
 
 
-struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
-struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
-struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
+struct DALEC_1105_PARAMETERS P=DALEC_1105_PARAMETERS;
+struct DALEC_1105_FLUXES F=DALEC_1105_FLUXES;
+struct DALEC_1105_POOLS S=DALEC_1105_POOLS;
 
 DALECmodel->nopools=10;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
@@ -306,13 +306,13 @@ return 0;}
 
 
 
-int DALEC_1100(DATA DATA, double const *pars){
+int DALEC_1105(DATA DATA, double const *pars){
     
 
 
-struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
-struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
-struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
+struct DALEC_1105_PARAMETERS P=DALEC_1105_PARAMETERS;
+struct DALEC_1105_FLUXES F=DALEC_1105_FLUXES;
+struct DALEC_1105_POOLS S=DALEC_1105_POOLS;
 
 
 
