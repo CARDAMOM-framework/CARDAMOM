@@ -258,6 +258,8 @@ def main():
     
     
     dataset.close()
+    print("\n***Other possible error sources***")
+    print("Tip: check that all met fields required for model ID are provided in cbf.nc file")
 #next checks here
 # end main 
 
