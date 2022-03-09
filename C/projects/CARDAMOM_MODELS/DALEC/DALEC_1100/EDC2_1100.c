@@ -47,6 +47,7 @@ int DIAG=EDCD->DIAG;/*1 or 0*/
 
 /*FIREBUCKET*/
 int nopools=MODEL->nopools;
+int noprogpools=10;//Prognostic pools only for EDCs
 int nofluxes=MODEL->nofluxes;
 int done=0;
 int k=0;
@@ -57,7 +58,7 @@ int k=0;
 double *MPOOLS;
 MPOOLS=calloc(nopools,sizeof(double));
 if (MPOOLS==0){printf("WARNING NULL POINTER");}
-for (n=0;n<nopools;n++){MPOOLS[n]=mean_pool(POOLS,n,N_timesteps+1,nopools);};
+for (n=0;n<noprogpools;n++){MPOOLS[n]=mean_pool(POOLS,n,N_timesteps+1,nopools);};
 
 
 
@@ -72,7 +73,7 @@ int dint=(int)floor(N_timesteps/(TIME_INDEX[N_timesteps-1]-TIME_INDEX[0])*365.25
 MPOOLSjan=calloc(nopools,sizeof(double));if (MPOOLSjan==0){printf("WARNING NULL POINTER");}
 /*deriving mean jan pools*/
 /*based on all jan pools except initial conditions*/
-for (n=0;n<nopools;n++){
+for (n=0;n<noprogpools;n++){
 for (m=0;m<(N_timesteps/dint+1);m++){
 MPOOLSjan[n]=MPOOLSjan[n]+POOLS[nopools*(m*dint)+n]/(N_timesteps/dint+1);}}
 /*printing just to make sure*/
@@ -157,7 +158,7 @@ double Rm, Rs;
 
 
 
-for (n=0;n<nopools;n++){
+for (n=0;n<noprogpools;n++){
 /*start and end pools*/
 Pstart=POOLS[n];
 Pend=POOLS[nopools*N_timesteps+n];
@@ -204,14 +205,14 @@ EDCD->pEDC=EDCD->pEDC+log(1/(1+exp(10*(pars[P.wilting]-MPOOLS[S.H2O_PAW])/MPOOLS
 int pidx[]={P.i_labile,P.i_foliar,P.i_root,P.i_wood,P.i_cwd,P.i_lit,P.i_som,P.i_PAW,P.i_PUW,P.i_SWE};
 
 /*for (n=0;n<nopools-1;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;}}*/
-for (n=0;n<nopools;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;EDCD->pEDC=log(0);}}
+for (n=0;n<noprogpools;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;EDCD->pEDC=log(0);}}
 
 
 int PEDC;
 /*ensuring minimum of each pool is zero & finite*/
 if (EDC==1 || DIAG==1)
 {double min; int nn;n=0;
-while ((n<nopools) & (EDC==1 || DIAG==1))
+while ((n<noprogpools) & (EDC==1 || DIAG==1))
 {nn=0;PEDC=1;while ((nn<N_timesteps+1) & (PEDC==1))
 {if ((POOLS[n+nn*nopools]<0) || isnan(POOLS[n+nn*nopools])==1)
 /*{EDC=0;PEDC=0;EDCD->PASSFAIL[35+n]=0;}nn=nn+1;};*/

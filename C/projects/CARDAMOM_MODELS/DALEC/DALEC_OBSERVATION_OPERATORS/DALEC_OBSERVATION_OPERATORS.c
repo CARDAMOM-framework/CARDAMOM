@@ -17,8 +17,7 @@ int CWOO_n_pools;
 //Gross primary productivity (GPP)
 int GPP_flux;
 bool SUPPORT_LAI_OBS;
-int LAI_foliar_pool;
-int LAI_LCMA;
+int LAI_pool;
 bool SUPPORT_ET_OBS;
 int ET_flux;
 bool SUPPORT_ROFF_OBS;
@@ -44,6 +43,10 @@ int EWT_n_h2o_pools;
 //Total fire C emissions
 bool SUPPORT_FIR_OBS;
 int FIR_flux;
+bool SUPPORT_SCF_OBS;
+int SCF_pool;
+
+
 //
 //Parameters and emergen quantities
 bool SUPPORT_Cefficiency_OBS;
@@ -66,8 +69,6 @@ int iniSOM_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
 
 
-//Inbuilt observation operators. These are derived inside model
-bool SUPPORT_iLAI_OBS;
 
 
 }OBSOPE;
@@ -86,6 +87,7 @@ OBSOPE->SUPPORT_GPP_OBS=false;
 OBSOPE->SUPPORT_LAI_OBS=false;
 OBSOPE->SUPPORT_NBE_OBS=false;
 OBSOPE->SUPPORT_ROFF_OBS=false;
+OBSOPE->SUPPORT_SCF_OBS=false;
 
 
 OBSOPE->SUPPORT_Cefficiency_OBS=false;
@@ -95,7 +97,6 @@ OBSOPE->SUPPORT_iniSnow_OBS=false;
 OBSOPE->SUPPORT_iniSOM_OBS=false;
 //In-built observation operators
 
-OBSOPE->SUPPORT_iLAI_OBS=false;
 
 return 0;
 }
@@ -104,7 +105,7 @@ return 0;
 
 
 
-//LAI observation operator
+//ABGB observation operator
 int DALEC_OBSOPE_ABGB(DATA * D, OBSOPE * O){
 //int folc_pool,double lcma_pars_index
     
@@ -260,25 +261,47 @@ return 0;}
 
 //LAI observation operator
 int DALEC_OBSOPE_LAI(DATA * D, OBSOPE * O){
+
 //int folc_pool,double lcma_pars_index
     
-//GPP timeseries length
-
+//Run length
 int N=D->ncdf_data.TIME_INDEX.length;
-
-
 
 //Time varying GPP and mean GPP
 TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.LAI;
 SINGLE_OBS_STRUCT SOBS=D->ncdf_data.Mean_LAI;
 
-if (TOBS.valid_obs_length>0 || SOBS.value!=DEFAULT_DOUBLE_VAL){int n;
+
+if ((TOBS.valid_obs_length>0 || SOBS.value!=DEFAULT_DOUBLE_VAL) ){int n;
 for (n=0;n<N;n++){
-    D->M_LAI[n]=(D->M_POOLS[D->nopools*n+O->LAI_foliar_pool]+D->M_POOLS[D->nopools*(n+1)+O->LAI_foliar_pool])*0.5/D->M_PARS[O->LAI_LCMA];
+    D->M_LAI[n]=(D->M_POOLS[D->nopools*n+O->LAI_pool]+D->M_POOLS[D->nopools*(n+1)+O->LAI_pool])*0.5;
 }}
 
 //Mean LAI
 if (SOBS.value!=DEFAULT_DOUBLE_VAL){int n;D->M_Mean_LAI=0;for (n=0;n<N;n++){D->M_Mean_LAI+=D->M_LAI[n];}D->M_Mean_LAI=D->M_Mean_LAI/(double)N;}
+
+return 0;}
+
+
+
+
+//SCF observation operator
+int DALEC_OBSOPE_SCF(DATA * D, OBSOPE * O){
+//int folc_pool,double lcma_pars_index
+
+    
+//Run length
+int N=D->ncdf_data.TIME_INDEX.length;
+
+//Time varying GPP and mean GPP
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.SCF;
+
+
+if ((TOBS.valid_obs_length>0) ){int n;
+for (n=0;n<N;n++){
+
+    D->M_SCF[n]=(D->M_POOLS[D->nopools*n+O->SCF_pool]+D->M_POOLS[D->nopools*(n+1)+O->SCF_pool])*0.5;
+}}
 
 
 return 0;}
@@ -397,14 +420,14 @@ int DALEC_OBSOPE(DATA * D, OBSOPE * O){
 if (O->SUPPORT_ABGB_OBS){DALEC_OBSOPE_ABGB(D, O);}
 if (O->SUPPORT_CH4_OBS){DALEC_OBSOPE_CH4(D, O);}
 if (O->SUPPORT_CWOO_OBS){DALEC_OBSOPE_CWOO(D, O);}
-if (O->SUPPORT_GPP_OBS){DALEC_OBSOPE_GPP(D, O);}
-if (O->SUPPORT_LAI_OBS){DALEC_OBSOPE_LAI(D, O);}
 if (O->SUPPORT_ET_OBS){DALEC_OBSOPE_ET(D, O);}
-if (O->SUPPORT_ROFF_OBS){DALEC_OBSOPE_ROFF(D, O);}
-if (O->SUPPORT_NBE_OBS){DALEC_OBSOPE_NBE(D, O);}
-if (O->SUPPORT_DOM_OBS){DALEC_OBSOPE_DOM(D, O);}
 if (O->SUPPORT_EWT_OBS){DALEC_OBSOPE_EWT(D, O);}
 if (O->SUPPORT_FIR_OBS){DALEC_OBSOPE_FIR(D, O);}
+if (O->SUPPORT_GPP_OBS){DALEC_OBSOPE_GPP(D, O);}
+if (O->SUPPORT_LAI_OBS ){DALEC_OBSOPE_LAI(D, O);}
+if (O->SUPPORT_NBE_OBS){DALEC_OBSOPE_NBE(D, O);}
+if (O->SUPPORT_ROFF_OBS){DALEC_OBSOPE_ROFF(D, O);}
+if (O->SUPPORT_SCF_OBS ){DALEC_OBSOPE_SCF(D, O);}
 
 //Parameters
 

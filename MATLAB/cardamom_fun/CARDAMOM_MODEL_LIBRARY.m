@@ -78,7 +78,7 @@ end
 else
 %Find parameter info here *******
 parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/DALEC_%i.c',Cpath,ID,ID);
- D=importdata(parfilename,'');
+ D=importdata(parfilename,'\n');
  
 %'/*DALEC PARAMETERS*/'
  k=0;n=1;p=0;

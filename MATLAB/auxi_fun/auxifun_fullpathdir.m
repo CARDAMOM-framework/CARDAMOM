@@ -7,7 +7,7 @@ pathstr= fileparts(fnamesearch);
 
 for n=1:numel(a);
     ffps{n}=fullfile(pathstr,a(n).name);
-    disp(ffps{n});
+    %disp(ffps{n});
 end
 
 

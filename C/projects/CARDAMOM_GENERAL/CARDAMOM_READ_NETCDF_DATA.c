@@ -109,7 +109,9 @@ DATA->GPP=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "GPP");
 DATA->LAI=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "LAI");
 DATA->NBE=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "NBE");
 DATA->ROFF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ROFF");
-
+printf("MADE IT HERE\n");
+DATA->SCF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "SCF");
+printf("2. MADE IT HERE\n");
 //Read time-averaged data
 
 DATA->Mean_ABGB=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_ABGB");
@@ -178,6 +180,12 @@ default_double_value(&DATA->DOM.single_unc,2);
 default_double_value(&DATA->DOM.min_threshold,10);//gC/m2
 
 
+//Default SCF options
+default_int_value(&DATA->SCF.opt_unc_type,0);
+default_double_value(&DATA->SCF.single_unc,0.1);
+default_double_value(&DATA->SCF.min_threshold,0.1);//m2/m2
+
+
 //pre-process obs to save time
 //Only required for timeseries obs
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ABGB);
@@ -190,6 +198,7 @@ TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->GPP);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->LAI);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->NBE);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ROFF);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->SCF);
 
 
 
