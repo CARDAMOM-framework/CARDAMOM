@@ -17,6 +17,16 @@ Test .md link to other file
 ### DOM = all dead organic C states, SOM = only DALEC soil 
 
 
+Sections for partitioned manual 
+"Curator" (or cognizant engineer) = you're in charge of (i) starting a new markdown page and moving content there, and (2) getting other ppl to contribute content where necessary.
+(1) Summary (Greg)
+(2) Getting started (Jessie; probably need to make new pages for DEMO)
+(3) Running CARDAMOM (Paul = main section, and command line example; expect subsections for matlab and python)
+(4) Cost function (Anthony; with as much as possible review from others).
+(5) The "cbf.nc" (Matt)
+(6) 
+
+
 ## Table of Contents
 - [Getting Started With CARDAMOM](#-getting-started)
   * [“Installing” CARDAMOM](#-installing--cardamom)
