@@ -6,7 +6,9 @@
 ###**THIS IS THE CARDAMOM TEAM INTERNAL MANUAL (MANUAL_DEV.md). Use this mannual collaboratively with CARDAMOM team. As & when instructions are ready to be used in public CARDAMOM code, copy/transfer/adapt these manually into MANUAL.md**
 
 Test .md link to other file
-[README file](https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/main/README.md)
+[README file](README.md)
+
+Example relative link for subsection
 [GETTING STARTED](MANUAL/GETTING_STARTED.md)
 
 ***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, Renato Braghiere and others***  
@@ -20,12 +22,22 @@ Test .md link to other file
 
 Sections for partitioned manual 
 "Curator" (or cognizant engineer) = you're in charge of (i) starting a new markdown page and moving content there, and (2) getting other ppl to contribute content where necessary.
+
+Also: link at end of each section to get to next section (e.g. previous, next, and "back to summary", definitely include that in all files).
+
 (1) Summary (Greg)
 (2) Getting started (Jessie; probably need to make new pages for DEMO)
 (3) Running CARDAMOM (Paul = main section, and command line example; expect subsections for matlab and python)
-(4) Cost function (Anthony; with as much as possible review from others).
-(5) The "cbf.nc" (Matt)
-(6) 
+(4) Reading, using and analyzing CARDAMOM data? (Greg)
+-------
+- Cost function (Anthony; with as much as possible review from others).
+- The "cbf.nc" (Matt)
+- CARDAMOM C developer guide (Shuang)
+- Running CARDAMOM in parallel (Sarah, scope = examples or resources associated to parallel computing option)
+- CARDAMOM-MAPS (point to CARDAMOM-MAPS manual)
+- FAQ etc (Anthony)
+
+
 
 
 ## Table of Contents
