@@ -2,6 +2,8 @@
 ## CARDAMOM framework version 2.2
 #### *JPL, Stanford & UCSB CARDAMOM framework*
 
+Changed in manual_test branch
+
 ## General description 
 
 The Carbon data model framework (CARDAMOM) is a Bayesian inference approach for using terrestrial ecosystem observations to optimize terrestrial carbon cycle model states and processes parameters. The CARDAMOM code presented here is the culmination of a grassroots model development effort undertaken across multiple institutions, including the Jet Propulsion Laboratory (California Institute for Technology), University of Edinburgh, Stanford University and University of California Santa Barbara. The CARDAMOM framework version 2.2 code provided here (https://github.com/CARDAMOM-framework/) was used in Bloom et al. (2020), Quetin et al., (2020), Yin et al. (2020), Famiglietti et al., (2021), and remains backward compatible with Bloom et al., (2016). 
