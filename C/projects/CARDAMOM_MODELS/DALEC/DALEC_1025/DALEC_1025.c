@@ -272,21 +272,21 @@ double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
 
 /*constants for exponents of leaffall and labrelease factors*/
 /*width*/
-double wf=pars[P.leaf_fall]*sqrt(2)/2;
-double wl=pars[P.labile_rel]*sqrt(2)/2;
+// double wf=pars[P.leaf_fall]*sqrt(2)/2;
+// double wl=pars[P.labile_rel]*sqrt(2)/2;
 
 
 /*factor*/
-double ff=(log(pars[P.t_foliar])-log(pars[P.t_foliar]-1))/2;
+// double ff=(log(pars[P.t_foliar])-log(pars[P.t_foliar]-1))/2;
 /*double fl=(log(1.001)-log(0.001))/2;*/
-double fl=(log(pars[P.t_labile])-log(pars[P.t_labile]-1))/2;
+// double fl=(log(pars[P.t_labile])-log(pars[P.t_labile]-1))/2;
 
 
 
 
 /*additional offset*/
-double osf=offset(pars[P.t_foliar],wf);
-double osl=offset(pars[P.t_labile],wl);
+// double osf=offset(pars[P.t_foliar],wf);
+// double osl=offset(pars[P.t_labile],wl);
 
 
 /*scaling to biyearly sine curve*/
@@ -427,9 +427,9 @@ FLUXES[f+F.root_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_pr
 /*wood production*/       
 FLUXES[f+F.wood_prod] = FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.lab_prod]; 
 /*leaf fall factor*/
-FLUXES[f+F.leaffall_fact] = (2/sqrt(pi))*(ff/wf)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Fday]+osf)/sf)*sf/wf,2));
+// FLUXES[f+F.leaffall_fact] = (2/sqrt(pi))*(ff/wf)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Fday]+osf)/sf)*sf/wf,2));
 /*Labrelease factor*/
-FLUXES[f+F.lab_release_fact]=(2/sqrt(pi))*(fl/wl)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Bday]+osl)/sf)*sf/wl,2));
+// FLUXES[f+F.lab_release_fact]=(2/sqrt(pi))*(fl/wl)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Bday]+osl)/sf)*sf/wl,2));
 /*wood litter production*/       
 FLUXES[f+F.wood2lit] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
 /*root litter production*/
