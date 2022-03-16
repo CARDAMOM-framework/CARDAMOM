@@ -72,7 +72,7 @@ OPT.MODEL.ID=CBF.ID.values;
 %number of parameter samples
 end
   
-
+MD=CARDAMOM_MODEL_LIBRARY(OPT.MODEL.ID);
 
 if ischar(CBF);
     
@@ -217,6 +217,12 @@ end
 delete(sprintf('%s/tempcar*%s*',Dpath,channel));
  end
 
+ %LAI
+ 
+LAI=CBR.POOLS(:,:,MD.POOL_IDs.C_fol)./CBR.PARS(:,MD.PARAMETER_IDs.LCMA);
+LAI1=LAI(:,1:end-1);
+LAI2=LAI(:,2:end);
+CBR.LAI=    (LAI1+    LAI2)*0.5;
 
  end
  
@@ -274,15 +280,9 @@ CBR.ET=CBR.FLUXES(:,:,MD.FLUX_IDs.et);
 
 
 
-if OPT.extended==1
-    
 
-        %LMA is par 11
-    CBR.LAI=CBR.POOLS(:,:,MD.POOL_IDs.C_fol)./CBR.PARS(:,MD.PARAMETER_IDs.LCMA);
-   
-    
-    
-end
+%LAI
+CBR.LAI=CBR.POOLS(:,:,MD.POOL_IDs.C_fol)./CBR.PARS(:,MD.PARAMETER_IDs.LCMA);
     
 
 
@@ -426,19 +426,6 @@ if OPT.MODEL.ID==1200; CBR.FF= CBR.FLUXES(:,:,31);end
 CBR.GPP=CBR.FLUXES(:,:,1);
 
 if OPT.extended==1
-    
-%LAI
-    if OPT.MODEL.ID==101;
-        %LMA is par 11
-    CBR.LAI=CBR.POOLS(:,:,2)./repmat(CBR.PARS(:,11),[1,size(CBR.POOLS(:,:,2),2)]);
-    elseif OPT.MODEL.ID==1100;
-        %LMA is par 18
-    CBR.LAI=CBR.POOLS(:,:,2)./repmat(CBR.PARS(:,18),[1,size(CBR.POOLS(:,:,2),2)]);
-    else
-        %LMA is par 17
-          CBR.LAI=CBR.POOLS(:,:,2)./repmat(CBR.PARS(:,17),[1,size(CBR.POOLS(:,:,2),2)]);
-
-    end
     
     
   %Water stress
