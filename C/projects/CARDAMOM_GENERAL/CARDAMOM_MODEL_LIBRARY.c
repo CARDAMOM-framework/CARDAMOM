@@ -96,16 +96,16 @@ if (ID==0){printf("No model prescribed, expect error!");}
 //else if (ID==1002  ){MODEL_INFO_1002(DATA);}
 //else if (ID==1003  ){MODEL_INFO_1003(DATA);}
 //else if (ID==1004  ){MODEL_INFO_1004(DATA);}
-    //else if (ID==1005  ){MODEL_INFO_1005(DATA);}
+    else if (ID==1005  ){MODEL_INFO_1005(DATA);}
 //else if (ID==1009  ){MODEL_INFO_1009(DATA);}
-    //else if (ID==1012  ){MODEL_INFO_1012(DATA);}
+    else if (ID==1012  ){MODEL_INFO_1012(DATA);}
     //else if (ID==1015  ){MODEL_INFO_1015(DATA);}
     //else if (ID==1016  ){MODEL_INFO_1016(DATA);}
     //else if (ID==1017  ){MODEL_INFO_1017(DATA);}
-    //else if (ID==1025  ){MODEL_INFO_1025(DATA);}
+    else if (ID==1025  ){MODEL_INFO_1025(DATA);}
 //else if (ID==1030  ){MODEL_INFO_1030(DATA);}
 //else if (ID==1031  ){MODEL_INFO_1031(DATA);}
-    //else if (ID==1032  ){MODEL_INFO_1032(DATA);}
+    else if (ID==1032  ){MODEL_INFO_1032(DATA);}
 //else if (ID==1040  ){MODEL_INFO_1040(DATA);}
     //else if (ID==1060  ){MODEL_INFO_1060(DATA);}
     //else if (ID==1080  ){MODEL_INFO_1080(DATA);}

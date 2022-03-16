@@ -20,6 +20,7 @@ DALEC_1025_MODCONFIG(&DALECmodel);
 DATA->nopools=DALECmodel.nopools;
 DATA->nopars=DALECmodel.nopars;
 DATA->nofluxes=DALECmodel.nofluxes;
+printf("DALECmodel->nopars=%i (INSIDE MODEL_INFO)\n",DALECmodel.nopars);
 
 /*All model functions*/
 /*User is able to add further functions as deemed necessary*/

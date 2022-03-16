@@ -69,7 +69,7 @@ printf("C/projects/CARDAMOM_MDF/MCMC_SETUP/PROJECT_FUN/FIND_EDC_INITIAL_VALUES.c
 
 int n;
 
-printf("PI->npars = %d\n",PI->npars);
+printf("PI->npars (INSIDE FIND_EDC_INITIAL_VALUES.c)= %d\n",PI->npars);
 
 
 
