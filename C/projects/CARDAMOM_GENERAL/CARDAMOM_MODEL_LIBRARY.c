@@ -71,7 +71,7 @@ int CARDAMOM_MODEL_LIBRARY(DATA *DATA){
 
 
 int status=0;
-int ID = DATA->ncdf_data.ID;
+int ID = (int) DATA->ncdf_data.ID;
 if (ID==0){printf("No model prescribed, expect error!");}
 //if (ID==101  ){MODEL_INFO_101(DATA);}
 //else if (ID==400  ){MODEL_INFO_400(DATA);}

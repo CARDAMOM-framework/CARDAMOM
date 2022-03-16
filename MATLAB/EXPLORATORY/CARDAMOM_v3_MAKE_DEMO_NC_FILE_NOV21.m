@@ -1,4 +1,12 @@
 function CARDAMOM_v3_MAKE_DEMO_NC_FILE_NOV21
+%This is DEMO driver file configured for US-NR1 (Niwot ridge)
+%2001-20xx
+%Purpose = add all datasets useful for verification and validation at
+%Niwot Ridge.
+
+%CARDAMOM units 
+% Energy = MJ/m2/day
+
 
 %Step 1. start netcdf file
 %Step 0. Load time data
@@ -47,12 +55,13 @@ ncwriteatt(NC.fname,'SCF','opt_unc_type',2);
     create_and_write_obs_single_variable(NC,'Mean_Biomass',-9999);
     create_and_write_obs_single_variable(NC,'Mean_Fire',-9999);
     create_and_write_obs_single_variable(NC,'Mean_GPP',-9999);
-    create_and_write_obs_single_variable(NC,'Mean_LAI',3);%
+    create_and_write_obs_single_variable(NC,'Mean_LAI',3);%Not using MODIS LAI (provided here) 
     ncwriteatt(NC.fname,'Mean_LAI','unc',1.5);
 
     
     %Put parameter constraint examples
-    
+    %
+    %
     create_and_write_obs_single_variable(NC,'PEQ_Cefficiency',-9999);
     create_and_write_obs_single_variable(NC,'PEQ_CUE',-9999);
     create_and_write_obs_single_variable(NC,'PEQ_iniSOM',-9999);
@@ -159,7 +168,7 @@ end
 
 
 function ABGB=ABGB_data
-
+%gC/m2
 
 ABGB=[  
        NaN
@@ -767,11 +776,10 @@ GPP=[
 
 end
 
-
 function LAI=LAI_data
 
 
-%%%WARNING: all set to NaNs
+%m2/m2
 LAI=[
          NaN
        NaN
@@ -2165,7 +2173,7 @@ SNOWFALL=[0.4580
 end
 
 function SSRD=SSRD_data
-
+%MJ/m2/day
 SSRD=[
     9.7291
    13.7900
@@ -2759,7 +2767,7 @@ T2M_MAX=[
 end
 
 function rawtime=time_data
-
+%This is days since 2001
 rawtime=     1.0e+03 *[
     0.0152
     0.0457

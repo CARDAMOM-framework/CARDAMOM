@@ -42,7 +42,7 @@ INITIALIZE_PARAMETER_FIELDS(DATA);
 PARS_INFO_1100(DATA);
 
 oksofar("about to declare EDCD");
-printf("DALECmodel.EDCD = %p\n",DALECmodel.EDCD); //DALECmodel.EDCD Needs to be initilized!
+//printf("DALECmodel.EDCD = %p\n",DALECmodel.EDCD); //DALECmodel.EDCD Needs to be initilized!
 /*Initialize the EDCD structure*/
 EDCSETUP(*DATA,&DALECmodel.EDCD);
 oksofar("done with declaration");
