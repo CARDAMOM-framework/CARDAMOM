@@ -4,7 +4,6 @@
 
 #pragma once
 #include "../../auxi_fun/filediag.c"
-#include "../../auxi_fun/oksofar.c"
 #include "stdlib.h"
 #include "stdio.h"
 #include "memory.h"
