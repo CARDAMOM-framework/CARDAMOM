@@ -44,7 +44,6 @@ PARS_INFO_1005(DATA);
 
 /*Initialize the EDCD structure*/
 EDCSETUP(*DATA,&DALECmodel.EDCD);
-oksofar("done with declaration");
 printf("DALECmodel.EDCD->EQF = %2.2f\n",DALECmodel.EDCD->EQF);
 
 
