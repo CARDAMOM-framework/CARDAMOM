@@ -1,5 +1,5 @@
 #pragma once
-#include "DALEC_1100.c"
+#include "DALEC_1105.c"
 
 /*PARAMETER_INFO (typedef struct) must have at least 3 fields
  *  * npars,
@@ -10,11 +10,11 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1100(DATA *CARDADATA)
+int PARS_INFO_1105(DATA *CARDADATA)
 {
 
 
-struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
+struct DALEC_1105_PARAMETERS P=DALEC_1105_PARAMETERS;
 
 /*Litter decomposition rate*/
 CARDADATA->parmin[P.tr_lit2som]=0.00001;
@@ -216,8 +216,8 @@ CARDADATA->parmax[P.min_melt]=270;
 CARDADATA->parmin[P.melt_slope]=0.00001;
 CARDADATA->parmax[P.melt_slope]=1;
 
-/*sn3: snow cover fraction scalar; SCF = SWE/(SWE +SWEcritical_par) */
-CARDADATA->parmin[P.scf_scalar]=10;
+/*sn3: snow cover fraction scalar*/
+CARDADATA->parmin[P.scf_scalar]=0.001;
 CARDADATA->parmax[P.scf_scalar]=1000.0;
 
 /* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)*/
@@ -288,10 +288,6 @@ CARDADATA->parmax[P.init_T_mem]=1;
 /*initialization of water/structural memory (fractional value of intrinsic maximum LAI)*/
 CARDADATA->parmin[P.init_LAIW_mem]=0.01;
 CARDADATA->parmax[P.init_LAIW_mem]=1;
-
-/*Inverse of leaf longevity at any period i.e. background turnover (days-1)*/
-CARDADATA->parmin[P.t_foliar]=0.001;
-CARDADATA->parmax[P.t_foliar]=0.1;
 
 return 0;
 

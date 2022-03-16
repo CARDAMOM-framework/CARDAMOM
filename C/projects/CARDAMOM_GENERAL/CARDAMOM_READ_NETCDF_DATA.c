@@ -109,7 +109,9 @@ DATA->GPP=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "GPP");
 DATA->LAI=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "LAI");
 DATA->NBE=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "NBE");
 DATA->ROFF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ROFF");
-
+printf("MADE IT HERE\n");
+DATA->SCF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "SCF");
+printf("2. MADE IT HERE\n");
 //Read time-averaged data
 
 DATA->Mean_ABGB=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_ABGB");
@@ -133,49 +135,66 @@ DATA->PEQ_iniSnow=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSnow");
 // default_double_value(&OBS->structural_unc,0);
 
 
+printf("Warning: No longer assigning default uncertainty values. Please double check your driver file contains uncertainties for all observations used.\n");
+printf("Example uncertainty values (used in the past) per variable:\n");
 // Default ABGB options
-
+printf("ABGB.opt_unc_type=1; ABGB.single_unc=2; ABGB.min_threshold=10 gC/m2;\n");
 default_int_value(&DATA->ABGB.opt_unc_type,1);
 default_double_value(&DATA->ABGB.single_unc,2);
 default_double_value(&DATA->ABGB.min_threshold,10);//gC/m2
 
 // Default CH4 options
+printf("CH4.opt_unc_type=1; CH4.single_unc=2; CH4.min_threshold=1e-5 mgCH4/m2/d;\n");
 default_int_value(&DATA->CH4.opt_unc_type,1);
 default_double_value(&DATA->CH4.single_unc,2);
 default_double_value(&DATA->CH4.min_threshold,1e-5);//mgCH4/m2/d
 
 //Default ET options
+printf("ET.opt_unc_type=1; ET.single_unc=2; ET.min_threshold=0.1 mm/d;\n");
 default_int_value(&DATA->ET.opt_unc_type,1);
 default_double_value(&DATA->ET.single_unc,2);
 default_double_value(&DATA->ET.min_threshold,0.1);
 
 //Default ROFF options
+printf("ROFF.opt_unc_type=1; ROFF.single_unc=2; ROFF.min_threshold=0.1 mm/d;\n");
 default_int_value(&DATA->ROFF.opt_unc_type,1);
 default_double_value(&DATA->ROFF.single_unc,2);
 default_double_value(&DATA->ROFF.min_threshold,0.1);
 
 //Default EWT options;
+printf("EWT.single_unc=2; EWT.opt_normalization=1;\n");
 default_double_value(&DATA->EWT.single_unc,50);//mm
 default_int_value(&DATA->EWT.opt_normalization,1);
 
 //Default GPP options
+printf("GPP.opt_unc_type=1; GPP.single_unc=2; GPP.min_threshold=0.1 gC/m2/d;\n");
 default_int_value(&DATA->GPP.opt_unc_type,1);
 default_double_value(&DATA->GPP.single_unc,2);
 default_double_value(&DATA->GPP.min_threshold,0.1);//gC/m2/d
 
 //Default LAI options
+printf("LAI.opt_unc_type=1; GPP.single_unc=2; LAI.min_threshold=0.1 m2/m2;\n");
 default_int_value(&DATA->LAI.opt_unc_type,1);
 default_double_value(&DATA->LAI.single_unc,2);
 default_double_value(&DATA->LAI.min_threshold,0.1);//m2/m2
 
 
 //Default NBE options;
+printf("NBE.single_unc=1 gC/m2/d;\n");
 default_double_value(&DATA->NBE.single_unc,1);//gC/m2/d
 
 //Default DOM options
+printf("DOM.opt_unc_type=1; DOM.single_unc=2; DOM.min_threshold=10 gC/m2;\n");
 default_int_value(&DATA->DOM.opt_unc_type,1);
 default_double_value(&DATA->DOM.single_unc,2);
 default_double_value(&DATA->DOM.min_threshold,10);//gC/m2
+
+
+//Default SCF options
+printf("SCF.opt_unc_type=0; SCF.single_unc=0.1; SCF.min_threshold=0.1 m2/m2;\n");
+default_int_value(&DATA->SCF.opt_unc_type,0);
+default_double_value(&DATA->SCF.single_unc,0.1);
+default_double_value(&DATA->SCF.min_threshold,0.1);//m2/m2
 
 
 //pre-process obs to save time
@@ -190,6 +209,7 @@ TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->GPP);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->LAI);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->NBE);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ROFF);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->SCF);
 
 
 

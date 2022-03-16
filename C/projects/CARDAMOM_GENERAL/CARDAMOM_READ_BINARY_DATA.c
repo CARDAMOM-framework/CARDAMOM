@@ -76,10 +76,12 @@ DATA->M_CWOO=calloc(Ntimesteps,sizeof(double));
 DATA->M_DOM=calloc(Ntimesteps,sizeof(double));
 DATA->M_ET=calloc(Ntimesteps,sizeof(double));
 DATA->M_EWT=calloc(Ntimesteps,sizeof(double));
-DATA->M_LAI=calloc(Ntimesteps,sizeof(double));
 DATA->M_GPP=calloc(Ntimesteps,sizeof(double));
+DATA->M_LAI=calloc(Ntimesteps,sizeof(double));//Warning, LAI larger than this!
 DATA->M_NBE=calloc(Ntimesteps,sizeof(double));
 DATA->M_ROFF=calloc(Ntimesteps,sizeof(double));
+DATA->M_SCF=calloc(Ntimesteps,sizeof(double));//Warning, LAI larger than this!
+
 
     
 
@@ -87,6 +89,8 @@ DATA->M_ROFF=calloc(Ntimesteps,sizeof(double));
 //Model variables 
 	DATA->M_FLUXES=calloc(Ntimesteps*DATA->nofluxes,sizeof(double));
 	DATA->M_POOLS=calloc((Ntimesteps+1)*DATA->nopools,sizeof(double));
+    
+    
 	int noedc=100, noprob=1;
 	DATA->M_EDCD=calloc(noedc,sizeof(int));
 	DATA->M_P=calloc(noprob,sizeof(double));

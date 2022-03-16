@@ -28,6 +28,7 @@ double *M_GPP;
 double *M_LAI;
 double *M_NBE;
 double *M_ROFF;
+double *M_SCF;
 //Mean values
 double M_Mean_ABGB;
 double M_Mean_FIR;

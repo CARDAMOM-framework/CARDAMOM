@@ -13,25 +13,25 @@
 /*Same as MHMCMC, except following differences:*/
 /*N chains (N>=3)*/
 
-double *ADEMCMC(
+double *ADEMCMC_301(
 double (MODEL_LIKELIHOOD)(DATA, double *),
 DATA DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCO, MCMC_OUTPUT *MCOUT){
 
 /* ***********INPUTS************
  *
- * MODEL_LIKELIHOOD: A function wholly responsible for
- * (a) running the model given the DATA and parameters,
- * (b) comparing it to observations,and
+ * MODEL_LIKELIHOOD: A function wholly responsible for 
+ * (a) running the model given the DATA and parameters, 
+ * (b) comparing it to observations,and 
  * (c) returning  the (log) likelihood.
  * The function will be run as MODEL_LIKELIHOOD(DATA,PARS);
- * To facilitate this, ALL data can be
- * passed to the MHMCMC function as a structure (in order to avoid
- * repeated read/write computational time).
+ * To facilitate this, ALL data can be 
+ * passed to the MHMCMC function as a structure (in order to avoid 
+ * repeated read/write computational time). 
  *
  * DATA: All data needed for the MODEL_LIKELIHOOD. It can include
  * drivers, observations, etc.
  *
- * PARINFO: This structure contains information on
+ * PARINFO: This structure contains information on 
  * (a) pmin, pmax:	parameter ranges (compulsory)
  * (b) initpars:	parameter starting values (optional/recommended).
  * (c) npars:		number of pars (compulsory)
@@ -45,7 +45,7 @@ DATA DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCO, MCMC_OUTPUT *MCOUT){
  * */
 
 /* **************OUTPUTS*************
- *
+ * 
  * RESULTS FILE: File includes (a) results (b) likelihood and (c) final step size
  *
  * */
@@ -83,6 +83,7 @@ double *PARS,*pars_new,*BESTPARS, *BESTP;
 PARS=calloc(PI.npars*NC,sizeof(double));
 pars_new=calloc(PI.npars,sizeof(double));
 BESTPARS=calloc(PI.npars*NC,sizeof(double));
+PARS0=calloc(PI.npars*NC,sizeof(double));
 BESTP=calloc(NC,sizeof(double));
 /*All accepted parameters*/
 /*This is now the last N parameter vectors
@@ -126,7 +127,7 @@ for (nn=0;nn<NC;nn++){
 /*NOTE: passing pointer of PARS0 + N-chains: also use *(P+N) format if this one won't work*/
 P[nn]=MODEL_LIKELIHOOD(DATA,&PARS[nn*PI.npars]);
 /*treating NaN as -inf*/
-if (isnan(P[nn])){printf("Warning: MLF generated NaN... treating as -Inf");
+if isnan(P[nn]){printf("Warning: MLF generated NaN... treating as -Inf");
 P[nn]=log(0);}
 if (Pmin>P[nn]){Pmin=P[nn];}
 
@@ -142,14 +143,17 @@ if (isinf(P[nn])==-1){printf("WARNING! P(0)=-inf - MHMCMC may get stuck - if so,
 for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
 	/*Looping through each chain*/
 	/*UPDATE: retaining parameter vector (as done in ter Braak, 2006) and moving on to next chain if metropolis ratio is rejected*/
-
+	
 	//PI.stepsize[0]=1e-1-(1e-1-1)*(double)(n % 10 == 0);
+	
+    memcpy(PARS0,PARS,PI.npars*NC*sizeof(double));
 
+    
 	for (nn=0;nn<NC;nn++){
 
 	//ADEMCMC
 	if ((double)N.ITER<(double)MCO.nOUT*MCO.fADAPT){
-        withinrange=STEP_ADEMCMC(PARS,pars_new,PI,nn,NC,&gratio);
+        withinrange=STEP_ADEMCMC(PARS0,pars_new,PI,nn,NC,&gratio);
 	}
 	//Standard DEMCMC
 	else {
@@ -157,11 +161,11 @@ for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
         PI.stepsize[0]=1 - (1-2.38/sqrt(2*PI.npars)/10)*(double)((double)(random()/RAND_MAX)<0.9);
 	/*take a step (DE-MCMC style)*/
 	PI.stepsize[0]=PI.stepsize[0];
-	withinrange=STEP_DEMCMC(PARS,pars_new,PI,nn,NC);
+	withinrange=STEP_DEMCMC(PARS0,pars_new,PI,nn,NC);
 	gratio=0;
 	}
 
-
+	
 	lr=log((double)random()/RAND_MAX);
 	/*p(x) = 0 if parameters outside bounds*/
 	if (withinrange==1 & -P[nn]+gratio>lr){
@@ -174,23 +178,24 @@ wrlocal=wrlocal+1;
 	/*if (isinf(P_new)==0){oksofar("Found non-inf solution");}
 	*/
 	/*treating nans as -inf*/
-	if (isnan(P_new)){P_new=log(0);}
+	if isnan(P_new){P_new=log(0);}
 if (P_new-P[nn]+gratio>lr || (isinf(P_new)==0 && isinf(P[nn]) && withinrange==1)){N.ACC=N.ACC+1;
 	if (isinf(P_new)==0 && isinf(P[nn])){printf("pnew = %2.1f, p = %2.1f, (P_new-P[nn]) = %2.1f\n",P_new,P[nn],P_new-P[nn]);}
 
 
 		for (n=0;n<PI.npars;n++){
 		PARS[n+nn*PI.npars]=pars_new[n];}
+	P[nn]=P_new;
 		if (P_new>=BESTP[nn]){for (n=0;n<PI.npars;n++){BESTPARS[n + nn*PI.npars]=pars_new[n];BESTP[nn]=P_new;}
 		if (P_new==0 && P_new>P[nn] ){printf("Found bestpars, prob = %2.1f, chain = %i\n",BESTP[nn],nn);}
 		}
-		P[nn]=P_new;}
 	}
-
+	}
+	
 	/*regularly write results*/
 	if (MCO.nWRITE>0 && (N.ITER % MCO.nWRITE)==0){
 WRITE_DEMCMC_RESULTS(PARS,PI,MCO);}
-
+	
 	/*Printing Info to Screen*/
 	if (MCO.nPRINT>0 && N.ITER % MCO.nPRINT==0){
 		printf("%d out of %d iterations)\n",N.ITER,MCO.nOUT);
@@ -204,16 +209,13 @@ WRITE_DEMCMC_RESULTS(PARS,PI,MCO);}
 
 /*End of chain loop*/
 	/*END OF WHILE LOOP*/
-
-
-	
-}
-//End of iteration loop	
 	
 
 
-
-
+	
+	}
+	
+	
 
 /*filling in MCOUT details*/
 /*best parameter combination*/
@@ -228,6 +230,7 @@ MCOUT->complete=1;
 free(BESTPARS);
 free(BESTP);
 free(PARS);
+free(PARS0);
 free(pars_new);
 free(P);
 printf("DEMCMC DONE\n");
