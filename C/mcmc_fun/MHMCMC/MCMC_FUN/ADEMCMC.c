@@ -117,7 +117,7 @@ printf("%1.1e ",PARS[n+nn*PI.npars]);}
 printf("\n");}
 */
 
-oksofar("Established PI.parini - begining MHMCMC now");
+printf("Established PI.parini - begining MHMCMC now\n");
 
 memcpy(BESTPARS,PARS,PI.npars*NC*sizeof(double));
 
