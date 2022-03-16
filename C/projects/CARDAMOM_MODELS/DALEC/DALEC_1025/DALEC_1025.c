@@ -138,7 +138,7 @@ DALECmodel->nopools=9;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=48;
 DALECmodel->nofluxes=41;
-
+printf("DALECmodel->nopars=%i (INSIDE DALEC)\n",DALECmodel->nopars);
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
 //Initialize all SUPPORT OBS values (default value = false).
