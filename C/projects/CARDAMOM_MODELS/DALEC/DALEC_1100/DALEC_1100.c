@@ -85,6 +85,7 @@ int time_c;
 int time_r;
 int init_T_mem;
 int init_LAIW_mem;
+int t_foliar;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -92,7 +93,7 @@ int init_LAIW_mem;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64,65,66
+    60,61,62,63,64,65,66,67
 };
 
 struct DALEC_1100_FLUXES{
@@ -168,6 +169,7 @@ int foliar_fire_frac;   /*C_fol fire loss frac*/
 
 
 
+/*Prognostic states and Diagnostic states (dependent on other states)*/
 
 
 struct DALEC_1100_POOLS{
@@ -182,8 +184,11 @@ int C_som; /*Soil C*/
 int H2O_PAW; /*Plant available H2O*/
 int H2O_PUW; /*Plant unavailable H2O*/
 int H2O_SWE; /*Snow water equivalent*/
+int D_LAI;//leaf area index
+int D_SCF;//snow-covered fraction
 } DALEC_1100_POOLS={
-    0,1,2,3,4,5,6,7,8,9
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+    10,11
 };
 
 /*
@@ -203,9 +208,9 @@ struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
 struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
-DALECmodel->nopools=10;
+DALECmodel->nopools=12;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=67;
+DALECmodel->nopars=68;
 DALECmodel->nofluxes=60;
 
 //declaring observation operator structure, and filling with DALEC configurations
@@ -213,7 +218,7 @@ static OBSOPE OBSOPE;
 //Initialize all SUPPORT OBS values (default value = false).
 INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 
-//Set SUPPORT_OBS values to true if model supports observation operation.
+//Set SUPPORT_OBS values to true if model supports external observation operations.
 OBSOPE.SUPPORT_GPP_OBS=true;
 OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
@@ -224,6 +229,10 @@ OBSOPE.SUPPORT_EWT_OBS=true;
 OBSOPE.SUPPORT_FIR_OBS=true;
 OBSOPE.SUPPORT_CH4_OBS=true;
 OBSOPE.SUPPORT_ROFF_OBS=true;
+OBSOPE.SUPPORT_SCF_OBS=true;
+
+
+
 
 
 OBSOPE.SUPPORT_CUE_OBS=true;
@@ -237,8 +246,7 @@ OBSOPE.SUPPORT_iniSOM_OBS=true;
 //GPP-specific variables
 OBSOPE.GPP_flux=F.gpp;
 //LAI-specific variables
-OBSOPE.LAI_foliar_pool=S.C_fol;
-OBSOPE.LAI_LCMA=P.LCMA;
+OBSOPE.LAI_pool=S.D_LAI;
 //ET variabiles
 OBSOPE.ET_flux=F.et;
 //Runoff variables
@@ -287,6 +295,11 @@ OBSOPE.EWT_h2o_pools=EWT_h2o_pools;
 OBSOPE.EWT_n_h2o_pools=3;
 //Fire-specific variables
 OBSOPE.FIR_flux=F.f_total;
+
+//SCF-specific variables
+OBSOPE.SCF_pool=S.D_SCF;
+
+
 //CUE parameters
 OBSOPE.CUE_PARAM=P.f_auto;
 //C3frac parameters
@@ -307,7 +320,6 @@ return 0;}
 
 
 int DALEC_1100(DATA DATA, double const *pars){
-    
 
 
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
@@ -330,8 +342,7 @@ int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
 double *FLUXES=DATA.M_FLUXES;
 double *POOLS=DATA.M_POOLS;
-double *LAI=DATA.M_LAI;
-// double *NEE=DATA.M_NEE;
+
 
   /*assigning values to pools*/
 
@@ -347,6 +358,10 @@ double *LAI=DATA.M_LAI;
   POOLS[S.H2O_PAW]=pars[P.i_PAW];
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
   POOLS[S.H2O_SWE]=pars[P.i_SWE];
+    
+   //***DIAGNOSTIC STATES*****  
+    POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; //LAI
+    POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
 
 double *SSRD=DATA.ncdf_data.SSRD.values;
 double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
@@ -407,11 +422,9 @@ nxp=nopools*(n+1);
 f=nofluxes*n;
 
 
-
-/*LAI*/
-LAI[n]=POOLS[p+S.C_fol]/pars[P.LCMA]; 
-
-
+double LAI=POOLS[p+S.D_LAI];
+        
+        
 /*Calculate light extinction coefficient*/
 double B = (DOY[n]-81)*2*pi/365.;
 double ET1 = 9.87*sin(2*B)-7.53*cos(B)-1.5*sin(B);
@@ -453,7 +466,7 @@ double beta = fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1.);
 // Annual radiation, VPD in kPa, mean T in K
 double *LIU_An_et_out = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 
     273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), pars[P.Vcmax25], CO2[n], beta, pars[P.Med_g1], 
-    LAI[n], pars[P.ga], VegK, pars[P.Tupp], pars[P.Tdown], 1., // pars[P.C3_frac],
+    LAI, pars[P.ga], VegK, pars[P.Tupp], pars[P.Tdown], 1., // pars[P.C3_frac],
     pars[P.clumping], pars[P.leaf_refl], pars[P.maxPevap], PREC[n]);
 // GPP
 FLUXES[f+F.gpp] = LIU_An_et_out[0];
@@ -468,7 +481,7 @@ FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+SNOWFALL[n]*deltat; /*first step snowfall to SWE*/
 FLUXES[f+F.melt]=fmin(fmax(((T2M_MIN[n]+T2M_MAX[n])/2-(pars[P.min_melt]-273.15))*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
 POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step remove snowmelt from SWE*/
-FLUXES[f+F.scf]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);  /*snow cover fraction*/
+
 
 // Infiltration (mm/day)
 double infil = pars[P.max_infil]*(1 - exp(-(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt])/pars[P.max_infil]));
@@ -536,8 +549,8 @@ if (n==0){
 lai_met_list[0]=(T2M_MAX[n]+T2M_MIN[n])/2.0;
 // lai_var_list[0]=1;
 lai_var_list[19]=deltat;
-lai_var_list[1]=LAI[n];
-lai_var_list[2]=LAI[n];
+lai_var_list[1]=LAI;
+lai_var_list[2]=LAI;
 lai_var_list[3]=pars[P.T_phi];
 lai_var_list[4]=pars[P.T_range];
 lai_var_list[6]=pars[P.tau_m];
@@ -570,14 +583,14 @@ if (FLUXES[f+F.dlambda_dt] > 0){
   /* flag for carbon availability limitation (0=canopy in senescence, 1=labile C does not limit growth, 2=labile C limits LAI growth) */
   FLUXES[f+F.c_lim_flag]=2.0;
   /* leaf litter production: flux from foliar pool to litter pool */
-  FLUXES[f+F.fol2lit]=0;
+  FLUXES[f+F.fol2lit]=POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))/deltat;
 }
 else {
   FLUXES[f+F.c_lim_flag]=0.0;
   /* labile release: flux from labile pool to foliar pool */
   FLUXES[f+F.lab_release]=0;
   /* leaf litter production: flux from foliar pool to litter pool */
-  FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA];
+  FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA]+POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))/deltat;
 }
 
 
@@ -702,10 +715,13 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2som]*FLUXES[f+F.te
     FLUXES[f+F.lai_fire] = (POOLS[p+S.C_fol]/pars[P.LCMA])*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
 
 
+    /***RECORD t+1 DIAGNOSTIC STATES*****/
+    POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
+    POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
+
 }
 
-/*LAI is a CARDAMOM-wide state variable, ensuring available at first/last timestep in general (LAI) form, rather than only as "Cfol/LCMA"*/
-LAI[n+1]=POOLS[nxp+S.C_fol]/pars[P.LCMA];
+
 
 return 0;
 }

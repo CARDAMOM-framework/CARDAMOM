@@ -216,8 +216,8 @@ CARDADATA->parmax[P.min_melt]=270;
 CARDADATA->parmin[P.melt_slope]=0.00001;
 CARDADATA->parmax[P.melt_slope]=1;
 
-/*sn3: snow cover fraction scalar*/
-CARDADATA->parmin[P.scf_scalar]=0.001;
+/*sn3: snow cover fraction scalar; SCF = SWE/(SWE +SWEcritical_par) */
+CARDADATA->parmin[P.scf_scalar]=10;
 CARDADATA->parmax[P.scf_scalar]=1000.0;
 
 /* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)*/
@@ -288,6 +288,10 @@ CARDADATA->parmax[P.init_T_mem]=1;
 /*initialization of water/structural memory (fractional value of intrinsic maximum LAI)*/
 CARDADATA->parmin[P.init_LAIW_mem]=0.01;
 CARDADATA->parmax[P.init_LAIW_mem]=1;
+
+/*Inverse of leaf longevity at any period i.e. background turnover (days-1)*/
+CARDADATA->parmin[P.t_foliar]=0.001;
+CARDADATA->parmax[P.t_foliar]=0.1;
 
 return 0;
 

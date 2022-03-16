@@ -104,7 +104,8 @@ int C_lit; /*Litter C*/
 int C_som; /*Soil C*/
 int H2O_PAW; /*Plant available H2O*/
 int H2O_PUW; /*Plant unavailable H2O*/
-} DALEC_1032_POOLS={0,1,2,3,4,5,6,7};
+int D_LAI;//leaf area index
+} DALEC_1032_POOLS={0,1,2,3,4,5,6,7,8};
 
 int DALEC_1032_MODCONFIG(DALEC * DALECmodel){
 
@@ -112,7 +113,7 @@ struct DALEC_1032_PARAMETERS P=DALEC_1032_PARAMETERS;
 struct DALEC_1032_FLUXES F=DALEC_1032_FLUXES;
 struct DALEC_1032_POOLS S=DALEC_1032_POOLS;
 
-DALECmodel->nopools=8;
+DALECmodel->nopools=9;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=39;
 DALECmodel->nofluxes=33;
@@ -144,8 +145,7 @@ OBSOPE.SUPPORT_Cefficiency_OBS=true;
 //GPP-specific variables
 OBSOPE.GPP_flux=F.gpp;
 //LAI-specific variables
-OBSOPE.LAI_foliar_pool=S.C_fol;
-OBSOPE.LAI_LCMA=P.LCMA;
+OBSOPE.LAI_pool=S.D_LAI;
 //ET variabiles
 OBSOPE.ET_flux=F.et;
 //Runoff variables
@@ -233,7 +233,6 @@ int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
 double *FLUXES=DATA.M_FLUXES;
 double *POOLS=DATA.M_POOLS;
-double *LAI=DATA.M_LAI;
 
   /*assigning values to pools*/
   /*L,F,R,W,Lit,SOM*/
@@ -246,6 +245,8 @@ double *LAI=DATA.M_LAI;
   /*water pools*/
   POOLS[S.H2O_PAW]=pars[P.i_PAW];
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
+  //Diagnostic states
+  POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; 
 
 double *SSRD=DATA.ncdf_data.SSRD.values;
 double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
@@ -318,9 +319,9 @@ f=nofluxes*n;
 
 
 /*LAI*/
-LAI[n]=POOLS[p+S.C_fol]/pars[P.LCMA]; 
-/*GPP*/
-gpppars[0]=LAI[n];
+double LAI=POOLS[p+S.D_LAI];
+        /*GPP*/
+gpppars[0]=LAI;
 gpppars[1]=T2M_MAX[n];
 gpppars[2]=T2M_MIN[n];
 gpppars[4]=CO2[n];
@@ -436,6 +437,10 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
     FLUXES[f+F.f_total] = FLUXES[f+F.f_lab] + FLUXES[f+F.f_fol] + FLUXES[f+F.f_roo] + FLUXES[f+F.f_woo] + FLUXES[f+F.f_lit] + FLUXES[f+F.f_som];
 
 
+    
+    
+    /***RECORD t+1 DIAGNOSTIC STATES*****/
+        POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
 }
 
 return 0;

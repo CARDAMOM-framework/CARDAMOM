@@ -125,7 +125,8 @@ int C_lit; /*Litter C*/
 int C_som; /*Soil C*/
 int H2O_PAW; /*Plant available H2O*/
 int H2O_PUW; /*Plant unavailable H2O*/
-} DALEC_1025_POOLS={0,1,2,3,4,5,6,7};
+int D_LAI;//leaf area index
+} DALEC_1025_POOLS={0,1,2,3,4,5,6,7,8};
 
 int DALEC_1025_MODCONFIG(DALEC * DALECmodel){
 
@@ -133,7 +134,7 @@ struct DALEC_1025_PARAMETERS P=DALEC_1025_PARAMETERS;
 struct DALEC_1025_FLUXES F=DALEC_1025_FLUXES;
 struct DALEC_1025_POOLS S=DALEC_1025_POOLS;
 
-DALECmodel->nopools=8;
+DALECmodel->nopools=9;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=48;
 DALECmodel->nofluxes=41;
@@ -161,8 +162,8 @@ OBSOPE.SUPPORT_FIR_OBS=true;
 //GPP-specific variables
 OBSOPE.GPP_flux=F.gpp;
 //LAI-specific variables
-OBSOPE.LAI_foliar_pool=S.C_fol;
-OBSOPE.LAI_LCMA=P.LCMA;
+OBSOPE.LAI_pool=S.D_LAI;
+
 //ET variabiles
 OBSOPE.ET_flux=F.et;
 //NBE-specific variables
@@ -237,7 +238,6 @@ int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
 double *FLUXES=DATA.M_FLUXES;
 double *POOLS=DATA.M_POOLS;
-double *LAI=DATA.M_LAI;
 
   /*assigning values to pools*/
   /*L,F,R,W,Lit,SOM*/
@@ -250,6 +250,8 @@ double *LAI=DATA.M_LAI;
   /*water pools*/
   POOLS[S.H2O_PAW]=pars[P.i_PAW];
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
+    //Diagnostic states
+  POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; 
 
 double *SSRD=DATA.ncdf_data.SSRD.values;
 double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
@@ -324,9 +326,9 @@ f=nofluxes*n;
 
 
 /*LAI*/
-LAI[n]=POOLS[p+S.C_fol]/pars[P.LCMA]; 
+double LAI=POOLS[p+S.D_LAI];        
 /*GPP*/
-gpppars[0]=LAI[n];
+gpppars[0]=LAI;
 gpppars[1]=T2M_MAX[n];
 gpppars[2]=T2M_MIN[n];
 gpppars[4]=CO2[n];
@@ -370,8 +372,8 @@ if (n==0){
 lai_met_list[0]=(T2M_MAX[n]+T2M_MIN[n])/2.0;
 // lai_var_list[0]=n;
 lai_var_list[19]=deltat;
-lai_var_list[1]=LAI[n];
-lai_var_list[2]=LAI[n];
+lai_var_list[1]=LAI;
+lai_var_list[2]=LAI;
 lai_var_list[3]=pars[P.T_phi];
 lai_var_list[4]=pars[P.T_range];
 lai_var_list[6]=pars[P.tau_m]; /*tau_m*/
@@ -499,8 +501,9 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
 
 }
 
-/*LAI is a CARDAMOM-wide state variable, ensuring available at first/last timestep in general (LAI) form, rather than only as "Cfol/LCMA"*/
-LAI[n+1]=POOLS[nxp+S.C_fol]/pars[P.LCMA];
+
+    /***RECORD t+1 DIAGNOSTIC STATES*****/
+        POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
 
 return 0;
 }
