@@ -31,10 +31,6 @@ CARDADATA->parmax[P.f_foliar]=0.5;
 CARDADATA->parmin[P.f_root]=0.01;
 CARDADATA->parmax[P.f_root]=1;
 
-/*Leaf Lifespan*/
-CARDADATA->parmin[P.t_foliar]=1.001;
-CARDADATA->parmax[P.t_foliar]=8;
-
 /*TOR wood* - 1% loss per year value*/
 CARDADATA->parmin[P.t_wood]=0.000025;
 CARDADATA->parmax[P.t_wood]=0.001;
@@ -212,6 +208,10 @@ CARDADATA->parmax[P.init_T_mem]=1;
 /*initialization of water/structural memory (fractional value of intrinsic maximum LAI)*/
 CARDADATA->parmin[P.init_LAIW_mem]=0.01;
 CARDADATA->parmax[P.init_LAIW_mem]=1;
+
+/*Inverse of leaf longevity at any period i.e. background turnover (days-1)*/
+CARDADATA->parmin[P.t_foliar]=0.001;
+CARDADATA->parmax[P.t_foliar]=0.1;
 
 return 0;
 

@@ -85,6 +85,7 @@ int time_c;
 int time_r;
 int init_T_mem;
 int init_LAIW_mem;
+int t_foliar;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -92,7 +93,7 @@ int init_LAIW_mem;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64,65,66
+    60,61,62,63,64,65,66,67
 };
 
 struct DALEC_1100_FLUXES{
@@ -209,7 +210,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=12;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=67;
+DALECmodel->nopars=68;
 DALECmodel->nofluxes=60;
 
 //declaring observation operator structure, and filling with DALEC configurations
@@ -582,14 +583,14 @@ if (FLUXES[f+F.dlambda_dt] > 0){
   /* flag for carbon availability limitation (0=canopy in senescence, 1=labile C does not limit growth, 2=labile C limits LAI growth) */
   FLUXES[f+F.c_lim_flag]=2.0;
   /* leaf litter production: flux from foliar pool to litter pool */
-  FLUXES[f+F.fol2lit]=0;
+  FLUXES[f+F.fol2lit]=POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))/deltat;
 }
 else {
   FLUXES[f+F.c_lim_flag]=0.0;
   /* labile release: flux from labile pool to foliar pool */
   FLUXES[f+F.lab_release]=0;
   /* leaf litter production: flux from foliar pool to litter pool */
-  FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA];
+  FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA]+POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))/deltat;
 }
 
 

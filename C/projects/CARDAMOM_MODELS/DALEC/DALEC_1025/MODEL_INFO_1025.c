@@ -20,6 +20,7 @@ DALEC_1025_MODCONFIG(&DALECmodel);
 DATA->nopools=DALECmodel.nopools;
 DATA->nopars=DALECmodel.nopars;
 DATA->nofluxes=DALECmodel.nofluxes;
+printf("DALECmodel->nopars=%i (INSIDE MODEL_INFO)\n",DALECmodel.nopars);
 
 /*All model functions*/
 /*User is able to add further functions as deemed necessary*/
@@ -41,11 +42,9 @@ INITIALIZE_PARAMETER_FIELDS(DATA);
 
 PARS_INFO_1025(DATA);
 
-oksofar("about to declare EDCD");
-printf("DALECmodel.EDCD = %p\n",DALECmodel.EDCD);
 /*Initialize the EDCD structure*/
 EDCSETUP(*DATA,&DALECmodel.EDCD);
-oksofar("done with declaration");
+printf("done with declaration");
 printf("DALECmodel.EDCD->EQF = %2.2f\n",DALECmodel.EDCD->EQF);
 
 
