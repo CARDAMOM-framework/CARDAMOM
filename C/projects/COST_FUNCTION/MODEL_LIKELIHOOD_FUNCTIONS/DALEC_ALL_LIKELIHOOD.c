@@ -123,24 +123,39 @@ DALEC_OBSOPE(&D,O);
 //printf("O->SUPPORT_LAI_OBS = %d\n",O->SUPPORT_LAI_OBS);
 
 //if (O->SUPPORT_ET_OBS){   P=P+DALEC_LIKELIHOOD_ET(D);}
+printf("P=%2.2f\n",P);
 if (O->SUPPORT_ABGB_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ABGB, D.M_ABGB);};
+printf("P=%2.2f\n",P);
 if (O->SUPPORT_CH4_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.CH4, D.M_CH4);};
+printf("P=%2.2f\n",P);
 if (O->SUPPORT_ET_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ET, D.M_ET);};
+printf("P=%2.2f\n",P);
 if (O->SUPPORT_ROFF_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ROFF, D.M_ROFF);};
+printf("P=%2.2f\n",P);
 if (O->SUPPORT_EWT_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.EWT, D.M_EWT);};
+printf("P=%2.2f\n",P);
 if (O->SUPPORT_GPP_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.GPP, D.M_GPP);};
+printf("P=%2.2f\n",P);
 if (O->SUPPORT_LAI_OBS ){P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.LAI, D.M_LAI);};
+printf("P=%2.2f\n",P);
 if (O->SUPPORT_NBE_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.NBE, D.M_NBE);};
+printf("P=%2.2f\n",P);
 if (O->SUPPORT_DOM_OBS){   P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.DOM, D.M_DOM);};
+printf("P=%2.2f\n",P);
 if ( O->SUPPORT_SCF_OBS){P=P+CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.SCF, D.M_SCF);};
+printf("P=%2.2f\n",P);
 
 //Mean OBS
 
 
 if (O->SUPPORT_ABGB_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_ABGB, D.M_Mean_ABGB);};
+printf("P=%2.2f\n",P);
 if (O->SUPPORT_FIR_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_FIR, D.M_Mean_FIR);};
+printf("P=%2.2f\n",P);
 if (O->SUPPORT_GPP_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_GPP, D.M_Mean_GPP);};
+printf("P=%2.2f\n",P);
 if (O->SUPPORT_LAI_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_LAI, D.M_Mean_LAI);};
+printf("P=%2.2f\n",P);
 
 //Parameters and emergent quantities
 if (O->SUPPORT_Cefficiency_OBS){   P=P+CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_Cefficiency, D.M_PEQ_Cefficiency);};
