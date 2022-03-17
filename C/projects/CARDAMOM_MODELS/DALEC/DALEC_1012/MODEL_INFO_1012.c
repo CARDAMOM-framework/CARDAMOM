@@ -41,11 +41,8 @@ INITIALIZE_PARAMETER_FIELDS(DATA);
 
 PARS_INFO_1012(DATA);
 
-oksofar("about to declare EDCD");
-printf("DALECmodel.EDCD = %p\n",DALECmodel.EDCD);
 /*Initialize the EDCD structure*/
 EDCSETUP(*DATA,&DALECmodel.EDCD);
-oksofar("done with declaration");
 printf("DALECmodel.EDCD->EQF = %2.2f\n",DALECmodel.EDCD->EQF);
 
 

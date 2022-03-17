@@ -17,7 +17,6 @@
 
 #pragma once
 #include "../../auxi_fun/filediag.c"
-#include "../../auxi_fun/oksofar.c"
 #include "stdlib.h"
 #include "stdio.h"
 #include "memory.h"
@@ -49,7 +48,7 @@ int StringEndsWith(const char *str, const char *suffix)
 int CARDAMOM_DATA_CHECKS(DATA *DATA){
 /*General Checks*/
 printf("***CBF FILE SUMMARY***\n");
-printf("MODEL ID = %d\n",DATA->ncdf_data.ID);
+printf("MODEL ID = %d\n",(int)DATA->ncdf_data.ID);
 printf("No days = %d\n",DATA->ncdf_data.Ntimesteps);
 printf("Mean Snow = %f\n",DATA->ncdf_data.SNOWFALL.reference_mean);
 printf("Mean Temp = %f\n",DATA->ncdf_data.T2M_MIN.reference_mean);
