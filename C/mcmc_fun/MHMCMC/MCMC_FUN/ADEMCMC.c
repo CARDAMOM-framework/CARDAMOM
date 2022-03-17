@@ -175,7 +175,8 @@ wrlocal=wrlocal+1;
 	*/
 	/*treating nans as -inf*/
 	if (isnan(P_new)){P_new=log(0);}
-if (P_new-P[nn]+gratio>lr || (isinf(P_new)==0 && isinf(P[nn]) && withinrange==1)){N.ACC=N.ACC+1;
+//if (P_new-P[nn]+gratio>lr || (isinf(P_new)==0 && isinf(P[nn]) && withinrange==1) ){N.ACC=N.ACC+1;
+    if (P_new-P[nn]+gratio>lr || (isinf(P[nn]) && withinrange==1) ){N.ACC=N.ACC+1;
 	if (isinf(P_new)==0 && isinf(P[nn])){printf("pnew = %2.1f, p = %2.1f, (P_new-P[nn]) = %2.1f\n",P_new,P[nn],P_new-P[nn]);}
 
 

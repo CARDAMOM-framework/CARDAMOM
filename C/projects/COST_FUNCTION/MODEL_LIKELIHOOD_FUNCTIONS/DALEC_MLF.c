@@ -86,13 +86,13 @@ int EDC, n;
 double P=0;
 
 
-EDC=MODEL->edc1(PARS,DATA,&EDCD);
+//EDC=MODEL->edc1(PARS,DATA,&EDCD);
 
 /*running model*/
 MODEL->dalec(DATA, PARS);
 
 /*EDC2 check*/
-EDC=EDC*MODEL->edc2(PARS, DATA, &EDCD);
+//EDC=EDC*MODEL->edc2(PARS, DATA, &EDCD);
 
 
 
@@ -100,12 +100,12 @@ EDC=EDC*MODEL->edc2(PARS, DATA, &EDCD);
 /*EDCs are individually counted*/
 /*Only counted if EDCSWITCH is on*/
 int tot_exp=0;
-for (n=0;n<EDCD.nedc;n++){
-tot_exp+=1-ipow(EDCD.PASSFAIL[n],EDCD.SWITCH[n]);}
+//for (n=0;n<EDCD.nedc;n++){
+//tot_exp+=1-ipow(EDCD.PASSFAIL[n],EDCD.SWITCH[n]);}
 
 
-P=-0.5*((double)tot_exp*10)*(double)DATA.ncdf_data.EDC;
-
+//P=-0.5*((double)tot_exp*10)*(double)DATA.ncdf_data.EDC;
+P=0;
 
 /*overriding if model likelihood is zero or erroneous*/
 
@@ -116,7 +116,7 @@ P=P-0.5*10;}
 /*if (DATA->EDC==0 && (isinf(ML)==-1 || isnan(ML))){P=P-0.5*10;}
 */
 
-
+P=0;
 
 return P;
 

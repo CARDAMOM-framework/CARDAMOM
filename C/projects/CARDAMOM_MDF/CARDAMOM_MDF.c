@@ -217,7 +217,8 @@ printf("CARDAMOM_MDF.c: about to start DEMCMC\n");
 DEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
 break;
 case 3:
-MCOPT.fADAPT=0.05;
+//MCOPT.fADAPT=0.05;
+    MCOPT.fADAPT=0.0;
 printf(" CARDAMOM_MDF.c: about to start ADEMCMC\n");
 ADEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
 break;
