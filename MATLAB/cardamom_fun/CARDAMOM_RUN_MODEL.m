@@ -72,7 +72,6 @@ OPT.MODEL.ID=CBF.ID.values;
 %number of parameter samples
 end
   
-MD=CARDAMOM_MODEL_LIBRARY(OPT.MODEL.ID);
 
 if ischar(CBF);
     
