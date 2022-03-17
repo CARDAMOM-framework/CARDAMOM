@@ -89,7 +89,7 @@ def check_variable(CBF,var):
             print('OK\n')
             return 0
     else:
-        print('No variable "{}" in CBF file\n'.format(var))
+        warnings.warn('No variable "{}" in CBF file\n'.format(var))
         return 0
         
 #checks if any obsevation mean var is <=0 and not -9999
@@ -105,7 +105,7 @@ def check_mean_variable(CBF,var):
             print('OK\n')
             return 0
     else:
-        print('No variable "{}" in CBF file\n'.format(var))
+        warnings.warn('No variable "{}" in CBF file\n'.format(var))
         return 0
 
 def obs_checks(CBF):
@@ -152,7 +152,7 @@ def check_driver_variable(CBF,var):
                 print('OK\n')
                 return 0
     else:
-        print('No variable "{}" in CBF file\n'.format(var))
+        warnings.warn('No variable "{}" in CBF file\n'.format(var))
         return 0  
         
 def check_temperature_vars(CBF,var):
@@ -173,7 +173,7 @@ def check_temperature_vars(CBF,var):
                 warnings.warn("Driver {} not within physical range, file will make CARDAMOM crash".format(var))
                 return 1
     else:
-        print('No variable "{}" in CBF file\n'.format(var))
+        warnings.warn('No variable "{}" in CBF file\n'.format(var))
         return 0  
 
 def driver_checks(CBF):
@@ -195,7 +195,7 @@ def ID_checks(CBF,var):
             warnings.warn("CBF ID = 0, file will make CARDAMOM crash")
             k = k + 1
     else:
-        print('No variable "{}" in CBF file\n'.format(var))
+        warnings.warn('No variable "{}" in CBF file\n'.format(var))
     return k
 # end CBF ID 
 
@@ -213,8 +213,16 @@ def time_var_checks(CBF,var):
             warnings.warn("time variable contains NaN or Inf values")
             k = k + 1
     else:
-        print('No variable "{}" in CBF file\n'.format(var))
+        warnings.warn('No variable "{}" in CBF file\n'.format(var))
     return k 
+
+def check_EDC_range(CBF,var):
+    if var in CBF.variables:
+        EDC = CBF[var]
+        if EDC not in range(0,2):
+            print("Error: EDC value is neither 0 nor 1")
+    else:
+        warnings.warn('No variable "{}" in CBF file\n'.format(var))
 
 def main():
 
@@ -224,6 +232,7 @@ def main():
     # read arguments from the command line
     args = parser.parse_args()
 
+    print("\n*******CARDAMOM cbf.nc file error check********")
     print(args.cbf_file)
     dataset=Dataset(args.cbf_file, "r")
     dataset.set_auto_mask(False)
