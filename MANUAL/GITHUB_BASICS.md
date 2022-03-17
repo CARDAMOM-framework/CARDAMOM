@@ -1,4 +1,10 @@
-Issue "There is no tracking information for the current branch"
+Issue "There is no tracking information for the current branch", when you try to "git push" for first time
+
+(1) git push <cardamom> (or the name of the remote, use "git remote" to find this out). This creates the branch on "cardamom" repo.
+(2)  git branch --set-upstream-to=<cardamom>/<branch> testonly. This tracks the cardamom repo branch
+  
+  You can then "git pull" or "git push"
+
 
 
 
