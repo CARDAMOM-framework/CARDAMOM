@@ -19,7 +19,7 @@ nccreate(NC.fname,'LAT'); ncwrite(NC.fname,'LAT',40.25);
 
 %DATA
 %Step 3. Writing all drivers
-Dnames={'BURNED_AREA','CO2','DOY','TOTAL_PREC','SNOWFALL','SSRD','T2M_MIN','T2M_MAX','time','VPD','FLUXNET_SW_IN','FLUXNET_SW_OUT','STRD','FLUXNET_LW_OUT','FLUXNET_G','FLUXNET_LE','H'};
+Dnames={'BURNED_AREA','CO2','DOY','TOTAL_PREC','SNOWFALL','SSRD','T2M_MIN','T2M_MAX','time','VPD'};
 for n=1:numel(Dnames)
     vname=Dnames{n};
     disp(sprintf('Writing %s...',vname))
@@ -27,7 +27,7 @@ create_and_write_dri_timeseries_variable(NC,Dnames{n},eval(sprintf('%s_data',vna
 end
 
 %Step 4. Writing time-varying obs
-Dnames={'ABGB','CH4','ET','EWT','GPP','LAI','NBE','SCF','SOM'};
+Dnames={'ABGB','CH4','ET','EWT','GPP','LAI','NBE','SCF','SOM','FLUXNET_SW_IN','FLUXNET_SW_OUT','STRD','FLUXNET_LW_OUT','FLUXNET_G','FLUXNET_LE','H'};
 for n=1:numel(Dnames)
     vname=Dnames{n};
     disp(sprintf('Writing %s...',vname))
