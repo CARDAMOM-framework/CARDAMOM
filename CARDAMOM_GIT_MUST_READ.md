@@ -38,7 +38,7 @@
 
 0. If you need help to identify the problem. Let other CARDAMOM developers be aware of this issue and specify the problem. 
 1. Find the commit ID that caused the problems (eg. the ID looks like ‘222fb39c3d39e70904371a63b14a346cfb29db08’)
-2. To be safe, we encourage you to do this fix on a new branch, then pull request to merge after all looks good. Eg. create a new branch called ‘commit_revert_demo_April2021’
+2. To be safe, we encourage you to do this fix on a new branch, then pull request to merge after all looks good. Eg. create a new branch called ‘commit_revert_demo_April2021’: git co -b commit_revert_demo_April2021
 3. On the branch ‘commit_revert_demo_April2021’, and run: git revert 222fb39c3d39e70904371a63b14a346cfb29db08 
 FYI: This is just an example, please remember to replace the commit ID 
 Git revert basically creates a new commit at the head of your current branch that is the inverse of the reverted commit. Basically a selective ‘undo’. For users, when they go to push to master next time, they will have to pull this revert commit into their tree. Basically, reverting in git is seen like any other action, and it shows up as a commit in your history. You can use git revert to ‘undo’ either a historical commit or a latest commit that you want to call back. It will not revert changes made after a historical commit.

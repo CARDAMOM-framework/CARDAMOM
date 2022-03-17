@@ -1,7 +1,9 @@
 function CARDAMOM_DEMO
 %
 %Step 1. Load CBF file
-nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
+%nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
+nccbffilename1100='/Users/braghier/Documents/models/CARDAMOM_2.1.6c//DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
+
 CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
 
 

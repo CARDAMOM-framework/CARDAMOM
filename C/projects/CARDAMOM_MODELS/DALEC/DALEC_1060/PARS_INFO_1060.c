@@ -156,8 +156,13 @@ CARDADATA->parmin[P.hydr_cond]=0.0000001;
 CARDADATA->parmax[P.hydr_cond]=0.00001;
 
 /*Maximum infiltration (mm/day)*/
+<<<<<<< .merge_file_xHek7e
 CARDADATA->parmin[P.max_infil]=0.01;
 CARDADATA->parmax[P.max_infil]=100;
+=======
+CARDADATA->parmin[34]=1;
+CARDADATA->parmax[34]=1e4;
+>>>>>>> .merge_file_uHAQ90
 
 /*PUW pool*/
 CARDADATA->parmin[P.i_PUW]=1;

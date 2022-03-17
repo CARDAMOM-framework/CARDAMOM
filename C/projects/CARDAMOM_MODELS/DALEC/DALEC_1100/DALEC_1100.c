@@ -496,7 +496,7 @@ double SWout = (1. - FLUXES[f+F.scf])*(SWin*pars[P.leaf_refl]) + FLUXES[f+F.scf]
 double LWin = LWIN[n];
 //Stefan–Boltzmann constant
 double sigma = 5.67*1e-8;
-double LWout = sigma*pow(TSKIN[n],4.)
+double LWout = sigma*pow(TSKIN[n],4.);
 //Net radiation
 double Rn = SWin - SWout + LWin - LWout;
 //Latent heat of Vaporization J kg-1 
