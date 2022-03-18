@@ -252,6 +252,7 @@ double *POOLS=DATA.M_POOLS;
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
     //Diagnostic states
   POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; 
+  //printf("POOLS[S.D_LAI] = %2.2f\n",POOLS[S.D_LAI]);
 
 double *SSRD=DATA.ncdf_data.SSRD.values;
 double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
@@ -499,11 +500,14 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
     /*Subtract fire loss LAI from current LAI*/
     // FLUXES[f+34] = FLUXES[f+34] - FLUXES[f+39];
 
-}
 
 
     /***RECORD t+1 DIAGNOSTIC STATES*****/
         POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
+        //printf(" POOLS[nxp+S.D_LAI] = %2.2f\n", POOLS[nxp+S.D_LAI]);
+        
+        }
+
 
 return 0;
 }

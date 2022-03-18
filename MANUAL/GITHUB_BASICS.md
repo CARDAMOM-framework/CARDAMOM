@@ -5,6 +5,16 @@ Issue "There is no tracking information for the current branch", when you try to
   
   You can then "git pull" or "git push"
 
+  
+  ###Merge changes from main into your branch
+  
+  git merge main
+  
+  ### Delete branch remotely (e.g. "testonly") and remote is "cardamom
+  git push cardamom --delete testonly
+  #And delete locally
+  git branch -D testonly
+  
 
 
 

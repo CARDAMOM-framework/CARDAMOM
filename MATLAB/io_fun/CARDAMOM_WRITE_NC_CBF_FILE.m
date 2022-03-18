@@ -11,7 +11,6 @@ function CARDAMOM_WRITE_NC_CBF_FILE(CBF,fname)
 
 notimesteps=numel(CBF.time.values);
 
-
     
 %Adjust number as needed. Not urgent for field to dynamically vary
 fieldnames=fields(CBF);

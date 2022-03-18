@@ -1,11 +1,12 @@
-function cardamom_vvuq_nccbf_summary(CBF)
+function cardamom_vvuq_nccbf_summary(CBF,f)
 %function cardamom_vvuq_cbf_summary(CBF)
 %Summarizes contents of CBF file
 %
 %Written by A Bloom, Thu Apr 11, 2019
 
 %Switch is in place in case later version met fields are not compatible!
-figure(1);clf
+if nargin<2;f=1;end
+figure(f);clf
 
 
 f=fields(CBF);

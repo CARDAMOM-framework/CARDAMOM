@@ -72,7 +72,6 @@ OPT.MODEL.ID=CBF.ID.values;
 %number of parameter samples
 end
   
-MD=CARDAMOM_MODEL_LIBRARY(OPT.MODEL.ID);
 
 if ischar(CBF);
     
@@ -218,11 +217,11 @@ delete(sprintf('%s/tempcar*%s*',Dpath,channel));
  end
 
  %LAI
- 
-LAI=CBR.POOLS(:,:,MD.POOL_IDs.C_fol)./CBR.PARS(:,MD.PARAMETER_IDs.LCMA);
-LAI1=LAI(:,1:end-1);
-LAI2=LAI(:,2:end);
-CBR.LAI=    (LAI1+    LAI2)*0.5;
+%  
+% LAI=CBR.POOLS(:,:,MD.POOL_IDs.C_fol)./CBR.PARS(:,MD.PARAMETER_IDs.LCMA);
+% LAI1=LAI(:,1:end-1);
+% LAI2=LAI(:,2:end);
+% CBR.LAI=    (LAI1+    LAI2)*0.5;
 
  end
  
