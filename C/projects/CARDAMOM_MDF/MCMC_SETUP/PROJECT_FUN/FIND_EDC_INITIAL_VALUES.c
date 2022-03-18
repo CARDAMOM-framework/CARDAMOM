@@ -36,8 +36,8 @@ int nstartchains=10;
 MCOPT.APPEND=0;
 MCOPT.nADAPT=10;/*was 20*/
 MCOPT.fADAPT=0.5;
-MCOPT.nOUT=100000;/*was 2000*/
-MCOPT.nPRINT=10000;/*was*/
+MCOPT.nOUT=1000;/*was 2000*/
+MCOPT.nPRINT=100;/*was*/
 MCOPT.nWRITE=0;
 /*randparini = 0*/
 /*this means all PI.parini values must either be given values or entered as -9999*/
@@ -52,8 +52,8 @@ MCOPT.minstepsize=1e-2;
 
 if (MCOPT_CARDAMOM->mcmcid==3){
 MCOPT.mcmcid=3;
-MCOPT.nOUT=1000;/*was 2000*/
-MCOPT.nPRINT=1000;/*was 2000*/
+MCOPT.nOUT=1;/*was 2000*/
+MCOPT.nPRINT=1;/*was 2000*/
 MCOPT.minstepsize=1e-5;
 MCOPT.nchains=200;
 MCOPT.fixedpars=0;
