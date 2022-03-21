@@ -69,6 +69,7 @@ int nopars;
 /*TO DO: include parameter info and model likelihood function fields HERE
 These can then be assigned during call to CARDAMOM_MODEL_LIBRARY*/
 double (*MLF)(struct DATA,double *);
+double (*EMLF)(struct DATA,double *);
 /*parameter & optimization info - add all required fields here*/
 double *parpriors;
 double *parmin;

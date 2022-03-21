@@ -150,7 +150,7 @@ for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
         
 	//ADEMCMC
         double fadapt=(double)N.ITER/((double)MCO.nOUT*MCO.fADAPT);
-	if (fadapt<1)){
+	if (fadapt<1){
         withinrange=STEP_ADEMCMC(PARS,pars_new,PI,nn,NC,&gratio);
 	}
 	//Standard DEMCMC

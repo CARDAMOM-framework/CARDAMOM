@@ -31,6 +31,7 @@ MCOPT->nPRINT=DATA.ncdf_data.MCMCID.nPRINT;
 MCOPT->minstepsize=DATA.ncdf_data.MCMCID.minstepsize;
 MCOPT->mcmcid=DATA.ncdf_data.MCMCID.value;
 MCOPT->nADAPT=DATA.ncdf_data.MCMCID.nADAPT;
+MCOPT->fADAPT=DATA.ncdf_data.MCMCID.fADAPT;
 
 if (DATA.ncdf_data.MCMCID.nSAMPLES==DEFAULT_INT_VAL){DATA.ncdf_data.MCMCID.nSAMPLES=2000;}
 
@@ -41,6 +42,7 @@ if (MCOPT->nPRINT==DEFAULT_INT_VAL){MCOPT->nPRINT=1000;}
 if (MCOPT->minstepsize==DEFAULT_DOUBLE_VAL){MCOPT->minstepsize=1e-5;}
 if (MCOPT->mcmcid==DEFAULT_INT_VAL){MCOPT->mcmcid=119;}
 if (MCOPT->nADAPT==DEFAULT_INT_VAL){MCOPT->nADAPT=100;}
+if (MCOPT->fADAPT==DEFAULT_DOUBLE_VAL){MCOPT->fADAPT=0.05;}
 
 //Derive nWRITE from fields
 MCOPT->nWRITE=MCOPT->nOUT/DATA.ncdf_data.MCMCID.nSAMPLES;
@@ -218,7 +220,7 @@ DEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
 break;
 case 3:
 //MCOPT.fADAPT=0.05;
-    MCOPT.fADAPT=0.05;
+    //MCOPT.fADAPT=1;
 printf(" CARDAMOM_MDF.c: about to start ADEMCMC\n");
 ADEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
 break;

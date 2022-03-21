@@ -13,12 +13,12 @@ int FIND_EDC_INITIAL_VALUES(DATA CARDADATA,PARAMETER_INFO *PI, MCMC_OPTIONS *MCO
 
 
     
-double (*EMLF)(DATA, double *);
-double (*MLF)(DATA, double *);
+//double (*EMLF)(DATA, double *);
+//double (*MLF)(DATA, double *);
 
 
-EMLF=EDC_DALEC_MLF;
-MLF=DALEC_MLF;
+//EMLF=EDC_DALEC_MLF;
+//MLF=DALEC_MLF;
 
 /*This MCMC is designed to find the best-fit DALEC parameters ONLY*/
 
@@ -52,8 +52,8 @@ MCOPT.minstepsize=1e-2;
 
 if (MCOPT_CARDAMOM->mcmcid==3){
 MCOPT.mcmcid=3;
-MCOPT.nOUT=1;/*was 2000*/
-MCOPT.nPRINT=1;/*was 2000*/
+MCOPT.nOUT=2000;/*1;was 2000*/
+MCOPT.nPRINT=2000;/*1;was 2000*/
 MCOPT.minstepsize=1e-5;
 MCOPT.nchains=200;
 MCOPT.fixedpars=0;
@@ -123,9 +123,9 @@ while (PEDC!=0){
 
 	oksofar("Running short MCMC to find x_{EDC} = 1");
     
-	if (MCOPT.mcmcid==119){MHMCMC_119(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
-        if (MCOPT.mcmcid==2){DEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
-        if (MCOPT.mcmcid==3){ADEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
+	if (MCOPT.mcmcid==119){MHMCMC_119(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
+        if (MCOPT.mcmcid==2){DEMCMC(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
+        if (MCOPT.mcmcid==3){ADEMCMC(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
 
 	/*if (MCOPT.mcmcid==2){DEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
 	*/
@@ -134,8 +134,8 @@ while (PEDC!=0){
 
 	PEDCC=0;
 	for (nn=0;nn<MCOPT.nchains;nn++){
-	PEDC=EMLF(CARDADATA, PI->parini + nn*PI->npars);double P;
-	P=MLF(CARDADATA, PI->parini + nn*PI->npars);
+	PEDC=CARDADATA.EMLF(CARDADATA, PI->parini + nn*PI->npars);double P;
+	P=CARDADATA.MLF(CARDADATA, PI->parini + nn*PI->npars);
 	printf("PEDC for chain %i = %2.1f (%2.1f)\n",nn,PEDC,P);
 	if (PEDC==0){PEDCC=PEDCC+1;}}
 

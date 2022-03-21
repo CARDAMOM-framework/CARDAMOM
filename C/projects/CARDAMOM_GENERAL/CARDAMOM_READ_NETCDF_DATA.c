@@ -336,6 +336,7 @@ MCMCID.nITERATIONS = ncdf_read_int_attr(ncid, "MCMCID","nITERATIONS");
 MCMCID.nPRINT = ncdf_read_int_attr(ncid, "MCMCID","nPRINT");
 MCMCID.nSAMPLES= ncdf_read_int_attr(ncid, "MCMCID","nSAMPLES");
 MCMCID.nADAPT= ncdf_read_int_attr(ncid, "MCMCID","nADAPT");
+MCMCID.fADAPT= ncdf_read_double_attr(ncid, "MCMCID","fADAPT");
 MCMCID.minstepsize=ncdf_read_double_attr(ncid, "MCMCID","minstepsize");
 MCMCID.seed_number=ncdf_read_double_attr(ncid, "MCMCID","seed_number");
 

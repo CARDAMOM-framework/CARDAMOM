@@ -53,6 +53,7 @@ printf("DALECmodel.EDCD->EQF = %2.2f\n",DALECmodel.EDCD->EQF);
 /*initializing model*/
 DATA->MODEL=&DALECmodel;
 DATA->MLF=DALEC_MLF_DEDC_beta;
+DATA->EMLF=EDC_DALEC_MLF_BINARY;
 
 
 

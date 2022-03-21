@@ -35,6 +35,7 @@ int nITERATIONS;
 int nPRINT;
 int nSAMPLES;
 int nADAPT;
+double fADAPT;
 double minstepsize;
 int seed_number;
 }MCMCID_STRUCT;
