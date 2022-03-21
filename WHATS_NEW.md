@@ -1,9 +1,9 @@
-#WHAT's NEW
+# WHAT's NEW
 
 
 Keeping track of recent updates relevant to users and developers
 
-###EDC refactor on March 21, 2022:
+### EDC refactor on March 21, 2022:
 
 See MODEL_INFO_1005.c and MODEL_INFO_1100.c
 Stepwise and binary non-inf starting points now options available for each model ID
