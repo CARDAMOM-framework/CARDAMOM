@@ -100,10 +100,6 @@ CARDADATA->parmax[P.i_som]=200000.0;
 CARDADATA->parmin[P.retention]=1.5;
 CARDADATA->parmax[P.retention]=10;
 
-/*"Wilting point"*/
-CARDADATA->parmin[P.wilting]=1;
-CARDADATA->parmax[P.wilting]=10000;
-
 /*"Bucket at t0"*/
 CARDADATA->parmin[P.i_PAW]=1;
 CARDADATA->parmax[P.i_PAW]=10000;
@@ -292,6 +288,14 @@ CARDADATA->parmax[P.init_LAIW_mem]=1;
 /*Inverse of leaf longevity at any period i.e. background turnover (days-1)*/
 CARDADATA->parmin[P.t_foliar]=0.001;
 CARDADATA->parmax[P.t_foliar]=0.1;
+
+/*PSI 50: water potential when soil-plant continuum is at 50% hydraulic conductivity (-MPa)*/
+CARDADATA->parmin[P.psi_50]=0.001;
+CARDADATA->parmax[P.psi_50]=1000;
+
+/*Beta function logistic growth rate */
+CARDADATA->parmin[P.beta_lgr]=0.001;
+CARDADATA->parmax[P.beta_lgr]=100;
 
 return 0;
 

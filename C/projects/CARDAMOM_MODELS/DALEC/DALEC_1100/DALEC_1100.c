@@ -38,7 +38,6 @@ int i_cwd;
 int i_lit;
 int i_som;
 int retention;
-int wilting;
 int i_PAW;
 int cf_foliar;
 int cf_ligneous;
@@ -86,6 +85,8 @@ int time_r;
 int init_T_mem;
 int init_LAIW_mem;
 int t_foliar;
+int psi_50;
+int beta_lgr;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -93,7 +94,7 @@ int t_foliar;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64,65,66,67
+    60,61,62,63,64,65,66,67,68
 };
 
 struct DALEC_1100_FLUXES{
@@ -158,13 +159,15 @@ int f_dayl_thresh;   /*f_dayl_thres*/
 int c_lim_flag;   /*LAI carbon limitation flag*/
 int lai_fire;   /*LAI fire loss*/
 int foliar_fire_frac;   /*C_fol fire loss frac*/
+int beta_h2o;   /*PAW stress factor*/
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
-    50,51,52,53,54,55,56,57,58,59
+    50,51,52,53,54,55,56,57,58,59,
+    60
 };
 
 
@@ -210,8 +213,8 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=12;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=68;
-DALECmodel->nofluxes=60;
+DALECmodel->nopars=69;
+DALECmodel->nofluxes=61;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
@@ -459,7 +462,9 @@ else {
 
 // H2O stress scaling factor
 	//We're also multiplying beta by cold-weather stress 
-double beta = fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1.);
+double sm_PAW0 = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);
+double psi_PAW0 = HYDROFUN_MOI2PSI(sm_PAW0,psi_porosity,pars[P.retention]);
+double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*psi_PAW0 - pars[P.psi_50])));
        beta = fmin(beta,g);
 
 // GPP, T, and E from LIU_An_et
