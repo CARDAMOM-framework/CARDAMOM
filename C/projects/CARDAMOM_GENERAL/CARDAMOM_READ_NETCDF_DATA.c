@@ -107,8 +107,8 @@ DATA->EWT=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "EWT");
 DATA->GPP=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "GPP");
 DATA->LAI=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "LAI");
 DATA->NBE=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "NBE");
-printf("Just read NBE...\n");
-printf("DATA->NBE.values[0] = %2.2f\n",DATA->NBE.values[0]);
+// printf("Just read NBE...\n");
+// printf("DATA->NBE.values[0] = %2.2f\n",DATA->NBE.values[0]);
 DATA->ROFF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ROFF");
 DATA->SCF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "SCF");
 //Read time-averaged data
