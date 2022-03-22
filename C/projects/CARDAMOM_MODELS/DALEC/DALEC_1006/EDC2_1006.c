@@ -78,7 +78,7 @@ MPOOLSjan[n]=MPOOLSjan[n]+POOLS[nopools*(m*dint)+n]/(N_timesteps/dint+1);}}
 /*EDC no 6*/
 /*0.2*Cf < Cr < 5*Cf*/
 /*Cfoliar : Croot = 5:1 or 1:5*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[6-1]==1)) & (MPOOLS[S.C_fol]>MPOOLS[S.C_roo]*5 | MPOOLS[S.C_fol]*5<MPOOLS[S.C_roo])){EDC=ipow(0,EDCD->SWITCH[6-1]);EDCD->PASSFAIL[6-1]=0; }
+EDCD->pEDC=EDCD->pEDC-0.5*pow(log(MPOOLS[S.C_fol]/MPOOLS[S.C_roo])/log(2),2);
 
 
 /*equilibrium factor (in comparison to C_initial)*/
@@ -151,14 +151,13 @@ Rm=Fin[n]/Fout[n];
 /*Theoretical starting input/output*/
 Rs=Rm*MPOOLSjan[n]/Pstart;
 
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[7-1+n]==1))
-& ((fabs(log(Rs))>log(EQF)) || (fabs(Rs-Rm)>etol)))
-{EDC=ipow(0,EDCD->SWITCH[7-1+n]);EDCD->PASSFAIL[7-1+n]=0;}
-
+if (Fin[n] > 0){
+EDCD->pEDC=EDCD->pEDC-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
 
 /*storing EDCPROB: i.e. the log probability of each EDC based on a gaussian representation*/
 /*of each constraint*/
 EDCD->EDCPROB[7-1+n]=-0.5*pow(log(Rs)/log(EQF),2);/*-0.5*pow((Rs-Rm)/etol,2);*/
+}
 
 if (psw==1){
 printf("****\n");
@@ -179,7 +178,7 @@ printf("****\n");}}
 
 
 /*Ensuring that wilting point is at or below the mean H2O pool EDC14*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[15-1]==1)) & (pars[P.wilting]>MPOOLS[S.H2O_PAW])){EDC=ipow(0,EDCD->SWITCH[15-1]);EDCD->PASSFAIL[15-1]=0;}
+EDCD->pEDC=EDCD->pEDC+log(1/(1+exp(10*(pars[P.wilting]-MPOOLS[S.H2O_PAW])/MPOOLS[S.H2O_PAW])));
 
 /***********************EDCs done here****************************/
 
@@ -190,7 +189,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[15-1]==1)
 /*PRIOR RANGES - ALL POOLS MUST CONFORM*/
 int pidx[]={P.i_labile,P.i_foliar,P.i_root,P.i_wood,P.i_lit,P.i_soil,P.i_PAW,P.i_PUW};
 
-for (n=0;n<noprogpools-1;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;}}
+for (n=0;n<noprogpools;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;EDCD->pEDC=log(0);}}
 
 
 int PEDC;
@@ -200,7 +199,7 @@ if (EDC==1 || DIAG==1)
 while ((n<noprogpools) & (EDC==1 || DIAG==1))
 {nn=0;PEDC=1;while ((nn<N_timesteps+1) & (PEDC==1))
 {if ((POOLS[n+nn*nopools]<0) || isnan(POOLS[n+nn*nopools])==1)
-{EDC=0;PEDC=0;EDCD->PASSFAIL[35+n]=0;}nn=nn+1;};
+{EDC=0;PEDC=0;EDCD->PASSFAIL[35+n]=0;EDCD->pEDC=log(0);}nn=nn+1;};	
 n=n+1;
 }
 }
