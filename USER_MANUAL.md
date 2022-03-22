@@ -750,7 +750,7 @@ Can use the COMPLEX effort to document all the models here, including some examp
 |                                  | 1003       | 1000                     | 1000 with surface runoff proportional to P          | Paul Levine                     | Published (Famiglietti et al., 2021)  |
 |                                  | 1004       | 1000                     | Testing new modular parameter definitions           | Anthony Bloom                   | In prep.                        |
 |                                  | 1005       | 1000                     | Boese et al, 2017 (uWUE + rad)                      | Paul Levine, Yan Yang           |    Yang et al., in prep.        |
-|                                  | 1006       | 1002                     | 1002 with max infiltration                          | Paul Levine                     | Exploratory                     |
+|                                  | 1006       | 1005                     | 1005 with continuous EDCs                           | Paul Levine                     | Exploratory                     |
 |                                  | 1007       | 1005                     | 1005 with max infiltration                          | Paul Levine                      | Exploratory                     |
 |                                  | 1008       | 1002                     | 1002 with surface runoff proportional to P          | Paul Levine                      | Exploratory                     |
 |                                  | 1009       | 1005                     | 1005 with surface runoff proportional to P          | Paul Levine                       | Exploratory                     |
