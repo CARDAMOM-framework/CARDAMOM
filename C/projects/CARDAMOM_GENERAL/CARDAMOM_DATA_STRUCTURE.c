@@ -51,6 +51,7 @@ double *M_POOLS;
 /*even though sizes are known, memory needs to be explicitly allocated*/
 int *M_EDCD;
 double *M_P;
+double *M_LIKELIHOODS;
 /*static data*/
 // int nodays;
 // double deltat;

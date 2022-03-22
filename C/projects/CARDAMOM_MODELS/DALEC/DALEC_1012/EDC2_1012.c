@@ -88,7 +88,7 @@ MPOOLSjan[n]=MPOOLSjan[n]+POOLS[nopools*(m*dint)+n]/(N_timesteps/dint+1);}}
 EDCD->pEDC=EDCD->pEDC-0.5*pow(log(MPOOLS[S.C_fol]/MPOOLS[S.C_roo])/log(2),2);
 
 /*equilibrium factor (in comparison to C_initial)*/
-double EQF=EDCD->EQF;
+double EQF=DATA.ncdf_data.EDC_EQF;
 
 /*Total fluxes*/
 double *FT;

@@ -22,7 +22,7 @@ EDCD=*MODEL->EDCD;
 int n; for (n=0;n<EDCD->nedc;n++){EDCD->PASSFAIL[n]=1;}
 */
 int EDC;
-double P=0,P_p;
+double P=0;//P_p;
 
 EDC=ipow(MODEL->edc1(PARS,DATA, &EDCD),DATA.ncdf_data.EDC);
 P=P+log((double)EDC);
@@ -30,8 +30,8 @@ P=P+log((double)EDC);
 
 if (EDC==1 | EDCD.DIAG==1){
 /*PARAMETER LOG LIKELIHOOD*/
-P=P+LIKELIHOOD_P(DATA,PARS);
-P_p=P;
+//P=P+LIKELIHOOD_P(DATA,PARS);
+//P_p=P;
 
 /*running model*/
 MODEL->dalec(DATA, PARS);
