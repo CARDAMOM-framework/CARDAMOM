@@ -89,7 +89,7 @@ def check_variable(CBF,var):
             print('OK\n')
             return 0
     else:
-        warnings.warn('No variable "{}" in CBF file\n'.format(var))
+        # warnings.warn('No variable "{}" in CBF file\n'.format(var))
         return 0
         
 #checks if any obsevation mean var is <=0 and not -9999
@@ -105,7 +105,7 @@ def check_mean_variable(CBF,var):
             print('OK\n')
             return 0
     else:
-        warnings.warn('No variable "{}" in CBF file\n'.format(var))
+        # warnings.warn('No variable "{}" in CBF file\n'.format(var))
         return 0
 
 def obs_checks(CBF):
