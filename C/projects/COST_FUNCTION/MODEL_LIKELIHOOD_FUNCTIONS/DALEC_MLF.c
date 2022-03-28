@@ -22,7 +22,7 @@ EDCD=*MODEL->EDCD;
 int n; for (n=0;n<EDCD->nedc;n++){EDCD->PASSFAIL[n]=1;}
 */
 int EDC;
-double P=0,P_p;
+double P=0;//P_p;
 
 EDC=ipow(MODEL->edc1(PARS,DATA, &EDCD),DATA.ncdf_data.EDC);
 P=P+log((double)EDC);
@@ -30,8 +30,8 @@ P=P+log((double)EDC);
 
 if (EDC==1 | EDCD.DIAG==1){
 /*PARAMETER LOG LIKELIHOOD*/
-P=P+LIKELIHOOD_P(DATA,PARS);
-P_p=P;
+//P=P+LIKELIHOOD_P(DATA,PARS);
+//P_p=P;
 
 /*running model*/
 MODEL->dalec(DATA, PARS);
@@ -71,7 +71,8 @@ return P;
 
 
 
-double EDC_DALEC_MLF(DATA DATA, double *PARS){
+
+double EDC_DALEC_MLF_STEPWISE(DATA DATA, double *PARS){
 
 /*Copy model pointer for brevity*/
 DALEC *MODEL=(DALEC *)DATA.MODEL;
@@ -112,6 +113,63 @@ P=-0.5*((double)tot_exp*10)*(double)DATA.ncdf_data.EDC;
 double ML=DATA.MLF(DATA,PARS);
 if (( isinf(ML)==-1 || isinf(ML)==1 || isnan(ML) )){
 P=P-0.5*10;}
+
+/*if (DATA->EDC==0 && (isinf(ML)==-1 || isnan(ML))){P=P-0.5*10;}
+*/
+
+
+
+return P;
+
+}
+
+
+
+
+
+double EDC_DALEC_MLF_BINARY(DATA DATA, double *PARS){
+
+/*Copy model pointer for brevity*/
+DALEC *MODEL=(DALEC *)DATA.MODEL;
+
+/*Independend EDCD structure: stores detailed EDC info, and provides DATA with result summary*/
+struct EDCDIAGNOSTIC EDCD;
+/*initialize EDCD: copy default structure*/
+EDCD=*MODEL->EDCD;
+/*enforce DIAGNOSTIC MODE: switches are still in place*/
+EDCD.DIAG=1;
+int EDC, n;
+double P=0;
+
+
+//EDC=MODEL->edc1(PARS,DATA,&EDCD);
+
+/*running model*/
+//MODEL->dalec(DATA, PARS);
+
+/*EDC2 check*/
+//EDC=EDC*MODEL->edc2(PARS, DATA, &EDCD);
+
+
+
+/*LIKELIHOOD (log likelihood)*/
+/*EDCs are individually counted*/
+/*Only counted if EDCSWITCH is on*/
+int tot_exp=0;
+//for (n=0;n<EDCD.nedc;n++){
+//tot_exp+=1-ipow(EDCD.PASSFAIL[n],EDCD.SWITCH[n]);}
+
+
+//P=-0.5*((double)tot_exp*10)*(double)DATA.ncdf_data.EDC;
+P=0;
+
+/*overriding if model likelihood is zero or erroneous*/
+
+double ML=DATA.MLF(DATA,PARS);
+if (( isinf(ML)==-1 || isinf(ML)==1 || isnan(ML) )){
+P=log(0);}
+else 
+{P=0;}
 
 /*if (DATA->EDC==0 && (isinf(ML)==-1 || isnan(ML))){P=P-0.5*10;}
 */

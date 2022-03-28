@@ -82,7 +82,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[6-1]==1))
 
 
 /*equilibrium factor (in comparison to C_initial)*/
-double EQF=EDCD->EQF;
+double EQF=DATA.ncdf_data.EDC_EQF;
 
 /*Total fluxes*/
 double *FT;

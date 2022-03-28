@@ -4,6 +4,7 @@
 #include "EDC1_1012.c"
 #include "EDC2_1012.c"
 #include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF_DEDC.c"
+#include "../../../DALEC_CODE/EDCs/EDCSETUP.c"
 #include "../../../CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c"
 
 int MODEL_INFO_1012(DATA * DATA){
@@ -43,13 +44,14 @@ PARS_INFO_1012(DATA);
 
 /*Initialize the EDCD structure*/
 EDCSETUP(*DATA,&DALECmodel.EDCD);
-printf("DALECmodel.EDCD->EQF = %2.2f\n",DALECmodel.EDCD->EQF);
+
 
 
 
 /*initializing model*/
 DATA->MODEL=&DALECmodel;
 DATA->MLF=DALEC_MLF_DEDC;
+DATA->EMLF=EDC_DALEC_MLF_STEPWISE;
 
 
 

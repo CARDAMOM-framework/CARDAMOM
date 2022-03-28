@@ -17,7 +17,6 @@ function D=CARDAMOM_RUN_MDF(CBF,cbrfile,compile,command_only,Cpath)
 %Last modified by A.A. Bloom 2021/09/29
 
 cbrtemp=0;cbftemp=0;
-
 if nargin<2; a=rng; rng(mod(now*10000,2^32));cbrfile=['DUMPFILES/CBR',char(ceil(rand(1,20)*25)+96),'temp.cbr'];cbrtemp=1;rng(a);end
 if nargin<5;Cpath=getenv('CARDAMOM_C_PATH');end
 if nargin<4 | isempty(command_only); command_only=0;end

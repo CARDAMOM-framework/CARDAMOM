@@ -107,10 +107,10 @@ DATA->EWT=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "EWT");
 DATA->GPP=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "GPP");
 DATA->LAI=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "LAI");
 DATA->NBE=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "NBE");
+// printf("Just read NBE...\n");
+// printf("DATA->NBE.values[0] = %2.2f\n",DATA->NBE.values[0]);
 DATA->ROFF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ROFF");
-printf("MADE IT HERE\n");
 DATA->SCF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "SCF");
-printf("2. MADE IT HERE\n");
 //Read time-averaged data
 
 DATA->Mean_ABGB=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_ABGB");
@@ -336,6 +336,7 @@ MCMCID.nITERATIONS = ncdf_read_int_attr(ncid, "MCMCID","nITERATIONS");
 MCMCID.nPRINT = ncdf_read_int_attr(ncid, "MCMCID","nPRINT");
 MCMCID.nSAMPLES= ncdf_read_int_attr(ncid, "MCMCID","nSAMPLES");
 MCMCID.nADAPT= ncdf_read_int_attr(ncid, "MCMCID","nADAPT");
+MCMCID.fADAPT= ncdf_read_double_attr(ncid, "MCMCID","fADAPT");
 MCMCID.minstepsize=ncdf_read_double_attr(ncid, "MCMCID","minstepsize");
 MCMCID.seed_number=ncdf_read_double_attr(ncid, "MCMCID","seed_number");
 

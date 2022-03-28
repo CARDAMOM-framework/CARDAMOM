@@ -4,6 +4,7 @@
 #include "EDC1_1005.c"
 #include "EDC2_1005.c"
 #include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
+#include "../../../DALEC_CODE/EDCs/EDCSETUP.c"
 #include "../../../CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c"
 
 int MODEL_INFO_1005(DATA * DATA){
@@ -20,6 +21,7 @@ DALEC_1005_MODCONFIG(&DALECmodel);
 DATA->nopools=DALECmodel.nopools;
 DATA->nopars=DALECmodel.nopars;
 DATA->nofluxes=DALECmodel.nofluxes;
+
 
 /*All model functions*/
 /*User is able to add further functions as deemed necessary*/
@@ -44,13 +46,13 @@ PARS_INFO_1005(DATA);
 
 /*Initialize the EDCD structure*/
 EDCSETUP(*DATA,&DALECmodel.EDCD);
-printf("DALECmodel.EDCD->EQF = %2.2f\n",DALECmodel.EDCD->EQF);
 
 
 
 /*initializing model*/
 DATA->MODEL=&DALECmodel;
 DATA->MLF=DALEC_MLF;
+DATA->EMLF=EDC_DALEC_MLF_STEPWISE;
 
 
 

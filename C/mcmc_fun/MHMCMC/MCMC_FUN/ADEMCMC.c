@@ -147,8 +147,10 @@ for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
 
 	for (nn=0;nn<NC;nn++){
 
+        
 	//ADEMCMC
-	if ((double)N.ITER<(double)MCO.nOUT*MCO.fADAPT){
+        double fadapt=(double)N.ITER/((double)MCO.nOUT*MCO.fADAPT);
+	if (fadapt<1){
         withinrange=STEP_ADEMCMC(PARS,pars_new,PI,nn,NC,&gratio);
 	}
 	//Standard DEMCMC
@@ -175,7 +177,8 @@ wrlocal=wrlocal+1;
 	*/
 	/*treating nans as -inf*/
 	if (isnan(P_new)){P_new=log(0);}
-if (P_new-P[nn]+gratio>lr || (isinf(P_new)==0 && isinf(P[nn]) && withinrange==1)){N.ACC=N.ACC+1;
+//if (P_new-P[nn]+gratio>lr || (isinf(P_new)==0 && isinf(P[nn]) && withinrange==1) ){N.ACC=N.ACC+1;
+    if (P_new-P[nn]+gratio>lr || (isinf(P[nn]) && withinrange==1) ){N.ACC=N.ACC+1;
 	if (isinf(P_new)==0 && isinf(P[nn])){printf("pnew = %2.1f, p = %2.1f, (P_new-P[nn]) = %2.1f\n",P_new,P[nn],P_new-P[nn]);}
 
 
