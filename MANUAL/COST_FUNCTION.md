@@ -57,3 +57,10 @@ Description: constrains annual means and monthly anomalies (Quetin et al., 2020,
  
  
  //(0 = none, 1 = remove mean, 2 = divide by mean)
+ 
+ 
+ <img width="782" alt="image" src="https://user-images.githubusercontent.com/23563444/160677023-99e0b654-e69d-49ae-96d2-caaa42d95ccc.png">
+ 
+ 
+ 
+
