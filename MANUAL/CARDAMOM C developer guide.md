@@ -4,13 +4,13 @@
 
 - [CARDAMOM C developer guide](#cardamom-c-developer-guid)
   * [Intro tips](#Intro-tips)
-  * [Make a new model]
-  * [Add more parameters to the model]
-  * [Add more pools to the model]
-  * [Define prior range for parameters and why log transformed prior range is used]
-  * [Add a new dataset to CARDAMOM DATA structure]
-  * [Make a new cost function]
-  * [Switches for EDCs]
+  * [Make a new model](#Make-a-new-model)
+  * [Add more parameters to the model](#Add-more-parameters-to-the-model)
+  * [Add more pools to the model](#Add-more-pools-to-the-model)
+  * [Define prior range for parameters and why log transformed prior range is used](#Define-prior-range-for-parameters-and-why-log-transformed-prior-range-is-used)
+  * [Add a new dataset to CARDAMOM DATA structure](#Add-a-new-dataset-to-CARDAMOM-DATA-structure)
+  * [Make a new cost function](#Make-a-new-cost-function)
+  * [Switches for EDCs](#Switches-for-EDCs)
   
   
   
