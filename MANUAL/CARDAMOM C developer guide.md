@@ -3,7 +3,7 @@
 ## Table of Contents
 
 - [CARDAMOM C developer guide](#cardamom-c-developer-guid)
-  * [Intro tips]
+  * [Intro tips](#Intro-tips)
   * [Make a new model]
   * [Add more parameters to the model]
   * [Add more pools to the model]
