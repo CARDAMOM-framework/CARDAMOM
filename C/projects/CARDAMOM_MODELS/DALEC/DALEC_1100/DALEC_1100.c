@@ -158,6 +158,7 @@ int f_dayl_thresh;   /*f_dayl_thres*/
 int c_lim_flag;   /*LAI carbon limitation flag*/
 int lai_fire;   /*LAI fire loss*/
 int foliar_fire_frac;   /*C_fol fire loss frac*/
+int net_radiation; /*Net radiation flux*/
 int latent_heat; /*latent heat flux*/
 int sensible_heat; /*sensible heat flux*/
 int ground_heat; /*ground heat flux*/
@@ -168,7 +169,7 @@ int ground_heat; /*ground heat flux*/
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62 
+    60,61,62,63 
 };
 
 
@@ -215,7 +216,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 DALECmodel->nopools=12;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=68;
-DALECmodel->nofluxes=63;
+DALECmodel->nofluxes=64;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
@@ -379,7 +380,7 @@ double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
 
 //Place holder for Tskin - this needs to be replaced by the actual Tskin
-double *TSKIN=DATA.ncdf_data.T2M_MIN.values;
+double *TSKIN=DATA.ncdf_data.T2M_MAX.values;
 //Place holder for Incident longwave radiation - this needs to be replaced by the actual LWin
 double *LWIN=DATA.ncdf_data.SSRD.values;
 
@@ -508,13 +509,16 @@ double tskin_k = TSKIN[n]+273.15;
 double LWout = sigma*pow(tskin_k,4.);
 //Net radiation
 double Rn = SWin - SWout + LWin - LWout;
+FLUXES[f+F.net_radiation] = Rn;
 //Latent heat of Vaporization J kg-1 
 double lambda = 2.501*1e6; 
 //Latente heat (W.m-2)
 double LE = lambda*FLUXES[f+F.et]/(24*60*60);
 FLUXES[f+F.latent_heat] = LE;
-//specific heat capacity of dry air J kg -1 K -1
-double cp = 1.00464*1e3;
+//specific heat capacity of dry air KJ kg -1 K -1
+//cp = 1.00464;
+//cp is the representative specific heat of moist air at const pressure: 29.2 J mol–1 K–1 
+double cp = 29.2;
 //Sensible heat 
 double H = cp*(tskin_k - ref_temp)*pars[P.ga];
 FLUXES[f+F.sensible_heat] = H;
@@ -522,6 +526,8 @@ FLUXES[f+F.sensible_heat] = H;
 double G = Rn - H - LE;
 FLUXES[f+F.ground_heat] = G;
 
+//printf("SWin = %2.2f, SWout = %2.2f, LWin = %2.2f, LWout = %2.2f,\n", SWin,SWout,LWin,LWout);
+//printf("Rn = %2.2f, LE = %2.2f, H = %2.2f, G = %2.2f,\n", Rn,LE,H,G);
 
 // Infiltration (mm/day)
 double infil = pars[P.max_infil]*(1 - exp(-(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt])/pars[P.max_infil]));
