@@ -17,8 +17,9 @@
   ## CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/>
 
 ### Intro tips. 
-Before doing any of the following, either git branch and/or backup your C code (!!!).\
+Before doing any of the following, start a new branch and used it as your developing branch to avoid potential conflicts. Constantly pull from the main branch (or any branch that your branch is based on) to keep your branch updated.\
 Regularly & frequently compile (e.g. CARDAMOM_COMPILE) when making any changes.\
+If you're comfortable with your changes and want to contribute your changes to the main branch (or any branch that you want to merge to), start a merge request and notify members of the team.
 
 
 ### Make a new model. 
@@ -40,7 +41,18 @@ Tips for step 2.
 *For matlab users*
 + Open CARDAMOM_RUN_MODEL.m and add the new model ID to the appropriate “if” statement (e.g. if CBF.ID==1000 || CBF.ID==1001;). 
 
+(shall this be deleted? since for matlab users we are only extracting CBR.PARS, CBR.FLUXES and CBR.POOLS)
+From CARDAMOM_RUN_MODEL.m we get a CBR structure, we are only extracting CBR.PARS, CBR.FLUXES and CBR.POOLS for subsequent analysis. There's an updated, easy way to figure out output variable names, for your model ID:
 
+eg. if your model ID is 1100
+
+MD=CARDAMOM_MODEL_LIBRARY(1100,[],1);
+
+MD extracts parameters, fluxes, and pools names in the same order they were defined in your DALEC model source code. To calculate subsequent fluxes of interest, eg., NBE:
+
+mod.NBE = -CBR.FLUXES(:,:,MD.FLUX_IDs.gpp)+CBR.FLUXES(:,:,MD.FLUX_IDs.resp_auto)+CBR.FLUXES(:,:,MD.FLUX_IDs.rh_co2);
+
+MD.FLUX_IDs.gpp points to a numeric number that points to the exact dimension in the CBR.FLUXES, which is the modeled gpp.   
 
 ### Add more parameters to the model. 
 ```json
