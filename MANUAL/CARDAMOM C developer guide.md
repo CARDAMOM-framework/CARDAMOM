@@ -69,7 +69,7 @@ update this section with instructions for parameter index abstraction
 MD=CARDAMOM_MODEL_LIBRARY(<newmodelid>,[],1);
 ```
 
-(where <newmodelid> is the ID for your new model). This will ensure new model parameter/pool info is registered in matlab.
+(where <newmodelid> is the ID for your new model). This will ensure new model parameter/pool info is registered in matlab. This function can be used later in your analysis, see examples in the sections 'make a new model'.
 
 ### Add more pools to the model
 
