@@ -1,4 +1,5 @@
 function CARDAMOM_COMPILE(Cpath,opt)
+disp('Warning: function CARDAMOM_COMPILE(Cpath,opt) is deprecated! Please use BASH/CARDAMOM_COMPILE.sh instead!')
 
 clc;
 
