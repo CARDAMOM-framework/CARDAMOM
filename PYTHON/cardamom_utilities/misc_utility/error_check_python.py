@@ -73,6 +73,12 @@ def vars_attributes_datatype_checks(CBF):
                 if (not isinstance(temp_attr_data,float)):
                     print("Error: Variable " + current_name + " has attribute " + attrname + " that is not of type double")  
                     vars_datatype_errors = vars_datatype_errors + 1
+        #check info and units to be string type 
+            else:
+                temp_attr_data = getattr(variable, attrname)
+                if (not isinstance(temp_attr_data,str)):
+                    print("Error: Variable " + current_name + " has attribute " + attrname + " that is not of type string")  
+                    vars_datatype_errors = vars_datatype_errors + 1
     return vars_datatype_errors
     
 #checks if any obsevation var is <=0 and not -9999 
@@ -224,6 +230,41 @@ def check_EDC_range(CBF,var):
     else:
         warnings.warn('No variable "{}" in CBF file\n'.format(var))
 
+def singleval_vars_attribute_check(CBF):
+    vars_unc_errors = 0
+    toexclude = ['ID','EDC','LAT']
+    for name, variable in CBF.variables.items():   
+        current_var = variable
+        current_name = name
+        if name not in toexclude:        
+            temp_data = CBF[name]
+            if temp_data.size==1 and temp_data!= -9999 and valid_value_check(temp_data)==1: 
+                if hasattr(current_var, 'unc'): 
+                    unc_value = getattr(current_var, 'unc')
+                    if unc_value==-9999:
+                        print("Error: Variable " + current_name + " has invalid combination of length==1 and unc equal to -9999")
+                        vars_unc_errors = vars_unc_errors + 1
+                    elif numpy.isnan(unc_value)==True or numpy.isinf(unc_value)==True:       
+                        print("Error: Variable " + current_name + " has invalid combination of length==1 and unc equal to Inf or NaN")
+                        vars_unc_errors = vars_unc_errors + 1                            
+                else:
+                    print("Error: Variable " + current_name + " has invalid combination of length==1 and missing attribute unc")
+                    vars_unc_errors = vars_unc_errors + 1                    
+    return vars_unc_errors
+
+def check_fillvalue(CBF):
+    vars_fillVal_errors=0
+    for name, variable in CBF.variables.items():   
+        current_var = variable
+        current_name = name
+        temp_data = CBF[name]#[:]
+        if hasattr(current_var, '_FillValue'):
+            current_FillVal=temp_data._FillValue    
+            if current_FillVal!=-9999:
+                vars_fillVal_errors=vars_fillVal_errors+1
+                print("Error: Variable " + current_name + " has invalid fill value and not equal to -9999")
+    return vars_fillVal_errors
+
 def main():
 
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description = "This tool checks netcdf cbf files")
@@ -261,11 +302,21 @@ def main():
     if driver_flag>0:
         print("Driver check failed with total " + str(driver_flag) + " warning(s)") 
     
-    datatype_flag = vars_attributes_datatype_checks(dataset)
-    if datatype_flag>0:
-        print("Datatype check failed with total " + str(datatype_flag) + " error(s)") 
+    #datatype_flag = vars_attributes_datatype_checks(dataset)
+    # commented based on meeting on apr 1 2022
+    #if datatype_flag>0:
+    #    print("Datatype check failed with total " + str(datatype_flag) + " error(s)") 
     
+    print("\nunc attribute check for single length variables")
+    unc_flag= singleval_vars_attribute_check(dataset)
+    if unc_flag>0:
+        print("unc attribute check failed with total " + str(unc_flag) + " error(s)") 
     
+    print("\nfill value check")
+    fill_value_flag= check_fillvalue(dataset)
+    if fill_value_flag>0:
+        print("fill value check failed with total " + str(fill_value_flag) + " error(s)") 
+
     dataset.close()
     print("\n***Other possible error sources***")
     print("Tip: check that all met fields required for model ID are provided in cbf.nc file")
@@ -274,3 +325,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
