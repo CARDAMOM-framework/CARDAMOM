@@ -12,7 +12,7 @@ The CARDAMOM netcdf input file is a "one-stop shop" for all inputs required to c
 
 
 ## FAQ
-###Q: If I’m not assimilating an observation, can I just delete the corresponding OBS field my cbf.nc file, or do I have to keep it and put NaN in the corresponding subsets?
+### Q: If I’m not assimilating an observation, can I just delete the corresponding OBS field my cbf.nc file, or do I have to keep it and put NaN in the corresponding subsets?
 Answer: you can delete it
 
 
