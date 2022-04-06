@@ -8,7 +8,7 @@
 
 typedef struct TIMESERIES_OBS_STRUCT{
 double * values;//Timeseries of observation values
-//**********Variable attributes*************
+//**********Variable attributes, as provided in netcf input file*************
 int opt_unc_type;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
 int opt_normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
 int opt_filter;//(0 = no filter, 1 = mean only, 2==annual mean & monthly anomaly, 3 = annual only). 
@@ -18,7 +18,7 @@ double single_annual_unc;//Fields to be used only with Filters=2 & 3 (AND opt_un
 double single_mean_unc;//Fields to be used only with Filter = 1;
 double single_unc;//Fields to be used only with Filter = 0 ;
 double structural_unc;//this gets added to uncertainty in quadrature.
-//Auxiliary uncertainty variable, separate from timeseries variable
+//****Auxiliary variables, separate from timeseries variable****
 double * unc;//Timeseries of uncertainty values
 //expand as needed
 size_t length;//
@@ -275,7 +275,7 @@ if (OBS->opt_filter==0){//no filter
 else if (OBS->opt_filter==1){//mean only
     tot_exp  = pow((mean_mod - mean_obs)/OBS->single_mean_unc,2);}
 
-else if (OBS->opt_filter==2){//monthly and annual flux
+else if (OBS->opt_filter==2 |  OBS->opt_filter==3){//monthly and annual flux
     /*Decoupling seasonal from interannual variations*/
     /*Only use with monthly resolution fluxes, complete years & no missing data*/
     /*Step 1. Mean model & data annual NBE*/
@@ -289,30 +289,66 @@ else if (OBS->opt_filter==2){//monthly and annual flux
     /*normalize means*/
     mam=mam/12;oam=oam/12;
     /*Calculate seasonal cost function*/
-    for (n=0;n<12;n++){dn=n+m*12;tot_exp+=pow((mod[dn]-obs[dn]-mam+oam)/OBS->single_monthly_unc,2);}
+    if (OBS->opt_filter==2){for (n=0;n<12;n++){dn=n+m*12;tot_exp+=pow((mod[dn]-obs[dn]-mam+oam)/OBS->single_monthly_unc,2);}}
     /*Calculate annual cost function*/
     /*TEST: normalize model likelihood by normal distribution with mean zero and unc = x2 annual unc.*/
     tot_exp+=pow((oam-mam)/OBS->single_annual_unc,2);}}
 
-else if (OBS->opt_filter==3){// annual flux or state
-    /*Decoupling seasonal from interannual variations*/
-    /*Only use with monthly resolution fluxes, complete years & no missing data*/
-    /*Step 1. Mean model & data annual NBE*/
-    /*Step 2. Compare means*/
-    /*Step 3. Remove means from months for cost function*/
-    int m, dn;
-    for (m=0;m<N/12;m++){
-    /*Calculate annual mean*/
-    double mam=0, oam=0;
-    for (n=0;n<12;n++){dn=n+m*12;mam=mam+mod[dn];oam=oam+obs[dn];}
-    /*normalize means*/
-    mam=mam/12;oam=oam/12;
 
-    /*Calculate annual cost function*/
-    /*TEST: normalize model likelihood by normal distribution with mean zero and unc = x2 annual unc.*/
-    tot_exp+=pow((oam-mam)/OBS->single_annual_unc,2);}}
+else if (OBS->opt_filter==4 | OBS->opt_filter==5){//climatology and inter-annual variability, only to use with monthly data
+    //Decoupling climatological seasonal cycle from inter-anual variations*/
+    //Only use with monthly resolution fluxes, complete years & no missing data*/
+    //Step 1. Mean model & data annual NBE*/
+    //Step 2. Compare means*/
+    //Step 3. Remove means from months for cost function*/
+    int m, dn,i;
+    double * modcm = calloc(sizeof(double),12);
+    double * obscm = calloc(sizeof(double),12);
+    int * countcm = calloc(sizeof(int),12);
+    
+    int * icm = calloc(sizeof(double),N);
+
+    //Step 1. 
+    //Loop through valid_obs_indices, and bin into mod(I,12) 
+    
+    for (m=0;m<N;m++){
+        //Obs index from 1-12
+        icm[m]=OBS->valid_obs_indices[m] % 12;i=icm[m];
+        //Average model and obs
+        modcm[i] +=mod[m];
+        obscm[i] +=obs[m];
+        countcm[i]+=1;
+
+        }
+    
+        //Climatological cost function component: Avoid averaging by scaling cost function uncertainties accordingly!
+        for (i=0;i<12;i++){
+            if (countcm[i]>0){
+            obscm[i]/=(double)countcm[i];
+            modcm[i]/=(double)countcm[i];
+               tot_exp+=pow((modcm[i]-obscm[i])/(OBS->single_monthly_unc),2);}}
+        
+         //Inter-annual cost function component: Avoid averaging by scaling cost function uncertainties accordingly!
+               if (OBS->opt_filter==4){
+                       for (m=0;m<N;m++){
+                                       i=icm[m];
+            if (countcm[i]>1){
+                tot_exp+=pow((mod[m] - modcm[i] - obs[m]  + obscm[i])/(OBS->single_annual_unc),2);}}}
+//Free pointers
+        free(modcm);free(obscm);free(countcm);free(icm);
+
+    }
+        
+        
+        
+        
+        
+  
 
 free(mod);free(obs);free(unc);
+
+
+
 
 
 P=-0.5*tot_exp;}
