@@ -45,7 +45,7 @@ dumpfiledir=dir(dumpfile);
 if isempty(dir(dumpfile)) | reread==1 | dumpfiledir.datenum<filedir.datenum
     disp('Re-reading file...');
 
-D=importdata(filename,'');
+D=importdata(filename,'\n');
 
 
 %searching for model attribute" line zero"

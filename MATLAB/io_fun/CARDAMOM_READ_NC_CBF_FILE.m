@@ -16,8 +16,10 @@ for n=1:numel(ni.Variables);
     
    
     for a=1: numel(ni.Variables(n).Attributes)
-        if strcmp(ni.Variables(n).Attributes(a).Name,  '_FillValue')==0
-    CBF.(ni.Variables(n).Name).(ni.Variables(n).Attributes(a).Name)=ni.Variables(n).Attributes(a).Value;
+        if strcmp(ni.Variables(n).Attributes(a).Name,  '_FillValue')==0;
+            NCV=ni.Variables(n).Attributes(a).Value;
+            if strcmp(class(NCV),'int64');NCV=int32(NCV);end
+    CBF.(ni.Variables(n).Name).(ni.Variables(n).Attributes(a).Name)=NCV;
         end
     end
     

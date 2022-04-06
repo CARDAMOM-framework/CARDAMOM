@@ -14,9 +14,9 @@ int opt_normalization;//(0 = none, 1 = remove mean, 2 = divide by mean)
 int opt_filter;//(0 = no filter, 1 = mean only, 2==annual mean & monthly anomaly, 3 = annual only). 
 double min_threshold;//Minimum value threshold: model and/or data will be rounded up to this value (default = -inf)
 double single_monthly_unc;//Fields to be used only with Filter=2 AND opt_unc_type=0;
-double single_annual_unc;//Fields to be used only with Filters=2,3 (AND opt_unc_type=0 for filter = 2);
+double single_annual_unc;//Fields to be used only with Filters=2 & 3 (AND opt_unc_type=0 or opt_unc_type=2 for filter = 2);
 double single_mean_unc;//Fields to be used only with Filter = 1;
-double single_unc;//
+double single_unc;//Fields to be used only with Filter = 0 ;
 double structural_unc;//this gets added to uncertainty in quadrature.
 //Auxiliary uncertainty variable, separate from timeseries variable
 double * unc;//Timeseries of uncertainty values
@@ -270,47 +270,47 @@ unc[n]=log(unc[n]);}}
 //Cost function
 //This is the only option available for single value (e.g. time invariant) observations
 if (OBS->opt_filter==0){//no filter
-for (n=0;n<N;n++){tot_exp += pow((mod[n] - obs[n])/unc[n],2);}}
+    for (n=0;n<N;n++){tot_exp += pow((mod[n] - obs[n])/unc[n],2);}}
 
 else if (OBS->opt_filter==1){//mean only
-tot_exp  = pow((mean_mod - mean_obs)/OBS->single_mean_unc,2);}
+    tot_exp  = pow((mean_mod - mean_obs)/OBS->single_mean_unc,2);}
 
 else if (OBS->opt_filter==2){//monthly and annual flux
-/*Decoupling seasonal from interannual variations*/
-/*Only use with monthly resolution fluxes, complete years & no missing data*/
-/*Step 1. Mean model & data annual NBE*/
-/*Step 2. Compare means*/
-/*Step 3. Remove means from months for cost function*/
-int m, dn;
-for (m=0;m<N/12;m++){
-/*Calculate annual mean of monthly values*/
-double mam=0, oam=0;
-for (n=0;n<12;n++){dn=n+m*12;mam=mam+mod[dn];oam=oam+obs[dn];}
-/*normalize means*/
-mam=mam/12;oam=oam/12;
-/*Calculate seasonal cost function*/
-for (n=0;n<12;n++){dn=n+m*12;tot_exp+=pow((mod[dn]-obs[dn]-mam+oam)/OBS->single_monthly_unc,2);}
-/*Calculate annual cost function*/
-/*TEST: normalize model likelihood by normal distribution with mean zero and unc = x2 annual unc.*/
-tot_exp+=pow((oam-mam)/OBS->single_annual_unc,2);}}
+    /*Decoupling seasonal from interannual variations*/
+    /*Only use with monthly resolution fluxes, complete years & no missing data*/
+    /*Step 1. Mean model & data annual NBE*/
+    /*Step 2. Compare means*/
+    /*Step 3. Remove means from months for cost function*/
+    int m, dn;
+    for (m=0;m<N/12;m++){
+    /*Calculate annual mean of monthly values*/
+    double mam=0, oam=0;
+    for (n=0;n<12;n++){dn=n+m*12;mam=mam+mod[dn];oam=oam+obs[dn];}
+    /*normalize means*/
+    mam=mam/12;oam=oam/12;
+    /*Calculate seasonal cost function*/
+    for (n=0;n<12;n++){dn=n+m*12;tot_exp+=pow((mod[dn]-obs[dn]-mam+oam)/OBS->single_monthly_unc,2);}
+    /*Calculate annual cost function*/
+    /*TEST: normalize model likelihood by normal distribution with mean zero and unc = x2 annual unc.*/
+    tot_exp+=pow((oam-mam)/OBS->single_annual_unc,2);}}
 
 else if (OBS->opt_filter==3){// annual flux or state
-/*Decoupling seasonal from interannual variations*/
-/*Only use with monthly resolution fluxes, complete years & no missing data*/
-/*Step 1. Mean model & data annual NBE*/
-/*Step 2. Compare means*/
-/*Step 3. Remove means from months for cost function*/
-int m, dn;
-for (m=0;m<N/12;m++){
-/*Calculate annual mean*/
-double mam=0, oam=0;
-for (n=0;n<12;n++){dn=n+m*12;mam=mam+mod[dn];oam=oam+obs[dn];}
-/*normalize means*/
-mam=mam/12;oam=oam/12;
+    /*Decoupling seasonal from interannual variations*/
+    /*Only use with monthly resolution fluxes, complete years & no missing data*/
+    /*Step 1. Mean model & data annual NBE*/
+    /*Step 2. Compare means*/
+    /*Step 3. Remove means from months for cost function*/
+    int m, dn;
+    for (m=0;m<N/12;m++){
+    /*Calculate annual mean*/
+    double mam=0, oam=0;
+    for (n=0;n<12;n++){dn=n+m*12;mam=mam+mod[dn];oam=oam+obs[dn];}
+    /*normalize means*/
+    mam=mam/12;oam=oam/12;
 
-/*Calculate annual cost function*/
-/*TEST: normalize model likelihood by normal distribution with mean zero and unc = x2 annual unc.*/
-tot_exp+=pow((oam-mam)/OBS->single_annual_unc,2);}}
+    /*Calculate annual cost function*/
+    /*TEST: normalize model likelihood by normal distribution with mean zero and unc = x2 annual unc.*/
+    tot_exp+=pow((oam-mam)/OBS->single_annual_unc,2);}}
 
 free(mod);free(obs);free(unc);
 

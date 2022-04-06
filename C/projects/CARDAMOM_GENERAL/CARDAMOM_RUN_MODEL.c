@@ -137,7 +137,7 @@ int Ntimesteps=CARDADATA.ncdf_data.Ntimesteps;
 
 
 /*STEP 3.2 - create netCDF output dimensions*/
-int sampleDimID, poolDimID, fluxDimID, timePoolsDimID,timeFluxesDimID, probIdxDimID,edcIdxDimID, noParsDimID;
+int sampleDimID, poolDimID, fluxDimID, timePoolsDimID,timeFluxesDimID, probIdxDimID,edcIdxDimID, noParsDimID, noLikelihoodsDimID;
 FAILONERROR(nc_def_dim(ncid,"Sample",N,&sampleDimID));
 FAILONERROR(nc_def_dim(ncid,"Pool",CARDADATA.nopools,&poolDimID ));
 FAILONERROR(nc_def_dim(ncid,"Flux",CARDADATA.nofluxes,&fluxDimID ));
@@ -152,10 +152,12 @@ const size_t edcIdxLen=100;
 FAILONERROR(nc_def_dim(ncid,"EDC Index",edcIdxLen,&edcIdxDimID ));
 
 FAILONERROR(nc_def_dim(ncid,"Parameter",CARDADATA.nopars,&noParsDimID ));
+FAILONERROR(nc_def_dim(ncid,"Likelihood Index",CARDADATA.nolikelihoods,&noLikelihoodsDimID ));
+
 
 
 /*STEP 3.3 - create netCDF variables in preperation for writting them later*/
-int fluxesVarID, poolsVarID, edcdVarID, pVarID, parsVarId;
+int fluxesVarID, poolsVarID, edcdVarID, pVarID, parsVarID, likelihoodsVarID;
 
 int fluxes_dems[] = {sampleDimID,timeFluxesDimID,fluxDimID};
 FAILONERROR(nc_def_var(	ncid,"FLUXES" , NC_DOUBLE, 3, fluxes_dems, &fluxesVarID ));
@@ -177,7 +179,10 @@ int prob_dems[] = {sampleDimID, probIdxDimID};
 FAILONERROR(nc_def_var(	ncid,"PROB" , NC_DOUBLE, 2, prob_dems, &pVarID ));
 
 int pars_dems[] = {sampleDimID, noParsDimID};
-FAILONERROR(nc_def_var(	ncid,"PARS" , NC_DOUBLE, 2, pars_dems, &parsVarId ));
+FAILONERROR(nc_def_var(	ncid,"PARS" , NC_DOUBLE, 2, pars_dems, &parsVarID ));
+
+int likelihoods_dems[] = {sampleDimID, noLikelihoodsDimID};
+FAILONERROR(nc_def_var(	ncid,"LIKELIHOODS" , NC_DOUBLE, 2, likelihoods_dems, &likelihoodsVarID ));
 
 
 //End NetCDF definition phase, in order to allow for writting
@@ -257,7 +262,13 @@ FAILONERROR(nc_put_vara_int(ncid,edcdVarID,(const size_t[]){n,0}, (const size_t[
 //write M_P
 FAILONERROR(nc_put_vara_double(ncid,pVarID,(const size_t[]){n,0}, (const size_t[]){1,probIdxLen}, CARDADATA.M_P));
 //write Pars
-FAILONERROR(nc_put_vara_double(ncid,parsVarId,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars));
+FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars));
+//Write Likelihoods
+FAILONERROR(nc_put_vara_double(ncid,likelihoodsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nolikelihoods}, CARDADATA.M_LIKELIHOODS));
+
+
+//for (n=0;n<CARDADATA.nolikelihoods;n++){printf("%5.4f  ",CARDADATA.M_LIKELIHOODS[n]);}
+//printf("\n");
 
 
 //write attributes to netCDF file

@@ -88,13 +88,12 @@ DATA->M_SCF=calloc(Ntimesteps,sizeof(double));//Warning, LAI larger than this!
 //Model variables 
 	DATA->M_FLUXES=calloc(Ntimesteps*DATA->nofluxes,sizeof(double));
 	DATA->M_POOLS=calloc((Ntimesteps+1)*DATA->nopools,sizeof(double));
-    
-    
+   
 	int noedc=100, noprob=1;
 	DATA->M_EDCD=calloc(noedc,sizeof(int));
 	DATA->M_P=calloc(noprob,sizeof(double));
-
 	DATA->M_PARS=calloc(DATA->nopars,sizeof(double));
+    DATA->M_LIKELIHOODS=calloc(DATA->nolikelihoods,sizeof(double));
 
 
 

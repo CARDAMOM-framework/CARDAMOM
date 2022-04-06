@@ -39,19 +39,19 @@ return 0;}
 //#include "../CARDAMOM_MODELS/DALEC/DALEC_1002/MODEL_INFO_1002.c"
 //#include "../CARDAMOM_MODELS/DALEC/DALEC_1003/MODEL_INFO_1003.c"
 //#include "../CARDAMOM_MODELS/DALEC/DALEC_1004/MODEL_INFO_1004.c"
-    #include "../CARDAMOM_MODELS/DALEC/DALEC_1005/MODEL_INFO_1005.c"
-    #include "../CARDAMOM_MODELS/DALEC/DALEC_1006/MODEL_INFO_1006.c"
+#include "../CARDAMOM_MODELS/DALEC/DALEC_1005/MODEL_INFO_1005.c"
+                #include "../CARDAMOM_MODELS/DALEC/DALEC_1006/MODEL_INFO_1006.c"
 //#include "../CARDAMOM_MODELS/DALEC/DALEC_1009/MODEL_INFO_1009.c"
 //#include "../CARDAMOM_MODELS/DALEC/DALEC_1010/MODEL_INFO_1010.c"
 //#include "../CARDAMOM_MODELS/DALEC/DALEC_1011/MODEL_INFO_1011.c"
-    #include "../CARDAMOM_MODELS/DALEC/DALEC_1012/MODEL_INFO_1012.c"
+               #include "../CARDAMOM_MODELS/DALEC/DALEC_1012/MODEL_INFO_1012.c"
     //#include "../CARDAMOM_MODELS/DALEC/DALEC_1015/MODEL_INFO_1015.c"
     //#include "../CARDAMOM_MODELS/DALEC/DALEC_1016/MODEL_INFO_1016.c"
     //#include "../CARDAMOM_MODELS/DALEC/DALEC_1017/MODEL_INFO_1017.c"
-   #include "../CARDAMOM_MODELS/DALEC/DALEC_1025/MODEL_INFO_1025.c"
+               #include "../CARDAMOM_MODELS/DALEC/DALEC_1025/MODEL_INFO_1025.c"
 //#include "../CARDAMOM_MODELS/DALEC/DALEC_1030/MODEL_INFO_1030.c"
 //#include "../CARDAMOM_MODELS/DALEC/DALEC_1031/MODEL_INFO_1031.c"
-    #include "../CARDAMOM_MODELS/DALEC/DALEC_1032/MODEL_INFO_1032.c"
+                #include "../CARDAMOM_MODELS/DALEC/DALEC_1032/MODEL_INFO_1032.c"
 //#include "../CARDAMOM_MODELS/DALEC/DALEC_1040/MODEL_INFO_1040.c"
     //#include "../CARDAMOM_MODELS/DALEC/DALEC_1060/MODEL_INFO_1060.c"
     //#include "../CARDAMOM_MODELS/DALEC/DALEC_1080/MODEL_INFO_1080.c"
@@ -97,29 +97,33 @@ if (ID==0){printf("No model prescribed, expect error!");}
 //else if (ID==1002  ){MODEL_INFO_1002(DATA);}
 //else if (ID==1003  ){MODEL_INFO_1003(DATA);}
 //else if (ID==1004  ){MODEL_INFO_1004(DATA);}
-    else if (ID==1005  ){MODEL_INFO_1005(DATA);}
-    else if (ID==1006  ){MODEL_INFO_1006(DATA);}
+      else if (ID==1005  ){MODEL_INFO_1005(DATA);}
+       else if (ID==1006  ){MODEL_INFO_1006(DATA);}
 //else if (ID==1009  ){MODEL_INFO_1009(DATA);}
-    else if (ID==1012  ){MODEL_INFO_1012(DATA);}
-    //else if (ID==1015  ){MODEL_INFO_1015(DATA);}
-    //else if (ID==1016  ){MODEL_INFO_1016(DATA);}
-    //else if (ID==1017  ){MODEL_INFO_1017(DATA);}
-    else if (ID==1025  ){MODEL_INFO_1025(DATA);}
+      else if (ID==1012  ){MODEL_INFO_1012(DATA);}
+//else if (ID==1015  ){MODEL_INFO_1015(DATA);}
+//else if (ID==1016  ){MODEL_INFO_1016(DATA);}
+//else if (ID==1017  ){MODEL_INFO_1017(DATA);}
+       else if (ID==1025  ){MODEL_INFO_1025(DATA);}
 //else if (ID==1030  ){MODEL_INFO_1030(DATA);}
 //else if (ID==1031  ){MODEL_INFO_1031(DATA);}
-    else if (ID==1032  ){MODEL_INFO_1032(DATA);}
+      else if (ID==1032  ){MODEL_INFO_1032(DATA);}
 //else if (ID==1040  ){MODEL_INFO_1040(DATA);}
-    //else if (ID==1060  ){MODEL_INFO_1060(DATA);}
-    //else if (ID==1080  ){MODEL_INFO_1080(DATA);}
+//else if (ID==1060  ){MODEL_INFO_1060(DATA);}
+//else if (ID==1080  ){MODEL_INFO_1080(DATA);}
 //else if (ID==1010  ){MODEL_INFO_1010(DATA);}
 //else if (ID==1011  ){MODEL_INFO_1011(DATA);}
 //else if (ID==1200  ){MODEL_INFO_1200(DATA);}
-else if (ID==1100  ){MODEL_INFO_1100(DATA);}
+        else if (ID==1100  ){MODEL_INFO_1100(DATA);}
     //else if (ID==1101  ){MODEL_INFO_1101(DATA);}
     //else if (ID==1102  ){MODEL_INFO_1102(DATA);}
     //else if (ID==1103  ){MODEL_INFO_1103(DATA);}
     //else if (ID==1105  ){MODEL_INFO_1105(DATA);}
-else {status=1;}
+        else {status=1;
+        printf("*********************************************\n");
+        printf("No loaded in CARDAMOM_MODEL_LIBRARY.c, expect error!\n");
+        printf("*********************************************\n");
+        }
 printf("*******CARDAMOM MODEL LIBRARY DONE****************\n");
 printf("Model ID = %i loaded & configured...", ID);
 printf("****************************************************\n");

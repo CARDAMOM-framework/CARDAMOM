@@ -1,8 +1,17 @@
 #pragma once
 #include <math.h>
 #include "DALEC_ALL_LIKELIHOOD.c"
+#include "DALEC_ALL_MLF.c"
 #include "../../../math_fun/ipow.c"
 
+
+
+        
+        
+
+        
+        
+        
 
 double DALEC_MLF(DATA DATA,double *PARS){
 //copy pars to M_PARS for export
@@ -64,6 +73,23 @@ return P;
 
 
 }
+
+
+
+     
+int DALEC_MLF_MODCONFIG(MLF* MLF){
+    
+   //Populate LS 
+    LIKELIHOODinfo LIKELIHOODinfo; DALEC_ALL_LIKELIHOOD_MODCONFIG(&LIKELIHOODinfo);
+   //Store LS
+    MLF->nolikelihoods=LIKELIHOODinfo.nolikelihoods;
+    MLF->mlf= DALEC_MLF;
+    
+    return 0;}
+
+
+
+
 
 
 

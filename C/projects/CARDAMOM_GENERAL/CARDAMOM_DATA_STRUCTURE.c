@@ -63,6 +63,7 @@ double *M_LIKELIHOODS;
 int nopools;
 int nofluxes;
 int nopars;
+int nolikelihoods;
 //
 
 
@@ -79,6 +80,7 @@ char **parname;
 // int assemble_model;
 /*Development in progress: this structure will contain all model-specific fields and memory declarations, making it therefore a flexible storage field for non-global "DATA" fields*/
 void *MODEL;
+
 
 
 }DATA;
