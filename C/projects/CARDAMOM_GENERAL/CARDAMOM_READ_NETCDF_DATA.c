@@ -233,6 +233,10 @@ printf("Done reading all other edc ");
         
 	DATA->DOY.values=ncdf_read_double_var(ncid, "DOY", &(DATA->DOY.length));
 		//DATA->DOY.reference_mean=ncdf_read_double_attr(ncid, "DOY","reference_mean");
+    
+                    	DATA->SKT.values=ncdf_read_double_var(ncid, "SKT", &(DATA->SKT.length));
+		DATA->SKT.reference_mean=ncdf_read_double_attr(ncid, "SKT","reference_mean");
+                DEFAULT_REFERENCE_MEAN(&DATA->SKT);
 
 	DATA->SNOWFALL.values=ncdf_read_double_var(ncid, "SNOWFALL", &(DATA->SNOWFALL.length));
 		DATA->SNOWFALL.reference_mean=ncdf_read_double_attr(ncid, "SNOWFALL","reference_mean");
@@ -241,6 +245,10 @@ printf("Done reading all other edc ");
 	DATA->SSRD.values=ncdf_read_double_var(ncid, "SSRD", &(DATA->SSRD.length));
 		DATA->SSRD.reference_mean=ncdf_read_double_attr(ncid, "SSRD","reference_mean");
                 DEFAULT_REFERENCE_MEAN(&DATA->SSRD);
+                
+                	DATA->STRD.values=ncdf_read_double_var(ncid, "STRD", &(DATA->STRD.length));
+		DATA->STRD.reference_mean=ncdf_read_double_attr(ncid, "STRD","reference_mean");
+                DEFAULT_REFERENCE_MEAN(&DATA->STRD);
 
 
 	DATA->T2M_MAX.values=ncdf_read_double_var(ncid, "T2M_MAX", &(DATA->T2M_MAX.length));
