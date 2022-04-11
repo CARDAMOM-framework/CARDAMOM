@@ -519,7 +519,8 @@ OBSOPE.FIR_flux=F.f_total;
 //CUE parameters
 OBSOPE.CUE_PARAM=P.f_auto;
 
-
+//CH4-specific variables 
+OBSOPE.CH4_flux = F.rh_ch4;
 
 DALECmodel->OBSOPE=OBSOPE;
 

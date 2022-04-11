@@ -717,7 +717,8 @@ OBSOPE.iniSnow_PARAM=P.i_SWE;
 //Initial SOM parameter
 OBSOPE.iniSOM_PARAM=P.i_som;
 
-
+//CH4-specific variables 
+OBSOPE.CH4_flux = F.rh_ch4;
 
 DALECmodel->OBSOPE=OBSOPE;
 
