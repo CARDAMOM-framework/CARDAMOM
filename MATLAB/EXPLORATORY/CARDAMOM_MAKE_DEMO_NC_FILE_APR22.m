@@ -1,4 +1,4 @@
-function CARDAMOM_v3_MAKE_DEMO_NC_FILE_NOV21
+function CARDAMOM_MAKE_DEMO_NC_FILE_APR22
 
 %Step 1. start netcdf file
 %Step 0. Load time data; time span for this US-NR1 demo is 2001-2016
@@ -79,10 +79,10 @@ end
 function create_and_write_dri_timeseries_variable(NC,vname,vvalues)
 
 
-METVNAME={'time','T2M_MIN','T2M_MAX','SSRD','CO2','DOY','BURNED_AREA','VPD','TOTAL_PREC','SNOWFALL','FLUXNET_SW_IN','FLUXNET_SW_OUT','STRD','FLUXNET_LW_OUT','FLUXNET_G','FLUXNET_LE','H'};
+METVNAME={'time','T2M_MIN','T2M_MAX','SSRD','CO2','DOY','BURNED_AREA','VPD','TOTAL_PREC','SNOWFALL','FLUXNET_SW_IN','FLUXNET_SW_OUT','STRD','FLUXNET_LW_OUT','FLUXNET_G','FLUXNET_LE','H','SKT'};
 METINFO={'Time since Jan 01/01/2000 00:00','Mean daily min. temperature','Mean daily max. temperature','Global radiation','Atmospheric CO2','Day of year','Burned area','VPD','Total precipitation','Snowfall',...
-    'FLUXNET_SW_IN','FLUXNET_SW_OUT','STRD is from FLUXNET_LW_IN','FLUXNET_LW_OUT','FLUXNET_G','FLUXNET_LE','H is same as FLUXNET_H'};
-METUNITS={'Days','deg C','deg C','MJ/m2/d','ppm','Days','m2/m2','hPA','mm/day','mm/day','MJ/m2/day','MJ/m2/day','MJ/m2/day','MJ/m2/day','MJ/m2/day','MJ/m2/day','MJ/m2/day'};
+    'FLUXNET_SW_IN','FLUXNET_SW_OUT','STRD ERA5','FLUXNET_LW_OUT','FLUXNET_G','FLUXNET_LE','H is same as FLUXNET_H','ERA5 SKT'};
+METUNITS={'Days','deg C','deg C','MJ/m2/d','ppm','Days','m2/m2','hPA','mm/day','mm/day','MJ/m2/day','MJ/m2/day','MJ/m2/day','MJ/m2/day','MJ/m2/day','MJ/m2/day','MJ/m2/day','deg C'};
 
 
 
