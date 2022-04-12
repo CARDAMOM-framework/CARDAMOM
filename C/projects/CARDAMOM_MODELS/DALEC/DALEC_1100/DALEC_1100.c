@@ -628,10 +628,42 @@ DALECmodel->nopars=68;
 DALECmodel->nofluxes=60;
 DALECmodel->dalec=DALEC_1100;
 
+
+//EDC operator
+//Make sure has same number as number of EDCs
+static EDCs  EDCs[10];
+
+
+//Som lit turnover rate
+
+static DALEC_EDC_PARS_INEQUALITY_STRUCT EDC_litsomtor;
+EDC_litsomtor.big_par_index=PARS.tlit;
+EDC_litsomtor.small_par_index=PARS.tsom;
+
+EDCs[E.litsomtor].data=&EDC_litsomtor;
+EDCs[E.litsomtor].function=&DALEC_EDC_PARS_INEQUALITY;
+
+
+        
+
+
+INITIALIZE_EDCOPE_SUPPORT(&EDCOPE);
+
+//ecological
+//EDCOPE.SUPPORT_LITCWDSOM_trpar_EDC=true;
+//dynamical
+//EDCOPE.SUPPORT_POOL_SSP_EDC=true;
+//Numerical checks
+//EDCOPE.SUPPORT_FINITE_EDC=true;
+
+
+
+
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
 //Initialize all SUPPORT OBS values (default value = false).
 INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
+
 
 //Set SUPPORT_OBS values to true if model supports external observation operations.
 OBSOPE.SUPPORT_GPP_OBS=true;
@@ -645,9 +677,6 @@ OBSOPE.SUPPORT_FIR_OBS=true;
 OBSOPE.SUPPORT_CH4_OBS=true;
 OBSOPE.SUPPORT_ROFF_OBS=true;
 OBSOPE.SUPPORT_SCF_OBS=true;
-
-
-
 
 
 OBSOPE.SUPPORT_CUE_OBS=true;

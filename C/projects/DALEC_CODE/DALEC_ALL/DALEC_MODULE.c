@@ -35,6 +35,7 @@ int nopools;
 int nopars;
 int nofluxes;
 int nomet;
+int noedc;
 int * testvec;
 int (*dalec)(DATA,const double *);
 int (*edc1)(const double *, DATA, struct EDCDIAGNOSTIC * EDCD);
@@ -42,4 +43,5 @@ int (*edc2)(const double *, DATA, struct EDCDIAGNOSTIC * EDCD);
 /*contains all the EDCD relevant info*/
 struct EDCDIAGNOSTIC * EDCD;
 OBSOPE OBSOPE;
+void * EDCFUNCS;
 }DALEC;
