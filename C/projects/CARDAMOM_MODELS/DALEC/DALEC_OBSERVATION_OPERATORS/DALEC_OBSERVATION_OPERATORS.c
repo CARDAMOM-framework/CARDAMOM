@@ -139,6 +139,13 @@ return 0;}
 
 
 int DALEC_OBSOPE_CH4(DATA * D, OBSOPE * O){
+
+int N=D->ncdf_data.TIME_INDEX.length;
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.CH4;
+
+
+if (TOBS.valid_obs_length>0){int n;for (n=0;n<N;n++){D->M_CH4[n]=D->M_FLUXES[D->nofluxes*n+O->CH4_flux];}};
+
 return 0;}
 
 //ET observation operator, assuming one flux
