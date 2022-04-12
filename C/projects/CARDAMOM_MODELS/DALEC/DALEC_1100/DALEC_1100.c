@@ -182,8 +182,8 @@ int C_som; /*Soil C*/
 int H2O_PAW; /*Plant available H2O*/
 int H2O_PUW; /*Plant unavailable H2O*/
 int H2O_SWE; /*Snow water equivalent*/
-int E_PAW; /*Snow water equivalent*/
-int E_PUW; /*Snow water equivalent*/
+int E_PAW; /*PAW thermal energy state*/
+int E_PUW; /*PUW thermal energy state*/
 int D_LAI;//leaf area index
 int D_SCF;//snow-covered fraction
 } DALEC_1100_POOLS={
@@ -240,6 +240,11 @@ double *POOLS=DATA.M_POOLS;
   POOLS[S.H2O_PAW]=pars[P.i_PAW];
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
   POOLS[S.H2O_SWE]=pars[P.i_SWE];
+  /*Energy pools*/
+    POOLS[S.E_PAW]=pars[P.i_PAW_E];
+  POOLS[S.E_PUW]=pars[P.i_PUW_E];
+  
+  
    //---DIAGNOSTIC STATES---
     POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; //LAI
     POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
@@ -411,6 +416,12 @@ FLUXES[f+F.paw2puw] = xfer*1000*3600*24;
 // Update pools, including ET from PAW
 POOLS[nxp+S.H2O_PAW] += (-FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
 POOLS[nxp+S.H2O_PUW] += (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
+
+
+//Energy states
+POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW];  //Rnet, //
+POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW]; //Transfer flux
+
 
 
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
