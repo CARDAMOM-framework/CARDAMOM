@@ -241,8 +241,8 @@ double *POOLS=DATA.M_POOLS;
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
   POOLS[S.H2O_SWE]=pars[P.i_SWE];
   /*Energy pools*/
-    POOLS[S.E_PAW]=pars[P.i_PAW_E];
-  POOLS[S.E_PUW]=pars[P.i_PUW_E];
+    //POOLS[S.E_PAW]=pars[P.i_PAW_E];
+  //POOLS[S.E_PUW]=pars[P.i_PUW_E];
   
   
    //---DIAGNOSTIC STATES---
