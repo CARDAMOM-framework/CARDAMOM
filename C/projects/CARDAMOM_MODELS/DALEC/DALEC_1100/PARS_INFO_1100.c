@@ -293,6 +293,14 @@ CARDADATA->parmax[P.init_LAIW_mem]=1;
 CARDADATA->parmin[P.t_foliar]=0.001;
 CARDADATA->parmax[P.t_foliar]=0.1;
 
+/*PAW energy pool*/
+CARDADATA->parmin[P.i_PAW_E]=1;
+CARDADATA->parmax[P.i_PAW_E]=10000;
+
+/*PUW energy pool*/
+CARDADATA->parmin[P.i_PUW_E]=1;
+CARDADATA->parmax[P.i_PUW_E]=10000;
+
 return 0;
 
 }

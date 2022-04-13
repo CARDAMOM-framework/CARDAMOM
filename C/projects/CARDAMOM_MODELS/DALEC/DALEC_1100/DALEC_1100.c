@@ -84,6 +84,8 @@ int time_r;
 int init_T_mem;
 int init_LAIW_mem;
 int t_foliar;
+int i_PAW_E;
+int i_PUW_E;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -91,7 +93,7 @@ int t_foliar;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64,65,66,67
+    60,61,62,63,64,65,66,67,68,69
 };
 
 struct DALEC_1100_FLUXES{
@@ -158,6 +160,13 @@ int lai_fire;   /*LAI fire loss*/
 int foliar_fire_frac;   /*C_fol fire loss frac*/
 int T_energy_flux;
 int E_energy_flux;
+int net_radiation; /*Net radiation flux*/
+int latent_heat; /*latent heat flux*/
+int sensible_heat; /*sensible heat flux*/
+int ground_heat; /*ground heat flux*/
+int FUP;
+int FUR; 
+int FUET;
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -165,7 +174,7 @@ int E_energy_flux;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61
+    60,61,62,63,64,65,66,67
 };
 
 
@@ -244,8 +253,8 @@ double *POOLS=DATA.M_POOLS;
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
   POOLS[S.H2O_SWE]=pars[P.i_SWE];
   /*Energy pools*/
-    //POOLS[S.E_PAW]=pars[P.i_PAW_E];
-  //POOLS[S.E_PUW]=pars[P.i_PUW_E];
+  POOLS[S.E_PAW]=pars[P.i_PAW_E];
+  POOLS[S.E_PUW]=pars[P.i_PUW_E];
   
   
    //---DIAGNOSTIC STATES---
@@ -262,6 +271,12 @@ double *VPD=DATA.ncdf_data.VPD.values;
 double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
 double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
+
+//New met variables for energy
+double *SKT=DATA.ncdf_data.SKT.values;
+double *STRD=DATA.ncdf_data.STRD.values;
+
+
 
 double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
 double meanrad = DATA.ncdf_data.SSRD.reference_mean;
@@ -372,6 +387,39 @@ POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+SNOWFALL[n]*deltat; /*first step snowfal
 FLUXES[f+F.melt]=fmin(fmax(((T2M_MIN[n]+T2M_MAX[n])/2-(pars[P.min_melt]-273.15))*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
 POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step remove snowmelt from SWE*/
 
+//Energy balance: Rn = LE + H - G
+// Rn = SWin - SWout + LWin - LWout
+double SWin = SSRD[n]*1e6/(24*3600);
+//Weighted average of surface albedo considering SW snow albedo as 0.9
+double SWout = (1. - FLUXES[f+F.scf])*(SWin*pars[P.leaf_refl]) + FLUXES[f+F.scf]*(SWin*0.9);
+//Stefan-Boltzmann constant W.m-2.K-4
+double sigma = 5.67*1e-8;
+//reference air temperature
+double ref_temp = 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]);
+//Incident LW radiation - calculated
+//double LWin = sigma*pow(ref_temp,4.);
+double LWin = STRD[n];
+//Outgoing LW radiation
+double tskin_k = SKT[n]+273.15;
+double LWout = sigma*pow(tskin_k,4.);
+//Net radiation at the top of the canopy
+double Rn = SWin - SWout + LWin - LWout;
+FLUXES[f+F.net_radiation] = Rn;
+//Latent heat of Vaporization J kg-1 
+double lambda = 2.501*1e6; 
+//Latente heat (W.m-2)
+double LE = lambda*FLUXES[f+F.et]/(24*60*60);
+FLUXES[f+F.latent_heat] = LE;
+//specific heat capacity of dry air KJ kg -1 K -1
+//cp = 1.00464;
+//cp is the representative specific heat of moist air at const pressure: 29.2 J mol‚Äì1 K‚Äì1 
+double cp = 29.2;
+//Sensible heat 
+double H = cp*(tskin_k - ref_temp)*pars[P.ga];
+FLUXES[f+F.sensible_heat] = H;
+//soil heat flux 
+double G = Rn - H - LE;
+FLUXES[f+F.ground_heat] = G;
 
 // Infiltration (mm/day)
 double infil = pars[P.max_infil]*(1 - exp(-(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt])/pars[P.max_infil]));
@@ -421,13 +469,45 @@ POOLS[nxp+S.H2O_PAW] += (-FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.e
 POOLS[nxp+S.H2O_PUW] += (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
 
 
-//Ebergy fluxes
-FLUXES[F.T_energy_flux]=0;
-FLUXES[F.E_energy_flux]=0;
+//At the moment we assume the canopy and soil are in thermal equilibrium, i.e., soil temp = skt;
+//fraction of liquid water in air
+double la = PREC[n]/(PREC[n] + SNOWFALL[n]);
+//Specific heat of ice in J kg-1 K-1
+double ci_const = 2093;
+//Specific heat of liquid water in J kg-1 K-1
+double cl_const = 4186;
+//Zero-energy temperature of super-cooled liquid water in K
+double tl0 = 56.79;
+double total_precip = PREC[n] + SNOWFALL[n];
+//Precipitation energy flux
+FLUXES[F.FUP]= total_precip*(1 - la)*ci_const*ref_temp + la*cl_const*(ref_temp - tl0);
+
+
+//defining runoff
+double runoff = FLUXES[f+F.q_surf];
+//fraction of liquid water in soil ????? - Ask Anthony and Shuang?
+double ls = 1;
+//Runoff energy flux 
+FLUXES[F.FUR]= runoff*(1 - ls)*ci_const*tskin_k + ls*cl_const*(tskin_k - tl0);
+
+//defining FUET
+//Specific latent heat of melting at the water triple point Jkg-1
+double lil = 3.34*1e5 ;
+//Specific latent heat of vaporization of water at the triple point Jkg-1
+double llv = 2.50*1e6;
+//Specific latent heat of sublimation at the water triple point Jkg-1
+double liv = 2.834*1e6 ;
+FLUXES[F.FUET] = FLUXES[f+F.et]*((1-ls)*liv*tskin_k + ls*llv*tskin_k);
+
+//Energy fluxes
+///FLUXES[F.T_energy_flux]=0;
+//FLUXES[F.E_energy_flux]=0;
 
 //Energy states
-POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW];  //Rnet, //
-POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW]; //Transfer flux
+//fraction of water in soil that is available 
+double frac_paw = POOLS[nxp+S.H2O_PAW]/(POOLS[nxp+S.H2O_PAW]+POOLS[nxp+S.H2O_PUW]);
+POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + frac_paw*(FLUXES[f+F.ground_heat] + FLUXES[f+F.FUP] - FLUXES[f+F.FUET] - FLUXES[f+F.FUR])*deltat;  //Rnet, //
+POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (1. - frac_paw)*(FLUXES[f+F.ground_heat] + FLUXES[f+F.FUP] - FLUXES[f+F.FUET] - FLUXES[f+F.FUR])*deltat;
 
 
 
@@ -642,8 +722,8 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=14;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=68;
-DALECmodel->nofluxes=60;
+DALECmodel->nopars=70;
+DALECmodel->nofluxes=68;
 DALECmodel->dalec=DALEC_1100;
 
 //declaring observation operator structure, and filling with DALEC configurations
