@@ -465,6 +465,7 @@ else {
 double sm_PAW0 = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);
 double psi_PAW0 = HYDROFUN_MOI2PSI(sm_PAW0,psi_porosity,pars[P.retention]);
 double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*psi_PAW0 - pars[P.psi_50])));
+	FLUXES[f+F.beta_h2o] = 1/(1 + exp(pars[P.beta_lgr]*(-1*psi_PAW0 - pars[P.psi_50])));
        beta = fmin(beta,g);
 
 // GPP, T, and E from LIU_An_et
