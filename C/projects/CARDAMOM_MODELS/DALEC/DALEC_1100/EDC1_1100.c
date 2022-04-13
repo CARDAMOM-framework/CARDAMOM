@@ -65,9 +65,9 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1))
 /*EDC no 5 is addressed in EDC2_FIREBUCKET.c*/
 
 /*EDC CHECK NO 6*/
-/*Bday Fday difference>45 days */
-/*if (((EDC==1 & DIAG==0) || DIAG==1) & (fabs(pars[P.Fday] - pars[P.Bday])<45 | fabs(pars[P.Fday]-pars[P.Bday])>320.25)){EDC=0;EDCD->PASSFAIL[6-1]=0;}*/
-/*now obsolete!*/
+/*Curve check */
+if (((EDC==1 & DIAG==0) || DIAG==1) & ( 1/(1 + exp(pars[P.beta_lgr]*(.0001 - pars[P.psi_50]))) <.98 )){EDC=0;EDCD->PASSFAIL[6-1]=0;}
+
 
 /*EDC CHECK NO 5*/
 /*Allocation to canopy is comparable to allocation to fine roots*/
