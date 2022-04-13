@@ -249,6 +249,7 @@ CBR.POOLS=CBR.POOLS(:,2:end,:);
 CBR.EDCDIAG=permute(ncread(fluxfile,'EDCD'),[3,1,2]);
 %reading probability fields
 CBR.PROB=ncread(fluxfile,'PROB')';
+CBR.LIKELIHOODS=ncread(fluxfile,'LIKELIHOODS')';
 %storing parameters (for completeness)
 CBR.PARS=PARS;
 %extras

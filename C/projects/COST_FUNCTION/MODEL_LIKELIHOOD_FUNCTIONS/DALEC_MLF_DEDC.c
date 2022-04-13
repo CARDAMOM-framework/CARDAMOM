@@ -1,7 +1,18 @@
 #pragma once
 #include <math.h>
 #include "DALEC_ALL_LIKELIHOOD.c"
+#include "DALEC_ALL_MLF.c"
 #include "../../../math_fun/ipow.c"
+        
+// 
+// int DALEC_MLF_DEDC_MODCONFIG(MLFinfo * MLFinfo){
+//     
+//    //Populate LS 
+//     LIKELIHOODinfo LIKELIHOODinfo; DALEC_ALL_LIKELIHOOD_MODCONFIG(&LIKELIHOODinfo);
+//    //Store LS
+//     MLFinfo->nolikelihoods=LIKELIHOODinfo.nolikelihoods;
+//     
+//     return 0;}
 
 
 double DALEC_MLF_DEDC(DATA DATA,double *PARS){
@@ -47,7 +58,10 @@ if (DATA.ncdf_data.EDC==1){
 P=P+EDCD.pEDC;}
 
 /*Likelihood*/
+
 P=P+LIKELIHOOD(DATA);
+
+
 
 
 /*saving likelihood P*/
@@ -61,6 +75,19 @@ return P;
 
 
 }
+
+
+     
+int DALEC_MLF_DEDC_MODCONFIG(MLF* MLF){
+    
+   //Populate LS 
+    LIKELIHOODinfo LIKELIHOODinfo; DALEC_ALL_LIKELIHOOD_MODCONFIG(&LIKELIHOODinfo);
+   //Store LS
+    MLF->nolikelihoods=LIKELIHOODinfo.nolikelihoods;
+    MLF->mlf= DALEC_MLF_DEDC;
+    
+    return 0;}
+
 
 
 

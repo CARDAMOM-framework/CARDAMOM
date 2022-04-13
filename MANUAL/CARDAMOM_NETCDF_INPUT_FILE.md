@@ -10,6 +10,12 @@ The CARDAMOM netcdf input file is a "one-stop shop" for all inputs required to c
 - Minimal ancillary non-functional data (these are optional: includes longitude, notes, etc.)
 
 
+## Variable names, definitions and conventions
+
+- SOM: soil organic matter pool in DALEC. It does not include fine litte and coarse woody debris.
+- DOM: sum of all dead organic C states, including fine litter ("Litter"), coarse woody debris ("CWD") and soil organic matter ("SOM")
+
+
 
 ## FAQ
 ### Q: If I’m not assimilating an observation, can I just delete the corresponding OBS field my cbf.nc file, or do I have to keep it and put NaN in the corresponding subsets?

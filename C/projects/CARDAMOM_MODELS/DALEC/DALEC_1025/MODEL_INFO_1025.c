@@ -11,23 +11,26 @@ int MODEL_INFO_1025(DATA * DATA){
 
 /*Step 1. Declare structure*/
 /*"static" ensures that the memory is declared in one instance and visible to all functions (I think)*/
-static DALEC DALECmodel;
+static DALEC DALECmodel;DALEC_1025_MODCONFIG(&DALECmodel);
+static MLF MLF;DALEC_MLF_DEDC_MODCONFIG(&MLF);
+
 
 /*Step 2: Fill structure with model-specific info*/
-DALEC_1025_MODCONFIG(&DALECmodel);
+
 
 /*Short-term: copy quantities into DATA structure to reduce dependencies in CARDAMOM_MODEL_LIBRARY.c*/
 /*Long-term: remove dependencies on DATA.nofluxes... etc. in CARDAMOM_READ_BINARY_DATA and DALEC_ALL_LIKELIHOOD.c*/
 DATA->nopools=DALECmodel.nopools;
 DATA->nopars=DALECmodel.nopars;
 DATA->nofluxes=DALECmodel.nofluxes;
-printf("DALECmodel->nopars=%i (INSIDE MODEL_INFO)\n",DALECmodel.nopars);
+DATA->nolikelihoods=MLF.nolikelihoods;
+
+
 
 /*All model functions*/
 /*User is able to add further functions as deemed necessary*/
 /*Function names are declared in ../DALEC_ALL/DALEC_MODULE.c*/
 /*Consider starting new module for radically different model structures*/
-DALECmodel.dalec=DALEC_1025;
 DALECmodel.edc1=EDC1_1025;
 DALECmodel.edc2=EDC2_1025;
 
@@ -51,7 +54,7 @@ EDCSETUP(*DATA,&DALECmodel.EDCD);
 
 /*initializing model*/
 DATA->MODEL=&DALECmodel;
-DATA->MLF=DALEC_MLF_DEDC;
+DATA->MLF=MLF.mlf;
 DATA->EMLF=EDC_DALEC_MLF_BINARY;
 
 

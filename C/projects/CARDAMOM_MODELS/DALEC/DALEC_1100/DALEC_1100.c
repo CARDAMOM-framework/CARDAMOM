@@ -221,7 +221,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=14;
 DALECmodel->nomet=12;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=70;
+DALECmodel->nopars=68;
 DALECmodel->nofluxes=66;
 
 //declaring observation operator structure, and filling with DALEC configurations
@@ -390,8 +390,8 @@ double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
 
 //Place holder for Tskin - this needs to be replaced by the actual Tskin
-double *TSKIN=DATA.ncdf_data.T2M_MAX.values;
-//double *TSKIN=DATA.ncdf_data.SKT.values;
+//double *TSKIN=DATA.ncdf_data.T2M_MAX.values;
+double *TSKIN=DATA.ncdf_data.TSKIN.values;
 //Place holder for Incident longwave radiation - this needs to be replaced by the actual LWin
 //double *LWIN=DATA.ncdf_data.SSRD.values;
 double *LWIN=DATA.ncdf_data.STRD.values;
@@ -594,8 +594,8 @@ FLUXES[F.T_energy_flux]=0;
 FLUXES[F.E_energy_flux]=0;
 
 //Energy states
-POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW]; //Rnet, //
-POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW]; //Transfer flux
+POOLS[nxp+S.E_PAW] = POOLS[p+S.E.PAW]; //Rnet, //
+POOLS[nxp+S.E_PUW] = POOLS[p+S.E.PUW]; //Transfer flux
 
 
 
