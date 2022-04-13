@@ -147,7 +147,7 @@ while (N.ITER < MCO.nOUT){
 	/*Calculate new likelihood*/
 	P=MODEL_LIKELIHOOD(DATA,PARS);}
 	/*treating nans as -inf*/
-	if isnan(P){printf("Warning: MLF generated NaN... treating as -Inf\n");P=log(0);break;}
+	if (isnan(P)){printf("Warning: MLF generated NaN... treating as -Inf\n");P=log(0);break;}
 
 
 	if (P-P0>log((double)random()/RAND_MAX)){

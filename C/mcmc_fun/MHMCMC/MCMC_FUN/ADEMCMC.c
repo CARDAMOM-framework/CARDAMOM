@@ -126,7 +126,7 @@ for (nn=0;nn<NC;nn++){
 /*NOTE: passing pointer of PARS0 + N-chains: also use *(P+N) format if this one won't work*/
 P[nn]=MODEL_LIKELIHOOD(DATA,&PARS[nn*PI.npars]);
 /*treating NaN as -inf*/
-if isnan(P[nn]){printf("Warning: MLF generated NaN... treating as -Inf");
+if (isnan(P[nn])){printf("Warning: MLF generated NaN... treating as -Inf");
 P[nn]=log(0);}
 if (Pmin>P[nn]){Pmin=P[nn];}
 
@@ -174,7 +174,7 @@ wrlocal=wrlocal+1;
 	/*if (isinf(P_new)==0){oksofar("Found non-inf solution");}
 	*/
 	/*treating nans as -inf*/
-	if isnan(P_new){P_new=log(0);}
+	if (isnan(P_new)){P_new=log(0);}
 if (P_new-P[nn]+gratio>lr || (isinf(P_new)==0 && isinf(P[nn]) && withinrange==1)){N.ACC=N.ACC+1;
 	if (isinf(P_new)==0 && isinf(P[nn])){printf("pnew = %2.1f, p = %2.1f, (P_new-P[nn]) = %2.1f\n",P_new,P[nn],P_new-P[nn]);}
 
