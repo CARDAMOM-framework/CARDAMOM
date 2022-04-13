@@ -86,6 +86,8 @@ int time_r;
 int init_T_mem;
 int init_LAIW_mem;
 int t_foliar;
+int i_PAW_E;
+int i_PUW_E;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -93,7 +95,7 @@ int t_foliar;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64,65,66,67
+    60,61,62,63,64,65,66,67,68,69
 };
 
 struct DALEC_1100_FLUXES{
@@ -158,6 +160,8 @@ int f_dayl_thresh;   /*f_dayl_thres*/
 int c_lim_flag;   /*LAI carbon limitation flag*/
 int lai_fire;   /*LAI fire loss*/
 int foliar_fire_frac;   /*C_fol fire loss frac*/
+int T_energy_flux;
+int E_energy_flux;
 int net_radiation; /*Net radiation flux*/
 int latent_heat; /*latent heat flux*/
 int sensible_heat; /*sensible heat flux*/
@@ -169,7 +173,7 @@ int ground_heat; /*ground heat flux*/
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63 
+    60,61,62,63,64,65 
 };
 
 
@@ -189,11 +193,13 @@ int C_som; /*Soil C*/
 int H2O_PAW; /*Plant available H2O*/
 int H2O_PUW; /*Plant unavailable H2O*/
 int H2O_SWE; /*Snow water equivalent*/
+int E_PAW; /*PAW thermal energy state*/
+int E_PUW; /*PUW thermal energy state*/
 int D_LAI;//leaf area index
 int D_SCF;//snow-covered fraction
 } DALEC_1100_POOLS={
       0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-    10,11
+    10,11,12,13
 };
 
 /*
@@ -213,10 +219,10 @@ struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
 struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
-DALECmodel->nopools=12;
-DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=68;
-DALECmodel->nofluxes=64;
+DALECmodel->nopools=14;
+DALECmodel->nomet=12;/*This should be compatible with CBF file, if not then disp error*/
+DALECmodel->nopars=70;
+DALECmodel->nofluxes=66;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
@@ -363,6 +369,10 @@ double *POOLS=DATA.M_POOLS;
   POOLS[S.H2O_PAW]=pars[P.i_PAW];
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
   POOLS[S.H2O_SWE]=pars[P.i_SWE];
+  /*Energy pools*/
+  POOLS[S.E_PAW]=pars[P.i_PAW_E];
+  POOLS[S.E_PUW]=pars[P.i_PUW_E];
+  
     
    //***DIAGNOSTIC STATES*****  
     POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; //LAI
@@ -381,8 +391,10 @@ double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
 
 //Place holder for Tskin - this needs to be replaced by the actual Tskin
 double *TSKIN=DATA.ncdf_data.T2M_MAX.values;
+//double *TSKIN=DATA.ncdf_data.SKT.values;
 //Place holder for Incident longwave radiation - this needs to be replaced by the actual LWin
-double *LWIN=DATA.ncdf_data.SSRD.values;
+//double *LWIN=DATA.ncdf_data.SSRD.values;
+double *LWIN=DATA.ncdf_data.STRD.values;
 
 double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
 double meanrad = DATA.ncdf_data.SSRD.reference_mean;
@@ -575,6 +587,16 @@ FLUXES[f+F.paw2puw] = xfer*1000*3600*24;
 // Update pools, including ET from PAW
 POOLS[nxp+S.H2O_PAW] += (-FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
 POOLS[nxp+S.H2O_PUW] += (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
+
+
+//Energy fluxes
+FLUXES[F.T_energy_flux]=0;
+FLUXES[F.E_energy_flux]=0;
+
+//Energy states
+POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW]; //Rnet, //
+POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW]; //Transfer flux
+
 
 
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
