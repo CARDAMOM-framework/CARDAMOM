@@ -220,7 +220,7 @@ struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
 struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
  
 DALECmodel->nopools=14;
-DALECmodel->nomet=12;/*This should be compatible with CBF file, if not then disp error*/
+DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=70;
 DALECmodel->nofluxes=66;
  
@@ -370,8 +370,8 @@ double *POOLS=DATA.M_POOLS;
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
   POOLS[S.H2O_SWE]=pars[P.i_SWE];
   /*Energy pools*/
-  //POOLS[S.E_PAW]=pars[P.i_PAW_E];
-  //POOLS[S.E_PUW]=pars[P.i_PUW_E];
+  POOLS[S.E_PAW]=pars[P.i_PAW_E];
+  POOLS[S.E_PUW]=pars[P.i_PUW_E];
   
     
    //***DIAGNOSTIC STATES*****  
@@ -390,8 +390,8 @@ double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
  
 //Place holder for Tskin - this needs to be replaced by the actual Tskin
-double *TSKIN=DATA.ncdf_data.T2M_MAX.values;
-//double *TSKIN=DATA.ncdf_data.SKT.values;
+//double *TSKIN=DATA.ncdf_data.T2M_MAX.values;
+double *TSKIN=DATA.ncdf_data.SKT.values;
 //Place holder for Incident longwave radiation - this needs to be replaced by the actual LWin
 //double *LWIN=DATA.ncdf_data.SSRD.values;
 double *LWIN=DATA.ncdf_data.STRD.values;
