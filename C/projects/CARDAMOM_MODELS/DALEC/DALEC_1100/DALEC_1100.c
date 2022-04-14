@@ -471,21 +471,23 @@ POOLS[nxp+S.H2O_PUW] += (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
 
 //At the moment we assume the canopy and soil are in thermal equilibrium, i.e., soil temp = skt;
 //fraction of liquid water in air
-double la = PREC[n]/(PREC[n] + SNOWFALL[n]);
+//double la = PREC[n]/(PREC[n] + SNOWFALL[n]);
+double la = (PREC[n] - SNOWFALL[n])/(PREC[n]);
 //Specific heat of ice in J kg-1 K-1
 double ci_const = 2093;
 //Specific heat of liquid water in J kg-1 K-1
 double cl_const = 4186;
 //Zero-energy temperature of super-cooled liquid water in K
 double tl0 = 56.79;
-double total_precip = PREC[n] + SNOWFALL[n];
+//double total_precip = PREC[n] + SNOWFALL[n];
+double total_precip = PREC[n];
 //Precipitation energy flux
 FLUXES[F.FUP]= total_precip*(1 - la)*ci_const*ref_temp + la*cl_const*(ref_temp - tl0);
 
 
 //defining runoff
-double runoff = FLUXES[f+F.q_surf];
-//fraction of liquid water in soil ????? - Ask Anthony and Shuang?
+double runoff = (FLUXES[f+F.q_surf]); //+ subsurface_runoff
+//fraction of liquid water in soil 
 double ls = 1;
 //Runoff energy flux 
 FLUXES[F.FUR]= runoff*(1 - ls)*ci_const*tskin_k + ls*cl_const*(tskin_k - tl0);
@@ -505,7 +507,8 @@ FLUXES[F.FUET] = FLUXES[f+F.et]*((1-ls)*liv*tskin_k + ls*llv*tskin_k);
 
 //Energy states
 //fraction of water in soil that is available 
-double frac_paw = POOLS[nxp+S.H2O_PAW]/(POOLS[nxp+S.H2O_PAW]+POOLS[nxp+S.H2O_PUW]);
+//double frac_paw = POOLS[nxp+S.H2O_PAW]/(POOLS[nxp+S.H2O_PAW]+POOLS[nxp+S.H2O_PUW]);
+double frac_paw = 1.;
 POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + frac_paw*(FLUXES[f+F.ground_heat] + FLUXES[f+F.FUP] - FLUXES[f+F.FUET] - FLUXES[f+F.FUR])*deltat;  //Rnet, //
 POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (1. - frac_paw)*(FLUXES[f+F.ground_heat] + FLUXES[f+F.FUP] - FLUXES[f+F.FUET] - FLUXES[f+F.FUR])*deltat;
 
