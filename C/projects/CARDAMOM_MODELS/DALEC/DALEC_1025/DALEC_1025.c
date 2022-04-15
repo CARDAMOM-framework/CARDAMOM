@@ -1,7 +1,7 @@
 #pragma once
-#include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
-#include "../../../DALEC_CODE/DALEC_ALL/LAI_KNORR.c"
-#include "../../../DALEC_CODE/DALEC_ALL/LAI_KNORR_funcs.c"
+#include "../DALEC_ALL/DALEC_MODULE.c"
+#include "../DALEC_ALL/LAI_KNORR.c"
+#include "../DALEC_ALL/LAI_KNORR_funcs.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
