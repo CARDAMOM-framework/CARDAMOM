@@ -1,7 +1,7 @@
 #pragma once
-#include "../../../DALEC_CODE/DALEC_ALL/mean_pool.c"
-#include "../../../DALEC_CODE/DALEC_ALL/mean_annual_pool.c"
-#include "../../../DALEC_CODE/DALEC_ALL/expdecay2.c"
+#include "../DALEC_ALL/mean_pool.c"
+#include "../DALEC_ALL/mean_annual_pool.c"
+#include "../DALEC_ALL/expdecay2.c"
 #include "../../../../math_fun/std.c"
 #include "../../../../math_fun/ipow.c"
 #include "stdlib.h"
