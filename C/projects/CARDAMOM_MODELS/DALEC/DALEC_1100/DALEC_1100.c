@@ -198,9 +198,13 @@ int E_PAW; /*PAW thermal energy state*/
 int E_PUW; /*PUW thermal energy state*/
 int D_LAI;//leaf area index
 int D_SCF;//snow-covered fraction
+int D_TEMP_PAW;//PAW temp
+int D_TEMP_PUW;//PUW temp
+int D_LH2O_PAW;//PAW liquid h2o frac
+int D_LH2O_PUW;//PUW liquid h2o frac
 } DALEC_1100_POOLS={
       0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-    10,11,12,13
+    10,11,12,13,14,15, 16, 17
 };
 
 /*
@@ -226,7 +230,8 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 /*C-pools, fluxes, meteorology indices*/
 int p=0,f,m,nxp, i;
 int n=0,nn=0;
-double pi=3.1415927;
+//double pi=3.1415927;
+double pi=DGCM_PI;
 double lai_met_list[1],lai_var_list[20];
 
 double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.values[0];
