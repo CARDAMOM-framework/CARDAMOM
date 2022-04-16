@@ -10,6 +10,8 @@
 #include "../DALEC_ALL/CH4_MODULES/JCR.c"
 #include "../DALEC_ALL/LAI_KNORR.c"
 #include "../DALEC_ALL/LAI_KNORR_funcs.c"
+#include "../DALEC_ALL/SOIL_TEMP_AND_LIQUID_FRAC.c"
+
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
@@ -49,8 +51,10 @@ int i_PUW;
 int PAW_por;
 int PUW_por;
 int field_cap;
-int PAW_z;
-int PUW_z;
+int PAW_z;//PAW depth
+int PUW_z;//PUW depth
+int PAW_vhc;//PAW volumetric heat capacity
+int PUW_vhc;//PUW volumetric heat capacity
 int Q_excess;
 int Med_g1;
 int Vcmax25;
@@ -93,7 +97,8 @@ int i_PUW_E;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64,65,66,67,68,69
+    60,61,62,63,64,65,66,67,68,69,
+    70,71
 };
 
 struct DALEC_1100_FLUXES{
@@ -200,8 +205,8 @@ int D_LAI;//leaf area index
 int D_SCF;//snow-covered fraction
 int D_TEMP_PAW;//PAW temp
 int D_TEMP_PUW;//PUW temp
-int D_LH2O_PAW;//PAW liquid h2o frac
-int D_LH2O_PUW;//PUW liquid h2o frac
+int D_LF_PAW;//PAW liquid h2o frac
+int D_LF_PUW;//PUW liquid h2o frac
 } DALEC_1100_POOLS={
       0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15, 16, 17
@@ -266,6 +271,26 @@ double *POOLS=DATA.M_POOLS;
     POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; //LAI
     POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
 
+    //Declare stryct
+    SOIL_TEMP_AND_LIQUID_FRAC_STRUCT PAWSOILTEMP, PUWSOILTEMP;
+  //Populate with run-specific constrants
+    //PAW
+    PAWSOILTEMP.dry_soil_vol_heat_capacity =pars[P.PAW_vhc]; ;//J/m3/K
+    PAWSOILTEMP.depth = pars[P.PAW_z];//m 
+    PAWSOILTEMP.soil_water = POOLS[S.H2O_PAW];//mm (or kg/m2)
+    PAWSOILTEMP.internal_energy = POOLS[S.E_PAW];//Joules
+    //PUW
+    PUWSOILTEMP.dry_soil_vol_heat_capacity =pars[P.PUW_vhc]; ;//J/m3/K
+    PUWSOILTEMP.depth = pars[P.PUW_z];//m 
+    PUWSOILTEMP.soil_water = POOLS[S.H2O_PUW];//mm (or kg/m2)
+    PUWSOILTEMP.internal_energy = POOLS[S.E_PUW];//Joules
+    //Pass pointers to function 
+    SOIL_TEMP_AND_LIQUID_FRAC(&PAWSOILTEMP,        &POOLS[S.D_TEMP_PAW],        &POOLS[S.D_LF_PAW]);
+    SOIL_TEMP_AND_LIQUID_FRAC(&PUWSOILTEMP,        &POOLS[S.D_TEMP_PUW],        &POOLS[S.D_LF_PUW]);
+
+
+
+    
 double *SSRD=DATA.ncdf_data.SSRD.values;
 double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
 double *T2M_MAX=DATA.ncdf_data.T2M_MAX.values;
@@ -711,6 +736,16 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2som]*FLUXES[f+F.te
     /***RECORD t+1 DIAGNOSTIC STATES*****/
     POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
     POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
+    
+    
+    PAWSOILTEMP.soil_water = POOLS[nxp+S.H2O_PAW];//mm (or kg/m2)
+    PAWSOILTEMP.internal_energy = POOLS[nxp+S.E_PAW];//Joules
+    PUWSOILTEMP.soil_water = POOLS[nxp+S.H2O_PUW];//mm (or kg/m2)
+    PUWSOILTEMP.internal_energy = POOLS[nxp+S.E_PUW];//Joules
+    //Pass pointers to function 
+    SOIL_TEMP_AND_LIQUID_FRAC(&PAWSOILTEMP,        &POOLS[S.D_TEMP_PAW],        &POOLS[S.D_LF_PAW]);
+    SOIL_TEMP_AND_LIQUID_FRAC(&PUWSOILTEMP,        &POOLS[S.D_TEMP_PUW],        &POOLS[S.D_LF_PUW]);
+
 
 }
 
