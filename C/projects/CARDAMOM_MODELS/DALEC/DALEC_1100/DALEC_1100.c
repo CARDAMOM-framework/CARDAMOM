@@ -763,9 +763,9 @@ struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
 struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
-DALECmodel->nopools=14;
+DALECmodel->nopools=18;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=70;
+DALECmodel->nopars=72;
 DALECmodel->nofluxes=68;
 DALECmodel->dalec=DALEC_1100;
 
