@@ -1,9 +1,9 @@
 #pragma once
 //Note: DALEC_OBSERVATION_OPERATORS.c included in DALEC_MODULE.
-#include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
-#include "../../../DALEC_CODE/DALEC_ALL/ACM.c"
-#include "../../../DALEC_CODE/DALEC_ALL/offset.c"
-#include "../../../DALEC_CODE/DALEC_ALL/CH4_MODULES/JCR.c"
+#include "../DALEC_ALL/DALEC_MODULE.c"
+#include "../DALEC_ALL/ACM.c"
+#include "../DALEC_ALL/offset.c"
+#include "../DALEC_ALL/CH4_MODULES/JCR.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997
@@ -519,7 +519,8 @@ OBSOPE.FIR_flux=F.f_total;
 //CUE parameters
 OBSOPE.CUE_PARAM=P.f_auto;
 
-
+//CH4-specific variables 
+OBSOPE.CH4_flux = F.rh_ch4;
 
 DALECmodel->OBSOPE=OBSOPE;
 
