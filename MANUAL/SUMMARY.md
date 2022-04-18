@@ -83,29 +83,6 @@ Start here! This is the summary of the CARDAMOM community collaborative manual. 
   * Notes for this manual development
 
 
-
-
--------
-- Cost function (Anthony; ).
-- The "cbf.nc" (Matt)
-- CARDAMOM C developer guide (Shuang)
-- Running CARDAMOM in parallel (Sarah, scope = examples or resources associated to parallel computing option)
-- CARDAMOM-MAPS (point to CARDAMOM-MAPS manual)
-- FAQ etc (Anthony)
-
-
-
-
-## Table of Contents
-
-  
-
-
-
-
-
-
-
   
 
 
