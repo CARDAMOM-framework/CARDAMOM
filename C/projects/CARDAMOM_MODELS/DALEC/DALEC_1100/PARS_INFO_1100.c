@@ -290,12 +290,12 @@ CARDADATA->parmin[P.t_foliar]=0.001;
 CARDADATA->parmax[P.t_foliar]=0.1;
 
 /*PSI 50: water potential when soil-plant continuum is at 50% hydraulic conductivity (-MPa)*/
-CARDADATA->parmin[P.psi_50]=0.001;
-CARDADATA->parmax[P.psi_50]=1000;
+CARDADATA->parmin[P.psi_50]=0.1;
+CARDADATA->parmax[P.psi_50]=30;
 
 /*Beta function logistic growth rate */
-CARDADATA->parmin[P.beta_lgr]=0.001;
-CARDADATA->parmax[P.beta_lgr]=100;
+CARDADATA->parmin[P.beta_lgr]=0.1;
+CARDADATA->parmax[P.beta_lgr]=50;
 
 return 0;
 
