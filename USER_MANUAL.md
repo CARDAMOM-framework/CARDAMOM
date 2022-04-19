@@ -16,7 +16,7 @@ Start here! This is the summary of the CARDAMOM community collaborative manual. 
 - [Running CARDAMOM in parallel](#submission-command-line)
 - [PERTURBATION EXPERIMENTS](#perturbation-exp)
 - [CARDAMOM C developer guide](#cardamom-c-developer-guid)
-- [CARDAMOM-MAPS]
+- CARDAMOM-MAPS
   * [CARDAMOM-MAPS Repository](https://github.com/CARDAMOM-framework/CARDAMOM-MAPS)
 - [“Frequently asked questions” and “frequently encountered issues & solutions”](#faq)
 
