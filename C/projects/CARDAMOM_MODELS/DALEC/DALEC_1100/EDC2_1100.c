@@ -132,13 +132,13 @@ Fin[S.C_woo]=FT[F.wood_prod];
 Fout[S.C_woo]=FT[F.wood2cwd]+FT[F.f_woo]+FT[F.fx_woo2cwd];
 /*CWD*/
 Fin[S.C_cwd]=FT[F.wood2cwd]+FT[F.fx_woo2cwd];
-Fout[S.C_cwd]=FT[F.resp_het_cwd]+FT[F.cwd2som]+FT[F.f_cwd]+FT[F.fx_cwd2som];
+Fout[S.C_cwd]=FT[F.ae_rh_cwd]+FT[F.an_rh_cwd]+FT[F.cwd2som]+FT[F.f_cwd]+FT[F.fx_cwd2som];
 /*litter*/
 Fin[S.C_lit]=FT[F.fol2lit]+FT[F.root2lit]+FT[F.fx_lab2lit]+FT[F.fx_fol2lit]+FT[F.fx_roo2lit];
-Fout[S.C_lit]=FT[F.resp_het_lit]+FT[F.lit2som]+FT[F.f_lit]+FT[F.fx_lit2som];
+Fout[S.C_lit]=FT[F.ae_rh_lit]+FT[F.an_rh_lit]+FT[F.lit2som]+FT[F.f_lit]+FT[F.fx_lit2som];
 /*som*/
 Fin[S.C_som]=FT[F.cwd2som]+FT[F.lit2som]+FT[F.fx_cwd2som]+FT[F.fx_lit2som];
-Fout[S.C_som]=FT[F.resp_het_som]+FT[F.f_som];
+Fout[S.C_som]=FT[F.ae_rh_som]+FT[F.an_rh_som]+FT[F.f_som];
 /*PAH2O*/
 Fin[S.H2O_PAW]=TOTAL_PREC-FT[F.q_surf]-TOTAL_SNOW+FT[F.melt];
 Fout[S.H2O_PAW]=FT[F.et]+FT[F.q_paw]+FT[F.paw2puw];
