@@ -22,11 +22,11 @@ You can use the following command lines:
 
 MDF Run: 
 
-path to CARDAMOM_MDF.exe path to .cbf.nc file path to where you want the .cbr file to be create> 
+path to CARDAMOM_MDF.exe       path to .cbf.nc file        path to where you want the .cbr file to be created 
   
 Forward Run: 
   
-path to CARDAMOM_RUN_MODEL.exe path to .cbf.nc file path to created .cbr file
+path to CARDAMOM_RUN_MODEL.exe       path to .cbf.nc file       path to created .cbr file
 
 
 
