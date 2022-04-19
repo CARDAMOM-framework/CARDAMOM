@@ -49,6 +49,9 @@ Start here! This is the summary of the CARDAMOM community collaborative manual. 
   * cbf.nc Fields
   * [Make a new cbf.nc file](#cardamom-make-cbffile)
 
+- [PERTURBATION EXPERIMENTS](#perturbation-exp)
+  * [LINK](MANUAL/PERTURBATION_EXPERIMENTS.md)
+
 - [CARDAMOM C developer guide](#cardamom-c-developer-guid)
   * Curator: Shuang Ma
   * [LINK](MANUAL/CARDAMOM C developer guide.md)
