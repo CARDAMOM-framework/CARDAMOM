@@ -56,7 +56,7 @@ The CARDAMOM netcdf input file is a "one-stop shop" for all inputs required to c
 | -------------------------- | ---------------------------------- | ------------------- |
 | MCMCID                     | Monte Carlo Markov chain algorithm | unitless            |
 | ID                         | DALEC Model ID                     | unitless            |
-| EDC                        | Envionmenral diagram constraints   | unitless            |
+| EDC                        | Environmental dependent constraints   | unitless            |
 | LAT                        | Latitude                           | <sup>o</sup>degrees |
 
 
