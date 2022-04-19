@@ -21,6 +21,7 @@ You can manually open up multiple command lines/terminals up to the maximum numb
 You can use the following command lines:
 
 MDF Run: <path to CARDAMOM_MDF.exe> <path to .cbf.nc file> <path to where you want the .cbr file to be created> **do not include the <> in the command line
+  
 Forward Run: <path to CARDAMOM_RUN_MODEL.exe> <path to .cbf.nc file> <path to created .cbr file> **do not include the <> in the command line
 
 
