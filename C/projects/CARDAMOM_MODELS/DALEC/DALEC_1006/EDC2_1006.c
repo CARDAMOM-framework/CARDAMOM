@@ -187,7 +187,7 @@ EDCD->pEDC=EDCD->pEDC+log(1/(1+exp(10*(pars[P.wilting]-MPOOLS[S.H2O_PAW])/MPOOLS
 /*Additional faults can be stored in positions 35-40*/
 
 /*PRIOR RANGES - ALL POOLS MUST CONFORM*/
-int pidx[]={P.i_labile,P.i_foliar,P.i_root,P.i_wood,P.i_lit,P.i_soil,P.i_PAW,P.i_PUW};
+int pidx[]={P.i_labile,P.i_foliar,P.i_root,P.i_wood,P.i_lit,P.i_som,P.i_PAW,P.i_PUW};
 
 for (n=0;n<noprogpools;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;EDCD->PASSFAIL[35-1]=0;EDCD->pEDC=log(0);}}
 
