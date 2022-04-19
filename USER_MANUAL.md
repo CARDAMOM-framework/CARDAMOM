@@ -17,7 +17,7 @@ Start here! This is the summary of the CARDAMOM community collaborative manual. 
 - [PERTURBATION EXPERIMENTS](#perturbation-exp)
 - [CARDAMOM C developer guide](#cardamom-c-developer-guid)
 - CARDAMOM-MAPS
-  * [CARDAMOM-MAPS Repository](https://github.com/CARDAMOM-framework/CARDAMOM-MAPS){:target="_blank"}
+  * [CARDAMOM-MAPS Repository](https://github.com/CARDAMOM-framework/CARDAMOM-MAPS)
 - [“Frequently asked questions” and “frequently encountered issues & solutions”](#faq)
 
 - [README file](README.md)
