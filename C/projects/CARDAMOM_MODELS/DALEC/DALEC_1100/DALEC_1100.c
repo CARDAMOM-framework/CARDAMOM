@@ -764,6 +764,23 @@ return 0;
 
 
 
+// 
+// int ODE_FLUX_TABLE(){
+//     
+//     //Clabile
+//     P.noinputs=1;
+//             P.in_indices[1]{F.lab_prod };
+//     P.nooutputs=1;
+//             P.out_indices[1]{F.lab_release};
+//     
+//Copy this convention
+// static int ROFF_fluxes[3];
+// ROFF_fluxes[0]=F.q_paw;
+// ROFF_fluxes[1]=F.q_puw;
+// ROFF_fluxes[2]=F.q_surf;
+//     
+//     
+// }
 
 
 
@@ -808,6 +825,11 @@ EDCs[E.cwdsomtor].data=&EDC_cwdsomtor;
 EDCs[E.cwdsomtor].function=&DALEC_EDC_PARS_INEQUALITY;
 EDCs[E.cwdsomtor].prerun=true;
 
+// static DALEC_EDC_STEADY_STATE_EXP_DECAY_STRUCT EDC_SSED_Clab;
+// EDC_SSED_Clab.inputs[2]
+// EDC_SSED_Clab.outputs[2]=[F.
+        
+        
 //Eventually adopt more succinct notation (to consider)
 //e.g. INEQUALITY_EDC(P.t_cwd,P.t_som,EDCs[E.cwdsomtor])
 
