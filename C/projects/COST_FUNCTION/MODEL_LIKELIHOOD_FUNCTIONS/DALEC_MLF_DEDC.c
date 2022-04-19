@@ -3,16 +3,7 @@
 #include "DALEC_ALL_LIKELIHOOD.c"
 #include "DALEC_ALL_MLF.c"
 #include "../../../math_fun/ipow.c"
-        
-// 
-// int DALEC_MLF_DEDC_MODCONFIG(MLFinfo * MLFinfo){
-//     
-//    //Populate LS 
-//     LIKELIHOODinfo LIKELIHOODinfo; DALEC_ALL_LIKELIHOOD_MODCONFIG(&LIKELIHOODinfo);
-//    //Store LS
-//     MLFinfo->nolikelihoods=LIKELIHOODinfo.nolikelihoods;
-//     
-//     return 0;}
+
 
 
 double DALEC_MLF_DEDC(DATA DATA,double *PARS){

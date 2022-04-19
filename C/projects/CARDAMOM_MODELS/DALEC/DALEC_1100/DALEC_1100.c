@@ -208,8 +208,8 @@ int D_TEMP_PUW;//PUW temp
 int D_LF_PAW;//PAW liquid h2o frac
 int D_LF_PUW;//PUW liquid h2o frac
 } DALEC_1100_POOLS={
-      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-    10,11,12,13,14,15, 16, 17
+      0,  1, 2, 3,  4,  5, 6,  7, 8, 9,
+    10,11,12,13,14,15,16,17
 };
 
 /*
@@ -219,6 +219,14 @@ int n_output_fluxes
 int * input_fluxes
 int * output_fluxes}
 */
+
+
+struct DALEC_1100_EDCs{
+int litcwdtor;
+int cwdsomtor;
+} DALEC_1100_EDCs={
+    0,1
+};
 
 
 
@@ -756,39 +764,54 @@ return 0;
 
 
 
+
+
+
 int DALEC_1100_MODCONFIG(DALEC * DALECmodel){
 
 
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
 struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
+struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
 DALECmodel->nopools=18;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=72;
 DALECmodel->nofluxes=68;
 DALECmodel->dalec=DALEC_1100;
-
+DALECmodel->noedcs=2;
 
 //EDC operator
 //Make sure has same number as number of EDCs
-static EDCs  EDCs[10];
+//This is generic EDCs structure defined in ../DALEC_EDCs/DALEC_EDC_FUNCTIONS.c
+//Has three args, data (void), function (in "DATA", and "void *", and "double" out), and "boolean" prerun.
+
+static EDCs * EDCs;EDCs=calloc(DALECmodel->noedcs,sizeof( * EDCs));
 
 
 //Som lit turnover rate
 
-static DALEC_EDC_PARS_INEQUALITY_STRUCT EDC_litsomtor;
-EDC_litsomtor.big_par_index=PARS.tlit;
-EDC_litsomtor.small_par_index=PARS.tsom;
+//EDC: litter tor > cwd tor
+static DALEC_EDC_PARS_INEQUALITY_STRUCT EDC_litcwdtor;
+EDC_litcwdtor.big_par_index=P.t_lit;
+EDC_litcwdtor.small_par_index=P.t_cwd;
+EDCs[E.litcwdtor].data=&EDC_litcwdtor;
+EDCs[E.litcwdtor].function=&DALEC_EDC_PARS_INEQUALITY;
+EDCs[E.litcwdtor].prerun=true;
 
-EDCs[E.litsomtor].data=&EDC_litsomtor;
-EDCs[E.litsomtor].function=&DALEC_EDC_PARS_INEQUALITY;
+//EDC: cwd tor > som tor
+static DALEC_EDC_PARS_INEQUALITY_STRUCT  EDC_cwdsomtor;
+EDC_cwdsomtor.big_par_index=P.t_cwd;
+EDC_cwdsomtor.small_par_index=P.t_som;
+EDCs[E.cwdsomtor].data=&EDC_cwdsomtor;
+EDCs[E.cwdsomtor].function=&DALEC_EDC_PARS_INEQUALITY;
+EDCs[E.cwdsomtor].prerun=true;
 
+//Eventually adopt more succinct notation (to consider)
+//e.g. INEQUALITY_EDC(P.t_cwd,P.t_som,EDCs[E.cwdsomtor])
 
-        
-
-
-INITIALIZE_EDCOPE_SUPPORT(&EDCOPE);
+DALECmodel->EDCs=EDCs;
 
 //ecological
 //EDCOPE.SUPPORT_LITCWDSOM_trpar_EDC=true;

@@ -52,6 +52,7 @@ double *M_POOLS;
 int *M_EDCD;
 double *M_P;
 double *M_LIKELIHOODS;
+double *M_EDCs;
 /*static data*/
 // int nodays;
 // double deltat;
@@ -64,6 +65,7 @@ int nopools;
 int nofluxes;
 int nopars;
 int nolikelihoods;
+int noedcs;
 //
 
 
@@ -81,6 +83,8 @@ char **parname;
 /*Development in progress: this structure will contain all model-specific fields and memory declarations, making it therefore a flexible storage field for non-global "DATA" fields*/
 void *MODEL;
 
+//EDCs struct
+void *EDCs;
 
 
 
