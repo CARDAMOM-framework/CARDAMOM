@@ -13,7 +13,8 @@ Start here! This is the summary of the CARDAMOM community collaborative manual. 
   * Curator: Greg Quetin
 - [README file](README.md)
 
-- [GETTING STARTED]
+- [GITHUB Basics]
+  * [LINK](MANUAL/GITHUB_BASICS.md)
   
 - [Getting Started With CARDAMOM](#-getting-started)
   * Curator: Jessie Au
@@ -36,18 +37,21 @@ Start here! This is the summary of the CARDAMOM community collaborative manual. 
   * Curator: Greg Quetin
   * [Standard Input, Outputs, Parameters](#cardamom-input-output-parameters)
 
-- [CARDAMOM cost function](MANUAL/COST_FUNCTION.md)
+- [CARDAMOM cost function]
   * Curator: Anthony Bloom
+  * [LINK](MANUAL/COST_FUNCTION.md)
   * Notes: with as much as possible review from others
   * Options
 
 - [The ".cbf.nc" File (CARDAMOM netcdf input files)](#cardamom-cbffile)
   * Curator: Matthew Worden
+  * [LINK](CARDAMOM_NETCDF_INPUT_FILE.md)
   * cbf.nc Fields
   * [Make a new cbf.nc file](#cardamom-make-cbffile)
 
 - [CARDAMOM C developer guide](#cardamom-c-developer-guid)
   * Curator: Shuang Ma
+  * [LINK](MANUAL/CARDAMOM C developer guide.md)
   * [Intro tips]
   * [Make a new model]
   * [Add more parameters to the model]
