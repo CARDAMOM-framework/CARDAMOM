@@ -63,7 +63,7 @@ Start here! This is the summary of the CARDAMOM community collaborative manual. 
 
 - [CARDAMOM-MAPS]
   * Notes: (point to CARDAMOM-MAPS manual)
-  * [CARDAMOM-MAPS Repository](CARDAMOM-framework/CARDAMOM-MAPS/MANUAL.md)
+  * [CARDAMOM-MAPS Repository](https://github.com/CARDAMOM-framework/CARDAMOM-MAPS)
 
 - [“Frequently asked questions” and “frequently encountered issues & solutions”](#faq)
   * Curator: Anthony Bloom
