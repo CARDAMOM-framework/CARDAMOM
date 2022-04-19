@@ -17,11 +17,11 @@ Start here! This is the summary of the CARDAMOM community collaborative manual. 
 - [PERTURBATION EXPERIMENTS](#perturbation-exp)
 - [CARDAMOM C developer guide](#cardamom-c-developer-guid)
 - CARDAMOM-MAPS
-  * [CARDAMOM-MAPS Repository](https://github.com/CARDAMOM-framework/CARDAMOM-MAPS)
+  * [CARDAMOM-MAPS Repository](https://github.com/CARDAMOM-framework/CARDAMOM-MAPS){:target="_blank"}
 - [“Frequently asked questions” and “frequently encountered issues & solutions”](#faq)
 
-- [README file](README.md)
-- [GITHUB Basics](MANUAL/GITHUB_BASICS.md)
+- [README file](README.md){:target="_blank"}
+- [GITHUB Basics](MANUAL/GITHUB_BASICS.md){:target="_blank"}
 - [References](#-references)
 
 - [Manual development Notes](#-dev-notes)
@@ -33,7 +33,7 @@ Start here! This is the summary of the CARDAMOM community collaborative manual. 
 
  
 ## Getting Started with CARDAMOM <a name="-getting-started"/>
-  ***Curator: Jessie Au, [Link to section](MANUAL/GETTING_STARTED.md)
+  ***Curator: Jessie Au, [Link to section](MANUAL/GETTING_STARTED.md){:target="_blank"}
  
 This section covers everything to get you up and running, including "Installing" CARDAMOM, a must read for using the GitHub repository, and demos in both Matlab and Python for running CARDAMOM.
 <br/>
@@ -42,7 +42,7 @@ This section covers everything to get you up and running, including "Installing"
 
 
 ## Running CARDAMOM 
-  ***curator: Paul Levine, [Link to section]()
+  ***curator: Paul Levine, [Link to section](){:target="_blank"}
 
 This section outlines setting up CARDAMOM runs now that it is downloaded and tested (see above). The first example will be CARDAMOM run from the command line, followed by descriptions of CARDAMOM wrappers - written in both *Matlab* and *Python*. Code availability and description across platforms is on a case-by-case basis. The basic steps of running CARDAMOM consists of an 'assimilation run', where CARDAMOM is fed drivers and observations through the CBF. This run produces a set of parameters that are constrained by the observations. Finally, a CARDAMOM forward run uses these parameters to predict the states and fluxes of the carbon cycle through time (Figure).
 
@@ -59,7 +59,7 @@ This section outlines setting up CARDAMOM runs now that it is downloaded and tes
 
 
 ## CARDAMOM binary input file ("cbf.nc")<a name="cardamom-cbffile"/>
-  ***Curator: Matthew Worden, [Link to section](CARDAMOM_NETCDF_INPUT_FILE.md)
+  ***Curator: Matthew Worden, [Link to section](CARDAMOM_NETCDF_INPUT_FILE.md){:target="_blank"}
 
 The CBF file contains information on the model's driving meterology and the observations for constraining the model. In addition, the CBF file contains additional information on what model ID to run, uncertainties of observations, parameter priors and uncertainties, and which EDCs to have on. The driving meteorology is often taken from site level measurements or global reanalysis. This section includes the data included in the CBF file and how to create a CBF file to run CARDAMOM
 <br/>
@@ -68,7 +68,7 @@ The CBF file contains information on the model's driving meterology and the obse
 
 
 ## CARDAMOM Output Data and Analysis <a name="-output-analysis"/>
-  ***curator: Greg Quetin, [link to section](MANUAL/OUTPUT_DATA_ANALYSIS.md)
+  ***curator: Greg Quetin, [link to section](MANUAL/OUTPUT_DATA_ANALYSIS.md){:target="_blank"}
 
 This section covers the standard outputs and formats for both CARDAMOM assimilation (parameters) and the CARDAMOM forward runs (fluxes and states). It includes descriptions of some of the basic analysis techniques avaiable for the CARDAMOM ensemble, including references to Matlab and Python scripts.
 <br/>
@@ -77,7 +77,7 @@ This section covers the standard outputs and formats for both CARDAMOM assimilat
 
 
 ## Cost Function <a name="cost-function"/>
-  ***Curator: Anthony Bloom, [Link to section](MANUAL/COST_FUNCTION.md)
+  ***Curator: Anthony Bloom, [Link to section](MANUAL/COST_FUNCTION.md){:target="_blank"}
   * Notes: with as much as possible review from others
   * Options
 <br/>
@@ -86,7 +86,7 @@ This section covers the standard outputs and formats for both CARDAMOM assimilat
 
 
 ## Running CARDAMOM in parallel <a name="submission-command-line"/>
-  ***Curator: Sarah Worden [Link to section]()
+  ***Curator: Sarah Worden [Link to section](){:target="_blank"}
 
 It is common to run CARDAMOM in parallel on remote servers. Generally this is done by running multiple points across multiple CPUs. This section covers some helpful tips and examples for creating multiple point runs and submitting them to servers. Examples include limited information for servers commonly used with CARDAMOM as well as example SLURM submission scripts. See also, [CARDAMOM-MAPS](https://github.com/CARDAMOM-framework/CARDAMOM-MAPS).
 <br/>
@@ -96,14 +96,14 @@ It is common to run CARDAMOM in parallel on remote servers. Generally this is do
 
 
 ## Perturbation Experiments
-  ***Curator: TBD, [Link to section](MANUAL/PERTURBATION_EXPERIMENTS.md)
+  ***Curator: TBD, [Link to section](MANUAL/PERTURBATION_EXPERIMENTS.md){:target="_blank"}
 
 <br/>
 <br/>
 
 
 ## CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/>
-  ***Curator: Shuang Ma, [Link to section]("MANUAL/CARDAMOM_C_developer_guide.md")
+  ***Curator: Shuang Ma, [Link to section]("MANUAL/CARDAMOM_C_developer_guide.md"){:target="_blank"}
 
 This section covers the addition of models, processes, observations, and cost functions to the CARDAMOM C-code base. Before doing any of the following, either git branch and/or backup your C code. Regularly & frequently compile (e.g. CARDAMOM_COMPILE) when making any changes. The section covers making a new model, adding addtional parameters, pools and fluxes, as well as new datasets. Includes examples.
 
@@ -114,7 +114,7 @@ Before getting started, here are some [Github Basics](MANUAL/GITHUB_BASICS.md) t
 
 
 ## “Frequently asked questions” and “frequently encountered issues & solutions” <a name="faq"/>
-  ***Curator: Anthony Bloom [Link to section]()
+  ***Curator: Anthony Bloom [Link to section](){:target="_blank"}
 
 The frequently asked questions section is a collection of common issues and standard solutions to the eccentric inputs and outputs of CARDAMOM.
 <br/>
