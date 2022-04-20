@@ -1,53 +1,68 @@
 
 
 
-# SUMMARY
-### CARDAMOM community collaborative manual
+# CARDAMOM community collaborative manual
+
+###**THIS IS THE CARDAMOM TEAM INTERNAL MANUAL (MANUAL_DEV.md). Use this mannual collaboratively with CARDAMOM team. As & when instructions are ready to be used in public CARDAMOM code, copy/transfer/adapt these manually into MANUAL.md**
+
+Test .md link to other file
+[README file](README.md)
+
+Example relative link for subsection
+[GETTING STARTED](MANUAL/GETTING_STARTED.md)
+
 ***Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, Renato Braghiere and others***  
 [If you’re making any edits, add your name here!]
 
-Start here! This is the summary of the CARDAMOM community collaborative manual. Each section has a brief summary of a part of the manual and a link to a more detailed source. This manual covers everything from getting started runing CARDAMOM to example analysis and model development. See table of contexts and section curators below. Curators are in charge of (i) starting a new markdown page and moving content there, and (2) getting other people to contribute content where necessary. Use this manual collaboratively with the CARDAMOM team.
+
+## Ad-hoc material to "file" away in manual contents
+### Fill value conventions: Nans and -9999
+### DOM = all dead organic C states, SOM = only DALEC soil 
+
+
+Sections for partitioned manual 
+"Curator" (or cognizant engineer) = you're in charge of (i) starting a new markdown page and moving content there, and (2) getting other ppl to contribute content where necessary.
+
+Also: link at end of each section to get to next section (e.g. previous, next, and "back to summary", definitely include that in all files).
+
+(1) Summary (Greg)
+(2) Getting started (Jessie; probably need to make new pages for DEMO)
+(3) Running CARDAMOM (Paul = main section, and command line example; expect subsections for matlab and python)
+(4) Reading, using and analyzing CARDAMOM data? (Greg)
+-------
+- Cost function (Anthony; with as much as possible review from others).
+- The "cbf.nc" (Matt)
+- CARDAMOM C developer guide (Shuang)
+- Running CARDAMOM in parallel (Sarah, scope = examples or resources associated to parallel computing option)
+- CARDAMOM-MAPS (point to CARDAMOM-MAPS manual)
+- FAQ etc (Anthony)
+
+
+
 
 ## Table of Contents
-- [Summary]
-  * Curator: Greg Quetin
-- [README file](README.md)
-
-- [GETTING STARTED]
-  
 - [Getting Started With CARDAMOM](#-getting-started)
-  * Curator: Jessie Au
-  * [Link](MANUAL/GETTING_STARTED.md)
-  * Notes: probably need to make new pages for DEMO
   * [“Installing” CARDAMOM](#-installing--cardamom)
   * [Get code from Github](#get-code-from-github)
   * [CARDAMOM Github User Must Read](#cardamom-git-must-read)
   * [CARDAMOM Matlab Demo and Setup Test](#cardamom-with-matlab)
   * [CARDAMOM Python Demo and Setup](#cardamom-with-python)
-
+  
 - [Running CARDAMOM](#running-cardamom)
-  * Curator: Paul Levine
-  * Notes: main section, and command line example; expect subsections for matlab and python
   * Step 1: CARDAMOM_MDF
   * Step 2: CARDAMOM_RUN_MODEL
   * Saving output at runtime (Matlab)
-
-- [Output Data and Analysis]
-  * Curator: Greg Quetin
-  * [Standard Input, Outputs, Parameters](#cardamom-input-output-parameters)
+- [CARDAMOM state and flux conventions]
 
 - [CARDAMOM cost function](MANUAL/COST_FUNCTION.md)
-  * Curator: Anthony Bloom
-  * Notes: with as much as possible review from others
-  * Options
+  *Options
+
 
 - [The ".cbf.nc" File (CARDAMOM netcdf input files)](#cardamom-cbffile)
-  * Curator: Matthew Worden
   * cbf.nc Fields
   * [Make a new cbf.nc file](#cardamom-make-cbffile)
-
+  
 - [CARDAMOM C developer guide](#cardamom-c-developer-guid)
-  * Curator: Shuang Ma
   * [Intro tips]
   * [Make a new model]
   * [Add more parameters to the model]
@@ -58,14 +73,9 @@ Start here! This is the summary of the CARDAMOM community collaborative manual. 
   * [Switches for EDCs]
 
 - [Running CARDAMOM in parallel](#submission-command-line)
-  * Curator: Sarah Worden
-  * Notes: scope = examples or resources associated to parallel computing option
 
-- [CARDAMOM-MAPS]
-  * Notes: (point to CARDAMOM-MAPS manual)
 
 - [“Frequently asked questions” and “frequently encountered issues & solutions”](#faq)
-  * Curator: Anthony Bloom
   * [Frequently asked questions (FAQs)]
   * [Frequently encountered issues & solutions (FEIs…?)]
 
@@ -73,22 +83,11 @@ Start here! This is the summary of the CARDAMOM community collaborative manual. 
 
 - [Appendix](#appendix)
   * [CARDAMOM model library](#cardamom-model-library)
+  * [Standard Input, Outputs, Parameters](#cardamom-input-output-parameters)
   * [Recommended Settings](#-recommended-settings)
   * [Helper Scripts](#-helper-scripts)
 
 - [References](#-references)
-
-
-- [Manual development Notes](#-dev-notes)
-  * Notes for this manual development
-
-
-  
-
-
-
-
-
 
 
 ## Getting Started with CARDAMOM <a name="-getting-started"/>
@@ -281,12 +280,20 @@ Make sure to pass string or cell for cbffilename.\
 
 
 
-## CARDAMOM Output Data and Analysis
+## CARDAMOM state and flux conventions 
 
-[NEEDS SUMMARY PARAGRAPH AND LINK]
+- Initial conditions correspond to pools (states) at first timestep t = 0
+- Model Meteorological forcing at timestep t is centered between pools (states) t and t+1
+- Model fluxes at timestep t also centered between states t and t +1 
 
 
+<img width="830" alt="image" src="https://user-images.githubusercontent.com/23563444/117489093-086c5b80-af22-11eb-8006-693c716d142f.png">
 
+*In CARDAMOM C code* 
+See conventions above
+
+*For Matlab users*
+CARDAMOM_RUN_MODEL.m throws out first one, but only because it’s repeat of initial conditions (which are contained in parameter vector).
 
 
  
@@ -701,6 +708,108 @@ Can use the COMPLEX effort to document all the models here, including some examp
 | Flagship                         | 1100--1110 |101x,105x,106x            | "Kitchen sink" model                                |                                 | Exploratory                     |
 | DALEC + FF                       | 1200       |                          |                                                     |                                 | Exploratory                     |
 
+### Standard Input, Outputs, Parameters <a name="cardamom-input-output-parameters"/>
+
+#### List of Drivers <a name="list-of-drivers"/>
+
+##### Inputs (Model ID: 811, 821)
+|CARDAMOM Inputs|Units|Longname|
+|:-------------|:-------------|:-------------|
+|'Time | [Days since Jan 01, 2001]'|
+|'min temp | [C]'|
+|'max temp | [C]'|
+|'Solar irradiance | [MJ/m2/day]'|
+|'CO2 | [ppm]'|
+|'Day of year'|day|
+|'Burned area | [m2/m2]'|
+|'VPD | [hPa]'|
+|'Precip. | [mm/day]'|
+
+
+#### List of Ouputs (Model ID: 811, 821)
+
+##### Pools (gC/m2, kgH2O/m2, instantaneous)
+|CARDAMOM Pools|Longname|
+|:--------|:-------------|
+|'c_labile'|
+|'c_foliar'|
+|'c_root'|
+|'c_wood'|
+|'c_finelitter'|
+|'c_som'|
+|'h2o_forplant'|
+
+##### Fluxes (gC/m2/day, kgH2O/m2/day, mean)
+|CARDAMOM Fluxes|Longname|
+|:--------|:-------------|
+|'gppflux'|
+|'decf_tempr'|
+|'gpp_to_autoresp'|
+|'gpp_to_leaf'|
+|'gpp_to_labile'|
+|'gpp_to_root'|
+|'gpp_to_wood'|
+|'labile_to_foliar'|
+|'leaf_fall'|
+|'leaf_to_litter'|
+|'wood_to_soilc'|
+|'root_to_litter'|
+|'hetresp_litter'|
+|'hetresp_som'|
+|'litter_to_som'|
+|'leaf_onset'|
+|'fire_em_total'|
+|'fire_em_labile'|
+|'fire_em_foliar'|
+|'fire_em_root'|
+|'fire_em_wood'|
+|'fire_em_litter'|
+|'fire_em_som'|
+|'fire1_to_littersom'|
+|'fire2_to_littersom'|
+|'fire3_to_littersom'|
+|'fire4_to_littersom'|
+|'fire5_to_littersom'|
+|'et'|
+|'runoff'|
+
+##### Example List of Parameters Optimized in CARDAMOM
+
+| Shortname | Codename                                                                       | Units | Range |
+|-----------|--------------------------------------------------------------------------------|-------|-------|
+|           | Decomposition rate                                                             |       |0.00001 - 0.01|
+|           | Fraction of GPP respired                                                       |       |0.2 - 0.8|
+|           | Fraction of (1-fgpp) to foliage                                                |       |0.01 - 0.5|
+|           | Fraction of (1-fgpp) to roots                                                  |       |0.01 - 1.0|
+|           | Leaf Lifespan                                                                  |       |1.001 - 8.0|
+|           | TOR wood* - 1% loss per year value                                             |       |0.000025 - 0.001|
+|           | TOR roots                                                                      |       |0.0001 - 0.01|
+|           | TOR litter                                                                     |       |0.0001 - 0.01|
+|           | TOR SOM                                                                        |       |0.0000001 - 0.001|
+|           | Temp factor* = Q10 = 1.2-1.6                                                   |       |0.018 - 0.08|
+|           | Canopy Efficiency                                                              |       |5.0 - 50.0|
+|           | Bday                                                                           |day of year |365.25 - 4x365.25|
+|           | Fraction to Clab                                                               |       |0.01 - 0.5|
+|           | Clab Release period                                                            |days |365.25/12 - 100|
+|           | Fday                                                                           |day of year |365.25 - 4x365.25|
+|           | Leaf fall period                                                               |days |365.25/12 - 150|
+|           | LMCA                                                                           |g C/m2 |5.0 - 200.0|
+|           | C labile                                                                       |g C/m2 |1.0 - 2000.0|
+|           | C foliar                                                                       |g C/m2 |1.0 - 2000.0|
+|           | C roots                                                                        |g C/m2 |1.0 - 2000.0|
+|           | C_wood                                                                         |g C/m2 |1.0 - 100000.0|
+|           | C litter                                                                       |g C/m2 |1.0 - 2000.0|
+|           | C_som                                                                          |g C/m2 |1.0 - 200000.0|
+|           | IWUE: GPPxVPD/ET: gC/kgH2o -hPa                                                |hPa gC/kgH2O |10.0 - 50.0|
+|           | Runoff focal point (~maximum soil storage capacity x 4)                        |       |1.0 - 100000.0|
+|           | "Wilting point"                                                                |kgH2O/m2 |1.0 - 10000.0|
+|           | "Bucket at t0"                                                                 |kgH2O/m2 |1.0 - 10000.0|
+|           | Foliar biomass CF                                                              |       |0.01 - 1.0|
+|           | "Ligneous" biomass CF".                                                        |       |0.01 - 1.0|
+|           | DOM CF".                                                                       |       |0.01 - 1|
+|           | Resilience factor (since transfer to litter is represented as (1-pars[30])) ". |       |0.01 - 1|
+|           | Lab pool lifespan                                                              |       |1.001 - 8.0|
+|           | Moisture factor                                                                |       |0.01 - 1.0|
 
 
 ### Recommended Settings <a name="-recommended-settings"/>
@@ -715,6 +824,62 @@ minimum_step_size = ".001" # Relates to MCMC, standard is currently .001
 mcmcid = "119" # Current default MCMC method is 119
 nadapt = "1000" # MCMC setting, standard is 1000
 ```
+
+### Helper Scripts <a name="-helper-scripts"/>
+
+Helper scripts (running and analysing CARDAMOM) are primarily written in Matlab and Python.
+
+|Filepath|Description|
+|:--------|:-------------|
+|script1||
+|script1||
+|script1||
+
+
+
+## Aggregation and uncertainty propagatation
+Description: general rules and guidelines for estimating and propagating uncertainty
+
+"rule no 1." (some funny movie reference)
+"Rule no 2.": perform operation on data before calculating uncertainty (on states and fluxes?)
+
+- example: detrending state and flux data. 
+  - Step 1. Detrend every CARDAMOM sample 
+  - Step 2. Calculate percentile/statistics based on detrended dataset.
+
+Other examples:
+- annually average time series (action = average annually for each samples first, then
+- monthly anomalies
+- normalizing data (GRACE
+- For comparison against observation, perform "observation operator" first, then aggregate.
+
+
+Exception (sort of) to rule = "statistics on statistics".
+
+For example: what is the range of IAV (e.g. as sigma value) among CARDAMOM samples?
+Step 1. Calculate IAV per sample.
+Step 2. Summarize mean, median, standard deviation, percentiles of IAV among samples.
+
+Two contrasting examples:
+"ensemble mean" = mean of N CARDAMOM samples.
+
+(1) What is the IAV of ensemble mean GPP?
+Answer: (1) calculate ensemble mean GPP, and (2) calculate its IAV. Effectively no uncertainty estimate here, possible never need to do this for a single pixel (however: this order may be required for multi pixel uncertainty propagation).
+
+(2) What is the IAV of all GPP ensemble members?
+Answer: (1) calculate IAV for each sample, and (2) calculate any useful/relevant statistics on IAV differences among samples (e.g. medians, percentiles).
+
+Note on above examples: mean GPP IAV is **not** equal to mean of GPP IAV values corresponding to individual ensemble members (e.g. if distribution is skewed). iav(mean(GPP)) =/= mean(iav(GPP)).
+
+
+<img width="1113" alt="image" src="https://user-images.githubusercontent.com/23563444/110368127-74534600-7ffd-11eb-9d81-479a39618fe0.png">
+
+
+***How to aggregate statistics between pixels***
+General issue: no information on correlation between samples between pixels. However, some uncertainty estimation generally required
+
+Dilemma. Two pixels, one with mean GPP = 0.2 gC/m2/d (desert), and another with GPP = 10 gC/m2/d (rainforest). How to you aggregate IAVs (if at all)? 
+
 
 
 
@@ -750,9 +915,3 @@ Bloom, A. A., Bowman, K. W., Liu, J., Konings, A. G., Worden, J. R., Parazoo, N.
 Yin, Y., Bloom, A.A., Worden, J., Saatchi, S., Yang, Y., Williams, M., Liu, J., Jiang, Z., Worden, H., Bowman, K. and Frankenberg, C., 2020. Fire decline in dry tropical ecosystems enhances decadal land carbon sink. Nature communications, 11(1), pp.1-7.
 
 
-## Manual Development Notes <a name="-getting-started"/>
-## Ad-hoc material to "file" away in manual contents
-### Fill value conventions: Nans and -9999
-### DOM = all dead organic C states, SOM = only DALEC soil 
-
-Also: link at end of each section to get to next section (e.g. previous, next, and "back to summary", definitely include that in all files).
