@@ -512,14 +512,17 @@ double tl0 = 56.79;
 //double total_precip = PREC[n] + SNOWFALL[n];
 double total_precip = PREC[n];
 //Precipitation energy flux
-FLUXES[F.FUP]= total_precip*(1 - la)*ci_const*ref_temp + la*cl_const*(ref_temp - tl0);
+//For demonstration only (as we'll ultimately only track liquid H2O infiltration into soil to avoid snow energy balance).
+//FLUXES[F.FUP]= total_precip*(1 - la)*ci_const*ref_temp + la*cl_const*(ref_temp - tl0);
+//FLUXES[F.FUP]= total_precip * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(double ref_temp, double la)
 
 
 //defining runoff
 double runoff = (FLUXES[f+F.q_surf]); //+ subsurface_runoff
 //fraction of liquid water in soil 
 double ls = 1;
-//Runoff energy flux 
+//Runoff energy flux
+//Internal energy = liquid water flux * temp of water (in deg C) * specific heat capacity of liquid h2o  +
 FLUXES[F.FUR]= runoff*(1 - ls)*ci_const*tskin_k + ls*cl_const*(tskin_k - tl0);
 
 //defining FUET

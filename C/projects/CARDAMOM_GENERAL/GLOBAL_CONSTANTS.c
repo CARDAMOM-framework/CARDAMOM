@@ -10,3 +10,4 @@
 #define DGCM_SPECIFIC_HEAT_WATER 4186// 4186 J kg?1 K
 
 #define DGCM_LATENT_HEAT_FUSION_3 3.34e5
+#define DGCM_T_LIQUID_H2O_ZERO_ENERGY 56.79//Zero-energy temperature of super-cooled liquid water 56.79 K
