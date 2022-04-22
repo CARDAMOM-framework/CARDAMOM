@@ -294,7 +294,7 @@ CARDADATA->parmin[P.psi_50]=0.1;
 CARDADATA->parmax[P.psi_50]=30;
 
 /*Beta function logistic growth rate */
-CARDADATA->parmin[P.beta_lgr]=0.1;
+CARDADATA->parmin[P.beta_lgr]=4.2;
 CARDADATA->parmax[P.beta_lgr]=50;
 
 return 0;

@@ -66,7 +66,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1))
 
 /*EDC CHECK NO 6*/
 /*Curve check */
-if (((EDC==1 & DIAG==0) || DIAG==1) & ( 1/(1 + exp(pars[P.beta_lgr]*(.0001 - pars[P.psi_50]))) <.98 )){EDC=0;EDCD->PASSFAIL[6-1]=0;}
+// if (((EDC==1 & DIAG==0) || DIAG==1) & ( 1/(1 + exp(pars[P.beta_lgr]*(.0001 - pars[P.psi_50]))) <.98 )){EDC=0;EDCD->PASSFAIL[6-1]=0;}
 
 
 /*EDC CHECK NO 5*/
