@@ -58,8 +58,7 @@ Notes:
     + Please report questions and issues encountered in FAQ & FEI section below
     + Works with Matlab 2017b and later versions. Compatibility with earlier versions is likely straightforward.
 
-[MATLAB DEMO](MANUAL/MATLAB_DEMO)
-
+[MATLAB DEMO](MANUAL/MATLAB_DEMO.md)
 
 ### CARDAMOM Python Demo and Setup <a name="cardamom-with-python"/>
 
