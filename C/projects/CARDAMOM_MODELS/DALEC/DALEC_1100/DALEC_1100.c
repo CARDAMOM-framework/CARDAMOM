@@ -11,7 +11,8 @@
 #include "../DALEC_ALL/LAI_KNORR.c"
 #include "../DALEC_ALL/LAI_KNORR_funcs.c"
 #include "../DALEC_ALL/SOIL_TEMP_AND_LIQUID_FRAC.c"
-#include "../DALEC_ALL/INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS.c";
+#include "../DALEC_ALL/INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS.c"
+#include "../DALEC_ALL/CARBON_ALLOCATION_FLUXES.c"
 
 
 /*Code used by Bloom et al., 2016
@@ -274,20 +275,34 @@ double *POOLS=DATA.M_POOLS;
     SOIL_TEMP_AND_LIQUID_FRAC_STRUCT PAWSOILTEMP, PUWSOILTEMP;
   //Populate with run-specific constrants
     //PAW
-    PAWSOILTEMP.dry_soil_vol_heat_capacity =pars[P.PAW_vhc]; ;//J/m3/K
-    PAWSOILTEMP.depth = pars[P.PAW_z];//m 
-    PAWSOILTEMP.soil_water = POOLS[S.H2O_PAW];//mm (or kg/m2)
-    PAWSOILTEMP.internal_energy = POOLS[S.E_PAW];//Joules
-    //PUW
-    PUWSOILTEMP.dry_soil_vol_heat_capacity =pars[P.PUW_vhc]; ;//J/m3/K
-    PUWSOILTEMP.depth = pars[P.PUW_z];//m 
-    PUWSOILTEMP.soil_water = POOLS[S.H2O_PUW];//mm (or kg/m2)
-    PUWSOILTEMP.internal_energy = POOLS[S.E_PUW];//Joules
+    PAWSOILTEMP.IN.dry_soil_vol_heat_capacity =pars[P.PAW_vhc]; ;//J/m3/K
+    PAWSOILTEMP.IN.depth = pars[P.PAW_z];//m 
+    PAWSOILTEMP.IN.soil_water = POOLS[S.H2O_PAW];//mm (or kg/m2)
+    PAWSOILTEMP.IN.internal_energy = POOLS[S.E_PAW];//Joules
+    PAWSOILTEMP.OUT.TEMP=&POOLS[S.D_TEMP_PAW];
+    PAWSOILTEMP.OUT.LF=&POOLS[S.D_LF_PAW];
     //Pass pointers to function 
-    SOIL_TEMP_AND_LIQUID_FRAC(&PAWSOILTEMP,        &POOLS[S.D_TEMP_PAW],        &POOLS[S.D_LF_PAW]);
-    SOIL_TEMP_AND_LIQUID_FRAC(&PUWSOILTEMP,        &POOLS[S.D_TEMP_PUW],        &POOLS[S.D_LF_PUW]);
+    SOIL_TEMP_AND_LIQUID_FRAC(&PAWSOILTEMP);
+
+    //PUW
+    PUWSOILTEMP.IN.dry_soil_vol_heat_capacity =pars[P.PUW_vhc]; ;//J/m3/K
+    PUWSOILTEMP.IN.depth = pars[P.PUW_z];//m 
+    PUWSOILTEMP.IN.soil_water = POOLS[S.H2O_PUW];//mm (or kg/m2)
+    PUWSOILTEMP.IN.internal_energy = POOLS[S.E_PUW];//Joules
+    PUWSOILTEMP.OUT.TEMP=&POOLS[S.D_TEMP_PUW];
+    PUWSOILTEMP.OUT.LF=&POOLS[S.D_LF_PUW];
+    //Pass pointers to function 
+    SOIL_TEMP_AND_LIQUID_FRAC(&PUWSOILTEMP);
 
 
+    
+    
+    
+    //*Allocation fluxes struct
+    CARBON_ALLOCATION_FLUXES_STRUCT CALLOC;
+    
+    
+    
 
     
 double *SSRD=DATA.ncdf_data.SSRD.values;
@@ -523,8 +538,8 @@ FLUXES[F.et_e] = FLUXES[f+F.et]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(SKT[n] 
 //Energy states
 //fraction of water in soil that is available 
 //double frac_paw = POOLS[nxp+S.H2O_PAW]/(POOLS[nxp+S.H2O_PAW]+POOLS[nxp+S.H2O_PUW]);
-POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.ground_heat] + FLUXES[f+F.FUP] - FLUXES[f+F.FUET] - FLUXES[f+F.FUR])*deltat;  //Rnet, //
-POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[f+F.ground_heat] + FLUXES[f+F.FUP] - FLUXES[f+F.FUET] - FLUXES[f+F.FUR])*deltat;
+POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.ground_heat]  - FLUXES[f+F.et_e] )*deltat;  //ADD REST OF ENERGY FLUXES HERE
+POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[f+F.ground_heat]  - FLUXES[f+F.et_e] )*deltat; //ADD REST OF ENERGY FLUXES HERE
 
 
 
@@ -717,13 +732,20 @@ FLUXES[f+F.soil_moist] = thetas;
     POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
     
     
-    PAWSOILTEMP.soil_water = POOLS[nxp+S.H2O_PAW];//mm (or kg/m2)
-    PAWSOILTEMP.internal_energy = POOLS[nxp+S.E_PAW];//Joules
-    PUWSOILTEMP.soil_water = POOLS[nxp+S.H2O_PUW];//mm (or kg/m2)
-    PUWSOILTEMP.internal_energy = POOLS[nxp+S.E_PUW];//Joules
+    PAWSOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_PAW];//mm (or kg/m2)
+    PAWSOILTEMP.IN.internal_energy = POOLS[nxp+S.E_PAW];//Joules
+    PAWSOILTEMP.OUT.TEMP=&POOLS[nxp+S.D_TEMP_PAW];
+    PAWSOILTEMP.OUT.LF=&POOLS[nxp+S.D_LF_PAW];
+    
+    PUWSOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_PUW];//mm (or kg/m2)
+    PUWSOILTEMP.IN.internal_energy = POOLS[nxp+S.E_PUW];//Joules
+    PUWSOILTEMP.OUT.TEMP=&POOLS[nxp+S.D_TEMP_PUW];
+    PUWSOILTEMP.OUT.LF=&POOLS[nxp+S.D_LF_PUW];
+    
+
     //Pass pointers to function 
-    SOIL_TEMP_AND_LIQUID_FRAC(&PAWSOILTEMP,        &POOLS[S.D_TEMP_PAW],        &POOLS[S.D_LF_PAW]);
-    SOIL_TEMP_AND_LIQUID_FRAC(&PUWSOILTEMP,        &POOLS[S.D_TEMP_PUW],        &POOLS[S.D_LF_PUW]);
+    SOIL_TEMP_AND_LIQUID_FRAC(&PAWSOILTEMP);
+    SOIL_TEMP_AND_LIQUID_FRAC(&PUWSOILTEMP);
 
 
 }
