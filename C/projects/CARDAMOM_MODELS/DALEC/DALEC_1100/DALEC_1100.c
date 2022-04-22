@@ -11,6 +11,7 @@
 #include "../DALEC_ALL/LAI_KNORR.c"
 #include "../DALEC_ALL/LAI_KNORR_funcs.c"
 #include "../DALEC_ALL/SOIL_TEMP_AND_LIQUID_FRAC.c"
+#include "../DALEC_ALL/INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS.c";
 
 
 /*Code used by Bloom et al., 2016
@@ -132,12 +133,12 @@ int q_paw;   /*PAW runoff*/
 int paw2puw;   /*PAW->PUW transfer*/
 int q_puw;   /*PUW runoff*/
 int q_surf;   /*Surface runoff*/
-int infilt;   /*INFILTRATION*/
-int infilt_e;   /*INFILTRATION IE: temp = weight average of snow melt (0C) + liquid precip (@air temp)*/
+int infil;   /*INFILTRATION*/
+int infil_e;   /*INFILTRATION IE: temp = weight average of snow melt (0C) + liquid precip (@air temp)*/
 int q_paw_e;   /*Q PAW IE: temp = PAW temp*/
 int q_puw_e;   /*Q PUW IE: temp = PUW temp*/
 int paw2puw_e;   /*PAW->PUW transfer IE: temp of donor*/
-int FUET; /* See Retano's calculation*/
+int et_e; /* See Retano's calculation*/
 int transp;   /*Transpiration*/
 int evap;   /*Evaporation*/
 int melt;   /*Snow melt*/
@@ -448,13 +449,13 @@ double G = Rn - H - LE;
 FLUXES[f+F.ground_heat] = G;
 
 // Infiltration (mm/day)
-double infil = pars[P.max_infil]*(1 - exp(-(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt])/pars[P.max_infil]));
+FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt])/pars[P.max_infil]));
 
 // Surface runoff (mm/day)
-FLUXES[f+F.q_surf] = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]) - infil;
+FLUXES[f+F.q_surf] = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]) - FLUXES[f+F.infil];
 
 // Update pools, including infiltration
-POOLS[nxp+S.H2O_PAW] = POOLS[p+S.H2O_PAW] + deltat*infil;
+POOLS[nxp+S.H2O_PAW] = POOLS[p+S.H2O_PAW] + deltat*FLUXES[f+F.infil];
 POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW];
 
 // Volumetric soil moisture from water pools
@@ -495,40 +496,25 @@ POOLS[nxp+S.H2O_PAW] += (-FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.e
 POOLS[nxp+S.H2O_PUW] += (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
 
 
-//At the moment we assume the canopy and soil are in thermal equilibrium, i.e., soil temp = skt;
-//fraction of liquid water in air
-//double la = PREC[n]/(PREC[n] + SNOWFALL[n]);
-double la = (PREC[n] - SNOWFALL[n])/(PREC[n]);
-//Specific heat of ice in J kg-1 K-1
-double ci_const = 2093;
-//Specific heat of liquid water in J kg-1 K-1
-double cl_const = 4186;
-//Zero-energy temperature of super-cooled liquid water in K
-double tl0 = 56.79;
-//double total_precip = PREC[n] + SNOWFALL[n];
-double total_precip = PREC[n];
-//Precipitation energy flux
-//For demonstration only (as we'll ultimately only track liquid H2O infiltration into soil to avoid snow energy balance).
-//FLUXES[F.FUP]= total_precip*(1 - la)*ci_const*ref_temp + la*cl_const*(ref_temp - tl0);
-//FLUXES[F.FUP]= total_precip * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(double ref_temp, double la)
+
+//**********INTERNAL ENERGT FLUXES FOR ALL H2O FLUXES***************
+//Add INFILTRATION, PAW, PUW, PAW2PUW, ET
+double infiltemp = (T2M_MAX[n] + T2M_MIN[n])*0.5*(PREC[n] - SNOWFALL[n])/(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]) ;//snowmelt temp = 0, so term multiplied by zero in weighted average 
 
 
-//defining runoff
-double runoff = (FLUXES[f+F.q_surf]); //+ subsurface_runoff
-//fraction of liquid water in soil 
-double ls = 1;
-//Runoff energy flux
-//Internal energy = liquid water flux * temp of water (in deg C) * specific heat capacity of liquid h2o  +
-FLUXES[F.FUR]= runoff*(1 - ls)*ci_const*tskin_k + ls*cl_const*(tskin_k - tl0);
+//INFILTRATION
+FLUXES[F.infil_e] = FLUXES[F.infil_e]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(infiltemp + 273.15);
+//FLUXES[F.q_paw_e]
+//FLUXES[F.q_puw_e]
+//
+//Assumes PAW->PUW, so PAW LF & TEMP; if reverse flow, then switches to PUW LF & TEMP.
+double LFxfer=POOLS[S.D_LF_PAW]; 
+double TEMPxfer= POOLS[S.D_TEMP_PAW];
+if (FLUXES[f+F.paw2puw]<0) {LFxfer=POOLS[S.D_LF_PUW];TEMPxfer= POOLS[S.D_TEMP_PUW];}
+//FLUXES[F.paw2puw_e]
 
-//defining FUET
-//Specific latent heat of melting at the water triple point Jkg-1
-double lil = 3.34*1e5 ;
-//Specific latent heat of vaporization of water at the triple point Jkg-1
-double llv = 2.50*1e6;
-//Specific latent heat of sublimation at the water triple point Jkg-1
-double liv = 2.834*1e6 ;
-FLUXES[F.FUET] = FLUXES[f+F.et]*((1-ls)*liv*tskin_k + ls*llv*tskin_k);
+//ET equation done
+FLUXES[F.et_e] = FLUXES[f+F.et]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(SKT[n] + 273.15);
 
 //Energy fluxes
 ///FLUXES[F.T_energy_flux]=0;
@@ -537,9 +523,8 @@ FLUXES[F.FUET] = FLUXES[f+F.et]*((1-ls)*liv*tskin_k + ls*llv*tskin_k);
 //Energy states
 //fraction of water in soil that is available 
 //double frac_paw = POOLS[nxp+S.H2O_PAW]/(POOLS[nxp+S.H2O_PAW]+POOLS[nxp+S.H2O_PUW]);
-double frac_paw = 1.;
-POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + frac_paw*(FLUXES[f+F.ground_heat] + FLUXES[f+F.FUP] - FLUXES[f+F.FUET] - FLUXES[f+F.FUR])*deltat;  //Rnet, //
-POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (1. - frac_paw)*(FLUXES[f+F.ground_heat] + FLUXES[f+F.FUP] - FLUXES[f+F.FUET] - FLUXES[f+F.FUR])*deltat;
+POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.ground_heat] + FLUXES[f+F.FUP] - FLUXES[f+F.FUET] - FLUXES[f+F.FUR])*deltat;  //Rnet, //
+POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[f+F.ground_heat] + FLUXES[f+F.FUP] - FLUXES[f+F.FUET] - FLUXES[f+F.FUR])*deltat;
 
 
 
