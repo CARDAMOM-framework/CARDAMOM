@@ -47,18 +47,7 @@ After you clone the CARDAMOM repository to your local, please take a minute to g
 
 ### CARDAMOM Matlab Demo and Setup Test <a name="cardamom-with-matlab"/>
 
-Follow these steps *once*. Once you’ve successfully made it to step 4, you can then start matlab and you’re ready to use all CARDAMOM routines without any further action.
-Note: PC implementation not supported (but do add notes if you’ve managed to do this!).
-
-*What happens when you run CARDAMOM_DEMO:* \
-CARDAMOM_DEMO.m will locally compile the CARDAMOM C code (using “gcc” C compiler). CARDAMOM (called from within matlab) will then show some attempts to find a starting point with probability > 0, and will then start accepting/rejecting parameter samples (note: this is a shorter-than-usual run only for demo purposes). The CARDAMOM_DEMO script will then make a figure with some of the retrieved parameter results. Completion of the CARDAMOM script means all components of CARDAMOM are operational.
-
-Notes:
-    + This works great on macs and (theoretically) on linux. I have no idea what happens on Windows.
-    + Please report questions and issues encountered in FAQ & FEI section below
-    + Works with Matlab 2017b and later versions. Compatibility with earlier versions is likely straightforward.
-
-[MATLAB DEMO](MATLAB_DEMO.md)
+[Link to MATLAB DEMO](MATLAB_DEMO.md)
 
 ### CARDAMOM Python Demo and Setup <a name="cardamom-with-python"/>
 
