@@ -64,7 +64,7 @@ Description: constrains annual means and monthly anomalies (Quetin et al., 2020,
  
 ## Editing LIKELIHOOD field in the output file (cbr)
 
-If you find the existing LIKELIHOOD field is missing a variable (eg. PEQ_iniSOM) that you used to constrain model (prerequisites are 1)there of course need to be a field named PEQ_iniSOM in your input nc file, 2)the cost function has a PEQ_iniSOM operator). Consult the CARDAMOM developer team. You can add it to three places in the DALEC_ALL_LIKELIHOOD file:
+If you find the existing LIKELIHOOD field is missing a variable (eg. PEQ_iniSOM) that you used to constrain model (prerequisites are 1)there of course need to be a field named PEQ_iniSOM in your input nc file, 2)the cost function has a PEQ_iniSOM operator). Consult the CARDAMOM developer team. You can add it by editing three places in the DALEC_ALL_LIKELIHOOD file:
 
 1) add "int PEQ_iniSOM;" after line 21
 2) add a number coundting after the last number in line ~40: LIKELIHOOD_INDICES={
