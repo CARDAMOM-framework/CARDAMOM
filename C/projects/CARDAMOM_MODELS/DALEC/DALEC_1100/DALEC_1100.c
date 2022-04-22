@@ -132,6 +132,12 @@ int q_paw;   /*PAW runoff*/
 int paw2puw;   /*PAW->PUW transfer*/
 int q_puw;   /*PUW runoff*/
 int q_surf;   /*Surface runoff*/
+int infilt;   /*INFILTRATION*/
+int infilt_e;   /*INFILTRATION IE: temp = weight average of snow melt (0C) + liquid precip (@air temp)*/
+int q_paw_e;   /*Q PAW IE: temp = PAW temp*/
+int q_puw_e;   /*Q PUW IE: temp = PUW temp*/
+int paw2puw_e;   /*PAW->PUW transfer IE: temp of donor*/
+int FUET; /* See Retano's calculation*/
 int transp;   /*Transpiration*/
 int evap;   /*Evaporation*/
 int melt;   /*Snow melt*/
@@ -164,9 +170,6 @@ int net_radiation; /*Net radiation flux*/
 int latent_heat; /*latent heat flux*/
 int sensible_heat; /*sensible heat flux*/
 int ground_heat; /*ground heat flux*/
-int FUP;
-int FUR; 
-int FUET;
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -174,7 +177,7 @@ int FUET;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64
+    60,61,62,63,64,65,66,67
 };
 
 
