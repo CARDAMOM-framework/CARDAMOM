@@ -12,7 +12,7 @@
 #include "../DALEC_ALL/LAI_KNORR_funcs.c"
 #include "../DALEC_ALL/SOIL_TEMP_AND_LIQUID_FRAC.c"
 #include "../DALEC_ALL/INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS.c"
-#include "../DALEC_ALL/CARBON_ALLOCATION_FLUXES.c"
+#include "../DALEC_ALL/ALLOC_AND_AUTO_RESP_FLUXES.c"
 
 
 /*Code used by Bloom et al., 2016
@@ -172,6 +172,8 @@ int net_radiation; /*Net radiation flux*/
 int latent_heat; /*latent heat flux*/
 int sensible_heat; /*sensible heat flux*/
 int ground_heat; /*ground heat flux*/
+int auto_growth;
+int auto_maint;
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -179,7 +181,7 @@ int ground_heat; /*ground heat flux*/
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64,65,66,67
+    60,61,62,63,64,65,66,67,68,69
 };
 
 
@@ -207,9 +209,11 @@ int D_TEMP_PAW;//PAW temp
 int D_TEMP_PUW;//PUW temp
 int D_LF_PAW;//PAW liquid h2o frac
 int D_LF_PUW;//PUW liquid h2o frac
+int D_SM_PAW;//PAW liquid h2o frac
+int D_SM_PUW;//PUW liquid h2o frac
 } DALEC_1100_POOLS={
       0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-    10,11,12,13,14,15, 16, 17
+    10,11,12,13,14,15, 16, 17,18,19
 };
 
 /*
@@ -270,7 +274,12 @@ double *POOLS=DATA.M_POOLS;
    //---DIAGNOSTIC STATES---
     POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; //LAI
     POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
+    
+        POOLS[S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
+        POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);//soil moisture PUW
 
+        
+        
     //Declare stryct
     SOIL_TEMP_AND_LIQUID_FRAC_STRUCT PAWSOILTEMP, PUWSOILTEMP;
   //Populate with run-specific constrants
@@ -299,9 +308,31 @@ double *POOLS=DATA.M_POOLS;
     
     
     //*Allocation fluxes struct
-    CARBON_ALLOCATION_FLUXES_STRUCT CALLOC;
+//    
+//     typedef struct {    
+//     struct {
+//     double   TEMP;//deg C
+//     double   SRAD;//MJ m2 d
+//     double   NSC;//Clab
+//     double   PAW_SM;//m3/m3
+//     double   parameter1;//replace with any name, no constraints on naming convention
+//     double   parameter2;//replace with any name, no constraints on naming convention
+//     } IN;
+//     struct {
+//     double *    AUTO_RESP_MAINTENANCE;
+//       double *       AUTO_RESP_GROWTH;
+//       double *       ALLOC_FOL;
+//       double *       ALLOC_WOO;
+//      double *        ALLOC_ROO;}OUT;
+//   }ALLOC_AND_AUTO_RESP_FLUXES_STRUCT;
     
-    
+   //Declare
+     ALLOC_AND_AUTO_RESP_FLUXES_STRUCT ARFLUXES;
+     //define time-invariant parameters here
+        ARFLUXES.IN.parameter1=30;//replace with pars[P....]
+        ARFLUXES.IN.parameter2=40;//replace with pars[P....]
+
+
     
 
     
@@ -366,6 +397,30 @@ nxp=nopools*(n+1);
 // m=nomet*n;
 /*flux array index*/
 f=nofluxes*n;
+
+
+
+     //Allocation fluxes
+//     double   NSC;//Clab
+//     double   PAW_SM;//m3/m3
+//     double   parameter1;//replace with any name, no constraints on naming convention
+//     double   parameter2;//replace with any name, no constraints on naming convention
+//     } IN;
+//     struct {
+//     double *    AUTO_RESP_MAINTENANCE;
+//       double *       AUTO_RESP_GROWTH;
+//       double *       ALLOC_FOL;
+//       double *       ALLOC_WOO;
+//      double *        ALLOC_ROO;}OUT;
+//   }ALLOC_AND_AUTO_RESP_FLUXES_STRUCT;
+
+
+//Define (1) all time varying inputs, and (2) pointers for outputs
+    ARFLUXES.IN.TEMP=(T2M_MIN[n]+T2M_MAX[n])*0.5;
+    ARFLUXES.IN.SRAD=SSRD[n]*0.5;
+    ARFLUXES.IN.NSC=POOLS[p+S.C_lab];
+    ARFLUXES.IN.PAW_SM=POOLS[p+S.D_SM_PAW];
+    
 
 
 double LAI=POOLS[p+S.D_LAI];
@@ -727,7 +782,7 @@ FLUXES[f+F.soil_moist] = thetas;
       - FE_\Lambda^{(t+1)} = \Lambda^{(t+1)'} * BA ( k_{factor(i)} + (1 - k_{factor(i)}) r )*/
     FLUXES[f+F.lai_fire] = (POOLS[p+S.C_fol]/pars[P.LCMA])*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
 
-    /***RECORD t+1 DIAGNOSTIC STATES*****/
+    /****************************RECORD t+1 DIAGNOSTIC STATES*************************/
     POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
     POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
     
@@ -746,6 +801,11 @@ FLUXES[f+F.soil_moist] = thetas;
     //Pass pointers to function 
     SOIL_TEMP_AND_LIQUID_FRAC(&PAWSOILTEMP);
     SOIL_TEMP_AND_LIQUID_FRAC(&PUWSOILTEMP);
+    
+    
+    //Soil moisture
+         POOLS[S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
+        POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);//soil moisture PUW
 
 
 }

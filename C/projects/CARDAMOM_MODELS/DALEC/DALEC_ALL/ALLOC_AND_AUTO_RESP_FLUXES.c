@@ -17,12 +17,12 @@ typedef struct {
       double *       ALLOC_WOO;
      double *        ALLOC_ROO;}OUT;
         //Add any extra outputs here
-  }CARBON_ALLOCATION_FLUXES_STRUCT;
+  }ALLOC_AND_AUTO_RESP_FLUXES_STRUCT;
 
     
 
 //Main function 
-int CARBON_ALLOCATION_FLUXES(CARBON_ALLOCATION_FLUXES_STRUCT * S){
+int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
 //Add functionality here
     //Use any field in S->IN for calculations
     //example
