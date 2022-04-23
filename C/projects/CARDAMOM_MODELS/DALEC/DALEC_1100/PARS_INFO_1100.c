@@ -156,6 +156,15 @@ CARDADATA->parmax[P.PAW_z]=100;
 CARDADATA->parmin[P.PUW_z]=0.01;
 CARDADATA->parmax[P.PUW_z]=100;
 
+
+/*PAW volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
+CARDADATA->parmin[P.PAW_vhc]=1.3e6;
+CARDADATA->parmax[P.PAW_vhc]=3e6;
+
+/*PUW volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
+CARDADATA->parmin[P.PUW_vhc]=1.3e6;
+CARDADATA->parmax[P.PUW_vhc]=3e6;
+
 /*Runoff excess*/
 CARDADATA->parmin[P.Q_excess]=0.01;
 CARDADATA->parmax[P.Q_excess]=1;

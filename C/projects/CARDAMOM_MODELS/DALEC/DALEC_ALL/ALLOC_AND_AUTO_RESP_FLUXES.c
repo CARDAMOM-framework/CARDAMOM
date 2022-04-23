@@ -11,12 +11,13 @@ typedef struct {
         //Add any extra inputs here
     } IN;
     struct {
-    double *    AUTO_RESP_MAINTENANCE;
-      double *       AUTO_RESP_GROWTH;
-      double *       ALLOC_FOL;
-      double *       ALLOC_WOO;
-     double *        ALLOC_ROO;}OUT;
-        //Add any extra outputs here
+    double *    AUTO_RESP_MAINTENANCE;//gC/m2/d
+      double *       AUTO_RESP_GROWTH;//gC/m2/d
+      double *       ALLOC_FOL;//gC/m2/d
+      double *       ALLOC_WOO;//gC/m2/d
+     double *        ALLOC_ROO;//gC/m2/d
+             //Add any extra outputs here
+    }OUT;
   }ALLOC_AND_AUTO_RESP_FLUXES_STRUCT;
 
     
