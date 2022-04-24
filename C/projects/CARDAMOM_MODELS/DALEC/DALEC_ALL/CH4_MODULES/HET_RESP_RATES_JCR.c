@@ -24,10 +24,13 @@ typedef struct{
     }IN;
             
             struct {    
-    double*  aerobic_tr;//Aerobic turnover rate scalar
-    double * anaerobic_tr;//Anaerobic turnover rate scalar
-        double * anaerobic_co2_c_ratio;//CO2_C_ratio
-        double * anaerobic_ch4_c_ratio;//CH4_C_ratio
+    double aerobic_tr;//Aerobic turnover rate scalar
+    double anaerobic_tr;//Anaerobic turnover rate scalar
+        double  anaerobic_co2_c_ratio;//CO2_C_ratio
+        double  anaerobic_ch4_c_ratio;//CH4_C_ratio
+        double fT;
+        double fV;
+        double fW;
     }OUT;
     
 } HET_RESP_RATES_JCR_STRUCT;
@@ -101,10 +104,14 @@ int HET_RESP_RATES_JCR(HET_RESP_RATES_JCR_STRUCT * S)
     jcr_o[3] = fCH4;
 /*-------------------------------OUTPUTS----------------------------------------*/
 
-*S->OUT.aerobic_tr=jcr_o[2]*jcr_o[0]*jcr_o[1];
-*S->OUT.anaerobic_tr=fwc*jcr_o[0]*(1-jcr_o[1]);
-*S->OUT.anaerobic_ch4_c_ratio=jcr_o[3];
-*S->OUT.anaerobic_co2_c_ratio=(1-jcr_o[3]);
+S->OUT.aerobic_tr=jcr_o[2]*jcr_o[0]*jcr_o[1];
+S->OUT.anaerobic_tr=fwc*jcr_o[0]*(1-jcr_o[1]);
+S->OUT.anaerobic_ch4_c_ratio=jcr_o[3];
+S->OUT.anaerobic_co2_c_ratio=(1-jcr_o[3]);
+S->OUT.fT = jcr_o[0];
+S->OUT.fV = jcr_o[1];
+S->OUT.fW = jcr_o[2];
+
     
     
     

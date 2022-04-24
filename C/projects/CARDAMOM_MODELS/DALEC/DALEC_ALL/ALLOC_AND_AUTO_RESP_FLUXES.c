@@ -11,11 +11,11 @@ typedef struct {
         //Add any extra inputs here
     } IN;
     struct {
-    double *    AUTO_RESP_MAINTENANCE;//gC/m2/d
-      double *       AUTO_RESP_GROWTH;//gC/m2/d
-      double *       ALLOC_FOL;//gC/m2/d
-      double *       ALLOC_WOO;//gC/m2/d
-     double *        ALLOC_ROO;//gC/m2/d
+    double     AUTO_RESP_MAINTENANCE;//gC/m2/d
+      double       AUTO_RESP_GROWTH;//gC/m2/d
+      double       ALLOC_FOL;//gC/m2/d
+      double       ALLOC_WOO;//gC/m2/d
+     double         ALLOC_ROO;//gC/m2/d
              //Add any extra outputs here
     }OUT;
   }ALLOC_AND_AUTO_RESP_FLUXES_STRUCT;
@@ -35,11 +35,11 @@ int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
    //..
    //Once done with calculations, populate output variables
     
-*S->OUT.AUTO_RESP_MAINTENANCE=0;
-*S->OUT.AUTO_RESP_MAINTENANCE=0;
-*S->OUT.ALLOC_FOL=0;
-*S->OUT.ALLOC_WOO=0;
-*S->OUT.ALLOC_ROO=0;
+S->OUT.AUTO_RESP_MAINTENANCE=0;
+S->OUT.AUTO_RESP_MAINTENANCE=0;
+S->OUT.ALLOC_FOL=0;
+S->OUT.ALLOC_WOO=0;
+S->OUT.ALLOC_ROO=0;
 
     
     

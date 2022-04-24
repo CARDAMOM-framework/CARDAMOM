@@ -287,21 +287,22 @@ double *POOLS=DATA.M_POOLS;
     PAWSOILTEMP.IN.depth = pars[P.PAW_z];//m 
     PAWSOILTEMP.IN.soil_water = POOLS[S.H2O_PAW];//mm (or kg/m2)
     PAWSOILTEMP.IN.internal_energy = POOLS[S.E_PAW];//Joules
-    PAWSOILTEMP.OUT.TEMP=&POOLS[S.D_TEMP_PAW];
-    PAWSOILTEMP.OUT.LF=&POOLS[S.D_LF_PAW];
-    //Pass pointers to function 
-    SOIL_TEMP_AND_LIQUID_FRAC(&PAWSOILTEMP);
+    //Pass pointer to function 
+    SOIL_TEMP_AND_LIQUID_FRAC(&PAWSOILTEMP);  
+        //Store outputs 
+    POOLS[S.D_TEMP_PAW]=PAWSOILTEMP.OUT.TEMP;    
+    POOLS[S.D_LF_PAW]=PAWSOILTEMP.OUT.LF;
 
     //PUW
     PUWSOILTEMP.IN.dry_soil_vol_heat_capacity =pars[P.PUW_vhc]; ;//J/m3/K
     PUWSOILTEMP.IN.depth = pars[P.PUW_z];//m 
     PUWSOILTEMP.IN.soil_water = POOLS[S.H2O_PUW];//mm (or kg/m2)
     PUWSOILTEMP.IN.internal_energy = POOLS[S.E_PUW];//Joules
-    PUWSOILTEMP.OUT.TEMP=&POOLS[S.D_TEMP_PUW];
-    PUWSOILTEMP.OUT.LF=&POOLS[S.D_LF_PUW];
-    //Pass pointers to function 
+    //Pass pointer to function 
     SOIL_TEMP_AND_LIQUID_FRAC(&PUWSOILTEMP);
-
+    //Store outputs 
+    POOLS[S.D_TEMP_PUW]=PUWSOILTEMP.OUT.TEMP;    
+    POOLS[S.D_LF_PUW]=PUWSOILTEMP.OUT.LF;
 
     
     
@@ -428,16 +429,17 @@ f=nofluxes*n;
     
     //Note: these temporary variables can be replaced with indexed "FLUXES" variables to avoid extra code, variables, value copies and speed things up.
     //E.g. "  ARFLUXES.OUT.AUTO_RESP_MAINTENANCE = &FLUXES[f+F.auto_resp_main];" will populate FLUXES[f+F.auto_resp_main] values and these are then available elsewhere
-    double resp_main, resp_growth,alloc_fol, alloc_woo,alloc_roo;
-    ARFLUXES.OUT.AUTO_RESP_MAINTENANCE=&resp_main;//gC/m2/d
-    ARFLUXES.OUT.AUTO_RESP_GROWTH=&resp_growth;//gC/m2/d
-    ARFLUXES.OUT.ALLOC_FOL=&alloc_fol;//gC/m2/d
-        ARFLUXES.OUT.ALLOC_WOO=&alloc_woo;//gC/m2/d
-       ARFLUXES.OUT.ALLOC_ROO=&alloc_roo;//gC/m2/d
+
     
        //Call to ALLOC & AUTO RESP functuon
     ALLOC_AND_AUTO_RESP_FLUXES(&ARFLUXES);
-
+//You can now reference any of the .OUT variables
+    
+        //ARFLUXES.OUT.AUTO_RESP_MAINTENANCE
+    //ARFLUXES.OUT.AUTO_RESP_GROWTH
+    //ARFLUXES.OUT.ALLOC_FOL
+        //ARFLUXES.OUT.ALLOC_WOO
+       //ARFLUXES.OUT.ALLOC_ROO
 
 double LAI=POOLS[p+S.D_LAI];
      
@@ -689,54 +691,45 @@ FLUXES[f+F.root2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
     //TIME-VARYING INPUTS
      HRJCR.IN.SM=POOLS[p+S.D_SM_PAW];
      HRJCR.IN.TEMP=SKT[n];
-     
-     //OUtputs
-        HRJCR.OUT.aerobic_tr=&FLUXES[f+F.antr];//Aerobic turnover rate scalar
-        HRJCR.OUT.anaerobic_tr=&FLUXES[f+F.aetr];//Anaerobic turnover rate scalar
-        HRJCR.OUT.anaerobic_co2_c_ratio=&FLUXES[f+F.an_co2_c_ratio];//CO2_C_ratio
-        HRJCR.OUT.anaerobic_ch4_c_ratio=&FLUXES[f+F.an_ch4_c_ratio];//CH4_C_ratio
-
         //JCR
         HET_RESP_RATES_JCR(&HRJCR);
+             //OUtputs --- store anything we want here---
+            FLUXES[f+F.antr]=HRJCR.OUT.aerobic_tr;//Aerobic turnover rate scalar
+       FLUXES[f+F.aetr]=HRJCR.OUT.anaerobic_tr;//Anaerobic turnover rate scalar
+       FLUXES[f+F.an_co2_c_ratio]=HRJCR.OUT.anaerobic_co2_c_ratio;//CO2_C_ratio
+        FLUXES[f+F.an_ch4_c_ratio]=HRJCR.OUT.anaerobic_ch4_c_ratio;//CH4_C_ratio
 
-        //For brevity (can remove these in future);
-        double aetr=FLUXES[f+F.aetr];//aerobic turnver rate
-        double antr=FLUXES[f+F.antr];
-        double an_co2_c_ratio=FLUXES[f+F.an_co2_c_ratio];
-        double an_ch4_c_ratio=FLUXES[f+F.an_ch4_c_ratio];
 
 
 //outputformat
 //jcr_o 0-3 fT,fV,fW,fCH4; /*jc*/ /* output from JCR module */
-double ae_loss_cwd = POOLS[p+S.C_cwd]*(1-pow(1- aetr*pars[P.t_cwd],deltat))/deltat;
+double ae_loss_cwd = POOLS[p+S.C_cwd]*(1-pow(1-HRJCR.OUT.aerobic_tr*pars[P.t_cwd],deltat))/deltat;
 /* aerobic Rh from coarse woody debris*/
 FLUXES[f+F.ae_rh_cwd] = ae_loss_cwd*(1-pars[P.tr_cwd2som]);
-double ae_loss_lit = POOLS[p+S.C_lit]*(1-pow(1-aetr*pars[P.t_lit],deltat))/deltat;
+double ae_loss_lit = POOLS[p+S.C_lit]*(1-pow(1-     HRJCR.OUT.aerobic_tr*pars[P.t_lit],deltat))/deltat;
 /* aerobic Rh from litter*/
 FLUXES[f+F.ae_rh_lit] = ae_loss_lit*(1-pars[P.tr_lit2som]);
 /* aerobic Rh from SOM*/
-FLUXES[f+F.ae_rh_som] = POOLS[p+S.C_som]*(1-pow(1-aetr*pars[P.t_som],deltat))/deltat;
+FLUXES[f+F.ae_rh_som] = POOLS[p+S.C_som]*(1-pow(1-     HRJCR.OUT.aerobic_tr*pars[P.t_som],deltat))/deltat;
 
 //******Anaerobic fluxes
-double an_loss_cwd = POOLS[p+S.C_cwd]*(1-pow(1-antr*pars[P.t_cwd],deltat))/deltat;
+double an_loss_cwd = POOLS[p+S.C_cwd]*(1-pow(1- HRJCR.OUT.anaerobic_tr*pars[P.t_cwd],deltat))/deltat;
 /* anaerobic Rh from coarse woody debris*/
 FLUXES[f+F.an_rh_cwd] = an_loss_cwd*(1-pars[P.tr_cwd2som]);
 /* anaerobic Rh from litter*/
-double an_loss_lit = POOLS[p+S.C_lit]*(1-pow(1-antr*pars[P.t_lit],deltat))/deltat;
+double an_loss_lit = POOLS[p+S.C_lit]*(1-pow(1- HRJCR.OUT.anaerobic_tr*pars[P.t_lit],deltat))/deltat;
 FLUXES[f+F.an_rh_lit] = an_loss_lit*(1-pars[P.tr_lit2som]);
 /* anaerobic Rh from SOM*/
-FLUXES[f+F.an_rh_som] = POOLS[p+S.C_som]*(1-pow(1-antr*pars[P.t_som],deltat))/deltat;
+FLUXES[f+F.an_rh_som] = POOLS[p+S.C_som]*(1-pow(1- HRJCR.OUT.anaerobic_tr*pars[P.t_som],deltat))/deltat;
 /*CWD to SOM*/
 FLUXES[f+F.cwd2som] = (an_loss_cwd + ae_loss_cwd)*pars[P.tr_cwd2som];
 /*litter to SOM*/
 FLUXES[f+F.lit2som] = (an_loss_lit + ae_loss_lit)*pars[P.tr_lit2som];
 /* Rh_CO2*/
-FLUXES[f+F.rh_co2] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*an_co2_c_ratio + (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.ae_rh_som]);
+FLUXES[f+F.rh_co2] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*HRJCR.OUT.anaerobic_co2_c_ratio + (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.ae_rh_som]);
 /* Rh_CH4*/
-FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*an_ch4_c_ratio;
+FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*HRJCR.OUT.anaerobic_ch4_c_ratio;
 
-/* CH4 production=TEMP*RH*WEXT*Q10 */
-/*FLUXES[f+32] = ch4pars[0]*(FLUXES[f+12]+FLUXES[f+13])*pow(ch4pars[1],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-15)/10)*ch4pars[2];*/
 /*----------------------  end of JCR  --------------------------------------------*/
 
 
@@ -815,24 +808,27 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
     
     
-    PAWSOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_PAW];//mm (or kg/m2)
-    PAWSOILTEMP.IN.internal_energy = POOLS[nxp+S.E_PAW];//Joules
-    PAWSOILTEMP.OUT.TEMP=&POOLS[nxp+S.D_TEMP_PAW];
-    PAWSOILTEMP.OUT.LF=&POOLS[nxp+S.D_LF_PAW];
     
+    //Update time-varying inputs
+    PAWSOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_PAW];//mm (or kg/m2)
     PUWSOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_PUW];//mm (or kg/m2)
+    PAWSOILTEMP.IN.internal_energy = POOLS[nxp+S.E_PAW];//Joules
     PUWSOILTEMP.IN.internal_energy = POOLS[nxp+S.E_PUW];//Joules
-    PUWSOILTEMP.OUT.TEMP=&POOLS[nxp+S.D_TEMP_PUW];
-    PUWSOILTEMP.OUT.LF=&POOLS[nxp+S.D_LF_PUW];
+    
+    SOIL_TEMP_AND_LIQUID_FRAC(&PAWSOILTEMP);
+    SOIL_TEMP_AND_LIQUID_FRAC(&PUWSOILTEMP);
+
+    POOLS[nxp+S.D_TEMP_PAW]=PAWSOILTEMP.OUT.TEMP;
+    POOLS[nxp+S.D_TEMP_PUW]=PUWSOILTEMP.OUT.TEMP;
+    POOLS[nxp+S.D_LF_PAW]=PAWSOILTEMP.OUT.LF;
+    POOLS[nxp+S.D_LF_PUW]=PUWSOILTEMP.OUT.LF;
     
 
     //Pass pointers to function 
-    SOIL_TEMP_AND_LIQUID_FRAC(&PAWSOILTEMP);
-    SOIL_TEMP_AND_LIQUID_FRAC(&PUWSOILTEMP);
     
     
     //Soil moisture
-         POOLS[S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
+        POOLS[S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
         POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);//soil moisture PUW
 
 
