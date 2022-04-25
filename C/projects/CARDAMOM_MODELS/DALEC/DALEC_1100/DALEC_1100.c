@@ -8,8 +8,7 @@
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI.c"
 #include "../DALEC_ALL/LIU_An_et.c"
 #include "../DALEC_ALL/CH4_MODULES/HET_RESP_RATES_JCR.c"
-#include "../DALEC_ALL/LAI_KNORR.c"
-#include "../DALEC_ALL/LAI_KNORR_funcs.c"
+#include "../DALEC_ALL/KNORR_ALLOCATION.c"
 #include "../DALEC_ALL/SOIL_TEMP_AND_LIQUID_FRAC.c"
 #include "../DALEC_ALL/INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS.c"
 #include "../DALEC_ALL/ALLOC_AND_AUTO_RESP_FLUXES.c"
@@ -210,9 +209,13 @@ int D_LF_PAW;//PAW liquid h2o frac
 int D_LF_PUW;//PUW liquid h2o frac
 int D_SM_PAW;//PAW liquid h2o frac
 int D_SM_PUW;//PUW liquid h2o frac
+int M_LAI_MAX;//KNORR LAI module max LAI memory
+int M_LAI_TEMP;//KNORR LAI module temp memory
+
 } DALEC_1100_POOLS={
       0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-    10,11,12,13,14,15, 16, 17,18,19
+    10,11,12,13,14,15, 16, 17,18,19,
+      20,21
 };
 
 /*
@@ -233,6 +236,20 @@ struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
 struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 
+    
+double *SSRD=DATA.ncdf_data.SSRD.values;
+double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
+double *T2M_MAX=DATA.ncdf_data.T2M_MAX.values;
+double *CO2=DATA.ncdf_data.CO2.values;
+double *DOY=DATA.ncdf_data.DOY.values;
+double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
+double *VPD=DATA.ncdf_data.VPD.values;
+double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
+double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
+double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
+double *SKT=DATA.ncdf_data.SKT.values;
+double *STRD=DATA.ncdf_data.STRD.values;
+
 
 
 /*C-pools, fluxes, meteorology indices*/
@@ -240,7 +257,6 @@ int p=0,f,m,nxp, i;
 int n=0,nn=0;
 //double pi=3.1415927;
 double pi=DGCM_PI;
-double lai_met_list[1],lai_var_list[20];
 
 double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.values[0];
 int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
@@ -307,7 +323,27 @@ double *POOLS=DATA.M_POOLS;
     
     
     
-    //*Allocation fluxes struct
+    
+    //******************Delcare KNORR STRUCT*********************
+    KNORR_ALLOCATION_STRUCT KNORR;
+//define time-invariant parameters
+         KNORR.IN.deltat=deltat;
+         KNORR.IN.latitude=DATA.ncdf_data.LAT;
+         KNORR.IN.T_phi=pars[P.T_phi];
+         KNORR.IN.T_r=pars[P.T_range];
+         KNORR.IN.plgr=pars[P.plgr];
+         KNORR.IN.k_L=pars[P.k_leaf];
+         KNORR.IN.tau_W=pars[P.tau_W];
+         KNORR.IN.t_c=pars[P.time_c];
+         KNORR.IN.t_r=pars[P.time_r];;
+         KNORR.IN.lambda_max=pars[P.lambda_max];
+    //Initialize memory states
+    
+    POOLS[S.M_LAI_MAX]=pars[P.init_T_mem]*(T2M_MAX[0]-T2M_MIN[0])+T2M_MIN[0];//Recommend configuring "P.init_T_mem" as a temperature 
+    POOLS[S.M_LAI_TEMP]=pars[P.init_LAIW_mem]*pars[P.lambda_max];
+    
+
+    //******************Allocation fluxes struct**********************
 //    
 //     typedef struct {    
 //     struct {
@@ -325,6 +361,8 @@ double *POOLS=DATA.M_POOLS;
 //       double *       ALLOC_WOO;
 //      double *        ALLOC_ROO;}OUT;
 //   }ALLOC_AND_AUTO_RESP_FLUXES_STRUCT;
+    
+    
     
    //Declare
      ALLOC_AND_AUTO_RESP_FLUXES_STRUCT ARFLUXES;
@@ -345,19 +383,7 @@ double *POOLS=DATA.M_POOLS;
         HRJCR.IN.Q10CH4=pars[P.Q10ch4];
         HRJCR.IN.Q10CO2=pars[P.Q10rhco2];
 
-    
-double *SSRD=DATA.ncdf_data.SSRD.values;
-double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
-double *T2M_MAX=DATA.ncdf_data.T2M_MAX.values;
-double *CO2=DATA.ncdf_data.CO2.values;
-double *DOY=DATA.ncdf_data.DOY.values;
-double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
-double *VPD=DATA.ncdf_data.VPD.values;
-double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
-double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
-double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
-double *SKT=DATA.ncdf_data.SKT.values;
-double *STRD=DATA.ncdf_data.STRD.values;
+
 
 
 
@@ -621,42 +647,33 @@ FLUXES[f+F.resp_auto]=pars[P.f_auto]*FLUXES[f+F.gpp];
 /*labile production*/
 FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*(pars[P.f_lab]);
 
-//KNORR LAI//
-if (n==0){
-  /*Initialize phenology memory of air-temperature as some value within mintemp and maxtemp*/
-  lai_var_list[5]=pars[P.init_T_mem]*(T2M_MAX[n]-T2M_MIN[n])+T2M_MIN[n];
-  /*Initialize phenology memory of water/structural limitation */
-  lai_var_list[11]=pars[P.init_LAIW_mem]*pars[P.lambda_max];
-}
-lai_met_list[0]=(T2M_MAX[n]+T2M_MIN[n])/2.0;
-// lai_var_list[0]=1;
-lai_var_list[19]=deltat;
-lai_var_list[1]=LAI;
-lai_var_list[2]=LAI;
-lai_var_list[3]=pars[P.T_phi];
-lai_var_list[4]=pars[P.T_range];
-lai_var_list[6]=pars[P.tau_m];
-lai_var_list[7]=pars[P.plgr];
-lai_var_list[8]=pars[P.k_leaf];
-lai_var_list[9]=pars[P.lambda_max];
-lai_var_list[10]=pars[P.tau_W];
-lai_var_list[12]=DATA.ncdf_data.LAT;
-lai_var_list[13]=DOY[n];
-lai_var_list[14]=pi;
-lai_var_list[15]=pars[P.time_c];
-lai_var_list[16]=pars[P.time_r];
-lai_var_list[17]=(POOLS[p+S.H2O_PAW]+POOLS[nxp+S.H2O_PAW])/2.0;
-lai_var_list[18]=FLUXES[f+F.et];
-// // Run Knorr LAI module
-double *LAI_KNORR_OUTPUT = LAI_KNORR(lai_met_list,lai_var_list);
-FLUXES[f+F.target_LAI]=LAI_KNORR_OUTPUT[0];
-FLUXES[f+F.T_memory]=LAI_KNORR_OUTPUT[1];
-FLUXES[f+F.lambda_max_memory]=LAI_KNORR_OUTPUT[2];
-FLUXES[f+F.dlambda_dt]=LAI_KNORR_OUTPUT[3]/deltat;
-FLUXES[f+F.f_temp_thresh]=LAI_KNORR_OUTPUT[4];
-FLUXES[f+F.f_dayl_thresh]=LAI_KNORR_OUTPUT[5];
-lai_var_list[5]=FLUXES[f+F.T_memory];  /*Update LAI temperature memory state for next iteration*/
-lai_var_list[11]=FLUXES[f+F.lambda_max_memory];   /*Update water/structural memory state for next iteration*/
+//*************KNORR LAI**************
+
+
+
+//Time varying KNORR function terms
+
+KNORR.IN.lambda_max_memory=  POOLS[p+S.M_LAI_MAX];
+KNORR.IN.T_memory=POOLS[p+S.M_LAI_TEMP];
+KNORR.IN.temp=(T2M_MAX[n]+T2M_MIN[n])*0.5;
+KNORR.IN.DOY=DOY[n];
+KNORR.IN.lambda=LAI;
+KNORR.IN.pasm=(POOLS[p+S.H2O_PAW]+POOLS[nxp+S.H2O_PAW])/2.0;//Note: soil moisture also available here
+KNORR.IN.ET= FLUXES[f+F.et];
+//Call function: uses KNORR->IN to update KNORR->OUT
+KNORR_ALLOCATION(&KNORR);
+ 
+FLUXES[f+F.target_LAI]=KNORR.OUT.lambda_next ;
+FLUXES[f+F.dlambda_dt]=KNORR.OUT.dlambdadt;
+FLUXES[f+F.f_temp_thresh]= KNORR.OUT.f_T;
+FLUXES[f+F.f_dayl_thresh]= KNORR.OUT.f_d;
+
+//Update KNORR memory variables for next iteration
+POOLS[nxp+S.M_LAI_MAX]=KNORR.OUT.laim;
+POOLS[nxp+S.M_LAI_TEMP]=KNORR.OUT.T;
+
+    
+//************Allocation*******************
 
 Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]/deltat;
 if (FLUXES[f+F.dlambda_dt] > 0){
