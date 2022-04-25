@@ -865,10 +865,10 @@ struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
 struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
-DALECmodel->nopools=18;
+DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=71;
-DALECmodel->nofluxes=65;
+DALECmodel->nofluxes=69;
 DALECmodel->dalec=DALEC_1100;
 
 //declaring observation operator structure, and filling with DALEC configurations
