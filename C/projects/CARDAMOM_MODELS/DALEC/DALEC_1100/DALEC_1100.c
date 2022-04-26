@@ -212,7 +212,6 @@ int D_SM_PAW;//PAW liquid h2o frac
 int D_SM_PUW;//PUW liquid h2o frac
 int M_LAI_MAX;//KNORR LAI module max LAI memory
 int M_LAI_TEMP;//KNORR LAI module temp memory
-
 } DALEC_1100_POOLS={
       0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15, 16, 17,18,19,
@@ -368,6 +367,7 @@ double *POOLS=DATA.M_POOLS;
     
     
    //Declare
+    //Plant carbon allocation.
      ALLOC_AND_AUTO_RESP_FLUXES_STRUCT ARFLUXES;
      //define time-invariant parameters here
         ARFLUXES.IN.parameter1=30;//replace with pars[P....]
@@ -573,7 +573,8 @@ POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step
 // Rn = SWin - SWout + LWin - LWout
 double SWin = SSRD[n]*1e6/(24*3600);
 //Weighted average of surface albedo considering SW snow albedo as 0.9
-double SWout = (1. - FLUXES[f+F.scf])*(SWin*pars[P.leaf_refl]) + FLUXES[f+F.scf]*(SWin*0.9);
+double snow_albedo=0.9;//Consider age-dependent albedo.
+double SWout = (1. - FLUXES[f+F.scf])*(SWin*pars[P.leaf_refl]) + FLUXES[f+F.scf]*(SWin*snow_albedo);
 //Stefan-Boltzmann constant W.m-2.K-4
 double sigma = 5.67*1e-8;
 //reference air temperature
@@ -588,7 +589,7 @@ double LWout = sigma*pow(tskin_k,4.);
 double Rn = SWin - SWout + LWin - LWout;
 FLUXES[f+F.net_radiation] = Rn;
 //Latent heat of Vaporization J kg-1 
-double lambda = 2.501*1e6; 
+double lambda = DGCM_LATENT_HEAT_VAPORIZATION; //2.501*1e6; 
 //Latente heat (W.m-2)
 double LE = lambda*FLUXES[f+F.et]/(24*60*60);
 FLUXES[f+F.latent_heat] = LE;
