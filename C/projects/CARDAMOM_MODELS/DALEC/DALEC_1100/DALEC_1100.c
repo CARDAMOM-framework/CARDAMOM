@@ -604,10 +604,10 @@ double psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[P.retention]);
 //Assumes PAW->PUW, so PAW LF & TEMP; if reverse flow, then switches to PUW LF & TEMP.
 double LFxfer=POOLS[p+S.D_LF_PAW]; 
 double TEMPxfer= POOLS[p+S.D_TEMP_PAW];
-if (FLUXES[f+F.paw2puw]<0) {LFxfer=POOLS[p+S.D_LF_PUW];TEMPxfer= POOLS[p+S.D_TEMP_PUW];}
 
 // Calculate inter-pool transfer in m/s (positive is PAW to PUW)
 double pot_xfer = 1000 * sqrt(k_PAW*k_PUW) * (1000*(psi_PAW-psi_PUW)/(9.8*0.5*(pars[P.PAW_z]+pars[P.PUW_z])) + 1);
+if (pot_xfer<0) {LFxfer=POOLS[p+S.D_LF_PUW];TEMPxfer= POOLS[p+S.D_TEMP_PUW];}
 
 // Transfer flux in mm/day
 //scale with donor pool LF
