@@ -582,12 +582,12 @@ double sm_PUW = HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PUW],pars[P.PUW_por],pars[P.PUW
 //sm_PAW += HYDROFUN_EWT2MOI(infil*deltat,pars[P.PAW_por],pars[P.PAW_z]);
 
 // Calculate drainage
-double pot_drain_PAW = DRAINAGE(sm_PAW,pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
-double pot_drain_PUW = DRAINAGE(sm_PUW,pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
+double drain_PAW = POOLS[p+S.D_LF_PAW]*DRAINAGE(sm_PAW,pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
+double drain_PUW = POOLS[p+S.D_LF_PUW]*DRAINAGE(sm_PUW,pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
 
 // Drainage becomes runoff from pools
-FLUXES[f+F.q_paw] = POOLS[p+S.D_LF_PAW]*HYDROFUN_MOI2EWT(pot_drain_PAW,pars[P.PAW_por],pars[P.PAW_z])/deltat;
-FLUXES[f+F.q_puw] = POOLS[p+S.D_LF_PUW]*HYDROFUN_MOI2EWT(pot_drain_PUW,pars[P.PUW_por],pars[P.PUW_z])/deltat;
+FLUXES[f+F.q_paw] = HYDROFUN_MOI2EWT(drain_PAW,pars[P.PAW_por],pars[P.PAW_z])/deltat;
+FLUXES[f+F.q_puw] = HYDROFUN_MOI2EWT(drain_PUW,pars[P.PUW_por],pars[P.PUW_z])/deltat;
 
 // Remove drainage from layers
 sm_PAW -= drain_PAW;
