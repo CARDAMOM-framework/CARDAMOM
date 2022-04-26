@@ -6,7 +6,8 @@
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2EWT.c"
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2CON.c"
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI.c"
-#include "../DALEC_ALL/LIU_An_et.c"
+//#include "../DALEC_ALL/LIU_An_et.c"
+#include "../DALEC_ALL/LIU_AN_ET_REFACTOR.c"
 #include "../DALEC_ALL/CH4_MODULES/HET_RESP_RATES_JCR.c"
 #include "../DALEC_ALL/KNORR_ALLOCATION.c"
 #include "../DALEC_ALL/SOIL_TEMP_AND_LIQUID_FRAC.c"
@@ -512,18 +513,56 @@ double beta = fmin(POOLS[p+S.H2O_PAW]/pars[P.wilting],1.);
 // GPP, T, and E from LIU_An_et
 // Annual radiation, VPD in kPa, mean T in K
 //C3 frac hardcoded to 1 for now. Recommendation for re-integration of C3 frac = integrate distinct C3 and C4 GPP pars to avoid representation issues.
-double *LIU_An_et_out = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 
-    273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), pars[P.Vcmax25], CO2[n], beta, pars[P.Med_g1], 
-    LAI, pars[P.ga], VegK, pars[P.Tupp], pars[P.Tdown], 1., // pars[P.C3_frac],
-    pars[P.clumping], pars[P.leaf_refl], pars[P.maxPevap], PREC[n]);
+       
+//double *LIU_An_et_out = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 
+//    273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), pars[P.Vcmax25], CO2[n], beta, pars[P.Med_g1], 
+//    LAI, pars[P.ga], VegK, pars[P.Tupp], pars[P.Tdown], 1., // pars[P.C3_frac],
+//    pars[P.clumping], pars[P.leaf_refl], pars[P.maxPevap], PREC[n]);
 // GPP
-FLUXES[f+F.gpp] = LIU_An_et_out[0];
+//FLUXES[f+F.gpp] = LIU_An_et_out[0];
 //transpiration//
-FLUXES[f+F.transp] = LIU_An_et_out[1];
+//FLUXES[f+F.transp] = LIU_An_et_out[1];
 //evaporation//
-FLUXES[f+F.evap] = LIU_An_et_out[2];
+//FLUXES[f+F.evap] = LIU_An_et_out[2];
+// Evapotranspiration
+//FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
+
+
+
+//******************Declare LIU STRUCT*********************
+LIU_AN_ET_STRUCT LIU;
+
+//define time-invariant parameters
+LIU.IN.SRAD=SSRD[n]*1e6/(24*3600);
+LIU.IN.VPD=VPD[n]/10;
+LIU.IN.TEMP=273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]);  
+LIU.IN.vcmax25=pars[P.Vcmax25];
+LIU.IN.co2=CO2[n];
+LIU.IN.beta_factor=beta;
+LIU.IN.g1=pars[P.Med_g1];
+LIU.IN.LAI=LAI;
+LIU.IN.ga=pars[P.ga];
+LIU.IN.VegK=VegK;
+LIU.IN.Tupp=pars[P.Tupp];
+LIU.IN.Tdown=pars[P.Tdown];
+LIU.IN.C3_frac=1., // pars[P.C3_frac]
+LIU.IN.clumping=pars[P.clumping];
+LIU.IN.leaf_refl=pars[P.leaf_refl];
+LIU.IN.maxPevap=pars[P.maxPevap];
+LIU.IN.precip=PREC[n];
+
+//Call function: uses LIU->IN to update LIU->OUT
+LIU_AN_ET(&LIU);
+
+// GPP
+FLUXES[f+F.gpp] = LIU.OUT.An;
+//transpiration//
+FLUXES[f+F.transp] = LIU.OUT.transp;
+//evaporation//
+FLUXES[f+F.evap] = LIU.OUT.evap;
 // Evapotranspiration
 FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
+
 
 /*Snow water equivalent*/
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+SNOWFALL[n]*deltat; /*first step snowfall to SWE*/
