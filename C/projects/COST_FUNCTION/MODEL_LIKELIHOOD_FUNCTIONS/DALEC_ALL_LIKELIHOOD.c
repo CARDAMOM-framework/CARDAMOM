@@ -25,6 +25,7 @@ struct LIKELIHOOD_INDICES{
         int ET;
         int EWT;
         int GPP;
+        int SIF;
         int LAI;
         int NBE;
         int ROFF;
@@ -36,14 +37,15 @@ struct LIKELIHOOD_INDICES{
         int PEQ_Cefficiency;       
         int PEQ_CUE;
         int PEQ_iniSnow;
+        int PEQ_iniSOM;
         int PEQ_C3frac;} LIKELIHOOD_INDICES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-    10,11,12,13,14,15,16,17};
+    10,11,12,13,14,15,16,17,18,19};
     
   
     
     int DALEC_ALL_LIKELIHOOD_MODCONFIG(LIKELIHOODinfo * LI){
-        LI->nolikelihoods=18;
+        LI->nolikelihoods=20;
         return 0;}
             
             
@@ -91,12 +93,14 @@ double * ML=D.M_LIKELIHOODS;
 //printf("O->SUPPORT_LAI_OBS = %d\n",O->SUPPORT_LAI_OBS);
 
 //if (O->SUPPORT_ET_OBS){   P=DALEC_LIKELIHOOD_ET(D);}
+// shuang added SIF operator, to enable using two seperate observations to constrain GPP and SIF at the same time, evaluating performance
 if (O->SUPPORT_ABGB_OBS){ML[LI.ABGB]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ABGB, D.M_ABGB);};
 if (O->SUPPORT_CH4_OBS){  ML[LI.CH4]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.CH4, D.M_CH4);};
 if (O->SUPPORT_DOM_OBS){   ML[LI.DOM]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.DOM, D.M_DOM);};
 if (O->SUPPORT_ET_OBS){   ML[LI.ET]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ET, D.M_ET);};
 if (O->SUPPORT_EWT_OBS){   ML[LI.EWT]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.EWT, D.M_EWT);};
 if (O->SUPPORT_GPP_OBS){   ML[LI.GPP]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.GPP, D.M_GPP);};
+if (O->SUPPORT_SIF_OBS){   ML[LI.SIF]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.SIF, D.M_GPP);}; // shuang
 if (O->SUPPORT_LAI_OBS ){ML[LI.LAI]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.LAI, D.M_LAI);};
 if (O->SUPPORT_NBE_OBS){   ML[LI.NBE]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.NBE, D.M_NBE);};
 if (O->SUPPORT_ROFF_OBS){   ML[LI.ROFF]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ROFF, D.M_ROFF);};
@@ -114,6 +118,7 @@ if (O->SUPPORT_LAI_OBS){   ML[LI.Mean_LAI]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncd
 if (O->SUPPORT_Cefficiency_OBS){   ML[LI.PEQ_Cefficiency]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_Cefficiency, D.M_PEQ_Cefficiency);};
 if (O->SUPPORT_CUE_OBS){   ML[LI.PEQ_CUE]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_CUE, D.M_PEQ_CUE);};
 if (O->SUPPORT_iniSnow_OBS){   ML[LI.PEQ_iniSnow]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_iniSnow, D.M_PEQ_iniSnow);};
+if (O->SUPPORT_iniSOM_OBS){   ML[LI.PEQ_iniSOM]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_iniSOM, D.M_PEQ_iniSOM);};
 if (O->SUPPORT_C3frac_OBS){   ML[LI.PEQ_C3frac]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_C3frac, D.M_PEQ_C3frac);};
 
 

@@ -35,6 +35,7 @@ typedef struct {
 int LIU_AN_ET(LIU_AN_ET_STRUCT * A)
 {
 
+<<<<<<< HEAD
 double SRAD=(double)A->IN.SRAD;
 double VPD=(double)A->IN.VPD;
 double TEMP=(double)A->IN.TEMP;
@@ -52,6 +53,25 @@ double clumping=(double)A->IN.clumping;
 double leaf_refl=(double)A->IN.leaf_refl;
 double maxPevap=(double)A->IN.maxPevap;
 double precip=(double)A->IN.precip;
+=======
+double SRAD=A->IN.SRAD;
+double VPD=A->IN.VPD;
+double TEMP=A->IN.TEMP;
+double vcmax25=A->IN.vcmax25;
+double co2=A->IN.co2;
+double beta_factor=A->IN.beta_factor;
+double g1=A->IN.g1;
+double LAI=A->IN.LAI;
+double ga=A->IN.ga;
+double VegK=A->IN.VegK;
+double Tupp=A->IN.Tupp;
+double Tdown=A->IN.Tdown;
+double C3_frac=A->IN.C3_frac;
+double clumping=A->IN.clumping;
+double leaf_refl=A->IN.leaf_refl;
+double maxPevap=A->IN.maxPevap;
+double precip=A->IN.precip;
+>>>>>>> 28ca82478cfd7b1f891d7da6791f83ebb525970c
 
 //CONSTS
 double t0C = 273.15;//C to kelvin
