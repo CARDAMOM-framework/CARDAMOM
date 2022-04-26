@@ -35,23 +35,23 @@ typedef struct {
 int LIU_AN_ET(LIU_AN_ET_STRUCT * A)
 {
 
-SRAD=(double)A->IN.SRAD;
-VPD=(double)A->IN.VPD;
-TEMP=(double)A->IN.TEMP;
-vcmax25=(double)A->IN.vcmax25;
-co2=(double)A->IN.co2;
-beta_factor=(double)A->IN.beta_factor;
-g1=(double)A->IN.g1;
-LAI=(double)A->IN.LAI;
-ga=(double)A->IN.ga;
-VegK=(double)A->IN.VegK;
-Tupp=(double)A->IN.Tupp;
-Tdown=(double)A->IN.Tdown;
-C3_frac=(double)A->IN.C3_frac;
-clumping=(double)A->IN.clumping;
-leaf_refl=(double)A->IN.leaf_refl;
-maxPevap=(double)A->IN.maxPevap;
-precip=(double)A->IN.precip;
+double SRAD=(double)A->IN.SRAD;
+double VPD=(double)A->IN.VPD;
+double TEMP=(double)A->IN.TEMP;
+double vcmax25=(double)A->IN.vcmax25;
+double co2=(double)A->IN.co2;
+double beta_factor=(double)A->IN.beta_factor;
+double g1=(double)A->IN.g1;
+double LAI=(double)A->IN.LAI;
+double ga=(double)A->IN.ga;
+double VegK=(double)A->IN.VegK;
+double Tupp=(double)A->IN.Tupp;
+double Tdown=(double)A->IN.Tdown;
+double C3_frac=(double)A->IN.C3_frac;
+double clumping=(double)A->IN.clumping;
+double leaf_refl=(double)A->IN.leaf_refl;
+double maxPevap=(double)A->IN.maxPevap;
+double precip=(double)A->IN.precip;
 
 //CONSTS
 double t0C = 273.15;//C to kelvin
