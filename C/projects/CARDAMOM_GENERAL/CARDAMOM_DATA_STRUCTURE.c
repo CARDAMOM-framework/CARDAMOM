@@ -25,6 +25,7 @@ double *M_DOM;
 double *M_ET;
 double *M_EWT;
 double *M_GPP;
+double *M_SIF;
 double *M_LAI;
 double *M_NBE;
 double *M_ROFF;

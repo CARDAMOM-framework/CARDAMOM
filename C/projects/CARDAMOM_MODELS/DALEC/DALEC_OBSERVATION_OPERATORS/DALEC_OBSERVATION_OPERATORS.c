@@ -9,13 +9,15 @@ typedef struct OBSOPE{
 bool SUPPORT_CH4_OBS;
 //Need to fill this out...
 int CH4_flux;
-bool SUPPORT_GPP_OBS;
 //Woody C (CWOO)
 bool SUPPORT_CWOO_OBS;
 int * CWOO_pools;
 int CWOO_n_pools;
 //Gross primary productivity (GPP)
+bool SUPPORT_GPP_OBS;
 int GPP_flux;
+// shuang added SIF operator so that both GPP and SIF can be compared at the same time, with different observation datasets, eg. TROPOMI SIF and FluxSat GPP
+bool SUPPORT_SIF_OBS;
 bool SUPPORT_LAI_OBS;
 int LAI_pool;
 bool SUPPORT_ET_OBS;
@@ -84,6 +86,7 @@ OBSOPE->SUPPORT_ET_OBS=false;
 OBSOPE->SUPPORT_EWT_OBS=false;
 OBSOPE->SUPPORT_FIR_OBS=false;
 OBSOPE->SUPPORT_GPP_OBS=false;
+OBSOPE->SUPPORT_SIF_OBS=false;
 OBSOPE->SUPPORT_LAI_OBS=false;
 OBSOPE->SUPPORT_NBE_OBS=false;
 OBSOPE->SUPPORT_ROFF_OBS=false;
@@ -239,6 +242,20 @@ if (SOBS.value!=DEFAULT_DOUBLE_VAL){int n;D->M_Mean_GPP=0;for (n=0;n<N;n++){D->M
 return 0;}
 
 
+// SIF operator is made the same as GPP, be careful with its opt_filter and opt_normalization set up - shuang
+// Mean_SIF is not available since current model does not yet simulate SIF - shuang
+
+int DALEC_OBSOPE_SIF(DATA * D, OBSOPE * O){
+
+//SIF timeseries length, here DATA refer to input obs, OBSOPE refer to model output mapped to mathch data
+int N=D->ncdf_data.TIME_INDEX.length;
+
+//Time varying SIF 
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.SIF;
+if (TOBS.valid_obs_length>0){int n;for (n=0;n<N;n++){D->M_SIF[n]=D->M_FLUXES[D->nofluxes*n+O->GPP_flux];}};
+
+
+return 0;}
 
 
 

@@ -635,6 +635,7 @@ INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 
 //Set SUPPORT_OBS values to true if model supports external observation operations.
 OBSOPE.SUPPORT_GPP_OBS=true;
+OBSOPE.SUPPORT_SIF_OBS=true;
 OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
 OBSOPE.SUPPORT_NBE_OBS=true;
