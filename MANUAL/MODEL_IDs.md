@@ -49,7 +49,7 @@ Can use the COMPLEX effort to document all the models here, including some examp
 |                                  | 1060--1069 | 1000                     | Hydrology from Massoud et al, 2021                  | Paul Levine                     |                                 |
 | Flagship testing                 | 1090--1099 |101x,105x,106x,110x       | Testing of flagship model                           |                                 | For testing only                |
 | Flagship                         | 1100--1110 |101x,105x,106x            | "Kitchen sink" model                                |                                 | Exploratory                     |
-| frozen 1100 for fluxnetCH4 and TROPIC GC4x5 analysis     | 1107 |101x,105x,106x            | gradually take in new updates from 1100, ensure a working version for research purpose    |         | Shuang Ma                     |
+| frozen 1100 for fluxnetCH4 and TROPIC GC4x5 analysis     | 1107 |            | gradually take in new updates from 1100, ensure a working version for research purpose    |         | Shuang Ma                     |
 | DALEC + FF                       | 1200       |                          |                                                     |                                 | Exploratory                     |
 
 ### Standard Input, Outputs, Parameters <a name="cardamom-input-output-parameters"/>
