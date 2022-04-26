@@ -1,5 +1,5 @@
 #pragma once
-#include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
+#include "../DALEC_ALL/DALEC_MODULE.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/

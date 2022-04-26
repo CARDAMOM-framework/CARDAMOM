@@ -212,16 +212,17 @@ double * obs = calloc(sizeof(double),N);
 double * unc = calloc(sizeof(double),N);
 
 
-
-
-
 //Copying memory
 
 for (n=0;n<N;n++){
 mod[n] = MOD[OBS->valid_obs_indices[n]];
 obs[n] = OBS->values[OBS->valid_obs_indices[n]];
-unc[n] = OBS->unc[OBS->valid_obs_indices[n]];}
-
+unc[n] = OBS->unc[OBS->valid_obs_indices[n]];
+}
+//Filter uncertainty copies
+double single_mean_unc=OBS->single_mean_unc;
+double single_monthly_unc=OBS->single_monthly_unc;
+double single_annual_unc=OBS->single_annual_unc;
 
 
 
@@ -251,7 +252,7 @@ mod[n]=mod[n]/mean_mod;
 obs[n]=obs[n]/mean_obs;}
 }
 
-//threshold-- applies after normalization
+//threshold-- applies after normalization, before log-transform (if selected)
 if (isinf(OBS->min_threshold)==0){
 for (n=0;n<N;n++){
 mod[n] = max(mod[n],OBS->min_threshold);
@@ -264,7 +265,13 @@ if (OBS->opt_unc_type==1){
 for (n=0;n<N;n++){
 mod[n]=log(mod[n]);
 obs[n]=log(obs[n]);
-unc[n]=log(unc[n]);}}
+unc[n]=log(unc[n]);}
+
+single_mean_unc=log(single_mean_unc);
+single_monthly_unc=log(single_monthly_unc);
+single_annual_unc=log(single_annual_unc);
+
+}
 
 
 //Cost function
@@ -273,7 +280,7 @@ if (OBS->opt_filter==0){//no filter
     for (n=0;n<N;n++){tot_exp += pow((mod[n] - obs[n])/unc[n],2);}}
 
 else if (OBS->opt_filter==1){//mean only
-    tot_exp  = pow((mean_mod - mean_obs)/OBS->single_mean_unc,2);}
+    tot_exp  = pow((mean_mod - mean_obs)/single_mean_unc,2);}
 
 else if (OBS->opt_filter==2 |  OBS->opt_filter==3){//monthly and annual flux
     /*Decoupling seasonal from interannual variations*/
@@ -282,17 +289,20 @@ else if (OBS->opt_filter==2 |  OBS->opt_filter==3){//monthly and annual flux
     /*Step 2. Compare means*/
     /*Step 3. Remove means from months for cost function*/
     int m, dn;
+    //Looping through all years
     for (m=0;m<N/12;m++){
     /*Calculate annual mean of monthly values*/
     double mam=0, oam=0;
+    //Looping through all months
     for (n=0;n<12;n++){dn=n+m*12;mam=mam+mod[dn];oam=oam+obs[dn];}
     /*normalize means*/
     mam=mam/12;oam=oam/12;
     /*Calculate seasonal cost function*/
-    if (OBS->opt_filter==2){for (n=0;n<12;n++){dn=n+m*12;tot_exp+=pow((mod[dn]-obs[dn]-mam+oam)/OBS->single_monthly_unc,2);}}
+    if (OBS->opt_filter==2){for (n=0;n<12;n++){dn=n+m*12;tot_exp+=pow((mod[dn]-obs[dn]-mam+oam)/single_monthly_unc,2);}}
     /*Calculate annual cost function*/
     /*TEST: normalize model likelihood by normal distribution with mean zero and unc = x2 annual unc.*/
-    tot_exp+=pow((oam-mam)/OBS->single_annual_unc,2);}}
+    tot_exp+=pow((oam-mam)/single_annual_unc,2);
+    }}
 
 
 else if (OBS->opt_filter==4 | OBS->opt_filter==5){//climatology and inter-annual variability, only to use with monthly data
@@ -326,14 +336,14 @@ else if (OBS->opt_filter==4 | OBS->opt_filter==5){//climatology and inter-annual
             if (countcm[i]>0){
             obscm[i]/=(double)countcm[i];
             modcm[i]/=(double)countcm[i];
-               tot_exp+=pow((modcm[i]-obscm[i])/(OBS->single_monthly_unc),2);}}
+               tot_exp+=pow((modcm[i]-obscm[i])/single_monthly_unc,2);}}
         
          //Inter-annual cost function component: Avoid averaging by scaling cost function uncertainties accordingly!
                if (OBS->opt_filter==4){
                        for (m=0;m<N;m++){
                                        i=icm[m];
             if (countcm[i]>1){
-                tot_exp+=pow((mod[m] - modcm[i] - obs[m]  + obscm[i])/(OBS->single_annual_unc),2);}}}
+                tot_exp+=pow((mod[m] - modcm[i] - obs[m]  + obscm[i])/single_annual_unc,2);}}}
 //Free pointers
         free(modcm);free(obscm);free(countcm);free(icm);
 

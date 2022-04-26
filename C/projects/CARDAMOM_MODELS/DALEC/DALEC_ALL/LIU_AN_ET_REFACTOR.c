@@ -1,19 +1,57 @@
 #pragma once
-double * LIU_An_et(double SRAD, double VPD, double TEMP, double vcmax25, double co2, 
-	double beta_factor, double g1, double LAI, double ga, double VegK, double Tupp, 
-	double Tdown, double C3_frac, double clumping, double leaf_refl, double maxPevap,
-    double precip){
-//double LIU_An(double const *gpppars, double const *consts, double const *pars, double const beta){
+#include "./LIU_AN_ET_REFACTOR.c"
 
-//double SRAD = 12.*gpppars[7]; //Shortwave downward radiation
-//double VPD = gpppars[11]/10.; //VPD
-//double TEMP = 273.15 + (gpppars[1]+gpppars[2])/2.; //(Tmin + Tmax)/2
-//double co2 = gpppars[4]; //co2
-//double vcmax25 = pars[37]; 
-//double g1 = pars[36]; 
-//double beta_factor = beta;        
+typedef struct {
+    struct{        
+        double SRAD;
+        double VPD;
+        double TEMP;
+        double vcmax25;
+        double co2;
+        double beta_factor;
+        double g1;
+        double LAI;
+        double ga;
+        double VegK;
+        double Tupp;
+        double Tdown;
+        double C3_frac;
+        double clumping;
+        double leaf_refl;
+        double maxPevap;
+        double precip;        
+    }IN;
+    struct {
+        double An;
+        double transp;
+        double evap;
+    }OUT;
+    
+}LIU_AN_ET_STRUCT;
 
-//Add any more parameters to function definition
+//double* LIU_AN_ET_REFACTOR(double const *met_list, double const *var_list)
+//{
+    
+int LIU_AN_ET(LIU_AN_ET_STRUCT * A)
+{
+
+SRAD=(double)A->IN.SRAD;
+VPD=(double)A->IN.VPD;
+TEMP=(double)A->IN.TEMP;
+vcmax25=(double)A->IN.vcmax25;
+co2=(double)A->IN.co2;
+beta_factor=(double)A->IN.beta_factor;
+g1=(double)A->IN.g1;
+LAI=(double)A->IN.LAI;
+ga=(double)A->IN.ga;
+VegK=(double)A->IN.VegK;
+Tupp=(double)A->IN.Tupp;
+Tdown=(double)A->IN.Tdown;
+C3_frac=(double)A->IN.C3_frac;
+clumping=(double)A->IN.clumping;
+leaf_refl=(double)A->IN.leaf_refl;
+maxPevap=(double)A->IN.maxPevap;
+precip=(double)A->IN.precip;
 
 //CONSTS
 double t0C = 273.15;//C to kelvin
@@ -47,7 +85,7 @@ double An_C4;
 double An;
 
 //Array of results with 3 positions for An, E, and Transpiration;
-static double r[3];
+//static double r[3];
 
 
 PAR = SRAD/(Ephoton*NA)*1e6;
@@ -99,7 +137,9 @@ An = C3_frac*(An_C3) + (1. - C3_frac)*(An_C4);
 //double canopy_scale = 1.;
 double canopy_scale = (1. - exp(-VegK*LAI*clumping))/(VegK); 
 
-r[0] = An*canopy_scale*(12.e-6)*(24.*60.*60.); //from umolCO2m-2s-1 to gCm-2day-1
+//r[0] = An*canopy_scale*(12.e-6)*(24.*60.*60.); //from umolCO2m-2s-1 to gCm-2day-1
+
+A->OUT.An = An*canopy_scale*(12.e-6)*(24.*60.*60.);
 
 //##################Transpiration#################
 
@@ -112,7 +152,7 @@ double transp; // transpiration
 double evap; // evaporation
 double Psurf = 100.0; //Surface pressure in kPa
 double VPD_kPa = VPD;//*Psurf; //100.0 kPa = 1000.0 hPa => Surface pressure
-doubevap_scale_factpr
+double evap_scale_factpr;
 
 sV = 0.04145*exp(0.06088*T_C); 
 
@@ -134,21 +174,28 @@ else{
 transp = 0.0;
 }
 
-r[1] = transp*24; //from mm.hr-1 to mm.day-1
+//r[1] = transp*24; //from mm.hr-1 to mm.day-1
+
+A->OUT.transp = transp*24;
 
 
 
-evap_scale_factpr = fmin(maxPevap/precip, 1);
+
+evap_scale_factpr = fmin(maxPevap/precip, 1.);
+
 
 evap = petVnumB*evap_scale_factpr;
 
 //evap = petVnumB;
 
-r[2] = evap*24; //from mm.hr-1 to mm.day-1
+//r[2] = evap*24; //from mm.hr-1 to mm.day-1
+
+A->OUT.evap = evap*24;
+
 
 
 //printf("SRADg = %f, VegK = %f, LAI = %f\n", (SRADg/SRAD), VegK, LAI);
 //printf("transp = %f, evap = %f\n", r[1], r[2] );
 
-return r;
+return 0;
 }

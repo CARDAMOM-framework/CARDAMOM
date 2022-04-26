@@ -1,5 +1,5 @@
 #pragma once
-#include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
+#include "../DALEC_ALL/DALEC_MODULE.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
@@ -28,7 +28,7 @@ int i_foliar;
 int i_root;
 int i_wood;
 int i_lit;
-int i_soil;
+int i_som;
 int uWUE;
 int PAW_Qmax;
 int wilting;
@@ -144,7 +144,7 @@ double *POOLS=DATA.M_POOLS;
   POOLS[S.C_roo]=pars[P.i_root];
   POOLS[S.C_woo]=pars[P.i_wood];
   POOLS[S.C_lit]=pars[P.i_lit];
-  POOLS[S.C_som]=pars[P.i_soil];
+  POOLS[S.C_som]=pars[P.i_som];
   /*water pools*/
   POOLS[S.H2O_PAW]=pars[P.i_PAW];
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
@@ -442,7 +442,7 @@ OBSOPE.FIR_flux=F.f_total;
 //CUE parameters
 OBSOPE.CUE_PARAM=P.f_auto;
 OBSOPE.Cefficiency_PARAM=P.canopy_eff;
-OBSOPE.iniSOM_PARAM=P.i_soil;
+OBSOPE.iniSOM_PARAM=P.i_som;
 
 
 
