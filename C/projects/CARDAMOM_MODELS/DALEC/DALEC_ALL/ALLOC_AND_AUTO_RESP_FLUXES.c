@@ -31,7 +31,7 @@ int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
 
     
     //Maintenance respiration
-S->OUT.AUTO_RESP_MAINTENANCE = mr*S->IN.TEMP*Clive;//FOr example
+S->OUT.AUTO_RESP_MAINTENANCE = S->IN.mr*S->IN.TEMP*S->IN.C_LIVE;//FOr example
 
 
 
