@@ -286,10 +286,12 @@ double *POOLS=DATA.M_POOLS;
   POOLS[S.E_PUW]=pars[P.i_PUW_E];
   
   
-   //---DIAGNOSTIC STATES---
+   //---INITIALIZING DIAGNOSTIC STATES---
     POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; //LAI
     POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
     
+    
+    //INITIALIZING PAW and PUW soil moisture
         POOLS[S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
         POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);//soil moisture PUW
 
@@ -580,12 +582,12 @@ double sm_PUW = HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PUW],pars[P.PUW_por],pars[P.PUW
 //sm_PAW += HYDROFUN_EWT2MOI(infil*deltat,pars[P.PAW_por],pars[P.PAW_z]);
 
 // Calculate drainage
-double drain_PAW = DRAINAGE(sm_PAW,pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
-double drain_PUW = DRAINAGE(sm_PUW,pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
+double pot_drain_PAW = DRAINAGE(sm_PAW,pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
+double pot_drain_PUW = DRAINAGE(sm_PUW,pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
 
 // Drainage becomes runoff from pools
-FLUXES[f+F.q_paw] = HYDROFUN_MOI2EWT(drain_PAW,pars[P.PAW_por],pars[P.PAW_z])/deltat;
-FLUXES[f+F.q_puw] = HYDROFUN_MOI2EWT(drain_PUW,pars[P.PUW_por],pars[P.PUW_z])/deltat;
+FLUXES[f+F.q_paw] = POOLS[p+S.D_LF_PAW]*HYDROFUN_MOI2EWT(pot_drain_PAW,pars[P.PAW_por],pars[P.PAW_z])/deltat;
+FLUXES[f+F.q_puw] = POOLS[p+S.D_LF_PUW]*HYDROFUN_MOI2EWT(pot_drain_PUW,pars[P.PUW_por],pars[P.PUW_z])/deltat;
 
 // Remove drainage from layers
 sm_PAW -= drain_PAW;
@@ -599,11 +601,17 @@ double k_PUW = HYDROFUN_MOI2CON(sm_PUW,pars[P.hydr_cond],pars[P.retention]);
 double psi_PAW = HYDROFUN_MOI2PSI(sm_PAW,psi_porosity,pars[P.retention]);
 double psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[P.retention]);
 
+//Assumes PAW->PUW, so PAW LF & TEMP; if reverse flow, then switches to PUW LF & TEMP.
+double LFxfer=POOLS[p+S.D_LF_PAW]; 
+double TEMPxfer= POOLS[p+S.D_TEMP_PAW];
+if (FLUXES[f+F.paw2puw]<0) {LFxfer=POOLS[p+S.D_LF_PUW];TEMPxfer= POOLS[p+S.D_TEMP_PUW];}
+
 // Calculate inter-pool transfer in m/s (positive is PAW to PUW)
-double xfer = 1000 * sqrt(k_PAW*k_PUW) * (1000*(psi_PAW-psi_PUW)/(9.8*0.5*(pars[P.PAW_z]+pars[P.PUW_z])) + 1);
+double pot_xfer = 1000 * sqrt(k_PAW*k_PUW) * (1000*(psi_PAW-psi_PUW)/(9.8*0.5*(pars[P.PAW_z]+pars[P.PUW_z])) + 1);
 
 // Transfer flux in mm/day
-FLUXES[f+F.paw2puw] = xfer*1000*3600*24;
+//scale with donor pool LF
+FLUXES[f+F.paw2puw] = pot_xfer*1000*3600*24*LFxfer;
 
 // Update pools, including ET from PAW
 POOLS[nxp+S.H2O_PAW] += (-FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
@@ -616,19 +624,12 @@ POOLS[nxp+S.H2O_PUW] += (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
 double infiltemp = (T2M_MAX[n] + T2M_MIN[n])*0.5*(PREC[n] - SNOWFALL[n])/(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]) ;//snowmelt temp = 0, so term multiplied by zero in weighted average 
 
 
-//INFILTRATION
+//All energy fluxes
 FLUXES[F.infil_e] = FLUXES[F.infil_e]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(infiltemp + 273.15);
-//FLUXES[F.q_paw_e]
-//FLUXES[F.q_puw_e]
-//
-//Assumes PAW->PUW, so PAW LF & TEMP; if reverse flow, then switches to PUW LF & TEMP.
-double LFxfer=POOLS[S.D_LF_PAW]; 
-double TEMPxfer= POOLS[S.D_TEMP_PAW];
-if (FLUXES[f+F.paw2puw]<0) {LFxfer=POOLS[S.D_LF_PUW];TEMPxfer= POOLS[S.D_TEMP_PUW];}
-//FLUXES[F.paw2puw_e]
-
-//ET equation done
 FLUXES[F.et_e] = FLUXES[f+F.et]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(SKT[n] + 273.15);
+FLUXES[F.paw2puw_e] = FLUXES[f+F.paw2puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(TEMPxfer + 273.15);
+FLUXES[F.q_paw_e] = FLUXES[f+F.q_paw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PAW] + 273.15);
+FLUXES[F.q_puw_e] =  FLUXES[f+F.q_puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PUW] + 273.15);
 
 //Energy fluxes
 ///FLUXES[F.T_energy_flux]=0;
@@ -637,8 +638,8 @@ FLUXES[F.et_e] = FLUXES[f+F.et]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(SKT[n] 
 //Energy states
 //fraction of water in soil that is available 
 //double frac_paw = POOLS[nxp+S.H2O_PAW]/(POOLS[nxp+S.H2O_PAW]+POOLS[nxp+S.H2O_PUW]);
-POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.ground_heat]  - FLUXES[f+F.et_e] )*deltat;  //ADD REST OF ENERGY FLUXES HERE
-POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[f+F.ground_heat]  - FLUXES[f+F.et_e] )*deltat; //ADD REST OF ENERGY FLUXES HERE
+POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.ground_heat] + FLUXES[F.infil_e] - FLUXES[F.paw2puw_e] )*deltat;  //ADD REST OF ENERGY FLUXES HERE
+POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[F.paw2puw_e] - FLUXES[F.q_puw_e] )*deltat; //ADD REST OF ENERGY FLUXES HERE
 
 
 
