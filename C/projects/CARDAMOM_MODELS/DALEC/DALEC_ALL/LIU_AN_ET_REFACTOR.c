@@ -35,23 +35,23 @@ typedef struct {
 int LIU_AN_ET(LIU_AN_ET_STRUCT * A)
 {
 
-SRAD=(double)A->IN.SRAD;
-VPD=(double)A->IN.VPD;
-TEMP=(double)A->IN.TEMP;
-vcmax25=(double)A->IN.vcmax25;
-co2=(double)A->IN.co2;
-beta_factor=(double)A->IN.beta_factor;
-g1=(double)A->IN.g1;
-LAI=(double)A->IN.LAI;
-ga=(double)A->IN.ga;
-VegK=(double)A->IN.VegK;
-Tupp=(double)A->IN.Tupp;
-Tdown=(double)A->IN.Tdown;
-C3_frac=(double)A->IN.C3_frac;
-clumping=(double)A->IN.clumping;
-leaf_refl=(double)A->IN.leaf_refl;
-maxPevap=(double)A->IN.maxPevap;
-precip=(double)A->IN.precip;
+double SRAD=A->IN.SRAD;
+double VPD=A->IN.VPD;
+double TEMP=A->IN.TEMP;
+double vcmax25=A->IN.vcmax25;
+double co2=A->IN.co2;
+double beta_factor=A->IN.beta_factor;
+double g1=A->IN.g1;
+double LAI=A->IN.LAI;
+double ga=A->IN.ga;
+double VegK=A->IN.VegK;
+double Tupp=A->IN.Tupp;
+double Tdown=A->IN.Tdown;
+double C3_frac=A->IN.C3_frac;
+double clumping=A->IN.clumping;
+double leaf_refl=A->IN.leaf_refl;
+double maxPevap=A->IN.maxPevap;
+double precip=A->IN.precip;
 
 //CONSTS
 double t0C = 273.15;//C to kelvin

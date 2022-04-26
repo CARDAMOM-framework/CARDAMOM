@@ -3,6 +3,9 @@
 typedef struct {    
     struct {
     double   TEMP;//deg C
+    double  C_LIVE;// Live C
+    double GPP;
+    double mr;
     double   SRAD;//MJ m2 d
     double   NSC;//Clab
     double   PAW_SM;//m3/m3
@@ -11,6 +14,7 @@ typedef struct {
         //Add any extra inputs here
     } IN;
     struct {
+        double Flabprod;//Labile C production
     double     AUTO_RESP_MAINTENANCE;//gC/m2/d
       double       AUTO_RESP_GROWTH;//gC/m2/d
       double       ALLOC_FOL;//gC/m2/d
@@ -24,13 +28,13 @@ typedef struct {
 
 //Main function 
 int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
-//Add functionality here
-    //Use any field in S->IN for calculations
-    //example
-   double A = S->IN. parameter1 + S->IN. parameter2;
-   double B = S->IN. parameter1*S->IN.TEMP;
-   double C = A-B;
-   //...
+
+    
+    //Maintenance respiration
+S->OUT.AUTO_RESP_MAINTENANCE = mr*S->IN.TEMP*Clive;//FOr example
+
+
+
 //...
    //..
    //Once done with calculations, populate output variables
