@@ -108,8 +108,8 @@ CARDADATA->parmin[P.i_lit]=1.0;
 CARDADATA->parmax[P.i_lit]=2000.0;
 
 /*C_som*/
-CARDADATA->parmin[P.i_soil]=1.0;
-CARDADATA->parmax[P.i_soil]=200000.0;
+CARDADATA->parmin[P.i_som]=1.0;
+CARDADATA->parmax[P.i_som]=200000.0;
 
 /*uWUE: GPP*sqrt(VPD)/ET: gC/kgH2o *hPa*/
 /*The chosen prior range in r conservatively captures the range of values by Boese et al.(2017)*/

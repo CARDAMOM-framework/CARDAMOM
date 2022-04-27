@@ -17,12 +17,12 @@ int PARS_INFO_1100(DATA *CARDADATA)
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 
 /*Litter decomposition rate*/
-CARDADATA->parmin[P.tr_lit2som]=0.00001;
-CARDADATA->parmax[P.tr_lit2som]=0.01;
+CARDADATA->parmin[P.tr_lit2som]=0.01;
+CARDADATA->parmax[P.tr_lit2som]=0.99;
 
 /*CWD decomposition rate*/
-CARDADATA->parmin[P.tr_cwd2som]=0.00001;
-CARDADATA->parmax[P.tr_cwd2som]=0.01;
+CARDADATA->parmin[P.tr_cwd2som]=0.01;
+CARDADATA->parmax[P.tr_cwd2som]=0.99;
 
 /*Fraction of GPP respired*/
 CARDADATA->parmin[P.f_auto]=0.2;
@@ -124,10 +124,6 @@ CARDADATA->parmax[P.cf_DOM]=1;
 CARDADATA->parmin[P.resilience]=0.01;
 CARDADATA->parmax[P.resilience]=1;
 
-/*Moisture factor*/
-CARDADATA->parmin[P.moisture]=0.01;
-CARDADATA->parmax[P.moisture]=1;
-
 /*Saturated hydraulic conductivity (m/s)*/
 CARDADATA->parmin[P.hydr_cond]=0.0000001;
 CARDADATA->parmax[P.hydr_cond]=0.00001;
@@ -159,6 +155,15 @@ CARDADATA->parmax[P.PAW_z]=100;
 /*PUW depth (m)*/
 CARDADATA->parmin[P.PUW_z]=0.01;
 CARDADATA->parmax[P.PUW_z]=100;
+
+
+/*PAW volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
+CARDADATA->parmin[P.PAW_vhc]=1.3e6;
+CARDADATA->parmax[P.PAW_vhc]=3e6;
+
+/*PUW volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
+CARDADATA->parmin[P.PUW_vhc]=1.3e6;
+CARDADATA->parmax[P.PUW_vhc]=3e6;
 
 /*Runoff excess*/
 CARDADATA->parmin[P.Q_excess]=0.01;

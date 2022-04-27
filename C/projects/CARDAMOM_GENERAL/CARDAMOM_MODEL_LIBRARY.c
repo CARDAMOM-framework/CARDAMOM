@@ -60,6 +60,7 @@ return 0;}
     //#include "../CARDAMOM_MODELS/DALEC/DALEC_1102/MODEL_INFO_1102.c"
     //#include "../CARDAMOM_MODELS/DALEC/DALEC_1103/MODEL_INFO_1103.c"
     //#include "../CARDAMOM_MODELS/DALEC/DALEC_1105/MODEL_INFO_1105.c"
+    #include "../CARDAMOM_MODELS/DALEC/DALEC_1106/MODEL_INFO_1106.c"
 
 /*This function attributes model specific variables based
  * on the ID number stored in ID*/
@@ -119,6 +120,7 @@ if (ID==0){printf("No model prescribed, expect error!");}
     //else if (ID==1102  ){MODEL_INFO_1102(DATA);}
     //else if (ID==1103  ){MODEL_INFO_1103(DATA);}
     //else if (ID==1105  ){MODEL_INFO_1105(DATA);}
+        else if (ID==1106  ){MODEL_INFO_1106(DATA);}
         else {status=1;
         printf("*********************************************\n");
         printf("No loaded in CARDAMOM_MODEL_LIBRARY.c, expect error!\n");

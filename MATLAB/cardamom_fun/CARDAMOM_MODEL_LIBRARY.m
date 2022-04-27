@@ -45,7 +45,8 @@ dumpfiledir=dir(dumpfile);
 if isempty(dir(dumpfile)) | reread==1 | dumpfiledir.datenum<filedir.datenum
     disp('Re-reading file...');
 
-D=importdata(filename,'\n');
+D=readalllines(filename);
+
 
 
 %searching for model attribute" line zero"
@@ -53,7 +54,7 @@ D=importdata(filename,'\n');
 %line0=find(strcmp(D,sprintf('/*ID%dMA*/',ID)));
 
 
-for n=1:size(D,1);
+for n=1:numel(D)
     %reading strings that read as follows
     %DATA->nopools=7;
     if strncmp(D{n},'DALECmodel->no',14)
@@ -67,7 +68,7 @@ end
 
 %Overwriting with stack file
 if isfile(stack_filename)
-D=importdata(stack_filename);
+D=readalllines(stack_filename);
 for n=1:size(D);
     eval(D{n});
 end
@@ -78,7 +79,8 @@ end
 else
 %Find parameter info here *******
 parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/DALEC_%i.c',Cpath,ID,ID);
- D=importdata(parfilename,'\n');
+ D=readalllines(parfilename);
+
  
 %'/*DALEC PARAMETERS*/'
  k=0;n=1;p=0;
@@ -135,7 +137,7 @@ if strcmp(linestr,'/*DALEC FLUXES*/');disp(linestr);k=1;end
           linestr=D{n};
 
      if k==1
-         if strcmp(linestr(1:4),'int ')
+         if length(linestr)>3 strcmp(linestr(1:4),'int ')
          %Assumes "int " (4 characters) is removed
          eval(sprintf('S.%s = %i + 1;',linestr(5:find(linestr==';',1)-1),  p));
          p=p+1;
@@ -170,10 +172,10 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',
 %TO DO: need to set these up for other models too
 
 
- D=importdata(parfilename,'');
+ D=readalllines(parfilename);
 
  pn=1;
- for n=1:size(D,1)
+ for n=1:numel(D)
      linestr=D{n};
      if numel(linestr)>21 & strcmp(linestr(1:12),'CARDADATA->p')==1  
      linestr(linestr=='-')='';
@@ -274,7 +276,7 @@ dumpfiledir=dir(dumpfile);
 if isempty(dir(dumpfile)) | reread==1 | dumpfiledir.datenum<filedir.datenum
     disp('Re-reading file...');
 
-D=importdata(filename);
+D=readalllines(filename);
 
 
 %searching for model attribute" line zero"
@@ -301,8 +303,8 @@ end
 if ID==1
 filename=sprintf('%s/projects/DALEC_CODE/DALEC_CDEA/PARS_INFO_CDEA.c',Cpath);
 
-D=importdata(filename);
-for n=1:size(D,1)
+D=readalllines(filename);
+for n=1:numel(D)
     linestr=D{n};
     if numel(linestr)>21 & strcmp(linestr(1:12),'CARDADATA->p')==1  
     linestr(linestr=='-')='';
@@ -333,4 +335,16 @@ MA.ID=ID;
 end
 
 
+function D=readalllines(fname)
+
+fid=fopen(fname);
+A=fgetl(fid);
+n=1;
+while ischar(A)
+    D{n}=A;
+    n=n+1;
+    A=fgetl(fid);   
+end
+
+end
 
