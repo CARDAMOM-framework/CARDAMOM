@@ -100,10 +100,6 @@ CARDADATA->parmax[P.i_som]=200000.0;
 CARDADATA->parmin[P.retention]=1.5;
 CARDADATA->parmax[P.retention]=10;
 
-/*"Wilting point"*/
-CARDADATA->parmin[P.wilting]=1;
-CARDADATA->parmax[P.wilting]=10000;
-
 /*"Bucket at t0"*/
 CARDADATA->parmin[P.i_PAW]=1;
 CARDADATA->parmax[P.i_PAW]=10000;
@@ -306,6 +302,15 @@ CARDADATA->parmax[P.i_PAW_E]=10000;
 CARDADATA->parmin[P.i_PUW_E]=1;
 CARDADATA->parmax[P.i_PUW_E]=10000;
 
+/*PSI 50: water potential when soil-plant continum is at 50% hydraulic conductivity (-MPa)*/
+CARDADATA->parmin[P.psi_50]=0.1;
+CARDADATA->parmax[P.psi_50]=30;
+
+/*Beta function normalized logistic growth rate */
+CARDADATA->parmin[P.beta_lgr]=4.1;
+CARDADATA->parmax[P.beta_lgr]=50;
+ 
+  
 return 0;
 
 }
