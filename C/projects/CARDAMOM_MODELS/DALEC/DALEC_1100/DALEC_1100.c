@@ -371,8 +371,8 @@ double *POOLS=DATA.M_POOLS;
     //Plant carbon allocation.
      ALLOC_AND_AUTO_RESP_FLUXES_STRUCT ARFLUXES;
      //define time-invariant parameters here
-        ARFLUXES.IN.parameter1=30;//replace with pars[P....]
-        ARFLUXES.IN.parameter2=40;//replace with pars[P....]
+        ARFLUXES.IN.gr=0.1;//replace with pars[P....]
+        ARFLUXES.IN.mr=0.05;//replace with pars[P....]
 
 
         //Heterotrophic respiration module
@@ -452,9 +452,9 @@ f=nofluxes*n;
 
 //Define (1) all time varying inputs, and (2) pointers for outputs
     ARFLUXES.IN.TEMP=(T2M_MIN[n]+T2M_MAX[n])*0.5;
-    ARFLUXES.IN.SRAD=SSRD[n]*0.5;
+    // ARFLUXES.IN.SRAD=SSRD[n]*0.5;
     ARFLUXES.IN.NSC=POOLS[p+S.C_lab];
-    ARFLUXES.IN.PAW_SM=POOLS[p+S.D_SM_PAW];
+    // ARFLUXES.IN.PAW_SM=POOLS[p+S.D_SM_PAW];
     
     
     //Note: these temporary variables can be replaced with indexed "FLUXES" variables to avoid extra code, variables, value copies and speed things up.

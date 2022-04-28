@@ -2,25 +2,28 @@
 
 typedef struct {    
     struct {
-    double   TEMP;//deg C
-    double  C_LIVE;// Live C
-    double GPP;
-    double mr;
-    double   SRAD;//MJ m2 d
-    double   NSC;//Clab
-    double   PAW_SM;//m3/m3
-    double   parameter1;//replace with any name, no constraints on naming convention
-    double   parameter2;//replace with any name, no constraints on naming convention
+        double deltat;//model timestep
+        double TEMP;  //deg C
+        double C_LIVE;// Live C
+        double GPP;
+        double mr;    // parameter: maintenance respiration coefficient (gC/gC/d)
+        double gr;    // parameter: growth respiration coefficient (gC/gC)
+        double NSC;   //labile carbon pool, Clab, non-structural carbohydrates (gC)
+        double ALLOC_FOL_POT; // potential allocation flux to foliar pool (gC/m2/d)
+        double ALLOC_WOO_POT; // potential allocation flux to wood pool (gC/m2/d)
+        double ALLOC_ROO_POT; // potential allocation flux to root pool (gC/m2/d)
         //Add any extra inputs here
     } IN;
     struct {
-        double Flabprod;//Labile C production
-    double     AUTO_RESP_MAINTENANCE;//gC/m2/d
-      double       AUTO_RESP_GROWTH;//gC/m2/d
-      double       ALLOC_FOL;//gC/m2/d
-      double       ALLOC_WOO;//gC/m2/d
-     double         ALLOC_ROO;//gC/m2/d
-             //Add any extra outputs here
+        double F_LABPROD; //Labile C production
+        double AUTO_RESP_MAINTENANCE;// autotrophic maintenance respiration flux (gC/m2/d)
+        double AUTO_RESP_GROWTH;// autotrophic growth respiration flux (gC/m2/d)
+        double ALLOC_FOL_ACTUAL; // actual allocation flux to root pool (gC/m2/d)
+        double ALLOC_WOO_ACTUAL; // actual allocation flux to root pool (gC/m2/d)
+        double ALLOC_ROO_ACTUAL; // actual allocation flux to root pool (gC/m2/d)
+        double AUTO_RESP_TOTAL; // autotrophic respiration (gC/m2/d)
+        double NPP; // net primary productivity, GPP - Rauto (gC/m2/d)
+        double CUE; // plant carbon use efficiency, NPP/GPP (gC/m2/d)
     }OUT;
   }ALLOC_AND_AUTO_RESP_FLUXES_STRUCT;
 
@@ -29,21 +32,52 @@ typedef struct {
 //Main function 
 int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
 
-    
+    double F_LABREL_SUPPLY; //
+    double F_LABREL_DEMAND; //
+    double F_LABREL_ACTUAL; //
+    double TOTAL_GROWTH_POT; //
+    double TOTAL_GROWTH_ACTUAL; //
+    double SCALE_ALLOC_FLUXES; //
+
+
     //Maintenance respiration
-S->OUT.AUTO_RESP_MAINTENANCE = S->IN.mr*S->IN.TEMP*S->IN.C_LIVE;//FOr example
+    //S->OUT.AUTO_RESP_MAINTENANCE = S->IN.mr*S->IN.TEMP*S->IN.C_LIVE;
+    S->OUT.AUTO_RESP_MAINTENANCE = S->IN.mr * S->IN.C_LIVE;
+    S->OUT.F_LABPROD = S->IN.GPP - S->OUT.AUTO_RESP_MAINTENANCE;
 
+    //Potential supply of labile carbon for plant growth
+    F_LABREL_SUPPLY = fmax(0,  (1 - S->IN.gr) * (S->IN.NSC / S->IN.deltat));
+    //Potential demand of labile carbon by plant growth
+    TOTAL_GROWTH_POT = S->IN.ALLOC_FOL_POT + S->IN.ALLOC_WOO_POT + S->IN.ALLOC_ROO_POT;
+    F_LABREL_DEMAND = fmax(0, TOTAL_GROWTH_POT);
+    //Actual release of labile carbon (before growth respiration costs subtracted)
+    F_LABREL_ACTUAL = fmin(F_LABREL_SUPPLY, F_LABREL_DEMAND);
+    //Growth respiration
+    S->OUT.AUTO_RESP_GROWTH = S->IN.gr * F_LABREL_ACTUAL;
+    //Actual release of labile carbon i.e. growth flux (after subtracting growth respiration costs)
+    TOTAL_GROWTH_ACTUAL = (1 - S->IN.gr) * F_LABREL_ACTUAL;
 
+    //Scaling factor for allocation fluxes, accounts for NSC limitation and growth respiration cost
+    // - if actual growth is smaller than potential growth, we down-scale plant allocation fluxes
+    SCALE_ALLOC_FLUXES = fmin(1, TOTAL_GROWTH_ACTUAL / TOTAL_GROWTH_POT);
+    S->OUT.ALLOC_FOL_ACTUAL = SCALE_ALLOC_FLUXES * S->IN.ALLOC_FOL_POT;
+    S->OUT.ALLOC_WOO_ACTUAL = SCALE_ALLOC_FLUXES * S->IN.ALLOC_WOO_POT;
+    S->OUT.ALLOC_ROO_ACTUAL = SCALE_ALLOC_FLUXES * S->IN.ALLOC_ROO_POT;
+
+    //Diagnostic variables
+    S->OUT.AUTO_RESP_TOTAL = S->OUT.AUTO_RESP_MAINTENANCE + S->OUT.AUTO_RESP_GROWTH;
+    S->OUT.NPP = S->IN.GPP - S->OUT.AUTO_RESP_TOTAL;
+    S->OUT.CUE = S->OUT.NPP/S->IN.GPP;
 
 //...
    //..
    //Once done with calculations, populate output variables
     
-S->OUT.AUTO_RESP_MAINTENANCE=0;
-S->OUT.AUTO_RESP_MAINTENANCE=0;
-S->OUT.ALLOC_FOL=0;
-S->OUT.ALLOC_WOO=0;
-S->OUT.ALLOC_ROO=0;
+// S->OUT.AUTO_RESP_MAINTENANCE=0;
+// S->OUT.AUTO_RESP_MAINTENANCE=0;
+// S->OUT.ALLOC_FOL=0;
+// S->OUT.ALLOC_WOO=0;
+// S->OUT.ALLOC_ROO=0;
 
     
     
