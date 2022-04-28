@@ -137,7 +137,7 @@ if strcmp(linestr,'/*DALEC FLUXES*/');disp(linestr);k=1;end
           linestr=D{n};
 
      if k==1
-         if length(linestr)>3 strcmp(linestr(1:4),'int ')
+         if strcmp(linestr(1:4),'int ')
          %Assumes "int " (4 characters) is removed
          eval(sprintf('S.%s = %i + 1;',linestr(5:find(linestr==';',1)-1),  p));
          p=p+1;
