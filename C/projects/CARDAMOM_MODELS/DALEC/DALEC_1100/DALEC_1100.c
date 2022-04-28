@@ -23,6 +23,8 @@ struct DALEC_1100_PARAMETERS{
 int tr_lit2som;
 int tr_cwd2som;
 int f_auto;
+int rauto_mr;
+int rauto_gr;
 int f_root;
 int t_wood;
 int t_root;
@@ -100,7 +102,7 @@ int beta_lgr;
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
-    70,71
+    70,71,72,73
 };
 
 struct DALEC_1100_FLUXES{
@@ -371,8 +373,8 @@ double *POOLS=DATA.M_POOLS;
     //Plant carbon allocation.
      ALLOC_AND_AUTO_RESP_FLUXES_STRUCT ARFLUXES;
      //define time-invariant parameters here
-        ARFLUXES.IN.gr=0.1;//replace with pars[P....]
-        ARFLUXES.IN.mr=0.05;//replace with pars[P....]
+        ARFLUXES.IN.mr=pars[P.rauto_mr];//
+        ARFLUXES.IN.gr=pars[P.rauto_gr];//
 
 
         //Heterotrophic respiration module
@@ -687,7 +689,7 @@ POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[F.paw2puw_e] - FLUXES[F.q_puw_e]
 
 
 /*respiration auto*/
-FLUXES[f+F.resp_auto]=pars[P.f_auto]*FLUXES[f+F.gpp];
+FLUXES[f+F.resp_auto]=pars[P.rauto_mr]*FLUXES[f+F.gpp];
 /*labile production*/
 FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*(pars[P.f_lab]);
 

@@ -28,6 +28,14 @@ CARDADATA->parmax[P.tr_cwd2som]=0.99;
 CARDADATA->parmin[P.f_auto]=0.2;
 CARDADATA->parmax[P.f_auto]=0.8;
 
+/*Autotrophic maintenance respiration coefficient*/
+CARDADATA->parmin[P.rauto_mr]=0.05;
+CARDADATA->parmax[P.rauto_mr]=0.8;
+
+/*Autotrophic growth respiration coefficient*/
+CARDADATA->parmin[P.rauto_gr]=0.05;
+CARDADATA->parmax[P.rauto_gr]=0.8;
+
 /*Fraction of (1-fgpp) to roots*/
 CARDADATA->parmin[P.f_root]=0.01;
 CARDADATA->parmax[P.f_root]=1;
