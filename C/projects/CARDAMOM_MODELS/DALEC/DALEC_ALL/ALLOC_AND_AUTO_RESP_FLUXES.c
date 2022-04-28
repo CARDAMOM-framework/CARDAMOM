@@ -16,6 +16,7 @@ typedef struct {
     } IN;
     struct {
         double F_LABPROD; //Labile C production
+        double F_LABREL_ACTUAL; //Labile C production
         double AUTO_RESP_MAINTENANCE;// autotrophic maintenance respiration flux (gC/m2/d)
         double AUTO_RESP_GROWTH;// autotrophic growth respiration flux (gC/m2/d)
         double ALLOC_FOL_ACTUAL; // actual allocation flux to root pool (gC/m2/d)
@@ -34,7 +35,6 @@ int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
 
     double F_LABREL_SUPPLY; //
     double F_LABREL_DEMAND; //
-    double F_LABREL_ACTUAL; //
     double TOTAL_GROWTH_POT; //
     double TOTAL_GROWTH_ACTUAL; //
     double SCALE_ALLOC_FLUXES; //
@@ -51,11 +51,11 @@ int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
     TOTAL_GROWTH_POT = S->IN.ALLOC_FOL_POT + S->IN.ALLOC_WOO_POT + S->IN.ALLOC_ROO_POT;
     F_LABREL_DEMAND = fmax(0, TOTAL_GROWTH_POT);
     //Actual release of labile carbon (before growth respiration costs subtracted)
-    F_LABREL_ACTUAL = fmin(F_LABREL_SUPPLY, F_LABREL_DEMAND);
+    S->OUT.F_LABREL_ACTUAL = fmin(F_LABREL_SUPPLY, F_LABREL_DEMAND);
     //Growth respiration
-    S->OUT.AUTO_RESP_GROWTH = S->IN.gr * F_LABREL_ACTUAL;
+    S->OUT.AUTO_RESP_GROWTH = S->IN.gr * S->OUT.F_LABREL_ACTUAL;
     //Actual release of labile carbon i.e. growth flux (after subtracting growth respiration costs)
-    TOTAL_GROWTH_ACTUAL = (1 - S->IN.gr) * F_LABREL_ACTUAL;
+    TOTAL_GROWTH_ACTUAL = (1 - S->IN.gr) * S->OUT.F_LABREL_ACTUAL;
 
     //Scaling factor for allocation fluxes, accounts for NSC limitation and growth respiration cost
     // - if actual growth is smaller than potential growth, we down-scale plant allocation fluxes

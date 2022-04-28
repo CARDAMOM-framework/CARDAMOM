@@ -94,6 +94,8 @@ int i_PAW_E;
 int i_PUW_E;
 int psi_50;
 int beta_lgr;
+int phi_RL;
+int phi_WL;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -102,7 +104,7 @@ int beta_lgr;
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
-    70,71,72,73
+    70,71,72,73,74,75
 };
 
 struct DALEC_1100_FLUXES{
@@ -453,9 +455,9 @@ f=nofluxes*n;
 
 
 //Define (1) all time varying inputs, and (2) pointers for outputs
-    ARFLUXES.IN.TEMP=(T2M_MIN[n]+T2M_MAX[n])*0.5;
+    // ARFLUXES.IN.TEMP=(T2M_MIN[n]+T2M_MAX[n])*0.5;
     // ARFLUXES.IN.SRAD=SSRD[n]*0.5;
-    ARFLUXES.IN.NSC=POOLS[p+S.C_lab];
+    // ARFLUXES.IN.NSC=POOLS[p+S.C_lab];
     // ARFLUXES.IN.PAW_SM=POOLS[p+S.D_SM_PAW];
     
     
@@ -464,7 +466,7 @@ f=nofluxes*n;
 
     
        //Call to ALLOC & AUTO RESP functuon
-    ALLOC_AND_AUTO_RESP_FLUXES(&ARFLUXES);
+    // ALLOC_AND_AUTO_RESP_FLUXES(&ARFLUXES);
 //You can now reference any of the .OUT variables
     
         //ARFLUXES.OUT.AUTO_RESP_MAINTENANCE
@@ -689,9 +691,9 @@ POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[F.paw2puw_e] - FLUXES[F.q_puw_e]
 
 
 /*respiration auto*/
-FLUXES[f+F.resp_auto]=pars[P.rauto_mr]*FLUXES[f+F.gpp];
+// FLUXES[f+F.resp_auto]=pars[P.rauto_mr]*FLUXES[f+F.gpp];
 /*labile production*/
-FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*(pars[P.f_lab]);
+// FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*(pars[P.f_lab]);
 
 //*************KNORR LAI**************
 
@@ -721,28 +723,48 @@ POOLS[nxp+S.M_LAI_TEMP]=KNORR.OUT.T;
     
 //************Allocation*******************
 
-Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]/deltat;
+ARFLUXES.IN.deltat=deltat;
+ARFLUXES.IN.GPP=FLUXES[f+F.gpp];
+ARFLUXES.IN.TEMP=(T2M_MIN[n]+T2M_MAX[n])*0.5;
+ARFLUXES.IN.NSC=POOLS[p+S.C_lab];
+ARFLUXES.IN.C_LIVE=POOLS[p+S.C_fol]+POOLS[p+S.C_woo]+POOLS[p+S.C_roo];
+// Potential plant allocation (growth) fluxes
+ARFLUXES.IN.ALLOC_FOL_POT=fmax(0, FLUXES[f+F.dlambda_dt]*pars[P.LCMA]);
+ARFLUXES.IN.ALLOC_ROO_POT=(pars[P.phi_RL] * FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_roo];
+ARFLUXES.IN.ALLOC_WOO_POT=(pars[P.phi_WL] * FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_woo];
+
+ALLOC_AND_AUTO_RESP_FLUXES(&ARFLUXES);
+
+/*respiration auto*/
+FLUXES[f+F.resp_auto]=ARFLUXES.OUT.AUTO_RESP_TOTAL;
+
+// Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]/deltat;
 if (FLUXES[f+F.dlambda_dt] > 0){
   /* labile release: flux from labile pool to foliar pool */
-  FLUXES[f+F.lab_release]=MinQuadraticSmooth(Fcfolavailable, FLUXES[f+F.dlambda_dt]*pars[P.LCMA], 0.99);
+  // FLUXES[f+F.lab_release]=MinQuadraticSmooth(Fcfolavailable, FLUXES[f+F.dlambda_dt]*pars[P.LCMA], 0.99);
   /* flag for carbon availability limitation (0=canopy in senescence, 1=labile C does not limit growth, 2=labile C limits LAI growth) */
-  FLUXES[f+F.c_lim_flag]=2.0;
+  // FLUXES[f+F.c_lim_flag]=2.0;
   /* leaf litter production: flux from foliar pool to litter pool */
   FLUXES[f+F.fol2lit]=POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))/deltat;
 }
 else {
-  FLUXES[f+F.c_lim_flag]=0.0;
+  // FLUXES[f+F.c_lim_flag]=0.0;
   /* labile release: flux from labile pool to foliar pool */
-  FLUXES[f+F.lab_release]=0;
+  // FLUXES[f+F.lab_release]=0;
   /* leaf litter production: flux from foliar pool to litter pool */
   FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA]+POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))/deltat;
 }
 
-
+/*labile production*/
+FLUXES[f+F.lab_prod] = ARFLUXES.OUT.F_LABPROD;
+/*labile production*/
+FLUXES[f+F.lab_release] = ARFLUXES.OUT.F_LABREL_ACTUAL;
 /*root production*/        
-FLUXES[f+F.root_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.lab_prod])*pars[P.f_root];            
+// FLUXES[f+F.root_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.lab_prod])*pars[P.f_root];            
+FLUXES[f+F.root_prod] = ARFLUXES.OUT.ALLOC_ROO_ACTUAL;
 /*wood production*/       
-FLUXES[f+F.wood_prod] = FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.root_prod]-FLUXES[f+F.lab_prod]; 
+// FLUXES[f+F.wood_prod] = FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.root_prod]-FLUXES[f+F.lab_prod]; 
+FLUXES[f+F.wood_prod] = ARFLUXES.OUT.ALLOC_WOO_ACTUAL;
 /*wood CWD production*/       
 FLUXES[f+F.wood2cwd] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
 /*root litter production*/

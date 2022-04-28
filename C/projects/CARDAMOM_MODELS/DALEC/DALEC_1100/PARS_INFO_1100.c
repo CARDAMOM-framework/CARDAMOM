@@ -318,6 +318,13 @@ CARDADATA->parmax[P.psi_50]=30;
 CARDADATA->parmin[P.beta_lgr]=4.1;
 CARDADATA->parmax[P.beta_lgr]=50;
  
+/*Ratio of total root surface area to total leaf area*/
+CARDADATA->parmin[P.phi_RL]=0.5;
+CARDADATA->parmax[P.phi_RL]=1.5;
+
+/*Ratio of total wood surface area to total leaf area*/
+CARDADATA->parmin[P.phi_WL]=0.1;
+CARDADATA->parmax[P.phi_WL]=10.0;
   
 return 0;
 
