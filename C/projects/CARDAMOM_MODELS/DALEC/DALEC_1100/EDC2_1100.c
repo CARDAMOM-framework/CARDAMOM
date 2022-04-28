@@ -193,8 +193,8 @@ printf("etol = %f\n",etol);
 printf("****\n");}}
 
 
-/*Ensuring that wilting point is at or below the mean H2O pool EDC14*/
-EDCD->pEDC=EDCD->pEDC+log(1/(1+exp(10*(pars[P.wilting]-MPOOLS[S.H2O_PAW])/MPOOLS[S.H2O_PAW])));
+/*Ensuring that wilting point is at or below the mean H2O pool EDC14 (No longer applicable)*/ 
+//EDCD->pEDC=EDCD->pEDC+log(1/(1+exp(10*(pars[P.wilting]-MPOOLS[S.H2O_PAW])/MPOOLS[S.H2O_PAW])));
 
 /***********************EDCs done here****************************/
 
