@@ -729,9 +729,9 @@ ARFLUXES.IN.TEMP=(T2M_MIN[n]+T2M_MAX[n])*0.5;
 ARFLUXES.IN.NSC=POOLS[p+S.C_lab];
 ARFLUXES.IN.C_LIVE=POOLS[p+S.C_fol]+POOLS[p+S.C_woo]+POOLS[p+S.C_roo];
 // Potential plant allocation (growth) fluxes
-ARFLUXES.IN.ALLOC_FOL_POT=fmax(0, FLUXES[f+F.dlambda_dt]*pars[P.LCMA]);
-ARFLUXES.IN.ALLOC_ROO_POT=(pars[P.phi_RL] * FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_roo];
-ARFLUXES.IN.ALLOC_WOO_POT=(pars[P.phi_WL] * FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_woo];
+ARFLUXES.IN.ALLOC_FOL_POT=fmax(0, (FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_fol]);
+ARFLUXES.IN.ALLOC_ROO_POT=fmax(0, (pars[P.phi_RL] * FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_roo]);
+ARFLUXES.IN.ALLOC_WOO_POT=fmax(0, (pars[P.phi_WL] * FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_woo]);
 
 ALLOC_AND_AUTO_RESP_FLUXES(&ARFLUXES);
 
@@ -962,7 +962,7 @@ OBSOPE.SUPPORT_SCF_OBS=true;
 
 
 
-OBSOPE.SUPPORT_CUE_OBS=true;
+// OBSOPE.SUPPORT_CUE_OBS=true;
 OBSOPE.SUPPORT_C3frac_OBS=true;
 OBSOPE.SUPPORT_iniSnow_OBS=true;
 OBSOPE.SUPPORT_iniSOM_OBS=true;
@@ -1028,7 +1028,7 @@ OBSOPE.SCF_pool=S.D_SCF;
 
 
 //CUE parameters
-OBSOPE.CUE_PARAM=P.f_auto;
+// OBSOPE.CUE_PARAM=P.f_auto;
 //C3frac parameters
 OBSOPE.C3frac_PARAM=P.C3_frac;
 //Initial Snow parameter
