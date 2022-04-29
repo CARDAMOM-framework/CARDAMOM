@@ -32,13 +32,13 @@ int EDC=1;
 int DIAG=EDCD->DIAG;
 /*obsolete edcc constant was kept here*/
 /*deriving true allocation fractions*/
-double const fauto=pars[P.f_auto];
+// double const fauto=pars[P.f_auto];
 // double const ffol=(1-fauto)*pars[P.f_foliar];
-double const flab=(1-fauto)*pars[P.f_lab];
-double const froot=(1-fauto-flab)*pars[P.f_root];
-double const fwood=1-fauto-flab-froot;
+// double const flab=(1-fauto)*pars[P.f_lab];
+// double const froot=(1-fauto-flab)*pars[P.f_root];
+// double const fwood=1-fauto-flab-froot;
 /*fraction of GPP som under equilibrium conditions*/
-double const fsom=fwood+(froot+flab)*pars[P.tr_lit2som]/(pars[P.tr_lit2som]+pars[P.t_lit]);
+// double const fsom=fwood+(froot+flab)*pars[P.tr_lit2som]/(pars[P.tr_lit2som]+pars[P.t_lit]);
 
 /*yearly leaf loss fraction*/
 // double torfol=1/(pars[P.t_foliar]*365.25);
@@ -71,7 +71,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1))
 
 /*EDC CHECK NO 5*/
 /*Allocation to canopy is comparable to allocation to fine roots*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[5-1]==1)) & ((flab)>5*froot | (flab)*5<froot)){EDC=0;EDCD->PASSFAIL[5-1]=0;}
+// if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[5-1]==1)) & ((flab)>5*froot | (flab)*5<froot)){EDC=0;EDCD->PASSFAIL[5-1]=0;}
 
 /*EDC No 16* Foliage CF> wood CF & SOM CF*/
 if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[16-1]==1)) & (pars[P.cf_foliar]<pars[P.cf_ligneous] | pars[P.cf_foliar]<pars[P.cf_DOM])){EDC=0;EDCD->PASSFAIL[16-1]=0;}
