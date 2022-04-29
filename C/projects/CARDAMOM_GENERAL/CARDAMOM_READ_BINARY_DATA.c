@@ -69,6 +69,7 @@ DATA->M_DOM=calloc(Ntimesteps,sizeof(double));
 DATA->M_ET=calloc(Ntimesteps,sizeof(double));
 DATA->M_EWT=calloc(Ntimesteps,sizeof(double));
 DATA->M_GPP=calloc(Ntimesteps,sizeof(double));
+DATA->M_SIF=calloc(Ntimesteps,sizeof(double));
 DATA->M_LAI=calloc(Ntimesteps,sizeof(double));//Warning, LAI larger than this!
 DATA->M_NBE=calloc(Ntimesteps,sizeof(double));
 DATA->M_ROFF=calloc(Ntimesteps,sizeof(double));
@@ -185,7 +186,7 @@ return 0;
 int FREE_DATA_STRUCT(DATA DATA){
 
 
-//Cost function obsetvations
+//Cost function observations
 free(DATA.M_ABGB);
 free(DATA.M_CH4);
 free(DATA.M_DOM);
@@ -193,6 +194,7 @@ free(DATA.M_ET);
 free(DATA.M_ROFF);
 free(DATA.M_EWT);
 free(DATA.M_GPP);
+free(DATA.M_SIF);
 free(DATA.M_LAI);
 free(DATA.M_NBE);
 

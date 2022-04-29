@@ -17,12 +17,12 @@ int PARS_INFO_1106(DATA *CARDADATA)
 struct DALEC_1106_PARAMETERS P=DALEC_1106_PARAMETERS;
 
 /*Litter decomposition rate*/
-CARDADATA->parmin[P.tr_lit2som]=0.00001;
-CARDADATA->parmax[P.tr_lit2som]=0.01;
+CARDADATA->parmin[P.tr_lit2som]=0.01;
+CARDADATA->parmax[P.tr_lit2som]=0.99;
 
 /*CWD decomposition rate*/
-CARDADATA->parmin[P.tr_cwd2som]=0.00001;
-CARDADATA->parmax[P.tr_cwd2som]=0.01;
+CARDADATA->parmin[P.tr_cwd2som]=0.01;
+CARDADATA->parmax[P.tr_cwd2som]=0.99;
 
 /*Fraction of GPP respired*/
 CARDADATA->parmin[P.f_auto]=0.2;
@@ -123,10 +123,6 @@ CARDADATA->parmax[P.cf_DOM]=1;
 /*Resilience factor (since transfer to litter is represented as (1-pars[30])) ".*/
 CARDADATA->parmin[P.resilience]=0.01;
 CARDADATA->parmax[P.resilience]=1;
-
-/*Moisture factor*/
-CARDADATA->parmin[P.moisture]=0.01;
-CARDADATA->parmax[P.moisture]=1;
 
 /*Saturated hydraulic conductivity (m/s)*/
 CARDADATA->parmin[P.hydr_cond]=0.0000001;

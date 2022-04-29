@@ -105,6 +105,7 @@ DATA->DOM=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "DOM");
 DATA->ET=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ET");
 DATA->EWT=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "EWT");
 DATA->GPP=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "GPP");
+DATA->SIF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "SIF");
 DATA->LAI=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "LAI");
 DATA->NBE=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "NBE");
 // printf("Just read NBE...\n");
@@ -171,8 +172,14 @@ default_int_value(&DATA->GPP.opt_unc_type,1);
 default_double_value(&DATA->GPP.single_unc,2);
 default_double_value(&DATA->GPP.min_threshold,0.1);//gC/m2/d
 
+//Default SIF options - shuang added
+printf("SIF.opt_unc_type=1; SIF.single_unc=2; SIF.min_threshold=0.1 gC/m2/d;\n");
+default_int_value(&DATA->SIF.opt_unc_type,1);
+default_double_value(&DATA->SIF.single_unc,2);
+default_double_value(&DATA->SIF.min_threshold,0.1);//gC/m2/d
+
 //Default LAI options
-printf("LAI.opt_unc_type=1; GPP.single_unc=2; LAI.min_threshold=0.1 m2/m2;\n");
+printf("LAI.opt_unc_type=1; LAI.single_unc=2; LAI.min_threshold=0.1 m2/m2;\n");
 default_int_value(&DATA->LAI.opt_unc_type,1);
 default_double_value(&DATA->LAI.single_unc,2);
 default_double_value(&DATA->LAI.min_threshold,0.1);//m2/m2
@@ -205,6 +212,7 @@ TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->DOM);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ET);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->EWT);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->GPP);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->SIF);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->LAI);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->NBE);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ROFF);
