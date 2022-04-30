@@ -6,7 +6,6 @@
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2EWT.c"
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2CON.c"
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI.c"
-//#include "../DALEC_ALL/LIU_An_et.c"
 #include "../DALEC_ALL/LIU_AN_ET_REFACTOR.c"
 #include "../DALEC_ALL/CH4_MODULES/HET_RESP_RATES_JCR.c"
 #include "../DALEC_ALL/KNORR_ALLOCATION.c"
@@ -956,22 +955,26 @@ static EDCs * EDCs;EDCs=calloc(DALECmodel->noedcs,sizeof( * EDCs));
 //Som lit turnover rate
 
 //EDC: litter tor > cwd tor
-static DALEC_EDC_PARS_INEQUALITY_STRUCT EDC_litcwdtor;
+//List all inequality calls here
+static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_litcwdtor, EDC_cwdsomtor;
+
 EDC_litcwdtor.big_par_index=P.t_lit;
 EDC_litcwdtor.small_par_index=P.t_cwd;
 EDCs[E.litcwdtor].data=&EDC_litcwdtor;
-EDCs[E.litcwdtor].function=&DALEC_EDC_PARS_INEQUALITY;
+EDCs[E.litcwdtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.litcwdtor].prerun=true;
 
 //EDC: cwd tor > som tor
-static DALEC_EDC_PARS_INEQUALITY_STRUCT  EDC_cwdsomtor;
 EDC_cwdsomtor.big_par_index=P.t_cwd;
 EDC_cwdsomtor.small_par_index=P.t_som;
 EDCs[E.cwdsomtor].data=&EDC_cwdsomtor;
-EDCs[E.cwdsomtor].function=&DALEC_EDC_PARS_INEQUALITY;
+EDCs[E.cwdsomtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.cwdsomtor].prerun=true;
 
-// static DALEC_EDC_STEADY_STATE_EXP_DECAY_STRUCT EDC_SSED_Clab;
+
+
+// Define all pools here
+// static DALEC_EDC_TRAJECTORY_STRUCT EDC_SSED_Clab;
 // EDC_SSED_Clab.inputs[2]
 // EDC_SSED_Clab.outputs[2]=[F.
         
