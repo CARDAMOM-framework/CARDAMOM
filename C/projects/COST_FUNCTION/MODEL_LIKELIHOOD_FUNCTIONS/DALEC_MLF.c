@@ -155,6 +155,7 @@ return P;
 
 double EDC_DALEC_MLF_BINARY(DATA DATA, double *PARS){
 
+
 /*Copy model pointer for brevity*/
 DALEC *MODEL=(DALEC *)DATA.MODEL;
 
@@ -166,7 +167,6 @@ EDCD=*MODEL->EDCD;
 EDCD.DIAG=1;
 int EDC, n;
 double P=0;
-
 
 //EDC=MODEL->edc1(PARS,DATA,&EDCD);
 
@@ -181,7 +181,6 @@ double P=0;
 /*LIKELIHOOD (log likelihood)*/
 /*EDCs are individually counted*/
 /*Only counted if EDCSWITCH is on*/
-int tot_exp=0;
 //for (n=0;n<EDCD.nedc;n++){
 //tot_exp+=1-ipow(EDCD.PASSFAIL[n],EDCD.SWITCH[n]);}
 
@@ -205,6 +204,8 @@ else
 return P;
 
 }
+
+
 
 
 

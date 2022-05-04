@@ -5,6 +5,7 @@
 #include "EDC2_1100.c"
 #include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF_DEDC.c"
 #include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
+#include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF2.c"
 #include "../../../DALEC_CODE/EDCs/EDCSETUP.c"
 #include "../../../CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c"
 
@@ -13,7 +14,7 @@ int MODEL_INFO_1100(DATA * DATA){
 /*Step 1. Declare structure*/
 /*"static" ensures that the memory is declared in one instance and visible to all functions (I think)*/
 static DALEC DALECmodel;DALEC_1100_MODCONFIG(&DALECmodel);
-static MLF MLF;DALEC_MLF_DEDC_MODCONFIG(&MLF);
+static MLF MLF;DALEC_MLF2_MODCONFIG(&MLF);
 
 /*Step 2: Fill structure with model-specific info*/
 
@@ -26,6 +27,7 @@ static MLF MLF;DALEC_MLF_DEDC_MODCONFIG(&MLF);
 DATA->nopools=DALECmodel.nopools;
 DATA->nopars=DALECmodel.nopars;
 DATA->nofluxes=DALECmodel.nofluxes;
+DATA->noedcs=DALECmodel.noedcs;
 DATA->nolikelihoods=MLF.nolikelihoods;
 
 
@@ -33,8 +35,8 @@ DATA->nolikelihoods=MLF.nolikelihoods;
 /*User is able to add further functions as deemed necessary*/
 /*Function names are declared in ../DALEC_ALL/DALEC_MODULE.c*/
 /*Consider starting new module for radically different model structures*/
-DALECmodel.edc1=EDC1_1100;
-DALECmodel.edc2=EDC2_1100;
+//DALECmodel.edc1=EDC1_1100;
+//DALECmodel.edc2=EDC2_1100;
 
 
 
@@ -55,7 +57,7 @@ PARS_INFO_1100(DATA);
 //oksofar("about to declare EDCD");
 //printf("DALECmodel.EDCD = %p\n",DALECmodel.EDCD); //DALECmodel.EDCD Needs to be initilized!
 /*Initialize the EDCD structure*/
-EDCSETUP(*DATA,&DALECmodel.EDCD);
+//EDCSETUP(*DATA,&DALECmodel.EDCD);
 
 
 
@@ -64,8 +66,9 @@ EDCSETUP(*DATA,&DALECmodel.EDCD);
 DATA->MODEL=&DALECmodel;
 /*Pointing to MLF*/
 DATA->MLF=MLF.mlf;
+
 /*Pointing to EMLF*/
-DATA->EMLF=EDC_DALEC_MLF_BINARY;
+DATA->EMLF=EDC_DALEC_MLF2_BINARY;
 
 
 

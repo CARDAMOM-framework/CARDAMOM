@@ -6,7 +6,6 @@
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2EWT.c"
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2CON.c"
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI.c"
-//#include "../DALEC_ALL/LIU_An_et.c"
 #include "../DALEC_ALL/LIU_AN_ET_REFACTOR.c"
 #include "../DALEC_ALL/CH4_MODULES/HET_RESP_RATES_JCR.c"
 #include "../DALEC_ALL/KNORR_ALLOCATION.c"
@@ -231,6 +230,14 @@ int n_output_fluxes
 int * input_fluxes
 int * output_fluxes}
 */
+
+
+struct DALEC_1100_EDCs{
+int litcwdtor;
+int cwdsomtor;
+} DALEC_1100_EDCs={
+    0,1
+};
 
 
 
@@ -873,23 +880,96 @@ return 0;
 
 
 
+// 
+// int ODE_FLUX_TABLE(){
+//     
+//     //Clabile
+//     P.noinputs=1;
+//             P.in_indices[1]{F.lab_prod };
+//     P.nooutputs=1;
+//             P.out_indices[1]{F.lab_release};
+//     
+//Copy this convention
+// static int ROFF_fluxes[3];
+// ROFF_fluxes[0]=F.q_paw;
+// ROFF_fluxes[1]=F.q_puw;
+// ROFF_fluxes[2]=F.q_surf;
+//     
+//     
+// }
+
+
+
 int DALEC_1100_MODCONFIG(DALEC * DALECmodel){
 
 
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
 struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
+struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=72;
 DALECmodel->nofluxes=69;
 DALECmodel->dalec=DALEC_1100;
+DALECmodel->noedcs=2;
+
+//EDC operator
+//Make sure has same number as number of EDCs
+//This is generic EDCs structure defined in ../DALEC_EDCs/DALEC_EDC_FUNCTIONS.c
+//Has three args, data (void), function (in "DATA", and "void *", and "double" out), and "boolean" prerun.
+
+static EDCs * EDCs;EDCs=calloc(DALECmodel->noedcs,sizeof( * EDCs));
+
+
+//Som lit turnover rate
+
+//EDC: litter tor > cwd tor
+//List all inequality calls here
+static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_litcwdtor, EDC_cwdsomtor;
+
+EDC_litcwdtor.big_par_index=P.t_lit;
+EDC_litcwdtor.small_par_index=P.t_cwd;
+EDCs[E.litcwdtor].data=&EDC_litcwdtor;
+EDCs[E.litcwdtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
+EDCs[E.litcwdtor].prerun=true;
+
+//EDC: cwd tor > som tor
+EDC_cwdsomtor.big_par_index=P.t_cwd;
+EDC_cwdsomtor.small_par_index=P.t_som;
+EDCs[E.cwdsomtor].data=&EDC_cwdsomtor;
+EDCs[E.cwdsomtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
+EDCs[E.cwdsomtor].prerun=true;
+
+
+
+// Define all pools here
+// static DALEC_EDC_TRAJECTORY_STRUCT EDC_SSED_Clab;
+// EDC_SSED_Clab.inputs[2]
+// EDC_SSED_Clab.outputs[2]=[F.
+        
+        
+//Eventually adopt more succinct notation (to consider)
+//e.g. INEQUALITY_EDC(P.t_cwd,P.t_som,EDCs[E.cwdsomtor])
+
+DALECmodel->EDCs=EDCs;
+
+//ecological
+//EDCOPE.SUPPORT_LITCWDSOM_trpar_EDC=true;
+//dynamical
+//EDCOPE.SUPPORT_POOL_SSP_EDC=true;
+//Numerical checks
+//EDCOPE.SUPPORT_FINITE_EDC=true;
+
+
+
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
 //Initialize all SUPPORT OBS values (default value = false).
 INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
+
 
 //Set SUPPORT_OBS values to true if model supports external observation operations.
 OBSOPE.SUPPORT_GPP_OBS=true;
@@ -904,7 +984,6 @@ OBSOPE.SUPPORT_FIR_OBS=true;
 OBSOPE.SUPPORT_CH4_OBS=true;
 OBSOPE.SUPPORT_ROFF_OBS=true;
 OBSOPE.SUPPORT_SCF_OBS=true;
-
 
 
 

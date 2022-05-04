@@ -12,7 +12,8 @@ int FIND_EDC_INITIAL_VALUES(DATA CARDADATA,PARAMETER_INFO *PI, MCMC_OPTIONS *MCO
 /*First: choosing the correct EDC MODEL LIKELIHOOD FUNCTION (EMLF)*/
 
 
-    
+    printf("*********made it to here FIND_EDC_INITIAL_VALUES********\n");
+
 //double (*EMLF)(DATA, double *);
 //double (*MLF)(DATA, double *);
 

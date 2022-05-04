@@ -61,6 +61,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[2-1]==1))
 /*Root turnover greater than SOM turnover at meantemp*/
 /*same as this*/
 /*\text{EDC 4: }(1-\pavii)^{365} > \Pi_{i=1}^{365} (1-\paix \tratei)*/
+//We can remove this, H2O controls on RHCO2 make it difficult to justify
 if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1)) & (pars[P.t_root]<pars[P.t_som]*pow(pars[P.Q10rhco2],meantemp/10))){EDC=0;EDCD->PASSFAIL[4-1]=0;}
 /*EDC no 5 is addressed in EDC2_FIREBUCKET.c*/
 
@@ -70,6 +71,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1))
 /*now obsolete!*/
 
 /*EDC CHECK NO 5*/
+//Will want to remove this at some point when Alex's new scheme kicks in!
 /*Allocation to canopy is comparable to allocation to fine roots*/
 // if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[5-1]==1)) & ((flab)>5*froot | (flab)*5<froot)){EDC=0;EDCD->PASSFAIL[5-1]=0;}
 

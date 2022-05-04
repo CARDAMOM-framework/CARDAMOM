@@ -76,6 +76,8 @@ DATA->M_ROFF=calloc(Ntimesteps,sizeof(double));
 DATA->M_SCF=calloc(Ntimesteps,sizeof(double));//Warning, LAI larger than this!
 
 
+
+
     
 
 
@@ -88,6 +90,7 @@ DATA->M_SCF=calloc(Ntimesteps,sizeof(double));//Warning, LAI larger than this!
 	DATA->M_P=calloc(noprob,sizeof(double));
 	DATA->M_PARS=calloc(DATA->nopars,sizeof(double));
     DATA->M_LIKELIHOODS=calloc(DATA->nolikelihoods,sizeof(double));
+	DATA->M_EDCs=calloc(DATA->noedcs,sizeof(double));
 
 
 
