@@ -5,10 +5,11 @@ typedef struct {
         double deltat;//model timestep
         double TEMP;  //deg C
         double C_LIVE;// Live C
+        double NSC;   //labile carbon pool, Clab, non-structural carbohydrates (gC)
         double GPP;
         double mr;    // parameter: maintenance respiration coefficient (gC/gC/d)
         double gr;    // parameter: growth respiration coefficient (gC/gC)
-        double NSC;   //labile carbon pool, Clab, non-structural carbohydrates (gC)
+        double Q10mr; // parameter: Q10 parameter for maintenance respiration (unitless)
         double ALLOC_FOL_POT; // potential allocation flux to foliar pool (gC/m2/d)
         double ALLOC_WOO_POT; // potential allocation flux to wood pool (gC/m2/d)
         double ALLOC_ROO_POT; // potential allocation flux to root pool (gC/m2/d)
@@ -33,16 +34,16 @@ typedef struct {
 //Main function 
 int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
 
+    double fT; // temperature scaling for maintenance respiration
     double F_LABREL_SUPPLY; //
     double F_LABREL_DEMAND; //
     double TOTAL_GROWTH_POT; //
     double TOTAL_GROWTH_ACTUAL; //
     double SCALE_ALLOC_FLUXES; //
 
-
     //Maintenance respiration
-    //S->OUT.AUTO_RESP_MAINTENANCE = S->IN.mr*S->IN.TEMP*S->IN.C_LIVE;
-    S->OUT.AUTO_RESP_MAINTENANCE = S->IN.mr * S->IN.C_LIVE;
+    fT = pow(S->IN.Q10mr,(S->IN.TEMP-25)/10); 
+    S->OUT.AUTO_RESP_MAINTENANCE = S->IN.mr * fT * S->IN.C_LIVE;
     S->OUT.F_LABPROD = S->IN.GPP - S->OUT.AUTO_RESP_MAINTENANCE;
 
     //Potential supply of labile carbon for plant growth
@@ -69,19 +70,6 @@ int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
     S->OUT.NPP = S->IN.GPP - S->OUT.AUTO_RESP_TOTAL;
     S->OUT.CUE = S->OUT.NPP/S->IN.GPP;
 
-//...
-   //..
-   //Once done with calculations, populate output variables
-    
-// S->OUT.AUTO_RESP_MAINTENANCE=0;
-// S->OUT.AUTO_RESP_MAINTENANCE=0;
-// S->OUT.ALLOC_FOL=0;
-// S->OUT.ALLOC_WOO=0;
-// S->OUT.ALLOC_ROO=0;
-
-    
-    
-    
 
 return 0;
 }

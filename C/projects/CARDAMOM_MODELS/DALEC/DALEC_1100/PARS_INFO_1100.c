@@ -32,6 +32,10 @@ CARDADATA->parmax[P.f_auto]=0.8;
 CARDADATA->parmin[P.rauto_mr]=0.05;
 CARDADATA->parmax[P.rauto_mr]=0.8;
 
+/*Autotrophic maintenance respiration Q10 parameter*/
+CARDADATA->parmin[P.rauto_mr_q10]=1.0;
+CARDADATA->parmax[P.rauto_mr_q10]=3.0;
+
 /*Autotrophic growth respiration coefficient*/
 CARDADATA->parmin[P.rauto_gr]=0.05;
 CARDADATA->parmax[P.rauto_gr]=0.8;
