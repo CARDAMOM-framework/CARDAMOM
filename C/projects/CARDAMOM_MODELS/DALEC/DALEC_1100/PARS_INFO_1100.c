@@ -294,9 +294,9 @@ CARDADATA->parmax[P.time_c]=22;
 CARDADATA->parmin[P.time_r]=0.1;
 CARDADATA->parmax[P.time_r]=6.0;
 
-/*initialization of temperature memory (fractional value between mintemp and maxtemp at t=0)*/
-CARDADATA->parmin[P.init_T_mem]=0.01;
-CARDADATA->parmax[P.init_T_mem]=1;
+/*initialization of temperature memory at t=0 (in absolute temperature units)*/
+CARDADATA->parmin[P.init_T_mem]=268.14;
+CARDADATA->parmax[P.init_T_mem]=323.15;
 
 /*initialization of water/structural memory (fractional value of intrinsic maximum LAI)*/
 CARDADATA->parmin[P.init_LAIW_mem]=0.01;

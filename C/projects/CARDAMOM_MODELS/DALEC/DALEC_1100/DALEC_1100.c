@@ -354,7 +354,7 @@ double *POOLS=DATA.M_POOLS;
          KNORR.IN.lambda_max=pars[P.lambda_max];
     //Initialize memory states
     
-    POOLS[S.M_LAI_TEMP]=pars[P.init_T_mem]*(T2M_MAX[0]-T2M_MIN[0])+T2M_MIN[0];//Recommend configuring "P.init_T_mem" as a temperature 
+    POOLS[S.M_LAI_TEMP]=pars[P.init_T_mem];
     POOLS[S.M_LAI_MAX]=pars[P.init_LAIW_mem]*pars[P.lambda_max];
     
 
