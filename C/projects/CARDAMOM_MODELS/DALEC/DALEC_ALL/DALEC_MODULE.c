@@ -16,6 +16,11 @@ int nofluxes;
 int nomet;
 int noedcs;
 int * testvec;
+struct PARS_INFO {
+   double * parmin;
+   double * parmax;}
+//struct POOL_INFO;
+//struct FLUX_INFO;
 int (*dalec)(DATA,const double *);
 //To become obsolete, once EDCs refactored
 int (*edc1)(const double *, DATA, struct EDCDIAGNOSTIC * EDCD);

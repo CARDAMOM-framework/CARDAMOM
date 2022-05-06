@@ -107,6 +107,9 @@ int phi_WL;
     70,71,72,73,74,75,76
 };
 
+
+
+
 struct DALEC_1100_FLUXES{
 /*DALEC FLUXES*/
 int gpp;   /*GPP*/
@@ -235,8 +238,9 @@ int * output_fluxes}
 struct DALEC_1100_EDCs{
 int litcwdtor;
 int cwdsomtor;
+int stateranges;
 } DALEC_1100_EDCs={
-    0,1
+    0,1,2
 };
 
 
@@ -898,6 +902,332 @@ return 0;
 //     
 // }
 
+// typedef struct PAR_INFO{
+//     double * min;
+//     double * max;} PARINFO
+    
+
+int PARAMETER_INFO_1100(DALEC * D){
+//Inputs: DALEC structure
+struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
+
+/*Litter decomposition rate*/
+D->PARS_INFO.parmin[P.tr_lit2som]=0.01;
+D->PARS_INFO.parmax[P.tr_lit2som]=0.99;
+
+/*CWD decomposition rate*/
+D->PARS_INFO.parmin[P.tr_cwd2som]=0.01;
+D->PARS_INFO.parmax[P.tr_cwd2som]=0.99;
+
+/*Fraction of GPP respired*/
+D->PARS_INFO.parmin[P.f_auto]=0.2;
+D->PARS_INFO.parmax[P.f_auto]=0.8;
+
+/*Autotrophic maintenance respiration coefficient*/
+D->PARS_INFO.parmin[P.rauto_mr]=0.05;
+D->PARS_INFO.parmax[P.rauto_mr]=0.8;
+
+/*Autotrophic maintenance respiration Q10 parameter*/
+D->PARS_INFO.parmin[P.rauto_mr_q10]=1.0;
+D->PARS_INFO.parmax[P.rauto_mr_q10]=3.0;
+
+/*Autotrophic growth respiration coefficient*/
+D->PARS_INFO.parmin[P.rauto_gr]=0.05;
+D->PARS_INFO.parmax[P.rauto_gr]=0.8;
+
+/*Fraction of (1-fgpp) to roots*/
+D->PARS_INFO.parmin[P.f_root]=0.01;
+D->PARS_INFO.parmax[P.f_root]=1;
+
+/*TOR wood* - 1% loss per year value*/
+D->PARS_INFO.parmin[P.t_wood]=0.000025;
+D->PARS_INFO.parmax[P.t_wood]=0.001;
+
+/*TOR roots*/
+D->PARS_INFO.parmin[P.t_root]=0.0001;
+D->PARS_INFO.parmax[P.t_root]=0.01;
+
+/*TOR litter*/
+D->PARS_INFO.parmin[P.t_lit]=0.0001;
+D->PARS_INFO.parmax[P.t_lit]=0.01;
+
+/*TOR CWD*/
+D->PARS_INFO.parmin[P.t_cwd]=0.00005;
+D->PARS_INFO.parmax[P.t_cwd]=0.005;
+
+/*TOR SOM*/
+D->PARS_INFO.parmin[P.t_som]=0.0000001;
+D->PARS_INFO.parmax[P.t_som]=0.001;
+
+/*\Q10 = 1.2-2.0*/
+D->PARS_INFO.parmin[P.Q10rhco2]=1.2;
+D->PARS_INFO.parmax[P.Q10rhco2]=2.0;
+
+/*Fraction to Clab*/
+D->PARS_INFO.parmin[P.f_lab]=0.01;
+D->PARS_INFO.parmax[P.f_lab]=0.5;
+
+/*LMCA*/
+/*Kattge et al. 2011*/
+/*Kattge et al., provide a range of 10 400 g m-2, i.e. 5 200 gC m-2*/
+D->PARS_INFO.parmin[P.LCMA]=5;
+D->PARS_INFO.parmax[P.LCMA]=200;
+
+/*INITIAL VALUES DECLARED HERE*/
+
+/*C labile*/
+D->PARS_INFO.parmin[P.i_labile]=1.0;
+D->PARS_INFO.parmax[P.i_labile]=2000.0;
+
+/*C foliar*/
+D->PARS_INFO.parmin[P.i_foliar]=1.0;
+D->PARS_INFO.parmax[P.i_foliar]=2000.0;
+
+/*C roots*/
+D->PARS_INFO.parmin[P.i_root]=1.0;
+D->PARS_INFO.parmax[P.i_root]=2000.0;
+
+/*C_wood*/
+D->PARS_INFO.parmin[P.i_wood]=1.0;
+D->PARS_INFO.parmax[P.i_wood]=100000.0;
+
+/*C CWD*/
+D->PARS_INFO.parmin[P.i_cwd]=1.0;
+D->PARS_INFO.parmax[P.i_cwd]=100000.0;
+
+/*C litter*/
+D->PARS_INFO.parmin[P.i_lit]=1.0;
+D->PARS_INFO.parmax[P.i_lit]=2000.0;
+
+/*C_som*/
+D->PARS_INFO.parmin[P.i_som]=1.0;
+D->PARS_INFO.parmax[P.i_som]=200000.0;
+
+/*Retention parameter (b)*/
+D->PARS_INFO.parmin[P.retention]=1.5;
+D->PARS_INFO.parmax[P.retention]=10;
+
+/*"Bucket at t0"*/
+D->PARS_INFO.parmin[P.i_PAW]=1;
+D->PARS_INFO.parmax[P.i_PAW]=10000;
+
+/*Foliar biomass CF*/
+D->PARS_INFO.parmin[P.cf_foliar]=0.01;
+D->PARS_INFO.parmax[P.cf_foliar]=1;
+
+/*"Ligneous" biomass CF".*/
+D->PARS_INFO.parmin[P.cf_ligneous]=0.01;
+D->PARS_INFO.parmax[P.cf_ligneous]=1;
+
+/*DOM CF".*/
+D->PARS_INFO.parmin[P.cf_DOM]=0.01;
+D->PARS_INFO.parmax[P.cf_DOM]=1;
+
+/*Resilience factor (since transfer to litter is represented as (1-pars[30])) ".*/
+D->PARS_INFO.parmin[P.resilience]=0.01;
+D->PARS_INFO.parmax[P.resilience]=1;
+
+/*Saturated hydraulic conductivity (m/s)*/
+D->PARS_INFO.parmin[P.hydr_cond]=0.0000001;
+D->PARS_INFO.parmax[P.hydr_cond]=0.00001;
+
+/*Maximum infiltration (mm/day)*/
+D->PARS_INFO.parmin[P.max_infil]=1;
+D->PARS_INFO.parmax[P.max_infil]=100;
+
+/*PUW pool*/
+D->PARS_INFO.parmin[P.i_PUW]=1;
+D->PARS_INFO.parmax[P.i_PUW]=10000;
+
+/*PAW porosity*/
+D->PARS_INFO.parmin[P.PAW_por]=0.2;
+D->PARS_INFO.parmax[P.PAW_por]=0.8;
+
+/*PUW porosity*/
+D->PARS_INFO.parmin[P.PUW_por]=0.2;
+D->PARS_INFO.parmax[P.PUW_por]=0.8;
+
+/*Field capacity (negative) potential (-Mpa)*/
+D->PARS_INFO.parmin[P.field_cap]=0.01;
+D->PARS_INFO.parmax[P.field_cap]=0.1;
+
+/*PAW depth (m)*/
+D->PARS_INFO.parmin[P.PAW_z]=0.01;
+D->PARS_INFO.parmax[P.PAW_z]=100;
+
+/*PUW depth (m)*/
+D->PARS_INFO.parmin[P.PUW_z]=0.01;
+D->PARS_INFO.parmax[P.PUW_z]=100;
+
+
+/*PAW volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
+D->PARS_INFO.parmin[P.PAW_vhc]=1.3e6;
+D->PARS_INFO.parmax[P.PAW_vhc]=3e6;
+
+/*PUW volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
+D->PARS_INFO.parmin[P.PUW_vhc]=1.3e6;
+D->PARS_INFO.parmax[P.PUW_vhc]=3e6;
+
+/*Runoff excess*/
+D->PARS_INFO.parmin[P.Q_excess]=0.01;
+D->PARS_INFO.parmax[P.Q_excess]=1;
+
+/*Medlyn g1*/
+D->PARS_INFO.parmin[P.Med_g1]=1.79;
+D->PARS_INFO.parmax[P.Med_g1]=5.79;
+
+/*Vcmax25*/
+D->PARS_INFO.parmin[P.Vcmax25]=1e-8;
+D->PARS_INFO.parmax[P.Vcmax25]=140;
+
+/*Tminmin scaling factor*/
+D->PARS_INFO.parmin[P.Tminmin]=258.15;
+D->PARS_INFO.parmax[P.Tminmin]=273.15;
+
+/*Tminmax scaling factor*/
+D->PARS_INFO.parmin[P.Tminmax]=273.15;
+D->PARS_INFO.parmax[P.Tminmax]=288.15;
+
+/*aerodynamic conductance*/
+D->PARS_INFO.parmin[P.ga]=0.01;
+D->PARS_INFO.parmax[P.ga]=10.0;
+
+/*Tupp*/
+D->PARS_INFO.parmin[P.Tupp]=299.15;
+D->PARS_INFO.parmax[P.Tupp]=318.15;
+
+/*Tdown*/
+D->PARS_INFO.parmin[P.Tdown]=263.15;
+D->PARS_INFO.parmax[P.Tdown]=286.15;
+
+/*C3_frac*/
+D->PARS_INFO.parmin[P.C3_frac]=1e-8;
+D->PARS_INFO.parmax[P.C3_frac]=1.0;
+
+/*Clumping index*/
+D->PARS_INFO.parmin[P.clumping]=0.35;
+D->PARS_INFO.parmax[P.clumping]=1.0;
+
+/*Leaf single scattering albedo*/
+D->PARS_INFO.parmin[P.leaf_refl]=1e-8;
+D->PARS_INFO.parmax[P.leaf_refl]=1.0;
+
+/*iSWE: initial for state variable SWE snow water equivalent*/
+D->PARS_INFO.parmin[P.i_SWE]=0.000001;
+D->PARS_INFO.parmax[P.i_SWE]=10000;
+
+/*sn1: min threshold for melt*/
+D->PARS_INFO.parmin[P.min_melt]=240;
+D->PARS_INFO.parmax[P.min_melt]=270;
+
+/*sn2: slope*/
+D->PARS_INFO.parmin[P.melt_slope]=0.00001;
+D->PARS_INFO.parmax[P.melt_slope]=1;
+
+/*sn3: snow cover fraction scalar; SCF = SWE/(SWE +SWEcritical_par) */
+D->PARS_INFO.parmin[P.scf_scalar]=10;
+D->PARS_INFO.parmax[P.scf_scalar]=1000.0;
+
+/* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)*/
+/*jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
+D->PARS_INFO.parmin[P.S_fv]=1;
+D->PARS_INFO.parmax[P.S_fv]=100.0;
+
+/* jc thetas_opt   optimum thetas for water scaler fW*/
+D->PARS_INFO.parmin[P.thetas_opt]=0.2;
+D->PARS_INFO.parmax[P.thetas_opt]=1.0;
+
+/* jc fwc the water scaler fW value at the end point C  */
+D->PARS_INFO.parmin[P.fwc]=0.01;
+D->PARS_INFO.parmax[P.fwc]=1.0;
+
+/* jc r_ch4   CH4:CO2 conversion ratio*/
+D->PARS_INFO.parmin[P.r_ch4]=0.001;
+D->PARS_INFO.parmax[P.r_ch4]=0.9;
+
+/* jc Q10ch4 Q10 for CH4 production  */
+D->PARS_INFO.parmin[P.Q10ch4]=1.0;
+D->PARS_INFO.parmax[P.Q10ch4]=3.0;
+
+/* maxPevap in mm/day*/
+D->PARS_INFO.parmin[P.maxPevap]=0.01;
+D->PARS_INFO.parmax[P.maxPevap]=20;
+
+/*Mean temperature at leaf onset (T_phi) (degrees kelvin)*/
+D->PARS_INFO.parmin[P.T_phi]=268.15;
+D->PARS_INFO.parmax[P.T_phi]=323.15;
+
+/*Spatial range of mean temperature at leaf onset (T_r) (degrees C or degrees kelvin)*/
+D->PARS_INFO.parmin[P.T_range]=0.1;
+D->PARS_INFO.parmax[P.T_range]=10.0;
+
+/*Averaging period for temperature growth trigger T (time units of model), usually kept constant*/
+D->PARS_INFO.parmin[P.tau_m]=1.0;
+D->PARS_INFO.parmax[P.tau_m]=1.01;
+
+/*LAI linear growth constant (inverse of model time units; e.g. days-1 or months-1)*/
+D->PARS_INFO.parmin[P.plgr]=0.001;
+D->PARS_INFO.parmax[P.plgr]=0.5;
+
+/*Inverse of leaf longevity during senescence period (inverse of model time units; e.g. days-1 or months-1)*/
+D->PARS_INFO.parmin[P.k_leaf]=0.001;
+D->PARS_INFO.parmax[P.k_leaf]=0.5;
+
+/*Intrinsic maximum LAI (m^2 m^-2)*/
+D->PARS_INFO.parmin[P.lambda_max]=0.1;
+D->PARS_INFO.parmax[P.lambda_max]=10.0;
+
+/*Target survival time for LAI under water-deficit conditions (days; or same unit as ET and PAW)*/
+D->PARS_INFO.parmin[P.tau_W]=0.1;
+D->PARS_INFO.parmax[P.tau_W]=300;
+
+/*Mean daylength at leaf shedding (t_c; in units of hours sunlight per day)*/
+D->PARS_INFO.parmin[P.time_c]=2;
+D->PARS_INFO.parmax[P.time_c]=22;
+
+/*Spatial range of mean daylength at leaf shedding (t_r)*/
+D->PARS_INFO.parmin[P.time_r]=0.1;
+D->PARS_INFO.parmax[P.time_r]=6.0;
+
+/*initialization of temperature memory (fractional value between mintemp and maxtemp at t=0)*/
+D->PARS_INFO.parmin[P.init_T_mem]=0.01;
+D->PARS_INFO.parmax[P.init_T_mem]=1;
+
+/*initialization of water/structural memory (fractional value of intrinsic maximum LAI)*/
+D->PARS_INFO.parmin[P.init_LAIW_mem]=0.01;
+D->PARS_INFO.parmax[P.init_LAIW_mem]=1;
+
+/*Inverse of leaf longevity at any period i.e. background turnover (days-1)*/
+D->PARS_INFO.parmin[P.t_foliar]=0.001;
+D->PARS_INFO.parmax[P.t_foliar]=0.1;
+
+/*PAW energy pool*/
+D->PARS_INFO.parmin[P.i_PAW_E]=1;
+D->PARS_INFO.parmax[P.i_PAW_E]=10000;
+
+/*PUW energy pool*/
+D->PARS_INFO.parmin[P.i_PUW_E]=1;
+D->PARS_INFO.parmax[P.i_PUW_E]=10000;
+
+/*PSI 50: water potential when soil-plant continum is at 50% hydraulic conductivity (-MPa)*/
+D->PARS_INFO.parmin[P.psi_50]=0.1;
+D->PARS_INFO.parmax[P.psi_50]=30;
+
+/*Beta function normalized logistic growth rate */
+D->PARS_INFO.parmin[P.beta_lgr]=4.1;
+D->PARS_INFO.parmax[P.beta_lgr]=50;
+ 
+/*Ratio of total root surface area to total leaf area*/
+D->PARS_INFO.parmin[P.phi_RL]=0.5;
+D->PARS_INFO.parmax[P.phi_RL]=1.5;
+
+/*Ratio of total wood surface area to total leaf area*/
+D->PARS_INFO.parmin[P.phi_WL]=0.1;
+D->PARS_INFO.parmax[P.phi_WL]=10.0;
+  
+return 0;}
+
+
 
 
 int DALEC_1100_MODCONFIG(DALEC * DALECmodel){
@@ -913,7 +1243,10 @@ DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp
 DALECmodel->nopars=72;
 DALECmodel->nofluxes=69;
 DALECmodel->dalec=DALEC_1100;
-DALECmodel->noedcs=2;
+DALECmodel->noedcs=3;
+
+//Define PARS_INFO here (ranges, and eventually names, etc)
+PARAMETER_INFO_1100(DALECmodel);
 
 //EDC operator
 //Make sure has same number as number of EDCs
@@ -942,6 +1275,30 @@ EDCs[E.cwdsomtor].data=&EDC_cwdsomtor;
 EDCs[E.cwdsomtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.cwdsomtor].prerun=true;
 
+//State ranges
+   DALEC_EDC_STATE_RANGES_STRUCT EDCsr;
+   
+   EDCsr.nopools=DALECmodel.nopools;
+   EDCsr.minvals=calloc(DALECmodel.nopools,sizeof(double));
+   EDCsr.maxvals=calloc(DALECmodel.nopools,sizeof(double));
+   
+   
+   EDC_sr.min_val[S.C_lab]=0;
+   EDC_sr.max_val[S.C_lab]=DALECmodel->PARS_INFO.parmax[P.i_labile];
+                
+              
+   //...
+   //...       
+   //...
+   //...        
+   //...
+   //...       
+   //...
+   //...
+//Adding EDC to the EDCs list
+    EDCs[E.stateranges].data=&EDC_sr;
+    EDCs[E.stateranges].function=&DALEC_EDC_STATE_RANGES;
+    EDCs[E.stateranges].prerun=true;
 
 
 // Define all pools here
