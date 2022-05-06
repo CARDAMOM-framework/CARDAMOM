@@ -15,7 +15,7 @@ int nopars;
 int nofluxes;
 int nomet;
 int noedcs;
-int * testvec;
+int * testvec;//Flag for deletion (isn't supposed to do anything)
 struct PARS_INFO {
    double * parmin;
    double * parmax;}

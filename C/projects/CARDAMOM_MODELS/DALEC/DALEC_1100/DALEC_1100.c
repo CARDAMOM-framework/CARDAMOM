@@ -1277,7 +1277,8 @@ EDCs[E.cwdsomtor].prerun=true;
 
 //State ranges
    DALEC_EDC_STATE_RANGES_STRUCT EDCsr;
-   
+   //Create array (1x number of pools) for minimum and max values 
+   //Index exactly corresponds to "POOLS" indices
    EDCsr.nopools=DALECmodel.nopools;
    EDCsr.minvals=calloc(DALECmodel.nopools,sizeof(double));
    EDCsr.maxvals=calloc(DALECmodel.nopools,sizeof(double));
