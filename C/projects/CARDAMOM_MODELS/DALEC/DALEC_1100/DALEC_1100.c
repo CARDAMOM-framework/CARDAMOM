@@ -1287,15 +1287,70 @@ EDCs[E.cwdsomtor].prerun=true;
    EDC_sr.min_val[S.C_lab]=0;
    EDC_sr.max_val[S.C_lab]=DALECmodel->PARS_INFO.parmax[P.i_labile];
                 
-              
-   //...
-   //...       
-   //...
-   //...        
-   //...
-   //...       
-   //...
-   //...
+   EDC_sr.min_val[S.C_fol]=0;
+   EDC_sr.max_val[S.C_fol]=DALECmodel->PARS_INFO.parmax[P.i_foliar];
+                
+   EDC_sr.min_val[S.C_roo]=0;
+   EDC_sr.max_val[S.C_roo]=DALECmodel->PARS_INFO.parmax[P.i_root];
+                
+   EDC_sr.min_val[S.C_woo]=0;
+   EDC_sr.max_val[S.C_woo]=DALECmodel->PARS_INFO.parmax[P.i_wood];
+                
+   EDC_sr.min_val[S.C_cwd]=0;
+   EDC_sr.max_val[S.C_cwd]=DALECmodel->PARS_INFO.parmax[P.i_cwd];
+                
+   EDC_sr.min_val[S.C_lit]=0;
+   EDC_sr.max_val[S.C_lit]=DALECmodel->PARS_INFO.parmax[P.i_lit];
+                
+   EDC_sr.min_val[S.C_som]=0;
+   EDC_sr.max_val[S.C_som]=DALECmodel->PARS_INFO.parmax[P.i_som];
+                
+   EDC_sr.min_val[S.H2O_PAW]=0;
+   EDC_sr.max_val[S.H2O_PAW]=DALECmodel->PARS_INFO.parmax[P.i_PAW];
+                
+   EDC_sr.min_val[S.H2O_PUW]=0;
+   EDC_sr.max_val[S.H2O_PUW]=DALECmodel->PARS_INFO.parmax[P.i_PUW];
+                
+   EDC_sr.min_val[S.H2O_SWE]=0;
+   EDC_sr.max_val[S.H2O_SWE]=DALECmodel->PARS_INFO.parmax[P.i_SWE];
+    
+   EDC_sr.min_val[S.E_PAW]=0;
+   EDC_sr.max_val[S.E_PAW]=DALECmodel->PARS_INFO.parmax[P.i_PAW_E];
+    
+   EDC_sr.min_val[S.E_PUW]=0;
+   EDC_sr.max_val[S.E_PUW]=DALECmodel->PARS_INFO.parmax[P.i_PUW_E];
+    
+   EDC_sr.min_val[S.D_LAI]=0;
+   EDC_sr.max_val[S.D_LAI]=DALECmodel->PARS_INFO.parmax[P.lambda_max];
+    
+   EDC_sr.min_val[S.D_SCF]=0;
+   EDC_sr.max_val[S.D_SCF]=1;
+    
+   EDC_sr.min_val[S.D_TEMP_PAW]=-100;
+   EDC_sr.max_val[S.D_TEMP_PAW]=100;
+    
+   EDC_sr.min_val[S.D_TEMP_PUW]=-100;
+   EDC_sr.max_val[S.D_TEMP_PUW]=100;
+    
+   EDC_sr.min_val[S.D_LF_PAW]=0;
+   EDC_sr.max_val[S.D_LF_PAW]=1;
+    
+   EDC_sr.min_val[S.D_LF_PUW]=0;
+   EDC_sr.max_val[S.D_LF_PUW]=1;
+    
+   EDC_sr.min_val[S.D_SM_PAW]=0;
+   EDC_sr.max_val[S.D_SM_PAW]=1;
+    
+   EDC_sr.min_val[S.D_SM_PUW]=0;
+   EDC_sr.max_val[S.D_SM_PUW]=1;
+    
+   EDC_sr.min_val[S.M_LAI_MAX]=-1e18; // get a better value from Alex N.
+   EDC_sr.max_val[S.M_LAI_MAX]=1e18; // get a better value from Alex N.
+    
+   EDC_sr.min_val[S.M_LAI_TEMP]=-1e18;  // get a better value from Alex N.
+   EDC_sr.max_val[S.M_LAI_TEMP]=1e18; // get a better value from Alex N.
+
+
 //Adding EDC to the EDCs list
     EDCs[E.stateranges].data=&EDC_sr;
     EDCs[E.stateranges].function=&DALEC_EDC_STATE_RANGES;
