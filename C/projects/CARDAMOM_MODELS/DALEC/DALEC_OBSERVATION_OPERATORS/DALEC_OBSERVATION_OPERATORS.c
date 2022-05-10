@@ -62,6 +62,10 @@ bool SUPPORT_C3frac_OBS;
 int C3frac_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
         
+bool SUPPORT_Vcmax25_OBS;
+int Vcmax25_PARAM;//This is assuming it's a single parameter
+//Can add more parameters OR options
+        
 bool SUPPORT_iniSnow_OBS;
 int iniSnow_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
@@ -419,6 +423,13 @@ return 0;
 int DALEC_OBSOPE_C3frac(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_C3frac;
 if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_C3frac=D->M_PARS[O->C3frac_PARAM];}
+return 0;
+
+}
+
+int DALEC_OBSOPE_Vcmax25(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_Vcmax25;
+if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_Vcmax25=D->M_PARS[O->Vcmax25_PARAM];}
 return 0;
 
 }
