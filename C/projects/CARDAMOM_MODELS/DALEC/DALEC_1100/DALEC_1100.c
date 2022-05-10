@@ -358,8 +358,8 @@ double *POOLS=DATA.M_POOLS;
          KNORR.IN.lambda_max=pars[P.lambda_max];
     //Initialize memory states
     
-    POOLS[S.M_LAI_MAX]=pars[P.init_T_mem]*(T2M_MAX[0]-T2M_MIN[0])+T2M_MIN[0];//Recommend configuring "P.init_T_mem" as a temperature 
-    POOLS[S.M_LAI_TEMP]=pars[P.init_LAIW_mem]*pars[P.lambda_max];
+    POOLS[S.M_LAI_TEMP]=pars[P.init_T_mem];
+    POOLS[S.M_LAI_MAX]=pars[P.init_LAIW_mem]*pars[P.lambda_max];
     
 
     //******************Allocation fluxes struct**********************
@@ -871,8 +871,8 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     
     
     //Soil moisture
-        POOLS[S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
-        POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);//soil moisture PUW
+        POOLS[nxp+S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
+        POOLS[nxp+S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);//soil moisture PUW
 
 
 }

@@ -287,7 +287,7 @@ FLUXES[f+F.et]=FLUXES[f+F.gpp]*sqrt(VPD[n])/pars[P.uWUE]+SSRD[n]*pars[P.boese_r]
 //KNORR LAI//
 if (n==0){
   /*Initialize phenology memory of air-temperature as some value within mintemp and maxtemp*/
-  lai_var_list[5]=pars[P.init_T_mem]*(T2M_MAX[n]-T2M_MIN[n])+T2M_MIN[n];
+  lai_var_list[5]=pars[P.init_T_mem];
   /*Initialize phenology memory of water/structural limitation */
   lai_var_list[11]=pars[P.init_LAIW_mem]*pars[P.lambda_max];
 }
