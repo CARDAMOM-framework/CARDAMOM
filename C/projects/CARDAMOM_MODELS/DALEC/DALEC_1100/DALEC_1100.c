@@ -1276,12 +1276,12 @@ EDCs[E.cwdsomtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.cwdsomtor].prerun=true;
 
 //State ranges
-   DALEC_EDC_STATE_RANGES_STRUCT EDCsr;
+   DALEC_EDC_STATE_RANGES_STRUCT EDC_sr;
    //Create array (1x number of pools) for minimum and max values 
    //Index exactly corresponds to "POOLS" indices
-   EDCsr.nopools=DALECmodel.nopools;
-   EDCsr.minvals=calloc(DALECmodel.nopools,sizeof(double));
-   EDCsr.maxvals=calloc(DALECmodel.nopools,sizeof(double));
+   EDC_sr.nopools=DALECmodel->nopools;
+   EDC_sr.min_val=calloc(DALECmodel->nopools,sizeof(double));
+   EDC_sr.max_val=calloc(DALECmodel->nopools,sizeof(double));
    
    
    EDC_sr.min_val[S.C_lab]=0;
@@ -1344,11 +1344,11 @@ EDCs[E.cwdsomtor].prerun=true;
    EDC_sr.min_val[S.D_SM_PUW]=0;
    EDC_sr.max_val[S.D_SM_PUW]=1;
     
-   EDC_sr.min_val[S.M_LAI_MAX]=-1e18; // get a better value from Alex N.
-   EDC_sr.max_val[S.M_LAI_MAX]=1e18; // get a better value from Alex N.
+   EDC_sr.min_val[S.M_LAI_MAX]=-INFINITY; // get a better value from Alex N.
+   EDC_sr.max_val[S.M_LAI_MAX]=INFINITY; // get a better value from Alex N.
     
-   EDC_sr.min_val[S.M_LAI_TEMP]=-1e18;  // get a better value from Alex N.
-   EDC_sr.max_val[S.M_LAI_TEMP]=1e18; // get a better value from Alex N.
+   EDC_sr.min_val[S.M_LAI_TEMP]=-INFINITY;  // get a better value from Alex N.
+   EDC_sr.max_val[S.M_LAI_TEMP]=INFINITY; // get a better value from Alex N.
 
 
 //Adding EDC to the EDCs list

@@ -18,7 +18,7 @@ int noedcs;
 int * testvec;//Flag for deletion (isn't supposed to do anything)
 struct PARS_INFO {
    double * parmin;
-   double * parmax;}
+   double * parmax;} PARS_INFO;
 //struct POOL_INFO;
 //struct FLUX_INFO;
 int (*dalec)(DATA,const double *);
