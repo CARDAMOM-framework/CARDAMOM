@@ -10,7 +10,11 @@
 //***************General inequality EDC******************
 //***************DALEC_EDC_PARS_INEQUALITY*********
 typedef struct {
-    int pool_index;}DALEC_EDC_TRAJECTORY_STRUCT;
+    int pool_index;
+
+
+
+}DALEC_EDC_TRAJECTORY_STRUCT;
 
 
 //General inequality function
