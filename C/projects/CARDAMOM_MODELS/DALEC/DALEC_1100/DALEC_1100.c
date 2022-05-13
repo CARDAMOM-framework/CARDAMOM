@@ -1402,6 +1402,7 @@ OBSOPE.SUPPORT_SCF_OBS=true;
 
 
 // OBSOPE.SUPPORT_CUE_OBS=true;
+OBSOPE.SUPPORT_Vcmax25_OBS=true;
 OBSOPE.SUPPORT_C3frac_OBS=true;
 OBSOPE.SUPPORT_iniSnow_OBS=true;
 OBSOPE.SUPPORT_iniSOM_OBS=true;
@@ -1468,6 +1469,8 @@ OBSOPE.SCF_pool=S.D_SCF;
 
 //CUE parameters
 // OBSOPE.CUE_PARAM=P.f_auto;
+//Vcmax25 parameters
+OBSOPE.Vcmax25_PARAM=P.Vcmax25;
 //C3frac parameters
 OBSOPE.C3frac_PARAM=P.C3_frac;
 //Initial Snow parameter

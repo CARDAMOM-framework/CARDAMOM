@@ -62,6 +62,10 @@ bool SUPPORT_C3frac_OBS;
 int C3frac_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
         
+bool SUPPORT_Vcmax25_OBS;
+int Vcmax25_PARAM;//This is assuming it's a single parameter
+//Can add more parameters OR options
+        
 bool SUPPORT_iniSnow_OBS;
 int iniSnow_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
@@ -96,6 +100,7 @@ OBSOPE->SUPPORT_SCF_OBS=false;
 OBSOPE->SUPPORT_Cefficiency_OBS=false;
 OBSOPE->SUPPORT_CUE_OBS=false;
 OBSOPE->SUPPORT_C3frac_OBS=false;
+OBSOPE->SUPPORT_Vcmax25_OBS=false;
 OBSOPE->SUPPORT_iniSnow_OBS=false;
 OBSOPE->SUPPORT_iniSOM_OBS=false;
 //In-built observation operators
@@ -423,6 +428,13 @@ return 0;
 
 }
 
+int DALEC_OBSOPE_Vcmax25(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_Vcmax25;
+if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_Vcmax25=D->M_PARS[O->Vcmax25_PARAM];}
+return 0;
+
+}
+
 int DALEC_OBSOPE_iniSnow(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_iniSnow;
 if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_iniSnow=D->M_PARS[O->iniSnow_PARAM];}
@@ -458,6 +470,7 @@ if (O->SUPPORT_SCF_OBS ){DALEC_OBSOPE_SCF(D, O);}
 if (O->SUPPORT_Cefficiency_OBS){DALEC_OBSOPE_Cefficiency(D, O);}
 if (O->SUPPORT_CUE_OBS){DALEC_OBSOPE_CUE(D, O);}
 if (O->SUPPORT_C3frac_OBS){DALEC_OBSOPE_C3frac(D, O);}
+if (O->SUPPORT_Vcmax25_OBS){DALEC_OBSOPE_Vcmax25(D, O);}
 if (O->SUPPORT_iniSnow_OBS){DALEC_OBSOPE_iniSnow(D, O);}
 if (O->SUPPORT_iniSOM_OBS){DALEC_OBSOPE_iniSOM(D, O);}
 

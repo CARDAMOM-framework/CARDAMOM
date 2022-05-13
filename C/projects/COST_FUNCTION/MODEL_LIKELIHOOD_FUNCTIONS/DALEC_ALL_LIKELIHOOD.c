@@ -38,14 +38,16 @@ struct LIKELIHOOD_INDICES{
         int PEQ_CUE;
         int PEQ_iniSnow;
         int PEQ_iniSOM;
-        int PEQ_C3frac;} LIKELIHOOD_INDICES={
+        int PEQ_C3frac;
+        int PEQ_Vcmax25;} LIKELIHOOD_INDICES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-    10,11,12,13,14,15,16,17,18,19};
+    10,11,12,13,14,15,16,17,18,19,
+    20};
     
   
     
     int DALEC_ALL_LIKELIHOOD_MODCONFIG(LIKELIHOODinfo * LI){
-        LI->nolikelihoods=20;
+        LI->nolikelihoods=21;
         return 0;}
             
             
@@ -119,6 +121,7 @@ if (O->SUPPORT_Cefficiency_OBS){   ML[LI.PEQ_Cefficiency]=CARDAMOM_SINGLE_OBS_LI
 if (O->SUPPORT_CUE_OBS){   ML[LI.PEQ_CUE]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_CUE, D.M_PEQ_CUE);};
 if (O->SUPPORT_iniSnow_OBS){   ML[LI.PEQ_iniSnow]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_iniSnow, D.M_PEQ_iniSnow);};
 if (O->SUPPORT_iniSOM_OBS){   ML[LI.PEQ_iniSOM]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_iniSOM, D.M_PEQ_iniSOM);};
+if (O->SUPPORT_Vcmax25_OBS){   ML[LI.PEQ_Vcmax25]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_Vcmax25, D.M_PEQ_Vcmax25);};
 if (O->SUPPORT_C3frac_OBS){   ML[LI.PEQ_C3frac]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_C3frac, D.M_PEQ_C3frac);};
 
 
