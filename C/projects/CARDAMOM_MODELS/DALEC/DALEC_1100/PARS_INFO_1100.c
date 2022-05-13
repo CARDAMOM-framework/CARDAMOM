@@ -60,13 +60,9 @@ CARDADATA->parmax[P.Q10rhco2]=2.0;
 CARDADATA->parmin[P.f_lab]=0.01;
 CARDADATA->parmax[P.f_lab]=0.5;
 
-/*LMCA*/
-/*Kattge et al. 2011*/
-/*Kattge et al., provide a range of 10 400 g m-2, i.e. 5 200 gC m-2*/
+/*LMCA: Kattge et al. 2011*Kattge et al., provide a range of 10 400 g m-2, i.e. 5 200 gC m-2*/
 CARDADATA->parmin[P.LCMA]=5;
 CARDADATA->parmax[P.LCMA]=200;
-
-/*INITIAL VALUES DECLARED HERE*/
 
 /*C labile*/
 CARDADATA->parmin[P.i_labile]=1.0;
@@ -220,8 +216,7 @@ CARDADATA->parmax[P.melt_slope]=1;
 CARDADATA->parmin[P.scf_scalar]=10;
 CARDADATA->parmax[P.scf_scalar]=1000.0;
 
-/* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)*/
-/*jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
+/* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
 CARDADATA->parmin[P.S_fv]=1;
 CARDADATA->parmax[P.S_fv]=100.0;
 

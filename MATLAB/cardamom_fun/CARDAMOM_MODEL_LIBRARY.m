@@ -182,7 +182,7 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',
      b2=find(linestr==']');
      linestr(b1)='(';
      linestr(b2)=')';
-     lnum=num2str(eval(linestr(b1+1:b2-1))+1);
+     lnum=num2str(eval(linestr(b1+1:b2-1)));
      linestr=[linestr(1:b1),lnum,linestr(b2:end)];
      %Find first ";"
      eval(linestr(1:find(linestr==';',1)));
