@@ -170,7 +170,7 @@ CARDADATA->parmin[P.Med_g1]=1.79;
 CARDADATA->parmax[P.Med_g1]=5.79;
 
 /*Vcmax25*/
-CARDADATA->parmin[P.Vcmax25]=1e-8;
+CARDADATA->parmin[P.Vcmax25]=1;
 CARDADATA->parmax[P.Vcmax25]=140;
 
 /*Tminmin scaling factor*/
