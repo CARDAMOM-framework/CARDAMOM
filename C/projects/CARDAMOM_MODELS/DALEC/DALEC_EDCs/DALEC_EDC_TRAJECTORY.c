@@ -10,11 +10,12 @@
 //***************General inequality EDC******************
 //***************DALEC_EDC_PARS_INEQUALITY*********
 typedef struct {
-    int pool_index;
-
-
-
-}DALEC_EDC_TRAJECTORY_STRUCT;
+    int nopools;
+    int *nfin;
+    int ** FIN;
+    int *nfout;
+    int ** FOUT;
+} DALEC_EDC_TRAJECTORY_STRUCT;
 
 
 //General inequality function
@@ -24,32 +25,28 @@ double DALEC_EDC_TRAJECTORY(DATA * DATA, void * EDCstruct){
     
      DALEC_EDC_TRAJECTORY_STRUCT  E = *(DALEC_EDC_TRAJECTORY_STRUCT * ) EDCstruct;
 
-     //Pool index 
-    pidx=E->pool_index;
-     
-    
-    //Continue from here
- 
+     int p;
+      
  double PEDC = 0;
+ 
+  double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
+  
+  DALEC *MODEL=(DALEC *)DATA->MODEL;
     
+  
+  int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
+  
+  double EQF=DATA->ncdf_data.EDC_EQF;
 
- 
- 
- double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
+     //Looping through all pools
+     
+     for (p=0;p<E->nopools;p++){
+     //Pool inde
 
 /*deriving mean pools here!*/
 double MPOOLS;
-DALEC *MODEL=(DALEC *)DATA->MODEL;
 
-int nopools=MODEL->nopools;
-int nofluxes=MODEL->nofluxes;
-int done=0;
-int k=0;
-int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
-double EQF=DATA->ncdf_data.EDC_EQF;
-
-
-MPOOLS=mean_pool(DATA->M_POOLS,pidx,N_timesteps+1,nopools);
+MPOOLS=mean_pool(DATA->M_POOLS,p,N_timesteps+1,nopools);
 
 
 
@@ -81,6 +78,9 @@ MPOOLSjan[n]=MPOOLSjan[n]+POOLS[nopools*(m*dint)+n]/(N_timesteps/dint+1);}}
 
 //********CONTINUE FROM HERE********** sum all fluxes
 
+FLUXES = DATA->M_FLUXES;
+
+
 
 double *FT;
 FT=calloc(nofluxes,sizeof(double));
@@ -89,7 +89,15 @@ for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nof
 /*Total prec*/
 double TOTAL_PREC=0;
 double TOTAL_SNOW=0;
-for (n=0;n<N_timesteps;n++){TOTAL_PREC+=PREC[n];TOTAL_SNOW+=SNOWFALL[n];}
+for (n=0;n<N_timesteps;n++){
+    for (i=0;i<E->nfin;i++)
+    Fin = FLUXES[E->
+            Fout = 
+    
+    TOTAL_PREC+=PREC[n];TOTAL_SNOW+=SNOWFALL[n];}
+
+
+Fi
 
 // 
 // double Fin[10];
