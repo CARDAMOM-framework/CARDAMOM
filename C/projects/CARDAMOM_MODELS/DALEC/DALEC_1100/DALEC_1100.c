@@ -822,6 +822,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 	/*Adding all fire pool transfers here*/
 	/*live C pools*/	
+    
     POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-(FLUXES[f+F.f_lab]+FLUXES[f+F.fx_lab2lit])*deltat;
     POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-(FLUXES[f+F.f_fol]+FLUXES[f+F.fx_fol2lit])*deltat;
     POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-(FLUXES[f+F.f_roo]+FLUXES[f+F.fx_roo2lit])*deltat;
@@ -1228,28 +1229,55 @@ D->PARS_INFO.parmax[P.phi_WL]=10.0;
 return 0;}
 
 
-
- typedef struct FIO{
-  int *N_INPUT_FLUXES;
-  int **INPUT_FLUXES;
-  int *N_OUTPUT_FLUXES;
-  int **INPUT_FLUXES;}FIO;
+//
+ typedef struct INPUT_OUTPUT_FLUX_STRUCT{
+  int N_INPUT_FLUXES;
+  int *INPUT_FLUXES;
+  int N_OUTPUT_FLUXES;
+  int *INPUT_FLUXES;}INPUT_OUTPUT_FLUX_STRUCT;
 
 typedef struct CONSERVED_STATES_INPUTS_OUTPUTS_STRUCT{
   int N_STATES;  
-  int *STATE_IDX;
- FIO * FIO;
+  INPUT_OUTPUT_FLUX_STRUCT * FIO;
 }CONSERVED_STATES_INPUTS_OUTPUTS_STRUCT;
 
-CONSERVED_STATES_INPUTS_OUTPUTS_STRUCT CONSERVED_STATES_INPUTS_OUTPUTS(){
+CONSERVED_STATES_INPUTS_OUTPUTS_STRUCT CONSERVED_STATES_INPUTS_OUTPUTS(DALEC * DALECmodel){
     
     
-    static CONSERVED_STATES_INPUTS_OUTPUTS_STRUCT CSIO
+CONSERVED_STATES_INPUTS_OUTPUTS_STRUCT CSIO;
             
+            CSIO.N_STATES = DALECmodel->nopools;
             
+            //Declaring FIO structure (which is pointer with N "FIO" structures, where N = number of pools)
+         INPUT_OUTPUT_FLUX_STRUCT FIO=calloc(CSIO.N_STATES, sizeof( INPUT_OUTPUT_FLUX_STRUCT));
             
+         
+         struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
+
             //Clabile
-            FIO.n_input  
+         //Number of input fluxes
+            FIO[P.C_lab].N_INPUT_FLUXES =1;
+                    
+          FIO[P.C_lab].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+        FIO[P.C_lab].INPUT_FLUXES[0]=F.lab_prod;
+
+
+//F.gpp;
+
+
+               FIO[P.C_lab].N_OUTPUT_FLUXES =3;
+                    
+               FIO[P.C_lab].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.C_lab].OUTPUT_FLUXES[0]=F.lab_release;
+               FIO[P.C_lab].OUTPUT_FLUXES[1]=F.f_lab;
+               FIO[P.C_lab].OUTPUT_FLUXES[2]= F.fx_lab2lit;
+//F.resp_auto;
+   
+
+                FIO.N_OUTPUT_FLUXES;
+                                             // output flux indices
+
+FIO.INPUT_FLUXES;
 
             
             
@@ -1394,18 +1422,18 @@ EDCs[E.cwdsomtor].prerun=true;
     EDCs[E.stateranges].data=&EDC_sr;
     EDCs[E.stateranges].function=&DALEC_EDC_STATE_RANGES;
     EDCs[E.stateranges].prerun=true;
-
-
-// Define all pools here
- static DALEC_EDC_TRAJECTORY_STRUCT EDC_t_C_lab;
- 
-EDC_t_Clab.pool_idx = S.C_lab;
-static int C_lab_fin = ;
-EDC_t_Clab.nfin = ;
-EDC_t_Clab.FIN = ;
-EDC_t_Clab.nfout = ;
-EDC_t_Clab.FOUT = ;
-} DALEC_EDC_TRAJECTORY_STRUCT;
+// 
+// 
+// // Define all pools here
+//  static DALEC_EDC_TRAJECTORY_STRUCT EDC_t_C_lab;
+//  
+// EDC_t_Clab.pool_idx = S.C_lab;
+// static int C_lab_fin = ;
+// EDC_t_Clab.nfin = ;
+// EDC_t_Clab.FIN = ;
+// EDC_t_Clab.nfout = ;
+// EDC_t_Clab.FOUT = ;
+// } DALEC_EDC_TRAJECTORY_STRUCT;
         
         
 //Eventually adopt more succinct notation (to consider)
