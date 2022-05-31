@@ -230,10 +230,13 @@ double mean_mod=0, mean_obs=0;
 
 
 //calculation of mean where obs are available
-if (OBS->opt_normalization>0 || OBS->opt_filter==1){
+//Only calculate means for opt nomormalization
+//Recalculate later for opt_filter=1
+if (OBS->opt_normalization>0){
 for (n=0;n<N;n++){
 mean_mod += mod[n];
-mean_obs += obs[n];}
+mean_obs += obs[n];
+}
 mean_mod=mean_mod/(double)N;
 mean_obs=mean_obs/(double)N;}
 
@@ -274,13 +277,28 @@ single_annual_unc=log(single_annual_unc);
 }
 
 
+
 //Cost function
 //This is the only option available for single value (e.g. time invariant) observations
 if (OBS->opt_filter==0){//no filter
     for (n=0;n<N;n++){tot_exp += pow((mod[n] - obs[n])/unc[n],2);}}
 
 else if (OBS->opt_filter==1){//mean only
-    tot_exp  = pow((mean_mod - mean_obs)/single_mean_unc,2);}
+
+    double mean_mod_of1=0, mean_obs_of1=0;
+
+    for (n=0;n<N;n++){
+mean_mod_of1 += mod[n];
+mean_obs_of1 += obs[n];
+
+}
+mean_mod_of1=mean_mod_of1/(double)N;
+mean_obs_of1=mean_obs_of1/(double)N;
+
+
+    
+    
+    tot_exp  = pow((mean_mod_of1 - mean_obs_of1)/single_mean_unc,2);}
 
 else if (OBS->opt_filter==2 |  OBS->opt_filter==3){//monthly and annual flux
     /*Decoupling seasonal from interannual variations*/
