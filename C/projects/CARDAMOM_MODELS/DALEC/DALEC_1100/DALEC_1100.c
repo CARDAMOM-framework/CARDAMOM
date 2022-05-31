@@ -1229,6 +1229,45 @@ return 0;}
 
 
 
+ typedef struct FIO{
+  int *N_INPUT_FLUXES;
+  int **INPUT_FLUXES;
+  int *N_OUTPUT_FLUXES;
+  int **INPUT_FLUXES;}FIO;
+
+typedef struct CONSERVED_STATES_INPUTS_OUTPUTS_STRUCT{
+  int N_STATES;  
+  int *STATE_IDX;
+ FIO * FIO;
+}CONSERVED_STATES_INPUTS_OUTPUTS_STRUCT;
+
+CONSERVED_STATES_INPUTS_OUTPUTS_STRUCT CONSERVED_STATES_INPUTS_OUTPUTS(){
+    
+    
+    static CONSERVED_STATES_INPUTS_OUTPUTS_STRUCT CSIO
+            
+            
+            
+            //Clabile
+            FIO.n_input  
+
+            
+            
+            
+    
+    
+}
+        
+        
+        
+   
+        
+        
+        
+        
+        
+
+
 
 int DALEC_1100_MODCONFIG(DALEC * DALECmodel){
 
@@ -1358,9 +1397,15 @@ EDCs[E.cwdsomtor].prerun=true;
 
 
 // Define all pools here
-// static DALEC_EDC_TRAJECTORY_STRUCT EDC_SSED_Clab;
-// EDC_SSED_Clab.inputs[2]
-// EDC_SSED_Clab.outputs[2]=[F.
+ static DALEC_EDC_TRAJECTORY_STRUCT EDC_t_C_lab;
+ 
+EDC_t_Clab.pool_idx = S.C_lab;
+static int C_lab_fin = ;
+EDC_t_Clab.nfin = ;
+EDC_t_Clab.FIN = ;
+EDC_t_Clab.nfout = ;
+EDC_t_Clab.FOUT = ;
+} DALEC_EDC_TRAJECTORY_STRUCT;
         
         
 //Eventually adopt more succinct notation (to consider)

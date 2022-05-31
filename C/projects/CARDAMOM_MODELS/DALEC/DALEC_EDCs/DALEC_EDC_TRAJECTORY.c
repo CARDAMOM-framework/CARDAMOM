@@ -9,12 +9,13 @@
 
 //***************General inequality EDC******************
 //***************DALEC_EDC_PARS_INEQUALITY*********
+//Doing one pool at a time
 typedef struct {
-    int nopools;
-    int *nfin;
-    int ** FIN;
-    int *nfout;
-    int ** FOUT;
+    int pool_idx;
+    int nfin;
+    int * FIN;
+    int nfout;
+    int * FOUT;
 } DALEC_EDC_TRAJECTORY_STRUCT;
 
 
@@ -39,8 +40,7 @@ double DALEC_EDC_TRAJECTORY(DATA * DATA, void * EDCstruct){
   double EQF=DATA->ncdf_data.EDC_EQF;
 
      //Looping through all pools
-     
-     for (p=0;p<E->nopools;p++){
+    
      //Pool inde
 
 /*deriving mean pools here!*/
