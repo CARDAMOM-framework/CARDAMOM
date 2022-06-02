@@ -181,6 +181,7 @@ int sensible_heat; /*sensible heat flux*/
 int ground_heat; /*ground heat flux*/
 int auto_growth;
 int auto_maint;
+int snowfall; /*snowfall driver data (necessary for budget closure on SWE)*/
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -188,7 +189,7 @@ int auto_maint;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64,65,66,67,68
+    60,61,62,63,64,65,66,67,68,69
 };
 
 
@@ -551,6 +552,7 @@ FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+SNOWFALL[n]*deltat; /*first step snowfall to SWE*/
 FLUXES[f+F.melt]=fmin(fmax(((T2M_MIN[n]+T2M_MAX[n])/2-(pars[P.min_melt]-273.15))*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
 POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step remove snowmelt from SWE*/
+FLUXES[f+F.snowfall] = SNOWFALL[n]; /*necessary for EDC IO on SWE*/
 
 //Energy balance: Rn = LE + H - G
 // Rn = SWin - SWout + LWin - LWout
@@ -593,16 +595,9 @@ FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-(PREC[n] - SNOWFALL[n] + FLUXES[
 // Surface runoff (mm/day)
 FLUXES[f+F.q_surf] = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]) - FLUXES[f+F.infil];
 
-// Update pools, including infiltration
-POOLS[nxp+S.H2O_PAW] = POOLS[p+S.H2O_PAW] + deltat*FLUXES[f+F.infil];
-POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW];
-
 // Volumetric soil moisture from water pools
-double sm_PAW = HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);
+double sm_PAW = HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PAW] + deltat*FLUXES[f+F.infil],pars[P.PAW_por],pars[P.PAW_z]);
 double sm_PUW = HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);
-
-// Update PAW SM with infiltration
-//sm_PAW += HYDROFUN_EWT2MOI(infil*deltat,pars[P.PAW_por],pars[P.PAW_z]);
 
 // Calculate drainage
 double drain_PAW = POOLS[p+S.D_LF_PAW]*DRAINAGE(sm_PAW,pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
@@ -612,7 +607,7 @@ double drain_PUW = POOLS[p+S.D_LF_PUW]*DRAINAGE(sm_PUW,pars[P.Q_excess],-pars[P.
 FLUXES[f+F.q_paw] = HYDROFUN_MOI2EWT(drain_PAW,pars[P.PAW_por],pars[P.PAW_z])/deltat;
 FLUXES[f+F.q_puw] = HYDROFUN_MOI2EWT(drain_PUW,pars[P.PUW_por],pars[P.PUW_z])/deltat;
 
-// Remove drainage from layers
+// Remove drainage from layers before calculating transfer flux
 sm_PAW -= drain_PAW;
 sm_PUW -= drain_PUW;
 
@@ -637,8 +632,8 @@ if (pot_xfer<0) {LFxfer=POOLS[p+S.D_LF_PUW];TEMPxfer= POOLS[p+S.D_TEMP_PUW];}
 FLUXES[f+F.paw2puw] = pot_xfer*1000*3600*24*LFxfer;
 
 // Update pools, including ET from PAW
-POOLS[nxp+S.H2O_PAW] += (-FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
-POOLS[nxp+S.H2O_PUW] += (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
+POOLS[nxp+S.H2O_PAW] = POOLS[p+S.H2O_PAW] + (FLUXES[f+F.infil] - FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
+POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
 
 
 
@@ -661,7 +656,7 @@ FLUXES[F.q_puw_e] =  FLUXES[f+F.q_puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(
 //Energy states
 //fraction of water in soil that is available 
 //double frac_paw = POOLS[nxp+S.H2O_PAW]/(POOLS[nxp+S.H2O_PAW]+POOLS[nxp+S.H2O_PUW]);
-POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.ground_heat] + FLUXES[F.infil_e] - FLUXES[F.paw2puw_e] )*deltat;  //ADD REST OF ENERGY FLUXES HERE
+POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.ground_heat] + FLUXES[F.infil_e] - FLUXES[F.et_e] - FLUXES[F.paw2puw_e] - FLUXES[F.q_paw_e] )*deltat;  
 POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[F.paw2puw_e] - FLUXES[F.q_puw_e] )*deltat; //ADD REST OF ENERGY FLUXES HERE
 
 
@@ -1253,48 +1248,44 @@ INPUT_OUTPUT_FLUXES_STRUCT * FIO=calloc(  DALECmodel->nopools, sizeof( INPUT_OUT
 
 
                 //C labile
-               FIO[P.C_lab].N_INPUT_FLUXES =1;
-                    
+               FIO[P.C_lab].N_INPUT_FLUXES=1;
                FIO[P.C_lab].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
                FIO[P.C_lab].INPUT_FLUXES[0]=F.lab_prod;
 
-               FIO[P.C_lab].N_OUTPUT_FLUXES =3;
+               FIO[P.C_lab].N_OUTPUT_FLUXES=3;
                FIO[P.C_lab].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
                FIO[P.C_lab].OUTPUT_FLUXES[0]=F.lab_release;
                FIO[P.C_lab].OUTPUT_FLUXES[1]=F.f_lab;
                FIO[P.C_lab].OUTPUT_FLUXES[2]= F.fx_lab2lit;
 
                 //C foliar
-               FIO[P.C_fol].N_INPUT_FLUXES =1;
-                    
+               FIO[P.C_fol].N_INPUT_FLUXES=1;
                FIO[P.C_fol].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
                FIO[P.C_fol].INPUT_FLUXES[0]=F.lab_release;
 
-               FIO[P.C_fol].N_OUTPUT_FLUXES =3;
+               FIO[P.C_fol].N_OUTPUT_FLUXES=3;
                FIO[P.C_fol].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
                FIO[P.C_fol].OUTPUT_FLUXES[0]=F.fol2lit;
                FIO[P.C_fol].OUTPUT_FLUXES[1]=F.f_fol;
                FIO[P.C_fol].OUTPUT_FLUXES[2]= F.fx_fol2lit;
 
                 //C root
-               FIO[P.C_roo].N_INPUT_FLUXES =1;
-                    
+               FIO[P.C_roo].N_INPUT_FLUXES=1;
                FIO[P.C_roo].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
                FIO[P.C_roo].INPUT_FLUXES[0]=F.root_prod;
 
-               FIO[P.C_roo].N_OUTPUT_FLUXES =3;
+               FIO[P.C_roo].N_OUTPUT_FLUXES=3;
                FIO[P.C_roo].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
                FIO[P.C_roo].OUTPUT_FLUXES[0]=F.roo2lit;
                FIO[P.C_roo].OUTPUT_FLUXES[1]=F.f_roo;
                FIO[P.C_roo].OUTPUT_FLUXES[2]= F.fx_roo2lit;
 
                 //C wood
-               FIO[P.C_woo].N_INPUT_FLUXES =1;
-                    
+               FIO[P.C_woo].N_INPUT_FLUXES=1;
                FIO[P.C_woo].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
                FIO[P.C_woo].INPUT_FLUXES[0]=F.wood_prod;
 
-               FIO[P.C_woo].N_OUTPUT_FLUXES =3;
+               FIO[P.C_woo].N_OUTPUT_FLUXES=3;
                FIO[P.C_woo].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
                FIO[P.C_woo].OUTPUT_FLUXES[0]=F.woo2cwd;
                FIO[P.C_woo].OUTPUT_FLUXES[1]=F.f_woo;
@@ -1302,13 +1293,12 @@ INPUT_OUTPUT_FLUXES_STRUCT * FIO=calloc(  DALECmodel->nopools, sizeof( INPUT_OUT
 
    
                 //C CWD
-               FIO[P.C_cwd].N_INPUT_FLUXES =2;
-                    
+               FIO[P.C_cwd].N_INPUT_FLUXES=2;
                FIO[P.C_cwd].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
                FIO[P.C_cwd].INPUT_FLUXES[0]=F.woo2cwd;
                FIO[P.C_cwd].INPUT_FLUXES[1]=F.fx_woo2cwd;
 
-               FIO[P.C_cwd].N_OUTPUT_FLUXES =5;
+               FIO[P.C_cwd].N_OUTPUT_FLUXES=5;
                FIO[P.C_cwd].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
                FIO[P.C_cwd].OUTPUT_FLUXES[0]=F.ae_rh_cwd;
                FIO[P.C_cwd].OUTPUT_FLUXES[1]=F.an_rh_cwd;
@@ -1318,8 +1308,7 @@ INPUT_OUTPUT_FLUXES_STRUCT * FIO=calloc(  DALECmodel->nopools, sizeof( INPUT_OUT
 
 
                 //C Litter
-               FIO[P.C_lit].N_INPUT_FLUXES =5;
-                    
+               FIO[P.C_lit].N_INPUT_FLUXES=5;
                FIO[P.C_lit].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
                FIO[P.C_lit].INPUT_FLUXES[0]=F.fol2lit;
                FIO[P.C_lit].INPUT_FLUXES[1]=F.fx_fol2lit;
@@ -1327,7 +1316,7 @@ INPUT_OUTPUT_FLUXES_STRUCT * FIO=calloc(  DALECmodel->nopools, sizeof( INPUT_OUT
                FIO[P.C_lit].INPUT_FLUXES[3]=F.fx_roo2lit;
                FIO[P.C_lit].INPUT_FLUXES[4]=F.fx_lab2lit;
 
-               FIO[P.C_lit].N_OUTPUT_FLUXES =5;
+               FIO[P.C_lit].N_OUTPUT_FLUXES=5;
                FIO[P.C_lit].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
                FIO[P.C_lit].OUTPUT_FLUXES[0]=F.ae_rh_lit;
                FIO[P.C_lit].OUTPUT_FLUXES[1]=F.an_rh_lit;
@@ -1336,19 +1325,108 @@ INPUT_OUTPUT_FLUXES_STRUCT * FIO=calloc(  DALECmodel->nopools, sizeof( INPUT_OUT
                FIO[P.C_lit].OUTPUT_FLUXES[4]= F.fx_lit2som;
 
                 //C SOM
-               FIO[P.C_som].N_INPUT_FLUXES =4;
-                    
+               FIO[P.C_som].N_INPUT_FLUXES=4;
                FIO[P.C_som].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
                FIO[P.C_som].INPUT_FLUXES[0]=F.lit2som;
                FIO[P.C_som].INPUT_FLUXES[1]=F.fx_lit2som;
                FIO[P.C_som].INPUT_FLUXES[2]=F.cwd2som;
                FIO[P.C_som].INPUT_FLUXES[3]=F.fx_cwd2som;
 
-               FIO[P.C_som].N_OUTPUT_FLUXES =3;
+               FIO[P.C_som].N_OUTPUT_FLUXES=3;
                FIO[P.C_som].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
                FIO[P.C_som].OUTPUT_FLUXES[0]=F.ae_rh_som;
                FIO[P.C_som].OUTPUT_FLUXES[1]=F.an_rh_som;
                FIO[P.C_som].OUTPUT_FLUXES[2]=F.f_som;
+
+
+                // H2O PAW
+               FIO[P.H2O_PAW].N_INPUT_FLUXES=1;
+               FIO[P.H2O_PAW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.H2O_PAW].INPUT_FLUXES[0]=F.infil;
+
+               FIO[P.H2O_PAW].N_OUTPUT_FLUXES=3;
+               FIO[P.H2O_PAW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.H2O_PAW].OUTPUT_FLUXES[0]=F.paw2puw;
+               FIO[P.H2O_PAW].OUTPUT_FLUXES[1]=F.q_paw;
+               FIO[P.H2O_PAW].OUTPUT_FLUXES[2]=F.et;
+
+
+                // H2O PUW
+               FIO[P.H2O_PUW].N_INPUT_FLUXES=1;
+               FIO[P.H2O_PUW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.H2O_PUW].INPUT_FLUXES[0]=F.paw2puw;
+
+               FIO[P.H2O_PUW].N_OUTPUT_FLUXES=1;
+               FIO[P.H2O_PUW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.H2O_PUW].OUTPUT_FLUXES[0]=F.q_puw;
+
+
+                // H2O SWE
+               FIO[P.H2O_SWE].N_INPUT_FLUXES=1;
+               FIO[P.H2O_SWE].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.H2O_SWE].INPUT_FLUXES[0]=F.snowfall;
+
+               FIO[P.H2O_SWE].N_OUTPUT_FLUXES=1;
+               FIO[P.H2O_SWE].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.H2O_SWE].OUTPUT_FLUXES[0]=F.melt;
+
+
+               // E PAW
+               FIO[P.E_PAW].N_INPUT_FLUXES=2;
+               FIO[P.E_PAW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.E_PAW].INPUT_FLUXES[0]=F.ground_heat;
+               FIO[P.E_PAW].INPUT_FLUXES[1]=F.infil_e;
+
+               FIO[P.E_PAW].N_OUTPUT_FLUXES=3;
+               FIO[P.E_PAW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.E_PAW].OUTPUT_FLUXES[0]=F.paw2puw_e;
+               FIO[P.E_PAW].OUTPUT_FLUXES[1]=F.q_paw_e;
+               FIO[P.E_PAW].OUTPUT_FLUXES[2]=F.et_e;
+
+
+               // E PUW
+               FIO[P.E_PUW].N_INPUT_FLUXES=1;
+               FIO[P.E_PUW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.E_PUW].INPUT_FLUXES[0]=F.paw2puw_e;
+
+               FIO[P.E_PUW].N_OUTPUT_FLUXES=1;
+               FIO[P.E_PUW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.E_PUW].OUTPUT_FLUXES[0]=F.q_puw_e;
+
+
+               // Diagnostic states
+
+               FIO[P.D_LAI].N_INPUT_FLUXES=0;
+               FIO[P.D_LAI].N_OUTPUT_FLUXES=0;
+
+               FIO[P.D_SCF].N_INPUT_FLUXES=0;
+               FIO[P.D_SCF].N_OUTPUT_FLUXES=0;
+
+               FIO[P.D_TEMP_PAW].N_INPUT_FLUXES=0;
+               FIO[P.D_TEMP_PAW].N_OUTPUT_FLUXES=0;
+
+               FIO[P.D_TEMP_PUW].N_INPUT_FLUXES=0;
+               FIO[P.D_TEMP_PUW].N_OUTPUT_FLUXES=0;
+
+               FIO[P.D_LF_PAW].N_INPUT_FLUXES=0;
+               FIO[P.D_LF_PAW].N_OUTPUT_FLUXES=0;
+
+               FIO[P.D_LF_PUW].N_INPUT_FLUXES=0;
+               FIO[P.D_LF_PUW].N_OUTPUT_FLUXES=0;
+
+               FIO[P.D_SM_PAW].N_INPUT_FLUXES=0;
+               FIO[P.D_SM_PAW].N_OUTPUT_FLUXES=0;
+
+               FIO[P.D_SM_PUW].N_INPUT_FLUXES=0;
+               FIO[P.D_SM_PUW].N_OUTPUT_FLUXES=0;
+
+               FIO[P.M_LAI_MAX].N_INPUT_FLUXES=0;
+               FIO[P.M_LAI_MAX].N_OUTPUT_FLUXES=0;
+
+               FIO[P.M_LAI_TEMP].N_INPUT_FLUXES=0;
+               FIO[P.M_LAI_TEMP].N_OUTPUT_FLUXES=0;
+
+
 
                return FIO;
     
@@ -1376,7 +1454,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=72;
-DALECmodel->nofluxes=69;
+DALECmodel->nofluxes=70;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->noedcs=4;
 
