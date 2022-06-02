@@ -119,8 +119,8 @@ int root_prod;   /*Root production*/
 int wood_prod;   /*Wood production*/
 int lab_release;   /*Labile release*/
 int fol2lit;   /*Foliar decomposition*/
-int wood2cwd;   /*Wood decomposition*/
-int root2lit;   /*Root decomposition*/
+int woo2cwd;   /*Wood decomposition*/
+int roo2lit;   /*Root decomposition*/
 int cwd2som;   /*CWD decomposition*/
 int lit2som;   /*Litter decomposition*/
 int f_total;   /*Flux description*/
@@ -724,9 +724,9 @@ FLUXES[f+F.root_prod] = ARFLUXES.OUT.ALLOC_ROO_ACTUAL;
 /*wood production*/       
 FLUXES[f+F.wood_prod] = ARFLUXES.OUT.ALLOC_WOO_ACTUAL;
 /*wood CWD production*/       
-FLUXES[f+F.wood2cwd] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
+FLUXES[f+F.woo2cwd] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
 /*root litter production*/
-FLUXES[f+F.root2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
+FLUXES[f+F.roo2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
 
 /*-----------------------------------------------------------------------*/
 
@@ -780,10 +780,10 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.lab_prod]-FLUXES[f+F.lab_release])*deltat;
         POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.lab_release] - FLUXES[f+F.fol2lit])*deltat;
-        POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.root2lit])*deltat;
-        POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] +  (FLUXES[f+F.wood_prod] - FLUXES[f+F.wood2cwd])*deltat;
-        POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.wood2cwd] - FLUXES[f+F.ae_rh_cwd]-FLUXES[f+F.an_rh_cwd]-FLUXES[f+F.cwd2som])*deltat;
-        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.root2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som])*deltat;
+        POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.roo2lit])*deltat;
+        POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] +  (FLUXES[f+F.wood_prod] - FLUXES[f+F.woo2cwd])*deltat;
+        POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.woo2cwd] - FLUXES[f+F.ae_rh_cwd]-FLUXES[f+F.an_rh_cwd]-FLUXES[f+F.cwd2som])*deltat;
+        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.roo2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som])*deltat;
         POOLS[nxp+S.C_som] = POOLS[p+S.C_som] + (FLUXES[f+F.lit2som] - FLUXES[f+F.ae_rh_som] - FLUXES[f+F.an_rh_som] + FLUXES[f+F.cwd2som])*deltat;
 
         
@@ -1252,8 +1252,7 @@ INPUT_OUTPUT_FLUXES_STRUCT * FIO=calloc(  DALECmodel->nopools, sizeof( INPUT_OUT
     DALECmodel->nopools;
 
 
-            //Clabile
-         //Number of input fluxes
+                //C labile
                FIO[P.C_lab].N_INPUT_FLUXES =1;
                     
                FIO[P.C_lab].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
@@ -1264,6 +1263,92 @@ INPUT_OUTPUT_FLUXES_STRUCT * FIO=calloc(  DALECmodel->nopools, sizeof( INPUT_OUT
                FIO[P.C_lab].OUTPUT_FLUXES[0]=F.lab_release;
                FIO[P.C_lab].OUTPUT_FLUXES[1]=F.f_lab;
                FIO[P.C_lab].OUTPUT_FLUXES[2]= F.fx_lab2lit;
+
+                //C foliar
+               FIO[P.C_fol].N_INPUT_FLUXES =1;
+                    
+               FIO[P.C_fol].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.C_fol].INPUT_FLUXES[0]=F.lab_release;
+
+               FIO[P.C_fol].N_OUTPUT_FLUXES =3;
+               FIO[P.C_fol].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.C_fol].OUTPUT_FLUXES[0]=F.fol2lit;
+               FIO[P.C_fol].OUTPUT_FLUXES[1]=F.f_fol;
+               FIO[P.C_fol].OUTPUT_FLUXES[2]= F.fx_fol2lit;
+
+                //C root
+               FIO[P.C_roo].N_INPUT_FLUXES =1;
+                    
+               FIO[P.C_roo].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.C_roo].INPUT_FLUXES[0]=F.root_prod;
+
+               FIO[P.C_roo].N_OUTPUT_FLUXES =3;
+               FIO[P.C_roo].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.C_roo].OUTPUT_FLUXES[0]=F.roo2lit;
+               FIO[P.C_roo].OUTPUT_FLUXES[1]=F.f_roo;
+               FIO[P.C_roo].OUTPUT_FLUXES[2]= F.fx_roo2lit;
+
+                //C wood
+               FIO[P.C_woo].N_INPUT_FLUXES =1;
+                    
+               FIO[P.C_woo].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.C_woo].INPUT_FLUXES[0]=F.wood_prod;
+
+               FIO[P.C_woo].N_OUTPUT_FLUXES =3;
+               FIO[P.C_woo].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.C_woo].OUTPUT_FLUXES[0]=F.woo2cwd;
+               FIO[P.C_woo].OUTPUT_FLUXES[1]=F.f_woo;
+               FIO[P.C_woo].OUTPUT_FLUXES[2]= F.fx_woo2cwd;
+
+   
+                //C CWD
+               FIO[P.C_cwd].N_INPUT_FLUXES =2;
+                    
+               FIO[P.C_cwd].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.C_cwd].INPUT_FLUXES[0]=F.woo2cwd;
+               FIO[P.C_cwd].INPUT_FLUXES[1]=F.fx_woo2cwd;
+
+               FIO[P.C_cwd].N_OUTPUT_FLUXES =5;
+               FIO[P.C_cwd].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.C_cwd].OUTPUT_FLUXES[0]=F.ae_rh_cwd;
+               FIO[P.C_cwd].OUTPUT_FLUXES[1]=F.an_rh_cwd;
+               FIO[P.C_cwd].OUTPUT_FLUXES[2]= F.cwd2som;
+               FIO[P.C_cwd].OUTPUT_FLUXES[3]=F.f_cwd;
+               FIO[P.C_cwd].OUTPUT_FLUXES[4]= F.fx_cwd2som;
+
+
+                //C Litter
+               FIO[P.C_lit].N_INPUT_FLUXES =5;
+                    
+               FIO[P.C_lit].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.C_lit].INPUT_FLUXES[0]=F.fol2lit;
+               FIO[P.C_lit].INPUT_FLUXES[1]=F.fx_fol2lit;
+               FIO[P.C_lit].INPUT_FLUXES[2]=F.roo2lit;
+               FIO[P.C_lit].INPUT_FLUXES[3]=F.fx_roo2lit;
+               FIO[P.C_lit].INPUT_FLUXES[4]=F.fx_lab2lit;
+
+               FIO[P.C_lit].N_OUTPUT_FLUXES =5;
+               FIO[P.C_lit].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.C_lit].OUTPUT_FLUXES[0]=F.ae_rh_lit;
+               FIO[P.C_lit].OUTPUT_FLUXES[1]=F.an_rh_lit;
+               FIO[P.C_lit].OUTPUT_FLUXES[2]=F.lit2som;
+               FIO[P.C_lit].OUTPUT_FLUXES[3]=F.f_lit;
+               FIO[P.C_lit].OUTPUT_FLUXES[4]= F.fx_lit2som;
+
+                //C SOM
+               FIO[P.C_som].N_INPUT_FLUXES =4;
+                    
+               FIO[P.C_som].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.C_som].INPUT_FLUXES[0]=F.lit2som;
+               FIO[P.C_som].INPUT_FLUXES[1]=F.fx_lit2som;
+               FIO[P.C_som].INPUT_FLUXES[2]=F.cwd2som;
+               FIO[P.C_som].INPUT_FLUXES[3]=F.fx_cwd2som;
+
+               FIO[P.C_som].N_OUTPUT_FLUXES =3;
+               FIO[P.C_som].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.C_som].OUTPUT_FLUXES[0]=F.ae_rh_som;
+               FIO[P.C_som].OUTPUT_FLUXES[1]=F.an_rh_som;
+               FIO[P.C_som].OUTPUT_FLUXES[2]=F.f_som;
 
                return FIO;
     
