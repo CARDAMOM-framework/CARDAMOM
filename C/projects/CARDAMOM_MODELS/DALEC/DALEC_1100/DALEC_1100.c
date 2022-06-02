@@ -596,8 +596,8 @@ FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-(PREC[n] - SNOWFALL[n] + FLUXES[
 FLUXES[f+F.q_surf] = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]) - FLUXES[f+F.infil];
 
 // Volumetric soil moisture from water pools
-double sm_PAW = HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PAW] + deltat*FLUXES[f+F.infil],pars[P.PAW_por],pars[P.PAW_z]);
-double sm_PUW = HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);
+double sm_PAW = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_PAW] + deltat*FLUXES[f+F.infil],pars[P.PAW_por],pars[P.PAW_z]);
+double sm_PUW = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);
 
 // Calculate drainage
 double drain_PAW = POOLS[p+S.D_LF_PAW]*DRAINAGE(sm_PAW,pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
