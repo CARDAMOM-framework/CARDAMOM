@@ -1230,59 +1230,42 @@ return 0;}
 
 
 //
- typedef struct INPUT_OUTPUT_FLUX_STRUCT{
+ typedef struct INPUT_OUTPUT_FLUXES_STRUCT{
   int N_INPUT_FLUXES;
   int *INPUT_FLUXES;
   int N_OUTPUT_FLUXES;
-  int *INPUT_FLUXES;}INPUT_OUTPUT_FLUX_STRUCT;
+  int *INPUT_FLUXES;}INPUT_OUTPUT_FLUXES_STRUCT;
 
-typedef struct CONSERVED_STATES_INPUTS_OUTPUTS_STRUCT{
-  int N_STATES;  
-  INPUT_OUTPUT_FLUX_STRUCT * FIO;
-}CONSERVED_STATES_INPUTS_OUTPUTS_STRUCT;
 
-CONSERVED_STATES_INPUTS_OUTPUTS_STRUCT CONSERVED_STATES_INPUTS_OUTPUTS(DALEC * DALECmodel){
+INPUT_OUTPUT_FLUXES_STRUCT INPUT_OUTPUT_FLUXES(DALEC * DALECmodel){
     
     
-CONSERVED_STATES_INPUTS_OUTPUTS_STRUCT CSIO;
-            
-            CSIO.N_STATES = DALECmodel->nopools;
-            
-            //Declaring FIO structure (which is pointer with N "FIO" structures, where N = number of pools)
-         INPUT_OUTPUT_FLUX_STRUCT FIO=calloc(CSIO.N_STATES, sizeof( INPUT_OUTPUT_FLUX_STRUCT));
-            
-         
-         struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
+             struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
+
+             
+    DALECmodel->nopools;
+    
+INPUT_OUTPUT_FLUXES_STRUCT * FIO=calloc(  DALECmodel->nopools, sizeof( INPUT_OUTPUT_FLUXES_STRUCT));;
+           //Step 1. Declaring all as "zero" inputs and "zero" ouputs.  
+ 
+           
+    DALECmodel->nopools;
+
 
             //Clabile
          //Number of input fluxes
-            FIO[P.C_lab].N_INPUT_FLUXES =1;
+               FIO[P.C_lab].N_INPUT_FLUXES =1;
                     
-          FIO[P.C_lab].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-        FIO[P.C_lab].INPUT_FLUXES[0]=F.lab_prod;
-
-
-//F.gpp;
-
+               FIO[P.C_lab].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.C_lab].INPUT_FLUXES[0]=F.lab_prod;
 
                FIO[P.C_lab].N_OUTPUT_FLUXES =3;
-                    
                FIO[P.C_lab].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
                FIO[P.C_lab].OUTPUT_FLUXES[0]=F.lab_release;
                FIO[P.C_lab].OUTPUT_FLUXES[1]=F.f_lab;
                FIO[P.C_lab].OUTPUT_FLUXES[2]= F.fx_lab2lit;
-//F.resp_auto;
-   
 
-                FIO.N_OUTPUT_FLUXES;
-                                             // output flux indices
-
-FIO.INPUT_FLUXES;
-
-            
-            
-            
-    
+               return FIO;
     
 }
         
@@ -1310,7 +1293,7 @@ DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp
 DALECmodel->nopars=72;
 DALECmodel->nofluxes=69;
 DALECmodel->dalec=DALEC_1100;
-DALECmodel->noedcs=3;
+DALECmodel->noedcs=4;
 
 //Define PARS_INFO here (ranges, and eventually names, etc)
 PARAMETER_INFO_1100(DALECmodel);
@@ -1421,11 +1404,11 @@ EDCs[E.cwdsomtor].prerun=true;
 //Adding EDC to the EDCs list
     EDCs[E.stateranges].data=&EDC_sr;
     EDCs[E.stateranges].function=&DALEC_EDC_STATE_RANGES;
-    EDCs[E.stateranges].prerun=true;
+    EDCs[E.stateranges].prerun=false;
 // 
 // 
 // // Define all pools here
-//  static DALEC_EDC_TRAJECTORY_STRUCT EDC_t_C_lab;
+//static DALEC_EDC_TRAJECTORY_STRUCT EDC_t_C_lab;
 //  
 // EDC_t_Clab.pool_idx = S.C_lab;
 // static int C_lab_fin = ;
@@ -1434,8 +1417,12 @@ EDCs[E.cwdsomtor].prerun=true;
 // EDC_t_Clab.nfout = ;
 // EDC_t_Clab.FOUT = ;
 // } DALEC_EDC_TRAJECTORY_STRUCT;
+    
+    EDC_st
         
-        
+            EDCs[E.statetrajectory].data=&EDC_st;
+    EDCs[E.statetrajectory].function=&DALEC_EDC_STATE_TRAJECTORIES;
+    EDCs[E.statetrajectory].prerun=false;
 //Eventually adopt more succinct notation (to consider)
 //e.g. INEQUALITY_EDC(P.t_cwd,P.t_som,EDCs[E.cwdsomtor])
 

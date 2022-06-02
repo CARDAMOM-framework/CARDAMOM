@@ -11,11 +11,9 @@
 //***************DALEC_EDC_PARS_INEQUALITY*********
 //Doing one pool at a time
 typedef struct {
-    int pool_idx;
-    int nfin;
-    int * FIN;
-    int nfout;
-    int * FOUT;
+    int no_state_checks;
+    int *pool_idx;
+    FIO * FIO; 
 } DALEC_EDC_TRAJECTORY_STRUCT;
 
 
