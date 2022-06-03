@@ -112,9 +112,9 @@ struct DALEC_1100_FLUXES{
 int gpp;   /*GPP*/
 int resp_auto;   /*Autotrophic respiration*/
 int lab_prod;   /*Labile production*/
+int foliar_prod;   /*Labile release*/
 int root_prod;   /*Root production*/
 int wood_prod;   /*Wood production*/
-int lab_release;   /*Labile release*/
 int fol2lit;   /*Foliar decomposition*/
 int wood2cwd;   /*Wood decomposition*/
 int root2lit;   /*Root decomposition*/
@@ -714,7 +714,9 @@ else {
 /*labile production*/
 FLUXES[f+F.lab_prod] = ARFLUXES.OUT.F_LABPROD;
 /*labile production*/
-FLUXES[f+F.lab_release] = ARFLUXES.OUT.F_LABREL_ACTUAL;
+//FLUXES[f+F.lab_release] = ARFLUXES.OUT.F_LABREL_ACTUAL;
+/*foliar production*/
+FLUXES[f+F.foliar_prod] = ARFLUXES.OUT.ALLOC_FOL_ACTUAL;
 /*root production*/        
 FLUXES[f+F.root_prod] = ARFLUXES.OUT.ALLOC_ROO_ACTUAL;
 /*wood production*/       
@@ -774,8 +776,8 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 /*total pool transfers (no fires yet)*/
 
-        POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.lab_prod]-FLUXES[f+F.lab_release])*deltat;
-        POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.lab_release] - FLUXES[f+F.fol2lit])*deltat;
+        POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.lab_prod]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod])*deltat;
+        POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod] - FLUXES[f+F.fol2lit])*deltat;
         POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.root2lit])*deltat;
         POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] +  (FLUXES[f+F.wood_prod] - FLUXES[f+F.wood2cwd])*deltat;
         POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.wood2cwd] - FLUXES[f+F.ae_rh_cwd]-FLUXES[f+F.an_rh_cwd]-FLUXES[f+F.cwd2som])*deltat;
