@@ -193,7 +193,6 @@ int snowfall; /*snowfall driver data (necessary for budget closure on SWE)*/
 };
 
 
-
 /*Prognostic states and Diagnostic states (dependent on other states)*/
 
 
@@ -226,6 +225,195 @@ int M_LAI_TEMP;//KNORR LAI module temp memory
     10,11,12,13,14,15,16,17,18,19,
     20,21
 };
+
+
+
+struct DALEC_1100_FLUX_SOURCES_SINKS_STRUCT{
+    int *SOURCE;
+            int *SINK;};
+
+//Returns structure with sources and sinks, matches number of fluxes
+DALEC_1100_FLUX_SOURCES_SINKS_STRUCT DALEC_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
+    //Step 1. Declare & initialize
+    DALEC_1100_FLUX_SOURCES_SINKS_STRUCT FLUXFLOWS;
+    // external source or pool sink, or not conserved quantity
+    //Default = -1 
+    FLUXFLOWS.SOURCE=calloc(DALECmodel->nofluxes, sizeof(int));
+    FLUXFLOWS.SINK=calloc(DALECmodel->nofluxes, sizeof(int));
+    
+    for (n=0;n<DALECmodel->nofluxes; n++){FLUXFLOWS.SOURCE[n]=-1;FLUXFLOWS.SINK[n]=-1;}
+    
+    
+    
+    //Step 2. Define
+    
+    
+        //source = GPP
+        FLUXFLOWS.SINK[F.lab_prod]=P.C_lab;
+
+      
+        
+          FLUXFLOWS.SOURCE[F.lab_release]=P.C_lab;
+          FLUXFLOWS.SINK[F.lab_release]=P.C_fol;
+
+          FLUXFLOWS.SOURCE[F.f_lab]=P.C_lab;
+         //Sink = atmosphere; 
+         
+          FLUXFLOWS.SOURCE[F.fx_lab2lit]=P.C_lab;
+          FLUXFLOWS.SINK[F.fx_lab2lit]=P.C_lit;
+          
+          
+          FLUXFLOWS.SOURCE[F.fol2lit]=P.C_fol;
+          FLUXFLOWS.SINK[F.fol2lit]=P.C_lit;
+          
+          FLUXFLOWS.SOURCE[F.f_fol]=P.C_fol;
+         //Sink = atmosphere; 
+          
+         
+           FLUXFLOWS.SOURCE[F.fx_fol2lit]=P.C_fol;
+           FLUXFLOWS.SINK[F.fx_fol2lit]=P.C_lit;
+           
+           
+           //Source = GPP
+           F.root_prod;
+           
+
+                //C root
+               FIO[P.C_roo].N_INPUT_FLUXES=1;
+               FIO[P.C_roo].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.C_roo].INPUT_FLUXES[0]=F.root_prod;
+
+               FIO[P.C_roo].N_OUTPUT_FLUXES=3;
+               FIO[P.C_roo].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.C_roo].OUTPUT_FLUXES[0]=F.roo2lit;
+               FIO[P.C_roo].OUTPUT_FLUXES[1]=F.f_roo;
+               FIO[P.C_roo].OUTPUT_FLUXES[2]= F.fx_roo2lit;
+
+                //C wood
+               FIO[P.C_woo].N_INPUT_FLUXES=1;
+               FIO[P.C_woo].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.C_woo].INPUT_FLUXES[0]=F.wood_prod;
+
+               FIO[P.C_woo].N_OUTPUT_FLUXES=3;
+               FIO[P.C_woo].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.C_woo].OUTPUT_FLUXES[0]=F.woo2cwd;
+               FIO[P.C_woo].OUTPUT_FLUXES[1]=F.f_woo;
+               FIO[P.C_woo].OUTPUT_FLUXES[2]= F.fx_woo2cwd;
+
+   
+                //C CWD
+               FIO[P.C_cwd].N_INPUT_FLUXES=2;
+               FIO[P.C_cwd].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.C_cwd].INPUT_FLUXES[0]=F.woo2cwd;
+               FIO[P.C_cwd].INPUT_FLUXES[1]=F.fx_woo2cwd;
+
+               FIO[P.C_cwd].N_OUTPUT_FLUXES=5;
+               FIO[P.C_cwd].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.C_cwd].OUTPUT_FLUXES[0]=F.ae_rh_cwd;
+               FIO[P.C_cwd].OUTPUT_FLUXES[1]=F.an_rh_cwd;
+               FIO[P.C_cwd].OUTPUT_FLUXES[2]= F.cwd2som;
+               FIO[P.C_cwd].OUTPUT_FLUXES[3]=F.f_cwd;
+               FIO[P.C_cwd].OUTPUT_FLUXES[4]= F.fx_cwd2som;
+
+
+                //C Litter
+               FIO[P.C_lit].N_INPUT_FLUXES=5;
+               FIO[P.C_lit].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.C_lit].INPUT_FLUXES[0]=F.fol2lit;
+               FIO[P.C_lit].INPUT_FLUXES[1]=F.fx_fol2lit;
+               FIO[P.C_lit].INPUT_FLUXES[2]=F.roo2lit;
+               FIO[P.C_lit].INPUT_FLUXES[3]=F.fx_roo2lit;
+               FIO[P.C_lit].INPUT_FLUXES[4]=F.fx_lab2lit;
+
+               FIO[P.C_lit].N_OUTPUT_FLUXES=5;
+               FIO[P.C_lit].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.C_lit].OUTPUT_FLUXES[0]=F.ae_rh_lit;
+               FIO[P.C_lit].OUTPUT_FLUXES[1]=F.an_rh_lit;
+               FIO[P.C_lit].OUTPUT_FLUXES[2]=F.lit2som;
+               FIO[P.C_lit].OUTPUT_FLUXES[3]=F.f_lit;
+               FIO[P.C_lit].OUTPUT_FLUXES[4]= F.fx_lit2som;
+
+                //C SOM
+               FIO[P.C_som].N_INPUT_FLUXES=4;
+               FIO[P.C_som].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.C_som].INPUT_FLUXES[0]=F.lit2som;
+               FIO[P.C_som].INPUT_FLUXES[1]=F.fx_lit2som;
+               FIO[P.C_som].INPUT_FLUXES[2]=F.cwd2som;
+               FIO[P.C_som].INPUT_FLUXES[3]=F.fx_cwd2som;
+
+               FIO[P.C_som].N_OUTPUT_FLUXES=3;
+               FIO[P.C_som].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.C_som].OUTPUT_FLUXES[0]=F.ae_rh_som;
+               FIO[P.C_som].OUTPUT_FLUXES[1]=F.an_rh_som;
+               FIO[P.C_som].OUTPUT_FLUXES[2]=F.f_som;
+
+
+                // H2O PAW
+               FIO[P.H2O_PAW].N_INPUT_FLUXES=1;
+               FIO[P.H2O_PAW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.H2O_PAW].INPUT_FLUXES[0]=F.infil;
+
+               FIO[P.H2O_PAW].N_OUTPUT_FLUXES=3;
+               FIO[P.H2O_PAW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.H2O_PAW].OUTPUT_FLUXES[0]=F.paw2puw;
+               FIO[P.H2O_PAW].OUTPUT_FLUXES[1]=F.q_paw;
+               FIO[P.H2O_PAW].OUTPUT_FLUXES[2]=F.et;
+
+
+                // H2O PUW
+               FIO[P.H2O_PUW].N_INPUT_FLUXES=1;
+               FIO[P.H2O_PUW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.H2O_PUW].INPUT_FLUXES[0]=F.paw2puw;
+
+               FIO[P.H2O_PUW].N_OUTPUT_FLUXES=1;
+               FIO[P.H2O_PUW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.H2O_PUW].OUTPUT_FLUXES[0]=F.q_puw;
+
+
+                // H2O SWE
+               FIO[P.H2O_SWE].N_INPUT_FLUXES=1;
+               FIO[P.H2O_SWE].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.H2O_SWE].INPUT_FLUXES[0]=F.snowfall;
+
+               FIO[P.H2O_SWE].N_OUTPUT_FLUXES=1;
+               FIO[P.H2O_SWE].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.H2O_SWE].OUTPUT_FLUXES[0]=F.melt;
+
+
+               // E PAW
+               FIO[P.E_PAW].N_INPUT_FLUXES=2;
+               FIO[P.E_PAW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.E_PAW].INPUT_FLUXES[0]=F.ground_heat;
+               FIO[P.E_PAW].INPUT_FLUXES[1]=F.infil_e;
+
+               FIO[P.E_PAW].N_OUTPUT_FLUXES=3;
+               FIO[P.E_PAW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.E_PAW].OUTPUT_FLUXES[0]=F.paw2puw_e;
+               FIO[P.E_PAW].OUTPUT_FLUXES[1]=F.q_paw_e;
+               FIO[P.E_PAW].OUTPUT_FLUXES[2]=F.et_e;
+
+               // E PUW
+               FIO[P.E_PUW].N_INPUT_FLUXES=1;
+               FIO[P.E_PUW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
+               FIO[P.E_PUW].INPUT_FLUXES[0]=F.paw2puw_e;
+
+               FIO[P.E_PUW].N_OUTPUT_FLUXES=1;
+               FIO[P.E_PUW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
+               FIO[P.E_PUW].OUTPUT_FLUXES[0]=F.q_puw_e;
+
+
+          
+    
+    
+    
+    
+}
+    
+    
+    
+    
+    
+    
 
 /*
 struct POOLS_INFO{
@@ -1245,7 +1433,11 @@ INPUT_OUTPUT_FLUXES_STRUCT * FIO=calloc(  DALECmodel->nopools, sizeof( INPUT_OUT
  
            
     DALECmodel->nopools;
-
+//Setting all IO to zero (default)
+    int n=0;
+    for (n=0;n<   DALECmodel->nopools;n++){FIO[n].N_INPUT_FLUXES=0;FIO[n].N_OUTPUT_FLUXES=0;}
+    
+    
 
                 //C labile
                FIO[P.C_lab].N_INPUT_FLUXES=1;
@@ -1383,7 +1575,6 @@ INPUT_OUTPUT_FLUXES_STRUCT * FIO=calloc(  DALECmodel->nopools, sizeof( INPUT_OUT
                FIO[P.E_PAW].OUTPUT_FLUXES[1]=F.q_paw_e;
                FIO[P.E_PAW].OUTPUT_FLUXES[2]=F.et_e;
 
-
                // E PUW
                FIO[P.E_PUW].N_INPUT_FLUXES=1;
                FIO[P.E_PUW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
@@ -1394,38 +1585,7 @@ INPUT_OUTPUT_FLUXES_STRUCT * FIO=calloc(  DALECmodel->nopools, sizeof( INPUT_OUT
                FIO[P.E_PUW].OUTPUT_FLUXES[0]=F.q_puw_e;
 
 
-               // Diagnostic states
-
-               FIO[P.D_LAI].N_INPUT_FLUXES=0;
-               FIO[P.D_LAI].N_OUTPUT_FLUXES=0;
-
-               FIO[P.D_SCF].N_INPUT_FLUXES=0;
-               FIO[P.D_SCF].N_OUTPUT_FLUXES=0;
-
-               FIO[P.D_TEMP_PAW].N_INPUT_FLUXES=0;
-               FIO[P.D_TEMP_PAW].N_OUTPUT_FLUXES=0;
-
-               FIO[P.D_TEMP_PUW].N_INPUT_FLUXES=0;
-               FIO[P.D_TEMP_PUW].N_OUTPUT_FLUXES=0;
-
-               FIO[P.D_LF_PAW].N_INPUT_FLUXES=0;
-               FIO[P.D_LF_PAW].N_OUTPUT_FLUXES=0;
-
-               FIO[P.D_LF_PUW].N_INPUT_FLUXES=0;
-               FIO[P.D_LF_PUW].N_OUTPUT_FLUXES=0;
-
-               FIO[P.D_SM_PAW].N_INPUT_FLUXES=0;
-               FIO[P.D_SM_PAW].N_OUTPUT_FLUXES=0;
-
-               FIO[P.D_SM_PUW].N_INPUT_FLUXES=0;
-               FIO[P.D_SM_PUW].N_OUTPUT_FLUXES=0;
-
-               FIO[P.M_LAI_MAX].N_INPUT_FLUXES=0;
-               FIO[P.M_LAI_MAX].N_OUTPUT_FLUXES=0;
-
-               FIO[P.M_LAI_TEMP].N_INPUT_FLUXES=0;
-               FIO[P.M_LAI_TEMP].N_OUTPUT_FLUXES=0;
-
+          
 
 
                return FIO;
