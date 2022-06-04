@@ -343,67 +343,44 @@ DALEC_1100_FLUX_SOURCES_SINKS_STRUCT DALEC_FLUX_SOURCES_SINKS(DALEC * DALECmodel
               FLUXFLOWS.SOURCE[F.f_som]=P.C_som;
              //Sink = atmosphere; 
  
+            // Source = atmosphere and snowmelt
+            FLUXFLOWS.SINK[F.infil]=P.H2O_PAW;
 
+            FLUXFLOWS.SOURCE[F.melt]=P.H2O_SWE;
+            //Sink = infiltration (F.infil); 
 
-              
-              
-              
-//            *****************CONVERT REST TO ABOVE FORMAT*********************   
-//  
-// 
-//                 // H2O PAW
-//                FIO[P.H2O_PAW].N_INPUT_FLUXES=1;
-//                FIO[P.H2O_PAW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.H2O_PAW].INPUT_FLUXES[0]=F.infil;
-// 
-//                FIO[P.H2O_PAW].N_OUTPUT_FLUXES=3;
-//                FIO[P.H2O_PAW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.H2O_PAW].OUTPUT_FLUXES[0]=F.paw2puw;
-//                FIO[P.H2O_PAW].OUTPUT_FLUXES[1]=F.q_paw;
-//                FIO[P.H2O_PAW].OUTPUT_FLUXES[2]=F.et;
-// 
-// 
-//                 // H2O PUW
-//                FIO[P.H2O_PUW].N_INPUT_FLUXES=1;
-//                FIO[P.H2O_PUW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.H2O_PUW].INPUT_FLUXES[0]=F.paw2puw;
-// 
-//                FIO[P.H2O_PUW].N_OUTPUT_FLUXES=1;
-//                FIO[P.H2O_PUW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.H2O_PUW].OUTPUT_FLUXES[0]=F.q_puw;
-// 
-// 
-//                 // H2O SWE
-//                FIO[P.H2O_SWE].N_INPUT_FLUXES=1;
-//                FIO[P.H2O_SWE].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.H2O_SWE].INPUT_FLUXES[0]=F.snowfall;
-// 
-//                FIO[P.H2O_SWE].N_OUTPUT_FLUXES=1;
-//                FIO[P.H2O_SWE].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.H2O_SWE].OUTPUT_FLUXES[0]=F.melt;
-// 
-// 
-//                // E PAW
-//                FIO[P.E_PAW].N_INPUT_FLUXES=2;
-//                FIO[P.E_PAW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.E_PAW].INPUT_FLUXES[0]=F.ground_heat;
-//                FIO[P.E_PAW].INPUT_FLUXES[1]=F.infil_e;
-// 
-//                FIO[P.E_PAW].N_OUTPUT_FLUXES=3;
-//                FIO[P.E_PAW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.E_PAW].OUTPUT_FLUXES[0]=F.paw2puw_e;
-//                FIO[P.E_PAW].OUTPUT_FLUXES[1]=F.q_paw_e;
-//                FIO[P.E_PAW].OUTPUT_FLUXES[2]=F.et_e;
-// 
-//                // E PUW
-//                FIO[P.E_PUW].N_INPUT_FLUXES=1;
-//                FIO[P.E_PUW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.E_PUW].INPUT_FLUXES[0]=F.paw2puw_e;
-// 
-//                FIO[P.E_PUW].N_OUTPUT_FLUXES=1;
-//                FIO[P.E_PUW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.E_PUW].OUTPUT_FLUXES[0]=F.q_puw_e;
-// 
+            // Source = atmosphere
+            FLUXFLOWS.SINK[F.snowfall]=P.H2O_SWE;
+
+            FLUXFLOWS.SOURCE[F.et]=P.H2O_PAW;
+            //Sink = atmosphere; 
+
+            FLUXFLOWS.SOURCE[F.paw2puw]=P.H2O_PAW;
+            FLUXFLOWS.SINK[F.paw2puw]=P.H2O_PUW;
+
+            FLUXFLOWS.SOURCE[F.q_paw]=P.H2O_PAW;
+            // Sink = runoff
+
+            FLUXFLOWS.SOURCE[F.q_puw]=P.H2O_PUW;
+            // Sink = runoff
+
+            // Source = atmosphere
+            FLUXFLOWS.SINK[F.ground_heat]=P.E_PAW;
+
+            // Source = atmosphere
+            FLUXFLOWS.SINK[F.infil_e]=P.E_PAW;
+
+            FLUXFLOWS.SOURCE[F.et_e]=P.E_PAW;
+            // Sink = atmosphere
+
+            FLUXFLOWS.SOURCE[F.q_paw_e]=P.E_PAW;
+            // Sink = runoff
+
+            FLUXFLOWS.SOURCE[F.q_puw_e]=P.E_PUW;
+            // Sink = runoff
+
+            FLUXFLOWS.SOURCE[F.paw2puw_e]=P.E_PAW;
+            FLUXFLOWS.SINK[F.paw2puw_e]=P.E_PUW;
 
           
     
