@@ -248,143 +248,128 @@ DALEC_1100_FLUX_SOURCES_SINKS_STRUCT DALEC_FLUX_SOURCES_SINKS(DALEC * DALECmodel
     //Step 2. Define
     
     
-          //source = GPP
-          FLUXFLOWS.SINK[F.lab_prod]=P.C_lab;
+        //source = GPP
+        FLUXFLOWS.SINK[F.lab_prod]=P.C_lab;
         
-      
-          FLUXFLOWS.SOURCE[F.foliar_prod]=P.C_lab;
-          FLUXFLOWS.SINK[F.foliar_prod]=P.C_fol;
-          
-          FLUXFLOWS.SOURCE[F.root_prod]=P.C_lab;
-          FLUXFLOWS.SINK[F.root_prod]=P.C_roo;
-          
-          FLUXFLOWS.SOURCE[F.wood_prod]=P.C_lab;
-          FLUXFLOWS.SINK[F.wood_prod]=P.C_woo;
+        FLUXFLOWS.SOURCE[F.foliar_prod]=P.C_lab;
+        FLUXFLOWS.SINK[F.foliar_prod]=P.C_fol;
+        
+        FLUXFLOWS.SOURCE[F.root_prod]=P.C_lab;
+        FLUXFLOWS.SINK[F.root_prod]=P.C_roo;
+        
+        FLUXFLOWS.SOURCE[F.wood_prod]=P.C_lab;
+        FLUXFLOWS.SINK[F.wood_prod]=P.C_woo;
 
-          
+        FLUXFLOWS.SOURCE[F.f_lab]=P.C_lab;  
+        //Sink = atmosphere; 
          
-          FLUXFLOWS.SOURCE[F.f_lab]=P.C_lab;
+        FLUXFLOWS.SOURCE[F.fx_lab2lit]=P.C_lab;
+        FLUXFLOWS.SINK[F.fx_lab2lit]=P.C_lit;
+    
+        FLUXFLOWS.SOURCE[F.fol2lit]=P.C_fol;
+        FLUXFLOWS.SINK[F.fol2lit]=P.C_lit;
           
-         //Sink = atmosphere; 
-         
-          FLUXFLOWS.SOURCE[F.fx_lab2lit]=P.C_lab;
-          FLUXFLOWS.SINK[F.fx_lab2lit]=P.C_lit;
-          
-          
-          FLUXFLOWS.SOURCE[F.fol2lit]=P.C_fol;
-          FLUXFLOWS.SINK[F.fol2lit]=P.C_lit;
-          
-          FLUXFLOWS.SOURCE[F.f_fol]=P.C_fol;
-         //Sink = atmosphere; 
-           FLUXFLOWS.SOURCE[F.fx_fol2lit]=P.C_fol;
-           FLUXFLOWS.SINK[F.fx_fol2lit]=P.C_lit;
-           
-           
-               
-          FLUXFLOWS.SOURCE[F.roo2lit]=P.C_roo;
-          FLUXFLOWS.SINK[F.roo2lit]=P.C_lit;
-          
-          FLUXFLOWS.SOURCE[F.f_roo]=P.C_roo;
-           //Sink = atmosphere; 
-           FLUXFLOWS.SOURCE[F.fx_roo2lit]=P.C_roo;
-           FLUXFLOWS.SINK[F.fx_roo2lit]=P.C_lit;
-           
-           
-                         
-           FLUXFLOWS.SOURCE[F.woo2cwd]=P.C_woo;
-           FLUXFLOWS.SINK[F.woo2cwd]=P.C_cwd;
-          
-           FLUXFLOWS.SOURCE[F.f_woo]=P.C_woo;
-           //Sink = atmosphere; 
-           FLUXFLOWS.SOURCE[F.fx_woo2cwd]=P.C_woo;
-           FLUXFLOWS.SINK[F.fx_woo2cwd]=P.C_cwd;
-           
-           
-            FLUXFLOWS.SOURCE[F.ae_rh_cwd]=P.C_cwd;
-           //Sink = atmosphere; 
-           
-            FLUXFLOWS.SOURCE[F.an_rh_cwd]=P.C_cwd;
-           //Sink = atmosphere; 
-            
-           FLUXFLOWS.SOURCE[F.f_cwd]=P.C_cwd;
-             //Sink = atmosphere; 
+        FLUXFLOWS.SOURCE[F.f_fol]=P.C_fol;
+        //Sink = atmosphere; 
 
-            FLUXFLOWS.SOURCE[F.cwd2som]=P.C_cwd;
-            FLUXFLOWS.SINK[F.cwd2som]=P.C_som;
-
-            FLUXFLOWS.SOURCE[F.fx_cwd2som]=P.C_cwd;
-            FLUXFLOWS.SINK[F.fx_cwd2som]=P.C_som;
-            
+        FLUXFLOWS.SOURCE[F.fx_fol2lit]=P.C_fol;
+        FLUXFLOWS.SINK[F.fx_fol2lit]=P.C_lit;
                        
-            
-            
-            FLUXFLOWS.SOURCE[F.ae_rh_lit]=P.C_lit;
-           //Sink = atmosphere; 
-           
-            FLUXFLOWS.SOURCE[F.an_rh_lit]=P.C_lit;
-           //Sink = atmosphere; 
-            
-              FLUXFLOWS.SOURCE[F.f_lit]=P.C_lit;
-             //Sink = atmosphere; 
+        FLUXFLOWS.SOURCE[F.roo2lit]=P.C_roo;
+        FLUXFLOWS.SINK[F.roo2lit]=P.C_lit;
+        
+        FLUXFLOWS.SOURCE[F.f_roo]=P.C_roo;
+        //Sink = atmosphere; 
 
-            FLUXFLOWS.SOURCE[F.lit2som]=P.C_lit;
-            FLUXFLOWS.SINK[F.lit2som]=P.C_som;
+        FLUXFLOWS.SOURCE[F.fx_roo2lit]=P.C_roo;
+        FLUXFLOWS.SINK[F.fx_roo2lit]=P.C_lit;
 
-            FLUXFLOWS.SOURCE[F.fx_lit2som]=P.C_lit;
-            FLUXFLOWS.SINK[F.fx_lit2som]=P.C_som;
+        FLUXFLOWS.SOURCE[F.woo2cwd]=P.C_woo;
+        FLUXFLOWS.SINK[F.woo2cwd]=P.C_cwd;
+        
+        FLUXFLOWS.SOURCE[F.f_woo]=P.C_woo;
+        //Sink = atmosphere; 
 
-
-            FLUXFLOWS.SOURCE[F.ae_rh_som]=P.C_som;
-           //Sink = atmosphere; 
-           
-            FLUXFLOWS.SOURCE[F.an_rh_som]=P.C_som;
-           //Sink = atmosphere; 
+        FLUXFLOWS.SOURCE[F.fx_woo2cwd]=P.C_woo;
+        FLUXFLOWS.SINK[F.fx_woo2cwd]=P.C_cwd;
+        
+        FLUXFLOWS.SOURCE[F.ae_rh_cwd]=P.C_cwd;
+        //Sink = atmosphere; 
+        
+        FLUXFLOWS.SOURCE[F.an_rh_cwd]=P.C_cwd;
+        //Sink = atmosphere; 
             
-              FLUXFLOWS.SOURCE[F.f_som]=P.C_som;
-             //Sink = atmosphere; 
+        FLUXFLOWS.SOURCE[F.f_cwd]=P.C_cwd;
+        //Sink = atmosphere; 
+
+        FLUXFLOWS.SOURCE[F.cwd2som]=P.C_cwd;
+        FLUXFLOWS.SINK[F.cwd2som]=P.C_som;
+
+        FLUXFLOWS.SOURCE[F.fx_cwd2som]=P.C_cwd;
+        FLUXFLOWS.SINK[F.fx_cwd2som]=P.C_som;
+                        
+        FLUXFLOWS.SOURCE[F.ae_rh_lit]=P.C_lit;
+        //Sink = atmosphere; 
+        
+        FLUXFLOWS.SOURCE[F.an_rh_lit]=P.C_lit;
+        //Sink = atmosphere; 
+        
+        FLUXFLOWS.SOURCE[F.f_lit]=P.C_lit;
+        //Sink = atmosphere; 
+
+        FLUXFLOWS.SOURCE[F.lit2som]=P.C_lit;
+        FLUXFLOWS.SINK[F.lit2som]=P.C_som;
+
+        FLUXFLOWS.SOURCE[F.fx_lit2som]=P.C_lit;
+        FLUXFLOWS.SINK[F.fx_lit2som]=P.C_som;
+
+        FLUXFLOWS.SOURCE[F.ae_rh_som]=P.C_som;
+        //Sink = atmosphere; 
+        
+        FLUXFLOWS.SOURCE[F.an_rh_som]=P.C_som;
+        //Sink = atmosphere; 
+        
+        FLUXFLOWS.SOURCE[F.f_som]=P.C_som;
+        //Sink = atmosphere; 
  
-            // Source = atmosphere and snowmelt
-            FLUXFLOWS.SINK[F.infil]=P.H2O_PAW;
+        // Source = atmosphere and snowmelt
+        FLUXFLOWS.SINK[F.infil]=P.H2O_PAW;
 
-            FLUXFLOWS.SOURCE[F.melt]=P.H2O_SWE;
-            //Sink = infiltration (F.infil); 
+        FLUXFLOWS.SOURCE[F.melt]=P.H2O_SWE;
+        //Sink = infiltration (F.infil); 
 
-            // Source = atmosphere
-            FLUXFLOWS.SINK[F.snowfall]=P.H2O_SWE;
+        // Source = atmosphere
+        FLUXFLOWS.SINK[F.snowfall]=P.H2O_SWE;
 
-            FLUXFLOWS.SOURCE[F.et]=P.H2O_PAW;
-            //Sink = atmosphere; 
+        FLUXFLOWS.SOURCE[F.et]=P.H2O_PAW;
+        //Sink = atmosphere; 
 
-            FLUXFLOWS.SOURCE[F.paw2puw]=P.H2O_PAW;
-            FLUXFLOWS.SINK[F.paw2puw]=P.H2O_PUW;
+        FLUXFLOWS.SOURCE[F.paw2puw]=P.H2O_PAW;
+        FLUXFLOWS.SINK[F.paw2puw]=P.H2O_PUW;
 
-            FLUXFLOWS.SOURCE[F.q_paw]=P.H2O_PAW;
-            // Sink = runoff
+        FLUXFLOWS.SOURCE[F.q_paw]=P.H2O_PAW;
+        // Sink = runoff
 
-            FLUXFLOWS.SOURCE[F.q_puw]=P.H2O_PUW;
-            // Sink = runoff
+        FLUXFLOWS.SOURCE[F.q_puw]=P.H2O_PUW;
+        // Sink = runoff
 
-            // Source = atmosphere
-            FLUXFLOWS.SINK[F.ground_heat]=P.E_PAW;
+        // Source = atmosphere
+        FLUXFLOWS.SINK[F.ground_heat]=P.E_PAW;
 
-            // Source = atmosphere
-            FLUXFLOWS.SINK[F.infil_e]=P.E_PAW;
+        // Source = atmosphere
+        FLUXFLOWS.SINK[F.infil_e]=P.E_PAW;
 
-            FLUXFLOWS.SOURCE[F.et_e]=P.E_PAW;
-            // Sink = atmosphere
+        FLUXFLOWS.SOURCE[F.et_e]=P.E_PAW;
+        // Sink = atmosphere
 
-            FLUXFLOWS.SOURCE[F.q_paw_e]=P.E_PAW;
-            // Sink = runoff
+        FLUXFLOWS.SOURCE[F.q_paw_e]=P.E_PAW;
+        // Sink = runoff
 
-            FLUXFLOWS.SOURCE[F.q_puw_e]=P.E_PUW;
-            // Sink = runoff
+        FLUXFLOWS.SOURCE[F.q_puw_e]=P.E_PUW;
+        // Sink = runoff
 
-            FLUXFLOWS.SOURCE[F.paw2puw_e]=P.E_PAW;
-            FLUXFLOWS.SINK[F.paw2puw_e]=P.E_PUW;
-
-          
-    
-    
+        FLUXFLOWS.SOURCE[F.paw2puw_e]=P.E_PAW;
+        FLUXFLOWS.SINK[F.paw2puw_e]=P.E_PUW;
     
     
 }
