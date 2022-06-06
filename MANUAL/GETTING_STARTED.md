@@ -25,7 +25,7 @@ Step 2. type "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c" m
 
 
 *SOON TO BE REQUIRED:* 
-+ *Install homebrew (if you don’t already have it) (https://brew.sh/)[DETAILS AS NEEDED]*
++ *Install homebrew (if you don’t already have it: https://brew.sh)*
     * *Install netcdf library (if you don’t already have it)*
     * *type “brew install netcdf” in terminal window (Mac), see step (1) for installing brew. *
     * *Anthony, Alex: setenv('CARDAMOM_NC_CONFIG_PATH','/usr/local/bin/nc-config')*
