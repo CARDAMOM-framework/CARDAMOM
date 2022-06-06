@@ -109,7 +109,6 @@ CARDADATA->parmax[P.i_soil]=200000.0;
 
 /*uWUE: GPP*sqrt(VPD)/ET: gC/kgH2o *hPa*/
 /*The chosen prior range in r conservatively captures the range of values by Boese et al.(2017)*/
-
 CARDADATA->parmin[P.uWUE]=0.5;
 CARDADATA->parmax[P.uWUE]=30;
 
