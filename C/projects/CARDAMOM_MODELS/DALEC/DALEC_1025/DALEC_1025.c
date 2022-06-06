@@ -10,7 +10,6 @@ struct DALEC_1025_PARAMETERS{
 /*DALEC PARAMETERS*/
 int tr_lit2soil;
 int f_auto;
-int f_foliar;
 int f_root;
 int t_wood;
 int t_root;
@@ -61,7 +60,7 @@ int t_foliar;
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
-    40,41,42,43,44,45,46,47
+    40,41,42,43,44,45,46
 };
 
 struct DALEC_1025_FLUXES{
@@ -328,7 +327,7 @@ FLUXES[f+F.resp_auto]=pars[P.f_auto]*FLUXES[f+F.gpp];
 /*leaf production*/
 FLUXES[f+F.fol_prod]=0;
 /*labile production*/
-FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*(pars[P.f_lab]+pars[P.f_foliar]);
+FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*(pars[P.f_lab]);
 Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]/deltat;
 if (FLUXES[f+F.dlambda_dt] > 0){
   FLUXES[f+F.lab_release]=MinQuadraticSmooth(Fcfolavailable, FLUXES[f+F.dlambda_dt]*pars[P.LCMA], 0.99);

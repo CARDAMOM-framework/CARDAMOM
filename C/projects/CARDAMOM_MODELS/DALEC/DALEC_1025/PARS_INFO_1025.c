@@ -23,10 +23,6 @@ CARDADATA->parmax[P.tr_lit2soil]=0.01;
 CARDADATA->parmin[P.f_auto]=0.2;
 CARDADATA->parmax[P.f_auto]=0.8;
 
-/*Fraction of (1-fgpp) to foliage*/
-CARDADATA->parmin[P.f_foliar]=0.01;
-CARDADATA->parmax[P.f_foliar]=0.5;
-
 /*Fraction of (1-fgpp) to roots*/
 CARDADATA->parmin[P.f_root]=0.01;
 CARDADATA->parmax[P.f_root]=1;
