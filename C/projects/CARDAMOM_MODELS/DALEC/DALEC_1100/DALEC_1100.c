@@ -156,13 +156,18 @@ int f_dayl_thresh;   /*f_dayl_thres*/
 int c_lim_flag;   /*LAI carbon limitation flag*/
 int lai_fire;   /*LAI fire loss*/
 int foliar_fire_frac;   /*C_fol fire loss frac*/
+int sm_PAW; /* soil moisture in PAW layer*/
+int sm_PUW; /* soil moisture in PUW layer*/
+int infil;
+
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
-    50,51,52,53,54,55,56,57,58,59
+    50,51,52,53,54,55,56,57,58,59,
+    60,61,62
 };
 
 
@@ -367,6 +372,7 @@ POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step
 
 // Infiltration (mm/day)
 double infil = pars[P.max_infil]*(1 - exp(-(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt])/pars[P.max_infil]));
+FLUXES[f+F.infil] = infil;
 
 // Surface runoff (mm/day)
 FLUXES[f+F.q_surf] = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]) - infil;
@@ -606,6 +612,11 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2som]*FLUXES[f+F.te
     POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
     POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
 
+
+    /* soil moisture, can ignore this change once merged to the most current 1100 on main, output as S.D_SM_PAW already*/
+    FLUXES[f+F.sm_PAW] = HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);
+    FLUXES[f+F.sm_PUW] = HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);
+
 }
 
 
@@ -625,7 +636,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 DALECmodel->nopools=14;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=68;
-DALECmodel->nofluxes=60;
+DALECmodel->nofluxes=63;
 DALECmodel->dalec=DALEC_1100;
 
 //declaring observation operator structure, and filling with DALEC configurations
