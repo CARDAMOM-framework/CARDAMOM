@@ -1,13 +1,13 @@
 #pragma once
 //Note: DALEC_OBSERVATION_OPERATORS.c included in DALEC_MODULE.
-#include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
-#include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/DRAINAGE.c"
-#include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_EWT2MOI.c"
-#include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2EWT.c"
-#include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2CON.c"
-#include "../../../DALEC_CODE/DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI.c"
-#include "../../../DALEC_CODE/DALEC_ALL/LIU_An_et.c"
-#include "../../../DALEC_CODE/DALEC_ALL/CH4_MODULES/JCR.c"
+#include "../DALEC_ALL/DALEC_MODULE.c"
+#include "../DALEC_ALL/HYDROLOGY_MODULES/DRAINAGE.c"
+#include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_EWT2MOI.c"
+#include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2EWT.c"
+#include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2CON.c"
+#include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI.c"
+#include "../DALEC_ALL/LIU_An_et.c"
+#include "../DALEC_ALL/CH4_MODULES/JCR.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
@@ -171,8 +171,10 @@ int C_som; /*Soil C*/
 int H2O_PAW; /*Plant available H2O*/
 int H2O_PUW; /*Plant unavailable H2O*/
 int H2O_SWE; /*Snow water equivalent*/
+int D_LAI;  /*Leaf Area Index*/
 } DALEC_1101_POOLS={
-    0,1,2,3,4,5,6,7,8,9
+     0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+    10 
 };
 
 /*
@@ -185,113 +187,6 @@ int * output_fluxes}
 
 
 
-int DALEC_1101_MODCONFIG(DALEC * DALECmodel){
-
-
-struct DALEC_1101_PARAMETERS P=DALEC_1101_PARAMETERS;
-struct DALEC_1101_FLUXES F=DALEC_1101_FLUXES;
-struct DALEC_1101_POOLS S=DALEC_1101_POOLS;
-
-DALECmodel->nopools=10;
-DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=63;
-DALECmodel->nofluxes=54;
-
-//declaring observation operator structure, and filling with DALEC configurations
-static OBSOPE OBSOPE;
-//Initialize all SUPPORT OBS values (default value = false).
-INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
-
-//Set SUPPORT_OBS values to true if model supports observation operation.
-OBSOPE.SUPPORT_GPP_OBS=true;
-OBSOPE.SUPPORT_LAI_OBS=true;
-OBSOPE.SUPPORT_ET_OBS=true;
-OBSOPE.SUPPORT_NBE_OBS=true;
-OBSOPE.SUPPORT_ABGB_OBS=true;
-OBSOPE.SUPPORT_DOM_OBS=true;
-OBSOPE.SUPPORT_EWT_OBS=true;
-OBSOPE.SUPPORT_FIR_OBS=true;
-OBSOPE.SUPPORT_CH4_OBS=true;
-OBSOPE.SUPPORT_ROFF_OBS=true;
-
-
-OBSOPE.SUPPORT_CUE_OBS=true;
-OBSOPE.SUPPORT_C3frac_OBS=true;
-OBSOPE.SUPPORT_iniSnow_OBS=true;
-OBSOPE.SUPPORT_iniSOM_OBS=true;
-//Provide values required by each OBS operator
-//Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
-//Note: no values required for any SUPPORT_*_OBS quantity set to false.
-
-//GPP-specific variables
-OBSOPE.GPP_flux=F.gpp;
-//LAI-specific variables
-OBSOPE.LAI_foliar_pool=S.C_fol;
-OBSOPE.LAI_LCMA=P.LCMA;
-//ET variabiles
-OBSOPE.ET_flux=F.et;
-//Runoff variables
-static int ROFF_fluxes[3];
-ROFF_fluxes[0]=F.q_paw;
-ROFF_fluxes[1]=F.q_puw;
-ROFF_fluxes[2]=F.q_surf;
-OBSOPE.ROFF_fluxes=ROFF_fluxes;
-static double ROFF_flux_signs[]={1.,1.,1.};
-OBSOPE.ROFF_flux_signs=ROFF_flux_signs;
-OBSOPE.ROFF_n_fluxes=3;
-//NBE-specific variables
-static int NBE_fluxes[4];
-NBE_fluxes[0]=F.gpp;
-NBE_fluxes[1]=F.resp_auto;
-NBE_fluxes[2]=F.rh_co2;
-NBE_fluxes[3]=F.f_total;
-OBSOPE.NBE_fluxes=NBE_fluxes;
-static double NBE_flux_signs[]={-1.,1.,1.,1.};
-OBSOPE.NBE_flux_signs=NBE_flux_signs;
-OBSOPE.NBE_n_fluxes=4;
-
-//ABGB-specific variables
-static int ABGB_pools[4];
-ABGB_pools[0]=S.C_lab;
-ABGB_pools[1]=S.C_fol;
-ABGB_pools[2]=S.C_roo;
-ABGB_pools[3]=S.C_woo;
-OBSOPE.ABGB_pools=ABGB_pools;
-OBSOPE.ABGB_n_pools=4;
-
-
-//SOM-specific variables
-static int DOM_pools[3]; 
-DOM_pools[0]=S.C_cwd;
-DOM_pools[1]=S.C_lit;
-DOM_pools[2]=S.C_som;
-OBSOPE.DOM_pools=DOM_pools;
-OBSOPE.DOM_n_pools=3;
-//H2O-specific variables
-static int EWT_h2o_pools[3];
-EWT_h2o_pools[0]=S.H2O_PAW;
-EWT_h2o_pools[1]=S.H2O_PUW;
-EWT_h2o_pools[2]=S.H2O_SWE;
-OBSOPE.EWT_h2o_pools=EWT_h2o_pools;
-OBSOPE.EWT_n_h2o_pools=3;
-//Fire-specific variables
-OBSOPE.FIR_flux=F.f_total;
-//CUE parameters
-OBSOPE.CUE_PARAM=P.f_auto;
-//C3frac parameters
-OBSOPE.C3frac_PARAM=P.C3_frac;
-//Initial Snow parameter
-OBSOPE.iniSnow_PARAM=P.i_SWE;
-//Initial SOM parameter
-OBSOPE.iniSOM_PARAM=P.i_som;
-
-
-
-DALECmodel->OBSOPE=OBSOPE;
-
-
-
-return 0;}
 
 
 
@@ -336,6 +231,9 @@ double *LAI=DATA.M_LAI;
   POOLS[S.H2O_PAW]=pars[P.i_PAW];
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
   POOLS[S.H2O_SWE]=pars[P.i_SWE];
+    //Diagnostic states
+  POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; 
+
 
 double *SSRD=DATA.ncdf_data.SSRD.values;
 double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
@@ -417,10 +315,19 @@ f=nofluxes*n;
 
 
 /*LAI*/
-LAI[n]=POOLS[p+S.C_fol]/pars[P.LCMA]; 
+double LAI=POOLS[p+S.D_LAI];
 
 
-double zenith_angle=DATA.ncdf_data.SZA[n];
+/*Calculate light extinction coefficient*/
+double B = (DOY[n]-81)*2*pi/365.;
+double ET1 = 9.87*sin(2*B)-7.53*cos(B)-1.5*sin(B);
+double DA = 23.45*sin((284+DOY[n])*2*pi/365); //Deviation angle
+double LST = (int) (DOY[n]*24*60) % (24*60);
+LST=0.5*24*60;
+double AST = LST+ET1;
+double h = (AST-12*60)/4; //hour angle
+double alpha = asin((sin(pi/180*DATA.ncdf_data.LAT)*sin(pi/180*DA)+cos(pi/180*DATA.ncdf_data.LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
+double zenith_angle = 90-alpha;
 double LAD = 0.5; //leaf angle distribution
 double VegK = LAD/cos(zenith_angle/180*pi);
 
@@ -643,12 +550,122 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2som]*FLUXES[f+F.te
 	/*replace in next version of DALEC_FIRES*/
     FLUXES[f+F.f_total] = FLUXES[f+F.f_lab] + FLUXES[f+F.f_fol] + FLUXES[f+F.f_roo] + FLUXES[f+F.f_woo] + FLUXES[f+F.f_cwd] + FLUXES[f+F.f_lit] + FLUXES[f+F.f_som];
 
+    /***RECORD t+1 DIAGNOSTIC STATES*****/
+        POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
+
 }
 
 
 return 0;
 }
 
+int DALEC_1101_MODCONFIG(DALEC * DALECmodel){
+
+
+struct DALEC_1101_PARAMETERS P=DALEC_1101_PARAMETERS;
+struct DALEC_1101_FLUXES F=DALEC_1101_FLUXES;
+struct DALEC_1101_POOLS S=DALEC_1101_POOLS;
+
+DALECmodel->nopools=11;
+DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
+DALECmodel->nopars=63;
+DALECmodel->nofluxes=54;
+DALECmodel->dalec=DALEC_1101;
+
+//declaring observation operator structure, and filling with DALEC configurations
+static OBSOPE OBSOPE;
+//Initialize all SUPPORT OBS values (default value = false).
+INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
+
+//Set SUPPORT_OBS values to true if model supports observation operation.
+OBSOPE.SUPPORT_GPP_OBS=true;
+OBSOPE.SUPPORT_LAI_OBS=true;
+OBSOPE.SUPPORT_ET_OBS=true;
+OBSOPE.SUPPORT_NBE_OBS=true;
+OBSOPE.SUPPORT_ABGB_OBS=true;
+OBSOPE.SUPPORT_DOM_OBS=true;
+OBSOPE.SUPPORT_EWT_OBS=true;
+OBSOPE.SUPPORT_FIR_OBS=true;
+OBSOPE.SUPPORT_CH4_OBS=true;
+OBSOPE.SUPPORT_ROFF_OBS=true;
+
+
+OBSOPE.SUPPORT_CUE_OBS=true;
+OBSOPE.SUPPORT_C3frac_OBS=true;
+OBSOPE.SUPPORT_iniSnow_OBS=true;
+OBSOPE.SUPPORT_iniSOM_OBS=true;
+//Provide values required by each OBS operator
+//Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
+//Note: no values required for any SUPPORT_*_OBS quantity set to false.
+
+//GPP-specific variables
+OBSOPE.GPP_flux=F.gpp;
+//LAI-specific variables
+OBSOPE.LAI_pool=S.D_LAI;
+//ET variabiles
+OBSOPE.ET_flux=F.et;
+//Runoff variables
+static int ROFF_fluxes[3];
+ROFF_fluxes[0]=F.q_paw;
+ROFF_fluxes[1]=F.q_puw;
+ROFF_fluxes[2]=F.q_surf;
+OBSOPE.ROFF_fluxes=ROFF_fluxes;
+static double ROFF_flux_signs[]={1.,1.,1.};
+OBSOPE.ROFF_flux_signs=ROFF_flux_signs;
+OBSOPE.ROFF_n_fluxes=3;
+//NBE-specific variables
+static int NBE_fluxes[4];
+NBE_fluxes[0]=F.gpp;
+NBE_fluxes[1]=F.resp_auto;
+NBE_fluxes[2]=F.rh_co2;
+NBE_fluxes[3]=F.f_total;
+OBSOPE.NBE_fluxes=NBE_fluxes;
+static double NBE_flux_signs[]={-1.,1.,1.,1.};
+OBSOPE.NBE_flux_signs=NBE_flux_signs;
+OBSOPE.NBE_n_fluxes=4;
+
+//ABGB-specific variables
+static int ABGB_pools[4];
+ABGB_pools[0]=S.C_lab;
+ABGB_pools[1]=S.C_fol;
+ABGB_pools[2]=S.C_roo;
+ABGB_pools[3]=S.C_woo;
+OBSOPE.ABGB_pools=ABGB_pools;
+OBSOPE.ABGB_n_pools=4;
+
+
+//SOM-specific variables
+static int DOM_pools[3]; 
+DOM_pools[0]=S.C_cwd;
+DOM_pools[1]=S.C_lit;
+DOM_pools[2]=S.C_som;
+OBSOPE.DOM_pools=DOM_pools;
+OBSOPE.DOM_n_pools=3;
+//H2O-specific variables
+static int EWT_h2o_pools[3];
+EWT_h2o_pools[0]=S.H2O_PAW;
+EWT_h2o_pools[1]=S.H2O_PUW;
+EWT_h2o_pools[2]=S.H2O_SWE;
+OBSOPE.EWT_h2o_pools=EWT_h2o_pools;
+OBSOPE.EWT_n_h2o_pools=3;
+//Fire-specific variables
+OBSOPE.FIR_flux=F.f_total;
+//CUE parameters
+OBSOPE.CUE_PARAM=P.f_auto;
+//C3frac parameters
+OBSOPE.C3frac_PARAM=P.C3_frac;
+//Initial Snow parameter
+OBSOPE.iniSnow_PARAM=P.i_SWE;
+//Initial SOM parameter
+OBSOPE.iniSOM_PARAM=P.i_som;
+
+
+
+DALECmodel->OBSOPE=OBSOPE;
+
+
+
+return 0;}
 
 
 
