@@ -166,9 +166,13 @@ OBS.min_threshold=ncdf_read_double_attr(ncid, OBSNAME,"min_threshold");
 // //MINMAX LIMITS: OBS.min_value=ncdf_read_double_attr(ncid, OBSNAME,"min_value");
 ////MINMAX LIMITS: OBS.max_value=ncdf_read_double_attr(ncid, OBSNAME,"max_value");
 
+//MINMAX LIMITS: default_double_value(&OBS->min_value,log(0));//-INFINITY
+//MINMAX LIMITS: default_double_value(&OBS->max_value,-log(0));//INFINITY
 
 
 if (isnan(OBS.value)){OBS.value=DEFAULT_DOUBLE_VAL;}
+
+
 
 return OBS;
 }
