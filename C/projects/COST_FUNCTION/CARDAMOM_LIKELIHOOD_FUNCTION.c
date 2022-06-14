@@ -34,6 +34,8 @@ double value;
 double unc;
 int opt_unc_type;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
 double min_threshold;
+double min_value;
+double max_value;
 }SINGLE_OBS_STRUCT;
 
 
@@ -161,6 +163,10 @@ OBS.value = ncdf_read_single_double_var(ncid, OBSNAME);
 OBS.unc = ncdf_read_double_attr(ncid, OBSNAME,"unc");
 OBS.opt_unc_type=ncdf_read_int_attr(ncid, OBSNAME,"opt_unc_type");//absolute, log, percentage
 OBS.min_threshold=ncdf_read_double_attr(ncid, OBSNAME,"min_threshold");
+// //MINMAX LIMITS: OBS.min_value=ncdf_read_double_attr(ncid, OBSNAME,"min_value");
+////MINMAX LIMITS: OBS.max_value=ncdf_read_double_attr(ncid, OBSNAME,"max_value");
+
+
 
 if (isnan(OBS.value)){OBS.value=DEFAULT_DOUBLE_VAL;}
 
@@ -445,7 +451,13 @@ unc=log(unc);}
 tot_exp = pow((mod- obs)/unc,2);
 
 
-P=-0.5*tot_exp;}
+P=-0.5*tot_exp;
+
+//MINMAX LIMITS if (mod < OBS->min_value || mod > OBS->max_value ){P=log(0);}
+
+}
+
+
 // printf("Completed likelihood function...P = %2.2f\n",P);
 // printf("OBS->opt_filter = %i\n",OBS->opt_filter);
 // printf("OBS->opt_unc_type = %i\n",OBS->opt_unc_type);
