@@ -70,7 +70,9 @@ bool SUPPORT_iniSOM_OBS;
 int iniSOM_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
 
-
+bool SUPPORT_PAW_z_OBS;
+int PAW_z_PARAM;//This is assuming it's a single parameter
+//Can add more parameters OR options
 
 
 }OBSOPE;
@@ -98,6 +100,7 @@ OBSOPE->SUPPORT_CUE_OBS=false;
 OBSOPE->SUPPORT_C3frac_OBS=false;
 OBSOPE->SUPPORT_iniSnow_OBS=false;
 OBSOPE->SUPPORT_iniSOM_OBS=false;
+OBSOPE->SUPPORT_PAW_z_OBS=false;
 //In-built observation operators
 
 
@@ -436,7 +439,12 @@ return 0;
 
 }
 
+int DALEC_OBSOPE_PAW_z(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_PAW_z;
+if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_PAW_z=D->M_PARS[O->PAW_z_PARAM];}
+return 0;
 
+}
 
 ///Full observation operator
 int DALEC_OBSOPE(DATA * D, OBSOPE * O){
@@ -460,7 +468,7 @@ if (O->SUPPORT_CUE_OBS){DALEC_OBSOPE_CUE(D, O);}
 if (O->SUPPORT_C3frac_OBS){DALEC_OBSOPE_C3frac(D, O);}
 if (O->SUPPORT_iniSnow_OBS){DALEC_OBSOPE_iniSnow(D, O);}
 if (O->SUPPORT_iniSOM_OBS){DALEC_OBSOPE_iniSOM(D, O);}
-
+if (O->SUPPORT_PAW_z_OBS){DALEC_OBSOPE_PAW_z(D, O);}
 
 return 0;}  
 
