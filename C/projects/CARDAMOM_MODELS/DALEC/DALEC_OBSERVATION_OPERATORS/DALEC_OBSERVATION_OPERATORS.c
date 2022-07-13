@@ -417,9 +417,7 @@ return 0;
 int DALEC_OBSOPE_CUE(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_CUE;
 if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_CUE=D->M_PARS[O->CUE_PARAM];}
-return 0;
-
-}
+return 0;}
 
 int DALEC_OBSOPE_C3frac(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_C3frac;

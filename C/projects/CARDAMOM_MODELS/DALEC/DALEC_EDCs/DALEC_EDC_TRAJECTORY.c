@@ -85,17 +85,18 @@ FT=calloc(nofluxes,sizeof(double));
 int f=0;
 for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nofluxes+f];}}
 /*Total prec*/
-double TOTAL_PREC=0;
-double TOTAL_SNOW=0;
+doule 
 for (n=0;n<N_timesteps;n++){
     for (i=0;i<E->nfin;i++)
-    Fin = FLUXES[E->
-            Fout = 
-    
-    TOTAL_PREC+=PREC[n];TOTAL_SNOW+=SNOWFALL[n];}
+        //CONTINUE FROM HERE
+    Fin += FLUXES[E->FIO.........];
+    Fout += FLUXES[E->FIO..........]
 
 
-Fi
+}
+
+
+
 
 // 
 // double Fin[10];
@@ -164,11 +165,9 @@ Rs=Rm*MPOOLSjan[n]/Pstart;
 /*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[7-1+n]==1))
 & ((fabs(log(Rs))>log(EQF)) || (fabs(Rs-Rm)>etol)))
 {EDC=ipow(0,EDCD->SWITCH[7-1+n]);EDCD->PASSFAIL[7-1+n]=0;}*/
-if (Fin[n] > 0){
+
  PEDC=EDCD->pEDC-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
 
-
-}
 
  
  
