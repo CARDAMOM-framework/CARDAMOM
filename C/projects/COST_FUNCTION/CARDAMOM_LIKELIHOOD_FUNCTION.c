@@ -441,13 +441,18 @@ double unc= OBS->unc;
 if (isinf(OBS->min_threshold)==0){
 mod = max(mod,OBS->min_threshold);
 obs = max(obs,OBS->min_threshold);}
-
+printf("before log mod = %f\n", mod);
+printf("before log obs = %f\n", obs);
+printf("before log unc = %f\n", unc);
 
 if (OBS->opt_unc_type==1){
 mod=log(mod);
 obs=log(obs);
 unc=log(unc);}
 
+printf("mod = %f\n", mod);
+printf("obs = %f\n", obs);
+printf("unc = %f\n", unc);
 
 //Cost function
 //This is the only option available for single value (e.g. time invariant) observations

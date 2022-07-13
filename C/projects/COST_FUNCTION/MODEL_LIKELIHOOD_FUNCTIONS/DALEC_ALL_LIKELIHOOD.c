@@ -129,6 +129,7 @@ int n;
 double P=0;
 for (n=0;n<D.nolikelihoods;n++){P=P+ML[n];}
 
+printf("P sum = %f\n", P);
 
 
 /*Note: only use with model ID = 806*/
