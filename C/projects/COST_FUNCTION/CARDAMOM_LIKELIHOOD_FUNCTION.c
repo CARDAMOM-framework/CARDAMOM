@@ -459,7 +459,7 @@ tot_exp = pow((mod- obs)/unc,2);
 P=-0.5*tot_exp;
 
 //MINMAX LIMITS 
-if (mod < OBS->min_value || mod > OBS->max_value ){P=log(0);}
+//if (mod < OBS->min_value || mod > OBS->max_value ){P=log(0);}
 
 }
 // printf("Completed likelihood function...P = %2.2f\n",P);
