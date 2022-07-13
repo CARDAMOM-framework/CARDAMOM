@@ -154,7 +154,7 @@ SINGLE_OBS_STRUCT READ_NETCDF_SINGLE_OBS_FIELDS(int ncid, char * OBSNAME){
     
 SINGLE_OBS_STRUCT OBS;
 
-printf("OBSNAME = %s\n",OBSNAME);
+
 
 
 size_t length;
@@ -166,7 +166,8 @@ OBS.min_threshold=ncdf_read_double_attr(ncid, OBSNAME,"min_threshold");
 
 OBS.min_value=ncdf_read_double_attr(ncid, OBSNAME,"min_value"); // //MINMAX LIMITS: 
 OBS.max_value=ncdf_read_double_attr(ncid, OBSNAME,"max_value"); // //MINMAX LIMITS: 
-
+printf("OBSNAME = %s\n",OBSNAME);
+printf("OBS.value = %f\n",OBS.value);
 
 default_double_value(&OBS.min_value,log(0));//-INFINITY // //MINMAX LIMITS: 
 default_double_value(&OBS.max_value,-log(0));//INFINITY // //MINMAX LIMITS: 
@@ -415,9 +416,12 @@ double CARDAMOM_SINGLE_OBS_LIKELIHOOD(SINGLE_OBS_STRUCT * OBS,double MOD){
 
     
 double P=0;
+printf("before if!= devault val\n");
+printf("DEFAULT_DOUBLE_VAL = %f\n", DEFAULT_DOUBLE_VAL);
 
 if (OBS->value!=DEFAULT_DOUBLE_VAL){
-            
+printf("after if!= devault val\n");         
+printf("OBS->value = %f\n", OBS->value);
 /*Data structure, includes model and data*/
 /*EWT constraint*/
 double tot_exp=0;
