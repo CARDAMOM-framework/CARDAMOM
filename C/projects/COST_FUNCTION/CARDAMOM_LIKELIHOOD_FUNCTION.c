@@ -407,8 +407,10 @@ double CARDAMOM_SINGLE_OBS_LIKELIHOOD(SINGLE_OBS_STRUCT * OBS,double MOD){
     
 double P=0;
 
+printf("before if!= devault val\n");
+printf("DEFAULT_DOUBLE_VAL = %f\n", DEFAULT_DOUBLE_VAL);
 if (OBS->value!=DEFAULT_DOUBLE_VAL){
-            
+printf("after if!= devault val\n");         
 /*Data structure, includes model and data*/
 /*EWT constraint*/
 double tot_exp=0;
@@ -432,13 +434,20 @@ double unc= OBS->unc;
 if (isinf(OBS->min_threshold)==0){
 mod = max(mod,OBS->min_threshold);
 obs = max(obs,OBS->min_threshold);}
-
+printf("after ifinf min_threshold\n"); 
+printf("before log mod = %f\n", mod);
+printf("before log obs = %f\n", obs);
+printf("before log unc = %f\n", unc);
 
 if (OBS->opt_unc_type==1){
+printf("after unctype=1\n"); 
 mod=log(mod);
 obs=log(obs);
 unc=log(unc);}
 
+printf("mod = %f\n", mod);
+printf("obs = %f\n", obs);
+printf("unc = %f\n", unc);
 
 //Cost function
 //This is the only option available for single value (e.g. time invariant) observations
