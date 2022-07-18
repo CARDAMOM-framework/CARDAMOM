@@ -1057,7 +1057,7 @@ OBSOPE.SCF_pool=S.D_SCF;
 
 
 //CUE parameters
-OBSOPE.CUE_PARAM=P.f_auto;
+//OBSOPE.CUE_PARAM=P.f_auto;
 //Vcmax25 parameters
 OBSOPE.Vcmax25_PARAM=P.Vcmax25;
 //C3frac parameters
