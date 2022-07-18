@@ -256,7 +256,7 @@ double *VPD=DATA.ncdf_data.VPD.values;
 double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
 double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
-// SKT debug double *SKT=DATA.ncdf_data.SKT.values;
+double *SKT=DATA.ncdf_data.SKT.values; // SKT debug 
 
 double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
 double meanrad = DATA.ncdf_data.SSRD.reference_mean;
@@ -513,8 +513,8 @@ FLUXES[f+F.root2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
   
     //TIME-VARYING INPUTS
      HRJCR.IN.SM=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);
-     HRJCR.IN.TEMP=0.5*(T2M_MIN[n]+T2M_MAX[n]);
-     //HRJCR.IN.TEMP=SKT[n];
+     //HRJCR.IN.TEMP=0.5*(T2M_MIN[n]+T2M_MAX[n]);
+     HRJCR.IN.TEMP=SKT[n];
     //JCR
         HET_RESP_RATES_JCR(&HRJCR);
     //OUtputs --- store anything we want here---
@@ -659,7 +659,7 @@ struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
 struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=14;
-DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
+DALECmodel->nomet=11;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=68;
 DALECmodel->nofluxes=60;
 DALECmodel->dalec=DALEC_1100;
