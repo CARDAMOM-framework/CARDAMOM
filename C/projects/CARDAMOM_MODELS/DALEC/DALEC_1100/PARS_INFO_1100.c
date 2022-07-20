@@ -24,10 +24,6 @@ CARDADATA->parmax[P.tr_lit2som]=0.99;
 CARDADATA->parmin[P.tr_cwd2som]=0.01;
 CARDADATA->parmax[P.tr_cwd2som]=0.99;
 
-/*Fraction of GPP respired*/
-CARDADATA->parmin[P.f_auto]=0.2;
-CARDADATA->parmax[P.f_auto]=0.8;
-
 /*Autotrophic maintenance respiration coefficient*/
 CARDADATA->parmin[P.rauto_mr]=0.05;
 CARDADATA->parmax[P.rauto_mr]=0.8;
