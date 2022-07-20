@@ -469,7 +469,8 @@ P=-0.5*tot_exp;}
 //P=-0.5*tot_exp;
 
 //MINMAX LIMITS 
-if (MOD < OBS->min_value || MOD > OBS->max_value ){P=log(0);}
+if (OBS->max_value!=DEFAULT_DOUBLE_VAL & MOD < OBS->max_value){P=log(0);}
+if (OBS->min_value!=DEFAULT_DOUBLE_VAL && MOD > OBS->min_value) ){P=log(0);}
 /*printf("MOD = %f\n", MOD);
 printf("OBS->max_value = %f\n", OBS->max_value);
 printf("P = %f\n", P);*/
