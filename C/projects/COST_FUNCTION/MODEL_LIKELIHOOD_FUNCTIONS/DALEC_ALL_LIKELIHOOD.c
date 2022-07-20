@@ -119,9 +119,11 @@ if (O->SUPPORT_LAI_OBS){   ML[LI.Mean_LAI]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncd
 if (O->SUPPORT_Cefficiency_OBS){   ML[LI.PEQ_Cefficiency]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_Cefficiency, D.M_PEQ_Cefficiency);};
 if (O->SUPPORT_CUE_OBS){   ML[LI.PEQ_CUE]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_CUE, D.M_PEQ_CUE);};
 if (O->SUPPORT_iniSnow_OBS){   ML[LI.PEQ_iniSnow]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_iniSnow, D.M_PEQ_iniSnow);};
-if (O->SUPPORT_iniSOM_OBS){   ML[LI.PEQ_iniSOM]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_iniSOM, D.M_PEQ_iniSOM);};
-if (O->SUPPORT_C3frac_OBS){   ML[LI.PEQ_C3frac]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_C3frac, D.M_PEQ_C3frac);};
-if (O->SUPPORT_PAW_z_OBS){   ML[LI.PEQ_PAW_z]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_PAW_z, D.M_PEQ_PAW_z);};
+if (O->SUPPORT_iniSOM_OBS){  //printf("******** in PEQ_iniSOM OBS LIKELIHOOD\n"); 
+ML[LI.PEQ_iniSOM]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_iniSOM, D.M_PEQ_iniSOM);};
+//if (O->SUPPORT_C3frac_OBS){   ML[LI.PEQ_C3frac]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_C3frac, D.M_PEQ_C3frac);};
+if (O->SUPPORT_PAW_z_OBS){   //printf("******** in PEQ_PAW_z OBS LIKELIHOOD\n"); 
+ML[LI.PEQ_PAW_z]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_PAW_z, D.M_PEQ_PAW_z);};
 
 //Calculate sum here;
 
@@ -134,7 +136,8 @@ for (n=0;n<D.nolikelihoods;n++){P=P+ML[n];}
 //printf("ML[LI.PEQ_PAW_z] = %f\n", ML[LI.PEQ_PAW_z]); 
 //printf("n = %d\n", n);
 //printf("P sum = %f\n", P);
-
+//printf("O->SUPPORT_PAW_z_OBS = %d\n", O->SUPPORT_PAW_z_OBS);
+//printf("O->SUPPORT_iniSOM_OBS = %d\n", O->SUPPORT_iniSOM_OBS);
 
 /*Note: only use with model ID = 806*/
 //if (D.ID==806){P = P + DALEC_806_MFCF(D);}

@@ -443,7 +443,8 @@ return 0;
 
 int DALEC_OBSOPE_PAW_z(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_PAW_z;
-if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_PAW_z=D->M_PARS[O->PAW_z_PARAM];}
+//if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_PAW_z=D->M_PARS[O->PAW_z_PARAM];}
+D->M_PEQ_PAW_z=D->M_PARS[O->PAW_z_PARAM];
 return 0;
 
 }

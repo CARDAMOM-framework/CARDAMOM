@@ -416,9 +416,10 @@ double CARDAMOM_SINGLE_OBS_LIKELIHOOD(SINGLE_OBS_STRUCT * OBS,double MOD){
 
     
 double P=0;
-//printf("before if!= devault val\n");
-//printf("DEFAULT_DOUBLE_VAL = %f\n", DEFAULT_DOUBLE_VAL);
-
+/*printf("before if!= devault val\n");
+printf("DEFAULT_DOUBLE_VAL = %f\n", DEFAULT_DOUBLE_VAL);
+printf("OBS->value = %f\n", OBS->value);
+printf("MOD = %f\n", MOD);*/
 if (OBS->value!=DEFAULT_DOUBLE_VAL){
 //printf("after if!= devault val\n");         
 //printf("OBS->value = %f\n", OBS->value);
@@ -463,14 +464,16 @@ unc=log(unc);}
 tot_exp = pow((mod- obs)/unc,2);
 
 
-//P=-0.5*tot_exp;}
+P=-0.5*tot_exp;}
 
-P=-0.5*tot_exp;
+//P=-0.5*tot_exp;
 
 //MINMAX LIMITS 
-if (mod < OBS->min_value || mod > OBS->max_value ){P=log(0);}
-
-}
+if (MOD < OBS->min_value || MOD > OBS->max_value ){P=log(0);}
+/*printf("MOD = %f\n", MOD);
+printf("OBS->max_value = %f\n", OBS->max_value);
+printf("P = %f\n", P);*/
+//}
 // printf("Completed likelihood function...P = %2.2f\n",P);
 // printf("OBS->opt_filter = %i\n",OBS->opt_filter);
 // printf("OBS->opt_unc_type = %i\n",OBS->opt_unc_type);
