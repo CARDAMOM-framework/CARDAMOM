@@ -7,7 +7,8 @@
 
 
 
-
+  
+  
 
 typedef struct DALEC{
 int nopools;

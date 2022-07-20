@@ -1,6 +1,5 @@
 //List functions here
 #pragma once
-//#include "DALEC_EDC_PARS_INEQUALITY.c"
 #include "DALEC_EDC_PARAMETER_INEQUALITY.c"
 #include "DALEC_EDC_STATE_RANGES.c"
 #include "DALEC_EDC_TRAJECTORY.c"

@@ -238,6 +238,12 @@ printf("Done reading all other edc ");
 	DATA->CO2.values=ncdf_read_double_var(ncid, "CO2", &(DATA->CO2.length));
 		DATA->CO2.reference_mean=ncdf_read_double_attr(ncid, "CO2","reference_mean");
                                                 DEFAULT_REFERENCE_MEAN(&DATA->CO2);
+                                                
+                                                                                                
+	DATA->CROP_YIELD.values=ncdf_read_double_var(ncid, "CROP_YIELD", &(DATA->CROP_YIELD.length));
+	DATA->CROP_YIELD.reference_mean=ncdf_read_double_attr(ncid, "CROP_YIELD","reference_mean");
+    DEFAULT_REFERENCE_MEAN(&DATA->CROP_YIELD);
+
 
         
 	DATA->DOY.values=ncdf_read_double_var(ncid, "DOY", &(DATA->DOY.length));

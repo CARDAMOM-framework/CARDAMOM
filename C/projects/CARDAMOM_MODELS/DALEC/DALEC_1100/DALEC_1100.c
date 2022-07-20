@@ -1,6 +1,7 @@
 #pragma once
 //Note: DALEC_OBSERVATION_OPERATORS.c included in DALEC_MODULE.
-#include "../DALEC_ALL/DALEC_MODULE.c"
+#include "../DALEC_ALL/DALEC_STRUCTS.c"//Includes all calls to DALEC-compatible EDC functions
+#include "../DALEC_ALL/DALEC_MODULE.c"//Includes all calls to DALEC-compatible EDC functions
 #include "../DALEC_ALL/HYDROLOGY_MODULES/DRAINAGE.c"
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_EWT2MOI.c"
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2EWT.c"
@@ -228,12 +229,10 @@ int M_LAI_TEMP;//KNORR LAI module temp memory
 
 
 
-struct DALEC_1100_FLUX_SOURCES_SINKS_STRUCT{
-    int *SOURCE;
-            int *SINK;};
+
 
 //Returns structure with sources and sinks, matches number of fluxes
-DALEC_1100_FLUX_SOURCES_SINKS_STRUCT DALEC_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
+DALEC_FLUX_SOURCES_SINKS_STRUCT DALEC_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
     //Step 1. Declare & initialize
     DALEC_1100_FLUX_SOURCES_SINKS_STRUCT FLUXFLOWS;
     // external source or pool sink, or not conserved quantity
@@ -242,7 +241,6 @@ DALEC_1100_FLUX_SOURCES_SINKS_STRUCT DALEC_FLUX_SOURCES_SINKS(DALEC * DALECmodel
     FLUXFLOWS.SINK=calloc(DALECmodel->nofluxes, sizeof(int));
     
     for (n=0;n<DALECmodel->nofluxes; n++){FLUXFLOWS.SOURCE[n]=-1;FLUXFLOWS.SINK[n]=-1;}
-    
     
     
     //Step 2. Define
@@ -369,10 +367,10 @@ DALEC_1100_FLUX_SOURCES_SINKS_STRUCT DALEC_FLUX_SOURCES_SINKS(DALEC * DALECmodel
         // Sink = runoff
 
         FLUXFLOWS.SOURCE[F.paw2puw_e]=P.E_PAW;
-        FLUXFLOWS.SINK[F.paw2puw_e]=P.E_PUW;
-    
-    
-}
+        FLUXFLOWS.SINK[F.paw2puw_e]=P.E_PUW;}
+
+
+
     
     
     
@@ -1381,26 +1379,22 @@ return 0;}
 
 
 //
- typedef struct INPUT_OUTPUT_FLUXES_STRUCT{
-  int N_INPUT_FLUXES;
-  int *INPUT_FLUXES;
-  int N_OUTPUT_FLUXES;
-  int *INPUT_FLUXES;}INPUT_OUTPUT_FLUXES_STRUCT;
 
 
-INPUT_OUTPUT_FLUXES_STRUCT INPUT_OUTPUT_FLUXES(DALEC * DALECmodel){
+
+INPUT_OUTPUT_FLUXES_STRUCT * DALEC_1100_INPUT_OUTPUT_FLUXES(DALEC * DALECmodel){
     
     
              struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 
              
-    DALECmodel->nopools;
+    //DALECmodel->nopools;
     
 INPUT_OUTPUT_FLUXES_STRUCT * FIO=calloc(  DALECmodel->nopools, sizeof( INPUT_OUTPUT_FLUXES_STRUCT));;
            //Step 1. Declaring all as "zero" inputs and "zero" ouputs.  
  
            
-    DALECmodel->nopools;
+    //DALECmodel->nopools;
 //Setting all IO to zero (default)
     int n=0;
     for (n=0;n<   DALECmodel->nopools;n++){FIO[n].N_INPUT_FLUXES=0;FIO[n].N_OUTPUT_FLUXES=0;}
@@ -1709,9 +1703,16 @@ EDCs[E.cwdsomtor].prerun=true;
 // EDC_t_Clab.FOUT = ;
 // } DALEC_EDC_TRAJECTORY_STRUCT;
     
-    EDC_st
-        
-            EDCs[E.statetrajectory].data=&EDC_st;
+    
+    //Define which pools need to be constrained here
+    
+    EDC_st.n_pools=...
+
+    EDC_st.pool_indices=...
+            
+            EDC_st.FLUX_SOURCE_SINK_STRUCT=...
+        //Rest can be done by code without additional input
+    EDCs[E.statetrajectory].data=&EDC_st;
     EDCs[E.statetrajectory].function=&DALEC_EDC_STATE_TRAJECTORIES;
     EDCs[E.statetrajectory].prerun=false;
 //Eventually adopt more succinct notation (to consider)

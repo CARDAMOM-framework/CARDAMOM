@@ -2,6 +2,7 @@
 #include "../DALEC_ALL/mean_pool.c"
 #include "../DALEC_ALL/mean_annual_pool.c"
 #include "../DALEC_ALL/expdecay2.c"
+#include "../DALEC_ALL/DALEC_STRUCTS.c"
 #include "../../../../math_fun/std.c"
 #include "../../../../math_fun/ipow.c"
 #include "stdlib.h"
@@ -9,11 +10,18 @@
 
 //***************General inequality EDC******************
 //***************DALEC_EDC_PARS_INEQUALITY*********
-//Doing one pool at a time
+
+
+  
+  
+  
+
+//Doing all pools
 typedef struct {
-    int no_state_checks;
+    int no_pool_checks;
     int *pool_idx;
-    FIO * FIO; 
+    //INPUT_OUTPUT_FLUXES_STRUCT * FIO; 
+    DALEC_FLUX_SOURCES_SINKS_STRUCT * FSS;
 } DALEC_EDC_TRAJECTORY_STRUCT;
 
 
@@ -59,9 +67,11 @@ int dint=(int)floor(N_timesteps/(TIME_INDEX[N_timesteps-1]-TIME_INDEX[0])*365.25
 
 /*deriving mean jan pools*/
 /*based on all jan pools except initial conditions*/
-for (n=0;n<noprogpools;n++){
+for (n=0;n<EDCstruct->no_pool_checks;n++){
+    int pidx = EDCstruct->pool_idx[n];
 for (m=0;m<(N_timesteps/dint+1);m++){
-MPOOLSjan[n]=MPOOLSjan[n]+POOLS[nopools*(m*dint)+n]/(N_timesteps/dint+1);}}
+MPOOLSjan[n]=MPOOLSjan[n]+POOLS[nopools*(m*dint)+pidx
+        ]/(N_timesteps/dint+1);}}
 /*printing just to make sure*/
 /*for (n=0;n<nopools;n++){printf("Pool = %d, janmnean=%2.2f\n",n,MPOOLSjan[n]);}*/
 
@@ -84,7 +94,13 @@ double *FT;
 FT=calloc(nofluxes,sizeof(double));
 int f=0;
 for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nofluxes+f];}}
-/*Total prec*/
+
+
+
+//Next step:
+//Loop through all fluxes
+//For each pool create "Fin" and "Fout", and add these to fluxe
+
 doule 
 for (n=0;n<N_timesteps;n++){
     for (i=0;i<E->nfin;i++)
