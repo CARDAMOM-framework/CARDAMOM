@@ -21,7 +21,6 @@ struct DALEC_1100_PARAMETERS{
 /*DALEC PARAMETERS*/
 int tr_lit2som;
 int tr_cwd2som;
-int f_auto;
 int rauto_mr;
 int rauto_mr_q10;
 int rauto_gr;
@@ -104,7 +103,7 @@ int phi_WL;
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
-    70,71,72,73,74,75,76
+    70,71,72,73,74,75
 };
 
 struct DALEC_1100_FLUXES{
@@ -912,7 +911,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=72;
+DALECmodel->nopars=76;
 DALECmodel->nofluxes=69;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->noedcs=2;
@@ -1056,8 +1055,6 @@ OBSOPE.FIR_flux=F.f_total;
 OBSOPE.SCF_pool=S.D_SCF;
 
 
-//CUE parameters
-//OBSOPE.CUE_PARAM=P.f_auto;
 //Vcmax25 parameters
 OBSOPE.Vcmax25_PARAM=P.Vcmax25;
 //C3frac parameters
