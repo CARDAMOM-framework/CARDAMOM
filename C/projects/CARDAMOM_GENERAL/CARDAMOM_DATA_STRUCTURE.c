@@ -61,7 +61,6 @@ double *M_EDCs;
 // double LAT;
 // int ID;
 // int noobs;
-// int nomet;
 //These quantities are autofilled based on model ID
 int nopools;
 int nofluxes;
