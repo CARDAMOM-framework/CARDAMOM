@@ -24,14 +24,12 @@ int tr_cwd2som;
 int rauto_mr;
 int rauto_mr_q10;
 int rauto_gr;
-int f_root;
 int t_wood;
 int t_root;
 int t_lit;
 int t_cwd;
 int t_som;
 int Q10rhco2;
-int f_lab;
 int LCMA;
 int i_labile;
 int i_foliar;
@@ -64,7 +62,6 @@ int Tminmax;
 int ga;
 int Tupp;
 int Tdown;
-int C3_frac;
 int clumping;
 int leaf_refl;
 int i_SWE;
@@ -79,7 +76,6 @@ int Q10ch4;
 int maxPevap;
 int T_phi;
 int T_range;
-int tau_m;
 int plgr;
 int k_leaf;
 int lambda_max;
@@ -103,7 +99,7 @@ int phi_WL;
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
-    70,71,72,73,74,75
+    70,71
 };
 
 struct DALEC_1100_FLUXES{
@@ -487,24 +483,6 @@ double sm_PAW0 = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_
 double psi_PAW0 = HYDROFUN_MOI2PSI(sm_PAW0,psi_porosity,pars[P.retention]);
 double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*psi_PAW0/pars[P.psi_50] - 1)));
        beta = fmin(beta,g);
-
-// GPP, T, and E from LIU_An_et
-// Annual radiation, VPD in kPa, mean T in K
-//C3 frac hardcoded to 1 for now. Recommendation for re-integration of C3 frac = integrate distinct C3 and C4 GPP pars to avoid representation issues.
-       
-//double *LIU_An_et_out = LIU_An_et(SSRD[n]*1e6/(24*3600), VPD[n]/10, 
-//    273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]), pars[P.Vcmax25], CO2[n], beta, pars[P.Med_g1], 
-//    LAI, pars[P.ga], VegK, pars[P.Tupp], pars[P.Tdown], 1., // pars[P.C3_frac],
-//    pars[P.clumping], pars[P.leaf_refl], pars[P.maxPevap], PREC[n]);
-// GPP
-//FLUXES[f+F.gpp] = LIU_An_et_out[0];
-//transpiration//
-//FLUXES[f+F.transp] = LIU_An_et_out[1];
-//evaporation//
-//FLUXES[f+F.evap] = LIU_An_et_out[2];
-// Evapotranspiration
-//FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
-
 
 
 //******************Declare LIU STRUCT*********************
@@ -911,7 +889,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=76;
+DALECmodel->nopars=72;
 DALECmodel->nofluxes=69;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->noedcs=2;
@@ -1057,8 +1035,8 @@ OBSOPE.SCF_pool=S.D_SCF;
 
 //Vcmax25 parameters
 OBSOPE.Vcmax25_PARAM=P.Vcmax25;
-//C3frac parameters
-OBSOPE.C3frac_PARAM=P.C3_frac;
+// //C3frac parameters
+// OBSOPE.C3frac_PARAM=P.C3_frac;
 //Initial Snow parameter
 OBSOPE.iniSnow_PARAM=P.i_SWE;
 //Initial SOM parameter
