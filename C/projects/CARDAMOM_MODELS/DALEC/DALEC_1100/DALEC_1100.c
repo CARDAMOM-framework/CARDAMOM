@@ -143,7 +143,6 @@ int et_e; /* See Retano's calculation*/
 int transp;   /*Transpiration*/
 int evap;   /*Evaporation*/
 int melt;   /*Snow melt*/
-int scf;   /*Snow cover fraction*/
 int ae_rh_cwd; /*Aerobic Rh from coarse woody debris*/
 int ae_rh_lit; /*Aerobic Rh from litter*/
 int ae_rh_som; /*aerobic Rh from SOM*/
@@ -180,7 +179,7 @@ int auto_maint;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64,65,66,67,68
+    60,61,62,63,64,65,66,67
 };
 
 
@@ -527,28 +526,28 @@ POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step
 
 //Energy balance: Rn = LE + H - G
 // Rn = SWin - SWout + LWin - LWout
-double SWin = SSRD[n]*1e6/(24*3600);
+double SWin = SSRD[n]*1e6/(24*3600); // Watts per square meter
 //Weighted average of surface albedo considering SW snow albedo as 0.9
 double snow_albedo=0.9;//Consider age-dependent albedo.
-double SWout = (1. - FLUXES[f+F.scf])*(SWin*pars[P.leaf_refl]) + FLUXES[f+F.scf]*(SWin*snow_albedo);
+double SWout = (1. - POOLS[p+S.D_SCF])*(SWin*pars[P.leaf_refl]) + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // Watts per square meter
 //Stefan-Boltzmann constant W.m-2.K-4
 double sigma = 5.67*1e-8;
 //reference air temperature
 double ref_temp = 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 //Incident LW radiation - calculated
 //double LWin = sigma*pow(ref_temp,4.);
-double LWin = STRD[n];
+double LWin = STRD[n]*1e6/(24*3600); // Watts per square meter
 //Outgoing LW radiation
 double tskin_k = SKT[n]+273.15;
-double LWout = sigma*pow(tskin_k,4.);
+double LWout = sigma*pow(tskin_k,4.); // Watts per square meter
 //Net radiation at the top of the canopy
-double Rn = SWin - SWout + LWin - LWout;
-FLUXES[f+F.net_radiation] = Rn;
+double Rn = SWin - SWout + LWin - LWout; // Watts per square meter
+FLUXES[f+F.net_radiation] = Rn; // Watts per square meter
 //Latent heat of Vaporization J kg-1 
-double lambda = DGCM_LATENT_HEAT_VAPORIZATION; //2.501*1e6; 
+double lambda = DGCM_LATENT_HEAT_VAPORIZATION; //2.501*1e6 J kg-1 
 //Latente heat (W.m-2)
-double LE = lambda*FLUXES[f+F.et]/(24*60*60);
-FLUXES[f+F.latent_heat] = LE;
+double LE = lambda*FLUXES[f+F.et]/(24*60*60); // Watts per square meter
+FLUXES[f+F.latent_heat] = LE; // Watts per square meter
 //specific heat capacity of dry air KJ kg -1 K -1
 //cp = 1.00464;
 //cp is the representative specific heat of moist air at const pressure: 29.2 J mol‚Äì1 K‚Äì1 
@@ -890,7 +889,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=72;
-DALECmodel->nofluxes=69;
+DALECmodel->nofluxes=68;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->noedcs=2;
 
