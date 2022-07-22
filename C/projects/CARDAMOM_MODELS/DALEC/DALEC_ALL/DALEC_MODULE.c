@@ -3,12 +3,15 @@
 #include "offset.c"
 #include "../DALEC_OBSERVATION_OPERATORS/DALEC_OBSERVATION_OPERATORS.c"
 #include "DALEC_EDCS_OLD.c"
-#include "../DALEC_EDCs/DALEC_EDC_FUNCTIONS.c"
 
 
+typedef struct {
+double (*function) (DATA * , void *);
+     void *    data;
+     bool prerun;
+}EDCs;
 
-  
-  
+
 
 typedef struct DALEC{
 int nopools;
@@ -32,3 +35,5 @@ struct EDCDIAGNOSTIC * EDCD;
 OBSOPE OBSOPE;
 EDCs * EDCs;//Pointer, as each element is a unique EDC
 }DALEC;
+
+

@@ -1,4 +1,5 @@
 #pragma once
+#include "../DALEC_ALL/DALEC_MODULE.c"//Includes all calls to DALEC-compatible EDC functions
 #include "../DALEC_ALL/mean_pool.c"
 #include "../DALEC_ALL/mean_annual_pool.c"
 #include "../DALEC_ALL/expdecay2.c"

@@ -5,13 +5,6 @@
 #include "DALEC_EDC_TRAJECTORY.c"
 
 
-typedef struct {
-double (*function) (DATA * , void *);
-     void *    data;
-     bool prerun;
-}EDCs;
-
-
 
 
 
