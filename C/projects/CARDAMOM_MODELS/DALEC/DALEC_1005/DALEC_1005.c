@@ -62,7 +62,7 @@ int wood_prod;   /*Wood production*/
 int lab_release;   /*Labile release*/
 int leaffall_fact;   /*Leaffall factor*/
 int fol2lit;   /*Foliar decomposition*/
-int wood2som;   /*Wood description*/
+int woo2som;   /*Wood description*/
 int root2lit;   /*Root decomposition*/
 int resp_het_lit;   /*Litter heterotrophic respiration*/
 int resp_het_som;   /*Soil heterotrophic respiration*/
@@ -260,7 +260,7 @@ FLUXES[f+F.lab_release] = POOLS[p+S.C_lab]*(1-pow(1-FLUXES[f+F.lab_release_fact]
 /*leaf litter production*/       
 FLUXES[f+F.fol2lit] = POOLS[p+S.C_fol]*(1-pow(1-FLUXES[f+F.leaffall_fact],deltat))/deltat;
 /*wood litter production*/       
-FLUXES[f+F.wood2som] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
+FLUXES[f+F.woo2som] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
 /*root litter production*/
 FLUXES[f+F.root2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
 /*respiration heterotrophic litter*/
@@ -275,9 +275,9 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.lab_prod]-FLUXES[f+F.lab_release])*deltat;
         POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.fol_prod] - FLUXES[f+F.fol2lit] + FLUXES[f+F.lab_release])*deltat;
         POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.root2lit])*deltat;
-        POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] +  (FLUXES[f+F.wood_prod] - FLUXES[f+F.wood2som])*deltat;
+        POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] +  (FLUXES[f+F.wood_prod] - FLUXES[f+F.woo2som])*deltat;
         POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.root2lit] - FLUXES[f+F.resp_het_lit] - FLUXES[f+F.lit2som])*deltat; 
-        POOLS[nxp+S.C_som]= POOLS[p+S.C_som]+ (FLUXES[f+F.lit2som] - FLUXES[f+F.resp_het_som]+FLUXES[f+F.wood2som])*deltat;                    
+        POOLS[nxp+S.C_som]= POOLS[p+S.C_som]+ (FLUXES[f+F.lit2som] - FLUXES[f+F.resp_het_som]+FLUXES[f+F.woo2som])*deltat;                    
 /*Water pool = Water pool - runoff + prec (mm/day) - ET*/
 	/*printf("%2.1f\n",POOLS[p+S.H2O_PAW]);*/
 	/*PAW total runoff*/
