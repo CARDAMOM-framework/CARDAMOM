@@ -25,10 +25,6 @@ CARDADATA->parmax[P.tr_lit2som]=0.99;
 CARDADATA->parmin[P.tr_cwd2som]=0.01;
 CARDADATA->parmax[P.tr_cwd2som]=0.99;
 
-/*Fraction of GPP respired*/
-CARDADATA->parmin[P.f_auto]=0.2;
-CARDADATA->parmax[P.f_auto]=0.8;
-
 /*Autotrophic maintenance respiration coefficient*/
 CARDADATA->parmin[P.rauto_mr]=0.05;
 CARDADATA->parmax[P.rauto_mr]=0.8;
@@ -40,10 +36,6 @@ CARDADATA->parmax[P.rauto_mr_q10]=3.0;
 /*Autotrophic growth respiration coefficient*/
 CARDADATA->parmin[P.rauto_gr]=0.05;
 CARDADATA->parmax[P.rauto_gr]=0.8;
-
-/*Fraction of (1-fgpp) to roots*/
-CARDADATA->parmin[P.f_root]=0.01;
-CARDADATA->parmax[P.f_root]=1;
 
 /*TOR wood* - 1% loss per year value*/
 CARDADATA->parmin[P.t_wood]=0.000025;
@@ -68,10 +60,6 @@ CARDADATA->parmax[P.t_som]=0.001;
 /*\Q10 = 1.2-2.0*/
 CARDADATA->parmin[P.Q10rhco2]=1.2;
 CARDADATA->parmax[P.Q10rhco2]=2.0;
-
-/*Fraction to Clab*/
-CARDADATA->parmin[P.f_lab]=0.01;
-CARDADATA->parmax[P.f_lab]=0.5;
 
 /*LMCA*/
 /*Kattge et al. 2011*/
@@ -206,10 +194,6 @@ CARDADATA->parmax[P.Tupp]=318.15;
 CARDADATA->parmin[P.Tdown]=263.15;
 CARDADATA->parmax[P.Tdown]=286.15;
 
-/*C3_frac*/
-CARDADATA->parmin[P.C3_frac]=1e-8;
-CARDADATA->parmax[P.C3_frac]=1.0;
-
 /*Clumping index*/
 CARDADATA->parmin[P.clumping]=0.35;
 CARDADATA->parmax[P.clumping]=1.0;
@@ -266,10 +250,6 @@ CARDADATA->parmax[P.T_phi]=323.15;
 /*Spatial range of mean temperature at leaf onset (T_r) (degrees C or degrees kelvin)*/
 CARDADATA->parmin[P.T_range]=0.1;
 CARDADATA->parmax[P.T_range]=10.0;
-
-/*Averaging period for temperature growth trigger T (time units of model), usually kept constant*/
-CARDADATA->parmin[P.tau_m]=1.0;
-CARDADATA->parmax[P.tau_m]=1.01;
 
 /*LAI linear growth constant (inverse of model time units; e.g. days-1 or months-1)*/
 CARDADATA->parmin[P.plgr]=0.001;
