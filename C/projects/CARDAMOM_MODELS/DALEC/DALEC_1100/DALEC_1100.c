@@ -184,7 +184,7 @@ int snowfall; /*snowfall driver data (necessary for budget closure on SWE)*/
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64,65,66,67,68,69
+    60,61,62,63,64,65,66,67,68
 };
 
 
@@ -226,11 +226,12 @@ int M_LAI_TEMP;//KNORR LAI module temp memory
 
 
 //Returns structure with sources and sinks, matches number of fluxes
-DALEC_FLUX_SOURCES_SINKS_STRUCT DALEC_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
+DALEC_FLUX_SOURCES_SINKS_STRUCT DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
     //Step 1. Declare & initialize
-    DALEC_1100_FLUX_SOURCES_SINKS_STRUCT FLUXFLOWS;
+    DALEC_FLUX_SOURCES_SINKS_STRUCT FLUXFLOWS;
     // external source or pool sink, or not conserved quantity
     //Default = -1 
+   
     FLUXFLOWS.SOURCE=calloc(DALECmodel->nofluxes, sizeof(int));
     FLUXFLOWS.SINK=calloc(DALECmodel->nofluxes, sizeof(int));
     
