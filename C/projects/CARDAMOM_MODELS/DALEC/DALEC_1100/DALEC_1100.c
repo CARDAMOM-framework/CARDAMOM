@@ -526,38 +526,36 @@ POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step
 
 //Energy balance: Rn = LE + H - G
 // Rn = SWin - SWout + LWin - LWout
-double SWin = SSRD[n]*1e6/(24*3600); // Watts per square meter
+double SWin = SSRD[n]*1e6/(24*3600); // W m-2
 //Weighted average of surface albedo considering SW snow albedo as 0.9
 double snow_albedo=0.9;//Consider age-dependent albedo.
-double SWout = (1. - POOLS[p+S.D_SCF])*(SWin*pars[P.leaf_refl]) + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // Watts per square meter
+double SWout = (1. - POOLS[p+S.D_SCF])*(SWin*pars[P.leaf_refl]) + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // W m-2
 //Stefan-Boltzmann constant W.m-2.K-4
 double sigma = 5.67*1e-8;
 //reference air temperature
 double ref_temp = 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 //Incident LW radiation - calculated
 //double LWin = sigma*pow(ref_temp,4.);
-double LWin = STRD[n]*1e6/(24*3600); // Watts per square meter
+double LWin = STRD[n]*1e6/(24*3600); // W m-2
 //Outgoing LW radiation
 double tskin_k = SKT[n]+273.15;
-double LWout = sigma*pow(tskin_k,4.); // Watts per square meter
+double LWout = sigma*pow(tskin_k,4.); // W m-2
 //Net radiation at the top of the canopy
-double Rn = SWin - SWout + LWin - LWout; // Watts per square meter
-FLUXES[f+F.net_radiation] = Rn; // Watts per square meter
+double Rn = SWin - SWout + LWin - LWout; // W m-2
+FLUXES[f+F.net_radiation] = Rn; // W m-2
 //Latent heat of Vaporization J kg-1 
 double lambda = DGCM_LATENT_HEAT_VAPORIZATION; //2.501*1e6 J kg-1 
 //Latente heat (W.m-2)
-double LE = lambda*FLUXES[f+F.et]/(24*60*60); // Watts per square meter
-FLUXES[f+F.latent_heat] = LE; // Watts per square meter
-//specific heat capacity of dry air KJ kg -1 K -1
-//cp = 1.00464;
-//cp is the representative specific heat of moist air at const pressure: 29.2 J mol‚Äì1 K‚Äì1 
-double cp = 29.2;
+double LE = lambda*FLUXES[f+F.et]/(24*60*60); // W m-2
+FLUXES[f+F.latent_heat] = LE; // W m-2
+//specific heat capacity of dry air is 1.00464 KJ kg -1 K -1
+double cp = 29.2; // J mol-1 K-1 representative specific heat of moist air at const pressure from Bonan book
 //Sensible heat 
-double H = cp*(tskin_k - ref_temp)*pars[P.ga];
-FLUXES[f+F.sensible_heat] = H;
+double H = cp*(tskin_k - ref_temp)*pars[P.ga]; // ga in mol m-2 s-1
+FLUXES[f+F.sensible_heat] = H; // W m-2
 //soil heat flux 
-double G = Rn - H - LE;
-FLUXES[f+F.ground_heat] = G;
+double G = Rn - H - LE; // W m-2
+FLUXES[f+F.ground_heat] = G; // W m-2
 
 // Infiltration (mm/day)
 FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt])/pars[P.max_infil]));
