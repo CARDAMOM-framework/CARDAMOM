@@ -119,12 +119,12 @@ Fin[S.C_roo]=FT[F.root_prod];
 Fout[S.C_roo]=FT[F.root2lit]+FT[F.f_roo]+FT[F.fx_roo2lit];
 /*wood*/
 Fin[S.C_woo]=FT[F.wood_prod];
-Fout[S.C_woo]=FT[F.wood2lit]+FT[F.f_woo]+FT[F.fx_woo2som];
+Fout[S.C_woo]=FT[F.woo2som]+FT[F.f_woo]+FT[F.fx_woo2som];
 /*litter*/
 Fin[S.C_lit]=FT[F.fol2lit]+FT[F.root2lit]+FT[F.fx_lab2lit]+FT[F.fx_fol2lit]+FT[F.fx_roo2lit];
 Fout[S.C_lit]=FT[F.resp_het_lit]+FT[F.lit2som]+FT[F.f_lit]+FT[F.fx_lit2som];
 /*som*/
-Fin[S.C_som]=FT[F.wood2lit]+FT[F.lit2som]+FT[F.fx_woo2som]+FT[F.fx_lit2som];
+Fin[S.C_som]=FT[F.woo2som]+FT[F.lit2som]+FT[F.fx_woo2som]+FT[F.fx_lit2som];
 Fout[S.C_som]=FT[F.resp_het_som]+FT[F.f_som];
 /*PAH2O*/
 Fin[S.H2O_PAW]=TOTAL_PREC;
