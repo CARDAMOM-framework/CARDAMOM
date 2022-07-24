@@ -227,6 +227,11 @@ int M_LAI_TEMP;//KNORR LAI module temp memory
 
 //Returns structure with sources and sinks, matches number of fluxes
 DALEC_FLUX_SOURCES_SINKS_STRUCT DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
+    
+//DALEC flux indices    
+    struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
+    struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
+
     //Step 1. Declare & initialize
     DALEC_FLUX_SOURCES_SINKS_STRUCT FLUXFLOWS;
     // external source or pool sink, or not conserved quantity
@@ -234,7 +239,9 @@ DALEC_FLUX_SOURCES_SINKS_STRUCT DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel
    
     FLUXFLOWS.SOURCE=calloc(DALECmodel->nofluxes, sizeof(int));
     FLUXFLOWS.SINK=calloc(DALECmodel->nofluxes, sizeof(int));
+     
     
+    int n;
     for (n=0;n<DALECmodel->nofluxes; n++){FLUXFLOWS.SOURCE[n]=-1;FLUXFLOWS.SINK[n]=-1;}
     
     
@@ -242,127 +249,131 @@ DALEC_FLUX_SOURCES_SINKS_STRUCT DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel
     
     
         //source = GPP
-        FLUXFLOWS.SINK[F.lab_prod]=P.C_lab;
+        FLUXFLOWS.SINK[F.lab_prod]=S.C_lab;
         
-        FLUXFLOWS.SOURCE[F.foliar_prod]=P.C_lab;
-        FLUXFLOWS.SINK[F.foliar_prod]=P.C_fol;
+        FLUXFLOWS.SOURCE[F.foliar_prod]=S.C_lab;
+        FLUXFLOWS.SINK[F.foliar_prod]=S.C_fol;
         
-        FLUXFLOWS.SOURCE[F.root_prod]=P.C_lab;
-        FLUXFLOWS.SINK[F.root_prod]=P.C_roo;
+        FLUXFLOWS.SOURCE[F.root_prod]=S.C_lab;
+        FLUXFLOWS.SINK[F.root_prod]=S.C_roo;
         
-        FLUXFLOWS.SOURCE[F.wood_prod]=P.C_lab;
-        FLUXFLOWS.SINK[F.wood_prod]=P.C_woo;
+        FLUXFLOWS.SOURCE[F.wood_prod]=S.C_lab;
+        FLUXFLOWS.SINK[F.wood_prod]=S.C_woo;
 
-        FLUXFLOWS.SOURCE[F.f_lab]=P.C_lab;  
+        FLUXFLOWS.SOURCE[F.f_lab]=S.C_lab;  
         //Sink = atmosphere; 
          
-        FLUXFLOWS.SOURCE[F.fx_lab2lit]=P.C_lab;
-        FLUXFLOWS.SINK[F.fx_lab2lit]=P.C_lit;
+        FLUXFLOWS.SOURCE[F.fx_lab2lit]=S.C_lab;
+        FLUXFLOWS.SINK[F.fx_lab2lit]=S.C_lit;
     
-        FLUXFLOWS.SOURCE[F.fol2lit]=P.C_fol;
-        FLUXFLOWS.SINK[F.fol2lit]=P.C_lit;
+        FLUXFLOWS.SOURCE[F.fol2lit]=S.C_fol;
+        FLUXFLOWS.SINK[F.fol2lit]=S.C_lit;
           
-        FLUXFLOWS.SOURCE[F.f_fol]=P.C_fol;
+        FLUXFLOWS.SOURCE[F.f_fol]=S.C_fol;
         //Sink = atmosphere; 
 
-        FLUXFLOWS.SOURCE[F.fx_fol2lit]=P.C_fol;
-        FLUXFLOWS.SINK[F.fx_fol2lit]=P.C_lit;
+        FLUXFLOWS.SOURCE[F.fx_fol2lit]=S.C_fol;
+        FLUXFLOWS.SINK[F.fx_fol2lit]=S.C_lit;
                        
-        FLUXFLOWS.SOURCE[F.roo2lit]=P.C_roo;
-        FLUXFLOWS.SINK[F.roo2lit]=P.C_lit;
+        FLUXFLOWS.SOURCE[F.roo2lit]=S.C_roo;
+        FLUXFLOWS.SINK[F.roo2lit]=S.C_lit;
         
-        FLUXFLOWS.SOURCE[F.f_roo]=P.C_roo;
+        FLUXFLOWS.SOURCE[F.f_roo]=S.C_roo;
         //Sink = atmosphere; 
 
-        FLUXFLOWS.SOURCE[F.fx_roo2lit]=P.C_roo;
-        FLUXFLOWS.SINK[F.fx_roo2lit]=P.C_lit;
+        FLUXFLOWS.SOURCE[F.fx_roo2lit]=S.C_roo;
+        FLUXFLOWS.SINK[F.fx_roo2lit]=S.C_lit;
 
-        FLUXFLOWS.SOURCE[F.woo2cwd]=P.C_woo;
-        FLUXFLOWS.SINK[F.woo2cwd]=P.C_cwd;
+        FLUXFLOWS.SOURCE[F.woo2cwd]=S.C_woo;
+        FLUXFLOWS.SINK[F.woo2cwd]=S.C_cwd;
         
-        FLUXFLOWS.SOURCE[F.f_woo]=P.C_woo;
+        FLUXFLOWS.SOURCE[F.f_woo]=S.C_woo;
         //Sink = atmosphere; 
 
-        FLUXFLOWS.SOURCE[F.fx_woo2cwd]=P.C_woo;
-        FLUXFLOWS.SINK[F.fx_woo2cwd]=P.C_cwd;
+        FLUXFLOWS.SOURCE[F.fx_woo2cwd]=S.C_woo;
+        FLUXFLOWS.SINK[F.fx_woo2cwd]=S.C_cwd;
         
-        FLUXFLOWS.SOURCE[F.ae_rh_cwd]=P.C_cwd;
+        FLUXFLOWS.SOURCE[F.ae_rh_cwd]=S.C_cwd;
         //Sink = atmosphere; 
         
-        FLUXFLOWS.SOURCE[F.an_rh_cwd]=P.C_cwd;
+        FLUXFLOWS.SOURCE[F.an_rh_cwd]=S.C_cwd;
         //Sink = atmosphere; 
             
-        FLUXFLOWS.SOURCE[F.f_cwd]=P.C_cwd;
+        FLUXFLOWS.SOURCE[F.f_cwd]=S.C_cwd;
         //Sink = atmosphere; 
 
-        FLUXFLOWS.SOURCE[F.cwd2som]=P.C_cwd;
-        FLUXFLOWS.SINK[F.cwd2som]=P.C_som;
+        FLUXFLOWS.SOURCE[F.cwd2som]=S.C_cwd;
+        FLUXFLOWS.SINK[F.cwd2som]=S.C_som;
 
-        FLUXFLOWS.SOURCE[F.fx_cwd2som]=P.C_cwd;
-        FLUXFLOWS.SINK[F.fx_cwd2som]=P.C_som;
+        FLUXFLOWS.SOURCE[F.fx_cwd2som]=S.C_cwd;
+        FLUXFLOWS.SINK[F.fx_cwd2som]=S.C_som;
                         
-        FLUXFLOWS.SOURCE[F.ae_rh_lit]=P.C_lit;
+        FLUXFLOWS.SOURCE[F.ae_rh_lit]=S.C_lit;
         //Sink = atmosphere; 
         
-        FLUXFLOWS.SOURCE[F.an_rh_lit]=P.C_lit;
+        FLUXFLOWS.SOURCE[F.an_rh_lit]=S.C_lit;
         //Sink = atmosphere; 
         
-        FLUXFLOWS.SOURCE[F.f_lit]=P.C_lit;
+        FLUXFLOWS.SOURCE[F.f_lit]=S.C_lit;
         //Sink = atmosphere; 
 
-        FLUXFLOWS.SOURCE[F.lit2som]=P.C_lit;
-        FLUXFLOWS.SINK[F.lit2som]=P.C_som;
+        FLUXFLOWS.SOURCE[F.lit2som]=S.C_lit;
+        FLUXFLOWS.SINK[F.lit2som]=S.C_som;
 
-        FLUXFLOWS.SOURCE[F.fx_lit2som]=P.C_lit;
-        FLUXFLOWS.SINK[F.fx_lit2som]=P.C_som;
+        FLUXFLOWS.SOURCE[F.fx_lit2som]=S.C_lit;
+        FLUXFLOWS.SINK[F.fx_lit2som]=S.C_som;
 
-        FLUXFLOWS.SOURCE[F.ae_rh_som]=P.C_som;
+        FLUXFLOWS.SOURCE[F.ae_rh_som]=S.C_som;
         //Sink = atmosphere; 
         
-        FLUXFLOWS.SOURCE[F.an_rh_som]=P.C_som;
+        FLUXFLOWS.SOURCE[F.an_rh_som]=S.C_som;
         //Sink = atmosphere; 
         
-        FLUXFLOWS.SOURCE[F.f_som]=P.C_som;
+        FLUXFLOWS.SOURCE[F.f_som]=S.C_som;
         //Sink = atmosphere; 
  
         // Source = atmosphere and snowmelt
-        FLUXFLOWS.SINK[F.infil]=P.H2O_PAW;
+        FLUXFLOWS.SINK[F.infil]=S.H2O_PAW;
 
-        FLUXFLOWS.SOURCE[F.melt]=P.H2O_SWE;
+        FLUXFLOWS.SOURCE[F.melt]=S.H2O_SWE;
         //Sink = infiltration (F.infil); 
 
         // Source = atmosphere
-        FLUXFLOWS.SINK[F.snowfall]=P.H2O_SWE;
+        FLUXFLOWS.SINK[F.snowfall]=S.H2O_SWE;
 
-        FLUXFLOWS.SOURCE[F.et]=P.H2O_PAW;
+        FLUXFLOWS.SOURCE[F.et]=S.H2O_PAW;
         //Sink = atmosphere; 
 
-        FLUXFLOWS.SOURCE[F.paw2puw]=P.H2O_PAW;
-        FLUXFLOWS.SINK[F.paw2puw]=P.H2O_PUW;
+        FLUXFLOWS.SOURCE[F.paw2puw]=S.H2O_PAW;
+        FLUXFLOWS.SINK[F.paw2puw]=S.H2O_PUW;
 
-        FLUXFLOWS.SOURCE[F.q_paw]=P.H2O_PAW;
+        FLUXFLOWS.SOURCE[F.q_paw]=S.H2O_PAW;
         // Sink = runoff
 
-        FLUXFLOWS.SOURCE[F.q_puw]=P.H2O_PUW;
+        FLUXFLOWS.SOURCE[F.q_puw]=S.H2O_PUW;
         // Sink = runoff
 
         // Source = atmosphere
-        FLUXFLOWS.SINK[F.ground_heat]=P.E_PAW;
+        FLUXFLOWS.SINK[F.ground_heat]=S.E_PAW;
 
         // Source = atmosphere
-        FLUXFLOWS.SINK[F.infil_e]=P.E_PAW;
+        FLUXFLOWS.SINK[F.infil_e]=S.E_PAW;
 
-        FLUXFLOWS.SOURCE[F.et_e]=P.E_PAW;
+        FLUXFLOWS.SOURCE[F.et_e]=S.E_PAW;
         // Sink = atmosphere
 
-        FLUXFLOWS.SOURCE[F.q_paw_e]=P.E_PAW;
+        FLUXFLOWS.SOURCE[F.q_paw_e]=S.E_PAW;
         // Sink = runoff
 
-        FLUXFLOWS.SOURCE[F.q_puw_e]=P.E_PUW;
+        FLUXFLOWS.SOURCE[F.q_puw_e]=S.E_PUW;
         // Sink = runoff
 
-        FLUXFLOWS.SOURCE[F.paw2puw_e]=P.E_PAW;
-        FLUXFLOWS.SINK[F.paw2puw_e]=P.E_PUW;}
+        FLUXFLOWS.SOURCE[F.paw2puw_e]=S.E_PAW;
+        FLUXFLOWS.SINK[F.paw2puw_e]=S.E_PUW;
+
+
+return  FLUXFLOWS;
+}
 
 
 
@@ -906,10 +917,10 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.lab_prod]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod])*deltat;
         POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod] - FLUXES[f+F.fol2lit])*deltat;
-        POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.root2lit])*deltat;
-        POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] +  (FLUXES[f+F.wood_prod] - FLUXES[f+F.wood2cwd])*deltat;
-        POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.wood2cwd] - FLUXES[f+F.ae_rh_cwd]-FLUXES[f+F.an_rh_cwd]-FLUXES[f+F.cwd2som])*deltat;
-        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.root2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som])*deltat;
+        POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.roo2lit])*deltat;
+        POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] +  (FLUXES[f+F.wood_prod] - FLUXES[f+F.woo2cwd])*deltat;
+        POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.woo2cwd] - FLUXES[f+F.ae_rh_cwd]-FLUXES[f+F.an_rh_cwd]-FLUXES[f+F.cwd2som])*deltat;
+        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.roo2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som])*deltat;
         POOLS[nxp+S.C_som] = POOLS[p+S.C_som] + (FLUXES[f+F.lit2som] - FLUXES[f+F.ae_rh_som] - FLUXES[f+F.an_rh_som] + FLUXES[f+F.cwd2som])*deltat;
 
         
@@ -1045,10 +1056,6 @@ D->PARS_INFO.parmax[P.tr_lit2som]=0.99;
 /*CWD decomposition rate*/
 D->PARS_INFO.parmin[P.tr_cwd2som]=0.01;
 D->PARS_INFO.parmax[P.tr_cwd2som]=0.99;
-
-/*Fraction of GPP respired*/
-D->PARS_INFO.parmin[P.f_auto]=0.2;
-D->PARS_INFO.parmax[P.f_auto]=0.8;
 
 /*Autotrophic maintenance respiration coefficient*/
 D->PARS_INFO.parmin[P.rauto_mr]=0.05;
@@ -1550,14 +1557,14 @@ struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
 struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
+DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel)
+
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=72;
-<<<<<<< HEAD
-DALECmodel->nofluxes=70;
-=======
+
 DALECmodel->nofluxes=68;
->>>>>>> main
+
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->noedcs=4;
 
