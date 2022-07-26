@@ -620,7 +620,7 @@ FLUXES[F.q_puw_e] =  FLUXES[f+F.q_puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(
 //Energy states
 //fraction of water in soil that is available 
 //double frac_paw = POOLS[nxp+S.H2O_PAW]/(POOLS[nxp+S.H2O_PAW]+POOLS[nxp+S.H2O_PUW]);
-POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.ground_heat] + FLUXES[F.infil_e] - FLUXES[F.paw2puw_e] )*deltat;  
+POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.ground_heat] + FLUXES[F.infil_e] - FLUXES[F.et_e] - FLUXES[F.paw2puw_e] - FLUXES[F.q_paw_e])*deltat;  
 POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[F.paw2puw_e] - FLUXES[F.q_puw_e] )*deltat; 
 
 
