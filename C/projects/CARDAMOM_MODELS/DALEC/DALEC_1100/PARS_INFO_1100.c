@@ -217,7 +217,7 @@ CARDADATA->parmin[P.scf_scalar]=10;
 CARDADATA->parmax[P.scf_scalar]=1000.0;
 
 /* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
-CARDADATA->parmin[P.S_fv]=1;
+CARDADATA->parmin[P.S_fv]=3.;
 CARDADATA->parmax[P.S_fv]=100.0;
 
 /* jc thetas_opt   optimum thetas for water scaler fW*/
