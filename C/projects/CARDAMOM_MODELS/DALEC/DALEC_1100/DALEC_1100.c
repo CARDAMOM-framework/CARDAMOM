@@ -165,6 +165,8 @@ int net_radiation; /*Net radiation flux*/
 int latent_heat; /*latent heat flux*/
 int sensible_heat; /*sensible heat flux*/
 int ground_heat; /*ground heat flux*/
+int resp_auto_growth; /*autotrophic growth respiration*/
+int resp_auto_maint; /*autotrophic maintenance respiration*/
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -172,7 +174,7 @@ int ground_heat; /*ground heat flux*/
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60
+    60,61,62
 };
 
 
@@ -544,7 +546,7 @@ FLUXES[f+F.latent_heat] = LE; // W m-2
 //specific heat capacity of dry air is 1.00464 KJ kg -1 K -1
 double cp = 29.2; // J mol-1 K-1 representative specific heat of moist air at const pressure from Bonan book
 //Sensible heat 
-double H = cp*(tskin_k - ref_temp)*pars[P.ga]; // ga in mol m-2 s-1
+double H = cp*(tskin_k - ref_temp)*pars[P.ga]; // ga in mol m-2 s-1 ??????
 FLUXES[f+F.sensible_heat] = H; // W m-2
 //soil heat flux 
 double G = Rn - H - LE; // W m-2
@@ -617,7 +619,7 @@ FLUXES[F.q_puw_e] =  FLUXES[f+F.q_puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(
 //Energy states
 //fraction of water in soil that is available 
 //double frac_paw = POOLS[nxp+S.H2O_PAW]/(POOLS[nxp+S.H2O_PAW]+POOLS[nxp+S.H2O_PUW]);
-POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.ground_heat] + FLUXES[F.infil_e] - FLUXES[F.et_e] - FLUXES[F.paw2puw_e] - FLUXES[F.q_paw_e])*deltat;  
+POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.ground_heat]*60*60*24 + FLUXES[F.infil_e] - FLUXES[F.et_e] - FLUXES[F.paw2puw_e] - FLUXES[F.q_paw_e])*deltat;  
 POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[F.paw2puw_e] - FLUXES[F.q_puw_e] )*deltat; 
 
 
@@ -662,6 +664,10 @@ ALLOC_AND_AUTO_RESP_FLUXES(&ARFLUXES);
 
 /*respiration auto*/
 FLUXES[f+F.resp_auto]=ARFLUXES.OUT.AUTO_RESP_TOTAL;
+/*growth respiration*/
+FLUXES[f+F.resp_auto_growth]=ARFLUXES.OUT.AUTO_RESP_GROWTH;
+/*maintenance respiration*/
+FLUXES[f+F.resp_auto_maint]=ARFLUXES.OUT.AUTO_RESP_MAINTENANCE;
 
 // Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]/deltat;
 if (FLUXES[f+F.dlambda_dt] > 0){
@@ -736,7 +742,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 /*total pool transfers (no fires yet)*/
 
-        POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.lab_prod]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod])*deltat;
+        POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.lab_prod]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
         POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod] - FLUXES[f+F.fol2lit])*deltat;
         POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.root2lit])*deltat;
         POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + (FLUXES[f+F.wood_prod] - FLUXES[f+F.wood2cwd])*deltat;
@@ -873,7 +879,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=72;
-DALECmodel->nofluxes=61;
+DALECmodel->nofluxes=63;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->noedcs=2;
 
