@@ -95,7 +95,7 @@ def check_variable(CBF,var):
             print('OK\n')
             return 0
     else:
-        # warnings.warn('No variable "{}" in CBF file\n'.format(var))
+        warnings.warn('No variable "{}" in CBF file\n'.format(var))
         return 0
         
 #checks if any obsevation mean var is <=0 and not -9999
@@ -103,15 +103,18 @@ def check_mean_variable(CBF,var):
     if var in CBF.variables:
         print("Checking CBF OTHER OBS {} is positive or valid missing value".format(var))
         temp = CBF[var][:]
-        result_temp =  (temp != -9999 and temp <=0)
-        if (result_temp is True):
-            warnings.warn('CBF OTHER OBS {} is negative, file will make CARDAMOM crash'.format(var))
-            return 1
+        if (temp <=0):
+            if (temp != -9999):
+                warnings.warn('CBF OTHER OBS {} is negative, file will make CARDAMOM crash'.format(var))
+                return 1
+            else: 
+                print('OK\n')
+                return 0
         else: 
             print('OK\n')
             return 0
     else:
-        # warnings.warn('No variable "{}" in CBF file\n'.format(var))
+        warnings.warn('No variable "{}" in CBF file\n'.format(var))
         return 0
 
 def obs_checks(CBF):
@@ -174,6 +177,7 @@ def check_temperature_vars(CBF,var):
             temp[temp == -9999] = 9999        
             ar_negative = any((numpy.array(temp)+273.15) < 0) #convert to kelvin and check anything < 0 kelvin
             if (ar_negative==False):
+                print("OK\n")
                 return 0 #no addtional warning hence return zero
             else:
                 warnings.warn("Driver {} not within physical range, file will make CARDAMOM crash".format(var))
@@ -237,7 +241,7 @@ def singleval_vars_attribute_check(CBF):
         current_var = variable
         current_name = name
         if name not in toexclude:        
-            temp_data = CBF[name]
+            temp_data = CBF[name][:]
             if temp_data.size==1 and temp_data!= -9999 and valid_value_check(temp_data)==1: 
                 if hasattr(current_var, 'unc'): 
                     unc_value = getattr(current_var, 'unc')
@@ -272,7 +276,9 @@ def main():
 
     # read arguments from the command line
     args = parser.parse_args()
-
+    error_message_summary='';
+    total_errors=0;
+    
     print("\n*******CARDAMOM cbf.nc file error check********")
     print(args.cbf_file)
     dataset=Dataset(args.cbf_file, "r")
@@ -282,28 +288,37 @@ def main():
     k = ID_checks(dataset,"ID")
     if k>0:
         print("ID check failed with total " + str(k) + " warning(s)")
-   
+        error_message_summary = error_message_summary + "\n ID check failed"
+        total_errors=total_errors+k
+        
     print("time checks")
     k = time_var_checks(dataset,"time")
     if k>0:
         print("time check failed with total " + str(k) + " warning(s)")
-
+        error_message_summary = error_message_summary + "\n time check failed with total " + str(k) + " warning(s)"
+        total_errors=total_errors+k
+        
     print("OBS checks")    
     obs_flag=obs_checks(dataset)
     if obs_flag>0:
         print("OBS check failed with total " + str(obs_flag) + " warning(s)") 
+        error_message_summary = error_message_summary + "\n OBS check failed with total " + str(obs_flag) + " warning(s)"
+        total_errors=total_errors+obs_flag
 
     obs_attribute_flag = obs_attributes_checks(dataset)
     if obs_attribute_flag>0:
         print("OBS attribute check failed with total " + str(obs_attribute_flag) + " error(s)") 
-
+        error_message_summary = error_message_summary + "\n OBS attribute check failed with total " + str(obs_attribute_flag) + " error(s)"
+        total_errors=total_errors+obs_attribute_flag
+        
     print("Driver checks")
     driver_flag = driver_checks(dataset)
     if driver_flag>0:
         print("Driver check failed with total " + str(driver_flag) + " warning(s)") 
-    
+        error_message_summary = error_message_summary + "\n Driver check failed with total " + str(driver_flag) + " warning(s)"
+        total_errors=total_errors+driver_flag
     #datatype_flag = vars_attributes_datatype_checks(dataset)
-    # commented based on meeting on apr 1 2022
+    # commented for now 
     #if datatype_flag>0:
     #    print("Datatype check failed with total " + str(datatype_flag) + " error(s)") 
     
@@ -311,12 +326,23 @@ def main():
     unc_flag= singleval_vars_attribute_check(dataset)
     if unc_flag>0:
         print("unc attribute check failed with total " + str(unc_flag) + " error(s)") 
+        error_message_summary = error_message_summary + "\n unc attribute check failed with total " + str(unc_flag) + " error(s)"
+        total_errors=total_errors+unc_flag
+    else:
+        print("OK")
     
     print("\nfill value check")
     fill_value_flag= check_fillvalue(dataset)
     if fill_value_flag>0:
         print("fill value check failed with total " + str(fill_value_flag) + " error(s)") 
-
+        error_message_summary = error_message_summary + "\n fill value check failed with total " + str(fill_value_flag) + " error(s)"
+        total_errors=total_errors+fill_value_flag
+    else:
+        print("OK")
+    
+    if len(error_message_summary)>0:
+        print("\nError Summary: Total " + str(total_errors) + " Errors/Warnings Found. See below:" + error_message_summary)
+        
     dataset.close()
     print("\n***Other possible error sources***")
     print("Tip: check that all met fields required for model ID are provided in cbf.nc file")
