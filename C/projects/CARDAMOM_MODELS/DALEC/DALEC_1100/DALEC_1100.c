@@ -586,17 +586,32 @@ double k_PUW = HYDROFUN_MOI2CON(sm_PUW,pars[P.hydr_cond],pars[P.retention]);
 double psi_PAW = HYDROFUN_MOI2PSI(sm_PAW,psi_porosity,pars[P.retention]);
 double psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[P.retention]);
 
-//Assumes PAW->PUW, so PAW LF & TEMP; if reverse flow, then switches to PUW LF & TEMP.
-double LFxfer=POOLS[p+S.D_LF_PAW]; 
-double TEMPxfer= POOLS[p+S.D_TEMP_PAW];
+double LFxfer,TEMPxfer, SPACEavail, H2Oavail;
 
 // Calculate inter-pool transfer in m/s (positive is PAW to PUW)
 double pot_xfer = 1000 * sqrt(k_PAW*k_PUW) * (1000*(psi_PAW-psi_PUW)/(9.8*0.5*(pars[P.PAW_z]+pars[P.PUW_z])) + 1);
-if (pot_xfer<0) {LFxfer=POOLS[p+S.D_LF_PUW];TEMPxfer= POOLS[p+S.D_TEMP_PUW];}
+
+if (pot_xfer>0) {//Water is going PAW->PUW (down)
+LFxfer=POOLS[p+S.D_LF_PAW]; 
+TEMPxfer= POOLS[p+S.D_TEMP_PAW];
+SPACEavail=pars[P.PUW_z]*pars[P.PUW_por]*1e3 - POOLS[p+S.H2O_PUW];
+H2Oavail=POOLS[p+S.H2O_PAW]*POOLS[p+S.D_LF_PAW];}
+else { //Water is going PUW->PAW (up)
+    LFxfer=POOLS[p+S.D_LF_PUW];
+    TEMPxfer= POOLS[p+S.D_TEMP_PUW];
+SPACEavail=pars[P.PAW_z]*pars[P.PAW_por]*1e3 - POOLS[p+S.H2O_PAW];
+H2Oavail= POOLS[p+S.H2O_PUW]*POOLS[p+S.D_LF_PUW];}
 
 // Transfer flux in mm/day
 //scale with donor pool LF
-FLUXES[f+F.paw2puw] = pot_xfer*1000*3600*24*LFxfer;
+double PAW2PUWmax= pot_xfer*1000*3600*24*LFxfer*deltat;
+
+//Minimum of three terms for PAW->PUW
+//1. PAW2PUW
+//2. Available space in PUW
+//3. PAW*LF
+FLUXES[f+F.paw2puw] =fmin(PAW2PUWmax , fmin(SPACEavail, H2Oavail))/deltat;
+
 
 // Update pools, including ET from PAW
 POOLS[nxp+S.H2O_PAW] = POOLS[p+S.H2O_PAW] + (FLUXES[f+F.infil] - FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
