@@ -22,13 +22,21 @@ double sm_field = HYDROFUN_PSI2MOI(psi_field,psi_porosity,b);
 // change in soil moisture (zero if soil moisture is less than field capacity)
 double delta_sm = fmax(sm - sm_field,0);
 
+// check for excessive soil moisture
+double avail_sm = 1 - sm;
+double excess_drainage = 0;
+// excess_sm > 0 when 
+if (delta_sm > avail_sm) {
+  excess_drainage = delta_sm - avail_sm; 
+  delta_sm = avail_sm;}
+
 // potential of layer
 double psi = HYDROFUN_MOI2PSI(sm,psi_porosity,b);
 
   
   //Matlab line Massoud et al.  D= frac_Qexcess * (1- (PARS.psiporosity-min(max(STATES.PSI(t,:),PARS.psifield),PARS.psiporosity))./(PARS.psiporosity-PARS.psifield)).*(SMdelta);
 // calculate drainage (equals zero if change in soil moisture is zero)
-double drainage = delta_sm * Qexcess * (1 - (psi_porosity - fmin(fmax(psi,psi_field),psi_porosity))/(psi_porosity-psi_field));
+double drainage = excess_drainage + delta_sm * Qexcess * (1 - (psi_porosity - fmin(fmax(psi,psi_field),psi_porosity))/(psi_porosity-psi_field));
 
 return drainage;
 
