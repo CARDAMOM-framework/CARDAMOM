@@ -668,7 +668,7 @@ FLUXES[f+F.q_surf] = liquid_in - FLUXES[f+F.infil];
 
 // Volumetric soil moisture from water pools
 // Include infiltration into PAW ()
-double sm_PAW = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_PAW]+deltat*FLUXES[f+F.infil],pars[P.PAW_por],pars[P.PAW_z]);
+double sm_PAW = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);
 double sm_PUW = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);
 
 // Update PAW SM with infiltration
