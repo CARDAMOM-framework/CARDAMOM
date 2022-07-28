@@ -987,7 +987,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=72;
-DALECmodel->nofluxes=6;
+DALECmodel->nofluxes=65;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->noedcs=2;
 
