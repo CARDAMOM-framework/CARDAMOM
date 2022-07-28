@@ -142,6 +142,7 @@ int paw2puw_e;   /*PAW->PUW transfer IE: temp of donor*/
 int et_e; /* See Retano's calculation*/
 int transp;   /*Transpiration*/
 int evap;   /*Evaporation*/
+int snow_in;   /*Snowfall to SWE*/
 int melt;   /*Snow melt*/
 int ae_rh_cwd; /*Aerobic Rh from coarse woody debris*/
 int ae_rh_lit; /*Aerobic Rh from litter*/
@@ -165,6 +166,7 @@ int net_radiation; /*Net radiation flux*/
 int latent_heat; /*latent heat flux*/
 int sensible_heat; /*sensible heat flux*/
 int ground_heat; /*ground heat flux*/
+int gh_in; /*ground heat flux in converted units*/
 int resp_auto_growth; /*autotrophic growth respiration*/
 int resp_auto_maint; /*autotrophic maintenance respiration*/
 } DALEC_1100_FLUXES={
@@ -174,7 +176,7 @@ int resp_auto_maint; /*autotrophic maintenance respiration*/
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62
+    60,61,62,63,64
 };
 
 
@@ -515,7 +517,8 @@ FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
 
 
 /*Snow water equivalent*/
-POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+SNOWFALL[n]*deltat; /*first step snowfall to SWE*/
+FLUXES[f+F.snow_in] = SNOWFALL[n];
+POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snow_in]*deltat; /*first step snowfall to SWE*/
 FLUXES[f+F.melt]=fmin(fmax(((T2M_MIN[n]+T2M_MAX[n])/2-(pars[P.min_melt]-273.15))*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
 POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step remove snowmelt from SWE*/
 
@@ -551,12 +554,14 @@ FLUXES[f+F.sensible_heat] = H; // W m-2
 //soil heat flux 
 double G = Rn - H - LE; // W m-2
 FLUXES[f+F.ground_heat] = G; // W m-2
+FLUXES[f+F.gh_in] = G*60*60*24; // J m-2 d-1
 
 // Infiltration (mm/day)
-FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt])/pars[P.max_infil]));
+double liquid_in = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]);
+FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-liquid_in/pars[P.max_infil]));
 
 // Surface runoff (mm/day)
-FLUXES[f+F.q_surf] = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]) - FLUXES[f+F.infil];
+FLUXES[f+F.q_surf] = liquid_in - FLUXES[f+F.infil];
 
 // Volumetric soil moisture from water pools
 // Include infiltration into PAW ()
@@ -619,7 +624,7 @@ FLUXES[F.q_puw_e] =  FLUXES[f+F.q_puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(
 //Energy states
 //fraction of water in soil that is available 
 //double frac_paw = POOLS[nxp+S.H2O_PAW]/(POOLS[nxp+S.H2O_PAW]+POOLS[nxp+S.H2O_PUW]);
-POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.ground_heat]*60*60*24 + FLUXES[F.infil_e] - FLUXES[F.et_e] - FLUXES[F.paw2puw_e] - FLUXES[F.q_paw_e])*deltat;  
+POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.gh_in] + FLUXES[F.infil_e] - FLUXES[F.et_e] - FLUXES[F.paw2puw_e] - FLUXES[F.q_paw_e])*deltat;  
 POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[F.paw2puw_e] - FLUXES[F.q_puw_e] )*deltat; 
 
 
@@ -879,7 +884,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=72;
-DALECmodel->nofluxes=63;
+DALECmodel->nofluxes=6;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->noedcs=2;
 
