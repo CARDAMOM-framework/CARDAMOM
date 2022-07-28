@@ -44,7 +44,7 @@ int cf_ligneous;
 int cf_DOM;
 int resilience;
 int moisture;
-int hydr_cond;
+int PAW_hydr_cond;
 int max_infil;
 int i_PUW;
 int PAW_por;
@@ -85,6 +85,7 @@ int time_r;
 int init_T_mem;
 int init_LAIW_mem;
 int t_foliar;
+int PUW_hydr_cond;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -92,7 +93,7 @@ int t_foliar;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64,65,66,67
+    60,61,62,63,64,65,66,67,68
 };
 
 struct DALEC_1100_FLUXES{
@@ -413,18 +414,48 @@ sm_PAW -= drain_PAW;
 sm_PUW -= drain_PUW;
 
 // Convert to conductivity
-double k_PAW = HYDROFUN_MOI2CON(sm_PAW,pars[P.hydr_cond],pars[P.retention]);
-double k_PUW = HYDROFUN_MOI2CON(sm_PUW,pars[P.hydr_cond],pars[P.retention]);
+double k_PAW = HYDROFUN_MOI2CON(sm_PAW,pars[P.PAW_hydr_cond],pars[P.retention]);
+double k_PUW = HYDROFUN_MOI2CON(sm_PUW,pars[P.PUW_hydr_cond],pars[P.retention]);
 
 // Convert to potential
 double psi_PAW = HYDROFUN_MOI2PSI(sm_PAW,psi_porosity,pars[P.retention]);
 double psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[P.retention]);
 
+
+
 // Calculate inter-pool transfer in m/s (positive is PAW to PUW)
 double xfer = 1000 * sqrt(k_PAW*k_PUW) * (1000*(psi_PAW-psi_PUW)/(9.8*0.5*(pars[P.PAW_z]+pars[P.PUW_z])) + 1);
 
+//***************
+// Calculate inter-pool transfer in m/s (positive is PAW to PUW)
+double SPACEavail, H2Oavail;
+
+if (xfer>0) {//Water is going PAW->PUW (down)
+
+SPACEavail=pars[P.PUW_z]*pars[P.PUW_por]*1e3 - POOLS[p+S.H2O_PUW];
+H2Oavail=POOLS[p+S.H2O_PAW];}
+else { //Water is going PUW->PAW (up)
+
+SPACEavail=pars[P.PAW_z]*pars[P.PAW_por]*1e3 - POOLS[p+S.H2O_PAW];
+H2Oavail= POOLS[p+S.H2O_PUW];}
+
 // Transfer flux in mm/day
-FLUXES[f+F.paw2puw] = xfer*1000*3600*24;
+//scale with donor pool LF
+double PAW2PUWmax= xfer*1000*3600*24*deltat;
+
+//Minimum of three terms for PAW->PUW
+//1. PAW2PUW
+//2. Available space in PUW
+//3. PAW*LF
+FLUXES[f+F.paw2puw] =fmin(PAW2PUWmax , fmin(SPACEavail, H2Oavail))/deltat;
+//*****************
+
+
+
+
+
+
+
 
 // Update pools, including ET from PAW
 POOLS[nxp+S.H2O_PAW] += (-FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
@@ -660,7 +691,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 DALECmodel->nopools=14;
 DALECmodel->nomet=11;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=68;
+DALECmodel->nopars=69;
 DALECmodel->nofluxes=60;
 DALECmodel->dalec=DALEC_1100;
 

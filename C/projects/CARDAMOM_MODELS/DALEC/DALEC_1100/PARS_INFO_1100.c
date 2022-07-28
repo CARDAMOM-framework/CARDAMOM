@@ -125,8 +125,12 @@ CARDADATA->parmin[P.moisture]=0.01;
 CARDADATA->parmax[P.moisture]=1;
 
 /*Saturated hydraulic conductivity (m/s)*/
-CARDADATA->parmin[P.hydr_cond]=0.0000001;
-CARDADATA->parmax[P.hydr_cond]=0.00001;
+CARDADATA->parmin[P.PAW_hydr_cond]=1e-9;
+CARDADATA->parmax[P.PAW_hydr_cond]=1e-4;
+
+/*Saturated hydraulic conductivity (m/s)*/
+CARDADATA->parmin[P.PUW_hydr_cond]=1e-9;
+CARDADATA->parmax[P.PUW_hydr_cond]=1e-4;
 
 /*Maximum infiltration (mm/day)*/
 CARDADATA->parmin[P.max_infil]=1;
