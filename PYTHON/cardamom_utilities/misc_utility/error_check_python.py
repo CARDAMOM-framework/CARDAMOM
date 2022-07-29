@@ -236,7 +236,7 @@ def check_EDC_range(CBF,var):
 
 def singleval_vars_attribute_check(CBF):
     vars_unc_errors = 0
-    toexclude = ['ID','EDC','LAT']
+    toexclude = ['ID','EDC','LAT','MCMCID']
     for name, variable in CBF.variables.items():   
         current_var = variable
         current_name = name
