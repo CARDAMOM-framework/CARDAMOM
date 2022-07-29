@@ -682,9 +682,9 @@ double drain_PUW = POOLS[p+S.D_LF_PUW]*DRAINAGE(sm_PUW,pars[P.Q_excess],-pars[P.
 FLUXES[f+F.q_paw] = HYDROFUN_MOI2EWT(drain_PAW,pars[P.PAW_por],pars[P.PAW_z])/deltat;
 FLUXES[f+F.q_puw] = HYDROFUN_MOI2EWT(drain_PUW,pars[P.PUW_por],pars[P.PUW_z])/deltat;
 
-// Remove drainage from layers
-sm_PAW -= drain_PAW;
-sm_PUW -= drain_PUW;
+// // Remove drainage from layers
+// sm_PAW -= drain_PAW;
+// sm_PUW -= drain_PUW;
 
 // Convert to conductivity
 double k_PAW = HYDROFUN_MOI2CON(sm_PAW,pars[P.hydr_cond],pars[P.retention]);
@@ -694,17 +694,35 @@ double k_PUW = HYDROFUN_MOI2CON(sm_PUW,pars[P.hydr_cond],pars[P.retention]);
 double psi_PAW = HYDROFUN_MOI2PSI(sm_PAW,psi_porosity,pars[P.retention]);
 double psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[P.retention]);
 
-//Assumes PAW->PUW, so PAW LF & TEMP; if reverse flow, then switches to PUW LF & TEMP.
-double LFxfer=POOLS[p+S.D_LF_PAW]; 
-double TEMPxfer= POOLS[p+S.D_TEMP_PAW];
-
 // Calculate inter-pool transfer in m/s (positive is PAW to PUW)
 double pot_xfer = 1000 * sqrt(k_PAW*k_PUW) * (1000*(psi_PAW-psi_PUW)/(9.8*0.5*(pars[P.PAW_z]+pars[P.PUW_z])) + 1);
-if (pot_xfer<0) {LFxfer=POOLS[p+S.D_LF_PUW];TEMPxfer= POOLS[p+S.D_TEMP_PUW];}
+double SPACEavail, H2Oavail, PAW2PUWmax, TEMPxfer;
+if (pot_xfer>0) {//Water is going PAW->PUW (down)
+// Available space in PUW (after runoff)
+SPACEavail=pars[P.PUW_z]*pars[P.PUW_por]*1e3 - POOLS[p+S.H2O_PUW] + FLUXES[f+F.q_puw]*deltat;
+// Available water in PAW (after runoff, et, and infiltration)
+H2Oavail=POOLS[p+S.D_LF_PAW]*POOLS[p+S.H2O_PAW] + (FLUXES[f+F.infil] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
+// Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
+PAW2PUWmax= POOLS[p+S.D_LF_PAW]*pot_xfer*1000*3600*24*deltat;
+//Minimum of three terms for PAW->PUW
+//1. PAW2PUWmax
+//2. Available space in PUW (after runoff)
+//3. PAW*LF (after runoff, et, and infiltration)
+FLUXES[f+F.paw2puw] =fmin(PAW2PUWmax , fmin(SPACEavail, H2Oavail))/deltat;
+TEMPxfer= POOLS[p+S.D_TEMP_PAW];
+}
+else { //Water is going PUW->PAW (up)
+// Available space in PAW after runoff, et, and infiltration
+SPACEavail=pars[P.PAW_z]*pars[P.PAW_por]*1e3 - POOLS[p+S.H2O_PAW] - (FLUXES[f+F.infil] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
+// Available water in PUW after runoff
+H2Oavail= POOLS[p+S.D_LF_PUW]*POOLS[p+S.H2O_PUW] - FLUXES[f+F.q_puw]*deltat;
+// Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
+PAW2PUWmax= POOLS[p+S.D_LF_PUW]*pot_xfer*1000*3600*24*deltat;
+// Reverse sign of previous case
+FLUXES[f+F.paw2puw] = -fmin(-PAW2PUWmax , fmin(SPACEavail, H2Oavail))/deltat;
+TEMPxfer= POOLS[p+S.D_TEMP_PUW];
+}
 
-// Transfer flux in mm/day
-//scale with donor pool LF
-FLUXES[f+F.paw2puw] = pot_xfer*1000*3600*24*LFxfer;
 
 // Update pools, including ET from PAW
 POOLS[nxp+S.H2O_PAW] = POOLS[p+S.H2O_PAW] + (FLUXES[f+F.infil] - FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
