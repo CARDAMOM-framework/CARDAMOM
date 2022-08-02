@@ -498,8 +498,6 @@ double *POOLS=DATA.M_POOLS;
 
 
 
-double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
-
 // Porosity scaling factor (see line 124 of HESS paper)
 double psi_porosity = -0.117/100;
 
@@ -583,6 +581,8 @@ double psi_PAW0 = HYDROFUN_MOI2PSI(sm_PAW0,psi_porosity,pars[P.retention]);
 double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*psi_PAW0/pars[P.psi_50] - 1)));
        beta = fmin(beta,g);
 
+// mean air temperature (K)
+double air_temp = 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 
 //******************Declare LIU STRUCT*********************
 LIU_AN_ET_STRUCT LIU;
@@ -590,7 +590,7 @@ LIU_AN_ET_STRUCT LIU;
 //define time-invariant parameters
 LIU.IN.SRAD=SSRD[n]*1e6/(24*3600);
 LIU.IN.VPD=VPD[n]/10;
-LIU.IN.TEMP=273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]);  
+LIU.IN.TEMP=air_temp;  
 LIU.IN.vcmax25=pars[P.Vcmax25];
 LIU.IN.co2=CO2[n];
 LIU.IN.beta_factor=beta;
@@ -622,7 +622,7 @@ FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
 /*Snow water equivalent*/
 FLUXES[f+F.snow_in] = SNOWFALL[n];
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snow_in]*deltat; /*first step snowfall to SWE*/
-FLUXES[f+F.melt]=fmin(fmax(((T2M_MIN[n]+T2M_MAX[n])/2-(pars[P.min_melt]-273.15))*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
+FLUXES[f+F.melt]=fmin(fmax((air_temp-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
 POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step remove snowmelt from SWE*/
 
 //Energy balance: Rn = LE + H - G
@@ -633,10 +633,8 @@ double snow_albedo=0.9;//Consider age-dependent albedo.
 double SWout = (1. - POOLS[p+S.D_SCF])*(SWin*pars[P.leaf_refl]) + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // W m-2
 //Stefan-Boltzmann constant W.m-2.K-4
 double sigma = 5.67*1e-8;
-//reference air temperature
-double ref_temp = 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 //Incident LW radiation - calculated
-//double LWin = sigma*pow(ref_temp,4.);
+//double LWin = sigma*pow(air_temp,4.);
 double LWin = STRD[n]*1e6/(24*3600); // W m-2
 //Outgoing LW radiation
 double tskin_k = SKT[n]+273.15;
@@ -656,9 +654,9 @@ double cp = 29.2; // J mol-1 K-1 representative specific heat of moist air at co
 double Psurf = 1e5 // Pa (representative surface pressure)
 double Rgas = 8.31e-3 // Universal gas constant (J mol-1 K-1)
 // Pa / (J mol-1 K-1 * K) = mol m-3
-double moles_per_m3 = Psurf/(Rgas*ref_temp)
+double moles_per_m3 = Psurf/(Rgas*air_temp)
 //Sensible heat 
-double H = cp*(tskin_k - ref_temp)*pars[P.ga]*moles_per_m3; // ga in m s-1, 
+double H = cp*(tskin_k - air_temp)*pars[P.ga]*moles_per_m3; // ga in m s-1, 
 FLUXES[f+F.sensible_heat] = H; // W m-2
 //soil heat flux 
 double G = Rn - H - LE; // W m-2
@@ -762,7 +760,7 @@ POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[F.paw2puw_e] - FLUXES[F.q_puw_e]
 
 KNORR.IN.lambda_max_memory=  POOLS[p+S.M_LAI_MAX];
 KNORR.IN.T_memory=POOLS[p+S.M_LAI_TEMP];
-KNORR.IN.temp=(T2M_MAX[n]+T2M_MIN[n])*0.5;
+KNORR.IN.temp=air_temp;
 KNORR.IN.DOY=DOY[n];
 KNORR.IN.lambda=LAI;
 KNORR.IN.pasm=(POOLS[p+S.H2O_PAW]+POOLS[nxp+S.H2O_PAW])/2.0;//Note: soil moisture also available here
@@ -784,7 +782,7 @@ POOLS[nxp+S.M_LAI_TEMP]=KNORR.OUT.T;
 
 ARFLUXES.IN.deltat=deltat;
 ARFLUXES.IN.GPP=FLUXES[f+F.gpp];
-ARFLUXES.IN.TEMP=(T2M_MIN[n]+T2M_MAX[n])*0.5;
+ARFLUXES.IN.TEMP=air_temp;
 ARFLUXES.IN.C_LIVE=POOLS[p+S.C_fol]+POOLS[p+S.C_woo]+POOLS[p+S.C_roo];
 // Potential plant allocation (growth) fluxes
 ARFLUXES.IN.ALLOC_FOL_POT=fmax(0, (FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_fol]);
