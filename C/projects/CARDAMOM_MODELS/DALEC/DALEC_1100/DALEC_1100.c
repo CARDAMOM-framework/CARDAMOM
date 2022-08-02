@@ -651,10 +651,10 @@ FLUXES[f+F.latent_heat] = LE; // W m-2
 // Consider surface pressure as forcing for more accurate conversion from mol to m3
 // Consider explicitly calculating cp based on humidity (derived from VPD and pressure)
 double cp = 29.2; // J mol-1 K-1 representative specific heat of moist air at const pressure from Bonan book
-double Psurf = 1e5 // Pa (representative surface pressure)
-double Rgas = 8.31e-3 // Universal gas constant (J mol-1 K-1)
+double Psurf = 1e5; // Pa (representative surface pressure)
+double Rgas = 8.31e-3; // Universal gas constant (J mol-1 K-1)
 // Pa / (J mol-1 K-1 * K) = mol m-3
-double moles_per_m3 = Psurf/(Rgas*air_temp)
+double moles_per_m3 = Psurf/(Rgas*air_temp);
 //Sensible heat 
 double H = cp*(tskin_k - air_temp)*pars[P.ga]*moles_per_m3; // ga in m s-1, 
 FLUXES[f+F.sensible_heat] = H; // W m-2
