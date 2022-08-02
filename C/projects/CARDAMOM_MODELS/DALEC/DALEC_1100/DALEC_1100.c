@@ -650,9 +650,13 @@ double lambda = DGCM_LATENT_HEAT_VAPORIZATION; //2.501*1e6 J kg-1
 double LE = lambda*FLUXES[f+F.et]/(24*60*60); // W m-2
 FLUXES[f+F.latent_heat] = LE; // W m-2
 //specific heat capacity of dry air is 1.00464 KJ kg -1 K -1
+// Consider surface pressure as forcing for more accurate conversion from mol to m3
+// Consider explicitly calculating cp based on humidity (derived from VPD and pressure)
 double cp = 29.2; // J mol-1 K-1 representative specific heat of moist air at const pressure from Bonan book
+double Psurf = 100 // kPa (representative surface pressure)
+double Rgas = 8.31e-3 // Universal gas constant
 //Sensible heat 
-double H = cp*(tskin_k - ref_temp)*pars[P.ga]; // ga in mol m-2 s-1 ??????
+double H = cp*(tskin_k - ref_temp)*pars[P.ga]*Psurf/(Rgas*(ref_temp-273.15)); // ga in m s-1, 
 FLUXES[f+F.sensible_heat] = H; // W m-2
 //soil heat flux 
 double G = Rn - H - LE; // W m-2
@@ -727,7 +731,6 @@ TEMPxfer= POOLS[p+S.D_TEMP_PUW];
 // Update pools, including ET from PAW
 POOLS[nxp+S.H2O_PAW] = POOLS[p+S.H2O_PAW] + (FLUXES[f+F.infil] - FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
 POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
-
 
 
 //**********INTERNAL ENERGT FLUXES FOR ALL H2O FLUXES***************
