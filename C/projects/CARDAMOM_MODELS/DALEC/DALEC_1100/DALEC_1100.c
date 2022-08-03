@@ -705,9 +705,9 @@ double pot_xfer = 1000 * sqrt(k_PAW*k_PUW) * (1000*(psi_PAW-psi_PUW)/(9.8*0.5*(p
 double SPACEavail, H2Oavail, PAW2PUWmax, TEMPxfer;
 if (pot_xfer>0) {//Water is going PAW->PUW (down)
 // Available space in PUW (after runoff)
-SPACEavail=pars[P.PUW_z]*pars[P.PUW_por]*1e3 - POOLS[p+S.H2O_PUW] + FLUXES[f+F.q_puw]*deltat;
+SPACEavail=fmax(pars[P.PUW_z]*pars[P.PUW_por]*1e3 - POOLS[p+S.H2O_PUW] + FLUXES[f+F.q_puw]*deltat,0);
 // Available water in PAW (after runoff, et, and infiltration)
-H2Oavail=POOLS[p+S.D_LF_PAW]*POOLS[p+S.H2O_PAW] + (FLUXES[f+F.infil] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
+H2Oavail=fmax(POOLS[p+S.D_LF_PAW]*POOLS[p+S.H2O_PAW] + (FLUXES[f+F.infil] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat,0);
 // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
 PAW2PUWmax= POOLS[p+S.D_LF_PAW]*pot_xfer*1000*3600*24*deltat;
 //Minimum of three terms for PAW->PUW
@@ -719,9 +719,9 @@ TEMPxfer= POOLS[p+S.D_TEMP_PAW];
 }
 else { //Water is going PUW->PAW (up)
 // Available space in PAW after runoff, et, and infiltration
-SPACEavail=pars[P.PAW_z]*pars[P.PAW_por]*1e3 - POOLS[p+S.H2O_PAW] - (FLUXES[f+F.infil] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
+SPACEavail=fmax(pars[P.PAW_z]*pars[P.PAW_por]*1e3 - POOLS[p+S.H2O_PAW] - (FLUXES[f+F.infil] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat,0);
 // Available water in PUW after runoff
-H2Oavail= POOLS[p+S.D_LF_PUW]*POOLS[p+S.H2O_PUW] - FLUXES[f+F.q_puw]*deltat;
+H2Oavail= fmax(POOLS[p+S.D_LF_PUW]*POOLS[p+S.H2O_PUW] - FLUXES[f+F.q_puw]*deltat,0);
 // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
 PAW2PUWmax= POOLS[p+S.D_LF_PUW]*pot_xfer*1000*3600*24*deltat;
 // Reverse sign of previous case
