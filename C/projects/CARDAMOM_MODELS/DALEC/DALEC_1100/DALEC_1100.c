@@ -498,8 +498,6 @@ double *POOLS=DATA.M_POOLS;
 
 
 
-double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
-
 // Porosity scaling factor (see line 124 of HESS paper)
 double psi_porosity = -0.117/100;
 
@@ -583,6 +581,8 @@ double psi_PAW0 = HYDROFUN_MOI2PSI(sm_PAW0,psi_porosity,pars[P.retention]);
 double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*psi_PAW0/pars[P.psi_50] - 1)));
        beta = fmin(beta,g);
 
+// mean air temperature (K)
+double air_temp = 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 
 //******************Declare LIU STRUCT*********************
 LIU_AN_ET_STRUCT LIU;
@@ -590,7 +590,7 @@ LIU_AN_ET_STRUCT LIU;
 //define time-invariant parameters
 LIU.IN.SRAD=SSRD[n]*1e6/(24*3600);
 LIU.IN.VPD=VPD[n]/10;
-LIU.IN.TEMP=273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]);  
+LIU.IN.TEMP=air_temp;  
 LIU.IN.vcmax25=pars[P.Vcmax25];
 LIU.IN.co2=CO2[n];
 LIU.IN.beta_factor=beta;
@@ -622,7 +622,7 @@ FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
 /*Snow water equivalent*/
 FLUXES[f+F.snow_in] = SNOWFALL[n];
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snow_in]*deltat; /*first step snowfall to SWE*/
-FLUXES[f+F.melt]=fmin(fmax(((T2M_MIN[n]+T2M_MAX[n])/2-(pars[P.min_melt]-273.15))*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
+FLUXES[f+F.melt]=fmin(fmax((air_temp-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
 POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step remove snowmelt from SWE*/
 
 //Energy balance: Rn = LE + H - G
@@ -633,10 +633,8 @@ double snow_albedo=0.9;//Consider age-dependent albedo.
 double SWout = (1. - POOLS[p+S.D_SCF])*(SWin*pars[P.leaf_refl]) + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // W m-2
 //Stefan-Boltzmann constant W.m-2.K-4
 double sigma = 5.67*1e-8;
-//reference air temperature
-double ref_temp = 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 //Incident LW radiation - calculated
-//double LWin = sigma*pow(ref_temp,4.);
+//double LWin = sigma*pow(air_temp,4.);
 double LWin = STRD[n]*1e6/(24*3600); // W m-2
 //Outgoing LW radiation
 double tskin_k = SKT[n]+273.15;
@@ -650,9 +648,15 @@ double lambda = DGCM_LATENT_HEAT_VAPORIZATION; //2.501*1e6 J kg-1
 double LE = lambda*FLUXES[f+F.et]/(24*60*60); // W m-2
 FLUXES[f+F.latent_heat] = LE; // W m-2
 //specific heat capacity of dry air is 1.00464 KJ kg -1 K -1
+// Consider surface pressure as forcing for more accurate conversion from mol to m3
+// Consider explicitly calculating cp based on humidity (derived from VPD and pressure)
 double cp = 29.2; // J mol-1 K-1 representative specific heat of moist air at const pressure from Bonan book
+double Psurf = 1e5; // Pa (representative surface pressure)
+double Rgas = 8.31e-3; // Universal gas constant (J mol-1 K-1)
+// Pa / (J mol-1 K-1 * K) = mol m-3
+double moles_per_m3 = Psurf/(Rgas*air_temp);
 //Sensible heat 
-double H = cp*(tskin_k - ref_temp)*pars[P.ga]; // ga in mol m-2 s-1 ??????
+double H = cp*(tskin_k - air_temp)*pars[P.ga]*moles_per_m3; // ga in m s-1, 
 FLUXES[f+F.sensible_heat] = H; // W m-2
 //soil heat flux 
 double G = Rn - H - LE; // W m-2
@@ -682,9 +686,9 @@ double drain_PUW = POOLS[p+S.D_LF_PUW]*DRAINAGE(sm_PUW,pars[P.Q_excess],-pars[P.
 FLUXES[f+F.q_paw] = HYDROFUN_MOI2EWT(drain_PAW,pars[P.PAW_por],pars[P.PAW_z])/deltat;
 FLUXES[f+F.q_puw] = HYDROFUN_MOI2EWT(drain_PUW,pars[P.PUW_por],pars[P.PUW_z])/deltat;
 
-// Remove drainage from layers
-sm_PAW -= drain_PAW;
-sm_PUW -= drain_PUW;
+// // Remove drainage from layers
+// sm_PAW -= drain_PAW;
+// sm_PUW -= drain_PUW;
 
 // Convert to conductivity
 double k_PAW = HYDROFUN_MOI2CON(sm_PAW,pars[P.hydr_cond],pars[P.retention]);
@@ -694,31 +698,36 @@ double k_PUW = HYDROFUN_MOI2CON(sm_PUW,pars[P.hydr_cond],pars[P.retention]);
 double psi_PAW = HYDROFUN_MOI2PSI(sm_PAW,psi_porosity,pars[P.retention]);
 double psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[P.retention]);
 
-double LFxfer,TEMPxfer, SPACEavail, H2Oavail;
+
 
 // Calculate inter-pool transfer in m/s (positive is PAW to PUW)
 double pot_xfer = 1000 * sqrt(k_PAW*k_PUW) * (1000*(psi_PAW-psi_PUW)/(9.8*0.5*(pars[P.PAW_z]+pars[P.PUW_z])) + 1);
-
+double SPACEavail, H2Oavail, PAW2PUWmax, TEMPxfer;
 if (pot_xfer>0) {//Water is going PAW->PUW (down)
-LFxfer=POOLS[p+S.D_LF_PAW]; 
-TEMPxfer= POOLS[p+S.D_TEMP_PAW];
-SPACEavail=pars[P.PUW_z]*pars[P.PUW_por]*1e3 - POOLS[p+S.H2O_PUW];
-H2Oavail=POOLS[p+S.H2O_PAW]*POOLS[p+S.D_LF_PAW];}
-else { //Water is going PUW->PAW (up)
-    LFxfer=POOLS[p+S.D_LF_PUW];
-    TEMPxfer= POOLS[p+S.D_TEMP_PUW];
-SPACEavail=pars[P.PAW_z]*pars[P.PAW_por]*1e3 - POOLS[p+S.H2O_PAW];
-H2Oavail= POOLS[p+S.H2O_PUW]*POOLS[p+S.D_LF_PUW];}
-
-// Transfer flux in mm/day
-//scale with donor pool LF
-double PAW2PUWmax= pot_xfer*1000*3600*24*LFxfer*deltat;
-
+// Available space in PUW (after runoff)
+SPACEavail=pars[P.PUW_z]*pars[P.PUW_por]*1e3 - POOLS[p+S.H2O_PUW] + FLUXES[f+F.q_puw]*deltat;
+// Available water in PAW (after runoff, et, and infiltration)
+H2Oavail=POOLS[p+S.D_LF_PAW]*POOLS[p+S.H2O_PAW] + (FLUXES[f+F.infil] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
+// Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
+PAW2PUWmax= POOLS[p+S.D_LF_PAW]*pot_xfer*1000*3600*24*deltat;
 //Minimum of three terms for PAW->PUW
-//1. PAW2PUW
-//2. Available space in PUW
-//3. PAW*LF
+//1. PAW2PUWmax
+//2. Available space in PUW (after runoff)
+//3. PAW*LF (after runoff, et, and infiltration)
 FLUXES[f+F.paw2puw] =fmin(PAW2PUWmax , fmin(SPACEavail, H2Oavail))/deltat;
+TEMPxfer= POOLS[p+S.D_TEMP_PAW];
+}
+else { //Water is going PUW->PAW (up)
+// Available space in PAW after runoff, et, and infiltration
+SPACEavail=pars[P.PAW_z]*pars[P.PAW_por]*1e3 - POOLS[p+S.H2O_PAW] - (FLUXES[f+F.infil] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
+// Available water in PUW after runoff
+H2Oavail= POOLS[p+S.D_LF_PUW]*POOLS[p+S.H2O_PUW] - FLUXES[f+F.q_puw]*deltat;
+// Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
+PAW2PUWmax= POOLS[p+S.D_LF_PUW]*pot_xfer*1000*3600*24*deltat;
+// Reverse sign of previous case
+FLUXES[f+F.paw2puw] = -fmin(-PAW2PUWmax , fmin(SPACEavail, H2Oavail))/deltat;
+TEMPxfer= POOLS[p+S.D_TEMP_PUW];
+}
 
 
 // Update pools, including ET from PAW
@@ -726,10 +735,9 @@ POOLS[nxp+S.H2O_PAW] = POOLS[p+S.H2O_PAW] + (FLUXES[f+F.infil] - FLUXES[f+F.paw2
 POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
 
 
-
 //**********INTERNAL ENERGT FLUXES FOR ALL H2O FLUXES***************
 //Add INFILTRATION, PAW, PUW, PAW2PUW, ET
-double infiltemp = (T2M_MAX[n] + T2M_MIN[n])*0.5*(PREC[n] - SNOWFALL[n])/(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]) ;//snowmelt temp = 0, so term multiplied by zero in weighted average 
+double infiltemp = air_temp*(PREC[n] - SNOWFALL[n])/(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]) ;//snowmelt temp = 0, so term multiplied by zero in weighted average 
 
 
 //All energy fluxes
@@ -754,7 +762,7 @@ POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[F.paw2puw_e] - FLUXES[F.q_puw_e]
 
 KNORR.IN.lambda_max_memory=  POOLS[p+S.M_LAI_MAX];
 KNORR.IN.T_memory=POOLS[p+S.M_LAI_TEMP];
-KNORR.IN.temp=(T2M_MAX[n]+T2M_MIN[n])*0.5;
+KNORR.IN.temp=air_temp;
 KNORR.IN.DOY=DOY[n];
 KNORR.IN.lambda=LAI;
 KNORR.IN.pasm=(POOLS[p+S.H2O_PAW]+POOLS[nxp+S.H2O_PAW])/2.0;//Note: soil moisture also available here
@@ -776,7 +784,7 @@ POOLS[nxp+S.M_LAI_TEMP]=KNORR.OUT.T;
 
 ARFLUXES.IN.deltat=deltat;
 ARFLUXES.IN.GPP=FLUXES[f+F.gpp];
-ARFLUXES.IN.TEMP=(T2M_MIN[n]+T2M_MAX[n])*0.5;
+ARFLUXES.IN.TEMP=air_temp;
 ARFLUXES.IN.C_LIVE=POOLS[p+S.C_fol]+POOLS[p+S.C_woo]+POOLS[p+S.C_roo];
 // Potential plant allocation (growth) fluxes
 ARFLUXES.IN.ALLOC_FOL_POT=fmax(0, (FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_fol]);

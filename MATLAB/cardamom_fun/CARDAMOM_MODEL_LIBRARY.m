@@ -177,7 +177,7 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',
  pn=1;
  for n=1:numel(D)
      linestr=D{n};
-     if numel(linestr)>21 & strcmp(linestr(1:12),'CARDADATA->p')==1  
+     if numel(linestr)>21 & strcmp(linestr(1),'p')==1  
      linestr(linestr=='-')='';
      linestr(linestr=='>')='.';
      b1=find(linestr=='[');
@@ -189,7 +189,7 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',
      %Find first ";"
      eval(linestr(1:find(linestr==';',1)));
      %Storing parameter name based on line above parmin
-     if strcmp(linestr(1:16),'CARDADATA.parmin');
+     if strcmp(linestr(1:6),'parmin');
          if strcmp(D{n-1}(1:2), '/*')
          parname{pn}=D{n-1};
          else
@@ -202,8 +202,8 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',
  end
 % 
 % 
- MA.parmin=CARDADATA.parmin;
- MA.parmax=CARDADATA.parmax;
+ MA.parmin=parmin;
+ MA.parmax=parmax;
  MA.parname=parname;
  
 end
