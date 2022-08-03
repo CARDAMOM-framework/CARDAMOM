@@ -1,5 +1,5 @@
 #pragma once
-#include "DALEC_1100.c"
+#include "DALEC_1100_INDICES.c"
 
 /*PARAMETER_INFO (typedef struct) must have at least 3 fields
  *  * npars,
@@ -12,7 +12,6 @@
 
 
 int PARS_INFO_1100(double *parmin, double *parmax){
-
 
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 

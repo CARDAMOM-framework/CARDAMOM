@@ -29,6 +29,10 @@ typedef struct {
 //General inequality function
 double DALEC_EDC_TRAJECTORY(DATA * DATA, void * EDCstruct){
     
+    
+
+    
+    
     //Casting struct
     
      DALEC_EDC_TRAJECTORY_STRUCT  E = *(DALEC_EDC_TRAJECTORY_STRUCT * ) EDCstruct;
@@ -40,9 +44,17 @@ double DALEC_EDC_TRAJECTORY(DATA * DATA, void * EDCstruct){
   double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
   
   DALEC *MODEL=(DALEC *)DATA->MODEL;
+  
+  
     
   
-  int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
+  int N_timesteps=DATA->ncdf_data.TIME_INDEX.length;
+  
+int nopools=MODEL->nopools;
+int nofluxes=MODEL->nofluxes;
+
+  //int nopools=DATA->nopools;
+
   
   double EQF=DATA->ncdf_data.EDC_EQF;
 
@@ -51,15 +63,21 @@ double DALEC_EDC_TRAJECTORY(DATA * DATA, void * EDCstruct){
      //Pool inde
 
 /*deriving mean pools here!*/
-double MPOOLS;
+      int n;
+    
+    for (n=0;n<no_pool_checks;n++){
 
-MPOOLS=mean_pool(DATA->M_POOLS,p,N_timesteps+1,nopools);
 
+double MPOOLSjan;
+double MPOOLS=mean_pool(DATA->M_POOLS,p,N_timesteps+1,nopools);
+
+FLUXES = DATA->M_FLUXES;
+POOLS = DATA->M_POOLS;
 
 
 /*deriving mean January pools*/
 /*Assuming COMPLETE years*/
-double MPOOLSjan;
+
 /*pool interval*/
 
 
@@ -68,26 +86,16 @@ int dint=(int)floor(N_timesteps/(TIME_INDEX[N_timesteps-1]-TIME_INDEX[0])*365.25
 
 /*deriving mean jan pools*/
 /*based on all jan pools except initial conditions*/
+
+int n;
 for (n=0;n<EDCstruct->no_pool_checks;n++){
     int pidx = EDCstruct->pool_idx[n];
 for (m=0;m<(N_timesteps/dint+1);m++){
-MPOOLSjan[n]=MPOOLSjan[n]+POOLS[nopools*(m*dint)+pidx
+MPOOLSjan=MPOOLSjan+POOLS[nopools*(m*dint)+pidx
         ]/(N_timesteps/dint+1);}}
-/*printing just to make sure*/
-/*for (n=0;n<nopools;n++){printf("Pool = %d, janmnean=%2.2f\n",n,MPOOLSjan[n]);}*/
-
-
-/***********************EDCs start here****************************/
 
 
 
-/*Total fluxes*/
-
-
-
-//********CONTINUE FROM HERE********** sum all fluxes
-
-FLUXES = DATA->M_FLUXES;
 
 
 

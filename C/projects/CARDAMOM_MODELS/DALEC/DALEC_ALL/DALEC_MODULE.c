@@ -3,8 +3,6 @@
 #include "offset.c"
 #include "../DALEC_OBSERVATION_OPERATORS/DALEC_OBSERVATION_OPERATORS.c"
 #include "DALEC_EDCS_OLD.c"
-
-
 typedef struct {
 double (*function) (DATA * , void *);
      void *    data;
@@ -36,4 +34,5 @@ OBSOPE OBSOPE;
 EDCs * EDCs;//Pointer, as each element is a unique EDC
 }DALEC;
 
+#include "../DALEC_EDCs/DALEC_EDC_FUNCTIONS.c"
 
