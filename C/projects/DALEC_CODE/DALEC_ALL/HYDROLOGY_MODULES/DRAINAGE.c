@@ -19,16 +19,24 @@ double DRAINAGE(double sm, double Qexcess, double psi_field, double psi_porosity
 // soil moisture at field capacity
 double sm_field = HYDROFUN_PSI2MOI(psi_field,psi_porosity,b);
 
+//// change in soil moisture (zero if soil moisture is less than field capacity)
+//double delta_sm = fmax(sm - sm_field,0);
+
+//// check for excessive soil moisture
+//double avail_sm = 1 - sm;
+double excess_drainage = 0;
+//// excess_sm > 0 when 
+//if (delta_sm > avail_sm) {
+//  excess_drainage = delta_sm - avail_sm; 
+//  delta_sm = avail_sm;}
+
+
+if (sm > 1) {
+  excess_drainage = sm - 1;
+  sm = 1;}
+
 // change in soil moisture (zero if soil moisture is less than field capacity)
 double delta_sm = fmax(sm - sm_field,0);
-
-// check for excessive soil moisture
-double avail_sm = 1 - sm;
-double excess_drainage = 0;
-// excess_sm > 0 when 
-if (delta_sm > avail_sm) {
-  excess_drainage = delta_sm - avail_sm; 
-  delta_sm = avail_sm;}
 
 // potential of layer
 double psi = HYDROFUN_MOI2PSI(sm,psi_porosity,b);
