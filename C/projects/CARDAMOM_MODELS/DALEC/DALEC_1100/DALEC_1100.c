@@ -169,6 +169,10 @@ int ground_heat; /*ground heat flux*/
 int gh_in; /*ground heat flux in converted units*/
 int resp_auto_growth; /*autotrophic growth respiration*/
 int resp_auto_maint; /*autotrophic maintenance respiration*/
+int SWin;
+int SWout;
+int LWin;
+int LWout;
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -176,7 +180,7 @@ int resp_auto_maint; /*autotrophic maintenance respiration*/
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64
+    60,61,62,63,64,65,66,67,68
 };
 
 
@@ -618,7 +622,6 @@ FLUXES[f+F.evap] = LIU.OUT.evap;
 // Evapotranspiration
 FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
 
-
 /*Snow water equivalent*/
 FLUXES[f+F.snow_in] = SNOWFALL[n];
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snow_in]*deltat; /*first step snowfall to SWE*/
@@ -631,6 +634,8 @@ double SWin = SSRD[n]*1e6/(24*3600); // W m-2
 //Weighted average of surface albedo considering SW snow albedo as 0.9
 double snow_albedo=0.9;//Consider age-dependent albedo.
 double SWout = (1. - POOLS[p+S.D_SCF])*(SWin*pars[P.leaf_refl]) + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // W m-2
+        
+
 //Stefan-Boltzmann constant W.m-2.K-4
 double sigma = 5.67*1e-8;
 //Incident LW radiation - calculated
@@ -642,6 +647,12 @@ double LWout = sigma*pow(tskin_k,4.); // W m-2
 //Net radiation at the top of the canopy
 double Rn = SWin - SWout + LWin - LWout; // W m-2
 FLUXES[f+F.net_radiation] = Rn; // W m-2
+
+FLUXES[f+F.SWin]=SWin;//flag for redundancy and deletion
+FLUXES[f+F.LWin]=LWin;//flag for redundancy and deletion
+FLUXES[f+F.SWout]=SWout;
+FLUXES[f+F.LWout]=LWout;
+        
 //Latent heat of Vaporization J kg-1 
 double lambda = DGCM_LATENT_HEAT_VAPORIZATION; //2.501*1e6 J kg-1 
 //Latente heat (W.m-2)
@@ -679,6 +690,8 @@ double sm_PUW = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z
 //sm_PAW += HYDROFUN_EWT2MOI(infil*deltat,pars[P.PAW_por],pars[P.PAW_z]);
 
 // Calculate drainage
+
+//printf("POOLS[p+S.D_LF_PAW] = %2.2f\n",POOLS[p+S.D_LF_PAW]);
 double drain_PAW = POOLS[p+S.D_LF_PAW]*DRAINAGE(sm_PAW,pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
 double drain_PUW = POOLS[p+S.D_LF_PUW]*DRAINAGE(sm_PUW,pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
 
@@ -737,15 +750,20 @@ POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_
 
 //**********INTERNAL ENERGT FLUXES FOR ALL H2O FLUXES***************
 //Add INFILTRATION, PAW, PUW, PAW2PUW, ET
-double infiltemp = air_temp*(PREC[n] - SNOWFALL[n])/(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]) ;//snowmelt temp = 0, so term multiplied by zero in weighted average 
+double infiltemp = air_temp;
+if (FLUXES[f+F.melt]>0){infiltemp = air_temp*(PREC[n] - SNOWFALL[n])/(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]);}//snowmelt temp = 0, so term multiplied by zero in weighted average 
 
 
 //All energy fluxes
+
 FLUXES[f+F.infil_e] = FLUXES[f+F.infil]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(infiltemp + 273.15);
 FLUXES[f+F.et_e] = FLUXES[f+F.et]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(SKT[n] + 273.15);
 FLUXES[f+F.paw2puw_e] = FLUXES[f+F.paw2puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(TEMPxfer + 273.15);
 FLUXES[f+F.q_paw_e] = FLUXES[f+F.q_paw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PAW] + 273.15);
 FLUXES[f+F.q_puw_e] =  FLUXES[f+F.q_puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PUW] + 273.15);
+
+//Thermal energy flux only
+//FLUXES[f+F.paw2puw_e_thermal] = 
 
 //Energy states
 //fraction of water in soil that is available 
@@ -961,6 +979,8 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
     POOLS[nxp+S.D_TEMP_PAW]=PAWSOILTEMP.OUT.TEMP;
     POOLS[nxp+S.D_TEMP_PUW]=PUWSOILTEMP.OUT.TEMP;
+    
+
     POOLS[nxp+S.D_LF_PAW]=PAWSOILTEMP.OUT.LF;
     POOLS[nxp+S.D_LF_PUW]=PUWSOILTEMP.OUT.LF;
     
@@ -1013,7 +1033,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=72;
-DALECmodel->nofluxes=65;
+DALECmodel->nofluxes=69;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->noedcs=2;
 

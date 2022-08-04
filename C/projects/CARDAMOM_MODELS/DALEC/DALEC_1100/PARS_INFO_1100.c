@@ -121,8 +121,8 @@ parmin[P.resilience]=0.01;
 parmax[P.resilience]=1;
 
 /*Saturated hydraulic conductivity (m/s)*/
-parmin[P.hydr_cond]=0.0000001;
-parmax[P.hydr_cond]=0.00001;
+parmin[P.hydr_cond]=1e-9;
+parmax[P.hydr_cond]=1e-4;
 
 /*Maximum infiltration (mm/day)*/
 parmin[P.max_infil]=1;
@@ -181,8 +181,8 @@ parmax[P.Tminmin]=273.15;
 parmin[P.Tminmax]=273.15;
 parmax[P.Tminmax]=288.15;
 
-/*aerodynamic conductance*/
-parmin[P.ga]=0.01;
+/*aerodynamic conductance (m/s)*/
+parmin[P.ga]=0.001;
 parmax[P.ga]=10.0;
 
 /*Tupp*/
@@ -198,7 +198,7 @@ parmin[P.clumping]=0.35;
 parmax[P.clumping]=1.0;
 
 /*Leaf single scattering albedo*/
-parmin[P.leaf_refl]=1e-8;
+parmin[P.leaf_refl]=1e-1;
 parmax[P.leaf_refl]=1.0;
 
 /*iSWE: initial for state variable SWE snow water equivalent*/
@@ -288,11 +288,11 @@ parmax[P.t_foliar]=0.1;
 
 /*PAW energy pool*/
 parmin[P.i_PAW_E]=1;
-parmax[P.i_PAW_E]=10000;
+parmax[P.i_PAW_E]=1e15;
 
-/*PUW energy pool*/
+/*PUW energy pool (SWdown Wm2* seconds in year for very very rough OOM estimate)*/
 parmin[P.i_PUW_E]=1;
-parmax[P.i_PUW_E]=10000;
+parmax[P.i_PUW_E]=1e15;
 
 /*PSI 50: water potential when soil-plant continum is at 50% hydraulic conductivity (-MPa)*/
 parmin[P.psi_50]=0.1;
