@@ -442,7 +442,7 @@ double *POOLS=DATA.M_POOLS;
          KNORR.IN.T_r=pars[P.T_range];
          KNORR.IN.plgr=pars[P.plgr];
          KNORR.IN.k_L=pars[P.k_leaf];
-         KNORR.IN.tau_W=pars[P.tau_W];
+         KNORR.IN.tau_W=pars[P.tau_W];//0.00000001;//
          KNORR.IN.t_c=pars[P.time_c];
          KNORR.IN.t_r=pars[P.time_r];;
          KNORR.IN.lambda_max=pars[P.lambda_max];
@@ -652,7 +652,7 @@ FLUXES[f+F.latent_heat] = LE; // W m-2
 // Consider explicitly calculating cp based on humidity (derived from VPD and pressure)
 double cp = 29.2; // J mol-1 K-1 representative specific heat of moist air at const pressure from Bonan book
 double Psurf = 1e5; // Pa (representative surface pressure)
-double Rgas = 8.31e-3; // Universal gas constant (J mol-1 K-1)
+double Rgas = 8.31; // Universal gas constant (J mol-1 K-1)
 // Pa / (J mol-1 K-1 * K) = mol m-3
 double moles_per_m3 = Psurf/(Rgas*air_temp);
 //Sensible heat 
@@ -875,6 +875,9 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.lab_prod]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
         POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod] - FLUXES[f+F.fol2lit])*deltat;
+
+        
+        
         POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.root2lit])*deltat;
         POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + (FLUXES[f+F.wood_prod] - FLUXES[f+F.wood2cwd])*deltat;
         POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.wood2cwd] - FLUXES[f+F.ae_rh_cwd]-FLUXES[f+F.an_rh_cwd]-FLUXES[f+F.cwd2som])*deltat;
