@@ -87,9 +87,6 @@ int phi_WL;
     70,71
 };
 
-
-
-
 struct DALEC_1100_FLUXES{
 /*DALEC FLUXES*/
 int gpp;   /*GPP*/
@@ -130,6 +127,7 @@ int paw2puw_e;   /*PAW->PUW transfer IE: temp of donor*/
 int et_e; /* See Retano's calculation*/
 int transp;   /*Transpiration*/
 int evap;   /*Evaporation*/
+int snow_in;   /*Snowfall to SWE*/
 int melt;   /*Snow melt*/
 int ae_rh_cwd; /*Aerobic Rh from coarse woody debris*/
 int ae_rh_lit; /*Aerobic Rh from litter*/
@@ -144,23 +142,22 @@ int antr; /*anaerobic turnover scalar*/
 int an_co2_c_ratio; /*CO2 fraction in anaerobic C decomposition*/
 int an_ch4_c_ratio; /*CH4 fraction in anaerobic C decomposition*/
 int target_LAI;   /*LAI environmental target*/
-int T_memory;   /*LAI temp memory*/
-int lambda_max_memory;   /*LAI max memory*/
 int dlambda_dt;   /*dLAI/dt*/
 int f_temp_thresh;   /*f_temp_thres*/
 int f_dayl_thresh;   /*f_dayl_thres*/
-int c_lim_flag;   /*LAI carbon limitation flag*/
 int lai_fire;   /*LAI fire loss*/
 int foliar_fire_frac;   /*C_fol fire loss frac*/
-int T_energy_flux;
-int E_energy_flux;
 int net_radiation; /*Net radiation flux*/
 int latent_heat; /*latent heat flux*/
 int sensible_heat; /*sensible heat flux*/
 int ground_heat; /*ground heat flux*/
-int auto_growth;
-int auto_maint;
-int snowfall; /*snowfall driver data (necessary for budget closure on SWE)*/
+int gh_in; /*ground heat flux in converted units*/
+int resp_auto_growth; /*autotrophic growth respiration*/
+int resp_auto_maint; /*autotrophic maintenance respiration*/
+int SWin;
+int SWout;
+int LWin;
+int LWout;
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -170,6 +167,7 @@ int snowfall; /*snowfall driver data (necessary for budget closure on SWE)*/
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68
 };
+
 
 
 /*Prognostic states and Diagnostic states (dependent on other states)*/
@@ -195,8 +193,8 @@ int D_TEMP_PAW;//PAW temp
 int D_TEMP_PUW;//PUW temp
 int D_LF_PAW;//PAW liquid h2o frac
 int D_LF_PUW;//PUW liquid h2o frac
-int D_SM_PAW;//PAW liquid h2o frac
-int D_SM_PUW;//PUW liquid h2o frac
+int D_SM_PAW;//PAW soil moisture
+int D_SM_PUW;//PUW soil moisture
 int M_LAI_MAX;//KNORR LAI module max LAI memory
 int M_LAI_TEMP;//KNORR LAI module temp memory
 } DALEC_1100_POOLS={
@@ -204,7 +202,5 @@ int M_LAI_TEMP;//KNORR LAI module temp memory
     10,11,12,13,14,15,16,17,18,19,
     20,21
 };
-
-
 
 
