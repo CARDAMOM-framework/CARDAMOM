@@ -1,4 +1,4 @@
-function CARDAMOM_MAKE_DEMO_NC_FILE_APR22
+function CARDAMOM_MAKE_DEMO_NC_FILE_AUG22
 
 %Step 1. start netcdf file
 %Step 0. Load time data; time span for this US-NR1 demo is 2001-2016
@@ -40,26 +40,21 @@ end
 ncwriteatt(NC.fname,'ABGB','opt_unc_type',1.);
 ncwriteatt(NC.fname,'ABGB','single_annual_unc',1.5);
 ncwriteatt(NC.fname,'ABGB','opt_filter',3.);
-ncwriteatt(NC.fname,'ABGB','_FillValue',-9999.);
 
 ncwriteatt(NC.fname,'ET','opt_unc_type',1.);
 ncwriteatt(NC.fname,'ET','single_unc',3.);
 ncwriteatt(NC.fname,'ET','min_threshold',0.1);
-ncwriteatt(NC.fname,'ET','_FillValue',-9999.);
 
 ncwriteatt(NC.fname,'GPP','opt_unc_type',1.);
 ncwriteatt(NC.fname,'GPP','single_unc',3.);
 ncwriteatt(NC.fname,'GPP','min_threshold',0.1);
-ncwriteatt(NC.fname,'GPP','_FillValue',-9999.);
 
 ncwriteatt(NC.fname,'LAI','opt_unc_type',1.);
 ncwriteatt(NC.fname,'LAI','single_annual_unc',2.);
 ncwriteatt(NC.fname,'LAI','opt_filter',31.);
-ncwriteatt(NC.fname,'LAI','_FillValue',-9999.);
 
 ncwriteatt(NC.fname,'NBE','opt_unc_type',0);
 ncwriteatt(NC.fname,'NBE','single_unc',0.1);
-ncwriteatt(NC.fname,'NBE','_FillValue',-9999.);
 
 
 
@@ -67,7 +62,6 @@ ncwriteatt(NC.fname,'NBE','_FillValue',-9999.);
 ncwriteatt(NC.fname,'SCF','opt_unc_type',0);
 ncwriteatt(NC.fname,'SCF','single_unc',0.1);
 ncwriteatt(NC.fname,'SCF','min_threshold',0.1);
-ncwriteatt(NC.fname,'SCF','_FillValue',-9999.);
 
 
 
