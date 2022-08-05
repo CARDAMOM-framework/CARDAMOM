@@ -3,7 +3,6 @@
 #include "../DALEC_ALL/mean_pool.c"
 #include "../DALEC_ALL/mean_annual_pool.c"
 #include "../DALEC_ALL/expdecay2.c"
-#include "../DALEC_ALL/DALEC_STRUCTS.c"
 #include "../../../../math_fun/std.c"
 #include "../../../../math_fun/ipow.c"
 #include "stdlib.h"
@@ -19,10 +18,8 @@
 
 //Doing all pools
 typedef struct {
-    int no_pool_checks;
-    int *pool_idx;
-    //INPUT_OUTPUT_FLUXES_STRUCT * FIO; 
-    DALEC_FLUX_SOURCES_SINKS_STRUCT * FSS;
+    int no_pools_to_check;
+    int *pool_indices;
 } DALEC_EDC_TRAJECTORY_STRUCT;
 
 
@@ -43,15 +40,15 @@ double DALEC_EDC_TRAJECTORY(DATA * DATA, void * EDCstruct){
  
   double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
   
-  DALEC *MODEL=(DALEC *)DATA->MODEL;
+  DALEC *DALECmodel=(DALEC *)DATA->MODEL;
   
-  
+
     
   
   int N_timesteps=DATA->ncdf_data.TIME_INDEX.length;
   
-int nopools=MODEL->nopools;
-int nofluxes=MODEL->nofluxes;
+int nopools=DALECmodel->nopools;
+int nofluxes=DALECmodel->nofluxes;
 
   //int nopools=DATA->nopools;
 
@@ -63,16 +60,17 @@ int nofluxes=MODEL->nofluxes;
      //Pool inde
 
 /*deriving mean pools here!*/
-      int n;
+      int s,n,m,i;
+       PEDC=0;
     
-    for (n=0;n<no_pool_checks;n++){
+    for (s=0;s<E.no_pools_to_check;s++){
 
 
 double MPOOLSjan;
 double MPOOLS=mean_pool(DATA->M_POOLS,p,N_timesteps+1,nopools);
 
-FLUXES = DATA->M_FLUXES;
-POOLS = DATA->M_POOLS;
+double * FLUXES = DATA->M_FLUXES;
+double * POOLS = DATA->M_POOLS;
 
 
 /*deriving mean January pools*/
@@ -87,12 +85,11 @@ int dint=(int)floor(N_timesteps/(TIME_INDEX[N_timesteps-1]-TIME_INDEX[0])*365.25
 /*deriving mean jan pools*/
 /*based on all jan pools except initial conditions*/
 
-int n;
-for (n=0;n<EDCstruct->no_pool_checks;n++){
-    int pidx = EDCstruct->pool_idx[n];
+    int pidx = E.pool_indices[s];
+    
 for (m=0;m<(N_timesteps/dint+1);m++){
 MPOOLSjan=MPOOLSjan+POOLS[nopools*(m*dint)+pidx
-        ]/(N_timesteps/dint+1);}}
+        ]/(N_timesteps/dint+1);}
 
 
 
@@ -109,16 +106,10 @@ for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nof
 //Next step:
 //Loop through all fluxes
 //For each pool create "Fin" and "Fout", and add these to fluxe
-
-doule 
-for (n=0;n<N_timesteps;n++){
-    for (i=0;i<E->nfin;i++)
-        //CONTINUE FROM HERE
-    Fin += FLUXES[E->FIO.........];
-    Fout += FLUXES[E->FIO..........]
-
-
-}
+double Fin=0, Fout=0;
+    for (i=0;i<DALECmodel->SIOMATRIX[pidx].N_STATE_INPUT_FLUXES;i++){Fin += FT[DALECmodel->SIOMATRIX[pidx].STATE_INPUT_FLUXES[i]];}
+    for (i=0;i<DALECmodel->SIOMATRIX[pidx].N_STATE_OUTPUT_FLUXES;i++){Fout += FT[DALECmodel->SIOMATRIX[pidx].STATE_OUTPUT_FLUXES[i]];}
+    
 
 
 
@@ -133,44 +124,6 @@ int psw=0;
 /*exponential decay tolerance*/
 double etol=0.1;
 
-// 
-// 
-// 
-// 
-// /*Inputs and outputs for each pool*/
-// /*labile*/
-// Fin[S.C_lab]=FT[F.lab_prod];
-// Fout[S.C_lab]=FT[F.lab_release]+FT[F.f_lab]+FT[F.fx_lab2lit];
-// /*foliar*/
-// Fin[S.C_fol]=FT[F.lab_release];
-// Fout[S.C_fol]=FT[F.fol2lit]+FT[F.f_fol]+FT[F.fx_fol2lit];
-// /*root*/
-// Fin[S.C_roo]=FT[F.root_prod];
-// Fout[S.C_roo]=FT[F.root2lit]+FT[F.f_roo]+FT[F.fx_roo2lit];
-// /*wood*/
-// Fin[S.C_woo]=FT[F.wood_prod];
-// Fout[S.C_woo]=FT[F.wood2cwd]+FT[F.f_woo]+FT[F.fx_woo2cwd];
-// /*CWD*/
-// Fin[S.C_cwd]=FT[F.wood2cwd]+FT[F.fx_woo2cwd];
-// Fout[S.C_cwd]=FT[F.ae_rh_cwd]+FT[F.an_rh_cwd]+FT[F.cwd2som]+FT[F.f_cwd]+FT[F.fx_cwd2som];
-// /*litter*/
-// Fin[S.C_lit]=FT[F.fol2lit]+FT[F.root2lit]+FT[F.fx_lab2lit]+FT[F.fx_fol2lit]+FT[F.fx_roo2lit];
-// Fout[S.C_lit]=FT[F.ae_rh_lit]+FT[F.an_rh_lit]+FT[F.lit2som]+FT[F.f_lit]+FT[F.fx_lit2som];
-// /*som*/
-// Fin[S.C_som]=FT[F.cwd2som]+FT[F.lit2som]+FT[F.fx_cwd2som]+FT[F.fx_lit2som];
-// Fout[S.C_som]=FT[F.ae_rh_som]+FT[F.an_rh_som]+FT[F.f_som];
-// /*PAH2O*/
-// Fin[S.H2O_PAW]=TOTAL_PREC-FT[F.q_surf]-TOTAL_SNOW+FT[F.melt];
-// Fout[S.H2O_PAW]=FT[F.et]+FT[F.q_paw]+FT[F.paw2puw];
-// /*PUH2O*/
-// Fin[S.H2O_PUW]=FT[F.paw2puw];
-// Fout[S.H2O_PUW]=FT[F.q_puw];
-// /*SWE*/
-// Fin[S.H2O_SWE]=TOTAL_SNOW;
-// Fout[S.H2O_SWE]=FT[F.melt];
-
-
-
 /*Inlcuding H2O pool*/
 /*EDCs 7-13 - inputs, outputs and exponential tolerance*/
 
@@ -181,26 +134,21 @@ double Rm, Rs;
 
 /*start and end pools*/
 Pstart=POOLS[pidx];
-Pend=POOLS[nopools*N_timesteps+piex];
+Pend=POOLS[nopools*N_timesteps+pidx];
 /*mean input/output*/
 Rm=Fin/Fout;
 /*Theoretical starting input/output*/
-Rs=Rm*MPOOLSjan[n]/Pstart;
+Rs=Rm*MPOOLSjan/Pstart;
 
 /*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[7-1+n]==1))
 & ((fabs(log(Rs))>log(EQF)) || (fabs(Rs-Rm)>etol)))
 {EDC=ipow(0,EDCD->SWITCH[7-1+n]);EDCD->PASSFAIL[7-1+n]=0;}*/
 
- PEDC=EDCD->pEDC-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
+ PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
 
-
- 
- 
- 
- 
- 
-
-    
+    }
+      
+      
     return PEDC;
 }
 

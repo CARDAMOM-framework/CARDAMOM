@@ -2,7 +2,6 @@
 //Note: DALEC_OBSERVATION_OPERATORS.c included in DALEC_MODULE.
 #include "DALEC_1100_INDICES.c"
 #include "PARS_INFO_1100.c"
-#include "../DALEC_ALL/DALEC_STRUCTS.c"//Includes all calls to DALEC-compatible EDC functions
 #include "../DALEC_ALL/DALEC_MODULE.c"//Includes all calls to DALEC-compatible EDC functions
 #include "../DALEC_ALL/HYDROLOGY_MODULES/DRAINAGE.c"
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_EWT2MOI.c"
@@ -21,153 +20,165 @@
 
 
 //Returns structure with sources and sinks, matches number of fluxes
-DALEC_FLUX_SOURCES_SINKS_STRUCT DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
+int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
     
 //DALEC flux indices    
     struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
     struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
     //Step 1. Declare & initialize
-    DALEC_FLUX_SOURCES_SINKS_STRUCT FLUXFLOWS;
+    DALEC_FLUX_SOURCE_SINK_MATRIX FIOMATRIX;
     // external source or pool sink, or not conserved quantity
     //Default = -1 
    
-    FLUXFLOWS.SOURCE=calloc(DALECmodel->nofluxes, sizeof(int));
-    FLUXFLOWS.SINK=calloc(DALECmodel->nofluxes, sizeof(int));
+    FIOMATRIX.SOURCE=calloc(DALECmodel->nofluxes, sizeof(int));
+    FIOMATRIX.SINK=calloc(DALECmodel->nofluxes, sizeof(int));
      
     
     int n;
-    for (n=0;n<DALECmodel->nofluxes; n++){FLUXFLOWS.SOURCE[n]=-1;FLUXFLOWS.SINK[n]=-1;}
+    for (n=0;n<DALECmodel->nofluxes; n++){FIOMATRIX.SOURCE[n]=-1;FIOMATRIX.SINK[n]=-1;}
     
     
     //Step 2. Define
     
     
         //source = GPP
-        FLUXFLOWS.SINK[F.lab_prod]=S.C_lab;
+        FIOMATRIX.SINK[F.lab_prod]=S.C_lab;
         
-        FLUXFLOWS.SOURCE[F.foliar_prod]=S.C_lab;
-        FLUXFLOWS.SINK[F.foliar_prod]=S.C_fol;
+        FIOMATRIX.SOURCE[F.foliar_prod]=S.C_lab;
+        FIOMATRIX.SINK[F.foliar_prod]=S.C_fol;
         
-        FLUXFLOWS.SOURCE[F.root_prod]=S.C_lab;
-        FLUXFLOWS.SINK[F.root_prod]=S.C_roo;
+        FIOMATRIX.SOURCE[F.root_prod]=S.C_lab;
+        FIOMATRIX.SINK[F.root_prod]=S.C_roo;
         
-        FLUXFLOWS.SOURCE[F.wood_prod]=S.C_lab;
-        FLUXFLOWS.SINK[F.wood_prod]=S.C_woo;
+        FIOMATRIX.SOURCE[F.wood_prod]=S.C_lab;
+        FIOMATRIX.SINK[F.wood_prod]=S.C_woo;
 
-        FLUXFLOWS.SOURCE[F.f_lab]=S.C_lab;  
+        FIOMATRIX.SOURCE[F.f_lab]=S.C_lab;  
         //Sink = atmosphere; 
          
-        FLUXFLOWS.SOURCE[F.fx_lab2lit]=S.C_lab;
-        FLUXFLOWS.SINK[F.fx_lab2lit]=S.C_lit;
+        FIOMATRIX.SOURCE[F.fx_lab2lit]=S.C_lab;
+        FIOMATRIX.SINK[F.fx_lab2lit]=S.C_lit;
     
-        FLUXFLOWS.SOURCE[F.fol2lit]=S.C_fol;
-        FLUXFLOWS.SINK[F.fol2lit]=S.C_lit;
+        FIOMATRIX.SOURCE[F.fol2lit]=S.C_fol;
+        FIOMATRIX.SINK[F.fol2lit]=S.C_lit;
           
-        FLUXFLOWS.SOURCE[F.f_fol]=S.C_fol;
+        FIOMATRIX.SOURCE[F.f_fol]=S.C_fol;
         //Sink = atmosphere; 
 
-        FLUXFLOWS.SOURCE[F.fx_fol2lit]=S.C_fol;
-        FLUXFLOWS.SINK[F.fx_fol2lit]=S.C_lit;
+        FIOMATRIX.SOURCE[F.fx_fol2lit]=S.C_fol;
+        FIOMATRIX.SINK[F.fx_fol2lit]=S.C_lit;
                        
-        FLUXFLOWS.SOURCE[F.roo2lit]=S.C_roo;
-        FLUXFLOWS.SINK[F.roo2lit]=S.C_lit;
+        FIOMATRIX.SOURCE[F.roo2lit]=S.C_roo;
+        FIOMATRIX.SINK[F.roo2lit]=S.C_lit;
         
-        FLUXFLOWS.SOURCE[F.f_roo]=S.C_roo;
+        FIOMATRIX.SOURCE[F.f_roo]=S.C_roo;
         //Sink = atmosphere; 
 
-        FLUXFLOWS.SOURCE[F.fx_roo2lit]=S.C_roo;
-        FLUXFLOWS.SINK[F.fx_roo2lit]=S.C_lit;
+        FIOMATRIX.SOURCE[F.fx_roo2lit]=S.C_roo;
+        FIOMATRIX.SINK[F.fx_roo2lit]=S.C_lit;
 
-        FLUXFLOWS.SOURCE[F.woo2cwd]=S.C_woo;
-        FLUXFLOWS.SINK[F.woo2cwd]=S.C_cwd;
+        FIOMATRIX.SOURCE[F.woo2cwd]=S.C_woo;
+        FIOMATRIX.SINK[F.woo2cwd]=S.C_cwd;
         
-        FLUXFLOWS.SOURCE[F.f_woo]=S.C_woo;
+        FIOMATRIX.SOURCE[F.f_woo]=S.C_woo;
         //Sink = atmosphere; 
 
-        FLUXFLOWS.SOURCE[F.fx_woo2cwd]=S.C_woo;
-        FLUXFLOWS.SINK[F.fx_woo2cwd]=S.C_cwd;
+        FIOMATRIX.SOURCE[F.fx_woo2cwd]=S.C_woo;
+        FIOMATRIX.SINK[F.fx_woo2cwd]=S.C_cwd;
         
-        FLUXFLOWS.SOURCE[F.ae_rh_cwd]=S.C_cwd;
+        FIOMATRIX.SOURCE[F.ae_rh_cwd]=S.C_cwd;
         //Sink = atmosphere; 
         
-        FLUXFLOWS.SOURCE[F.an_rh_cwd]=S.C_cwd;
+        FIOMATRIX.SOURCE[F.an_rh_cwd]=S.C_cwd;
         //Sink = atmosphere; 
             
-        FLUXFLOWS.SOURCE[F.f_cwd]=S.C_cwd;
+        FIOMATRIX.SOURCE[F.f_cwd]=S.C_cwd;
         //Sink = atmosphere; 
 
-        FLUXFLOWS.SOURCE[F.cwd2som]=S.C_cwd;
-        FLUXFLOWS.SINK[F.cwd2som]=S.C_som;
+        FIOMATRIX.SOURCE[F.cwd2som]=S.C_cwd;
+        FIOMATRIX.SINK[F.cwd2som]=S.C_som;
 
-        FLUXFLOWS.SOURCE[F.fx_cwd2som]=S.C_cwd;
-        FLUXFLOWS.SINK[F.fx_cwd2som]=S.C_som;
+        FIOMATRIX.SOURCE[F.fx_cwd2som]=S.C_cwd;
+        FIOMATRIX.SINK[F.fx_cwd2som]=S.C_som;
                         
-        FLUXFLOWS.SOURCE[F.ae_rh_lit]=S.C_lit;
+        FIOMATRIX.SOURCE[F.ae_rh_lit]=S.C_lit;
         //Sink = atmosphere; 
         
-        FLUXFLOWS.SOURCE[F.an_rh_lit]=S.C_lit;
+        FIOMATRIX.SOURCE[F.an_rh_lit]=S.C_lit;
         //Sink = atmosphere; 
         
-        FLUXFLOWS.SOURCE[F.f_lit]=S.C_lit;
+        FIOMATRIX.SOURCE[F.f_lit]=S.C_lit;
         //Sink = atmosphere; 
 
-        FLUXFLOWS.SOURCE[F.lit2som]=S.C_lit;
-        FLUXFLOWS.SINK[F.lit2som]=S.C_som;
+        FIOMATRIX.SOURCE[F.lit2som]=S.C_lit;
+        FIOMATRIX.SINK[F.lit2som]=S.C_som;
 
-        FLUXFLOWS.SOURCE[F.fx_lit2som]=S.C_lit;
-        FLUXFLOWS.SINK[F.fx_lit2som]=S.C_som;
+        FIOMATRIX.SOURCE[F.fx_lit2som]=S.C_lit;
+        FIOMATRIX.SINK[F.fx_lit2som]=S.C_som;
 
-        FLUXFLOWS.SOURCE[F.ae_rh_som]=S.C_som;
+        FIOMATRIX.SOURCE[F.ae_rh_som]=S.C_som;
         //Sink = atmosphere; 
         
-        FLUXFLOWS.SOURCE[F.an_rh_som]=S.C_som;
+        FIOMATRIX.SOURCE[F.an_rh_som]=S.C_som;
         //Sink = atmosphere; 
         
-        FLUXFLOWS.SOURCE[F.f_som]=S.C_som;
+        FIOMATRIX.SOURCE[F.f_som]=S.C_som;
         //Sink = atmosphere; 
  
         // Source = atmosphere and snowmelt
-        FLUXFLOWS.SINK[F.infil]=S.H2O_PAW;
+        FIOMATRIX.SINK[F.infil]=S.H2O_PAW;
 
-        FLUXFLOWS.SOURCE[F.melt]=S.H2O_SWE;
+        FIOMATRIX.SOURCE[F.melt]=S.H2O_SWE;
         //Sink = infiltration (F.infil); 
 
         // Source = atmosphere
-        FLUXFLOWS.SINK[F.snowfall]=S.H2O_SWE;
+        FIOMATRIX.SINK[F.snowfall]=S.H2O_SWE;
 
-        FLUXFLOWS.SOURCE[F.et]=S.H2O_PAW;
+        FIOMATRIX.SOURCE[F.et]=S.H2O_PAW;
         //Sink = atmosphere; 
 
-        FLUXFLOWS.SOURCE[F.paw2puw]=S.H2O_PAW;
-        FLUXFLOWS.SINK[F.paw2puw]=S.H2O_PUW;
+        FIOMATRIX.SOURCE[F.paw2puw]=S.H2O_PAW;
+        FIOMATRIX.SINK[F.paw2puw]=S.H2O_PUW;
 
-        FLUXFLOWS.SOURCE[F.q_paw]=S.H2O_PAW;
+        FIOMATRIX.SOURCE[F.q_paw]=S.H2O_PAW;
         // Sink = runoff
 
-        FLUXFLOWS.SOURCE[F.q_puw]=S.H2O_PUW;
+        FIOMATRIX.SOURCE[F.q_puw]=S.H2O_PUW;
         // Sink = runoff
 
         // Source = atmosphere
-        FLUXFLOWS.SINK[F.ground_heat]=S.E_PAW;
+        FIOMATRIX.SINK[F.ground_heat]=S.E_PAW;
 
         // Source = atmosphere
-        FLUXFLOWS.SINK[F.infil_e]=S.E_PAW;
+        FIOMATRIX.SINK[F.infil_e]=S.E_PAW;
 
-        FLUXFLOWS.SOURCE[F.et_e]=S.E_PAW;
+        FIOMATRIX.SOURCE[F.et_e]=S.E_PAW;
         // Sink = atmosphere
 
-        FLUXFLOWS.SOURCE[F.q_paw_e]=S.E_PAW;
+        FIOMATRIX.SOURCE[F.q_paw_e]=S.E_PAW;
         // Sink = runoff
 
-        FLUXFLOWS.SOURCE[F.q_puw_e]=S.E_PUW;
+        FIOMATRIX.SOURCE[F.q_puw_e]=S.E_PUW;
         // Sink = runoff
 
-        FLUXFLOWS.SOURCE[F.paw2puw_e]=S.E_PAW;
-        FLUXFLOWS.SINK[F.paw2puw_e]=S.E_PUW;
+        FIOMATRIX.SOURCE[F.paw2puw_e]=S.E_PAW;
+        FIOMATRIX.SINK[F.paw2puw_e]=S.E_PUW;
 
 
-return  FLUXFLOWS;
+        
+        
+        //Determine list of source and sink flux indices based on fluxfloes
+        
+        
+DALECmodel->FIOMATRIX = FIOMATRIX;
+
+//Calculate State source sink matrix
+DALEC_STATE_SOURCE_SINK_MATRIX_CONFIG(DALECmodel);
+
+return 0;
+
+
 }
 
 
@@ -191,7 +202,8 @@ int * output_fluxes}
 struct DALEC_1100_EDCs{
 int litcwdtor;
 int cwdsomtor;
-int stateranges;
+int state_ranges;
+int state_trajectories;
 } DALEC_1100_EDCs={
     0,1,2
 };
@@ -1162,34 +1174,32 @@ EDCs[E.cwdsomtor].prerun=true;
 
 
 //Adding EDC to the EDCs list
-    EDCs[E.stateranges].data=&EDC_sr;
-    EDCs[E.stateranges].function=&DALEC_EDC_STATE_RANGES;
-    EDCs[E.stateranges].prerun=false;
-// 
-// 
-// // Define all pools here
-//static DALEC_EDC_TRAJECTORY_STRUCT EDC_t_C_lab;
-//  
-// EDC_t_Clab.pool_idx = S.C_lab;
-// static int C_lab_fin = ;
-// EDC_t_Clab.nfin = ;
-// EDC_t_Clab.FIN = ;
-// EDC_t_Clab.nfout = ;
-// EDC_t_Clab.FOUT = ;
-// } DALEC_EDC_TRAJECTORY_STRUCT;
-    
-    
-    //Define which pools need to be constrained here
-    
-    EDC_st.n_pools=...
+   
 
-    EDC_st.pool_indices=...
+    EDCs[E.state_ranges].data=&EDC_sr;
+    EDCs[E.state_ranges].function=&DALEC_EDC_STATE_RANGES;
+    EDCs[E.state_ranges].prerun=false;
+// 
+
+          DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
+    
+static int edc_pool_indices[7];
+EDC_st.pool_indices=edc_pool_indices;
+EDC_st.no_pools_to_check=7;
             
-            EDC_st.FLUX_SOURCE_SINK_STRUCT=...
+EDC_st.pool_indices[0]=S.C_lab;
+EDC_st.pool_indices[1]=S.C_fol;
+EDC_st.pool_indices[2]=S.C_roo;
+EDC_st.pool_indices[3]=S.C_woo;
+EDC_st.pool_indices[4]=S.C_cwd;
+EDC_st.pool_indices[5]=S.C_lit;
+EDC_st.pool_indices[6]=S.C_som;
+
+            
         //Rest can be done by code without additional input
-    EDCs[E.statetrajectory].data=&EDC_st;
-    EDCs[E.statetrajectory].function=&DALEC_EDC_STATE_TRAJECTORIES;
-    EDCs[E.statetrajectory].prerun=false;
+    EDCs[E.state_trajectories].data=&EDC_st;
+    EDCs[E.state_trajectories].function=&DALEC_EDC_TRAJECTORY;
+    EDCs[E.state_trajectories].prerun=false;
 //Eventually adopt more succinct notation (to consider)
 //e.g. INEQUALITY_EDC(P.t_cwd,P.t_som,EDCs[E.cwdsomtor])
 

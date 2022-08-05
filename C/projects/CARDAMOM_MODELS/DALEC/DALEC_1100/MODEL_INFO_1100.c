@@ -1,8 +1,6 @@
 #pragma once
 #include "PARS_INFO_1100.c"
 #include "DALEC_1100.c"
-#include "EDC1_1100.c"
-#include "EDC2_1100.c"
 #include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF_DEDC.c"
 #include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
 #include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF2.c"

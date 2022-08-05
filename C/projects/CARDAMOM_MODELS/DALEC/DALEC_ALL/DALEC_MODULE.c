@@ -11,6 +11,19 @@ double (*function) (DATA * , void *);
 
 
 
+typedef struct DALEC_FLUX_SOURCE_SINK_MATRIX{
+    int *SOURCE;
+    int *SINK;
+}DALEC_FLUX_SOURCE_SINK_MATRIX;
+
+
+   typedef struct DALEC_STATE_SOURCE_SINK_MATRIX{ 
+  int N_STATE_INPUT_FLUXES;
+  int *STATE_INPUT_FLUXES;
+  int N_STATE_OUTPUT_FLUXES;
+  int *STATE_OUTPUT_FLUXES;}DALEC_STATE_SOURCE_SINK_MATRIX;
+  
+
 typedef struct DALEC{
 int nopools;
 int nopars;
@@ -30,9 +43,14 @@ int (*edc2)(const double *, DATA, struct EDCDIAGNOSTIC * EDCD);
 /*contains all the EDCD relevant info*/
 struct EDCDIAGNOSTIC * EDCD;
 
+DALEC_FLUX_SOURCE_SINK_MATRIX FIOMATRIX;
+DALEC_STATE_SOURCE_SINK_MATRIX * SIOMATRIX;
 OBSOPE OBSOPE;
 EDCs * EDCs;//Pointer, as each element is a unique EDC
 }DALEC;
 
 #include "../DALEC_EDCs/DALEC_EDC_FUNCTIONS.c"
+#include "DALEC_STATE_SOURCE_SINK_MATRIX_CONFIG.c"
+
+
 
