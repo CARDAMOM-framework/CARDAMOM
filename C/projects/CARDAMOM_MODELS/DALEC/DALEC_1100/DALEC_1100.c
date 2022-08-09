@@ -566,8 +566,8 @@ double VegK = LAD/cos(zenith_angle/180*pi);
 
 /*Temp scaling factor*/
 double g;
-int Tminmin = pars[P.Tminmin] - 273.15; 
-int Tminmax = pars[P.Tminmax] - 273.15;
+double Tminmin = pars[P.Tminmin] - 273.15; 
+double Tminmax = pars[P.Tminmax] - 273.15;
 if( T2M_MIN[n] < Tminmin ) {
     g=0;
 }
