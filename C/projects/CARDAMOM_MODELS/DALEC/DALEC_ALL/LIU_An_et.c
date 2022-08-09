@@ -119,8 +119,20 @@ sV = 0.04145*exp(0.06088*T_C);
 SRADg = (1. - leaf_refl)*SRAD*exp(-VegK*LAI*clumping);
 SRAD = (1. - leaf_refl)*SRAD;
 
+printf("SRADg = %2.2f\n",SRADg);
+printf("SRAD = %2.2f\n",SRAD);
+
+
 petVnum = (sV*(SRAD-SRADg)+1.225*1000*VPD_kPa*ga)/lambda0*60*60;
+
+
 petVnumB = 1.26*(sV*SRADg)/(sV+gammaV)/lambda0*60*60; //from mm.hr-1 
+printf("sV = %2.2f\n",sV);
+printf("gammaV = %2.2f\n",gammaV);
+printf("lambda0 = %2.2f\n",lambda0);
+
+
+
 
 if(beta_factor > 0 && SRAD >0){
 
@@ -142,6 +154,11 @@ evap_scale_factpr = fmin(maxPevap/precip, 1.);
 
 
 evap = petVnumB*evap_scale_factpr;
+
+printf("pars[P.maxPevap]; = %2.2f\n",maxPevap);
+printf("precip = %2.2f\n",precip);
+printf("petVnumB = %2.2f\n",petVnumB);
+
 
 //evap = petVnumB;
 

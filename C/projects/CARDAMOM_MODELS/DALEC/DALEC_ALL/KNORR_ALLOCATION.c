@@ -137,17 +137,20 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   lambda_lim = MaxExponentialSmooth(plgr * laim * f / r, 1e-9, 5e-3);
 
   // dlambdadt = r*(lambda_lim - lambda);
-
+//
   lambda_next = lambda_lim - (lambda_lim - lambda)*exp(-r*deltat);
 
-  dlambdadt = lambda_next - lambda;
+  //DLAI/dt per timestep (as in Knorr paper)
+
+  dlambdadt = (lambda_next - lambda);
+  
 
   
   //Store outputs in struct
  K->OUT.lambda_next = lambda_next;
  K->OUT.T= T;
  K->OUT.laim = laim;
- K->OUT.dlambdadt = dlambdadt;
+ K->OUT.dlambdadt = dlambdadt;//dLAI/dt units = change of LAI per timestep
  K->OUT.f_T=f_T;
  K->OUT.f_d= f_d;
  
