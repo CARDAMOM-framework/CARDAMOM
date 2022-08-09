@@ -32,7 +32,7 @@ int EDC=1;
 int DIAG=EDCD->DIAG;
 /*obsolete edcc constant was kept here*/
 /*deriving true allocation fractions*/
-double const fauto=pars[P.f_auto];HEAD
+double const fauto=pars[P.f_auto];
 // double const ffol=(1-fauto)*pars[P.f_foliar];  // Removed this as there is no longer a direct flux from NPP -> Cfol, it all goes via Clab
 double const flab=(1-fauto)*pars[P.f_lab];
 double const froot=(1-fauto-flab)*pars[P.f_root];
