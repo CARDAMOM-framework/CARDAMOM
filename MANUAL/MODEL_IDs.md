@@ -45,6 +45,7 @@ Can use the COMPLEX effort to document all the models here, including some examp
 |                                  | 1025       |                          |                                                     | Norton                          | In prep.                        |
 |                                  | 1030--1039 | 1000                     | VPD-GPP sensitivity                                 | Paul Levine                     |     In prep.                  |
 |                                  | 1040       | 1005                     | Nutrient model                                      | Anthony Bloom                   | In prep.                        |
+|                                  | 1045       | 1005                     | Agriculture and non-fire disturbance model                                   | Anthony Bloom                   | In prep.                        |
 |                                  | 1050       | 1000                     | Nitrogen model                                      | Renato Braghiere                | In prep.                        |
 |                                  | 1060--1069 | 1000                     | Hydrology from Massoud et al, 2021                  | Paul Levine                     |                                 |
 | Flagship testing                 | 1090--1099 |101x,105x,106x,110x       | Testing of flagship model                           |                                 | For testing only                |

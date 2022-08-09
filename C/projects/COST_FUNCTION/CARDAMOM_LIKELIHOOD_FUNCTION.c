@@ -2,6 +2,7 @@
 #include "../CARDAMOM_GENERAL/NETCDF_AUXILLIARY_FUNCTIONS.c"
 #include "../../math_fun/max.c"
 #include "../CARDAMOM_GENERAL/CARDAMOM_NETCDF_DATA_STRUCTURE.c"
+#include <stdbool.h>
 
 //#include "../CARDAMOM_GENERAL/CARDAMOM_READ_NETCDF_DATA.c"
 
@@ -15,7 +16,7 @@ int opt_filter;//(0 = no filter, 1 = mean only, 2==annual mean & monthly anomaly
 double min_threshold;//Minimum value threshold: model and/or data will be rounded up to this value (default = -inf)
 double single_monthly_unc;//Fields to be used only with Filter=2 AND opt_unc_type=0;
 double single_annual_unc;//Fields to be used only with Filters=2 & 3 (AND opt_unc_type=0 or opt_unc_type=2 for filter = 2);
-double single_mean_unc;//Fields to be used only with Filter = 1;
+double single_mean_unc;//Fields to be used only with Filter = 1;`
 double single_unc;//Fields to be used only with Filter = 0 ;
 double structural_unc;//this gets added to uncertainty in quadrature.
 //****Auxiliary variables, separate from timeseries variable****
@@ -25,6 +26,7 @@ size_t length;//
 size_t unc_length;//
 int valid_obs_length;//number of non-empty obs
 int * valid_obs_indices;//indices of non-empty obs
+bool validobs;//True/false  whether no usable data provided
 }TIMESERIES_OBS_STRUCT;
 
 
@@ -34,6 +36,9 @@ double value;
 double unc;
 int opt_unc_type;//(0 = absolute sigma, 1 = uncertainty factor, 2 = sigma as fraction of value)
 double min_threshold;
+double min_value;
+double max_value;
+bool validobs;//True/false  whether no usable data provided
 }SINGLE_OBS_STRUCT;
 
 
@@ -79,6 +84,10 @@ for (k=0;k<OBS->valid_obs_length;k++){
     OBS->unc[OBS->valid_obs_indices[k]]=sqrt(pow(OBS->unc[OBS->valid_obs_indices[k]],2) + pow(OBS->structural_unc,2));}
 
 
+
+//isempty flag
+OBS->validobs=false;
+if (OBS->valid_obs_length>0){OBS->validobs=true;}
 
 
 return 0;}
@@ -158,11 +167,26 @@ printf("OBSNAME = %s\n",OBSNAME);
 size_t length;
 
 OBS.value = ncdf_read_single_double_var(ncid, OBSNAME);
+if (isnan(OBS.value)){OBS.value=DEFAULT_DOUBLE_VAL;}
+
 OBS.unc = ncdf_read_double_attr(ncid, OBSNAME,"unc");
+
 OBS.opt_unc_type=ncdf_read_int_attr(ncid, OBSNAME,"opt_unc_type");//absolute, log, percentage
+
 OBS.min_threshold=ncdf_read_double_attr(ncid, OBSNAME,"min_threshold");
 
-if (isnan(OBS.value)){OBS.value=DEFAULT_DOUBLE_VAL;}
+// //MINMAX LIMITS: OBS.min_value=ncdf_read_double_attr(ncid, OBSNAME,"min_value");
+////MINMAX LIMITS: OBS.max_value=ncdf_read_double_attr(ncid, OBSNAME,"max_value");
+
+//MINMAX LIMITS: default_double_value(&OBS->min_value,log(0));//-INFINITY
+//MINMAX LIMITS: default_double_value(&OBS->max_value,-log(0));//INFINITY
+
+//isempty flag
+OBS.validobs=false;
+if(OBS.min_value!=DEFAULT_DOUBLE_VAL){OBS.validobs=true;}
+if(OBS.max_value!=DEFAULT_DOUBLE_VAL){OBS.validobs=true;}
+if(OBS.value!=DEFAULT_DOUBLE_VAL){OBS.validobs=true;}
+
 
 return OBS;
 }
@@ -445,7 +469,13 @@ unc=log(unc);}
 tot_exp = pow((mod- obs)/unc,2);
 
 
-P=-0.5*tot_exp;}
+P=-0.5*tot_exp;
+
+//MINMAX LIMITS if (mod < OBS->min_value || mod > OBS->max_value ){P=log(0);}
+
+}
+
+
 // printf("Completed likelihood function...P = %2.2f\n",P);
 // printf("OBS->opt_filter = %i\n",OBS->opt_filter);
 // printf("OBS->opt_unc_type = %i\n",OBS->opt_unc_type);
