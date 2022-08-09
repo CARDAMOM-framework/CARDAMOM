@@ -3,14 +3,36 @@
             
 int DALEC_STATE_SOURCE_SINK_MATRIX_CONFIG(DALEC * DALEC){
     
-    
+
+printf("********\n");
+printf("********\n");
+printf("****SO FAR SO GOOD DALEC_STATE_SOURCE_SINK_MATRIX_CONFIG start****\n");
+printf("********\n");
+printf("********\n");
+printf("DALEC->nopools = %2i\n",DALEC->nopools);
+
+
      int nopools=DALEC->nopools;
      int nofluxes=DALEC->nofluxes;
      DALEC_FLUX_SOURCE_SINK_MATRIX FIOMATRIX=DALEC->FIOMATRIX;
      int f,s;
      
+    
+//static EDCs * EDCs;EDCs=calloc(DALECmodel->noedcs,sizeof( * EDCs));
+
+         DALEC_STATE_SOURCE_SINK_MATRIX * SIOMATRIX;
+
+
+
+SIOMATRIX=calloc(nopools,sizeof(DALEC_STATE_SOURCE_SINK_MATRIX));
+         
+printf("********\n");
+printf("********\n");
+printf("****SO FAR SO GOOD DALEC_STATE_SOURCE_SINK_MATRIX_CONFIG start 2****\n");
+printf("********\n");
+printf("********\n");
      
-         DALEC_STATE_SOURCE_SINK_MATRIX * SIOMATRIX=calloc(DALEC->nopools,sizeof(DALEC_STATE_SOURCE_SINK_MATRIX *));
+         
      
          for (s=0;s<nopools;s++){SIOMATRIX[s].N_STATE_INPUT_FLUXES=0;SIOMATRIX[s].N_STATE_OUTPUT_FLUXES=0;}
          //Step 1. Count inputs and outputs

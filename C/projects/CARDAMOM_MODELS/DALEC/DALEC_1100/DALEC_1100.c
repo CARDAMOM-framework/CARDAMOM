@@ -22,7 +22,7 @@
 //Returns structure with sources and sinks, matches number of fluxes
 int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
     
-//DALEC flux indices    
+
     struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
     struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
@@ -169,15 +169,22 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         
         
         //Determine list of source and sink flux indices based on fluxfloes
-        
+
         
 DALECmodel->FIOMATRIX = FIOMATRIX;
+            
+
+//DALEC flux indices    
 
 //Calculate State source sink matrix
 DALEC_STATE_SOURCE_SINK_MATRIX_CONFIG(DALECmodel);
 
 return 0;
-
+printf("********\n");
+printf("********\n");
+printf("****SO FAR SO GOOD MATRIX CONFIG****\n");
+printf("********\n");
+printf("********\n");
 
 }
 
@@ -1208,7 +1215,9 @@ struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
 struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
-DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
+
+
+
 
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
@@ -1216,6 +1225,10 @@ DALECmodel->nopars=72;
 DALECmodel->nofluxes=69;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->noedcs=4;
+
+DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
+
+
 
 //Define PARS_INFO here (ranges, and eventually names, etc)
 PARAMETER_INFO_1100(DALECmodel);
@@ -1225,7 +1238,7 @@ PARAMETER_INFO_1100(DALECmodel);
 //This is generic EDCs structure defined in ../DALEC_EDCs/DALEC_EDC_FUNCTIONS.c
 //Has three args, data (void), function (in "DATA", and "void *", and "double" out), and "boolean" prerun.
 
-static EDCs * EDCs;EDCs=calloc(DALECmodel->noedcs,sizeof( * EDCs));
+static EDCs * EDCs;EDCs=calloc(DALECmodel->noedcs,sizeof(EDCs));
 
 
 //Som lit turnover rate
