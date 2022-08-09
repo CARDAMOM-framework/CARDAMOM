@@ -610,6 +610,7 @@ LIU.IN.leaf_refl=pars[P.leaf_refl];
 LIU.IN.maxPevap=pars[P.maxPevap];
 LIU.IN.precip=PREC[n];
 
+
 //Call function: uses LIU->IN to update LIU->OUT
 LIU_AN_ET(&LIU);
 
@@ -788,8 +789,10 @@ KNORR.IN.ET= FLUXES[f+F.et];
 //Call function: uses KNORR->IN to update KNORR->OUT
 KNORR_ALLOCATION(&KNORR);
  
-FLUXES[f+F.target_LAI]=KNORR.OUT.lambda_next ;
-FLUXES[f+F.dlambda_dt]=KNORR.OUT.dlambdadt;
+FLUXES[f+F.target_LAI]=KNORR.OUT.lambda_next;
+//KNORR.OUT.dlambdadt is in units per timestep; converting thest to units per day (as required for CARDAMOM)
+//"FLUXES" have to be in "per day" units
+FLUXES[f+F.dlambda_dt]=KNORR.OUT.dlambdadt/deltat;
 FLUXES[f+F.f_temp_thresh]= KNORR.OUT.f_T;
 FLUXES[f+F.f_dayl_thresh]= KNORR.OUT.f_d;
 
@@ -823,6 +826,8 @@ if (FLUXES[f+F.dlambda_dt] > 0){
   FLUXES[f+F.fol2lit]=POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))/deltat;
 }
 else {
+    //FLUXES[f+F.dlambda_dt] is in m2/m2/day
+    //LCMA = gC/m2/m2
   FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA]+POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))/deltat;
 }
 
