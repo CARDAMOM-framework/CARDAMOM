@@ -152,10 +152,6 @@ CARDADATA->parmax[P.T_phi]=323.15;
 CARDADATA->parmin[P.T_range]=0.1;
 CARDADATA->parmax[P.T_range]=10.0;
 
-/*Averaging period for temperature growth trigger T (time units of model), usually kept constant*/
-CARDADATA->parmin[P.tau_m]=1.0;
-CARDADATA->parmax[P.tau_m]=1.01;
-
 /*LAI linear growth constant (inverse of model time units; e.g. days-1 or months-1)*/
 CARDADATA->parmin[P.plgr]=0.001;
 CARDADATA->parmax[P.plgr]=0.5;

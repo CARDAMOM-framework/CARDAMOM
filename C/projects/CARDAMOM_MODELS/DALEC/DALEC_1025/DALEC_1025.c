@@ -41,7 +41,6 @@ int i_PUW;
 int boese_r;
 int T_phi;
 int T_range;
-int tau_m;
 int plgr;
 int k_leaf;
 int lambda_max;
@@ -56,7 +55,7 @@ int t_foliar;
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
-    40,41,42
+    40,41
 };
 
 struct DALEC_1025_FLUXES{
@@ -293,7 +292,7 @@ lai_var_list[1]=LAI;
 lai_var_list[2]=LAI;
 lai_var_list[3]=pars[P.T_phi];
 lai_var_list[4]=pars[P.T_range];
-lai_var_list[6]=pars[P.tau_m]; /*tau_m*/
+lai_var_list[6]=30.0; /*tau_m*/
 lai_var_list[7]=pars[P.plgr]; /*plgr*/
 lai_var_list[8]=pars[P.k_leaf]; /*k_L*/
 lai_var_list[9]=pars[P.lambda_max]; /*lambda_max*/
@@ -438,7 +437,7 @@ struct DALEC_1025_POOLS S=DALEC_1025_POOLS;
 
 DALECmodel->nopools=9;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=48;
+DALECmodel->nopars=42;
 DALECmodel->nofluxes=41;
 DALECmodel->dalec=DALEC_1025;
 
