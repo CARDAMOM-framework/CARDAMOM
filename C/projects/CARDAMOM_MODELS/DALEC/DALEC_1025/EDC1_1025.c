@@ -33,7 +33,7 @@ int DIAG=EDCD->DIAG;
 /*obsolete edcc constant was kept here*/
 /*deriving true allocation fractions*/
 double const fauto=pars[P.f_auto];
-double const ffol=(1-fauto)*pars[P.f_foliar];
+double const ffol=(1-fauto);//*pars[P.f_foliar];
 double const flab=(1-fauto-ffol)*pars[P.f_lab];
 double const froot=(1-fauto-ffol-flab)*pars[P.f_root];
 double const fwood=1-fauto-ffol-flab-froot;
