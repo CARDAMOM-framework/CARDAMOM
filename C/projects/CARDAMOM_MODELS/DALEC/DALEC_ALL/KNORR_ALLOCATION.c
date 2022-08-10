@@ -85,7 +85,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   }
    T_r=K->IN.T_r;
   T_memory=K->IN.T_memory;
-   tau_m=1.0; //var_list[6];
+   tau_m=30.0; // Averaging period for temperature growth trigger T (units of days; must be in same units as deltat), usually kept constant but could potentially be a tuneable parameter
    plgr=K->IN.plgr;//
    k_L=K->IN.k_L;
    pasm=K->IN.pasm;
@@ -93,7 +93,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
    lambda_max=K->IN.lambda_max;
    tau_W=K->IN.tau_W;
    lambda_max_memory=K->IN.lambda_max_memory;  //TIME-DEPENDENT I.E. SAVE IN MEMORY
-   tau_s=1.0;
+   tau_s=30.0; // Averaging period for water/structural memory (units of days; must be in same units as deltat), usually kept constant but could potentially be a tuneable parameter
    t_c=K->IN.t_c; 
    t_r=K->IN.t_r; 
 
@@ -110,7 +110,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   // if (n==0){printf("> in LAI_KNORR: T_memory = %2.1f\n",T_memory);}
   // if (n==0){T_memory=T_phi+3*T_r;}   /* set the temperature memory to be high so that we start in growth phase */
   // Exponentially declining memory of temperature
-  T      = exp(- 1 / tau_m)*T_memory + meantemp * (1 - exp(- 1 / tau_m));
+  T      = exp(- deltat / tau_m)*T_memory + meantemp * (1 - exp(- deltat / tau_m));
   T_deviation=(T-T_phi)/T_r;
   /* fraction of plants above temperature threshold: using cumulative normal distribution function (derived from the intrinsic c-function erfc) */
   f_T    = 0.5*erfc(-T_deviation*sqrt(0.5));
@@ -132,16 +132,14 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   /* compute smoothed maximum LAI */
   lambda_tilde_max = MinQuadraticSmooth(lambda_max, lambda_W, 0.99);
   /* update LAI water/structural memory using an exponentially declining memory of water/structural limitation over the time period tau_s */
-  laim = exp(- 1.0 / tau_s)*lambda_max_memory + lambda_tilde_max * (1.0 - exp(- 1.0 / tau_s));
+  laim = exp(- deltat / tau_s)*lambda_max_memory + lambda_tilde_max * (1.0 - exp(- deltat / tau_s));
   
   lambda_lim = MaxExponentialSmooth(plgr * laim * f / r, 1e-9, 5e-3);
 
-  // dlambdadt = r*(lambda_lim - lambda);
-//
+  // lambda_next is the updated target LAI (units of m2/m2)
   lambda_next = lambda_lim - (lambda_lim - lambda)*exp(-r*deltat);
 
-  //DLAI/dt per timestep (as in Knorr paper)
-
+  // dlambdadt is the change in LAI over the period deltat (units of m2/m2)
   dlambdadt = (lambda_next - lambda);
   
 
