@@ -39,18 +39,6 @@ typedef struct {
 //double* KNORR_ALLOCATION(double const *met_list, double const *var_list)
 int KNORR_ALLOCATION(KNORR_ALLOCATION_STRUCT * K)
 {
-/*Notes: DALEC code passes the following *consts and *pars pointers:
- double constants[10]={pars[10],0.0156935,4.22273,208.868,0.0453194,0.37836,7.19298, 0.011136,2.1001,0.789798};
-
-constants terms:
-consts[0] = T_Phi = 12.5        # parameter: temperature at leaf onset (degrees C)
-consts[1] = T_r   = 2.0         # parameter: spatial range (1 sigma) of T_Phi (degrees C)
-consts[2] = t_c   = 10.0        # parameter: day length at leaf shedding (hours)
-consts[3] = t_r   = 0.5         # parameter: spatial range (1 sigma) of t_c (hours)
-consts[4] = xi  = 0.5           # parameter: initial linear leaf growth (1/days)
-consts[5] = k_L   = 0.1         # parameter: inverse of leaf longevity from start of senscence (1/days)
-consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (m2/m2)
-*/
 
   /*initialize intermediate variables*/
   double daylengthpars[3];
@@ -68,23 +56,16 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   double tau_W, tau_s;
   double lambda_next;
 
-  meantemp=K->IN.temp - DGCM_TK0C; // convert K to degrees C
   
   
   n=1.0; /*(double)var_list[0];*/
   deltat=(double)K->IN.deltat;
   lambda=(double)K->IN.lambda;
   T_init=(double)0.0;
-  if (K->IN.T_phi  < 100.0) {
-    // assume temperature parameter is in degrees C
-    T_phi=K->IN.T_phi ;
-  }
-  else {
-    // assume temperature parameter is in degrees kelvin
-    T_phi=K->IN.T_phi - DGCM_TK0C;
-  }
-   T_r=K->IN.T_r;
-  T_memory=K->IN.T_memory;
+  T_phi=K->IN.T_phi ;  // mean temp at leaf onset (K)
+  T_r=K->IN.T_r;       // spatial range of T_phi (K)
+  T_memory=K->IN.T_memory; // temperature memory (K)
+  meantemp=K->IN.temp;     // mean surface air temperature (K)
    tau_m=1.0; //var_list[6];
    plgr=K->IN.plgr;//
    k_L=K->IN.k_L;
@@ -98,7 +79,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
    t_r=K->IN.t_r; 
 
   
-    daylengthpars[0]=K->IN.latitude;  /* latitude */
+  daylengthpars[0]=K->IN.latitude;  /* latitude */
   daylengthpars[1]=K->IN.DOY;  /* day of year */
   daylengthpars[2]=DGCM_PI;  /* pi */
 
