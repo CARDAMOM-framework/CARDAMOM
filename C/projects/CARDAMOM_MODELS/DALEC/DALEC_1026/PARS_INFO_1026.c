@@ -1,5 +1,5 @@
 #pragma once
-#include "DALEC_1025.c"
+#include "DALEC_1026.c"
 
 /*PARAMETER_INFO (typedef struct) must have at least 3 fields
  *  * npars,
@@ -10,10 +10,10 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1025(DATA *CARDADATA)
+int PARS_INFO_1026(DATA *CARDADATA)
 {
 
-struct DALEC_1025_PARAMETERS P=DALEC_1025_PARAMETERS;
+struct DALEC_1026_PARAMETERS P=DALEC_1026_PARAMETERS;
 
 /*Decomposition rate*/
 CARDADATA->parmin[P.tr_lit2soil]=0.00001;
@@ -22,6 +22,10 @@ CARDADATA->parmax[P.tr_lit2soil]=0.01;
 /*Fraction of GPP respired*/
 CARDADATA->parmin[P.f_auto]=0.2;
 CARDADATA->parmax[P.f_auto]=0.8;
+
+/*Fraction of (1-fgpp) to foliage*/
+CARDADATA->parmin[P.f_foliar]=0.01;
+CARDADATA->parmax[P.f_foliar]=0.5;
 
 /*Fraction of (1-fgpp) to roots*/
 CARDADATA->parmin[P.f_root]=0.01;
@@ -51,9 +55,25 @@ CARDADATA->parmax[P.temp_factor]=0.08;
 CARDADATA->parmin[P.canopy_eff]=5;
 CARDADATA->parmax[P.canopy_eff]=50;
 
+/*Bday*/
+CARDADATA->parmin[P.Bday]=365.25;
+CARDADATA->parmax[P.Bday]=365.25*4;
+
 /*Fraction to Clab*/
 CARDADATA->parmin[P.f_lab]=0.01;
 CARDADATA->parmax[P.f_lab]=0.5;
+
+/*Clab Release period*/
+CARDADATA->parmin[P.labile_rel]=365.25/12;
+CARDADATA->parmax[P.labile_rel]=100;
+
+/*Fday*/
+CARDADATA->parmin[P.Fday]=365.25;
+CARDADATA->parmax[P.Fday]=365.25*4;
+
+/*Leaf fall period*/
+CARDADATA->parmin[P.leaf_fall]=365.25/12;
+CARDADATA->parmax[P.leaf_fall]=150;
 
 /*LMCA*/
 /*Kattge et al. 2011*/
@@ -151,6 +171,10 @@ CARDADATA->parmax[P.T_phi]=323.15;
 /*Spatial range of mean temperature at leaf onset (T_r) (degrees C or degrees kelvin)*/
 CARDADATA->parmin[P.T_range]=0.1;
 CARDADATA->parmax[P.T_range]=10.0;
+
+/*Averaging period for temperature growth trigger T (time units of model), usually kept constant*/
+CARDADATA->parmin[P.tau_m]=1.0;
+CARDADATA->parmax[P.tau_m]=1.01;
 
 /*LAI linear growth constant (inverse of model time units; e.g. days-1 or months-1)*/
 CARDADATA->parmin[P.plgr]=0.001;

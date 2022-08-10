@@ -566,8 +566,8 @@ double VegK = LAD/cos(zenith_angle/180*pi);
 
 /*Temp scaling factor*/
 double g;
-int Tminmin = pars[P.Tminmin] - 273.15; 
-int Tminmax = pars[P.Tminmax] - 273.15;
+double Tminmin = pars[P.Tminmin] - 273.15; 
+double Tminmax = pars[P.Tminmax] - 273.15;
 if( T2M_MIN[n] < Tminmin ) {
     g=0;
 }
@@ -583,7 +583,6 @@ else {
 double sm_PAW0 = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);
 double psi_PAW0 = HYDROFUN_MOI2PSI(sm_PAW0,psi_porosity,pars[P.retention]);
 double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*psi_PAW0/pars[P.psi_50] - 1)));
-       beta = fmin(beta,g);
 
 // mean air temperature (K)
 double air_temp = 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]);
@@ -597,7 +596,7 @@ LIU.IN.VPD=VPD[n]/10;
 LIU.IN.TEMP=air_temp;  
 LIU.IN.vcmax25=pars[P.Vcmax25];
 LIU.IN.co2=CO2[n];
-LIU.IN.beta_factor=beta;
+LIU.IN.beta_factor=fmin(beta,g);
 LIU.IN.g1=pars[P.Med_g1];
 LIU.IN.LAI=LAI;
 LIU.IN.ga=pars[P.ga];

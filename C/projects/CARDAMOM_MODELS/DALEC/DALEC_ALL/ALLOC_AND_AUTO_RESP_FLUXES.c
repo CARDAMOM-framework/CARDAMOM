@@ -42,7 +42,7 @@ int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
     double SCALE_ALLOC_FLUXES; //
 
     //Maintenance respiration
-    fT = pow(S->IN.Q10mr,(S->IN.TEMP-25)/10); 
+    fT = pow(S->IN.Q10mr,(S->IN.TEMP-298.15)/10);
     S->OUT.AUTO_RESP_MAINTENANCE = S->IN.mr * fT * S->IN.C_LIVE;
     S->OUT.F_LABPROD = S->IN.GPP - S->OUT.AUTO_RESP_MAINTENANCE;
 

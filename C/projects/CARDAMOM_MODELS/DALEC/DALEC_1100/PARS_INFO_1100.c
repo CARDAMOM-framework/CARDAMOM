@@ -170,7 +170,7 @@ parmin[P.Med_g1]=1.79;
 parmax[P.Med_g1]=5.79;
 
 /*Vcmax25*/
-parmin[P.Vcmax25]=1e-8;
+parmin[P.Vcmax25]=10;
 parmax[P.Vcmax25]=140;
 
 /*Tminmin scaling factor*/

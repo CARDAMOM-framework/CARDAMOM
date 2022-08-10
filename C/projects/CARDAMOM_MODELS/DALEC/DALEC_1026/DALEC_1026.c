@@ -2,14 +2,16 @@
 #include "../DALEC_ALL/DALEC_MODULE.c"
 #include "../DALEC_ALL/LAI_KNORR.c"
 #include "../DALEC_ALL/LAI_KNORR_funcs.c"
+#include "../DALEC_ALL/LAI_GSI.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
-struct DALEC_1025_PARAMETERS{
+struct DALEC_1026_PARAMETERS{
 /*DALEC PARAMETERS*/
 int tr_lit2soil;
 int f_auto;
+int f_foliar;
 int f_root;
 int t_wood;
 int t_root;
@@ -17,7 +19,11 @@ int t_lit;
 int t_soil;
 int temp_factor;
 int canopy_eff;
+int Bday;
 int f_lab;
+int labile_rel;
+int Fday;
+int leaf_fall;
 int LCMA;
 int i_labile;
 int i_foliar;
@@ -41,6 +47,7 @@ int i_PUW;
 int boese_r;
 int T_phi;
 int T_range;
+int tau_m;
 int plgr;
 int k_leaf;
 int lambda_max;
@@ -50,15 +57,15 @@ int time_r;
 int init_T_mem;
 int init_LAIW_mem;
 int t_foliar; 
-} DALEC_1025_PARAMETERS={
+} DALEC_1026_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
-    40,41
+    40,41,42,43,44,45,46,47
 };
 
-struct DALEC_1025_FLUXES{
+struct DALEC_1026_FLUXES{
 /*DALEC FLUXES*/
 int gpp;   /*GPP*/
 int temprate;   /*Temprate*/
@@ -101,7 +108,7 @@ int f_dayl_thresh;   /*f_dayl_thres*/
 int c_lim_flag;   /*LAI carbon limitation flag*/
 int lai_fire;   /*LAI fire loss*/
 int foliar_fire_frac;   /*C_fol fire loss frac*/
-} DALEC_1025_FLUXES={
+} DALEC_1026_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
@@ -109,7 +116,7 @@ int foliar_fire_frac;   /*C_fol fire loss frac*/
     40,
 };
 
-struct DALEC_1025_POOLS{
+struct DALEC_1026_POOLS{
 /*DALEC POOLS*/
 int C_lab; /*Labile C*/
 int C_fol; /*Foliar C*/
@@ -120,15 +127,15 @@ int C_som; /*Soil C*/
 int H2O_PAW; /*Plant available H2O*/
 int H2O_PUW; /*Plant unavailable H2O*/
 int D_LAI;//leaf area index
-} DALEC_1025_POOLS={0,1,2,3,4,5,6,7,8};
+} DALEC_1026_POOLS={0,1,2,3,4,5,6,7,8};
 
 
-int DALEC_1025(DATA DATA, double const *pars)
+int DALEC_1026(DATA DATA, double const *pars)
 {
 
-struct DALEC_1025_PARAMETERS P=DALEC_1025_PARAMETERS;
-struct DALEC_1025_FLUXES F=DALEC_1025_FLUXES;
-struct DALEC_1025_POOLS S=DALEC_1025_POOLS;
+struct DALEC_1026_PARAMETERS P=DALEC_1026_PARAMETERS;
+struct DALEC_1026_FLUXES F=DALEC_1026_FLUXES;
+struct DALEC_1026_POOLS S=DALEC_1026_POOLS;
 
 double gpppars[11],pi,lai_met_list[1],lai_var_list[21];
 /*C-pools, fluxes, meteorology indices*/
@@ -286,34 +293,28 @@ if (n==0){
   lai_var_list[11]=pars[P.init_LAIW_mem]*pars[P.lambda_max];
 }
 lai_met_list[0]=(T2M_MAX[n]+T2M_MIN[n])/2.0;
-// lai_var_list[0]=n;
-lai_var_list[19]=deltat;
-lai_var_list[1]=LAI;
-lai_var_list[2]=LAI;
-lai_var_list[3]=pars[P.T_phi];
-lai_var_list[4]=pars[P.T_range];
-lai_var_list[6]=30.0; /*tau_m*/
-lai_var_list[7]=pars[P.plgr]; /*plgr*/
-lai_var_list[8]=pars[P.k_leaf]; /*k_L*/
-lai_var_list[9]=pars[P.lambda_max]; /*lambda_max*/
-lai_var_list[10]=pars[P.tau_W]; /*tau_W*/
-lai_var_list[12]=DATA.ncdf_data.LAT; /*latitude*/
-lai_var_list[13]=DOY[n]; /*day of year*/
-lai_var_list[14]=pi; /*pi*/
-lai_var_list[15]=pars[P.time_c]; /*t_c*/
-lai_var_list[16]=pars[P.time_r]; /*t_r*/
-lai_var_list[17]=(POOLS[p+S.H2O_PAW]+POOLS[nxp+S.H2O_PAW])/2.0;
-lai_var_list[18]=FLUXES[f+F.et];
+lai_met_list[1]=VPD;
+
+lai_var_list[0]=DATA.ncdf_data.LAT; /*latitude*/
+lai_var_list[1]=DOY[n]; /*day of year*/
+lai_var_list[2]=pi; /*pi*/
+lai_var_list[3]=pars[P.T_phi]-5.0;
+lai_var_list[4]=pars[P.T_phi]+5.0;
+lai_var_list[5]=pars[P.time_c]-3.0;
+lai_var_list[6]=pars[P.time_c]+3.0;
+lai_var_list[7]=3.0;
+lai_var_list[8]=10.0;
 // Run Knorr LAI module
-double *LAI_KNORR_OUTPUT = LAI_KNORR(lai_met_list,lai_var_list);
-FLUXES[f+F.target_LAI]=LAI_KNORR_OUTPUT[0];
-FLUXES[f+F.T_memory]=LAI_KNORR_OUTPUT[1];
-FLUXES[f+F.lambda_max_memory]=LAI_KNORR_OUTPUT[2];
-FLUXES[f+F.dlambda_dt]=LAI_KNORR_OUTPUT[3]/deltat;
-FLUXES[f+F.f_temp_thresh]=LAI_KNORR_OUTPUT[4];
-FLUXES[f+F.f_dayl_thresh]=LAI_KNORR_OUTPUT[5];
-lai_var_list[5]=FLUXES[f+F.T_memory];  /*Update LAI temperature memory state for next iteration*/
-lai_var_list[11]=FLUXES[f+F.lambda_max_memory];   /*Update water/structural memory state for next iteration*/
+// double *LAI_KNORR_OUTPUT = LAI_KNORR(lai_met_list,lai_var_list);
+// FLUXES[f+F.target_LAI]=LAI_KNORR_OUTPUT[0];
+// FLUXES[f+F.T_memory]=LAI_KNORR_OUTPUT[1];
+// FLUXES[f+F.lambda_max_memory]=LAI_KNORR_OUTPUT[2];
+// FLUXES[f+F.dlambda_dt]=LAI_KNORR_OUTPUT[3]/deltat;
+FLUXES[f+F.dlambda_dt]=0.0;
+// FLUXES[f+F.f_temp_thresh]=LAI_KNORR_OUTPUT[4];
+// FLUXES[f+F.f_dayl_thresh]=LAI_KNORR_OUTPUT[5];
+// lai_var_list[5]=FLUXES[f+F.T_memory];  /*Update LAI temperature memory state for next iteration*/
+// lai_var_list[11]=FLUXES[f+F.lambda_max_memory];   /*Update water/structural memory state for next iteration*/
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
 FLUXES[f+F.temprate]=exp(pars[P.temp_factor]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp))*((PREC[n]/meanprec-1)*pars[P.moisture]+1);
@@ -322,7 +323,7 @@ FLUXES[f+F.resp_auto]=pars[P.f_auto]*FLUXES[f+F.gpp];
 /*leaf production*/
 FLUXES[f+F.fol_prod]=0;
 /*labile production*/
-FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*(pars[P.f_lab]);
+FLUXES[f+F.lab_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto])*(pars[P.f_lab]+pars[P.f_foliar]);
 Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]/deltat;
 if (FLUXES[f+F.dlambda_dt] > 0){
   FLUXES[f+F.lab_release]=MinQuadraticSmooth(Fcfolavailable, FLUXES[f+F.dlambda_dt]*pars[P.LCMA], 0.99);
@@ -429,17 +430,17 @@ return 0;
 
 
 
-int DALEC_1025_MODCONFIG(DALEC * DALECmodel){
+int DALEC_1026_MODCONFIG(DALEC * DALECmodel){
 
-struct DALEC_1025_PARAMETERS P=DALEC_1025_PARAMETERS;
-struct DALEC_1025_FLUXES F=DALEC_1025_FLUXES;
-struct DALEC_1025_POOLS S=DALEC_1025_POOLS;
+struct DALEC_1026_PARAMETERS P=DALEC_1026_PARAMETERS;
+struct DALEC_1026_FLUXES F=DALEC_1026_FLUXES;
+struct DALEC_1026_POOLS S=DALEC_1026_POOLS;
 
 DALECmodel->nopools=9;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=42;
+DALECmodel->nopars=48;
 DALECmodel->nofluxes=41;
-DALECmodel->dalec=DALEC_1025;
+DALECmodel->dalec=DALEC_1026;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
@@ -447,7 +448,7 @@ static OBSOPE OBSOPE;
 INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 
 //Set SUPPORT_OBS values to true if model supports observation operation.
-// printf("DALEC_1025_MODCONFIG, Line 22...\n");
+// printf("DALEC_1026_MODCONFIG, Line 22...\n");
 OBSOPE.SUPPORT_GPP_OBS=true;
 OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
