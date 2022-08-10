@@ -20,18 +20,15 @@ double RUN_DALEC_EDCs(DATA * DATA, EDCs * EDCs, bool prerun){
     //Continue from here: need to probably allow for EDCs to be standalone DATA field to allow for more versatile code(maybe) later on
 
 
-    
-    
     int n=0;
+
+
+
     double P=0;
     for (n=0;n<DATA->noedcs;n++){
               
         
-             printf("******************\n");
-    printf("******************\n");
-    printf("About to test EDC\n");
-    printf("******************\n");
-    printf("******************\n");
+       
         //Run function
         if (EDCs[n].prerun==prerun){    
             DATA->M_EDCs[n]=EDCs[n].function(DATA, EDCs[n].data);}}    

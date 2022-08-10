@@ -9,11 +9,7 @@ typedef struct {
 double DALEC_EDC_STATE_RANGES(DATA * DATA, void * EDCstruct){
     
     
-       printf("******************\n");
-    printf("******************\n");
-    printf("IN EDC state ranges\n");
-    printf("******************\n");
-    printf("******************\n");
+ 
     double PEDC = 0;
     //Reading by casting void pointer to "DALEC_EDC_PARS_INEQUALITY_STRUCT" format
    DALEC_EDC_STATE_RANGES_STRUCT  E = *(DALEC_EDC_STATE_RANGES_STRUCT * ) EDCstruct;
@@ -32,11 +28,6 @@ while (n<DATA->ncdf_data.TIME_INDEX.length  & k==0){
   p+=1;}
   
   
-     printf("******************\n");
-    printf("******************\n");
-    printf("Done in EDC state ranges\n");
-    printf("******************\n");
-    printf("******************\n");
     return PEDC;
 }
 

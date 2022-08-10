@@ -113,7 +113,6 @@ double Fin=0, Fout=0;
 
 
 
-
 // 
 // double Fin[10];
 // double Fout[10];
@@ -147,8 +146,7 @@ Rs=Rm*MPOOLSjan/Pstart;
  PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
 
     }
-      
-      
+PEDC=0;      
     return PEDC;
 }
 

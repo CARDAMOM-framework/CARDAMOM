@@ -38,7 +38,7 @@ int LIU_AN_ET(LIU_AN_ET_STRUCT * A)
 
 double SRAD=A->IN.SRAD;
 double VPD=A->IN.VPD;
-double TEMP=A->IN.TEMP;
+double TEMP=A->IN.TEMP; // Temperature (K)
 double vcmax25=A->IN.vcmax25;
 double co2=A->IN.co2;
 double beta_factor=A->IN.beta_factor;
@@ -46,8 +46,8 @@ double g1=A->IN.g1;
 double LAI=A->IN.LAI;
 double ga=A->IN.ga;
 double VegK=A->IN.VegK;
-double Tupp=A->IN.Tupp;
-double Tdown=A->IN.Tdown;
+double Tupp=A->IN.Tupp; // Units are K
+double Tdown=A->IN.Tdown; // Units are K
 double C3_frac=A->IN.C3_frac;
 double clumping=A->IN.clumping;
 double leaf_refl=A->IN.leaf_refl;
@@ -55,7 +55,6 @@ double maxPevap=A->IN.maxPevap;
 double precip=A->IN.precip;
 
 //CONSTS
-double t0C = 273.15;//C to kelvin
 double Ephoton = 2.0e-25/500.0e-9;// Planck constant times speed of light (J.s*m.s-1) divided by light wavelength (m)
 double NA = 6.02e23;// Avogadro's constant /mol
 double R = 8.31e-3;//Gas constant, kJ/mol/K
@@ -97,7 +96,7 @@ PAR = SRAD/(Ephoton*NA)*1e6;
 PAR *= (1. - leaf_refl)*(1. - exp(-VegK*LAI*clumping));
 
 
-T_C = TEMP - t0C;
+T_C = TEMP - DGCM_TK0C;  // Convert temperature to degrees C
 
 Kc = 300.*exp(0.074*(T_C - 25.));
 Ko = 300.*exp(0.015*(T_C - 25.));
@@ -107,7 +106,7 @@ cp = 36.9 + 1.18*(T_C - 25.) + 0.36*pow((T_C - 25.), 2.);
 //Vcmax = vcmax25*exp(50.*(TEMP - 298.)/(298.*R*TEMP));
 double q_10 = 2.0;
 
-Vcmax = vcmax25*pow(q_10,0.1*(T_C-25.))/((1 + exp(0.3*(T_C-Tupp-273.15)))*(1 +exp(0.3*(Tdown-T_C-273.15))));
+Vcmax = vcmax25*pow(q_10,0.1*(T_C-25.))/((1 + exp(0.3*(T_C-(Tupp-DGCM_TK0C))))*(1 +exp(0.3*((Tdown-DGCM_TK0C)-T_C))));
 
 Jmax = Vcmax*exp(1.);
 
