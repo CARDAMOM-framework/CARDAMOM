@@ -585,7 +585,7 @@ double psi_PAW0 = HYDROFUN_MOI2PSI(sm_PAW0,psi_porosity,pars[P.retention]);
 double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*psi_PAW0/pars[P.psi_50] - 1)));
 
 // mean air temperature (K)
-double air_temp = 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]);
+double air_temp_k = 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 
 //******************Declare LIU STRUCT*********************
 LIU_AN_ET_STRUCT LIU;
@@ -593,7 +593,7 @@ LIU_AN_ET_STRUCT LIU;
 //define time-invariant parameters
 LIU.IN.SRAD=SSRD[n]*1e6/(24*3600);
 LIU.IN.VPD=VPD[n]/10;
-LIU.IN.TEMP=air_temp;  
+LIU.IN.TEMP=air_temp_k;  
 LIU.IN.vcmax25=pars[P.Vcmax25];
 LIU.IN.co2=CO2[n];
 LIU.IN.beta_factor=fmin(beta,g);
@@ -625,7 +625,7 @@ FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
 /*Snow water equivalent*/
 FLUXES[f+F.snow_in] = SNOWFALL[n];
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snow_in]*deltat; /*first step snowfall to SWE*/
-FLUXES[f+F.melt]=fmin(fmax((air_temp-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
+FLUXES[f+F.melt]=fmin(fmax((air_temp_k-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
 POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step remove snowmelt from SWE*/
 
 //Energy balance: Rn = LE + H - G
@@ -639,7 +639,7 @@ double SWout = (1. - POOLS[p+S.D_SCF])*(SWin*pars[P.leaf_refl]) + POOLS[p+S.D_SC
 //Stefan-Boltzmann constant W.m-2.K-4
 double sigma = 5.67*1e-8;
 //Incident LW radiation - calculated
-//double LWin = sigma*pow(air_temp,4.);
+//double LWin = sigma*pow(air_temp_k,4.);
 double LWin = STRD[n]*1e6/(24*3600); // W m-2
 //Outgoing LW radiation
 double tskin_k = SKT[n]+273.15;
@@ -665,9 +665,9 @@ double cp = 29.2; // J mol-1 K-1 representative specific heat of moist air at co
 double Psurf = 1e5; // Pa (representative surface pressure)
 double Rgas = 8.31; // Universal gas constant (J mol-1 K-1)
 // Pa / (J mol-1 K-1 * K) = mol m-3
-double moles_per_m3 = Psurf/(Rgas*air_temp);
+double moles_per_m3 = Psurf/(Rgas*air_temp_k);
 //Sensible heat 
-double H = cp*(tskin_k - air_temp)*pars[P.ga]*moles_per_m3; // ga in m s-1, 
+double H = cp*(tskin_k - air_temp_k)*pars[P.ga]*moles_per_m3; // ga in m s-1, 
 FLUXES[f+F.sensible_heat] = H; // W m-2
 //soil heat flux 
 double G = Rn - H - LE; // W m-2
@@ -750,8 +750,8 @@ POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_
 
 //**********INTERNAL ENERGT FLUXES FOR ALL H2O FLUXES***************
 //Add INFILTRATION, PAW, PUW, PAW2PUW, ET
-double infiltemp = air_temp - 273.15;
-if (FLUXES[f+F.melt]>0){infiltemp = air_temp*(PREC[n] - SNOWFALL[n])/(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]);}//snowmelt temp = 0, so term multiplied by zero in weighted average 
+double infiltemp = air_temp_k - 273.15;//Infiltemp is in degrees celcius 
+if (FLUXES[f+F.melt]>0){infiltemp = infiltemp*(PREC[n] - SNOWFALL[n])/(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]);}//snowmelt temp = 0, so term multiplied by zero in weighted average 
 
 
 //All energy fluxes
