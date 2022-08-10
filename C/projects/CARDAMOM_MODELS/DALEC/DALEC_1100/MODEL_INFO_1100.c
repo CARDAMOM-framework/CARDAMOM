@@ -50,7 +50,11 @@ DATA->parmax=calloc(DATA->nopars,sizeof(double));
 */
 INITIALIZE_PARAMETER_FIELDS(DATA);
 
-PARS_INFO_1100(DATA->parmin, DATA->parmax);
+
+    //Copying pointers
+    DATA->parmin=DALECmodel.PARS_INFO.parmin;
+    DATA->parmax=DALECmodel.PARS_INFO.parmax;
+
 
 //oksofar("about to declare EDCD");
 //printf("DALECmodel.EDCD = %p\n",DALECmodel.EDCD); //DALECmodel.EDCD Needs to be initilized!

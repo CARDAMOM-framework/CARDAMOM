@@ -11,10 +11,17 @@
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
 
-int PARS_INFO_1100(double *parmin, double *parmax){
+int PARS_INFO_1100(DALEC * DALECmodel){
 
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 
+
+DALECmodel->PARS_INFO.parmin= calloc(DALECmodel->nopars, sizeof(double));
+DALECmodel->PARS_INFO.parmax= calloc(DALECmodel->nopars, sizeof(double));
+//Abbreviate
+
+double * parmin = DALECmodel->PARS_INFO.parmin;
+double * parmax =DALECmodel->PARS_INFO.parmax;
 /*Litter decomposition rate*/
 parmin[P.tr_lit2som]=0.01;
 parmax[P.tr_lit2som]=0.99;
@@ -308,7 +315,8 @@ parmax[P.phi_RL]=1.5;
 /*Ratio of total wood surface area to total leaf area*/
 parmin[P.phi_WL]=0.1;
 parmax[P.phi_WL]=10.0;
-  
+
+
 return 0;
 
 }

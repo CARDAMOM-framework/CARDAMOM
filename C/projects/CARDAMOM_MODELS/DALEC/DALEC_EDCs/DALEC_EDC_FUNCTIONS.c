@@ -25,8 +25,15 @@ double RUN_DALEC_EDCs(DATA * DATA, EDCs * EDCs, bool prerun){
     int n=0;
     double P=0;
     for (n=0;n<DATA->noedcs;n++){
+              
+        
+             printf("******************\n");
+    printf("******************\n");
+    printf("About to test EDC\n");
+    printf("******************\n");
+    printf("******************\n");
         //Run function
-        if (EDCs[n].prerun==prerun){
+        if (EDCs[n].prerun==prerun){    
             DATA->M_EDCs[n]=EDCs[n].function(DATA, EDCs[n].data);}}    
 
     

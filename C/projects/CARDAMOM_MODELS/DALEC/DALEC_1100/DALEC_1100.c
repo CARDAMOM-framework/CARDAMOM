@@ -178,13 +178,7 @@ DALECmodel->FIOMATRIX = FIOMATRIX;
 
 //Calculate State source sink matrix
 DALEC_STATE_SOURCE_SINK_MATRIX_CONFIG(DALECmodel);
-
 return 0;
-printf("********\n");
-printf("********\n");
-printf("****SO FAR SO GOOD MATRIX CONFIG****\n");
-printf("********\n");
-printf("********\n");
 
 }
 
@@ -320,6 +314,9 @@ int state_trajectories;
 
 
 int DALEC_1100(DATA DATA, double const *pars){
+
+    
+
 
 
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
@@ -968,17 +965,17 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     POOLS[nxp+S.D_TEMP_PAW]=PAWSOILTEMP.OUT.TEMP;
     POOLS[nxp+S.D_TEMP_PUW]=PUWSOILTEMP.OUT.TEMP;
     
-
     POOLS[nxp+S.D_LF_PAW]=PAWSOILTEMP.OUT.LF;
     POOLS[nxp+S.D_LF_PUW]=PUWSOILTEMP.OUT.LF;
     
 
     //Pass pointers to function 
-    
+
     
     //Soil moisture
         POOLS[nxp+S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
         POOLS[nxp+S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);//soil moisture PUW
+
 
 
 }
@@ -987,228 +984,6 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 return 0;
 }
-
-
-
-// 
-// int ODE_FLUX_TABLE(){
-//     
-//     //Clabile
-//     P.noinputs=1;
-//             P.in_indices[1]{F.lab_prod };
-//     P.nooutputs=1;
-//             P.out_indices[1]{F.lab_release};
-//     
-//Copy this convention
-// static int ROFF_fluxes[3];
-// ROFF_fluxes[0]=F.q_paw;
-// ROFF_fluxes[1]=F.q_puw;
-// ROFF_fluxes[2]=F.q_surf;
-//     
-//     
-// }
-
-// typedef struct PAR_INFO{
-//     double * min;
-//     double * max;} PARINFO
-    
-
-int PARAMETER_INFO_1100(DALEC * D){
-//Inputs: DALEC structure
-struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
-
-
-PARS_INFO_1100(D->PARS_INFO.parmin, D->PARS_INFO.parmax);
-
-return 0;}
-
-
-//
-
-
-// 
-// INPUT_OUTPUT_FLUXES_STRUCT * DALEC_1100_INPUT_OUTPUT_FLUXES(DALEC * DALECmodel){
-//     
-//     
-//              struct DALEC_1100_POOLS P=DALEC_1100_POOLS;
-//              struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
-// 
-//              
-//     //DALECmodel->nopools;
-//     
-// INPUT_OUTPUT_FLUXES_STRUCT * FIO=calloc(  DALECmodel->nopools, sizeof( INPUT_OUTPUT_FLUXES_STRUCT));;
-//            //Step 1. Declaring all as "zero" inputs and "zero" ouputs.  
-//  
-//            
-//     //DALECmodel->nopools;
-// //Setting all IO to zero (default)
-//     int n=0;
-//     for (n=0;n<   DALECmodel->nopools;n++){FIO[n].N_INPUT_FLUXES=0;FIO[n].N_OUTPUT_FLUXES=0;}
-//     
-//     
-// 
-//                 //C labile
-//                FIO[P.C_lab].N_INPUT_FLUXES=1;
-//                FIO[P.C_lab].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.C_lab].INPUT_FLUXES[0]=F.lab_prod;
-// 
-//                FIO[P.C_lab]->N_OUTPUT_FLUXES=3;
-//                FIO[P.C_lab]->OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.C_lab]->OUTPUT_FLUXES[0]=F.lab_release;
-//                FIO[P.C_lab]->OUTPUT_FLUXES[1]=F.f_lab;
-//                FIO[P.C_lab]->OUTPUT_FLUXES[2]= F.fx_lab2lit;
-// 
-//                 //C foliar
-//                FIO[P.C_fol]->N_INPUT_FLUXES=1;
-//                FIO[P.C_fol]->INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.C_fol]->INPUT_FLUXES[0]=F.lab_release;
-// 
-//                FIO[P.C_fol]->N_OUTPUT_FLUXES=3;
-//                FIO[P.C_fol]->OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.C_fol]->OUTPUT_FLUXES[0]=F.fol2lit;
-//                FIO[P.C_fol]->OUTPUT_FLUXES[1]=F.f_fol;
-//                FIO[P.C_fol].OUTPUT_FLUXES[2]= F.fx_fol2lit;
-// 
-//                 //C root
-//                FIO[P.C_roo].N_INPUT_FLUXES=1;
-//                FIO[P.C_roo].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.C_roo].INPUT_FLUXES[0]=F.root_prod;
-// 
-//                FIO[P.C_roo].N_OUTPUT_FLUXES=3;
-//                FIO[P.C_roo].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.C_roo].OUTPUT_FLUXES[0]=F.roo2lit;
-//                FIO[P.C_roo].OUTPUT_FLUXES[1]=F.f_roo;
-//                FIO[P.C_roo].OUTPUT_FLUXES[2]= F.fx_roo2lit;
-// 
-//                 //C wood
-//                FIO[P.C_woo].N_INPUT_FLUXES=1;
-//                FIO[P.C_woo].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.C_woo].INPUT_FLUXES[0]=F.wood_prod;
-// 
-//                FIO[P.C_woo].N_OUTPUT_FLUXES=3;
-//                FIO[P.C_woo].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.C_woo].OUTPUT_FLUXES[0]=F.woo2cwd;
-//                FIO[P.C_woo].OUTPUT_FLUXES[1]=F.f_woo;
-//                FIO[P.C_woo].OUTPUT_FLUXES[2]= F.fx_woo2cwd;
-// 
-//    
-//                 //C CWD
-//                FIO[P.C_cwd].N_INPUT_FLUXES=2;
-//                FIO[P.C_cwd].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.C_cwd].INPUT_FLUXES[0]=F.woo2cwd;
-//                FIO[P.C_cwd].INPUT_FLUXES[1]=F.fx_woo2cwd;
-// 
-//                FIO[P.C_cwd].N_OUTPUT_FLUXES=5;
-//                FIO[P.C_cwd].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.C_cwd].OUTPUT_FLUXES[0]=F.ae_rh_cwd;
-//                FIO[P.C_cwd].OUTPUT_FLUXES[1]=F.an_rh_cwd;
-//                FIO[P.C_cwd].OUTPUT_FLUXES[2]= F.cwd2som;
-//                FIO[P.C_cwd].OUTPUT_FLUXES[3]=F.f_cwd;
-//                FIO[P.C_cwd].OUTPUT_FLUXES[4]= F.fx_cwd2som;
-// 
-// 
-//                 //C Litter
-//                FIO[P.C_lit].N_INPUT_FLUXES=5;
-//                FIO[P.C_lit].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.C_lit].INPUT_FLUXES[0]=F.fol2lit;
-//                FIO[P.C_lit].INPUT_FLUXES[1]=F.fx_fol2lit;
-//                FIO[P.C_lit].INPUT_FLUXES[2]=F.roo2lit;
-//                FIO[P.C_lit].INPUT_FLUXES[3]=F.fx_roo2lit;
-//                FIO[P.C_lit].INPUT_FLUXES[4]=F.fx_lab2lit;
-// 
-//                FIO[P.C_lit].N_OUTPUT_FLUXES=5;
-//                FIO[P.C_lit].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.C_lit].OUTPUT_FLUXES[0]=F.ae_rh_lit;
-//                FIO[P.C_lit].OUTPUT_FLUXES[1]=F.an_rh_lit;
-//                FIO[P.C_lit].OUTPUT_FLUXES[2]=F.lit2som;
-//                FIO[P.C_lit].OUTPUT_FLUXES[3]=F.f_lit;
-//                FIO[P.C_lit].OUTPUT_FLUXES[4]= F.fx_lit2som;
-// 
-//                 //C SOM
-//                FIO[P.C_som].N_INPUT_FLUXES=4;
-//                FIO[P.C_som].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.C_som].INPUT_FLUXES[0]=F.lit2som;
-//                FIO[P.C_som].INPUT_FLUXES[1]=F.fx_lit2som;
-//                FIO[P.C_som].INPUT_FLUXES[2]=F.cwd2som;
-//                FIO[P.C_som].INPUT_FLUXES[3]=F.fx_cwd2som;
-// 
-//                FIO[P.C_som].N_OUTPUT_FLUXES=3;
-//                FIO[P.C_som].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.C_som].OUTPUT_FLUXES[0]=F.ae_rh_som;
-//                FIO[P.C_som].OUTPUT_FLUXES[1]=F.an_rh_som;
-//                FIO[P.C_som].OUTPUT_FLUXES[2]=F.f_som;
-// 
-// 
-//                 // H2O PAW
-//                FIO[P.H2O_PAW].N_INPUT_FLUXES=1;
-//                FIO[P.H2O_PAW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.H2O_PAW].INPUT_FLUXES[0]=F.infil;
-// 
-//                FIO[P.H2O_PAW].N_OUTPUT_FLUXES=3;
-//                FIO[P.H2O_PAW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.H2O_PAW].OUTPUT_FLUXES[0]=F.paw2puw;
-//                FIO[P.H2O_PAW].OUTPUT_FLUXES[1]=F.q_paw;
-//                FIO[P.H2O_PAW].OUTPUT_FLUXES[2]=F.et;
-// 
-// 
-//                 // H2O PUW
-//                FIO[P.H2O_PUW].N_INPUT_FLUXES=1;
-//                FIO[P.H2O_PUW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.H2O_PUW].INPUT_FLUXES[0]=F.paw2puw;
-// 
-//                FIO[P.H2O_PUW].N_OUTPUT_FLUXES=1;
-//                FIO[P.H2O_PUW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.H2O_PUW].OUTPUT_FLUXES[0]=F.q_puw;
-// 
-// 
-//                 // H2O SWE
-//                FIO[P.H2O_SWE].N_INPUT_FLUXES=1;
-//                FIO[P.H2O_SWE].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.H2O_SWE].INPUT_FLUXES[0]=F.snowfall;
-// 
-//                FIO[P.H2O_SWE].N_OUTPUT_FLUXES=1;
-//                FIO[P.H2O_SWE].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.H2O_SWE].OUTPUT_FLUXES[0]=F.melt;
-// 
-// 
-//                // E PAW
-//                FIO[P.E_PAW].N_INPUT_FLUXES=2;
-//                FIO[P.E_PAW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.E_PAW].INPUT_FLUXES[0]=F.ground_heat;
-//                FIO[P.E_PAW].INPUT_FLUXES[1]=F.infil_e;
-// 
-//                FIO[P.E_PAW].N_OUTPUT_FLUXES=3;
-//                FIO[P.E_PAW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.E_PAW].OUTPUT_FLUXES[0]=F.paw2puw_e;
-//                FIO[P.E_PAW].OUTPUT_FLUXES[1]=F.q_paw_e;
-//                FIO[P.E_PAW].OUTPUT_FLUXES[2]=F.et_e;
-// 
-//                // E PUW
-//                FIO[P.E_PUW].N_INPUT_FLUXES=1;
-//                FIO[P.E_PUW].INPUT_FLUXES=calloc(FIO.N_INPUT_FLUXES, sizeof(int));
-//                FIO[P.E_PUW].INPUT_FLUXES[0]=F.paw2puw_e;
-// 
-//                FIO[P.E_PUW].N_OUTPUT_FLUXES=1;
-//                FIO[P.E_PUW].OUTPUT_FLUXES=calloc(FIO.N_OUTPUT_FLUXES, sizeof(int));
-//                FIO[P.E_PUW].OUTPUT_FLUXES[0]=F.q_puw_e;
-// 
-// 
-//           
-// 
-// 
-//                return FIO;
-//     
-// }
-//         
-        
-        
-   
-        
-        
-        
-        
-        
-
 
 
 int DALEC_1100_MODCONFIG(DALEC * DALECmodel){
@@ -1234,13 +1009,17 @@ DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
 
 
+
 //Define PARS_INFO here (ranges, and eventually names, etc)
-PARAMETER_INFO_1100(DALECmodel);
+PARS_INFO_1100(DALECmodel);
 
 //EDC operator
 //Make sure has same number as number of EDCs
 //This is generic EDCs structure defined in ../DALEC_EDCs/DALEC_EDC_FUNCTIONS.c
 //Has three args, data (void), function (in "DATA", and "void *", and "double" out), and "boolean" prerun.
+
+
+
 
 static EDCs * EDCs;EDCs=calloc(DALECmodel->noedcs,sizeof(EDCs));
 

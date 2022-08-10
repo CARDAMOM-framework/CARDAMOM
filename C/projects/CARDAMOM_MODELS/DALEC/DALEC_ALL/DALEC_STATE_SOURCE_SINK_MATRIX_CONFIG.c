@@ -26,19 +26,17 @@ printf("DALEC->nopools = %2i\n",DALEC->nopools);
 
 SIOMATRIX=calloc(nopools,sizeof(DALEC_STATE_SOURCE_SINK_MATRIX));
          
-printf("********\n");
-printf("********\n");
-printf("****SO FAR SO GOOD DALEC_STATE_SOURCE_SINK_MATRIX_CONFIG start 2****\n");
-printf("********\n");
-printf("********\n");
+
      
          
      
          for (s=0;s<nopools;s++){SIOMATRIX[s].N_STATE_INPUT_FLUXES=0;SIOMATRIX[s].N_STATE_OUTPUT_FLUXES=0;}
+
          //Step 1. Count inputs and outputs
      for (f=0;f<nofluxes;f++){
          if (FIOMATRIX.SOURCE[f]!=-1){SIOMATRIX[FIOMATRIX.SOURCE[f]].N_STATE_OUTPUT_FLUXES+=1;}
          if (FIOMATRIX.SINK[f]!=-1){SIOMATRIX[FIOMATRIX.SINK[f]].N_STATE_INPUT_FLUXES+=1;}}
+
          //Step 2. Allocate
                      for (s=0;s<nopools;s++){
                     SIOMATRIX[s].STATE_INPUT_FLUXES=calloc(SIOMATRIX[s].N_STATE_INPUT_FLUXES, sizeof(int));
@@ -56,6 +54,8 @@ printf("********\n");
           DALEC->SIOMATRIX= SIOMATRIX;
                      //Step 3. 
   
+          
+
     return 0;
     
 }
