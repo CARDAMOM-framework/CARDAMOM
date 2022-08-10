@@ -566,8 +566,8 @@ double VegK = LAD/cos(zenith_angle/180*pi);
 
 /*Temp scaling factor*/
 double g;
-double Tminmin = pars[P.Tminmin] - 273.15; 
-double Tminmax = pars[P.Tminmax] - 273.15;
+double Tminmin = pars[P.Tminmin] - DGCM_TK0C; 
+double Tminmax = pars[P.Tminmax] - DGCM_TK0C;
 if( T2M_MIN[n] < Tminmin ) {
     g=0;
 }
@@ -585,7 +585,7 @@ double psi_PAW0 = HYDROFUN_MOI2PSI(sm_PAW0,psi_porosity,pars[P.retention]);
 double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*psi_PAW0/pars[P.psi_50] - 1)));
 
 // mean air temperature (K)
-double air_temp_k = 273.15+0.5*(T2M_MIN[n]+T2M_MAX[n]);
+double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 
 //******************Declare LIU STRUCT*********************
 LIU_AN_ET_STRUCT LIU;
@@ -642,7 +642,7 @@ double sigma = 5.67*1e-8;
 //double LWin = sigma*pow(air_temp_k,4.);
 double LWin = STRD[n]*1e6/(24*3600); // W m-2
 //Outgoing LW radiation
-double tskin_k = SKT[n]+273.15;
+double tskin_k = SKT[n]+DGCM_TK0C;
 double LWout = sigma*pow(tskin_k,4.); // W m-2
 //Net radiation at the top of the canopy
 double Rn = SWin - SWout + LWin - LWout; // W m-2
@@ -751,13 +751,13 @@ POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_
 //**********INTERNAL ENERGT FLUXES FOR ALL H2O FLUXES***************
 //Add INFILTRATION, PAW, PUW, PAW2PUW, ET
 double infiltemp = air_temp_k ;//Infiltemp needs to be in degrees celcius for IF statement to work
-if (FLUXES[f+F.melt]>0){infiltemp = (infiltemp-273.15)*(PREC[n] - SNOWFALL[n])/(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt])+273.15;}//snowmelt temp = 0, so term multiplied by zero in weighted average 
+if (FLUXES[f+F.melt]>0){infiltemp = (infiltemp-DGCM_TK0C)*(PREC[n] - SNOWFALL[n])/(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt])+DGCM_TK0C;}//snowmelt temp = 0, so term multiplied by zero in weighted average 
 
 
 //All energy fluxes
 
 FLUXES[f+F.infil_e] = FLUXES[f+F.infil]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(infiltemp);
-FLUXES[f+F.et_e] = FLUXES[f+F.et]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(SKT[n] + 273.15);
+FLUXES[f+F.et_e] = FLUXES[f+F.et]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(SKT[n] + DGCM_TK0C);
 FLUXES[f+F.paw2puw_e] = FLUXES[f+F.paw2puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(TEMPxfer);
 FLUXES[f+F.q_paw_e] = FLUXES[f+F.q_paw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PAW]);
 FLUXES[f+F.q_puw_e] =  FLUXES[f+F.q_puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PUW]);
@@ -850,7 +850,7 @@ FLUXES[f+F.root2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
   
     //TIME-VARYING INPUTS
      HRJCR.IN.SM=POOLS[p+S.D_SM_PAW];
-     HRJCR.IN.TEMP=SKT[n];
+     HRJCR.IN.TEMP=SKT[n]; // Input in degrees C
         //JCR
         HET_RESP_RATES_JCR(&HRJCR);
              //OUtputs --- store anything we want here---

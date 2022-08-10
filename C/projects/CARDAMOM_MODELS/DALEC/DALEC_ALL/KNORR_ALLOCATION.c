@@ -68,7 +68,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   double tau_W, tau_s;
   double lambda_next;
 
-  meantemp=K->IN.temp - 273.15; // convert K to degrees C
+  meantemp=K->IN.temp - DGCM_TK0C; // convert K to degrees C
   
   
   n=1.0; /*(double)var_list[0];*/
@@ -81,7 +81,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   }
   else {
     // assume temperature parameter is in degrees kelvin
-    T_phi=K->IN.T_phi -273.15;
+    T_phi=K->IN.T_phi - DGCM_TK0C;
   }
    T_r=K->IN.T_r;
   T_memory=K->IN.T_memory;
