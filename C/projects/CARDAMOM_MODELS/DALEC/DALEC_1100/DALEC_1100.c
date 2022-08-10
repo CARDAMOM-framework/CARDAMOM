@@ -204,8 +204,8 @@ int E_PAW; /*PAW thermal energy state*/
 int E_PUW; /*PUW thermal energy state*/
 int D_LAI;//leaf area index
 int D_SCF;//snow-covered fraction
-int D_TEMP_PAW;//PAW temp
-int D_TEMP_PUW;//PUW temp
+int D_TEMP_PAW;//PAW temp in K
+int D_TEMP_PUW;//PUW temp in K
 int D_LF_PAW;//PAW liquid h2o frac
 int D_LF_PUW;//PUW liquid h2o frac
 int D_SM_PAW;//PAW soil moisture
@@ -750,13 +750,13 @@ POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_
 
 //**********INTERNAL ENERGT FLUXES FOR ALL H2O FLUXES***************
 //Add INFILTRATION, PAW, PUW, PAW2PUW, ET
-double infiltemp = air_temp_k;//Infiltemp is in degrees celcius 
+double infiltemp = air_temp_k -273.15;//Infiltemp needs to be in degrees celcius for IF statement to work
 if (FLUXES[f+F.melt]>0){infiltemp = infiltemp*(PREC[n] - SNOWFALL[n])/(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]);}//snowmelt temp = 0, so term multiplied by zero in weighted average 
 
 
 //All energy fluxes
 
-FLUXES[f+F.infil_e] = FLUXES[f+F.infil]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(infiltemp);
+FLUXES[f+F.infil_e] = FLUXES[f+F.infil]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(infiltemp +273.15 );
 FLUXES[f+F.et_e] = FLUXES[f+F.et]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(SKT[n] + 273.15);
 FLUXES[f+F.paw2puw_e] = FLUXES[f+F.paw2puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(TEMPxfer);
 FLUXES[f+F.q_paw_e] = FLUXES[f+F.q_paw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PAW]);
