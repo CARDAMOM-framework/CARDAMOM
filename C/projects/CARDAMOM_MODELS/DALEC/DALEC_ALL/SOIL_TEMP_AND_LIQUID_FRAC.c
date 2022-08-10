@@ -5,8 +5,8 @@ double        depth;//m
  double       soil_water;//mm (or kg/m2)
  double       internal_energy;} IN;//Joules
  struct {
- double TEMP;
- double LF;} OUT;
+ double TEMP;// Temperature in K
+ double LF;} OUT;// Liquid fraction
 }SOIL_TEMP_AND_LIQUID_FRAC_STRUCT;
 
     
@@ -32,16 +32,16 @@ double UL3 = UI3 + S->IN.soil_water*DGCM_LATENT_HEAT_FUSION_3;
 
 
 if (S->IN.internal_energy<UI3){
-    S->OUT.TEMP = (S->IN.internal_energy/UI3)*DGCM_T3 - DGCM_TK0C;
+    S->OUT.TEMP = (S->IN.internal_energy/UI3)*DGCM_T3 ;
    S->OUT.LF = 0; }
         
 else if (S->IN.internal_energy>UL3){
-        S->OUT.TEMP = (S->IN.internal_energy + S->IN.soil_water*DGCM_SPECIFIC_HEAT_WATER*DGCM_TK0C)/(dry_soil_sh + S->IN.soil_water*DGCM_SPECIFIC_HEAT_WATER)  - DGCM_TK0C;
+        S->OUT.TEMP = (S->IN.internal_energy + S->IN.soil_water*DGCM_SPECIFIC_HEAT_WATER*DGCM_TK0C)/(dry_soil_sh + S->IN.soil_water*DGCM_SPECIFIC_HEAT_WATER) ;
       S->OUT.LF = 1;  
 }
 //Calculate liquid fraction
 else {
-    S->OUT.TEMP = 0;  
+    S->OUT.TEMP = DGCM_TK0C;  
      S->OUT.LF =(S->IN.internal_energy - UI3) /(S->IN.soil_water*DGCM_LATENT_HEAT_FUSION_3);  
 }
     

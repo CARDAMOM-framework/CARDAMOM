@@ -417,9 +417,9 @@ double *POOLS=DATA.M_POOLS;
     PAWSOILTEMP.IN.soil_water = POOLS[S.H2O_PAW];//mm (or kg/m2)
     PAWSOILTEMP.IN.internal_energy = POOLS[S.E_PAW];//Joules
     //Pass pointer to function 
-    SOIL_TEMP_AND_LIQUID_FRAC(&PAWSOILTEMP);  
+    SOIL_TEMP_AND_LIQUID_FRAC(&PAWSOILTEMP);  //Outputs are in K
         //Store outputs 
-    POOLS[S.D_TEMP_PAW]=PAWSOILTEMP.OUT.TEMP;    
+    POOLS[S.D_TEMP_PAW]=PAWSOILTEMP.OUT.TEMP;  //In K  
     POOLS[S.D_LF_PAW]=PAWSOILTEMP.OUT.LF;
 
     //PUW
@@ -428,9 +428,9 @@ double *POOLS=DATA.M_POOLS;
     PUWSOILTEMP.IN.soil_water = POOLS[S.H2O_PUW];//mm (or kg/m2)
     PUWSOILTEMP.IN.internal_energy = POOLS[S.E_PUW];//Joules
     //Pass pointer to function 
-    SOIL_TEMP_AND_LIQUID_FRAC(&PUWSOILTEMP);
+    SOIL_TEMP_AND_LIQUID_FRAC(&PUWSOILTEMP);//Outputs are in K
     //Store outputs 
-    POOLS[S.D_TEMP_PUW]=PUWSOILTEMP.OUT.TEMP;    
+    POOLS[S.D_TEMP_PUW]=PUWSOILTEMP.OUT.TEMP;    //In K
     POOLS[S.D_LF_PUW]=PUWSOILTEMP.OUT.LF;
 
     
@@ -728,7 +728,7 @@ PAW2PUWmax= POOLS[p+S.D_LF_PAW]*pot_xfer*1000*3600*24*deltat;
 //2. Available space in PUW (after runoff)
 //3. PAW*LF (after runoff, et, and infiltration)
 FLUXES[f+F.paw2puw] =fmin(PAW2PUWmax , fmin(SPACEavail, H2Oavail))/deltat;
-TEMPxfer= POOLS[p+S.D_TEMP_PAW];
+TEMPxfer= POOLS[p+S.D_TEMP_PAW];//In K
 }
 else { //Water is going PUW->PAW (up)
 // Available space in PAW after runoff, et, and infiltration
@@ -739,7 +739,7 @@ H2Oavail= fmax(POOLS[p+S.D_LF_PUW]*POOLS[p+S.H2O_PUW] - FLUXES[f+F.q_puw]*deltat
 PAW2PUWmax= POOLS[p+S.D_LF_PUW]*pot_xfer*1000*3600*24*deltat;
 // Reverse sign of previous case
 FLUXES[f+F.paw2puw] = -fmin(-PAW2PUWmax , fmin(SPACEavail, H2Oavail))/deltat;
-TEMPxfer= POOLS[p+S.D_TEMP_PUW];
+TEMPxfer= POOLS[p+S.D_TEMP_PUW];//In K
 }
 
 
@@ -750,13 +750,13 @@ POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_
 
 //**********INTERNAL ENERGT FLUXES FOR ALL H2O FLUXES***************
 //Add INFILTRATION, PAW, PUW, PAW2PUW, ET
-double infiltemp = air_temp_k -273.15;//Infiltemp needs to be in degrees celcius for IF statement to work
-if (FLUXES[f+F.melt]>0){infiltemp = infiltemp*(PREC[n] - SNOWFALL[n])/(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]);}//snowmelt temp = 0, so term multiplied by zero in weighted average 
+double infiltemp = air_temp_k ;//Infiltemp needs to be in degrees celcius for IF statement to work
+if (FLUXES[f+F.melt]>0){infiltemp = (infiltemp-273.15)*(PREC[n] - SNOWFALL[n])/(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt])+273.15;}//snowmelt temp = 0, so term multiplied by zero in weighted average 
 
 
 //All energy fluxes
 
-FLUXES[f+F.infil_e] = FLUXES[f+F.infil]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(infiltemp +273.15 );
+FLUXES[f+F.infil_e] = FLUXES[f+F.infil]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(infiltemp);
 FLUXES[f+F.et_e] = FLUXES[f+F.et]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(SKT[n] + 273.15);
 FLUXES[f+F.paw2puw_e] = FLUXES[f+F.paw2puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(TEMPxfer);
 FLUXES[f+F.q_paw_e] = FLUXES[f+F.q_paw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PAW]);
@@ -981,8 +981,8 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     SOIL_TEMP_AND_LIQUID_FRAC(&PAWSOILTEMP);
     SOIL_TEMP_AND_LIQUID_FRAC(&PUWSOILTEMP);
 
-    POOLS[nxp+S.D_TEMP_PAW]=PAWSOILTEMP.OUT.TEMP;
-    POOLS[nxp+S.D_TEMP_PUW]=PUWSOILTEMP.OUT.TEMP;
+    POOLS[nxp+S.D_TEMP_PAW]=PAWSOILTEMP.OUT.TEMP;//In K
+    POOLS[nxp+S.D_TEMP_PUW]=PUWSOILTEMP.OUT.TEMP;//In K
     
 
     POOLS[nxp+S.D_LF_PAW]=PAWSOILTEMP.OUT.LF;
