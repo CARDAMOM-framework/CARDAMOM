@@ -3,7 +3,7 @@
 
 typedef struct {
     struct{
-        double temp;
+        double temp; \\ mean air temperature (K)
         double deltat;
         double latitude;
         double DOY;
@@ -68,7 +68,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   double tau_W, tau_s;
   double lambda_next;
 
-  meantemp=K->IN.temp;
+  meantemp=K->IN.temp - 273.15; \\ convert degrees C to K
   
   
   n=1.0; /*(double)var_list[0];*/

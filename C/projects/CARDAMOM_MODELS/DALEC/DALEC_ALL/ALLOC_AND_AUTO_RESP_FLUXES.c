@@ -3,7 +3,7 @@
 typedef struct {    
     struct {
         double deltat;//model timestep
-        double TEMP;  //deg C
+        double TEMP;  //K
         double C_LIVE;// Live C
         double NSC;   //labile carbon pool, Clab, non-structural carbohydrates (gC)
         double GPP;
