@@ -751,7 +751,7 @@ POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_
 
 //**********INTERNAL ENERGT FLUXES FOR ALL H2O FLUXES***************
 //Add INFILTRATION, PAW, PUW, PAW2PUW, ET
-double infiltemp = air_temp;
+double infiltemp = air_temp - 273.15;
 if (FLUXES[f+F.melt]>0){infiltemp = air_temp*(PREC[n] - SNOWFALL[n])/(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]);}//snowmelt temp = 0, so term multiplied by zero in weighted average 
 
 
