@@ -785,6 +785,7 @@ POOLS[nxp+S.M_LAI_TEMP]=KNORR.OUT.T;
 ARFLUXES.IN.deltat=deltat;
 ARFLUXES.IN.GPP=FLUXES[f+F.gpp];
 ARFLUXES.IN.TEMP=air_temp_k;
+ARFLUXES.IN.NSC=POOLS[p+S.C_lab];
 ARFLUXES.IN.C_LIVE=POOLS[p+S.C_fol]+POOLS[p+S.C_woo]+POOLS[p+S.C_roo];
 // Potential plant allocation (growth) fluxes
 ARFLUXES.IN.ALLOC_FOL_POT=fmax(0, (FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_fol]);
