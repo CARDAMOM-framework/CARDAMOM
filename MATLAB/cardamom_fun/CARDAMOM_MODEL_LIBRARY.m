@@ -177,7 +177,7 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',
  pn=1;
  for n=1:numel(D)
      linestr=D{n};
-     if numel(linestr)>21 & strcmp(linestr(1),'p')==1  
+     if numel(linestr)>12 & strcmp(linestr(1),'p')==1
      linestr(linestr=='-')='';
      linestr(linestr=='>')='.';
      b1=find(linestr=='[');
