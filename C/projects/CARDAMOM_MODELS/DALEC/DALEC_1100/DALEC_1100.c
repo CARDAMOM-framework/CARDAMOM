@@ -1054,13 +1054,16 @@ EDCs[E.cwdsomtor].prerun=true;
 
    //Create array (1x number of pools) for minimum and max values 
    //Index exactly corresponds to "POOLS" indices
-   EDC_sr.nopools=DALECmodel->nopools;
 
    EDC_sr.min_val=calloc(DALECmodel->nopools,sizeof(double));
 
    EDC_sr.max_val=calloc(DALECmodel->nopools,sizeof(double));
-
    
+   int n;
+   for (n=0;n<DALECmodel->nopools;n++){
+   EDC_sr.min_val[n]=-INFINITY;
+              EDC_sr.max_val[n]=INFINITY;}
+//    
    EDC_sr.min_val[S.C_lab]=0;
    EDC_sr.max_val[S.C_lab]=DALECmodel->PARS_INFO.parmax[P.i_labile];
                 

@@ -1,5 +1,4 @@
 typedef struct {
-    int nopools;
        double  * min_val;
     double * max_val; }DALEC_EDC_STATE_RANGES_STRUCT;
 
@@ -22,11 +21,13 @@ while (p<DATA->nopools & k==0){
             //looping through timesteps
 while (n<DATA->ncdf_data.TIME_INDEX.length  & k==0){
 
-         if (DATA->M_POOLS[p+n*DATA->nopools]<E.min_val[p] || DATA->M_POOLS[p+n*DATA->nopools]>E.max_val[p]){PEDC = -INFINITY;k=-1;}
+         if (DATA->M_POOLS[p+n*DATA->nopools]<E.min_val[p] || DATA->M_POOLS[p+n*DATA->nopools]>E.max_val[p]){
+      
+             
+             PEDC = -INFINITY;k=-1;}
           
   n+=1;}
   p+=1;}
-  
   
     return PEDC;
 }
