@@ -304,6 +304,11 @@ parmax[P.phi_RL]=1.5;
 parmin[P.phi_WL]=0.1;
 parmax[P.phi_WL]=10.0;
   
+
+/*Soil thermal conductivity in W/m/K */
+parmin[P.thermal_cond]=0.3;
+parmax[P.thermal_cond]=2;
+  
 return 0;
 
 }
