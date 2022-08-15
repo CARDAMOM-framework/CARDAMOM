@@ -15,8 +15,7 @@ int PARS_INFO_1005(double *parmin, double *parmax)
 
 struct DALEC_1005_PARAMETERS P=DALEC_1005_PARAMETERS;
 
-double * parmin=CARDADATA->parmin;
-double * parmax=CARDADATA->parmax;
+
 /*Decomposition rate*/
 parmin[P.tr_lit2soil]=0.00001;
 parmax[P.tr_lit2soil]=0.01;
