@@ -40,7 +40,7 @@ DATA->parmax=calloc(DATA->nopars,sizeof(double));
 */
 INITIALIZE_PARAMETER_FIELDS(DATA);
 
-PARS_INFO_1006(DATA);
+PARS_INFO_1006(DATA->parmin, DATA->parmax);
 
 
 /*Initialize the EDCD structure*/

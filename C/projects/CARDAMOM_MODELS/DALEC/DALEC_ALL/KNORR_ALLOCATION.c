@@ -74,7 +74,7 @@ int KNORR_ALLOCATION(KNORR_ALLOCATION_STRUCT * K)
    lambda_max=K->IN.lambda_max;
    tau_W=K->IN.tau_W;
    lambda_max_memory=K->IN.lambda_max_memory;  //TIME-DEPENDENT I.E. SAVE IN MEMORY
-   tau_s=1.0;
+   tau_s=30.0; // Averaging period for water/structural memory (units of days; must be in same units as deltat), usually kept constant but could potentially be a tuneable parameter
    t_c=K->IN.t_c; 
    t_r=K->IN.t_r; 
 
@@ -114,15 +114,12 @@ int KNORR_ALLOCATION(KNORR_ALLOCATION_STRUCT * K)
   lambda_tilde_max = MinQuadraticSmooth(lambda_max, lambda_W, 0.99);
   /* update LAI water/structural memory using an exponentially declining memory of water/structural limitation over the time period tau_s */
   laim = exp(- 1.0 / tau_s)*lambda_max_memory + lambda_tilde_max * (1.0 - exp(- 1.0 / tau_s));
-  
   lambda_lim = MaxExponentialSmooth(plgr * laim * f / r, 1e-9, 5e-3);
 
-  // dlambdadt = r*(lambda_lim - lambda);
-//
+  // lambda_next is the updated target LAI (units of m2/m2)
   lambda_next = lambda_lim - (lambda_lim - lambda)*exp(-r*deltat);
 
-  //DLAI/dt per timestep (as in Knorr paper)
-
+  // dlambdadt is the change in LAI over the period deltat (units of m2/m2)
   dlambdadt = (lambda_next - lambda);
   
 

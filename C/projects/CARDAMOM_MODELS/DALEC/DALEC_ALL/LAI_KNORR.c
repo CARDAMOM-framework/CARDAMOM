@@ -32,21 +32,21 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   double tau_W, tau_s;
   double lambda_next;
 
-  meantemp=(double)met_list[0];
+  if (met_list[0] < 100.0) {
+    // assume temperature forcing at time t is in degrees C, then convert to degrees K
+    meantemp=(double)met_list[0]+273.15;
+  }
+  else {
+    // assume temperature forcing at time t is in degrees K
+    meantemp=(double)met_list[0];
+  }
   n=1.0; /*(double)var_list[0];*/
   deltat=(double)var_list[19];
   lambda=(double)var_list[2];
   T_init=(double)0.0;
-  if (var_list[3] < 100.0) {
-    // assume temperature parameter is in degrees C
-    T_phi=(double)var_list[3];
-  }
-  else {
-    // assume temperature parameter is in degrees kelvin
-    T_phi=(double)var_list[3]-273.15;
-  }
-  T_r=(double)var_list[4];
-  T_memory=(double)var_list[5];
+  T_phi=(double)var_list[3];   // degrees K
+  T_r=(double)var_list[4];   // degrees K
+  T_memory=(double)var_list[5];   // degrees K
   tau_m=(double)30.0; // Averaging period for temperature growth trigger T (units of days; must be in same units as deltat), usually kept constant but could potentially be a tuneable parameter
   plgr=(double)var_list[7];
   k_L=(double)var_list[8];

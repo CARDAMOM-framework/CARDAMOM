@@ -10,7 +10,7 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1005(DATA *CARDADATA)
+int PARS_INFO_1005(double *parmin, double *parmax)
 {
 
 struct DALEC_1005_PARAMETERS P=DALEC_1005_PARAMETERS;
