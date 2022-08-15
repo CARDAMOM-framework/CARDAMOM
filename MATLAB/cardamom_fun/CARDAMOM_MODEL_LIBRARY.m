@@ -188,7 +188,7 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',
      linestr=[linestr(1:b1),lnum,linestr(b2:end)];
      %Find first ";"
      strev=linestr(1:find(linestr==';',1));
-     disp(strev)
+     %disp(strev)
      eval(strev);
      %Storing parameter name based on line above parmin
      if strcmp(linestr(1:6),'parmin');
