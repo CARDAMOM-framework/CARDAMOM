@@ -60,13 +60,9 @@ parmax[P.t_som]=0.001;
 parmin[P.Q10rhco2]=1.2;
 parmax[P.Q10rhco2]=2.0;
 
-/*LMCA*/
-/*Kattge et al. 2011*/
-/*Kattge et al., provide a range of 10 400 g m-2, i.e. 5 200 gC m-2*/
+/*LMCA*; Kattge et al. 2011*;*Kattge et al., provide a range of 10 400 g m-2, i.e. 5 200 gC m-2*/
 parmin[P.LCMA]=5;
 parmax[P.LCMA]=200;
-
-/*INITIAL VALUES DECLARED HERE*/
 
 /*C labile*/
 parmin[P.i_labile]=1.0;
@@ -152,7 +148,6 @@ parmax[P.PAW_z]=100;
 parmin[P.PUW_z]=0.01;
 parmax[P.PUW_z]=100;
 
-
 /*PAW volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
 parmin[P.PAW_vhc]=1.3e6;
 parmax[P.PAW_vhc]=3e6;
@@ -217,8 +212,7 @@ parmax[P.melt_slope]=1;
 parmin[P.scf_scalar]=10;
 parmax[P.scf_scalar]=1000.0;
 
-/* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)*/
-/*jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
+/* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)\n jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
 parmin[P.S_fv]=1;
 parmax[P.S_fv]=100.0;
 

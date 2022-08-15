@@ -157,11 +157,11 @@ double evap_scale_factpr;
 sV = 0.04145*exp(0.06088*T_C); 
 
 SRADg = (1. - leaf_refl)*SRAD*exp(-VegK*LAI*clumping);
+
 SRAD = (1. - leaf_refl)*SRAD;
 
 petVnum = (sV*(SRAD-SRADg)+1.225*1000*VPD_kPa*ga)/lambda0*60*60;
 petVnumB = 1.26*(sV*SRADg)/(sV+gammaV)/lambda0*60*60; //from mm.hr-1 
-
 if(beta_factor > 0 && SRAD >0){
 
 gs = 1.6*An/(co2-ci)*LAI*0.02405; 
@@ -180,9 +180,7 @@ A->OUT.transp = transp*24;
 
 
 
-
-evap_scale_factpr = fmin(maxPevap/precip, 1.);
-
+evap_scale_factpr = fmin(precip/maxPevap, 1.);
 
 evap = petVnumB*evap_scale_factpr;
 
