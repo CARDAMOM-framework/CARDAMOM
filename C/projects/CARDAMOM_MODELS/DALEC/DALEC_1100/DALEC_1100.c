@@ -399,7 +399,11 @@ double *POOLS=DATA.M_POOLS;
   
    //---INITIALIZING DIAGNOSTIC STATES---
     POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; //LAI
-    POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
+    
+    if (POOLS[S.H2O_SWE]>0){
+    POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]);} //snow cover fraction}
+    else
+    {POOLS[S.D_SCF]=0;};
     
     
     //INITIALIZING PAW and PUW soil moisture
@@ -669,7 +673,6 @@ double moles_per_m3 = Psurf/(Rgas*air_temp_k);
 //Sensible heat 
 double H = cp*(tskin_k - air_temp_k)*pars[P.ga]*moles_per_m3; // ga in m s-1, 
 FLUXES[f+F.sensible_heat] = H; // W m-2
-//soil heat flux 
 double G = Rn - H - LE; // W m-2
 FLUXES[f+F.ground_heat] = G; // W m-2
 FLUXES[f+F.gh_in] = G*60*60*24; // J m-2 d-1

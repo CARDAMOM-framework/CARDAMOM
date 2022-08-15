@@ -177,17 +177,19 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',
  pn=1;
  for n=1:numel(D)
      linestr=D{n};
-     if numel(linestr)>12 & strcmp(linestr(1),'p')==1
-     linestr(linestr=='-')='';
-     linestr(linestr=='>')='.';
+     if numel(linestr)>6 & strcmp(linestr(1),'p')==1  
+     %linestr(linestr=='-')='';
+     %linestr(linestr=='>')='.';
      b1=find(linestr=='[');
      b2=find(linestr==']');
      linestr(b1)='(';
      linestr(b2)=')';
-     lnum=num2str(eval(linestr(b1+1:b2-1))+1);
+     lnum=num2str(eval(linestr(b1+1:b2-1)));%No correction needed here
      linestr=[linestr(1:b1),lnum,linestr(b2:end)];
      %Find first ";"
-     eval(linestr(1:find(linestr==';',1)));
+     strev=linestr(1:find(linestr==';',1));
+     disp(strev)
+     eval(strev);
      %Storing parameter name based on line above parmin
      if strcmp(linestr(1:6),'parmin');
          if strcmp(D{n-1}(1:2), '/*')
