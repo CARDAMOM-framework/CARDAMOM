@@ -91,6 +91,7 @@ int psi_50;
 int beta_lgr;
 int phi_RL;
 int phi_WL;
+int thermal_cond;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -99,7 +100,7 @@ int phi_WL;
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
-    70,71
+    70,71,72
 };
 
 struct DALEC_1100_FLUXES{
@@ -173,6 +174,7 @@ int SWin;
 int SWout;
 int LWin;
 int LWout;
+int paw2puw_th_e;
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -180,7 +182,7 @@ int LWout;
     30,31,32,33,34,35,36,37,38,39,
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
-    60,61,62,63,64,65,66,67,68
+    60,61,62,63,64,65,66,67,68,69
 };
 
 
@@ -764,15 +766,20 @@ FLUXES[f+F.et_e] = FLUXES[f+F.et]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(SKT[n
 FLUXES[f+F.paw2puw_e] = FLUXES[f+F.paw2puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(TEMPxfer);
 FLUXES[f+F.q_paw_e] = FLUXES[f+F.q_paw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PAW]);
 FLUXES[f+F.q_puw_e] =  FLUXES[f+F.q_puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PUW]);
-
+//Thermal conductivity = k*dT/dz, units are W/m2, converting to J/m2/d
+FLUXES[f+F.paw2puw_th_e] = 2*pars[P.thermal_cond]* (POOLS[p+S.D_TEMP_PAW] - POOLS[p+S.D_TEMP_PUW])/(pars[P.PAW_z] + pars[P.PUW_z])*3600*24;
+      
+        
+        
+        
 //Thermal energy flux only
 //FLUXES[f+F.paw2puw_e_thermal] = 
 
 //Energy states
 //fraction of water in soil that is available 
 //double frac_paw = POOLS[nxp+S.H2O_PAW]/(POOLS[nxp+S.H2O_PAW]+POOLS[nxp+S.H2O_PUW]);
-POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.gh_in] + FLUXES[f+F.infil_e] - FLUXES[f+F.et_e] - FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_paw_e])*deltat;  
-POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_puw_e] )*deltat; 
+POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.gh_in] + FLUXES[f+F.infil_e] - FLUXES[f+F.et_e] - FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_paw_e]-FLUXES[f+F.paw2puw_th_e])*deltat;  
+POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_puw_e] +FLUXES[f+F.paw2puw_th_e])*deltat; 
 
 
 
@@ -1040,8 +1047,8 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=72;
-DALECmodel->nofluxes=69;
+DALECmodel->nopars=73;
+DALECmodel->nofluxes=70;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->noedcs=2;
 
