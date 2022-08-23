@@ -650,10 +650,15 @@ double LWin = STRD[n]*1e6/(24*3600); // W m-2
 //Outgoing LW radiation
 double tskin_k = SKT[n]+DGCM_TK0C;
 double LWout = sigma*pow(tskin_k,4.); // W m-2
-//Net radiation at the top of the canopy
+//Net radiation at the top of the canopy-soil continuum
+//
+//
 double Rn = SWin - SWout + LWin - LWout; // W m-2
+//Rnet only into soil
 FLUXES[f+F.net_radiation] = Rn; // W m-2
 
+
+//These are only fluxes into PAW and out of PAW
 FLUXES[f+F.SWin]=SWin;//flag for redundancy and deletion
 FLUXES[f+F.LWin]=LWin;//flag for redundancy and deletion
 FLUXES[f+F.SWout]=SWout;
@@ -675,7 +680,11 @@ double moles_per_m3 = Psurf/(Rgas*air_temp_k);
 //Sensible heat 
 double H = cp*(tskin_k - air_temp_k)*pars[P.ga]*moles_per_m3; // ga in m s-1, 
 FLUXES[f+F.sensible_heat] = H; // W m-2
-double G = Rn - H - LE; // W m-2
+//Ground heat flux ONLY for energy in&out of vegetation-soil continuum
+//Rn is scaled by snow free area, because we exclude snow energy balance from energy ODEs
+//H is scaled by snow free area, because we exclude snow energy balance from energy ODEs
+//LE is fully included, as evaporation and transpiration are assumed to come fully from snow-free areas (caveat: snow evaporation is a thing, btut we assume it's zero for this model)
+double G = Rn*(1. - POOLS[p+S.D_SCF]) - H*(1. - POOLS[p+S.D_SCF]) - LE; // W m-2
 FLUXES[f+F.ground_heat] = G; // W m-2
 FLUXES[f+F.gh_in] = G*60*60*24; // J m-2 d-1
 
