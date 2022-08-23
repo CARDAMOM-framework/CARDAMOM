@@ -297,11 +297,11 @@ parmin[P.beta_lgr]=4.1;
 parmax[P.beta_lgr]=50;
  
 /*Ratio of total root surface area to total leaf area*/
-parmin[P.phi_RL]=0.0001;
+parmin[P.phi_RL]=0.00001;
 parmax[P.phi_RL]=0.1;
 
 /*Ratio of total wood surface area to total leaf area*/
-parmin[P.phi_WL]=0.0001;
+parmin[P.phi_WL]=0.00001;
 parmax[P.phi_WL]=0.1;
   
 
