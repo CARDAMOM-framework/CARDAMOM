@@ -4,7 +4,7 @@
 
 The CARDAMOM netcdf input file is a "one-stop shop" for all inputs required to configure CARDAMOM including:
 - Model structure choice (Model ID [add link here])
-- Forcing data required by model structure (met data, burned area, latitude)
+- Forcing data required by model structure (meteorlogical drivers, latitude)
 - Observations (datasets, time varying uncertainties, and other cost function options)
 - MCMC options
 - Minimal ancillary non-functional data (these are optional: includes longitude, notes, etc.)
