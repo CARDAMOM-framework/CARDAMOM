@@ -827,9 +827,9 @@ ARFLUXES.IN.TEMP=air_temp_k;
 ARFLUXES.IN.NSC=POOLS[p+S.C_lab];
 ARFLUXES.IN.C_LIVE=POOLS[p+S.C_fol]+POOLS[p+S.C_woo]+POOLS[p+S.C_roo];
 // Potential plant allocation (growth) fluxes
-ARFLUXES.IN.ALLOC_FOL_POT=fmax(0, (FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_fol]);
-ARFLUXES.IN.ALLOC_ROO_POT=fmax(0, (pars[P.phi_RL] * (FLUXES[f+F.target_LAI] * pars[P.LCMA])));
-ARFLUXES.IN.ALLOC_WOO_POT=fmax(0, (pars[P.phi_WL] * (FLUXES[f+F.target_LAI] * pars[P.LCMA])));
+ARFLUXES.IN.ALLOC_FOL_POT=fmax(0, ((FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_fol])/deltat);
+ARFLUXES.IN.ALLOC_ROO_POT=fmax(0, (pars[P.phi_RL] * (FLUXES[f+F.target_LAI] * pars[P.LCMA]))/deltat);
+ARFLUXES.IN.ALLOC_WOO_POT=fmax(0, (pars[P.phi_WL] * (FLUXES[f+F.target_LAI] * pars[P.LCMA]))/deltat);
 
 ALLOC_AND_AUTO_RESP_FLUXES(&ARFLUXES);
 

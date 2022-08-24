@@ -296,13 +296,13 @@ parmax[P.psi_50]=30;
 parmin[P.beta_lgr]=4.1;
 parmax[P.beta_lgr]=50;
  
-/*Ratio of total root surface area to total leaf area*/
-parmin[P.phi_RL]=0.00001;
-parmax[P.phi_RL]=0.1;
+/*Ratio of carbon allocation to root per target foliar pool size (gC/gC)*/
+parmin[P.phi_RL]=0.0001;
+parmax[P.phi_RL]=0.5;
 
-/*Ratio of total wood surface area to total leaf area*/
-parmin[P.phi_WL]=0.00001;
-parmax[P.phi_WL]=0.1;
+/*Ratio of carbon allocation to wood per target foliar pool size (gC/gC)*/
+parmin[P.phi_WL]=0.0001;
+parmax[P.phi_WL]=0.5;
   
 
 /*Soil thermal conductivity in W/m/K */
