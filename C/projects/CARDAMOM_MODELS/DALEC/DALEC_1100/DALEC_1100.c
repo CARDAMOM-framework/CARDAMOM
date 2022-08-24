@@ -447,6 +447,7 @@ double *POOLS=DATA.M_POOLS;
     KNORR_ALLOCATION_STRUCT KNORR;
 //define time-invariant parameters
          KNORR.IN.deltat=deltat;
+         KNORR.IN.n=0;
          KNORR.IN.latitude=DATA.ncdf_data.LAT;
          KNORR.IN.T_phi=pars[P.T_phi];
          KNORR.IN.T_r=pars[P.T_range];
@@ -800,6 +801,7 @@ POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_pu
 KNORR.IN.lambda_max_memory=  POOLS[p+S.M_LAI_MAX];
 KNORR.IN.T_memory=POOLS[p+S.M_LAI_TEMP];
 KNORR.IN.temp=air_temp_k;
+KNORR.IN.n=n;
 KNORR.IN.DOY=DOY[n];
 KNORR.IN.lambda=LAI;
 KNORR.IN.pasm=(POOLS[p+S.H2O_PAW]+POOLS[nxp+S.H2O_PAW])/2.0;//Note: soil moisture also available here

@@ -5,6 +5,7 @@ typedef struct {
     struct{
         double temp; // mean air temperature (K)
         double deltat;
+        double n;
         double latitude;
         double DOY;
         double lambda;
@@ -58,7 +59,8 @@ int KNORR_ALLOCATION(KNORR_ALLOCATION_STRUCT * K)
 
   
   
-  n=1.0; /*(double)var_list[0];*/
+  // n=1.0; /*(double)var_list[0];*/
+  n=K->IN.n;
   deltat=(double)K->IN.deltat;
   lambda=(double)K->IN.lambda;
   T_init=(double)0.0;
@@ -66,7 +68,7 @@ int KNORR_ALLOCATION(KNORR_ALLOCATION_STRUCT * K)
   T_r=K->IN.T_r;       // spatial range of T_phi (K)
   T_memory=K->IN.T_memory; // temperature memory (K)
   meantemp=K->IN.temp;     // mean surface air temperature (K)
-   tau_m=1.0; //var_list[6];
+   tau_m=30.0; //var_list[6];
    plgr=K->IN.plgr;//
    k_L=K->IN.k_L;
    pasm=K->IN.pasm;
@@ -83,15 +85,20 @@ int KNORR_ALLOCATION(KNORR_ALLOCATION_STRUCT * K)
   daylengthpars[1]=K->IN.DOY;  /* day of year */
   daylengthpars[2]=DGCM_PI;  /* pi */
 
-  /* Initialization: only run this on the first time step! */
-  if (n==0) {
-    lambda_max_memory=lambda_max;
-    laim=lambda_max_memory;
-  }
+  // /* Initialization: only run this on the first time step! */
+  // if (n==0) {
+  //   lambda_max_memory=lambda_max;
+  //   laim=lambda_max_memory;
+  // }
+  if (n < 2){
+  printf("\n");
+  printf("KNORR n = %2f\n",n);
+    }
+
   // if (n==0){printf("> in LAI_KNORR: T_memory = %2.1f\n",T_memory);}
   // if (n==0){T_memory=T_phi+3*T_r;}   /* set the temperature memory to be high so that we start in growth phase */
   // Exponentially declining memory of temperature
-  T      = exp(- 1 / tau_m)*T_memory + meantemp * (1 - exp(- 1 / tau_m));
+  T      = exp(- deltat / tau_m)*T_memory + meantemp * (1 - exp(- deltat / tau_m));
   T_deviation=(T-T_phi)/T_r;
   /* fraction of plants above temperature threshold: using cumulative normal distribution function (derived from the intrinsic c-function erfc) */
   f_T    = 0.5*erfc(-T_deviation*sqrt(0.5));
@@ -113,7 +120,7 @@ int KNORR_ALLOCATION(KNORR_ALLOCATION_STRUCT * K)
   /* compute smoothed maximum LAI */
   lambda_tilde_max = MinQuadraticSmooth(lambda_max, lambda_W, 0.99);
   /* update LAI water/structural memory using an exponentially declining memory of water/structural limitation over the time period tau_s */
-  laim = exp(- 1.0 / tau_s)*lambda_max_memory + lambda_tilde_max * (1.0 - exp(- 1.0 / tau_s));
+  laim = exp(- deltat / tau_s)*lambda_max_memory + lambda_tilde_max * (1.0 - exp(- deltat / tau_s));
   lambda_lim = MaxExponentialSmooth(plgr * laim * f / r, 1e-9, 5e-3);
 
   // lambda_next is the updated target LAI (units of m2/m2)
