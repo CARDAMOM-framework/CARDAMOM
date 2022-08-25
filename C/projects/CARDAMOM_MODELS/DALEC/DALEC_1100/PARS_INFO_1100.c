@@ -24,9 +24,9 @@ parmax[P.tr_lit2som]=0.99;
 parmin[P.tr_cwd2som]=0.01;
 parmax[P.tr_cwd2som]=0.99;
 
-/*Autotrophic maintenance respiration coefficient*/
-parmin[P.rauto_mr]=0.05;
-parmax[P.rauto_mr]=0.8;
+/*Autotrophic maintenance respiration coefficient - turnover rate at 25oC (d-1)*/
+parmin[P.rauto_mr]=0.0001;
+parmax[P.rauto_mr]=0.05;
 
 /*Autotrophic maintenance respiration Q10 parameter*/
 parmin[P.rauto_mr_q10]=1.0;

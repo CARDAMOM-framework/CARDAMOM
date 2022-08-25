@@ -7,7 +7,7 @@ typedef struct {
         double C_LIVE;// Live C
         double NSC;   //labile carbon pool, Clab, non-structural carbohydrates (gC)
         double GPP;
-        double mr;    // parameter: maintenance respiration coefficient (gC/gC/d)
+        double mr;    // parameter: maintenance respiration coefficient (gC/gC/d) - see Cannell and Thornley (2000, doi: 10.1006/anbo.1999.0996)
         double gr;    // parameter: growth respiration coefficient (gC/gC)
         double Q10mr; // parameter: Q10 parameter for maintenance respiration (unitless)
         double ALLOC_FOL_POT; // potential allocation flux to foliar pool (gC/m2/d)
