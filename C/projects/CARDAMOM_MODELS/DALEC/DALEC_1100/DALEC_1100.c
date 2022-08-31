@@ -412,6 +412,10 @@ double *POOLS=DATA.M_POOLS;
         POOLS[S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
         POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);//soil moisture PUW
 
+        //Diagnostic time-invariant quantities
+        double PAWmax=pars[P.PAW_por]*pars[P.PAW_z];
+        double PUWmax=pars[P.PUW_por]*pars[P.PUW_z];
+        
         
         
     //Declare stryct
@@ -763,6 +767,22 @@ POOLS[nxp+S.H2O_PAW] = POOLS[p+S.H2O_PAW] + (FLUXES[f+F.infil] - FLUXES[f+F.paw2
 POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
 
 
+
+if (POOLS[nxp+S.H2O_PAW]>pars[P.PAW_por]*pars[P.PAW_z]){
+//Dump excess into PAW Q
+FLUXES[f+F.q_paw] +=POOLS[nxp+S.H2O_PAW]-PAWmax;
+POOLS[nxp+S.H2O_PAW]=PAWmax;}
+
+if (POOLS[nxp+S.H2O_PUW]>pars[P.PUW_por]*pars[P.PUW_z]){
+//Dump excess into PAW Q
+FLUXES[f+F.q_puw] +=POOLS[nxp+S.H2O_PUW]-PUWmax;
+POOLS[nxp+S.H2O_PUW]=PUWmax;}
+
+
+
+
+
+
 //**********INTERNAL ENERGT FLUXES FOR ALL H2O FLUXES***************
 //Add INFILTRATION, PAW, PUW, PAW2PUW, ET
 double infiltemp = air_temp_k ;//Infiltemp needs to be in degrees celcius for IF statement to work
@@ -1015,6 +1035,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     
     
     //Soil moisture
+
         POOLS[nxp+S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
         POOLS[nxp+S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);//soil moisture PUW
 
