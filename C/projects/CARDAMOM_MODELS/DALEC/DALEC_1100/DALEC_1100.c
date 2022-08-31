@@ -362,6 +362,7 @@ double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
 double *SKT=DATA.ncdf_data.SKT.values;
 double *STRD=DATA.ncdf_data.STRD.values;
+double *LAIdata=DATA.ncdf_data.LAI.values;
 
 
 
@@ -400,7 +401,9 @@ double *POOLS=DATA.M_POOLS;
   
   
    //---INITIALIZING DIAGNOSTIC STATES---
-    POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; //LAI
+    //POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; //LAI
+  //DALEC-SP
+  POOLS[S.D_LAI]=LAIdata[0]; //LAI
     
     if (POOLS[S.H2O_SWE]>0){
     POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]);} //snow cover fraction}
@@ -553,8 +556,8 @@ nxp=nopools*(n+1);
 /*flux array index*/
 f=nofluxes*n;
 
-
-double LAI=POOLS[p+S.D_LAI];
+//DALEC-SP: POOLS[p+S.D_LAI];
+//No need to do this, as we already track LAI
      
         
 /*Calculate light extinction coefficient*/
@@ -609,7 +612,7 @@ LIU.IN.vcmax25=pars[P.Vcmax25];
 LIU.IN.co2=CO2[n];
 LIU.IN.beta_factor=fmin(beta,g);
 LIU.IN.g1=pars[P.Med_g1];
-LIU.IN.LAI=LAI;
+LIU.IN.LAI=LAIdata[n];
 LIU.IN.ga=pars[P.ga];
 LIU.IN.VegK=VegK;
 LIU.IN.Tupp=pars[P.Tupp];
@@ -823,7 +826,7 @@ KNORR.IN.T_memory=POOLS[p+S.M_LAI_TEMP];
 KNORR.IN.temp=air_temp_k;
 KNORR.IN.n=n;
 KNORR.IN.DOY=DOY[n];
-KNORR.IN.lambda=LAI;
+KNORR.IN.lambda=LAIdata[n];
 KNORR.IN.pasm=(POOLS[p+S.H2O_PAW]+POOLS[nxp+S.H2O_PAW])/2.0;//Note: soil moisture also available here
 KNORR.IN.ET= FLUXES[f+F.et];
 //Call function: uses KNORR->IN to update KNORR->OUT
@@ -1009,7 +1012,9 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     FLUXES[f+F.lai_fire] = (POOLS[p+S.C_fol]/pars[P.LCMA])*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
 
     /****************************RECORD t+1 DIAGNOSTIC STATES*************************/
-    POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
+    //POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
+    //DALEC-SP
+    POOLS[nxp+S.D_LAI]=LAIdata[n]; //LAI
     POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
     
     
