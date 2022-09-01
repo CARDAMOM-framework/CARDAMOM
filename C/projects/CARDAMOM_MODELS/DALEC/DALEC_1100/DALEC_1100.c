@@ -143,7 +143,7 @@ int paw2puw_e;   /*PAW->PUW transfer IE: temp of donor*/
 int et_e; /* See Retano's calculation*/
 int transp;   /*Transpiration*/
 int evap;   /*Evaporation*/
-int snow_in;   /*Snowfall to SWE*/
+int snowfall;   /*Snowfall to SWE*/
 int melt;   /*Snow melt*/
 int ae_rh_cwd; /*Aerobic Rh from coarse woody debris*/
 int ae_rh_lit; /*Aerobic Rh from litter*/
@@ -410,7 +410,7 @@ double *POOLS=DATA.M_POOLS;
     
     //INITIALIZING PAW and PUW soil moisture
         POOLS[S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
-        POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);//soil moisture PUW
+        POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PUW],pars[P.PAW_por],pars[P.PAW_z]);//soil moisture PUW
 
         //Diagnostic time-invariant quantities
         double PAWmax=pars[P.PAW_por]*pars[P.PAW_z];
@@ -634,8 +634,8 @@ FLUXES[f+F.evap] = LIU.OUT.evap;
 FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
 
 /*Snow water equivalent*/
-FLUXES[f+F.snow_in] = SNOWFALL[n];
-POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snow_in]*deltat; /*first step snowfall to SWE*/
+FLUXES[f+F.snowfall] = SNOWFALL[n];
+POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snowfall]*deltat; /*first step snowfall to SWE*/
 FLUXES[f+F.melt]=fmin(fmax((air_temp_k-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
 POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step remove snowmelt from SWE*/
 
@@ -768,15 +768,15 @@ POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_
 
 
 
-if (POOLS[nxp+S.H2O_PAW]>pars[P.PAW_por]*pars[P.PAW_z]){
-//Dump excess into PAW Q
-FLUXES[f+F.q_paw] +=POOLS[nxp+S.H2O_PAW]-PAWmax;
-POOLS[nxp+S.H2O_PAW]=PAWmax;}
+// if (POOLS[nxp+S.H2O_PAW]>pars[P.PAW_por]*pars[P.PAW_z]){
+// //Dump excess into PAW Q
+// FLUXES[f+F.q_paw] +=POOLS[nxp+S.H2O_PAW]-PAWmax;
+// POOLS[nxp+S.H2O_PAW]=PAWmax;}
 
-if (POOLS[nxp+S.H2O_PUW]>pars[P.PUW_por]*pars[P.PUW_z]){
-//Dump excess into PAW Q
-FLUXES[f+F.q_puw] +=POOLS[nxp+S.H2O_PUW]-PUWmax;
-POOLS[nxp+S.H2O_PUW]=PUWmax;}
+// if (POOLS[nxp+S.H2O_PUW]>pars[P.PUW_por]*pars[P.PUW_z]){
+// //Dump excess into PAW Q
+// FLUXES[f+F.q_puw] +=POOLS[nxp+S.H2O_PUW]-PUWmax;
+// POOLS[nxp+S.H2O_PUW]=PUWmax;}
 
 
 
