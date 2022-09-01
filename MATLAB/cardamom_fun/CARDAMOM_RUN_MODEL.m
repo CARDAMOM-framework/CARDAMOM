@@ -243,7 +243,7 @@ CBR.FLUXES=permute(ncread(fluxfile,'FLUXES'),[3,2,1]);
 %with pool start values
 %CBR.POOLS=permute(readbinarymat(poolfile,[(Nd+1)*0,OPT.MODEL.MA.nopools,N]),[3,2,1]);
 CBR.POOLS=permute(ncread(fluxfile,'POOLS'),[3,2,1]);
-CBR.POOLS=CBR.POOLS(:,2:end,:);
+%CBR.POOLS=CBR.POOLS(:,2:end,:);
 %reading EDC diagnostics
 %CBR.EDCDIAG=permute(readbinarymat(edcdfile,[1,100,N],2),[3,1,2]);
 CBR.EDCDIAG=permute(ncread(fluxfile,'EDCD'),[3,1,2]);
