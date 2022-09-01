@@ -112,8 +112,8 @@ int foliar_prod;   /*Labile release*/
 int root_prod;   /*Root production*/
 int wood_prod;   /*Wood production*/
 int fol2lit;   /*Foliar decomposition*/
-int wood2cwd;   /*Wood decomposition*/
-int root2lit;   /*Root decomposition*/
+int woo2cwd;   /*Wood decomposition*/
+int roo2lit;   /*Root decomposition*/
 int cwd2som;   /*CWD decomposition*/
 int lit2som;   /*Litter decomposition*/
 int f_total;   /*Flux description*/
@@ -237,88 +237,88 @@ DALEC_FLUX_SOURCES_SINKS_STRUCT DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel
     //Step 2. Define
     
         // C_lab
-        FIOMATRIX.SINK[F.lab_prod]=P.C_lab;
-        FIOMATRIX.SOURCE[F.foliar_prod]=P.C_lab;
-        FIOMATRIX.SOURCE[F.root_prod]=P.C_lab;
-        FIOMATRIX.SOURCE[F.wood_prod]=P.C_lab;
-        FIOMATRIX.SOURCE[F.f_lab]=P.C_lab;  
-        FIOMATRIX.SOURCE[F.fx_lab2lit]=P.C_lab;
+        FIOMATRIX.SINK[F.lab_prod]=S.C_lab;
+        FIOMATRIX.SOURCE[F.foliar_prod]=S.C_lab;
+        FIOMATRIX.SOURCE[F.root_prod]=S.C_lab;
+        FIOMATRIX.SOURCE[F.wood_prod]=S.C_lab;
+        FIOMATRIX.SOURCE[F.f_lab]=S.C_lab;  
+        FIOMATRIX.SOURCE[F.fx_lab2lit]=S.C_lab;
 
 
         // C_fol
-        FIOMATRIX.SINK[F.foliar_prod]=P.C_fol;
-        FIOMATRIX.SOURCE[F.fol2lit]=P.C_fol;
-        FIOMATRIX.SOURCE[F.f_fol]=P.C_fol;
-        FIOMATRIX.SOURCE[F.fx_fol2lit]=P.C_fol;
+        FIOMATRIX.SINK[F.foliar_prod]=S.C_fol;
+        FIOMATRIX.SOURCE[F.fol2lit]=S.C_fol;
+        FIOMATRIX.SOURCE[F.f_fol]=S.C_fol;
+        FIOMATRIX.SOURCE[F.fx_fol2lit]=S.C_fol;
         
         // C_roo
-        FIOMATRIX.SINK[F.root_prod]=P.C_roo;
-        FIOMATRIX.SOURCE[F.roo2lit]=P.C_roo;
-        FIOMATRIX.SOURCE[F.f_roo]=P.C_roo;
-        FIOMATRIX.SOURCE[F.fx_roo2lit]=P.C_roo;
+        FIOMATRIX.SINK[F.root_prod]=S.C_roo;
+        FIOMATRIX.SOURCE[F.roo2lit]=S.C_roo;
+        FIOMATRIX.SOURCE[F.f_roo]=S.C_roo;
+        FIOMATRIX.SOURCE[F.fx_roo2lit]=S.C_roo;
         
         // C_woo
-        FIOMATRIX.SINK[F.wood_prod]=P.C_woo;
-        FIOMATRIX.SOURCE[F.woo2cwd]=P.C_woo;
-        FIOMATRIX.SOURCE[F.f_woo]=P.C_woo;
-        FIOMATRIX.SOURCE[F.fx_woo2cwd]=P.C_woo;
+        FIOMATRIX.SINK[F.wood_prod]=S.C_woo;
+        FIOMATRIX.SOURCE[F.woo2cwd]=S.C_woo;
+        FIOMATRIX.SOURCE[F.f_woo]=S.C_woo;
+        FIOMATRIX.SOURCE[F.fx_woo2cwd]=S.C_woo;
 
         
         // C_lit
-        FIOMATRIX.SINK[F.fx_lab2lit]=P.C_lit;
-        FIOMATRIX.SINK[F.fol2lit]=P.C_lit;
-        FIOMATRIX.SINK[F.fx_fol2lit]=P.C_lit;
-        FIOMATRIX.SINK[F.roo2lit]=P.C_lit;
-        FIOMATRIX.SINK[F.fx_roo2lit]=P.C_lit;
-        FIOMATRIX.SOURCE[F.ae_rh_lit]=P.C_lit;
-        FIOMATRIX.SOURCE[F.an_rh_lit]=P.C_lit;
-        FIOMATRIX.SOURCE[F.f_lit]=P.C_lit;
-        FIOMATRIX.SOURCE[F.lit2som]=P.C_lit;
-        FIOMATRIX.SOURCE[F.fx_lit2som]=P.C_lit;
+        FIOMATRIX.SINK[F.fx_lab2lit]=S.C_lit;
+        FIOMATRIX.SINK[F.fol2lit]=S.C_lit;
+        FIOMATRIX.SINK[F.fx_fol2lit]=S.C_lit;
+        FIOMATRIX.SINK[F.roo2lit]=S.C_lit;
+        FIOMATRIX.SINK[F.fx_roo2lit]=S.C_lit;
+        FIOMATRIX.SOURCE[F.ae_rh_lit]=S.C_lit;
+        FIOMATRIX.SOURCE[F.an_rh_lit]=S.C_lit;
+        FIOMATRIX.SOURCE[F.f_lit]=S.C_lit;
+        FIOMATRIX.SOURCE[F.lit2som]=S.C_lit;
+        FIOMATRIX.SOURCE[F.fx_lit2som]=S.C_lit;
     
         // C_cwd
-        FIOMATRIX.SINK[F.woo2cwd]=P.C_cwd;
-        FIOMATRIX.SINK[F.fx_woo2cwd]=P.C_cwd;
-        FIOMATRIX.SOURCE[F.ae_rh_cwd]=P.C_cwd;
-        FIOMATRIX.SOURCE[F.an_rh_cwd]=P.C_cwd;
-        FIOMATRIX.SOURCE[F.f_cwd]=P.C_cwd;
-        FIOMATRIX.SOURCE[F.cwd2som]=P.C_cwd;
-        FIOMATRIX.SOURCE[F.fx_cwd2som]=P.C_cwd;
+        FIOMATRIX.SINK[F.woo2cwd]=S.C_cwd;
+        FIOMATRIX.SINK[F.fx_woo2cwd]=S.C_cwd;
+        FIOMATRIX.SOURCE[F.ae_rh_cwd]=S.C_cwd;
+        FIOMATRIX.SOURCE[F.an_rh_cwd]=S.C_cwd;
+        FIOMATRIX.SOURCE[F.f_cwd]=S.C_cwd;
+        FIOMATRIX.SOURCE[F.cwd2som]=S.C_cwd;
+        FIOMATRIX.SOURCE[F.fx_cwd2som]=S.C_cwd;
         
         
         // C_som
-        FIOMATRIX.SINK[F.cwd2som]=P.C_som;
-        FIOMATRIX.SINK[F.fx_cwd2som]=P.C_som;
-        FIOMATRIX.SINK[F.lit2som]=P.C_som;
-        FIOMATRIX.SINK[F.fx_lit2som]=P.C_som;
-        FIOMATRIX.SOURCE[F.ae_rh_som]=P.C_som;
-        FIOMATRIX.SOURCE[F.an_rh_som]=P.C_som;
-        FIOMATRIX.SOURCE[F.f_som]=P.C_som;
+        FIOMATRIX.SINK[F.cwd2som]=S.C_som;
+        FIOMATRIX.SINK[F.fx_cwd2som]=S.C_som;
+        FIOMATRIX.SINK[F.lit2som]=S.C_som;
+        FIOMATRIX.SINK[F.fx_lit2som]=S.C_som;
+        FIOMATRIX.SOURCE[F.ae_rh_som]=S.C_som;
+        FIOMATRIX.SOURCE[F.an_rh_som]=S.C_som;
+        FIOMATRIX.SOURCE[F.f_som]=S.C_som;
 
         // H2O_SWE
-        FIOMATRIX.SOURCE[F.melt]=P.H2O_SWE;
-        FIOMATRIX.SINK[F.snowfall]=P.H2O_SWE;
+        FIOMATRIX.SOURCE[F.melt]=S.H2O_SWE;
+        FIOMATRIX.SINK[F.snowfall]=S.H2O_SWE;
 
         // H2O_PAW
-        FIOMATRIX.SINK[F.infil]=P.H2O_PAW;
-        FIOMATRIX.SOURCE[F.et]=P.H2O_PAW;
-        FIOMATRIX.SOURCE[F.paw2puw]=P.H2O_PAW;
-        FIOMATRIX.SOURCE[F.q_paw]=P.H2O_PAW;
+        FIOMATRIX.SINK[F.infil]=S.H2O_PAW;
+        FIOMATRIX.SOURCE[F.et]=S.H2O_PAW;
+        FIOMATRIX.SOURCE[F.paw2puw]=S.H2O_PAW;
+        FIOMATRIX.SOURCE[F.q_paw]=S.H2O_PAW;
 
         // H2O_PUW        
-        FIOMATRIX.SOURCE[F.q_puw]=P.H2O_PUW;
-        FIOMATRIX.SINK[F.paw2puw]=P.H2O_PUW;
+        FIOMATRIX.SOURCE[F.q_puw]=S.H2O_PUW;
+        FIOMATRIX.SINK[F.paw2puw]=S.H2O_PUW;
 
         // E_PAW
-        FIOMATRIX.SINK[F.ground_heat]=P.E_PAW;
-        FIOMATRIX.SINK[F.infil_e]=P.E_PAW;
-        FIOMATRIX.SOURCE[F.et_e]=P.E_PAW;
-        FIOMATRIX.SOURCE[F.q_paw_e]=P.E_PAW;
-        FIOMATRIX.SOURCE[F.paw2puw_e]=P.E_PAW;
+        FIOMATRIX.SINK[F.ground_heat]=S.E_PAW;
+        FIOMATRIX.SINK[F.infil_e]=S.E_PAW;
+        FIOMATRIX.SOURCE[F.et_e]=S.E_PAW;
+        FIOMATRIX.SOURCE[F.q_paw_e]=S.E_PAW;
+        FIOMATRIX.SOURCE[F.paw2puw_e]=S.E_PAW;
 
         // E_PUW
-        FIOMATRIX.SINK[F.paw2puw_e]=P.E_PUW;
-        FIOMATRIX.SOURCE[F.q_puw_e]=P.E_PUW;
+        FIOMATRIX.SINK[F.paw2puw_e]=S.E_PUW;
+        FIOMATRIX.SOURCE[F.q_puw_e]=S.E_PUW;
         }
 
 */
@@ -883,9 +883,9 @@ FLUXES[f+F.root_prod] = ARFLUXES.OUT.ALLOC_ROO_ACTUAL;
 /*wood production*/       
 FLUXES[f+F.wood_prod] = ARFLUXES.OUT.ALLOC_WOO_ACTUAL;
 /*wood CWD production*/       
-FLUXES[f+F.wood2cwd] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
+FLUXES[f+F.woo2cwd] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
 /*root litter production*/
-FLUXES[f+F.root2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
+FLUXES[f+F.roo2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
 
 /*-----------------------------------------------------------------------*/
 
@@ -942,10 +942,10 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
         
         
-        POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.root2lit])*deltat;
-        POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + (FLUXES[f+F.wood_prod] - FLUXES[f+F.wood2cwd])*deltat;
-        POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.wood2cwd] - FLUXES[f+F.ae_rh_cwd]-FLUXES[f+F.an_rh_cwd]-FLUXES[f+F.cwd2som])*deltat;
-        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.root2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som])*deltat;
+        POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.roo2lit])*deltat;
+        POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + (FLUXES[f+F.wood_prod] - FLUXES[f+F.woo2cwd])*deltat;
+        POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.woo2cwd] - FLUXES[f+F.ae_rh_cwd]-FLUXES[f+F.an_rh_cwd]-FLUXES[f+F.cwd2som])*deltat;
+        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.roo2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som])*deltat;
         POOLS[nxp+S.C_som] = POOLS[p+S.C_som] + (FLUXES[f+F.lit2som] - FLUXES[f+F.ae_rh_som] - FLUXES[f+F.an_rh_som] + FLUXES[f+F.cwd2som])*deltat;
 
         
