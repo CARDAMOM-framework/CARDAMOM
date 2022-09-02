@@ -12,3 +12,4 @@
 #define DGCM_LATENT_HEAT_VAPORIZATION 2.501*1e6; // J kg-1 
 #define DGCM_LATENT_HEAT_FUSION_3 3.34e5
 #define DGCM_T_LIQUID_H2O_ZERO_ENERGY 56.79//Zero-energy temperature of super-cooled liquid water 56.79 K
+#define DGCM_SEC_DAY 24*60*60//Seconds per day

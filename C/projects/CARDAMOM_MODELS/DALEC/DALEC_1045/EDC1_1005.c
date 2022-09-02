@@ -1,5 +1,5 @@
 #pragma once
-int EDC1_1006(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC1_1045(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
 /*EDCD=EDCD2;*/
@@ -13,7 +13,7 @@ int EDC1_1006(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 16. Foliage CF> wood CF & Foliage CF > Soil CF 
 */
 
-struct DALEC_1006_PARAMETERS P=DALEC_1006_PARAMETERS;
+struct DALEC_1045_PARAMETERS P=DALEC_1045_PARAMETERS;
 
 double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
 double meanrad = DATA.ncdf_data.SSRD.reference_mean;
@@ -60,7 +60,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[3-1]==1))
 /*Root turnover greater than SOM turnover at meantemp*/
 /*same as this*/
 /*\text{EDC 4: }(1-\pavii)^{365} > \Pi_{i=1}^{365} (1-\paix \tratei)*/
-// if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1)) & (pars[P.t_root]<pars[P.t_soil]*exp(pars[P.temp_factor]*meantemp))){EDC=0;EDCD->PASSFAIL[4-1]=0;}
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1)) & (pars[P.t_root]<pars[P.t_soil]*exp(pars[P.temp_factor]*meantemp))){EDC=0;EDCD->PASSFAIL[4-1]=0;}
 
 /*EDC no 5 is addressed in EDC2_FIREBUCKET.c*/
 
@@ -85,7 +85,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[16-1]==1)
 /*Note: these must be tested to ensure that DALEC2 run is NOT needed */
 
 
-EDCD->pEDC=log((double)EDC);
+
 
 
 return EDC;

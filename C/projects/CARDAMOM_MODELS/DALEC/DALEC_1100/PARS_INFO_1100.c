@@ -30,9 +30,9 @@ parmax[P.tr_lit2som]=0.99;
 parmin[P.tr_cwd2som]=0.01;
 parmax[P.tr_cwd2som]=0.99;
 
-/*Autotrophic maintenance respiration coefficient*/
-parmin[P.rauto_mr]=0.05;
-parmax[P.rauto_mr]=0.8;
+/*Autotrophic maintenance respiration coefficient - turnover rate at 25oC (d-1)*/
+parmin[P.rauto_mr]=0.0001;
+parmax[P.rauto_mr]=0.05;
 
 /*Autotrophic maintenance respiration Q10 parameter*/
 parmin[P.rauto_mr_q10]=1.0;
@@ -66,13 +66,9 @@ parmax[P.t_som]=0.001;
 parmin[P.Q10rhco2]=1.2;
 parmax[P.Q10rhco2]=2.0;
 
-/*LMCA*/
-/*Kattge et al. 2011*/
-/*Kattge et al., provide a range of 10 400 g m-2, i.e. 5 200 gC m-2*/
+/*LMCA*; Kattge et al. 2011*;*Kattge et al., provide a range of 10 400 g m-2, i.e. 5 200 gC m-2*/
 parmin[P.LCMA]=5;
 parmax[P.LCMA]=200;
-
-/*INITIAL VALUES DECLARED HERE*/
 
 /*C labile*/
 parmin[P.i_labile]=1.0;
@@ -158,7 +154,6 @@ parmax[P.PAW_z]=100;
 parmin[P.PUW_z]=0.01;
 parmax[P.PUW_z]=100;
 
-
 /*PAW volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
 parmin[P.PAW_vhc]=1.3e6;
 parmax[P.PAW_vhc]=3e6;
@@ -223,8 +218,7 @@ parmax[P.melt_slope]=1;
 parmin[P.scf_scalar]=10;
 parmax[P.scf_scalar]=1000.0;
 
-/* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)*/
-/*jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
+/* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)\n jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
 parmin[P.S_fv]=1;
 parmax[P.S_fv]=100.0;
 
@@ -308,15 +302,27 @@ parmax[P.psi_50]=30;
 parmin[P.beta_lgr]=4.1;
 parmax[P.beta_lgr]=50;
  
-/*Ratio of total root surface area to total leaf area*/
-parmin[P.phi_RL]=0.5;
-parmax[P.phi_RL]=1.5;
+/*Ratio of carbon allocation to root per target foliar pool size (gC/gC)*/
+parmin[P.phi_RL]=0.0001;
+parmax[P.phi_RL]=0.5;
 
+<<<<<<< HEAD
 /*Ratio of total wood surface area to total leaf area*/
 parmin[P.phi_WL]=0.1;
 parmax[P.phi_WL]=10.0;
 
 
+=======
+/*Ratio of carbon allocation to wood per target foliar pool size (gC/gC)*/
+parmin[P.phi_WL]=0.0001;
+parmax[P.phi_WL]=0.5;
+  
+
+/*Soil thermal conductivity in W/m/K */
+parmin[P.thermal_cond]=0.3;
+parmax[P.thermal_cond]=2;
+  
+>>>>>>> main
 return 0;
 
 }

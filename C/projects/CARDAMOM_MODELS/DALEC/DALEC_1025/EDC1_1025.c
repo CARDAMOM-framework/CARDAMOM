@@ -41,7 +41,7 @@ double const fwood=1-fauto-flab-froot;
 double const fsom=fwood+(froot+flab)*pars[P.tr_lit2soil]/(pars[P.tr_lit2soil]+pars[P.t_lit]);
 
 /*yearly leaf loss fraction*/
-double torfol=1/(pars[P.t_foliar]*365.25);
+// double torfol=1/(pars[P.t_foliar]*365.25);
 
 
 
@@ -55,13 +55,13 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[2-1]==1))
 
 /*EDC CHECK NO 3*/
 /*TOR_FOL faster than TOR_WOOD */
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[3-1]==1)) & (pars[P.t_wood]>torfol)){EDC=0;EDCD->PASSFAIL[3-1]=0;}
+// if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[3-1]==1)) & (pars[P.t_wood]>torfol)){EDC=0;EDCD->PASSFAIL[3-1]=0;}
 
 /*EDC CHECK NO 4*/
 /*Root turnover greater than SOM turnover at meantemp*/
 /*same as this*/
 /*\text{EDC 4: }(1-\pavii)^{365} > \Pi_{i=1}^{365} (1-\paix \tratei)*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1)) & (pars[P.t_root]<pars[P.t_soil]*exp(pars[P.temp_factor]*meantemp))){EDC=0;EDCD->PASSFAIL[4-1]=0;}
+// if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1)) & (pars[P.t_root]<pars[P.t_soil]*exp(pars[P.temp_factor]*meantemp))){EDC=0;EDCD->PASSFAIL[4-1]=0;}
 
 /*EDC no 5 is addressed in EDC2_FIREBUCKET.c*/
 
@@ -72,7 +72,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[4-1]==1))
 
 /*EDC CHECK NO 5*/
 /*Allocation to canopy is comparable to allocation to fine roots*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[5-1]==1)) & ((flab)>5*froot | (flab)*5<froot)){EDC=0;EDCD->PASSFAIL[5-1]=0;}
+// if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[5-1]==1)) & ((flab)>5*froot | (flab)*5<froot)){EDC=0;EDCD->PASSFAIL[5-1]=0;}
 
 /*EDC No 16* Foliage CF> wood CF & SOM CF*/
 if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[16-1]==1)) & (pars[P.cf_foliar]<pars[P.cf_ligneous] | pars[P.cf_foliar]<pars[P.cf_DOM])){EDC=0;EDCD->PASSFAIL[16-1]=0;}

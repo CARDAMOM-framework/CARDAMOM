@@ -1,5 +1,5 @@
 #pragma once
-#include "DALEC_1032.c"
+#include "DALEC_1005.c"
 
 /*PARAMETER_INFO (typedef struct) must have at least 3 fields
  *  * npars,
@@ -10,11 +10,13 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1032(double *parmin, double *parmax)
+int PARS_INFO_1005(DATA *CARDADATA)
 {
 
-struct DALEC_1032_PARAMETERS P=DALEC_1032_PARAMETERS;
+struct DALEC_1005_PARAMETERS P=DALEC_1005_PARAMETERS;
 
+double * parmin=CARDADATA->parmin;
+double * parmax=CARDADATA->parmax;
 /*Decomposition rate*/
 parmin[P.tr_lit2soil]=0.00001;
 parmax[P.tr_lit2soil]=0.01;
@@ -108,10 +110,10 @@ parmin[P.i_lit]=1.0;
 parmax[P.i_lit]=2000.0;
 
 /*C_som*/
-parmin[P.i_soil]=1.0;
-parmax[P.i_soil]=200000.0;
+parmin[P.i_som]=1.0;
+parmax[P.i_som]=200000.0;
 
-/*uWUE: GPP*sqrt(VPD)/ET: gC/kgH2o *hPa*/
+/*uWUE: GPP*sqrt(VPD)/ET: gC/kgH2o *hPa*;The chosen prior range in r conservatively captures the range of values by Boese et al.(2017)*/
 parmin[P.uWUE]=0.5;
 parmax[P.uWUE]=30;
 
@@ -166,14 +168,6 @@ parmax[P.i_PUW]=10000;
 /*r: The chosen prior range in r conservatively captures the range of values by Boese et al.(2017)*/
 parmin[P.boese_r]=0.01;
 parmax[P.boese_r]=0.3;
-
-/*Reference VPD */
-parmin[P.vpd_ref]=10;
-parmax[P.vpd_ref]=10000;
-
-/*VPD curvature exponent */
-parmin[P.vpd_exp]=0.001;
-parmax[P.vpd_exp]=1000;
 
 return 0;
 
