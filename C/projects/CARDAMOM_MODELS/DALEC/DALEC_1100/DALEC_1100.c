@@ -1,6 +1,5 @@
 #pragma once
 //Note: DALEC_OBSERVATION_OPERATORS.c included in DALEC_MODULE.
-#include "DALEC_1100_INDICES.c"
 #include "PARS_INFO_1100.c"
 #include "../DALEC_ALL/DALEC_MODULE.c"//Includes all calls to DALEC-compatible EDC functions
 #include "../DALEC_ALL/HYDROLOGY_MODULES/DRAINAGE.c"
