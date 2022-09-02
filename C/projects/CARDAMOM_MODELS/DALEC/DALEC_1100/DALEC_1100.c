@@ -812,14 +812,6 @@ FLUXES[f+F.paw2puw_th_e] = 2*pars[P.thermal_cond]* (POOLS[p+S.D_TEMP_PAW] - POOL
 //fraction of water in soil that is available 
 //double frac_paw = POOLS[nxp+S.H2O_PAW]/(POOLS[nxp+S.H2O_PAW]+POOLS[nxp+S.H2O_PUW]);
 POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.gh_in] + FLUXES[f+F.infil_e] - FLUXES[f+F.et_e] - FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_paw_e]-FLUXES[f+F.paw2puw_th_e])*deltat;  
-printf("POOLS[p+S.E_PAW] = %2.2f",POOLS[p+S.E_PAW]);
-printf("FLUXES[f+F.gh_in]  = %2.2f",FLUXES[f+F.gh_in] );
-printf("FLUXES[f+F.infil_e]= %2.2f",FLUXES[f+F.infil_e]);
-printf("POOLS[p+S.E_PAW] = %2.2f",POOLS[p+S.E_PAW]);
-printf("POOLS[p+S.E_PAW] = %2.2f",POOLS[p+S.E_PAW]);
-printf("POOLS[p+S.E_PAW] = %2.2f",POOLS[p+S.E_PAW]);
-printf("POOLS[p+S.E_PAW] = %2.2f",POOLS[p+S.E_PAW]);
-
 POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_puw_e] +FLUXES[f+F.paw2puw_th_e])*deltat; 
 
 
