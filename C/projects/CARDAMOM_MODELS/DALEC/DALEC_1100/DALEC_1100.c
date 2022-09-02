@@ -416,8 +416,8 @@ double *POOLS=DATA.M_POOLS;
         POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PUW],pars[P.PAW_por],pars[P.PAW_z]);//soil moisture PUW
 
         //Diagnostic time-invariant quantities
-        double PAWmax=pars[P.PAW_por]*pars[P.PAW_z];
-        double PUWmax=pars[P.PUW_por]*pars[P.PUW_z];
+        double PAWmax=pars[P.PAW_por]*pars[P.PAW_z]*1000; //PAW capacity in mm
+        double PUWmax=pars[P.PUW_por]*pars[P.PUW_z]*1000; //PUW capacity in mm
         
         
         
@@ -771,12 +771,12 @@ POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_
 
 
 
-if (POOLS[nxp+S.H2O_PAW]>pars[P.PAW_por]*pars[P.PAW_z]){
+if (POOLS[nxp+S.H2O_PAW]>PAWmax{
 //Dump excess into PAW Q
 FLUXES[f+F.q_paw] +=(POOLS[nxp+S.H2O_PAW]-PAWmax)/deltat;
 POOLS[nxp+S.H2O_PAW]=PAWmax;}
 
-if (POOLS[nxp+S.H2O_PUW]>pars[P.PUW_por]*pars[P.PUW_z]){
+if (POOLS[nxp+S.H2O_PUW]>PUWmax{
 //Dump excess into PAW Q
 FLUXES[f+F.q_puw] +=(POOLS[nxp+S.H2O_PUW]-PUWmax)/deltat;
 POOLS[nxp+S.H2O_PUW]=PUWmax;}
