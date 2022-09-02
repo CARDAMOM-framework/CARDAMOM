@@ -1,5 +1,6 @@
 #pragma once
 //Note: DALEC_OBSERVATION_OPERATORS.c included in DALEC_MODULE.
+#include "DALEC_1100_INDICES.c"
 #include "PARS_INFO_1100.c"
 #include "../DALEC_ALL/DALEC_MODULE.c"//Includes all calls to DALEC-compatible EDC functions
 #include "../DALEC_ALL/HYDROLOGY_MODULES/DRAINAGE.c"
@@ -13,9 +14,6 @@
 #include "../DALEC_ALL/SOIL_TEMP_AND_LIQUID_FRAC.c"
 #include "../DALEC_ALL/INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS.c"
 #include "../DALEC_ALL/ALLOC_AND_AUTO_RESP_FLUXES.c"
-
-
-
 
 
 //Returns structure with sources and sinks, matches number of fluxes
@@ -132,7 +130,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         //Sink = infiltration (F.infil); 
 
         // Source = atmosphere
-        FIOMATRIX.SINK[F.snow_in]=S.H2O_SWE;
+        FIOMATRIX.SINK[F.snowfall]=S.H2O_SWE;
 
         FIOMATRIX.SOURCE[F.et]=S.H2O_PAW;
         //Sink = atmosphere; 
@@ -186,131 +184,6 @@ return 0;
     
     
     
-    
-
-/*
-//Returns structure with sources and sinks, matches number of fluxes
-DALEC_FLUX_SOURCES_SINKS_STRUCT DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
-    //Step 1. Declare & initialize
-    DALEC_FLUX_SOURCES_SINKS_STRUCT FLUXFLOWS;
-    // external source or pool sink, or not conserved quantity
-    //Default = -1 
-   
-    FIOMATRIX.SOURCE=calloc(DALECmodel->nofluxes, sizeof(int));
-    FIOMATRIX.SINK=calloc(DALECmodel->nofluxes, sizeof(int));
-    
-    for (n=0;n<DALECmodel->nofluxes; n++){FIOMATRIX.SOURCE[n]=-1;FIOMATRIX.SINK[n]=-1;}
-    
-    
-    //Step 2. Define
-    
-        // C_lab
-        FIOMATRIX.SINK[F.lab_prod]=S.C_lab;
-        FIOMATRIX.SOURCE[F.foliar_prod]=S.C_lab;
-        FIOMATRIX.SOURCE[F.root_prod]=S.C_lab;
-        FIOMATRIX.SOURCE[F.wood_prod]=S.C_lab;
-        FIOMATRIX.SOURCE[F.resp_auto_growth]=S.C_lab;
-        FIOMATRIX.SOURCE[F.f_lab]=S.C_lab;  
-        FIOMATRIX.SOURCE[F.fx_lab2lit]=S.C_lab;
-
-
-        // C_fol
-        FIOMATRIX.SINK[F.foliar_prod]=S.C_fol;
-        FIOMATRIX.SOURCE[F.fol2lit]=S.C_fol;
-        FIOMATRIX.SOURCE[F.f_fol]=S.C_fol;
-        FIOMATRIX.SOURCE[F.fx_fol2lit]=S.C_fol;
-        
-        // C_roo
-        FIOMATRIX.SINK[F.root_prod]=S.C_roo;
-        FIOMATRIX.SOURCE[F.roo2lit]=S.C_roo;
-        FIOMATRIX.SOURCE[F.f_roo]=S.C_roo;
-        FIOMATRIX.SOURCE[F.fx_roo2lit]=S.C_roo;
-        
-        // C_woo
-        FIOMATRIX.SINK[F.wood_prod]=S.C_woo;
-        FIOMATRIX.SOURCE[F.woo2cwd]=S.C_woo;
-        FIOMATRIX.SOURCE[F.f_woo]=S.C_woo;
-        FIOMATRIX.SOURCE[F.fx_woo2cwd]=S.C_woo;
-
-        
-        // C_lit
-        FIOMATRIX.SINK[F.fx_lab2lit]=S.C_lit;
-        FIOMATRIX.SINK[F.fol2lit]=S.C_lit;
-        FIOMATRIX.SINK[F.fx_fol2lit]=S.C_lit;
-        FIOMATRIX.SINK[F.roo2lit]=S.C_lit;
-        FIOMATRIX.SINK[F.fx_roo2lit]=S.C_lit;
-        FIOMATRIX.SOURCE[F.ae_rh_lit]=S.C_lit;
-        FIOMATRIX.SOURCE[F.an_rh_lit]=S.C_lit;
-        FIOMATRIX.SOURCE[F.f_lit]=S.C_lit;
-        FIOMATRIX.SOURCE[F.lit2som]=S.C_lit;
-        FIOMATRIX.SOURCE[F.fx_lit2som]=S.C_lit;
-    
-        // C_cwd
-        FIOMATRIX.SINK[F.woo2cwd]=S.C_cwd;
-        FIOMATRIX.SINK[F.fx_woo2cwd]=S.C_cwd;
-        FIOMATRIX.SOURCE[F.ae_rh_cwd]=S.C_cwd;
-        FIOMATRIX.SOURCE[F.an_rh_cwd]=S.C_cwd;
-        FIOMATRIX.SOURCE[F.f_cwd]=S.C_cwd;
-        FIOMATRIX.SOURCE[F.cwd2som]=S.C_cwd;
-        FIOMATRIX.SOURCE[F.fx_cwd2som]=S.C_cwd;
-        
-        
-        // C_som
-        FIOMATRIX.SINK[F.cwd2som]=S.C_som;
-        FIOMATRIX.SINK[F.fx_cwd2som]=S.C_som;
-        FIOMATRIX.SINK[F.lit2som]=S.C_som;
-        FIOMATRIX.SINK[F.fx_lit2som]=S.C_som;
-        FIOMATRIX.SOURCE[F.ae_rh_som]=S.C_som;
-        FIOMATRIX.SOURCE[F.an_rh_som]=S.C_som;
-        FIOMATRIX.SOURCE[F.f_som]=S.C_som;
-
-        // H2O_SWE
-        FIOMATRIX.SOURCE[F.melt]=S.H2O_SWE;
-        FIOMATRIX.SINK[F.snowfall]=S.H2O_SWE;
-
-        // H2O_PAW
-        FIOMATRIX.SINK[F.infil]=S.H2O_PAW;
-        FIOMATRIX.SOURCE[F.et]=S.H2O_PAW;
-        FIOMATRIX.SOURCE[F.paw2puw]=S.H2O_PAW;
-        FIOMATRIX.SOURCE[F.q_paw]=S.H2O_PAW;
-
-        // H2O_PUW        
-        FIOMATRIX.SOURCE[F.q_puw]=S.H2O_PUW;
-        FIOMATRIX.SINK[F.paw2puw]=S.H2O_PUW;
-
-        // E_PAW
-        FIOMATRIX.SINK[F.gh_in]=S.E_PAW;
-        FIOMATRIX.SINK[F.infil_e]=S.E_PAW;
-        FIOMATRIX.SOURCE[F.et_e]=S.E_PAW;
-        FIOMATRIX.SOURCE[F.q_paw_e]=S.E_PAW;
-        FIOMATRIX.SOURCE[F.paw2puw_e]=S.E_PAW;
-        FIOMATRIX.SOURCE[F.paw2puw_th_e]=S.E_PAW;
-
-        // E_PUW
-        FIOMATRIX.SINK[F.paw2puw_e]=S.E_PUW;
-        FIOMATRIX.SINK[F.paw2puw_th_e]=S.E_PUW;
-        FIOMATRIX.SOURCE[F.q_puw_e]=S.E_PUW;
-        }
-
-*/
-
-/*
-struct POOLS_INFO{
-int n_input_fluxes
-int n_output_fluxes
-int * input_fluxes
-int * output_fluxes}
-*/
-
-
-struct DALEC_1100_EDCs{
-int litcwdtor;
-int cwdsomtor;
-int state_ranges;
-int state_trajectories;
-} DALEC_1100_EDCs={
-    0,1,2,3
-};
 
 
 
@@ -338,8 +211,6 @@ double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
 double *SKT=DATA.ncdf_data.SKT.values;
 double *STRD=DATA.ncdf_data.STRD.values;
-
-
 
 /*C-pools, fluxes, meteorology indices*/
 int p=0,f,m,nxp, i;
@@ -750,8 +621,7 @@ POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_
 
 
 
-<<<<<<< HEAD
-=======
+
 if (POOLS[nxp+S.H2O_PAW]>pars[P.PAW_por]*pars[P.PAW_z]){
 //Dump excess into PAW Q
 FLUXES[f+F.q_paw] +=(POOLS[nxp+S.H2O_PAW]-PAWmax)/deltat;
@@ -763,11 +633,6 @@ FLUXES[f+F.q_puw] +=(POOLS[nxp+S.H2O_PUW]-PUWmax)/deltat;
 POOLS[nxp+S.H2O_PUW]=PUWmax;}
 
 
-
-
-
-
->>>>>>> main
 //**********INTERNAL ENERGT FLUXES FOR ALL H2O FLUXES***************
 //Add INFILTRATION, PAW, PUW, PAW2PUW, ET
 double infiltemp = air_temp_k ;//Infiltemp needs to be in degrees celcius for IF statement to work
@@ -793,14 +658,9 @@ FLUXES[f+F.paw2puw_th_e] = 2*pars[P.thermal_cond]* (POOLS[p+S.D_TEMP_PAW] - POOL
 //Energy states
 //fraction of water in soil that is available 
 //double frac_paw = POOLS[nxp+S.H2O_PAW]/(POOLS[nxp+S.H2O_PAW]+POOLS[nxp+S.H2O_PUW]);
-<<<<<<< HEAD
 
-POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.gh_in] + FLUXES[f+F.infil_e] - FLUXES[f+F.et_e] - FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_paw_e])*deltat;  
-POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_puw_e] )*deltat; 
-=======
 POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.gh_in] + FLUXES[f+F.infil_e] - FLUXES[f+F.et_e] - FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_paw_e]-FLUXES[f+F.paw2puw_th_e])*deltat;  
 POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_puw_e] +FLUXES[f+F.paw2puw_th_e])*deltat; 
->>>>>>> main
 
 
 
@@ -931,12 +791,6 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.lab_prod]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
         POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod] - FLUXES[f+F.fol2lit])*deltat;
-<<<<<<< HEAD
-=======
-
-        
-        
->>>>>>> main
         POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.roo2lit])*deltat;
         POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + (FLUXES[f+F.wood_prod] - FLUXES[f+F.woo2cwd])*deltat;
         POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.woo2cwd] - FLUXES[f+F.ae_rh_cwd]-FLUXES[f+F.an_rh_cwd]-FLUXES[f+F.cwd2som])*deltat;
@@ -1197,26 +1051,25 @@ EDCs[E.cwdsomtor].prerun=true;
     EDCs[E.state_ranges].function=&DALEC_EDC_STATE_RANGES;
     EDCs[E.state_ranges].prerun=false;
 // 
-
-          static DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
-
-static int edc_pool_indices[7];
-EDC_st.pool_indices=edc_pool_indices;
-EDC_st.no_pools_to_check=7;
-            
-EDC_st.pool_indices[0]=S.C_lab;
-EDC_st.pool_indices[1]=S.C_fol;
-EDC_st.pool_indices[2]=S.C_roo;
-EDC_st.pool_indices[3]=S.C_woo;
-EDC_st.pool_indices[4]=S.C_cwd;
-EDC_st.pool_indices[5]=S.C_lit;
-EDC_st.pool_indices[6]=S.C_som;
-
-            
-        //Rest can be done by code without additional input
-    EDCs[E.state_trajectories].data=&EDC_st;
-    EDCs[E.state_trajectories].function=&DALEC_EDC_TRAJECTORY;
-    EDCs[E.state_trajectories].prerun=false;
+// 
+// static DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
+// 
+// static int edc_pool_indices[7];
+// EDC_st.pool_indices=edc_pool_indices;
+// EDC_st.no_pools_to_check=7;
+//             
+// EDC_st.pool_indices[0]=S.C_lab;
+// EDC_st.pool_indices[1]=S.C_fol;
+// EDC_st.pool_indices[2]=S.C_roo;
+// EDC_st.pool_indices[3]=S.C_woo;
+// EDC_st.pool_indices[4]=S.C_cwd;
+// EDC_st.pool_indices[5]=S.C_lit;
+// EDC_st.pool_indices[6]=S.C_som;
+//     
+// //Rest can be done by code without additional input
+// EDCs[E.state_trajectories].data=&EDC_st;
+// EDCs[E.state_trajectories].function=&DALEC_EDC_TRAJECTORY;
+// EDCs[E.state_trajectories].prerun=false;
 //Eventually adopt more succinct notation (to consider)
 //e.g. INEQUALITY_EDC(P.t_cwd,P.t_som,EDCs[E.cwdsomtor])
 

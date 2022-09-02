@@ -306,13 +306,11 @@ parmax[P.beta_lgr]=50;
 parmin[P.phi_RL]=0.0001;
 parmax[P.phi_RL]=0.5;
 
-<<<<<<< HEAD
 /*Ratio of total wood surface area to total leaf area*/
 parmin[P.phi_WL]=0.1;
 parmax[P.phi_WL]=10.0;
 
 
-=======
 /*Ratio of carbon allocation to wood per target foliar pool size (gC/gC)*/
 parmin[P.phi_WL]=0.0001;
 parmax[P.phi_WL]=0.5;
@@ -322,7 +320,6 @@ parmax[P.phi_WL]=0.5;
 parmin[P.thermal_cond]=0.3;
 parmax[P.thermal_cond]=2;
   
->>>>>>> main
 return 0;
 
 }
