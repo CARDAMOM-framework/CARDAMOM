@@ -37,7 +37,7 @@ DALEC_FLUX_SOURCES_SINKS_STRUCT DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel
         FIOMATRIX.SOURCE[F.foliar_prod]=S.C_lab;
         FIOMATRIX.SOURCE[F.root_prod]=S.C_lab;
         FIOMATRIX.SOURCE[F.wood_prod]=S.C_lab;
-        FIOMATRIX.SOURCE[F.resp_auto_growth]=S.C_lab;
+        FIOMATRIX.SOURCE[F.resp_auto]=S.C_lab;
         FIOMATRIX.SOURCE[F.f_lab]=S.C_lab;  
         FIOMATRIX.SOURCE[F.fx_lab2lit]=S.C_lab;
 
@@ -201,8 +201,8 @@ double *POOLS=DATA.M_POOLS;
         POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PUW],pars[P.PAW_por],pars[P.PAW_z]);//soil moisture PUW
 
         //Diagnostic time-invariant quantities
-        double PAWmax=pars[P.PAW_por]*pars[P.PAW_z];
-        double PUWmax=pars[P.PUW_por]*pars[P.PUW_z];
+        double PAWmax=pars[P.PAW_por]*pars[P.PAW_z]*1000; //PAW capacity in mm
+        double PUWmax=pars[P.PUW_por]*pars[P.PUW_z]*1000; //PUW capacity in mm
         
         
         
@@ -560,12 +560,12 @@ POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_
 
 
 
-if (POOLS[nxp+S.H2O_PAW]>pars[P.PAW_por]*pars[P.PAW_z]){
+if (POOLS[nxp+S.H2O_PAW]>PAWmax{
 //Dump excess into PAW Q
 FLUXES[f+F.q_paw] +=(POOLS[nxp+S.H2O_PAW]-PAWmax)/deltat;
 POOLS[nxp+S.H2O_PAW]=PAWmax;}
 
-if (POOLS[nxp+S.H2O_PUW]>pars[P.PUW_por]*pars[P.PUW_z]){
+if (POOLS[nxp+S.H2O_PUW]>PUWmax{
 //Dump excess into PAW Q
 FLUXES[f+F.q_puw] +=(POOLS[nxp+S.H2O_PUW]-PUWmax)/deltat;
 POOLS[nxp+S.H2O_PUW]=PUWmax;}
@@ -729,7 +729,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 /*total pool transfers (no fires yet)*/
 
-        POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.lab_prod]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
+        POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.lab_prod]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto])*deltat;
         POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod] - FLUXES[f+F.fol2lit])*deltat;
 
         
