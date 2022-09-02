@@ -560,12 +560,12 @@ POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_
 
 
 
-if (POOLS[nxp+S.H2O_PAW]>PAWmax{
+if (POOLS[nxp+S.H2O_PAW]>PAWmax){
 //Dump excess into PAW Q
 FLUXES[f+F.q_paw] +=(POOLS[nxp+S.H2O_PAW]-PAWmax)/deltat;
 POOLS[nxp+S.H2O_PAW]=PAWmax;}
 
-if (POOLS[nxp+S.H2O_PUW]>PUWmax{
+if (POOLS[nxp+S.H2O_PUW]>PUWmax){
 //Dump excess into PAW Q
 FLUXES[f+F.q_puw] +=(POOLS[nxp+S.H2O_PUW]-PUWmax)/deltat;
 POOLS[nxp+S.H2O_PUW]=PUWmax;}

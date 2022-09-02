@@ -78,7 +78,7 @@ end
 
 else
 %Find parameter info here *******
-parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/DALEC_%i.c',Cpath,ID,ID);
+parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/DALEC_%i_INDICES.c',Cpath,ID,ID);
  D=readalllines(parfilename);
 
  
