@@ -20,11 +20,7 @@ while (p<DATA->nopools & k==0){
             //looping through timesteps
     int n=0;
 while (n<DATA->ncdf_data.TIME_INDEX.length  & k==0){
-    if (p==18){
-        
-    printf("E.min_val[%i] = %2.2f\n",p,E.min_val[p]);
-    printf("E.max_val[%i] = %2.2f\n",p,E.max_val[p]);
-    printf("DATA->M_POOLS[p+n*DATA->nopools] = %2.2f\n",DATA->M_POOLS[p+n*DATA->nopools]);}
+
     
     
          if (DATA->M_POOLS[p+n*DATA->nopools]<E.min_val[p] || DATA->M_POOLS[p+n*DATA->nopools]>E.max_val[p]){PEDC = -INFINITY;k=-1;}
