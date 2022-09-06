@@ -505,7 +505,8 @@ LIU.IN.Tupp=pars[P.Tupp];
 LIU.IN.Tdown=pars[P.Tdown];
 LIU.IN.C3_frac=1., // pars[P.C3_frac]
 LIU.IN.clumping=pars[P.clumping];
-LIU.IN.leaf_refl=pars[P.leaf_refl];
+LIU.IN.leaf_refl_par=pars[P.leaf_refl_par];
+LIU.IN.leaf_refl_nir=pars[P.leaf_refl_nir];
 LIU.IN.maxPevap=pars[P.maxPevap];
 LIU.IN.precip=PREC[n];
 
@@ -531,10 +532,13 @@ POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step
 
 //Energy balance: Rn = LE + H - G
 // Rn = SWin - SWout + LWin - LWout
+
+
 double SWin = SSRD[n]*1e6/DGCM_SEC_DAY; // W m-2
+
 //Weighted average of surface albedo considering SW snow albedo as 0.9
 double snow_albedo=0.9;//Consider age-dependent albedo.
-double SWout = (1. - POOLS[p+S.D_SCF])*(SWin*pars[P.leaf_refl]) + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // W m-2
+double SWout = (1. - POOLS[p+S.D_SCF])*(SWin*0.5*(pars[P.leaf_refl_par]+pars[P.leaf_refl_nir])) + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // W m-2
         
 
 //Stefan-Boltzmann constant W.m-2.K-4
@@ -579,6 +583,9 @@ FLUXES[f+F.sensible_heat] = H; // W m-2
 //Rn is scaled by snow free area, because we exclude snow energy balance from energy ODEs
 //H is scaled by snow free area, because we exclude snow energy balance from energy ODEs
 //LE is fully included, as evaporation and transpiration are assumed to come fully from snow-free areas (caveat: snow evaporation is a thing, btut we assume it's zero for this model)
+
+//Ideally, Rn should be snow-free vs snow-covered.
+
 double G = Rn*(1. - POOLS[p+S.D_SCF]) - H*(1. - POOLS[p+S.D_SCF]) - LE; // W m-2
 FLUXES[f+F.ground_heat] = G; // W m-2
 FLUXES[f+F.gh_in] = G*DGCM_SEC_DAY; // J m-2 d-1
@@ -951,7 +958,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=73;
+DALECmodel->nopars=74;
 DALECmodel->nofluxes=70;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->noedcs=3;

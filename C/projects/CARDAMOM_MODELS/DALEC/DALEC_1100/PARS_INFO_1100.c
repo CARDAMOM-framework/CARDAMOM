@@ -198,9 +198,13 @@ parmax[P.Tdown]=286.15;
 parmin[P.clumping]=0.35;
 parmax[P.clumping]=1.0;
 
-/*Leaf single scattering albedo*/
-parmin[P.leaf_refl]=1e-1;
-parmax[P.leaf_refl]=1.0;
+/*PAR reflectance*/
+parmin[P.leaf_refl_par]=0.05;
+parmax[P.leaf_refl_par]=0.5;
+
+/*NIR reflectance*/
+parmin[P.leaf_refl_nir]=0.3;
+parmax[P.leaf_refl_nir]=0.7;
 
 /*iSWE: initial for state variable SWE snow water equivalent*/
 parmin[P.i_SWE]=0.000001;

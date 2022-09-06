@@ -38,6 +38,7 @@ if isfield(OPT,'MODEL')==0;
 if isfield(OPT,'STORE')==0;OPT.STORE=0;end;%CBF ID can be used to bypass 
 if isfield(OPT,'extended')==0;OPT.extended=1;end;%CBF ID can be used to bypass 
 if isfield(OPT,'compile')==0;OPT.compile=1;end
+if isfield(OPT,'filelatterhalf')==0;OPT.filelatterhalf=1;end
 
 if isfield(OPT,'Cpath')==0;OPT.Cpath=getenv('CARDAMOM_C_PATH');end
 if isfield(OPT,'command_only')==0;OPT.command_only=0;end
@@ -152,9 +153,11 @@ end
 
 
 %If multiple files are provided, all required information is derived here
-if (iscell(PARS) | ischar(PARS)) & (OPT.STORE==0  | nostorefiles==1)
+if (iscell(PARS) | ischar(PARS)) & (OPT.STORE==0  | nostorefiles==1) 
     OPT.MODEL.MA.latterhalf=1; 
     if  ischar(PARS) & strcmp('START',PARS(end-4:end));OPT.MODEL.MA.latterhalf=0;end
+    if  ischar(PARS) & OPT.filelatterhalf==0;OPT.MODEL.MA.latterhalf=0;end
+
     [PARS,ANCILLARY]=CARDAMOM_READ_BINARY_FILEFORMAT(PARS,OPT.MODEL.MA);
 elseif OPT.STORE==1
     PARS=readbinarymat(parfile,[0,OPT.MODEL.MA.nopars])';
