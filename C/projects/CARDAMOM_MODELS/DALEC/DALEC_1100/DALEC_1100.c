@@ -482,6 +482,9 @@ FLUXES[f+F.sensible_heat] = H; // W m-2
 //Rn is scaled by snow free area, because we exclude snow energy balance from energy ODEs
 //H is scaled by snow free area, because we exclude snow energy balance from energy ODEs
 //LE is fully included, as evaporation and transpiration are assumed to come fully from snow-free areas (caveat: snow evaporation is a thing, btut we assume it's zero for this model)
+
+//Ideally, Rn should be snow-free vs snow-covered.
+
 double G = Rn*(1. - POOLS[p+S.D_SCF]) - H*(1. - POOLS[p+S.D_SCF]) - LE; // W m-2
 FLUXES[f+F.ground_heat] = G; // W m-2
 FLUXES[f+F.gh_in] = G*DGCM_SEC_DAY; // J m-2 d-1
