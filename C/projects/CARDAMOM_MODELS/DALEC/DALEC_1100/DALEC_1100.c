@@ -431,7 +431,10 @@ POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step
 
 //Energy balance: Rn = LE + H - G
 // Rn = SWin - SWout + LWin - LWout
+
+
 double SWin = SSRD[n]*1e6/DGCM_SEC_DAY; // W m-2
+
 //Weighted average of surface albedo considering SW snow albedo as 0.9
 double snow_albedo=0.9;//Consider age-dependent albedo.
 double SWout = (1. - POOLS[p+S.D_SCF])*(SWin*pars[P.leaf_refl]) + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // W m-2
