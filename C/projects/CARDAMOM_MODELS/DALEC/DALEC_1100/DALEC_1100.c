@@ -405,7 +405,8 @@ LIU.IN.Tupp=pars[P.Tupp];
 LIU.IN.Tdown=pars[P.Tdown];
 LIU.IN.C3_frac=1., // pars[P.C3_frac]
 LIU.IN.clumping=pars[P.clumping];
-LIU.IN.leaf_refl=pars[P.leaf_refl];
+LIU.IN.leaf_refl_par=pars[P.leaf_refl_par];
+LIU.IN.leaf_refl_nir=pars[P.leaf_refl_nir];
 LIU.IN.maxPevap=pars[P.maxPevap];
 LIU.IN.precip=PREC[n];
 
@@ -437,7 +438,7 @@ double SWin = SSRD[n]*1e6/DGCM_SEC_DAY; // W m-2
 
 //Weighted average of surface albedo considering SW snow albedo as 0.9
 double snow_albedo=0.9;//Consider age-dependent albedo.
-double SWout = (1. - POOLS[p+S.D_SCF])*(SWin*pars[P.leaf_refl]) + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // W m-2
+double SWout = (1. - POOLS[p+S.D_SCF])*(SWin*0.5*(pars[P.leaf_refl_par]+pars[P.leaf_refl_nir])) + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // W m-2
         
 
 //Stefan-Boltzmann constant W.m-2.K-4
@@ -877,7 +878,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=73;
+DALECmodel->nopars=74;
 DALECmodel->nofluxes=70;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->noedcs=2;
