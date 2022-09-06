@@ -1,6 +1,6 @@
 function [CBFout]=CARDAMOM_MAKE_SINGLE_STEP_NC_CBF_FILE(CBF,idx,cbffile)
 
-if nargin==1;idx=1;
+if nargin==1;idx=1;end
 
 
 if ischar(CBF);CBF=CARDAMOM_READ_NC_CBF_FILE(CBF);end
