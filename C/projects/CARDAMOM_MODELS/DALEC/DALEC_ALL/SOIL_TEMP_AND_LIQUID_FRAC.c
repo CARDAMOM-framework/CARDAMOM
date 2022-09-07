@@ -36,7 +36,7 @@ if (S->IN.internal_energy<UI3){
    S->OUT.LF = 0; }
         
 else if (S->IN.internal_energy>UL3){
-        S->OUT.TEMP = (S->IN.internal_energy + S->IN.soil_water*DGCM_SPECIFIC_HEAT_WATER*DGCM_TK0C)/(dry_soil_sh + S->IN.soil_water*DGCM_SPECIFIC_HEAT_WATER) ;
+        S->OUT.TEMP = (S->IN.internal_energy + S->IN.soil_water*DGCM_SPECIFIC_HEAT_WATER*DGCM_T_LIQUID_H2O_ZERO_ENERGY)/(dry_soil_sh + S->IN.soil_water*DGCM_SPECIFIC_HEAT_WATER) ;
       S->OUT.LF = 1;  
 }
 //Calculate liquid fraction
