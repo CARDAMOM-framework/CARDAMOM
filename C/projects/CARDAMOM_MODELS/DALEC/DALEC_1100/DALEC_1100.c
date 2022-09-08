@@ -396,9 +396,9 @@ LIU.IN.VPD=VPD[n]/10;
 LIU.IN.TEMP=air_temp_k;  
 LIU.IN.vcmax25=pars[P.Vcmax25];
 LIU.IN.co2=CO2[n];
-LIU.IN.beta_factor=fmin(beta,g);
+LIU.IN.beta_factor=fmin(beta,g);//*POOLS[p+S.D_LF_PAW];
 LIU.IN.g1=pars[P.Med_g1];
-LIU.IN.LAI=LAI;
+LIU.IN.LAI=3;//LAI;
 LIU.IN.ga=pars[P.ga];
 LIU.IN.VegK=VegK;
 LIU.IN.Tupp=pars[P.Tupp];
@@ -486,7 +486,7 @@ FLUXES[f+F.sensible_heat] = H; // W m-2
 
 //Ideally, Rn should be snow-free vs snow-covered.
 
-double G = Rn*(1. - POOLS[p+S.D_SCF]) - H*(1. - POOLS[p+S.D_SCF]) - LE; // W m-2
+double  G = Rn*(1. - POOLS[p+S.D_SCF]) - H*(1. - POOLS[p+S.D_SCF]) - LE; // W m-2
 FLUXES[f+F.ground_heat] = G; // W m-2
 FLUXES[f+F.gh_in] = G*DGCM_SEC_DAY; // J m-2 d-1
 
