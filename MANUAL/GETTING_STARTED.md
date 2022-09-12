@@ -31,6 +31,11 @@ Step 2. type "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c" m
     * *Anthony, Alex: setenv('CARDAMOM_NC_CONFIG_PATH','/usr/local/bin/nc-config')*
     * *For PC: no supported solution yet… (Paul: add potential windows solution)*
 
++ *You may also need*
+  * "brew install python" (even for matlab users)
+  * 
+
+
 + Demos below will compile CARDAMOM and run short assimilation runs and forward runs for testing. There are options in both Python and Matlab. Check Appendix for additional tools written in Matlab and Python.
 
 ### CARDAMOM Github User Must Read <a name="cardamom-git-must-read">
