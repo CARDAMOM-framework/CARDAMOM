@@ -62,7 +62,7 @@ if [[ -z "${CARDAMOM_NC_CONFIG_PATH}" ]]; then
       exit 1
   fi
 else
-  COMPILER="${CARDAMOM_OPT_COMPILER}"
+  echo "setting CARDAMOM_NC_CONFIG_PATH to ${CARDAMOM_NC_CONFIG_PATH}"
 fi
 
 export NETCDF_LIB_FLAGS="$(${CARDAMOM_NC_CONFIG_PATH} --libs) $(${CARDAMOM_NC_CONFIG_PATH} --cflags)"
