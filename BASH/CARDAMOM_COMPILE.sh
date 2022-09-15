@@ -65,7 +65,7 @@ if [[ -z "${CARDAMOM_NC_CONFIG_PATH}" ]]; then
       exit 1
   fi
 else
-  COMPILER="${CARDAMOM_OPT_COMPILER}"
+  echo "setting CARDAMOM_NC_CONFIG_PATH to ${CARDAMOM_NC_CONFIG_PATH}"
 fi
 
 #Something went wrong here for different environments, hardcoding this as gcc compiler.
