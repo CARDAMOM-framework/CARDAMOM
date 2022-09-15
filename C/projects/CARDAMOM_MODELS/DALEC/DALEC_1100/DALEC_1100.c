@@ -436,10 +436,16 @@ POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step
 
 double SWin = SSRD[n]*1e6/DGCM_SEC_DAY; // W m-2
 
+//Snow free
+double SWout_snowfree =(SWin*0.5*(pars[P.leaf_refl_par]+pars[P.leaf_refl_nir])); // W m-2
 //Weighted average of surface albedo considering SW snow albedo as 0.9
 double snow_albedo=0.9;//Consider age-dependent albedo.
-double SWout = (1. - POOLS[p+S.D_SCF])*(SWin*0.5*(pars[P.leaf_refl_par]+pars[P.leaf_refl_nir])) + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // W m-2
+    
+//SW out
+double SWout = (1. - POOLS[p+S.D_SCF])*SWout_snowfree + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // W m-2
         
+
+
 
 //Stefan-Boltzmann constant W.m-2.K-4
 double sigma = 5.67*1e-8;
@@ -455,6 +461,9 @@ double LWout = sigma*pow(tskin_k,4.); // W m-2
 double Rn = SWin - SWout + LWin - LWout; // W m-2
 //Rnet only into soil
 FLUXES[f+F.net_radiation] = Rn; // W m-2
+
+//Rnet snow free
+double Rn_snowfree = SWin - SWout_snowfree + LWin - LWout; // W m-2
 
 
 //These are only fluxes into PAW and out of PAW

@@ -36,6 +36,7 @@ end
    disp(sprintf('CARDAMOM compilation based on scripts in %s',Cpath));
 compile_command_run_model=sprintf('gcc %s/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.c -o %s/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.exe -lm %s',Cpath,Cpath,netCDFLibFlags);
 compile_command_run_mdf=sprintf('gcc %s/projects/CARDAMOM_MDF/CARDAMOM_MDF.c -o %s/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe -lm %s',Cpath,Cpath,netCDFLibFlags);
+disp(compile_command_run_model)
 %compile_command_run_assemble=sprintf('gcc %s/projects/CARDAMOM_GENERAL/CARDAMOM_ASSEMBLE_MODELS.c -o %s/projects/CARDAMOM_GENERAL/CARDAMOM_ASSEMBLE_MODELS.exe -lm %s',Cpath,Cpath,netCDFLibFlags);
 if opt>=1;
 cp(1)=unix(compile_command_run_model);

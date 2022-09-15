@@ -192,7 +192,7 @@ parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',
      eval(strev);
      %Storing parameter name based on line above parmin
      if strcmp(linestr(1:6),'parmin');
-         if strcmp(D{n-1}(1:2), '/*')
+         if numel(D{n-1})>2 & strcmp(D{n-1}(1:2), '/*')
          parname{pn}=D{n-1};
          else
              parname{pn}='';
