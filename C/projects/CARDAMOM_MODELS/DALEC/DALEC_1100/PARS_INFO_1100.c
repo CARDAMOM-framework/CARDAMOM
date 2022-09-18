@@ -181,11 +181,11 @@ parmin[P.ga]=0.001;
 parmax[P.ga]=10.0;
 
 /*Tupp*/
-parmin[P.Tupp]=299.15;
+parmin[P.Tupp]=299.15-50;
 parmax[P.Tupp]=318.15;
 
 /*Tdown*/
-parmin[P.Tdown]=263.15;
+parmin[P.Tdown]=263.15-50;
 parmax[P.Tdown]=286.15;
 
 /*Clumping index*/
@@ -309,9 +309,14 @@ parmin[P.phi_WL]=0.0001;
 parmax[P.phi_WL]=0.5;
   
 
-/*Soil thermal conductivity in W/m/K */
+/*Deep thermal conductivity in W/m/K */
 parmin[P.thermal_cond]=0.3;
 parmax[P.thermal_cond]=2;
+
+
+/*Surface soil thermal conductivity in W/m/K */
+parmin[P.thermal_cond_surf]=0.1;
+parmax[P.thermal_cond_surf]=2;
   
 return 0;
 

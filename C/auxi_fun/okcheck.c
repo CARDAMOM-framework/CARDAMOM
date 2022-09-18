@@ -1,6 +1,6 @@
 #pragma once
 #include <stdio.h>
-int okcheck(int OK, char msg[200]){
+int okcheck(int OK, char * msg){
 
 printf("OKCHECK:%s\n",msg);
 
