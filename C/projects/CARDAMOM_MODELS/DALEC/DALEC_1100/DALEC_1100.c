@@ -483,7 +483,6 @@ else {
 double psi_PAW0 = HYDROFUN_MOI2PSI(POOLS[p+S.D_SM_PAW],psi_porosity,pars[P.retention]);
 double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*psi_PAW0/pars[P.psi_50] - 1)));
 
-
 // mean air temperature (K)
 double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 
@@ -496,9 +495,9 @@ LIU.IN.VPD=VPD[n]/10;
 LIU.IN.TEMP=air_temp_k;  
 LIU.IN.vcmax25=pars[P.Vcmax25];
 LIU.IN.co2=CO2[n];
-LIU.IN.beta_factor=fmin(beta,g);
+LIU.IN.beta_factor=fmin(beta,g)*POOLS[p+S.D_LF_PAW];
 LIU.IN.g1=pars[P.Med_g1];
-LIU.IN.LAI=LAI;
+LIU.IN.LAI=3;//LAI;
 LIU.IN.ga=pars[P.ga];
 LIU.IN.VegK=VegK;
 LIU.IN.Tupp=pars[P.Tupp];
@@ -536,10 +535,16 @@ POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step
 
 double SWin = SSRD[n]*1e6/DGCM_SEC_DAY; // W m-2
 
+//Snow free
+double SWout_snowfree =(SWin*0.5*(pars[P.leaf_refl_par]+pars[P.leaf_refl_nir])); // W m-2
 //Weighted average of surface albedo considering SW snow albedo as 0.9
 double snow_albedo=0.9;//Consider age-dependent albedo.
-double SWout = (1. - POOLS[p+S.D_SCF])*(SWin*0.5*(pars[P.leaf_refl_par]+pars[P.leaf_refl_nir])) + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // W m-2
+    
+//SW out
+double SWout = (1. - POOLS[p+S.D_SCF])*SWout_snowfree + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // W m-2
         
+
+
 
 //Stefan-Boltzmann constant W.m-2.K-4
 double sigma = 5.67*1e-8;
@@ -555,6 +560,9 @@ double LWout = sigma*pow(tskin_k,4.); // W m-2
 double Rn = SWin - SWout + LWin - LWout; // W m-2
 //Rnet only into soil
 FLUXES[f+F.net_radiation] = Rn; // W m-2
+
+//Rnet snow free
+double Rn_snowfree = SWin - SWout_snowfree + LWin - LWout; // W m-2
 
 
 //These are only fluxes into PAW and out of PAW
@@ -577,8 +585,8 @@ double Rgas = 8.31; // Universal gas constant (J mol-1 K-1)
 // Pa / (J mol-1 K-1 * K) = mol m-3
 double moles_per_m3 = Psurf/(Rgas*air_temp_k);
 //Sensible heat 
-double H = cp*(tskin_k - air_temp_k)*pars[P.ga]*moles_per_m3; // ga in m s-1, 
-FLUXES[f+F.sensible_heat] = H; // W m-2
+// double H = cp*(tskin_k - air_temp_k)*pars[P.ga]*moles_per_m3; // ga in m s-1, 
+// FLUXES[f+F.sensible_heat] = H; // W m-2
 //Ground heat flux ONLY for energy in&out of vegetation-soil continuum
 //Rn is scaled by snow free area, because we exclude snow energy balance from energy ODEs
 //H is scaled by snow free area, because we exclude snow energy balance from energy ODEs
@@ -586,9 +594,17 @@ FLUXES[f+F.sensible_heat] = H; // W m-2
 
 //Ideally, Rn should be snow-free vs snow-covered.
 
-double G = Rn*(1. - POOLS[p+S.D_SCF]) - H*(1. - POOLS[p+S.D_SCF]) - LE; // W m-2
-FLUXES[f+F.ground_heat] = G; // W m-2
-FLUXES[f+F.gh_in] = G*DGCM_SEC_DAY; // J m-2 d-1
+// double  G = Rn*(1. - POOLS[p+S.D_SCF]) - H*(1. - POOLS[p+S.D_SCF]) - LE; // W m-2
+// FLUXES[f+F.ground_heat] = G; // W m-2
+// FLUXES[f+F.gh_in] = G*DGCM_SEC_DAY; // J m-2 d-1
+
+//Gh_in approach 2 based on soil and LST
+FLUXES[f+F.ground_heat] =(pars[P.thermal_cond_surf]* (tskin_k - POOLS[p+S.D_TEMP_PAW])/(pars[P.PAW_z]*0.5))*(1. - POOLS[p+S.D_SCF]);
+FLUXES[f+F.gh_in] =FLUXES[f+F.ground_heat] *DGCM_SEC_DAY;        
+//Using G, Rn and LE to derive H
+    // H = Rn - G  - LE
+FLUXES[f+F.sensible_heat] = Rn - FLUXES[f+F.ground_heat] - FLUXES[f+F.latent_heat];
+        
 
 // Infiltration (mm/day)
 double liquid_in = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]);
@@ -689,15 +705,13 @@ if (FLUXES[f+F.melt]>0){infiltemp = (infiltemp-DGCM_TK0C)*(PREC[n] - SNOWFALL[n]
 //All energy fluxes
 
 FLUXES[f+F.infil_e] = FLUXES[f+F.infil]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(infiltemp);
-FLUXES[f+F.et_e] = FLUXES[f+F.et]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(SKT[n] + DGCM_TK0C);
+FLUXES[f+F.et_e] = FLUXES[f+F.et]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PAW]);
 FLUXES[f+F.paw2puw_e] = FLUXES[f+F.paw2puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(TEMPxfer);
 FLUXES[f+F.q_paw_e] = FLUXES[f+F.q_paw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PAW]);
 FLUXES[f+F.q_puw_e] =  FLUXES[f+F.q_puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PUW]);
 //Thermal conductivity = k*dT/dz, units are W/m2, converting to J/m2/d
 FLUXES[f+F.paw2puw_th_e] = 2*pars[P.thermal_cond]* (POOLS[p+S.D_TEMP_PAW] - POOLS[p+S.D_TEMP_PUW])/(pars[P.PAW_z] + pars[P.PUW_z])*DGCM_SEC_DAY;
-      
-        
-        
+
         
 //Thermal energy flux only
 //FLUXES[f+F.paw2puw_e_thermal] = 
@@ -958,7 +972,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=74;
+DALECmodel->nopars=75;
 DALECmodel->nofluxes=70;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->noedcs=3;

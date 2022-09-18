@@ -53,8 +53,8 @@ return 0;}
 //#include "../CARDAMOM_MODELS/DALEC/DALEC_1031/MODEL_INFO_1031.c"
                 #include "../CARDAMOM_MODELS/DALEC/DALEC_1032/MODEL_INFO_1032.c"
 //#include "../CARDAMOM_MODELS/DALEC/DALEC_1040/MODEL_INFO_1040.c"
-                #include "../CARDAMOM_MODELS/DALEC/DALEC_1045/MODEL_INFO_1045.c"
 
+		#include "../CARDAMOM_MODELS/DALEC/DALEC_1045/MODEL_INFO_1045.c"
     //#include "../CARDAMOM_MODELS/DALEC/DALEC_1060/MODEL_INFO_1060.c"
     //#include "../CARDAMOM_MODELS/DALEC/DALEC_1080/MODEL_INFO_1080.c"
     #include "../CARDAMOM_MODELS/DALEC/DALEC_1100/MODEL_INFO_1100.c"
@@ -112,8 +112,9 @@ if (ID==0){printf("No model prescribed, expect error!");}
 //else if (ID==1031  ){MODEL_INFO_1031(DATA);}
       else if (ID==1032  ){MODEL_INFO_1032(DATA);}
 //else if (ID==1040  ){MODEL_INFO_1040(DATA);}
-      else if (ID==1045  ){MODEL_INFO_1045(DATA);}
 
+
+else if (ID==1045  ){MODEL_INFO_1045(DATA);}
 //else if (ID==1060  ){MODEL_INFO_1060(DATA);}
 //else if (ID==1080  ){MODEL_INFO_1080(DATA);}
 //else if (ID==1010  ){MODEL_INFO_1010(DATA);}

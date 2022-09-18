@@ -18,8 +18,6 @@ else
 fi
 
 
-
-
 while getopts ":c:p:dn:" arg; do
   case "${arg}" in
     c )
@@ -44,6 +42,11 @@ while getopts ":c:p:dn:" arg; do
        ;;
   esac
 done
+
+
+
+
+
 shift $((OPTIND-1))
 #Begin to check manditory variables
 if [[ -z "${CARDAMOM_C_PATH}" ]]; then
@@ -62,8 +65,11 @@ if [[ -z "${CARDAMOM_NC_CONFIG_PATH}" ]]; then
       exit 1
   fi
 else
-  COMPILER="${CARDAMOM_OPT_COMPILER}"
+  echo "setting CARDAMOM_NC_CONFIG_PATH to ${CARDAMOM_NC_CONFIG_PATH}"
 fi
+
+#Something went wrong here for different environments, hardcoding this as gcc compiler.
+echo COMPILER=$COMPILER
 
 export NETCDF_LIB_FLAGS="$(${CARDAMOM_NC_CONFIG_PATH} --libs) $(${CARDAMOM_NC_CONFIG_PATH} --cflags)"
 

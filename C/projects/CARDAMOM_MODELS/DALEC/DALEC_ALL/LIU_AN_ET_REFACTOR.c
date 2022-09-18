@@ -100,6 +100,7 @@ PAR *= (1. - leaf_refl_par)*(1. - exp(-VegK*LAI*clumping));
 
 T_C = TEMP - DGCM_TK0C;  // Convert temperature to degrees C
 
+
 Kc = 300.*exp(0.074*(T_C - 25.));
 Ko = 300.*exp(0.015*(T_C - 25.));
 cp = 36.9 + 1.18*(T_C - 25.) + 0.36*pow((T_C - 25.), 2.);
@@ -119,9 +120,12 @@ medlyn_term = 1. + g1/sqrt(VPD);
 
 ci = co2*(1. - 1./medlyn_term);
 
+
 //Two terms for C3 photosythesis
 a1 = Vcmax*(ci - cp)/(ci + Kc*(1.+209./Ko));
 a2 = J*(ci-cp)/(4.*(ci + 2.*cp));
+
+
 
 An_C3 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 
@@ -140,9 +144,7 @@ An = C3_frac*(An_C3) + (1. - C3_frac)*(An_C4);
 double canopy_scale = (1. - exp(-VegK*LAI*clumping))/(VegK); 
 
 //r[0] = An*canopy_scale*(12.e-6)*(24.*60.*60.); //from umolCO2m-2s-1 to gCm-2day-1
-
 A->OUT.An = An*canopy_scale*(12.e-6)*(24.*60.*60.);
-
 //##################Transpiration#################
 
 double SRADg; 
