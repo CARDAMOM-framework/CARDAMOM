@@ -218,9 +218,13 @@ struct DALEC_1100_EDCs{
 int litcwdtor;
 int cwdsomtor;
 int state_ranges;
+int paw_temp;
+int puw_temp;
+int paw_sm;
+int puw_sm;
 //int state_trajectories;
 } DALEC_1100_EDCs={
-   0,1,2
+   0,1,2,3,4,5,6
 };
 
 

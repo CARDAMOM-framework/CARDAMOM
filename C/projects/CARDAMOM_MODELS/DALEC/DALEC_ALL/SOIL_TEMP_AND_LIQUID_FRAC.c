@@ -1,3 +1,4 @@
+#pragma once
 typedef struct {    
     struct{
 double     dry_soil_vol_heat_capacity;//J/m3/K
