@@ -2,10 +2,17 @@ function CARDAMOM_COMPILE(Cpath,debug)
 
 if nargin<2;debug=0;end
 if debug==0
-system('CARDAMOM/BASH/CARDAMOM_COMPILE.sh');
+v=system('CARDAMOM/BASH/CARDAMOM_COMPILE.sh');
 elseif debug==1
 
-system('CARDAMOM/BASH/CARDAMOM_COMPILE.sh -d');
+v=system('CARDAMOM/BASH/CARDAMOM_COMPILE.sh -d');
+
+end
+if (v>0)error(sprintf('CARDAMOM DID NOT COMPILE\nUSE "CARDAMOM_COMPILE" to resolve any compilation issues'));end
+
+
+
+
 end
 
 
@@ -85,7 +92,3 @@ end
 % 
 % %unix(sprintf('./%s/projects/CARDAMOM_GENERAL/CARDAMOM_ASSEMBLE_MODELS.exe',Cpath));
 % 
-
-
-
-end

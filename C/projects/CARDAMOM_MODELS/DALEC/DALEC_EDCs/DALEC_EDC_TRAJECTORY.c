@@ -27,14 +27,12 @@ typedef struct {
 double DALEC_EDC_TRAJECTORY(DATA * DATA, void * EDCstruct){
     
     
-
     
     
     //Casting struct
     
      DALEC_EDC_TRAJECTORY_STRUCT  E = *(DALEC_EDC_TRAJECTORY_STRUCT * ) EDCstruct;
 
-     int p;
       
  double PEDC = 0;
  
@@ -43,7 +41,7 @@ double DALEC_EDC_TRAJECTORY(DATA * DATA, void * EDCstruct){
   DALEC *DALECmodel=(DALEC *)DATA->MODEL;
   
 
-    
+
   
   int N_timesteps=DATA->ncdf_data.TIME_INDEX.length;
   
@@ -52,22 +50,25 @@ int nofluxes=DALECmodel->nofluxes;
 
   //int nopools=DATA->nopools;
 
-  
-  double EQF=DATA->ncdf_data.EDC_EQF;
 
+  double EQF=DATA->ncdf_data.EDC_EQF;
+EQF=1.1;
      //Looping through all pools
     
      //Pool inde
 
 /*deriving mean pools here!*/
-      int s,n,m,i;
+      int s,n,m,i,p;
        PEDC=0;
-    
+
     for (s=0;s<E.no_pools_to_check;s++){
 
 
+p = E.pool_indices[s];
+
 double MPOOLSjan;
 double MPOOLS=mean_pool(DATA->M_POOLS,p,N_timesteps+1,nopools);
+
 
 double * FLUXES = DATA->M_FLUXES;
 double * POOLS = DATA->M_POOLS;
@@ -87,9 +88,9 @@ int dint=(int)floor(N_timesteps/(TIME_INDEX[N_timesteps-1]-TIME_INDEX[0])*365.25
 
     int pidx = E.pool_indices[s];
     
+
 for (m=0;m<(N_timesteps/dint+1);m++){
-MPOOLSjan=MPOOLSjan+POOLS[nopools*(m*dint)+pidx
-        ]/(N_timesteps/dint+1);}
+MPOOLSjan=MPOOLSjan+POOLS[nopools*(m*dint)+pidx]/(N_timesteps/dint+1);}
 
 
 
@@ -121,7 +122,7 @@ double Pend;
 /*temporary print switch*/
 int psw=0;
 /*exponential decay tolerance*/
-double etol=0.1;
+double etol=0.02;
 
 /*Inlcuding H2O pool*/
 /*EDCs 7-13 - inputs, outputs and exponential tolerance*/

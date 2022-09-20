@@ -33,11 +33,13 @@ double RUN_DALEC_EDCs(DATA * DATA, EDCs * EDCs, bool prerun){
        
         //Run function
         if (EDCs[n].prerun==prerun){    
-            DATA->M_EDCs[n]=EDCs[n].function(DATA, EDCs[n].data);}}    
+            DATA->M_EDCs[n]=EDCs[n].function(DATA, EDCs[n].data);
+            //Add all probs up
+        P+=DATA->M_EDCs[n];
+        }}    
 
     
-    //Add all probs up
-    for (n=0;n<DATA->noedcs;n++){P+=DATA->M_EDCs[n];}
+
     
     
     return P;

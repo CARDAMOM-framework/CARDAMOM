@@ -33,8 +33,8 @@ end
 
 
 
-if compile==1
-CARDAMOM_COMPILE(Cpath)
+if compile==1;
+CARDAMOM_COMPILE(Cpath);
 end
 
 

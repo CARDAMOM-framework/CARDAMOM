@@ -280,12 +280,12 @@ double *POOLS=DATA.M_POOLS;
   POOLS[S.C_lit]=pars[P.i_lit];
   POOLS[S.C_som]=pars[P.i_som];
   /*water pools*/
-  POOLS[S.H2O_PAW]=pars[P.i_PAW];
-  POOLS[S.H2O_PUW]=pars[P.i_PUW];
+  POOLS[S.H2O_PAW]=HYDROFUN_MOI2EWT(pars[P.i_PAW_SM],pars[P.PAW_por],pars[P.PAW_z]);
+  POOLS[S.H2O_PUW]=HYDROFUN_MOI2EWT(pars[P.i_PUW_SM],pars[P.PUW_por],pars[P.PUW_z]);
   POOLS[S.H2O_SWE]=pars[P.i_SWE];
   /*Energy pools*/
-  POOLS[S.E_PAW]=pars[P.i_PAW_E];
-  POOLS[S.E_PUW]=pars[P.i_PUW_E];
+  POOLS[S.E_PAW]=pars[P.i_PAW_E]*pars[P.PAW_z];
+  POOLS[S.E_PUW]=pars[P.i_PUW_E]*pars[P.PUW_z];
   
   
    //---INITIALIZING DIAGNOSTIC STATES---
@@ -975,7 +975,7 @@ DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=75;
 DALECmodel->nofluxes=70;
-DALECmodel->noedcs=7;
+DALECmodel->noedcs=4;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
@@ -1058,32 +1058,30 @@ EDCs[E.cwdsomtor].prerun=true;
 //    EDC_sr.min_val[S.C_som]=0;
 //    EDC_sr.max_val[S.C_som]=DALECmodel->PARS_INFO.parmax[P.i_som];
 //                 
-//    EDC_sr.min_val[S.H2O_PAW]=0;
+    EDC_sr.min_val[S.H2O_PAW]=0;
 //    EDC_sr.max_val[S.H2O_PAW]=DALECmodel->PARS_INFO.parmax[P.i_PAW];
 //                 
-//    EDC_sr.min_val[S.H2O_PUW]=0;
+   EDC_sr.min_val[S.H2O_PUW]=0;
 //    EDC_sr.max_val[S.H2O_PUW]=DALECmodel->PARS_INFO.parmax[P.i_PUW];
 //                 
-//    EDC_sr.min_val[S.H2O_SWE]=0;
+    EDC_sr.min_val[S.H2O_SWE]=0;
 //    EDC_sr.max_val[S.H2O_SWE]=DALECmodel->PARS_INFO.parmax[P.i_SWE];
 //     
-//    EDC_sr.min_val[S.E_PAW]=0;
-//    EDC_sr.max_val[S.E_PAW]=DALECmodel->PARS_INFO.parmax[P.i_PAW_E];
+    EDC_sr.min_val[S.E_PAW]=0;
 //     
-//    EDC_sr.min_val[S.E_PUW]=0;
-//    EDC_sr.max_val[S.E_PUW]=DALECmodel->PARS_INFO.parmax[P.i_PUW_E];
+    EDC_sr.min_val[S.E_PUW]=0;
 //     
-//    EDC_sr.min_val[S.D_LAI]=0;
-//    EDC_sr.max_val[S.D_LAI]=DALECmodel->PARS_INFO.parmax[P.lambda_max];
+    EDC_sr.min_val[S.D_LAI]=0;
+    EDC_sr.max_val[S.D_LAI]=DALECmodel->PARS_INFO.parmax[P.lambda_max];
 //     
-//    EDC_sr.min_val[S.D_SCF]=0;
-//    EDC_sr.max_val[S.D_SCF]=1;
+    EDC_sr.min_val[S.D_SCF]=0;
+    EDC_sr.max_val[S.D_SCF]=1;
 //     
-    //EDC_sr.min_val[S.D_TEMP_PAW]=173.15;
-    //EDC_sr.max_val[S.D_TEMP_PAW]=373.15;
+    EDC_sr.min_val[S.D_TEMP_PAW]=173.15;
+    EDC_sr.max_val[S.D_TEMP_PAW]=373.15;
 //     
-    //EDC_sr.min_val[S.D_TEMP_PUW]=173.15;
-    //EDC_sr.max_val[S.D_TEMP_PUW]=373.15;
+    EDC_sr.min_val[S.D_TEMP_PUW]=173.15;
+    EDC_sr.max_val[S.D_TEMP_PUW]=373.15;
 //     
     EDC_sr.min_val[S.D_LF_PAW]=0;
     EDC_sr.max_val[S.D_LF_PAW]=1;
@@ -1091,7 +1089,7 @@ EDCs[E.cwdsomtor].prerun=true;
     EDC_sr.min_val[S.D_LF_PUW]=0;
     EDC_sr.max_val[S.D_LF_PUW]=1;
 //     
-    EDC_sr.min_val[S.D_SM_PAW]=0;
+   EDC_sr.min_val[S.D_SM_PAW]=0;
     EDC_sr.max_val[S.D_SM_PAW]=1;
 //     
     EDC_sr.min_val[S.D_SM_PUW]=0;
@@ -1116,81 +1114,60 @@ EDCs[E.cwdsomtor].prerun=true;
 
 
 //Start soil moistures for PAW and PUW
-        static DALEC_EDC_START_SM_STRUCT EDCpawsm, EDCpuwsm;
-
-    EDCpawsm.z_idx=P.PAW_z;
-EDCpawsm.por_idx=P.PAW_por;
-EDCpawsm.i_H2O_idx =P.i_PAW;
-
-EDCpuwsm.z_idx=P.PUW_z;
-EDCpuwsm.por_idx=P.PUW_por;
-EDCpuwsm.i_H2O_idx =P.i_PUW;
-
-
-
-EDCs[E.paw_sm].data=&EDCpawsm;
-EDCs[E.paw_sm].function=&DALEC_EDC_START_SM;
-EDCs[E.paw_sm].prerun=true;
-
-EDCs[E.puw_sm].data=&EDCpuwsm;
-EDCs[E.puw_sm].function=&DALEC_EDC_START_SM;
-EDCs[E.puw_sm].prerun=true;
+//         static DALEC_EDC_START_SM_STRUCT EDCpawsm, EDCpuwsm;
+// 
+//     EDCpawsm.z_idx=P.PAW_z;
+// EDCpawsm.por_idx=P.PAW_por;
+// EDCpawsm.i_H2O_idx =P.i_PAW;
+// 
+// EDCpuwsm.z_idx=P.PUW_z;
+// EDCpuwsm.por_idx=P.PUW_por;
+// EDCpuwsm.i_H2O_idx =P.i_PUW;
+// 
+// 
+// 
+// EDCs[E.paw_sm].data=&EDCpawsm;
+// EDCs[E.paw_sm].function=&DALEC_EDC_START_SM;
+// EDCs[E.paw_sm].prerun=true;
+// 
+// EDCs[E.puw_sm].data=&EDCpuwsm;
+// EDCs[E.puw_sm].function=&DALEC_EDC_START_SM;
+// EDCs[E.puw_sm].prerun=true;
 
 
 
 //Start temperatures for PAW and PUW
-    static DALEC_EDC_START_TEMP_STRUCT EDCpawtemp, EDCpuwtemp;
-
-
-EDCpawtemp.min_temp=273.15-50;
-EDCpawtemp.max_temp=273.15+50;
-EDCpawtemp.vhc_idx =P.PAW_vhc;
-EDCpawtemp.z_idx = P.PAW_z;
-EDCpawtemp.i_H2O_idx = P.i_PAW;
-EDCpawtemp.i_E_idx = P.i_PAW_E ;
-
-
-EDCpuwtemp.min_temp=273.15-50;
-EDCpuwtemp.max_temp=273.15+50;
-EDCpuwtemp.vhc_idx =P.PUW_vhc;
-EDCpuwtemp.z_idx = P.PUW_z;
-EDCpuwtemp.i_H2O_idx = P.i_PUW;
-EDCpuwtemp.i_E_idx = P.i_PUW_E ;
-
-
-EDCs[E.paw_temp].data=&EDCpawtemp;
-EDCs[E.paw_temp].function=&DALEC_EDC_START_TEMP;
-EDCs[E.paw_temp].prerun=true;
-
-EDCs[E.puw_temp].data=&EDCpuwtemp;
-EDCs[E.puw_temp].function=&DALEC_EDC_START_TEMP;
-EDCs[E.puw_temp].prerun=true;
 
 
 
 
-
-// 
  static DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
  
- static int edc_pool_indices[7];
+ static int edc_pool_indices[5];
 EDC_st.pool_indices=edc_pool_indices;
-EDC_st.no_pools_to_check=7;
+EDC_st.no_pools_to_check=5;
             
-EDC_st.pool_indices[0]=S.C_lab;
-EDC_st.pool_indices[1]=S.C_fol;
-EDC_st.pool_indices[2]=S.C_roo;
-EDC_st.pool_indices[3]=S.C_woo;
-EDC_st.pool_indices[4]=S.C_cwd;
-EDC_st.pool_indices[5]=S.C_lit;
-EDC_st.pool_indices[6]=S.C_som;
+EDC_st.pool_indices[0]=S.E_PAW;
+EDC_st.pool_indices[1]=S.E_PUW;
+EDC_st.pool_indices[2]=S.H2O_PAW;
+EDC_st.pool_indices[3]=S.H2O_PUW;
+EDC_st.pool_indices[4]=S.H2O_SWE;
+
+
+
+//EDC_st.pool_indices[1]=S.C_fol;
+//EDC_st.pool_indices[2]=S.C_roo;
+//EDC_st.pool_indices[3]=S.C_woo;
+//EDC_st.pool_indices[4]=S.C_cwd;
+//EDC_st.pool_indices[5]=S.C_lit;
+//EDC_st.pool_indices[6]=S.C_som;
     
 // //Rest can be done by code without additional input
-    /*
+    
 EDCs[E.state_trajectories].data=&EDC_st;
 EDCs[E.state_trajectories].function=&DALEC_EDC_TRAJECTORY;
 EDCs[E.state_trajectories].prerun=false;
-*/
+
 //Eventually adopt more succinct notation (to consider)
 //e.g. INEQUALITY_EDC(P.t_cwd,P.t_som,EDCs[E.cwdsomtor])
 

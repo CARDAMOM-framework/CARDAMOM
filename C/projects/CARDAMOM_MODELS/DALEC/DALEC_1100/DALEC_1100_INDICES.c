@@ -31,14 +31,14 @@ int i_cwd;
 int i_lit;
 int i_som;
 int retention;
-int i_PAW;
+int i_PAW_SM;
 int cf_foliar;
 int cf_ligneous;
 int cf_DOM;
 int resilience;
 int hydr_cond;
 int max_infil;
-int i_PUW;
+int i_PUW_SM;
 int PAW_por;
 int PUW_por;
 int field_cap;
@@ -218,13 +218,11 @@ struct DALEC_1100_EDCs{
 int litcwdtor;
 int cwdsomtor;
 int state_ranges;
-int paw_temp;
-int puw_temp;
-int paw_sm;
-int puw_sm;
-//int state_trajectories;
+//int paw_temp;
+//int puw_temp;
+int state_trajectories;
 } DALEC_1100_EDCs={
-   0,1,2,3,4,5,6
+   0,1,2,3
 };
 
 

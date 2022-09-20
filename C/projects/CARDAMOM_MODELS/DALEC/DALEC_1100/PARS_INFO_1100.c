@@ -101,10 +101,14 @@ parmax[P.i_som]=200000.0;
 /*Retention parameter (b)*/
 parmin[P.retention]=1.5;
 parmax[P.retention]=10;
+// 
+// /*"Bucket at t0"*/
+// parmin[P.i_PAW]=1;
+// parmax[P.i_PAW]=10000;
 
-/*"Bucket at t0"*/
-parmin[P.i_PAW]=1;
-parmax[P.i_PAW]=10000;
+/*"PAW SM at t0"*/
+parmin[P.i_PAW_SM]=0.01;
+parmax[P.i_PAW_SM]=1;
 
 /*Foliar biomass CF*/
 parmin[P.cf_foliar]=0.01;
@@ -129,10 +133,14 @@ parmax[P.hydr_cond]=1e-4;
 /*Maximum infiltration (mm/day)*/
 parmin[P.max_infil]=1;
 parmax[P.max_infil]=100;
+// 
+// /*PUW pool*/
+// parmin[P.i_PUW]=1;
+// parmax[P.i_PUW]=10000;
 
-/*PUW pool*/
-parmin[P.i_PUW]=1;
-parmax[P.i_PUW]=10000;
+/*PUW SM at t=0*/
+parmin[P.i_PUW_SM]=0.01;
+parmax[P.i_PUW_SM]=1;
 
 /*PAW porosity*/
 parmin[P.PAW_por]=0.2;
@@ -290,13 +298,13 @@ parmax[P.init_LAIW_mem]=1;
 parmin[P.t_foliar]=0.001;
 parmax[P.t_foliar]=0.1;
 
-/*PAW energy pool*/
-parmin[P.i_PAW_E]=1;
-parmax[P.i_PAW_E]=1e15;
+/*PAW energy per meter soil (~ dry at -50C to wet at 50C)*/
+parmin[P.i_PAW_E]=2e8;
+parmax[P.i_PAW_E]=2e9;
 
 /*PUW energy pool (SWdown Wm2* seconds in year for very very rough OOM estimate)*/
-parmin[P.i_PUW_E]=1;
-parmax[P.i_PUW_E]=1e15;
+parmin[P.i_PUW_E]=2e8;
+parmax[P.i_PUW_E]=2e9;
 
 /*PSI 50: water potential when soil-plant continum is at 50% hydraulic conductivity (-MPa)*/
 parmin[P.psi_50]=0.1;
@@ -326,7 +334,7 @@ parmax[P.thermal_cond]=2;
 
 
 /*Surface soil thermal conductivity in W/m/K */
-parmin[P.thermal_cond_surf]=0.1;
+parmin[P.thermal_cond_surf]=0.3;
 parmax[P.thermal_cond_surf]=2;
   
 return 0;

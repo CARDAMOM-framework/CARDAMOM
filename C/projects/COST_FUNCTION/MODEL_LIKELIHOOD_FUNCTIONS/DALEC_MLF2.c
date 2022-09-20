@@ -11,7 +11,6 @@
 
 double DALEC_MLF2(DATA DATA,double *PARS){
 
-
     //Copy "DATA.M_PARS" for convenience
     memcpy(DATA.M_PARS, PARS, DATA.nopars*sizeof(double));
 
@@ -26,14 +25,18 @@ EDCs *EDCs=MODEL->EDCs;
 double P=0;
 
 
+
 if (DATA.ncdf_data.EDC==1){
     
 
     
     //Call EDC function for prerun=1 models
     double Pedc1 = RUN_DALEC_EDCs(&DATA, EDCs, true);
-P=P+Pedc1;}
+P=P+Pedc1;
 
+
+
+}
 
 
 
@@ -43,7 +46,9 @@ P=P+Pedc1;}
 
 
 /*running model*/
-MODEL->dalec(DATA, PARS);
+     if (isinf(P)==0){
+
+         MODEL->dalec(DATA, PARS);}
 
 
 /*storing GPP*/
@@ -51,17 +56,17 @@ MODEL->dalec(DATA, PARS);
 
 
 //Post-run EDCs
-if (DATA.ncdf_data.EDC==1){
+if (DATA.ncdf_data.EDC==1 & isinf(P)==0){
   
     //Call EDC function for prerun=0 edcs
     double Pedc2 = RUN_DALEC_EDCs(&DATA, EDCs, false);
+
 P=P+Pedc2;}
 
 
 
 /*Likelihood*/
-
-P=P+LIKELIHOOD(DATA);
+   if (isinf(P)==0){P=P+LIKELIHOOD(DATA);}
 
 
 
@@ -81,7 +86,6 @@ return P;
 
 
 double EDC_DALEC_MLF2_BINARY(DATA DATA, double *PARS){
-
 
 /*Copy model pointer for brevity*/
 DALEC *MODEL=(DALEC *)DATA.MODEL;
