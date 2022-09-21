@@ -111,7 +111,7 @@ double Fin=0, Fout=0;
     for (i=0;i<DALECmodel->SIOMATRIX[pidx].N_STATE_INPUT_FLUXES;i++){Fin += FT[DALECmodel->SIOMATRIX[pidx].STATE_INPUT_FLUXES[i]];}
     for (i=0;i<DALECmodel->SIOMATRIX[pidx].N_STATE_OUTPUT_FLUXES;i++){Fout += FT[DALECmodel->SIOMATRIX[pidx].STATE_OUTPUT_FLUXES[i]];}
     
-
+free(FT);
 
 
 // 
