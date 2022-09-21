@@ -73,11 +73,18 @@ echo COMPILER=$COMPILER
 
 export NETCDF_LIB_FLAGS="$(${CARDAMOM_NC_CONFIG_PATH} --libs) $(${CARDAMOM_NC_CONFIG_PATH} --cflags)"
 
+echo ${COMPILER} ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.c -o ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.exe -lm ${NETCDF_LIB_FLAGS}
+
 ${COMPILER} ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.c -o ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.exe -lm ${NETCDF_LIB_FLAGS}
+
 if [ $? -ne 0 ]; then
     echo "Error: CARDAMOM_RUN_MODEL did not compile Sucessfully. Aborting."
     exit 1
 fi
+
+echo ${COMPILER} ${CARDAMOM_C_PATH}/projects/CARDAMOM_MDF/CARDAMOM_MDF.c -o ${CARDAMOM_C_PATH}/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe -lm ${NETCDF_LIB_FLAGS} 
+
+
 ${COMPILER} ${CARDAMOM_C_PATH}/projects/CARDAMOM_MDF/CARDAMOM_MDF.c -o ${CARDAMOM_C_PATH}/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe -lm ${NETCDF_LIB_FLAGS}
 if [ $? -ne 0 ]; then
     echo "Error: CARDAMOM_MDF did not compile Sucessfully. Aborting."
@@ -91,11 +98,16 @@ fi
 #fi
 
 if [[ ! -z "${DEBUG}" ]]; then
+
+echo   ${COMPILER} ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.c -g -o ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL_debug.exe -lm ${NETCDF_LIB_FLAGS}
+
   ${COMPILER} ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.c -g -o ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL_debug.exe -lm ${NETCDF_LIB_FLAGS}
   if [ $? -ne 0 ]; then
       echo "Error: CARDAMOM_RUN_MODEL_debug did not compile Sucessfully. Aborting."
       exit 1
   fi
+echo   ${COMPILER} ${CARDAMOM_C_PATH}/projects/CARDAMOM_MDF/CARDAMOM_MDF.c -g -ggdb3 -o ${CARDAMOM_C_PATH}/projects/CARDAMOM_MDF/CARDAMOM_MDF_debug.exe -lm ${NETCDF_LIB_FLAGS}
+
   ${COMPILER} ${CARDAMOM_C_PATH}/projects/CARDAMOM_MDF/CARDAMOM_MDF.c -g -ggdb3 -o ${CARDAMOM_C_PATH}/projects/CARDAMOM_MDF/CARDAMOM_MDF_debug.exe -lm ${NETCDF_LIB_FLAGS}
   if [ $? -ne 0 ]; then
       echo "Error: CARDAMOM_MDF_debug did not compile Sucessfully. Aborting."

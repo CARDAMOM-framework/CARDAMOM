@@ -1143,15 +1143,15 @@ EDCs[E.cwdsomtor].prerun=true;
 
  static DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
  
- static int edc_pool_indices[5];
+ static int edc_pool_indices[1];
 EDC_st.pool_indices=edc_pool_indices;
-EDC_st.no_pools_to_check=5;
+EDC_st.no_pools_to_check=1;
             
 EDC_st.pool_indices[0]=S.E_PAW;
-EDC_st.pool_indices[1]=S.E_PUW;
-EDC_st.pool_indices[2]=S.H2O_PAW;
-EDC_st.pool_indices[3]=S.H2O_PUW;
-EDC_st.pool_indices[4]=S.H2O_SWE;
+//EDC_st.pool_indices[1]=S.E_PUW;
+//EDC_st.pool_indices[2]=S.H2O_PAW;
+//EDC_st.pool_indices[3]=S.H2O_PUW;
+//EDC_st.pool_indices[4]=S.H2O_SWE;
 
 
 

@@ -122,7 +122,7 @@ double Pend;
 /*temporary print switch*/
 int psw=0;
 /*exponential decay tolerance*/
-double etol=0.02;
+double etol=0.1;
 
 /*Inlcuding H2O pool*/
 /*EDCs 7-13 - inputs, outputs and exponential tolerance*/
@@ -147,7 +147,6 @@ Rs=Rm*MPOOLSjan/Pstart;
  PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
 
     }
-PEDC=0;      
     return PEDC;
 }
 
