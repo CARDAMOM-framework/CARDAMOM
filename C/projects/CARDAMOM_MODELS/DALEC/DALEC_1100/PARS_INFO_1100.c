@@ -195,11 +195,11 @@ parmin[P.ga]=0.001;
 parmax[P.ga]=10.0;
 
 /*Tupp*/
-parmin[P.Tupp]=299.15-50;
+parmin[P.Tupp]=249.15; // 299.15-50
 parmax[P.Tupp]=318.15;
 
 /*Tdown*/
-parmin[P.Tdown]=263.15-50;
+parmin[P.Tdown]=213.15; // 263.15-50
 parmax[P.Tdown]=286.15;
 
 /*Clumping index*/
