@@ -299,7 +299,7 @@ double *POOLS=DATA.M_POOLS;
     
     //INITIALIZING PAW and PUW soil moisture
         POOLS[S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
-        POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PUW],pars[P.PAW_por],pars[P.PAW_z]);//soil moisture PUW
+        POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);//soil moisture PUW
 
         //Diagnostic time-invariant quantities
         double PAWmax=pars[P.PAW_por]*pars[P.PAW_z]*1000; //PAW capacity in mm
