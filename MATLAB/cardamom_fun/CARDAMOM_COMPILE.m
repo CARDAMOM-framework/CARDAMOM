@@ -2,10 +2,10 @@ function CARDAMOM_COMPILE(Cpath,debug)
 
 if nargin<2;debug=0;end
 if debug==0
-v=system('CARDAMOM/BASH/CARDAMOM_COMPILE.sh');
+v=system(sprintf('%s/BASH/CARDAMOM_COMPILE.sh',getenv('CARDAMOM_PATH')));
 elseif debug==1
 
-v=system('CARDAMOM/BASH/CARDAMOM_COMPILE.sh -d');
+v=system(sprintf('%s/BASH/CARDAMOM_COMPILE.sh -d',getenv('CARDAMOM_PATH')));
 
 end
 if (v>0)error(sprintf('CARDAMOM DID NOT COMPILE\nUSE "CARDAMOM_COMPILE" to resolve any compilation issues'));end

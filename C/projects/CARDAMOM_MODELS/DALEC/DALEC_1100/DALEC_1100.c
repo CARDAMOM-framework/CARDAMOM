@@ -216,7 +216,7 @@ double *POOLS=DATA.M_POOLS;
     
     //INITIALIZING PAW and PUW soil moisture
         POOLS[S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
-        POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PUW],pars[P.PAW_por],pars[P.PAW_z]);//soil moisture PUW
+        POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);//soil moisture PUW
 
         //Diagnostic time-invariant quantities
         double PAWmax=pars[P.PAW_por]*pars[P.PAW_z]*1000; //PAW capacity in mm
@@ -1060,15 +1060,15 @@ EDCs[E.cwdsomtor].prerun=true;
 
  static DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
  
- static int edc_pool_indices[5];
+ static int edc_pool_indices[1];
 EDC_st.pool_indices=edc_pool_indices;
-EDC_st.no_pools_to_check=5;
+EDC_st.no_pools_to_check=1;
             
 EDC_st.pool_indices[0]=S.E_PAW;
-EDC_st.pool_indices[1]=S.E_PUW;
-EDC_st.pool_indices[2]=S.H2O_PAW;
-EDC_st.pool_indices[3]=S.H2O_PUW;
-EDC_st.pool_indices[4]=S.H2O_SWE;
+//EDC_st.pool_indices[1]=S.E_PUW;
+//EDC_st.pool_indices[2]=S.H2O_PAW;
+//EDC_st.pool_indices[3]=S.H2O_PUW;
+//EDC_st.pool_indices[4]=S.H2O_SWE;
 
 
 
