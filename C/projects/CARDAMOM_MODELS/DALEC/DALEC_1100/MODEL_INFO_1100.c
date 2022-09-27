@@ -1,8 +1,6 @@
 #pragma once
 #include "PARS_INFO_1100.c"
 #include "DALEC_1100.c"
-#include "EDC1_1100.c"
-#include "EDC2_1100.c"
 #include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF_DEDC.c"
 #include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF.c"
 #include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF2.c"
@@ -52,7 +50,11 @@ DATA->parmax=calloc(DATA->nopars,sizeof(double));
 */
 INITIALIZE_PARAMETER_FIELDS(DATA);
 
-PARS_INFO_1100(DATA->parmin, DATA->parmax);
+
+    //Copying pointers
+    DATA->parmin=DALECmodel.PARS_INFO.parmin;
+    DATA->parmax=DALECmodel.PARS_INFO.parmax;
+
 
 //oksofar("about to declare EDCD");
 //printf("DALECmodel.EDCD = %p\n",DALECmodel.EDCD); //DALECmodel.EDCD Needs to be initilized!

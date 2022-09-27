@@ -111,7 +111,7 @@ printf("Number of starting parameter vectors to be sampled here: %i\n", int_max(
 /*if (PI->npars*MCOPT_CARDAMOM->nchains>filelength){*/
 if (PI->npars>filelength){
 /*done*/
-/*PEDC is the log likelihood*/
+/*PEDC is the log likelihoods*/
 /*for (m=0;m<M;m++){
 */
 for (m=0;m<1;m++){
@@ -119,6 +119,7 @@ double PEDC=log(0);
 int count=0;
 while (PEDC!=0){
 	printf("EDC Attempt no %d\n",count);oksofar("---");
+
 	for (n=0;n<PI->npars;n++){PI->stepsize[n]=0.0005;}
 	/*insert prior value option here!*/
 

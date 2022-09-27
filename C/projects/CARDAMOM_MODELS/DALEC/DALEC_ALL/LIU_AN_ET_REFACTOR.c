@@ -17,7 +17,8 @@ typedef struct {
         double Tdown;
         double C3_frac;
         double clumping;
-        double leaf_refl;
+        double leaf_refl_par;
+        double leaf_refl_nir;
         double maxPevap;
         double precip;        
     }IN;
@@ -50,7 +51,8 @@ double Tupp=A->IN.Tupp; // Units are K
 double Tdown=A->IN.Tdown; // Units are K
 double C3_frac=A->IN.C3_frac;
 double clumping=A->IN.clumping;
-double leaf_refl=A->IN.leaf_refl;
+double leaf_refl_par=A->IN.leaf_refl_par;
+double leaf_refl_nir=A->IN.leaf_refl_nir;
 double maxPevap=A->IN.maxPevap;
 double precip=A->IN.precip;
 
@@ -88,15 +90,16 @@ double An;
 //static double r[3];
 
 
-PAR = SRAD/(Ephoton*NA)*1e6;
+PAR = SRAD/(2*Ephoton*NA)*1e6;
 
 //absorbed PAR assuming black canopy. 
 //PAR = PAR*(1. - exp(-LAI*VegK));
 
-PAR *= (1. - leaf_refl)*(1. - exp(-VegK*LAI*clumping));
+PAR *= (1. - leaf_refl_par)*(1. - exp(-VegK*LAI*clumping));
 
 
 T_C = TEMP - DGCM_TK0C;  // Convert temperature to degrees C
+
 
 Kc = 300.*exp(0.074*(T_C - 25.));
 Ko = 300.*exp(0.015*(T_C - 25.));
@@ -117,9 +120,12 @@ medlyn_term = 1. + g1/sqrt(VPD);
 
 ci = co2*(1. - 1./medlyn_term);
 
+
 //Two terms for C3 photosythesis
 a1 = Vcmax*(ci - cp)/(ci + Kc*(1.+209./Ko));
 a2 = J*(ci-cp)/(4.*(ci + 2.*cp));
+
+
 
 An_C3 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 
@@ -138,9 +144,7 @@ An = C3_frac*(An_C3) + (1. - C3_frac)*(An_C4);
 double canopy_scale = (1. - exp(-VegK*LAI*clumping))/(VegK); 
 
 //r[0] = An*canopy_scale*(12.e-6)*(24.*60.*60.); //from umolCO2m-2s-1 to gCm-2day-1
-
 A->OUT.An = An*canopy_scale*(12.e-6)*(24.*60.*60.);
-
 //##################Transpiration#################
 
 double SRADg; 
@@ -156,9 +160,9 @@ double evap_scale_factpr;
 
 sV = 0.04145*exp(0.06088*T_C); 
 
-SRADg = (1. - leaf_refl)*SRAD*exp(-VegK*LAI*clumping);
+SRADg = (1. - 0.5*(leaf_refl_par+leaf_refl_nir))*SRAD*exp(-VegK*LAI*clumping);
 
-SRAD = (1. - leaf_refl)*SRAD;
+SRAD = (1. - 0.5*(leaf_refl_par+leaf_refl_nir))*SRAD;
 
 petVnum = (sV*(SRAD-SRADg)+1.225*1000*VPD_kPa*ga)/lambda0*60*60;
 petVnumB = 1.26*(sV*SRADg)/(sV+gammaV)/lambda0*60*60; //from mm.hr-1 

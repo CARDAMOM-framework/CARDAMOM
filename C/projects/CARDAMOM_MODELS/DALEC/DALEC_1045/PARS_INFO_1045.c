@@ -1,5 +1,5 @@
 #pragma once
-#include "DALEC_1005.c"
+#include "DALEC_1045.c"
 
 /*PARAMETER_INFO (typedef struct) must have at least 3 fields
  *  * npars,
@@ -10,13 +10,14 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1005(DATA *CARDADATA)
+int PARS_INFO_1045(DATA *CARDADATA)
 {
 
-struct DALEC_1005_PARAMETERS P=DALEC_1005_PARAMETERS;
+struct DALEC_1045_PARAMETERS P=DALEC_1045_PARAMETERS;
 
 double * parmin=CARDADATA->parmin;
 double * parmax=CARDADATA->parmax;
+
 /*Decomposition rate*/
 parmin[P.tr_lit2soil]=0.00001;
 parmax[P.tr_lit2soil]=0.01;
@@ -89,7 +90,6 @@ parmax[P.LCMA]=200;
 
 /*INITIAL VALUES DECLARED HERE*/
 
-/*C labile*/
 parmin[P.i_labile]=1.0;
 parmax[P.i_labile]=2000.0;
 

@@ -90,10 +90,10 @@ int KNORR_ALLOCATION(KNORR_ALLOCATION_STRUCT * K)
   //   lambda_max_memory=lambda_max;
   //   laim=lambda_max_memory;
   // }
-  if (n < 2){
-  printf("\n");
-  printf("KNORR n = %2f\n",n);
-    }
+  // if (n < 2){
+  // printf("\n");
+  // printf("KNORR n = %2f\n",n);
+  //   }
 
   // if (n==0){printf("> in LAI_KNORR: T_memory = %2.1f\n",T_memory);}
   // if (n==0){T_memory=T_phi+3*T_r;}   /* set the temperature memory to be high so that we start in growth phase */

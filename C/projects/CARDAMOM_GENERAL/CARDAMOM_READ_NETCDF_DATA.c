@@ -203,9 +203,14 @@ default_int_value(&DATA->SCF.opt_unc_type,0);
 default_double_value(&DATA->SCF.single_unc,0.1);
 default_double_value(&DATA->SCF.min_threshold,0.1);//m2/m2
 
+//No efault YIELD options
+
+
+
 
 //pre-process obs to save time
 //Only required for timeseries obs
+    //Keep alphabetical order if possible 
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ABGB);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->CH4);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->CWOO);
@@ -238,6 +243,8 @@ printf("Done reading all other edc ");
 	DATA->CO2.values=ncdf_read_double_var(ncid, "CO2", &(DATA->CO2.length));
 		DATA->CO2.reference_mean=ncdf_read_double_attr(ncid, "CO2","reference_mean");
                                                 DEFAULT_REFERENCE_MEAN(&DATA->CO2);
+                                                
+
 
         
 	DATA->DOY.values=ncdf_read_double_var(ncid, "DOY", &(DATA->DOY.length));
@@ -284,6 +291,9 @@ printf("Done reading all other edc ");
                                 DEFAULT_REFERENCE_MEAN(&DATA->VPD);
 
 
+	DATA->YIELD.values=ncdf_read_double_var(ncid, "YIELD", &(DATA->YIELD.length));
+		DATA->YIELD.reference_mean=ncdf_read_double_attr(ncid, "YIELD","reference_mean");
+                                DEFAULT_REFERENCE_MEAN(&DATA->YIELD);
 
         
         

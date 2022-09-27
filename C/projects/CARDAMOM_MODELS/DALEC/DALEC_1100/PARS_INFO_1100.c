@@ -1,5 +1,5 @@
 #pragma once
-#include "DALEC_1100.c"
+#include "DALEC_1100_INDICES.c"
 
 /*PARAMETER_INFO (typedef struct) must have at least 3 fields
  *  * npars,
@@ -10,12 +10,18 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1100(double *parmin, double *parmax)
-{
 
+int PARS_INFO_1100(DALEC * DALECmodel){
 
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 
+
+DALECmodel->PARS_INFO.parmin= calloc(DALECmodel->nopars, sizeof(double));
+DALECmodel->PARS_INFO.parmax= calloc(DALECmodel->nopars, sizeof(double));
+//Abbreviate
+
+double * parmin = DALECmodel->PARS_INFO.parmin;
+double * parmax =DALECmodel->PARS_INFO.parmax;
 /*Litter decomposition rate*/
 parmin[P.tr_lit2som]=0.01;
 parmax[P.tr_lit2som]=0.99;
@@ -96,9 +102,9 @@ parmax[P.i_som]=200000.0;
 parmin[P.retention]=1.5;
 parmax[P.retention]=10;
 
-/*"Bucket at t0"*/
-parmin[P.i_PAW]=1;
-parmax[P.i_PAW]=10000;
+/*"PAW SM at t0"*/
+parmin[P.i_PAW_SM]=0.01;
+parmax[P.i_PAW_SM]=1;
 
 /*Foliar biomass CF*/
 parmin[P.cf_foliar]=0.01;
@@ -124,9 +130,9 @@ parmax[P.hydr_cond]=1e-4;
 parmin[P.max_infil]=1;
 parmax[P.max_infil]=100;
 
-/*PUW pool*/
-parmin[P.i_PUW]=1;
-parmax[P.i_PUW]=10000;
+/*PUW SM at t=0*/
+parmin[P.i_PUW_SM]=0.01;
+parmax[P.i_PUW_SM]=1;
 
 /*PAW porosity*/
 parmin[P.PAW_por]=0.2;
@@ -181,20 +187,24 @@ parmin[P.ga]=0.001;
 parmax[P.ga]=10.0;
 
 /*Tupp*/
-parmin[P.Tupp]=299.15;
+parmin[P.Tupp]=249.15; // 299.15-50
 parmax[P.Tupp]=318.15;
 
 /*Tdown*/
-parmin[P.Tdown]=263.15;
+parmin[P.Tdown]=213.15; // 263.15-50
 parmax[P.Tdown]=286.15;
 
 /*Clumping index*/
 parmin[P.clumping]=0.35;
 parmax[P.clumping]=1.0;
 
-/*Leaf single scattering albedo*/
-parmin[P.leaf_refl]=1e-1;
-parmax[P.leaf_refl]=1.0;
+/*PAR reflectance*/
+parmin[P.leaf_refl_par]=0.05;
+parmax[P.leaf_refl_par]=0.5;
+
+/*NIR reflectance*/
+parmin[P.leaf_refl_nir]=0.3;
+parmax[P.leaf_refl_nir]=0.7;
 
 /*iSWE: initial for state variable SWE snow water equivalent*/
 parmin[P.i_SWE]=0.000001;
@@ -234,7 +244,7 @@ parmax[P.Q10ch4]=3.0;
 
 /* maxPevap in mm/day*/
 parmin[P.maxPevap]=0.01;
-parmax[P.maxPevap]=20;
+parmax[P.maxPevap]=100;
 
 /*Mean temperature at leaf onset (T_phi) (degrees kelvin)*/
 parmin[P.T_phi]=268.15;
@@ -280,13 +290,13 @@ parmax[P.init_LAIW_mem]=1;
 parmin[P.t_foliar]=0.001;
 parmax[P.t_foliar]=0.1;
 
-/*PAW energy pool*/
-parmin[P.i_PAW_E]=1;
-parmax[P.i_PAW_E]=1e15;
+/*PAW energy per meter soil (~ dry at -50C to wet at 50C)*/
+parmin[P.i_PAW_E]=2e8;
+parmax[P.i_PAW_E]=2e9;
 
 /*PUW energy pool (SWdown Wm2* seconds in year for very very rough OOM estimate)*/
-parmin[P.i_PUW_E]=1;
-parmax[P.i_PUW_E]=1e15;
+parmin[P.i_PUW_E]=2e8;
+parmax[P.i_PUW_E]=2e9;
 
 /*PSI 50: water potential when soil-plant continum is at 50% hydraulic conductivity (-MPa)*/
 parmin[P.psi_50]=0.1;
@@ -300,14 +310,20 @@ parmax[P.beta_lgr]=50;
 parmin[P.phi_RL]=0.0001;
 parmax[P.phi_RL]=0.5;
 
+
 /*Ratio of carbon allocation to wood per target foliar pool size (gC/gC)*/
 parmin[P.phi_WL]=0.0001;
 parmax[P.phi_WL]=0.5;
   
 
-/*Soil thermal conductivity in W/m/K */
+/*Deep thermal conductivity in W/m/K */
 parmin[P.thermal_cond]=0.3;
 parmax[P.thermal_cond]=2;
+
+
+/*Surface soil thermal conductivity in W/m/K */
+parmin[P.thermal_cond_surf]=0.3;
+parmax[P.thermal_cond_surf]=2;
   
 return 0;
 
