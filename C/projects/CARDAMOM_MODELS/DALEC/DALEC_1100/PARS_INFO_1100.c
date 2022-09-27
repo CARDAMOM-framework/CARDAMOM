@@ -101,10 +101,6 @@ parmax[P.i_som]=200000.0;
 /*Retention parameter (b)*/
 parmin[P.retention]=1.5;
 parmax[P.retention]=10;
-// 
-// /*"Bucket at t0"*/
-// parmin[P.i_PAW]=1;
-// parmax[P.i_PAW]=10000;
 
 /*"PAW SM at t0"*/
 parmin[P.i_PAW_SM]=0.01;
@@ -133,10 +129,6 @@ parmax[P.hydr_cond]=1e-4;
 /*Maximum infiltration (mm/day)*/
 parmin[P.max_infil]=1;
 parmax[P.max_infil]=100;
-// 
-// /*PUW pool*/
-// parmin[P.i_PUW]=1;
-// parmax[P.i_PUW]=10000;
 
 /*PUW SM at t=0*/
 parmin[P.i_PUW_SM]=0.01;
@@ -195,11 +187,11 @@ parmin[P.ga]=0.001;
 parmax[P.ga]=10.0;
 
 /*Tupp*/
-parmin[P.Tupp]=299.15-50;
+parmin[P.Tupp]=249.15; // 299.15-50
 parmax[P.Tupp]=318.15;
 
 /*Tdown*/
-parmin[P.Tdown]=263.15-50;
+parmin[P.Tdown]=213.15; // 263.15-50
 parmax[P.Tdown]=286.15;
 
 /*Clumping index*/
@@ -317,10 +309,6 @@ parmax[P.beta_lgr]=50;
 /*Ratio of carbon allocation to root per target foliar pool size (gC/gC)*/
 parmin[P.phi_RL]=0.0001;
 parmax[P.phi_RL]=0.5;
-
-/*Ratio of total wood surface area to total leaf area*/
-parmin[P.phi_WL]=0.1;
-parmax[P.phi_WL]=10.0;
 
 
 /*Ratio of carbon allocation to wood per target foliar pool size (gC/gC)*/

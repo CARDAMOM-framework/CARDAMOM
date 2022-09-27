@@ -79,135 +79,52 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.f_lit]=S.C_lit;
         FIOMATRIX.SOURCE[F.lit2som]=S.C_lit;
         FIOMATRIX.SOURCE[F.fx_lit2som]=S.C_lit;
-    
-        //source = GPP
-        FIOMATRIX.SINK[F.lab_prod]=S.C_lab;
-        
-        FIOMATRIX.SOURCE[F.foliar_prod]=S.C_lab;
-        FIOMATRIX.SINK[F.foliar_prod]=S.C_fol;
-        
-        FIOMATRIX.SOURCE[F.root_prod]=S.C_lab;
-        FIOMATRIX.SINK[F.root_prod]=S.C_roo;
-        
-        FIOMATRIX.SOURCE[F.wood_prod]=S.C_lab;
-        FIOMATRIX.SINK[F.wood_prod]=S.C_woo;
 
-        FIOMATRIX.SOURCE[F.f_lab]=S.C_lab;  
-        //Sink = atmosphere; 
-         
-        FIOMATRIX.SOURCE[F.fx_lab2lit]=S.C_lab;
-        FIOMATRIX.SINK[F.fx_lab2lit]=S.C_lit;
-    
-        FIOMATRIX.SOURCE[F.fol2lit]=S.C_fol;
-        FIOMATRIX.SINK[F.fol2lit]=S.C_lit;
-          
-        FIOMATRIX.SOURCE[F.f_fol]=S.C_fol;
-        //Sink = atmosphere; 
-
-        FIOMATRIX.SOURCE[F.fx_fol2lit]=S.C_fol;
-        FIOMATRIX.SINK[F.fx_fol2lit]=S.C_lit;
-                       
-        FIOMATRIX.SOURCE[F.roo2lit]=S.C_roo;
-        FIOMATRIX.SINK[F.roo2lit]=S.C_lit;
-        
-        FIOMATRIX.SOURCE[F.f_roo]=S.C_roo;
-        //Sink = atmosphere; 
-
-        FIOMATRIX.SOURCE[F.fx_roo2lit]=S.C_roo;
-        FIOMATRIX.SINK[F.fx_roo2lit]=S.C_lit;
-
-        FIOMATRIX.SOURCE[F.woo2cwd]=S.C_woo;
+        // C_cwd
         FIOMATRIX.SINK[F.woo2cwd]=S.C_cwd;
-        
-        FIOMATRIX.SOURCE[F.f_woo]=S.C_woo;
-        //Sink = atmosphere; 
-
-        FIOMATRIX.SOURCE[F.fx_woo2cwd]=S.C_woo;
         FIOMATRIX.SINK[F.fx_woo2cwd]=S.C_cwd;
-        
         FIOMATRIX.SOURCE[F.ae_rh_cwd]=S.C_cwd;
-        //Sink = atmosphere; 
-        
         FIOMATRIX.SOURCE[F.an_rh_cwd]=S.C_cwd;
-        //Sink = atmosphere; 
-            
         FIOMATRIX.SOURCE[F.f_cwd]=S.C_cwd;
-        //Sink = atmosphere; 
-
         FIOMATRIX.SOURCE[F.cwd2som]=S.C_cwd;
-        FIOMATRIX.SINK[F.cwd2som]=S.C_som;
-
         FIOMATRIX.SOURCE[F.fx_cwd2som]=S.C_cwd;
-        FIOMATRIX.SINK[F.fx_cwd2som]=S.C_som;
-                        
-        FIOMATRIX.SOURCE[F.ae_rh_lit]=S.C_lit;
-        //Sink = atmosphere; 
-        
-        FIOMATRIX.SOURCE[F.an_rh_lit]=S.C_lit;
-        //Sink = atmosphere; 
-        
-        FIOMATRIX.SOURCE[F.f_lit]=S.C_lit;
-        //Sink = atmosphere; 
 
-        FIOMATRIX.SOURCE[F.lit2som]=S.C_lit;
+        // C_som
+        FIOMATRIX.SINK[F.cwd2som]=S.C_som;
+        FIOMATRIX.SINK[F.fx_cwd2som]=S.C_som;        
         FIOMATRIX.SINK[F.lit2som]=S.C_som;
-
-        FIOMATRIX.SOURCE[F.fx_lit2som]=S.C_lit;
         FIOMATRIX.SINK[F.fx_lit2som]=S.C_som;
-
         FIOMATRIX.SOURCE[F.ae_rh_som]=S.C_som;
-        //Sink = atmosphere; 
-        
         FIOMATRIX.SOURCE[F.an_rh_som]=S.C_som;
-        //Sink = atmosphere; 
-        
         FIOMATRIX.SOURCE[F.f_som]=S.C_som;
-        //Sink = atmosphere; 
- 
-        // Source = atmosphere and snowmelt
-        FIOMATRIX.SINK[F.infil]=S.H2O_PAW;
 
+        // H2O_SWE
         FIOMATRIX.SOURCE[F.melt]=S.H2O_SWE;
-        //Sink = infiltration (F.infil); 
-
-        // Source = atmosphere
         FIOMATRIX.SINK[F.snowfall]=S.H2O_SWE;
 
+        // H2O_PAW
+        FIOMATRIX.SINK[F.infil]=S.H2O_PAW;
         FIOMATRIX.SOURCE[F.et]=S.H2O_PAW;
-        //Sink = atmosphere; 
-
         FIOMATRIX.SOURCE[F.paw2puw]=S.H2O_PAW;
+        FIOMATRIX.SOURCE[F.q_paw]=S.H2O_PAW;
+
+        // H2O_PUW        
+        FIOMATRIX.SOURCE[F.q_puw]=S.H2O_PUW;
         FIOMATRIX.SINK[F.paw2puw]=S.H2O_PUW;
 
-        FIOMATRIX.SOURCE[F.q_paw]=S.H2O_PAW;
-        // Sink = runoff
-
-        FIOMATRIX.SOURCE[F.q_puw]=S.H2O_PUW;
-        // Sink = runoff
-
-        // Source = atmosphere
+        // E_PAW
         FIOMATRIX.SINK[F.ground_heat]=S.E_PAW;
-
-        // Source = atmosphere
         FIOMATRIX.SINK[F.infil_e]=S.E_PAW;
-
         FIOMATRIX.SOURCE[F.et_e]=S.E_PAW;
-        // Sink = atmosphere
-
         FIOMATRIX.SOURCE[F.q_paw_e]=S.E_PAW;
-        // Sink = runoff
-
-        FIOMATRIX.SOURCE[F.q_puw_e]=S.E_PUW;
-        // Sink = runoff
-
         FIOMATRIX.SOURCE[F.paw2puw_e]=S.E_PAW;
-        FIOMATRIX.SINK[F.paw2puw_e]=S.E_PUW;
-
-
         FIOMATRIX.SOURCE[F.paw2puw_th_e]=S.E_PAW;
+
+        // E_PUW
+        FIOMATRIX.SINK[F.paw2puw_e]=S.E_PUW;
         FIOMATRIX.SINK[F.paw2puw_th_e]=S.E_PUW;
-        
-        //Determine list of source and sink flux indices based on fluxfloes
+        FIOMATRIX.SOURCE[F.q_puw_e]=S.E_PUW;
+
 
         
 DALECmodel->FIOMATRIX = FIOMATRIX;
