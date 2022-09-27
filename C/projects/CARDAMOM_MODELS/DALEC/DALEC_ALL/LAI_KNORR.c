@@ -30,7 +30,7 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   double lambda, lambda_W, lambda_tilde_max, lambda_max;
   double dlambdadt, lambda_lim, laim, lambda_max_memory;
   double tau_W, tau_s;
-  double lambda_next;
+  double lambda_next, lambda_input, lambda_output;
 
   if (met_list[0] < 100.0) {
     // assume temperature forcing at time t is in degrees C, then convert to degrees K
@@ -100,13 +100,19 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
   // dlambdadt is the change in LAI over the period deltat (units of m2/m2)
   dlambdadt = lambda_next - lambda;
 
-  static double return_arr[6];
+  lambda_input  = plgr * (laim - lambda) * f;
+  lambda_output = lambda * k_L * (1 - f);
+
+
+  static double return_arr[8];
   return_arr[0] = lambda_next;
   return_arr[1] = T;
   return_arr[2] = laim;
   return_arr[3] = dlambdadt;
   return_arr[4] = f_T;
   return_arr[5] = f_d;
+  return_arr[6] = lambda_input;
+  return_arr[7] = lambda_output;
   return return_arr;
 }
 
