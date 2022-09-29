@@ -146,6 +146,7 @@ Rs=Rm*MPOOLSjan/Pstart;
 
  PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
 
+
     }
     return PEDC;
 }
