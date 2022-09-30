@@ -315,6 +315,8 @@ double *POOLS=DATA.M_POOLS;
         HRJCR.IN.Q10CH4=pars[P.Q10ch4];
         HRJCR.IN.Q10CO2=pars[P.Q10rhco2];
 
+   
+
 
 
 
@@ -722,11 +724,13 @@ FLUXES[f+F.roo2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
   
     //TIME-VARYING INPUTS
      HRJCR.IN.SM=POOLS[p+S.D_SM_PAW];
-     HRJCR.IN.TEMP=SKT[n]; // Input in degrees C
-        //JCR
-        HET_RESP_RATES_JCR(&HRJCR);
-             //OUtputs --- store anything we want here---
-            FLUXES[f+F.antr]=HRJCR.OUT.aerobic_tr;//Aerobic turnover rate scalar
+     HRJCR.IN.TEMP=POOLS[p+S.D_TEMP_PAW];; // Input in degrees K
+     HRJCR.IN.LF=POOLS[p+S.D_LF_PAW];; // Input in degrees 
+
+       //JCR
+       HET_RESP_RATES_JCR(&HRJCR);
+       //OUtputs --- store anything we want here---
+       FLUXES[f+F.antr]=HRJCR.OUT.aerobic_tr;//Aerobic turnover rate scalar
        FLUXES[f+F.aetr]=HRJCR.OUT.anaerobic_tr;//Anaerobic turnover rate scalar
        FLUXES[f+F.an_co2_c_ratio]=HRJCR.OUT.anaerobic_co2_c_ratio;//CO2_C_ratio
         FLUXES[f+F.an_ch4_c_ratio]=HRJCR.OUT.anaerobic_ch4_c_ratio;//CH4_C_ratio
