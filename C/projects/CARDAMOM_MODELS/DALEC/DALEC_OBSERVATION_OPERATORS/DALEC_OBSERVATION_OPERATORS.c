@@ -74,6 +74,30 @@ bool SUPPORT_PAW_z_OBS;
 int PAW_z_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
 
+    //add PEQ value and unc from previous MCMC *pMCMC*
+bool SUPPORT_S_fv_OBS;
+int S_fv_PARAM;
+bool SUPPORT_thetas_opt_OBS;
+int thetas_opt_PARAM;
+bool SUPPORT_fwc_OBS;
+int fwc_PARAM;
+bool SUPPORT_r_ch4_OBS;
+int r_ch4_PARAM;
+bool SUPPORT_Q10ch4_OBS;
+int Q10ch4_PARAM;
+bool SUPPORT_Q10rhco2_OBS;
+int Q10rhco2_PARAM;
+bool SUPPORT_retention_OBS;
+int retention_PARAM;
+/* bool SUPPORT_Med_g1_OBS;
+int Med_g1_PARAM;
+bool SUPPORT_Vcmax25_OBS;
+int Vcmax25_PARAM;
+bool SUPPORT_ga_OBS;
+int ga_PARAM;
+bool SUPPORT_Tdown_OBS;
+int Tdown_PARAM;*/
+    // end of pMCMC
 
 }OBSOPE;
 
@@ -102,8 +126,19 @@ OBSOPE->SUPPORT_iniSnow_OBS=false;
 OBSOPE->SUPPORT_iniSOM_OBS=false;
 OBSOPE->SUPPORT_PAW_z_OBS=false;
 //In-built observation operators
-
-
+    //add PEQ value and unc from previous MCMC *pMCMC*
+OBSOPE->SUPPORT_S_fv_OBS=false;
+OBSOPE->SUPPORT_thetas_opt_OBS=false;
+OBSOPE->SUPPORT_fwc_OBS=false;
+OBSOPE->SUPPORT_r_ch4_OBS=false;
+OBSOPE->SUPPORT_Q10ch4_OBS=false;
+OBSOPE->SUPPORT_Q10rhco2_OBS=false;
+OBSOPE->SUPPORT_retention_OBS=false;
+/* OBSOPE->SUPPORT_Med_g1_OBS=false;
+OBSOPE->SUPPORT_Vcmax25_OBS=false;
+OBSOPE->SUPPORT_ga_OBS=false;
+OBSOPE->SUPPORT_Tdown_OBS=false; */
+    // end of pMCMC
 return 0;
 }
 
@@ -449,6 +484,90 @@ return 0;
 
 }
 
+
+//add PEQ value and unc from previous MCMC *pMCMC*
+
+int DALEC_OBSOPE_S_fv(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_S_fv;
+//if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_S_fv=D->M_PARS[O->S_fv_PARAM];}
+D->M_PEQ_S_fv=D->M_PARS[O->S_fv_PARAM];
+return 0;
+}
+
+int DALEC_OBSOPE_thetas_opt(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_thetas_opt;
+//if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_thetas_opt=D->M_PARS[O->thetas_opt_PARAM];}
+D->M_PEQ_thetas_opt=D->M_PARS[O->thetas_opt_PARAM];
+return 0;
+}
+
+int DALEC_OBSOPE_fwc(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_fwc;
+//if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_fwc=D->M_PARS[O->fwc_PARAM];}
+D->M_PEQ_fwc=D->M_PARS[O->fwc_PARAM];
+return 0;
+}
+
+int DALEC_OBSOPE_r_ch4(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_r_ch4;
+//if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_r_ch4=D->M_PARS[O->r_ch4_PARAM];}
+D->M_PEQ_r_ch4=D->M_PARS[O->r_ch4_PARAM];
+return 0;
+}
+
+int DALEC_OBSOPE_Q10ch4(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_Q10ch4;
+//if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_Q10ch4=D->M_PARS[O->Q10ch4_PARAM];}
+D->M_PEQ_Q10ch4=D->M_PARS[O->Q10ch4_PARAM];
+return 0;
+}
+
+int DALEC_OBSOPE_Q10rhco2(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_Q10rhco2;
+//if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_Q10rhco2=D->M_PARS[O->Q10rhco2_PARAM];}
+D->M_PEQ_Q10rhco2=D->M_PARS[O->Q10rhco2_PARAM];
+return 0;
+}
+
+int DALEC_OBSOPE_retention(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_retention;
+//if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_retention=D->M_PARS[O->retention_PARAM];}
+D->M_PEQ_retention=D->M_PARS[O->retention_PARAM];
+return 0;
+}
+/*
+int DALEC_OBSOPE_Med_g1(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_Med_g1;
+//if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_Med_g1=D->M_PARS[O->Med_g1_PARAM];}
+D->M_PEQ_Med_g1=D->M_PARS[O->Med_g1_PARAM];
+return 0;
+}
+
+int DALEC_OBSOPE_Vcmax25(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_Vcmax25;
+//if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_Vcmax25=D->M_PARS[O->Vcmax25_PARAM];}
+D->M_PEQ_Vcmax25=D->M_PARS[O->Vcmax25_PARAM];
+return 0;
+}
+
+int DALEC_OBSOPE_ga(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_ga;
+//if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_ga=D->M_PARS[O->ga_PARAM];}
+D->M_PEQ_ga=D->M_PARS[O->ga_PARAM];
+return 0;
+}
+
+int DALEC_OBSOPE_Tdown(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_Tdown;
+//if  (SOBS.value!=DEFAULT_DOUBLE_VAL){D->M_PEQ_Tdown=D->M_PARS[O->Tdown_PARAM];}
+D->M_PEQ_Tdown=D->M_PARS[O->Tdown_PARAM];
+return 0;
+}
+*/
+
+// end of pMCMC
+
+
 ///Full observation operator
 int DALEC_OBSOPE(DATA * D, OBSOPE * O){
 
@@ -472,6 +591,22 @@ if (O->SUPPORT_C3frac_OBS){DALEC_OBSOPE_C3frac(D, O);}
 if (O->SUPPORT_iniSnow_OBS){DALEC_OBSOPE_iniSnow(D, O);}
 if (O->SUPPORT_iniSOM_OBS){DALEC_OBSOPE_iniSOM(D, O);}
 if (O->SUPPORT_PAW_z_OBS){DALEC_OBSOPE_PAW_z(D, O);}
+
+    //add PEQ value and unc from previous MCMC *pMCMC*
+if (O->SUPPORT_S_fv_OBS){DALEC_OBSOPE_S_fv(D, O);}
+if (O->SUPPORT_thetas_opt_OBS){DALEC_OBSOPE_thetas_opt(D, O);}
+if (O->SUPPORT_fwc_OBS){DALEC_OBSOPE_fwc(D, O);}
+if (O->SUPPORT_r_ch4_OBS){DALEC_OBSOPE_r_ch4(D, O);}
+if (O->SUPPORT_Q10ch4_OBS){DALEC_OBSOPE_Q10ch4(D, O);}
+if (O->SUPPORT_Q10rhco2_OBS){DALEC_OBSOPE_Q10rhco2(D, O);}
+if (O->SUPPORT_retention_OBS){DALEC_OBSOPE_retention(D, O);}
+/* if (O->SUPPORT_Med_g1_OBS){DALEC_OBSOPE_Med_g1(D, O);}
+if (O->SUPPORT_Vcmax25_OBS){DALEC_OBSOPE_Vcmax25(D, O);}
+if (O->SUPPORT_ga_OBS){DALEC_OBSOPE_ga(D, O);}
+if (O->SUPPORT_Tdown_OBS){DALEC_OBSOPE_Tdown(D, O);}
+*/
+    // end of pMCMC
+
 
 return 0;}  
 

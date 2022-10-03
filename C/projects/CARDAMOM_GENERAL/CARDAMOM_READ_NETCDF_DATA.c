@@ -127,6 +127,19 @@ DATA->PEQ_C3frac=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_C3frac");
 DATA->PEQ_iniSOM=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSOM");
 DATA->PEQ_iniSnow=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSnow");
 DATA->PEQ_PAW_z=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_PAW_z");
+    //add PEQ value and unc from previous MCMC *pMCMC*
+DATA->PEQ_S_fv=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_S_fv");
+DATA->PEQ_thetas_opt=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_thetas_opt");
+DATA->PEQ_fwc=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_fwc");
+DATA->PEQ_r_ch4=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_r_ch4");
+DATA->PEQ_Q10ch4=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Q10ch4");
+DATA->PEQ_Q10rhco2=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Q10rhco2");
+DATA->PEQ_retention=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_retention");
+/* DATA->PEQ_Med_g1=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Med_g1");
+DATA->PEQ_Vcmax25=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Vcmax25");
+DATA->PEQ_ga=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_ga");
+DATA->PEQ_Tdown=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Tdown"); */
+    // end of pMCMC
 //Global defaults: these are set in pre-process if not defined below
 // default_int_value(&OBS->opt_unc_type,0);
 // default_int_value(&OBS->opt_normalization,0);
