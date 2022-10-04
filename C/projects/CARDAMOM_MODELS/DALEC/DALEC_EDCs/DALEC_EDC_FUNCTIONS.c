@@ -29,14 +29,20 @@ double RUN_DALEC_EDCs(DATA * DATA, EDCs * EDCs, bool prerun){
     double P=0;
     for (n=0;n<DATA->noedcs;n++){
               
-        
-       
+
         //Run function
         if (EDCs[n].prerun==prerun){    
+
+//Add EDC.diagnostic_mode = 1 here
+            if (P>-INFINITY){
             DATA->M_EDCs[n]=EDCs[n].function(DATA, EDCs[n].data);
             //Add all probs up
-        P+=DATA->M_EDCs[n];
-        }}    
+        P+=DATA->M_EDCs[n];}
+        
+        
+        }}
+
+
 
     
 
