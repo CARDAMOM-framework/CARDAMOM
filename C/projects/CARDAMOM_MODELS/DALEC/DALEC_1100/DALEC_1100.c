@@ -380,7 +380,7 @@ double zenith_angle = 90-alpha;
 //double LAD = 1.0; //leaf angle distribution
 //double VegK = sqrt(pow(LAD,2)+ pow(tan(zenith_angle/180*pi),2))/(LAD+1.774*pow((1+1.182),-0.733)); //Campbell and Norman 1998
 
-double LAD = 0.5; //leaf angle distribution
+double LAD = 0.5; //leaf angle distribution// optimize leaf angle distribution. 
 double VegK = LAD/cos(zenith_angle/180*pi);
 
 /*Temp scaling factor*/
