@@ -308,12 +308,12 @@ parmax[P.beta_lgr]=50;
  
 /*Ratio of carbon allocation to root per target foliar pool size (gC/gC)*/
 parmin[P.phi_RL]=0.0001;
-parmax[P.phi_RL]=0.5;
+parmax[P.phi_RL]=5.;
 
 
 /*Ratio of carbon allocation to wood per target foliar pool size (gC/gC)*/
 parmin[P.phi_WL]=0.0001;
-parmax[P.phi_WL]=0.5;
+parmax[P.phi_WL]=5.;
   
 
 /*Deep thermal conductivity in W/m/K */
