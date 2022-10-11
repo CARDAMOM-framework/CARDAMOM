@@ -231,9 +231,9 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
     
    
     POOLS[nxp+S.C_lab] += - YIELD[n]*0.4;
-    POOLS[nxp+S.C_fol] += 0;//- YIELD[n]*0.1;
-    POOLS[nxp+S.C_roo] += 0;//- YIELD[n]*0.1;
-    POOLS[nxp+S.C_woo] += 0;//- YIELD[n]*0.4;
+    POOLS[nxp+S.C_fol] += - YIELD[n]*0.1;
+    POOLS[nxp+S.C_roo] += - YIELD[n]*0.1;
+    POOLS[nxp+S.C_woo] += - YIELD[n]*0.4;
 
 
 
@@ -244,8 +244,8 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
 	POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]+(FLUXES[f+F.fx_woo2som]+FLUXES[f+F.fx_lit2som]-FLUXES[f+F.f_som])*deltat;
 
 
-	POOLS[nxp+S.C_lit] += 0;//YIELD[n]*0.1;
-	POOLS[nxp+S.C_som] +=0;// YIELD[n]*0.4;
+	POOLS[nxp+S.C_lit] += YIELD[n]*0.1;
+	POOLS[nxp+S.C_som] +=YIELD[n]*0.4;
 
 
 	/*fires - total flux in gC m-2 day-1*/

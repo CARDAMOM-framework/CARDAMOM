@@ -64,7 +64,7 @@ parmax[P.t_som]=0.001;
 
 /*\Q10 = 1.2-2.0*/
 parmin[P.Q10rhco2]=1.2;
-parmax[P.Q10rhco2]=2.0;
+parmax[P.Q10rhco2]=5.0;
 
 /*LMCA*; Kattge et al. 2011*;*Kattge et al., provide a range of 10 400 g m-2, i.e. 5 200 gC m-2*/
 parmin[P.LCMA]=5;
@@ -240,7 +240,7 @@ parmax[P.r_ch4]=0.9;
 
 /* jc Q10ch4 Q10 for CH4 production  */
 parmin[P.Q10ch4]=1.0;
-parmax[P.Q10ch4]=3.0;
+parmax[P.Q10ch4]=5.0;
 
 /* maxPevap in mm/day*/
 parmin[P.maxPevap]=0.01;

@@ -315,6 +315,8 @@ double *POOLS=DATA.M_POOLS;
         HRJCR.IN.Q10CH4=pars[P.Q10ch4];
         HRJCR.IN.Q10CO2=pars[P.Q10rhco2];
 
+   
+
 
 
 
@@ -722,11 +724,13 @@ FLUXES[f+F.roo2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
   
     //TIME-VARYING INPUTS
      HRJCR.IN.SM=POOLS[p+S.D_SM_PAW];
-     HRJCR.IN.TEMP=SKT[n]; // Input in degrees C
-        //JCR
-        HET_RESP_RATES_JCR(&HRJCR);
-             //OUtputs --- store anything we want here---
-            FLUXES[f+F.antr]=HRJCR.OUT.aerobic_tr;//Aerobic turnover rate scalar
+     HRJCR.IN.TEMP=POOLS[p+S.D_TEMP_PAW];; // Input in degrees K
+     HRJCR.IN.LF=POOLS[p+S.D_LF_PAW];; // Input in degrees 
+
+       //JCR
+       HET_RESP_RATES_JCR(&HRJCR);
+       //OUtputs --- store anything we want here---
+       FLUXES[f+F.antr]=HRJCR.OUT.aerobic_tr;//Aerobic turnover rate scalar
        FLUXES[f+F.aetr]=HRJCR.OUT.anaerobic_tr;//Anaerobic turnover rate scalar
        FLUXES[f+F.an_co2_c_ratio]=HRJCR.OUT.anaerobic_co2_c_ratio;//CO2_C_ratio
         FLUXES[f+F.an_ch4_c_ratio]=HRJCR.OUT.anaerobic_ch4_c_ratio;//CH4_C_ratio
@@ -953,34 +957,34 @@ EDCs[E.cwdsomtor].prerun=true;
    for (n=0;n<DALECmodel->nopools;n++){
    EDC_sr.min_val[n]=-INFINITY;
               EDC_sr.max_val[n]=INFINITY;}
-//   
-//    EDC_sr.min_val[S.C_lab]=0;
-//    EDC_sr.max_val[S.C_lab]=DALECmodel->PARS_INFO.parmax[P.i_labile];
-//                 
-//    EDC_sr.min_val[S.C_fol]=0;
-//    EDC_sr.max_val[S.C_fol]=DALECmodel->PARS_INFO.parmax[P.i_foliar];
-//                 
-//    EDC_sr.min_val[S.C_roo]=0;
-//    EDC_sr.max_val[S.C_roo]=DALECmodel->PARS_INFO.parmax[P.i_root];
-//                 
-//    EDC_sr.min_val[S.C_woo]=0;
-//    EDC_sr.max_val[S.C_woo]=DALECmodel->PARS_INFO.parmax[P.i_wood];
-//                 
-//    EDC_sr.min_val[S.C_cwd]=0;
-//    EDC_sr.max_val[S.C_cwd]=DALECmodel->PARS_INFO.parmax[P.i_cwd];
-//                 
-//    EDC_sr.min_val[S.C_lit]=0;
-//    EDC_sr.max_val[S.C_lit]=DALECmodel->PARS_INFO.parmax[P.i_lit];
-//                 
-//    EDC_sr.min_val[S.C_som]=0;
-//    EDC_sr.max_val[S.C_som]=DALECmodel->PARS_INFO.parmax[P.i_som];
-//                 
+  
+   EDC_sr.min_val[S.C_lab]=0;
+   EDC_sr.max_val[S.C_lab]=DALECmodel->PARS_INFO.parmax[P.i_labile];
+                
+   EDC_sr.min_val[S.C_fol]=0;
+   EDC_sr.max_val[S.C_fol]=DALECmodel->PARS_INFO.parmax[P.i_foliar];
+                
+   EDC_sr.min_val[S.C_roo]=0;
+   EDC_sr.max_val[S.C_roo]=DALECmodel->PARS_INFO.parmax[P.i_root];
+                
+   EDC_sr.min_val[S.C_woo]=0;
+   EDC_sr.max_val[S.C_woo]=DALECmodel->PARS_INFO.parmax[P.i_wood];
+                
+   EDC_sr.min_val[S.C_cwd]=0;
+   EDC_sr.max_val[S.C_cwd]=DALECmodel->PARS_INFO.parmax[P.i_cwd];
+                
+   EDC_sr.min_val[S.C_lit]=0;
+   EDC_sr.max_val[S.C_lit]=DALECmodel->PARS_INFO.parmax[P.i_lit];
+                
+   EDC_sr.min_val[S.C_som]=0;
+   EDC_sr.max_val[S.C_som]=DALECmodel->PARS_INFO.parmax[P.i_som];
+                
     EDC_sr.min_val[S.H2O_PAW]=0;
-//    EDC_sr.max_val[S.H2O_PAW]=DALECmodel->PARS_INFO.parmax[P.i_PAW];
-//                 
+   //
+                
    EDC_sr.min_val[S.H2O_PUW]=0;
-//    EDC_sr.max_val[S.H2O_PUW]=DALECmodel->PARS_INFO.parmax[P.i_PUW];
-//                 
+   //
+                
     EDC_sr.min_val[S.H2O_SWE]=0;
 //    EDC_sr.max_val[S.H2O_SWE]=DALECmodel->PARS_INFO.parmax[P.i_SWE];
 //     
@@ -991,32 +995,32 @@ EDCs[E.cwdsomtor].prerun=true;
     EDC_sr.min_val[S.D_LAI]=0;
     EDC_sr.max_val[S.D_LAI]=DALECmodel->PARS_INFO.parmax[P.lambda_max];
 //     
-    EDC_sr.min_val[S.D_SCF]=0;
-    EDC_sr.max_val[S.D_SCF]=1;
+//     EDC_sr.min_val[S.D_SCF]=0;
+//     EDC_sr.max_val[S.D_SCF]=1;
 //     
     EDC_sr.min_val[S.D_TEMP_PAW]=173.15;
     EDC_sr.max_val[S.D_TEMP_PAW]=373.15;
 //     
     EDC_sr.min_val[S.D_TEMP_PUW]=173.15;
     EDC_sr.max_val[S.D_TEMP_PUW]=373.15;
-//     
-    EDC_sr.min_val[S.D_LF_PAW]=0;
-    EDC_sr.max_val[S.D_LF_PAW]=1;
-//     
-    EDC_sr.min_val[S.D_LF_PUW]=0;
-    EDC_sr.max_val[S.D_LF_PUW]=1;
+// //     
+//     EDC_sr.min_val[S.D_LF_PAW]=0;
+//     EDC_sr.max_val[S.D_LF_PAW]=1;
+// //     
+//     EDC_sr.min_val[S.D_LF_PUW]=0;
+//     EDC_sr.max_val[S.D_LF_PUW]=1;
 //     
    EDC_sr.min_val[S.D_SM_PAW]=0;
     EDC_sr.max_val[S.D_SM_PAW]=1;
 //     
     EDC_sr.min_val[S.D_SM_PUW]=0;
     EDC_sr.max_val[S.D_SM_PUW]=1;
-//     
-//    EDC_sr.min_val[S.M_LAI_MAX]=-INFINITY; // get a better value from Alex N.
-//    EDC_sr.max_val[S.M_LAI_MAX]=INFINITY; // get a better value from Alex N.
-//     
-//    EDC_sr.min_val[S.M_LAI_TEMP]=-INFINITY;  // get a better value from Alex N.
-//    EDC_sr.max_val[S.M_LAI_TEMP]=INFINITY; // get a better value from Alex N.
+    
+   EDC_sr.min_val[S.M_LAI_MAX]=-INFINITY; // get a better value from Alex N.
+   EDC_sr.max_val[S.M_LAI_MAX]=INFINITY; // get a better value from Alex N.
+    
+   EDC_sr.min_val[S.M_LAI_TEMP]=-INFINITY;  // get a better value from Alex N.
+   EDC_sr.max_val[S.M_LAI_TEMP]=INFINITY; // get a better value from Alex N.
 
 
 
@@ -1060,24 +1064,25 @@ EDCs[E.cwdsomtor].prerun=true;
 
  static DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
  
- static int edc_pool_indices[1];
+ static int edc_pool_indices[7];
 EDC_st.pool_indices=edc_pool_indices;
-EDC_st.no_pools_to_check=1;
+EDC_st.no_pools_to_check=7;
             
-EDC_st.pool_indices[0]=S.E_PAW;
+//EDC_st.pool_indices[0]=S.E_PAW;
 //EDC_st.pool_indices[1]=S.E_PUW;
 //EDC_st.pool_indices[2]=S.H2O_PAW;
 //EDC_st.pool_indices[3]=S.H2O_PUW;
 //EDC_st.pool_indices[4]=S.H2O_SWE;
 
 
-
-//EDC_st.pool_indices[1]=S.C_fol;
-//EDC_st.pool_indices[2]=S.C_roo;
-//EDC_st.pool_indices[3]=S.C_woo;
-//EDC_st.pool_indices[4]=S.C_cwd;
-//EDC_st.pool_indices[5]=S.C_lit;
-//EDC_st.pool_indices[6]=S.C_som;
+    
+EDC_st.pool_indices[0]=S.C_lab;
+EDC_st.pool_indices[1]=S.C_fol;
+ EDC_st.pool_indices[2]=S.C_roo;
+EDC_st.pool_indices[3]=S.C_woo;
+EDC_st.pool_indices[4]=S.C_cwd;
+EDC_st.pool_indices[5]=S.C_lit;
+ EDC_st.pool_indices[6]=S.C_som;
     
 // //Rest can be done by code without additional input
     

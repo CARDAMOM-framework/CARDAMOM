@@ -13,8 +13,9 @@ Ma et al 2021 in prep
 typedef struct{
     
     struct {
-        double TEMP;
-        double SM;
+        double TEMP;//Input in K
+        double SM;//Soil moisture, 0-1
+        double LF;//0-1
          double S_FV;
          double SM_OPT;
          double FWC;
@@ -43,7 +44,7 @@ int HET_RESP_RATES_JCR(HET_RESP_RATES_JCR_STRUCT * S)
 	/* input array already defined above,
   define names for ch4pars elements to be convenient in the JCR module*/
   //double PAW_fs,S_fv,thetas_opt,fwc,r_ch4,Q10ch4,Q10rhco2,meantemp; /*jc*/
-  double reftemp=25;
+  double reftemp= 298.15;//25+DGCM_TK0C;
 	// output array and corresponding elements
   static double jcr_o[4];
   //
@@ -75,7 +76,7 @@ int HET_RESP_RATES_JCR(HET_RESP_RATES_JCR_STRUCT * S)
     //fT = exp(pars[9]*(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-meantemp)); 
     //Q10 method
     fT = pow(Q10rhco2,(S->IN.TEMP-reftemp)/10); 
-    jcr_o[0] = fT;
+    jcr_o[0] = fT*S->IN.LF;
     //fT = pow(pars[9],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-meantemp)/10);
     /* fV Volumetric factor seperating aerobic and anaerobic respiration */
     /* statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs) */

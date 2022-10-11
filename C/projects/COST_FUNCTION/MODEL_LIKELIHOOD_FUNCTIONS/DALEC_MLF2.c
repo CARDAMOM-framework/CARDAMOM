@@ -33,9 +33,6 @@ if (DATA.ncdf_data.EDC==1){
     //Call EDC function for prerun=1 models
     double Pedc1 = RUN_DALEC_EDCs(&DATA, EDCs, true);
 P=P+Pedc1;
-
-
-
 }
 
 
@@ -45,10 +42,9 @@ P=P+Pedc1;
 
 
 
-/*running model*/
-     if (isinf(P)==0){
 
-         MODEL->dalec(DATA, PARS);}
+/*running model*/
+     if (P>-INFINITY){MODEL->dalec(DATA, PARS);}
 
 
 /*storing GPP*/
@@ -56,7 +52,7 @@ P=P+Pedc1;
 
 
 //Post-run EDCs
-if (DATA.ncdf_data.EDC==1 & isinf(P)==0){
+if (DATA.ncdf_data.EDC==1 & P>-INFINITY){
   
     //Call EDC function for prerun=0 edcs
     double Pedc2 = RUN_DALEC_EDCs(&DATA, EDCs, false);
@@ -66,7 +62,7 @@ P=P+Pedc2;}
 
 
 /*Likelihood*/
-   if (isinf(P)==0){P=P+LIKELIHOOD(DATA);}
+   if (P>-INFINITY){P=P+LIKELIHOOD(DATA);}
 
 
 
