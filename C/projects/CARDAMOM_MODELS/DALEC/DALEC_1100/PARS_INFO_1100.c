@@ -30,9 +30,13 @@ parmax[P.tr_lit2som]=0.99;
 parmin[P.tr_cwd2som]=0.01;
 parmax[P.tr_cwd2som]=0.99;
 
-/*Autotrophic maintenance respiration coefficient - turnover rate at 25oC (d-1)*/
-parmin[P.rauto_mr]=0.00001;
-parmax[P.rauto_mr]=0.05;
+/*Autotrophic maintenance respiration coefficient for foliar and roots - turnover rate at 25oC (d-1)*/
+parmin[P.rauto_mr_fr]=0.0001;
+parmax[P.rauto_mr_fr]=0.1;
+
+/*Autotrophic maintenance respiration coefficient for wood - turnover rate at 25oC (d-1)*/
+parmin[P.rauto_mr_w]=0.000001;
+parmax[P.rauto_mr_w]=0.05;
 
 /*Autotrophic maintenance respiration Q10 parameter*/
 parmin[P.rauto_mr_q10]=1.0;

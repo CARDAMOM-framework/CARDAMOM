@@ -13,7 +13,8 @@ struct DALEC_1100_PARAMETERS{
 /*DALEC PARAMETERS*/
 int tr_lit2som;
 int tr_cwd2som;
-int rauto_mr;
+int rauto_mr_fr;
+int rauto_mr_w;
 int rauto_mr_q10;
 int rauto_gr;
 int t_wood;
@@ -94,7 +95,7 @@ int thermal_cond_surf;
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
-    70,71,72,73,74
+    70,71,72,73,74,75
 };
 
 struct DALEC_1100_FLUXES{
@@ -217,12 +218,13 @@ int M_LAI_TEMP;//KNORR LAI module temp memory
 struct DALEC_1100_EDCs{
 int litcwdtor;
 int cwdsomtor;
+int mr_rates;
 int state_ranges;
 //int paw_temp;
 //int puw_temp;
 int state_trajectories;
 } DALEC_1100_EDCs={
-   0,1,2,3
+   0,1,2,3,4
 };
 
 

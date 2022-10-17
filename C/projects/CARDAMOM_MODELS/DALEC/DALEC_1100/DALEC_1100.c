@@ -298,7 +298,8 @@ double *POOLS=DATA.M_POOLS;
     //Plant carbon allocation.
      ALLOC_AND_AUTO_RESP_FLUXES_STRUCT ARFLUXES;
      //define time-invariant parameters here
-        ARFLUXES.IN.mr=pars[P.rauto_mr];//
+        ARFLUXES.IN.mr_fr=pars[P.rauto_mr_fr];//
+        ARFLUXES.IN.mr_w=pars[P.rauto_mr_w];//
         ARFLUXES.IN.gr=pars[P.rauto_gr];//
         ARFLUXES.IN.Q10mr=pars[P.rauto_mr_q10];//
 
@@ -894,9 +895,9 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=75;
+DALECmodel->nopars=76;
 DALECmodel->nofluxes=70;
-DALECmodel->noedcs=4;
+DALECmodel->noedcs=5;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
@@ -925,6 +926,7 @@ EDCs * EDCs=DALECmodel->EDCs;
 //List all inequality calls here
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_litcwdtor; 
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_cwdsomtor;
+static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_mr_rates;
 
 EDC_litcwdtor.big_par_index=P.t_lit;
 EDC_litcwdtor.small_par_index=P.t_cwd;
@@ -940,6 +942,13 @@ EDC_cwdsomtor.small_par_index=P.t_som;
 EDCs[E.cwdsomtor].data=&EDC_cwdsomtor;
 EDCs[E.cwdsomtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.cwdsomtor].prerun=true;
+
+//EDC: foliar and root mr > wood mr
+EDC_mr_rates.big_par_index=P.rauto_mr_fr;
+EDC_mr_rates.small_par_index=P.rauto_mr_w;
+EDCs[E.mr_rates].data=&EDC_mr_rates;
+EDCs[E.mr_rates].function=&DALEC_EDC_PARAMETER_INEQUALITY;
+EDCs[E.mr_rates].prerun=true;
 
 
 
