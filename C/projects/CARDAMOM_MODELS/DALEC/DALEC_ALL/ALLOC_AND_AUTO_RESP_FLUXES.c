@@ -43,11 +43,42 @@ int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
 
     //Maintenance respiration
     fT = pow(S->IN.Q10mr,(S->IN.TEMP-(25+DGCM_TK0C))/10); // reference temperature is 25 degrees C
-    S->OUT.AUTO_RESP_MAINTENANCE = S->IN.mr * fT * S->IN.C_LIVE;
-    S->OUT.F_LABPROD = S->IN.GPP - S->OUT.AUTO_RESP_MAINTENANCE;
+   double POTENTIAL_AUTO_RESP_MAINTENANCE = S->IN.mr * fT * S->IN.C_LIVE;
+    S->OUT.F_LABPROD = S->IN.GPP;
+    //- S->OUT.AUTO_RESP_MAINTENANCE;
+    //Calculate actual maintenance respiration, based on available NSCs
+
+    //Full available resources 
+    // Most land models
+    //We're using GPP for whole timesteo with rest of NSC
+    NSC_PLUS_GPP = S->IN.NSC  + S->IN.GPP*deltat;
+
+    //IF maintenance 
+   if ( POTENTIAL_AUTO_RESP_MAINTENANCE*deltat<NSC_PLUS_GPP)
+       //Spend all NSC on maintenance
+                    {S->OUT.AUTO_ACTUAL_RESP_MAINTENANCE =  NSC_PLUS_GPP/deltat;}
+
+    else
+
+//Spend full amount on maintenance resp
+    {S->OUT.AUTO_ACTUAL_RESP_MAINTENANCE =  S->OUT.AUTO_RESP_MAINTENANCE;
+     //Calculate leftover NSCs
+    //Only use available NSC after maintenance resp accounted for
+    double LEFTOVER_NSC = S->IN.NSC - S->OUT.AUTO_RESP_MAINTENANCE*delta;
+    
+    
+    }
+
+   
+    //Only proceed if AUTO_RESP_MAINTENANCE>=NSC
+    //
+    //NEW_PSEUDOCODE
 
     //Potential supply of labile carbon for plant growth
     F_LABREL_SUPPLY = fmax(0,  (1 - S->IN.gr) * (S->IN.NSC / S->IN.deltat));
+    
+    //NEW PSEUDOCODE: F_LABREL_SUPPLY = fmax(0,  (1 - S->IN.gr) * (LEFTOVER_NSC/ S->IN.deltat));
+
     //Potential demand of labile carbon by plant growth
     TOTAL_GROWTH_POT = S->IN.ALLOC_FOL_POT + S->IN.ALLOC_WOO_POT + S->IN.ALLOC_ROO_POT;
     F_LABREL_DEMAND = fmax(0, TOTAL_GROWTH_POT);
