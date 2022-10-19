@@ -101,12 +101,14 @@ int f_dayl_thresh;   /*f_dayl_thres*/
 int c_lim_flag;   /*LAI carbon limitation flag*/
 int lai_fire;   /*LAI fire loss*/
 int foliar_fire_frac;   /*C_fol fire loss frac*/
+int lambda_ode_input;   /*C_fol fire loss frac*/
+int lambda_ode_output;   /*C_fol fire loss frac*/
 } DALEC_1025_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36,37,38,39,
-    40,
+    40,41,42
 };
 
 struct DALEC_1025_POOLS{
@@ -312,6 +314,8 @@ FLUXES[f+F.lambda_max_memory]=LAI_KNORR_OUTPUT[2];
 FLUXES[f+F.dlambda_dt]=LAI_KNORR_OUTPUT[3]/deltat;
 FLUXES[f+F.f_temp_thresh]=LAI_KNORR_OUTPUT[4];
 FLUXES[f+F.f_dayl_thresh]=LAI_KNORR_OUTPUT[5];
+FLUXES[f+F.lambda_ode_input]=LAI_KNORR_OUTPUT[6];
+FLUXES[f+F.lambda_ode_output]=LAI_KNORR_OUTPUT[7];
 lai_var_list[5]=FLUXES[f+F.T_memory];  /*Update LAI temperature memory state for next iteration*/
 lai_var_list[11]=FLUXES[f+F.lambda_max_memory];   /*Update water/structural memory state for next iteration*/
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
@@ -438,7 +442,7 @@ struct DALEC_1025_POOLS S=DALEC_1025_POOLS;
 DALECmodel->nopools=9;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=42;
-DALECmodel->nofluxes=41;
+DALECmodel->nofluxes=43;
 DALECmodel->dalec=DALEC_1025;
 
 //declaring observation operator structure, and filling with DALEC configurations
