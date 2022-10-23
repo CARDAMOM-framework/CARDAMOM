@@ -1,5 +1,5 @@
 
-struct DALEC_1005_PARAMETERS{
+struct DALEC_1006_PARAMETERS{
 /*DALEC PARAMETERS*/
 int tr_lit2soil;
 int f_auto;
@@ -38,14 +38,14 @@ int h2o_xfer;
 int PUW_Qmax;
 int i_PUW;
 int boese_r;
-} DALEC_1005_PARAMETERS={
+} DALEC_1006_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36
 };
 
-struct DALEC_1005_FLUXES{
+struct DALEC_1006_FLUXES{
 /*DALEC FLUXES*/
 int gpp;   /*GPP*/
 int temprate;   /*Temprate*/
@@ -79,14 +79,14 @@ int et;   /*Evapotranspiration*/
 int q_paw;   /*Plant-available water drainage*/
 int paw2puw;   /*Plant-available water to plant-unavailable water transfer*/
 int q_puw;   /*Plant-unavailable water runoff*/
-} DALEC_1005_FLUXES={
+} DALEC_1006_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
     30,31
 };
 
-struct DALEC_1005_POOLS{
+struct DALEC_1006_POOLS{
 /*DALEC POOLS*/
 int C_lab; /*Labile C*/
 int C_fol; /*Foliar C*/
@@ -97,4 +97,4 @@ int C_som; /*Soil C*/
 int H2O_PAW; /*Plant available H2O*/
 int H2O_PUW; /*Plant unavailable H2O*/
 int D_LAI;//leaf area index
-} DALEC_1005_POOLS={0,1,2,3,4,5,6,7,8};
+} DALEC_1006_POOLS={0,1,2,3,4,5,6,7,8};

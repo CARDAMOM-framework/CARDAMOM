@@ -1,14 +1,13 @@
 #pragma once
 #include "../DALEC_ALL/DALEC_MODULE.c"
-#include "DALEC_1005_INDICES.c"
+#include "DALEC_1046_INDICES.c"
 
-
-int DALEC_1005(DATA DATA, double const *pars)
+int DALEC_1046(DATA DATA, double const *pars)
 {
 
-struct DALEC_1005_PARAMETERS P=DALEC_1005_PARAMETERS;
-struct DALEC_1005_FLUXES F=DALEC_1005_FLUXES;
-struct DALEC_1005_POOLS S=DALEC_1005_POOLS;
+struct DALEC_1046_PARAMETERS P=DALEC_1046_PARAMETERS;
+struct DALEC_1046_FLUXES F=DALEC_1046_FLUXES;
+struct DALEC_1046_POOLS S=DALEC_1046_POOLS;
 
 double gpppars[11],pi;
 /*C-pools, fluxes, meteorology indices*/
@@ -57,6 +56,7 @@ double *DOY=DATA.ncdf_data.DOY.values;
 double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
 double *VPD=DATA.ncdf_data.VPD.values;
 double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
+double *YIELD=DATA.ncdf_data.YIELD.values;
 double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 
 double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
@@ -226,11 +226,27 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
     POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-(FLUXES[f+F.f_fol]+FLUXES[f+F.fx_fol2lit])*deltat;
     POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-(FLUXES[f+F.f_roo]+FLUXES[f+F.fx_roo2lit])*deltat;
     POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-(FLUXES[f+F.f_woo]+FLUXES[f+F.fx_woo2som])*deltat;
+
+//Removing YIELD; using fixed fracs for pools
+    
+   
+    POOLS[nxp+S.C_lab] += - YIELD[n]*0.4;
+    POOLS[nxp+S.C_fol] += - YIELD[n]*0.1;
+    POOLS[nxp+S.C_roo] += - YIELD[n]*0.1;
+    POOLS[nxp+S.C_woo] += - YIELD[n]*0.4;
+
+
+
 	/*dead C pools*/
 	/*litter*/
 	POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.fx_lab2lit]+FLUXES[f+F.fx_fol2lit]+FLUXES[f+F.fx_roo2lit]-FLUXES[f+F.f_lit]-FLUXES[f+F.fx_lit2som])*deltat;
 	/*som*/
 	POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]+(FLUXES[f+F.fx_woo2som]+FLUXES[f+F.fx_lit2som]-FLUXES[f+F.f_som])*deltat;
+
+
+	POOLS[nxp+S.C_lit] += YIELD[n]*0.1;
+	POOLS[nxp+S.C_som] +=YIELD[n]*0.4;
+
 
 	/*fires - total flux in gC m-2 day-1*/
 	/*this term is now (essentially) obsolete*/
@@ -250,17 +266,17 @@ return 0;
 
 
 
-int DALEC_1005_MODCONFIG(DALEC * DALECmodel){
+int DALEC_1046_MODCONFIG(DALEC * DALECmodel){
 
-struct DALEC_1005_PARAMETERS P=DALEC_1005_PARAMETERS;
-struct DALEC_1005_FLUXES F=DALEC_1005_FLUXES;
-struct DALEC_1005_POOLS S=DALEC_1005_POOLS;
+struct DALEC_1046_PARAMETERS P=DALEC_1046_PARAMETERS;
+struct DALEC_1046_FLUXES F=DALEC_1046_FLUXES;
+struct DALEC_1046_POOLS S=DALEC_1046_POOLS;
 
 DALECmodel->nopools=9;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=37;
 DALECmodel->nofluxes=32;
-DALECmodel->dalec=DALEC_1005;
+DALECmodel->dalec=DALEC_1046;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
@@ -268,7 +284,7 @@ static OBSOPE OBSOPE;
 INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 
 //Set SUPPORT_OBS values to true if model supports observation operation.
-printf("DALEC_1005_MODCONFIG, Line 22...\n");
+printf("DALEC_1046_MODCONFIG, Line 22...\n");
 OBSOPE.SUPPORT_ABGB_OBS=true;
 OBSOPE.SUPPORT_CWOO_OBS=true;
 OBSOPE.SUPPORT_DOM_OBS=true;
