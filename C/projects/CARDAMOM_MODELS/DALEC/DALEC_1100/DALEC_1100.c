@@ -430,6 +430,7 @@ LIU.IN.leaf_refl_nir=pars[P.leaf_refl_nir];
 LIU.IN.maxPevap=pars[P.maxPevap];
 LIU.IN.precip=PREC[n];
 LIU.IN.q10canopy=pars[P.q10canopy];
+LIU.IN.q10canopyRd=pars[P.rauto_mr_q10];
 
 
 //Call function: uses LIU->IN to update LIU->OUT

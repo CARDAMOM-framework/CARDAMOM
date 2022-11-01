@@ -22,6 +22,7 @@ typedef struct {
         double maxPevap;
         double precip; 
         double q10canopy;
+        double q10canopyRd;
     }IN;
     struct {
         double An;
@@ -118,6 +119,8 @@ cp = 36.9 + 1.18*(T_C - 25.) + 0.36*pow((T_C - 25.), 2.);
 //Vcmax = vcmax25*exp(50.*(TEMP - 298.)/(298.*R*TEMP));
 double q_10 = A->IN.q10canopy;
 
+double fT = pow(A->IN.q10canopyRd,(T_C-25)/10); // reference temperature is 25 degrees C
+
 Vcmax = vcmax25*pow(q_10,0.1*(T_C-25.))/((1 + exp(0.3*(T_C-(Tupp-DGCM_TK0C))))*(1 +exp(0.3*((Tdown-DGCM_TK0C)-T_C))));
 
 Jmax = Vcmax*exp(1.);
@@ -138,7 +141,7 @@ a2 = J*(ci-cp)/(4.*(ci + 2.*cp));
 
 // An_C3 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 Ag_C3 = fmin(a1*beta_factor,a2);
-Rd_C3 =  0.015*vcmax25;
+Rd_C3 =  0.015*vcmax25*fT;
 
 //Two terms for C4 photosynthesis
 a1 = Vcmax;
@@ -146,7 +149,7 @@ a2 = J;
 
 // An_C4 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 Ag_C4 = fmin(a1*beta_factor,a2);
-Rd_C4 = 0.015*vcmax25;
+Rd_C4 = 0.015*vcmax25*fT;
 
 //Total photosynthesis 
 Ag = C3_frac*(Ag_C3) + (1. - C3_frac)*(Ag_C4);
