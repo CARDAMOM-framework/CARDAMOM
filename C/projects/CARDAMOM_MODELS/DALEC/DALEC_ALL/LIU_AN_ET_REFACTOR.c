@@ -24,6 +24,8 @@ typedef struct {
     }IN;
     struct {
         double An;
+        double Ag;
+        double Rd;
         double transp;
         double evap;
     }OUT;
@@ -81,10 +83,16 @@ double ci;
 double a1;
 double a2;
 
-double An_C3;
-double An_C4;
+double Ag_C3;
+double Ag_C4;
 
+double Ag;
 double An;
+
+double Rd_C3;
+double Rd_C4;
+
+double Rd;
 
 //Array of results with 3 positions for An, E, and Transpiration;
 //static double r[3];
@@ -127,24 +135,31 @@ a2 = J*(ci-cp)/(4.*(ci + 2.*cp));
 
 
 
-An_C3 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
+// An_C3 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
+Ag_C3 = fmin(a1*beta_factor,a2);
+Rd_C3 =  0.015*Vcmax*beta_factor;
 
 //Two terms for C4 photosynthesis
 a1 = Vcmax;
 a2 = J;
 
-An_C4 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
-
+// An_C4 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
+Ag_C4 = fmin(a1*beta_factor,a2);
+Rd_C4 = 0.015*Vcmax*beta_factor;
 
 //Total photosynthesis 
-An = C3_frac*(An_C3) + (1. - C3_frac)*(An_C4);
+Ag = C3_frac*(Ag_C3) + (1. - C3_frac)*(Ag_C4);
+Rd = C3_frac*(Rd_C3) + (1. - C3_frac)*(Rd_C4);
+An = Ag - Rd;
 
 //To scale from leaf to canopy, comment out the following line and uncomment the one after
 //double canopy_scale = 1.;
 double canopy_scale = (1. - exp(-VegK*LAI*clumping))/(VegK); 
 
 //r[0] = An*canopy_scale*(12.e-6)*(24.*60.*60.); //from umolCO2m-2s-1 to gCm-2day-1
-A->OUT.An = An*canopy_scale*(12.e-6)*(24.*60.*60.);
+A->OUT.Ag = Ag*canopy_scale*(12.e-6)*(24.*60.*60.);
+A->OUT.Rd = Rd*canopy_scale*(12.e-6)*(24.*60.*60.);
+
 //##################Transpiration#################
 
 double SRADg; 

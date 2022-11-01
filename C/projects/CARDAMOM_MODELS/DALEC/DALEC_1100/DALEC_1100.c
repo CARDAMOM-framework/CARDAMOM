@@ -435,7 +435,7 @@ LIU.IN.precip=PREC[n];
 LIU_AN_ET(&LIU);
 
 // GPP
-FLUXES[f+F.gpp] = LIU.OUT.An;
+FLUXES[f+F.gpp] = LIU.OUT.Ag;
 //transpiration//
 FLUXES[f+F.transp] = LIU.OUT.transp;
 //evaporation//
@@ -700,7 +700,7 @@ FLUXES[f+F.resp_auto]=ARFLUXES.OUT.AUTO_RESP_TOTAL;
 /*growth respiration*/
 FLUXES[f+F.resp_auto_growth]=ARFLUXES.OUT.AUTO_RESP_GROWTH;
 /*maintenance respiration*/
-FLUXES[f+F.resp_auto_maint]=ARFLUXES.OUT.AUTO_RESP_MAINTENANCE;
+FLUXES[f+F.resp_auto_maint]=ARFLUXES.OUT.AUTO_RESP_MAINTENANCE + LIU.OUT.Rd;
 
 // Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]/deltat;
 if (FLUXES[f+F.dlambda_dt] > 0){
