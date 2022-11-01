@@ -429,6 +429,7 @@ LIU.IN.leaf_refl_par=pars[P.leaf_refl_par];
 LIU.IN.leaf_refl_nir=pars[P.leaf_refl_nir];
 LIU.IN.maxPevap=pars[P.maxPevap];
 LIU.IN.precip=PREC[n];
+LIU.IN.q10canopy=pars[P.q10canopy];
 
 
 //Call function: uses LIU->IN to update LIU->OUT
@@ -907,7 +908,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=76;
+DALECmodel->nopars=77;
 DALECmodel->nofluxes=70;
 DALECmodel->noedcs=5;
 

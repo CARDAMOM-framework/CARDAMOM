@@ -328,6 +328,11 @@ parmax[P.thermal_cond]=2;
 /*Surface soil thermal conductivity in W/m/K */
 parmin[P.thermal_cond_surf]=0.3;
 parmax[P.thermal_cond_surf]=2;
+
+
+/*Surface soil thermal conductivity in W/m/K */
+parmin[P.q10canopy]=1.5;
+parmax[P.q10canopy]=2.5;
   
 return 0;
 
