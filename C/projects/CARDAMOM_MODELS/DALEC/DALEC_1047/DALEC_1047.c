@@ -1,13 +1,13 @@
 #pragma once
 #include "../DALEC_ALL/DALEC_MODULE.c"
-#include "DALEC_1046_INDICES.c"
+#include "DALEC_1047_INDICES.c"
 
-int DALEC_1046(DATA DATA, double const *pars)
+int DALEC_1047(DATA DATA, double const *pars)
 {
 
-struct DALEC_1046_PARAMETERS P=DALEC_1046_PARAMETERS;
-struct DALEC_1046_FLUXES F=DALEC_1046_FLUXES;
-struct DALEC_1046_POOLS S=DALEC_1046_POOLS;
+struct DALEC_1047_PARAMETERS P=DALEC_1047_PARAMETERS;
+struct DALEC_1047_FLUXES F=DALEC_1047_FLUXES;
+struct DALEC_1047_POOLS S=DALEC_1047_POOLS;
 
 double gpppars[11],pi;
 /*C-pools, fluxes, meteorology indices*/
@@ -234,7 +234,7 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
     FLUXES[f+F.fx_fol2lit] = (POOLS[nxp+S.C_fol]*BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience])+FLUXES[f+F.ax_fol2lit])/deltat;
     FLUXES[f+F.fx_roo2lit] = (POOLS[nxp+S.C_roo]*BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience])+FLUXES[f+F.ax_roo2lit])/deltat;
     FLUXES[f+F.fx_woo2som] = (POOLS[nxp+S.C_woo]*BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience])+FLUXES[f+F.ax_woo2som])/deltat;
-    FLUXES[f+F.fx_lit2som] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*(1-CF[S.C_lit])*(1-pars[P.resilience])/deltat;
+    FLUXES[f+F.fx_lit2som] = (POOLS[nxp+S.C_lit]*BURNED_AREA[n]*(1-CF[S.C_lit])*(1-pars[P.resilience]))/deltat;
 
 
 
@@ -279,17 +279,17 @@ return 0;
 
 
 
-int DALEC_1046_MODCONFIG(DALEC * DALECmodel){
+int DALEC_1047_MODCONFIG(DALEC * DALECmodel){
 
-struct DALEC_1046_PARAMETERS P=DALEC_1046_PARAMETERS;
-struct DALEC_1046_FLUXES F=DALEC_1046_FLUXES;
-struct DALEC_1046_POOLS S=DALEC_1046_POOLS;
+struct DALEC_1047_PARAMETERS P=DALEC_1047_PARAMETERS;
+struct DALEC_1047_FLUXES F=DALEC_1047_FLUXES;
+struct DALEC_1047_POOLS S=DALEC_1047_POOLS;
 
 DALECmodel->nopools=9;
 DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=37;
 DALECmodel->nofluxes=40;
-DALECmodel->dalec=DALEC_1046;
+DALECmodel->dalec=DALEC_1047;
 
 //declaring observation operator structure, and filling with DALEC configurations
 static OBSOPE OBSOPE;
@@ -297,7 +297,7 @@ static OBSOPE OBSOPE;
 INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 
 //Set SUPPORT_OBS values to true if model supports observation operation.
-printf("DALEC_1046_MODCONFIG, Line 22...\n");
+printf("DALEC_1047_MODCONFIG, Line 22...\n");
 OBSOPE.SUPPORT_ABGB_OBS=true;
 OBSOPE.SUPPORT_CWOO_OBS=true;
 OBSOPE.SUPPORT_DOM_OBS=true;
@@ -325,16 +325,16 @@ OBSOPE.LAI_pool=S.D_LAI;
 //ET variabiles
 OBSOPE.ET_flux=F.et;
 //NBE-specific variables
-static int NBE_fluxes[5];
+static int NBE_fluxes[4];
 NBE_fluxes[0]=F.gpp;
 NBE_fluxes[1]=F.resp_auto;
 NBE_fluxes[2]=F.resp_het_lit;
 NBE_fluxes[3]=F.resp_het_som;
-NBE_fluxes[4]=F.f_total;
+//NBE_fluxes[4]=F.f_total;
 OBSOPE.NBE_fluxes=NBE_fluxes;
-static double NBE_flux_signs[]={-1.,1.,1.,1.,1.};
+static double NBE_flux_signs[]={-1.,1.,1.,1.};
 OBSOPE.NBE_flux_signs=NBE_flux_signs;
-OBSOPE.NBE_n_fluxes=5;
+OBSOPE.NBE_n_fluxes=4;
 
 //ABGB-specific variables
 static int ABGB_pools[4];

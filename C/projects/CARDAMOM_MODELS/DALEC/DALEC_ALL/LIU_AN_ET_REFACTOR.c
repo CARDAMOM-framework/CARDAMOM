@@ -20,7 +20,8 @@ typedef struct {
         double leaf_refl_par;
         double leaf_refl_nir;
         double maxPevap;
-        double precip;        
+        double precip; 
+        double q10canopy;
     }IN;
     struct {
         double An;
@@ -107,7 +108,7 @@ cp = 36.9 + 1.18*(T_C - 25.) + 0.36*pow((T_C - 25.), 2.);
 
 
 //Vcmax = vcmax25*exp(50.*(TEMP - 298.)/(298.*R*TEMP));
-double q_10 = 2.0;
+double q_10 = A->IN.q10canopy;
 
 Vcmax = vcmax25*pow(q_10,0.1*(T_C-25.))/((1 + exp(0.3*(T_C-(Tupp-DGCM_TK0C))))*(1 +exp(0.3*((Tdown-DGCM_TK0C)-T_C))));
 
