@@ -137,7 +137,7 @@ a2 = J*(ci-cp)/(4.*(ci + 2.*cp));
 
 // An_C3 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 Ag_C3 = fmin(a1*beta_factor,a2);
-Rd_C3 =  0.015*Vcmax*beta_factor;
+Rd_C3 =  0.015*vcmax25;
 
 //Two terms for C4 photosynthesis
 a1 = Vcmax;
@@ -145,7 +145,7 @@ a2 = J;
 
 // An_C4 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 Ag_C4 = fmin(a1*beta_factor,a2);
-Rd_C4 = 0.015*Vcmax*beta_factor;
+Rd_C4 = 0.015*vcmax25;
 
 //Total photosynthesis 
 Ag = C3_frac*(Ag_C3) + (1. - C3_frac)*(Ag_C4);
