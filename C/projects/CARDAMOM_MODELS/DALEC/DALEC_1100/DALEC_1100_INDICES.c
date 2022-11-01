@@ -13,7 +13,7 @@ struct DALEC_1100_PARAMETERS{
 /*DALEC PARAMETERS*/
 int tr_lit2som;
 int tr_cwd2som;
-int rauto_mr_fr;
+int rauto_mr_r;
 int rauto_mr_w;
 int rauto_mr_q10;
 int rauto_gr;

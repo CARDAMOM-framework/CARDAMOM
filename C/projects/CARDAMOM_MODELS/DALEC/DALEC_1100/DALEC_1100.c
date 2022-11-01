@@ -298,7 +298,7 @@ double *POOLS=DATA.M_POOLS;
     //Plant carbon allocation.
      ALLOC_AND_AUTO_RESP_FLUXES_STRUCT ARFLUXES;
      //define time-invariant parameters here
-        ARFLUXES.IN.mr_fr=pars[P.rauto_mr_fr];//
+        ARFLUXES.IN.mr_r=pars[P.rauto_mr_r];//
         ARFLUXES.IN.mr_w=pars[P.rauto_mr_w];//
         ARFLUXES.IN.gr=pars[P.rauto_gr];//
         ARFLUXES.IN.Q10mr=pars[P.rauto_mr_q10];//
@@ -679,10 +679,11 @@ POOLS[nxp+S.M_LAI_TEMP]=KNORR.OUT.T;
 
 ARFLUXES.IN.deltat=deltat;
 ARFLUXES.IN.GPP=FLUXES[f+F.gpp];
+ARFLUXES.IN.Rd=LIU.OUT.Rd;
 ARFLUXES.IN.TEMP=air_temp_k;
 ARFLUXES.IN.NSC=POOLS[p+S.C_lab];
 ARFLUXES.IN.C_LIVE_W=POOLS[p+S.C_woo];
-ARFLUXES.IN.C_LIVE_FR= POOLS[p+S.C_fol]+POOLS[p+S.C_roo];
+ARFLUXES.IN.C_LIVE_R= POOLS[p+S.C_roo];
 // Potential plant allocation (growth) fluxes
 ARFLUXES.IN.ALLOC_FOL_POT=fmax(0, ((FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_fol])/deltat);
 ARFLUXES.IN.ALLOC_ROO_POT=fmax(0, (pars[P.phi_RL] * (FLUXES[f+F.target_LAI] * pars[P.LCMA]))/deltat);
@@ -700,7 +701,7 @@ FLUXES[f+F.resp_auto]=ARFLUXES.OUT.AUTO_RESP_TOTAL;
 /*growth respiration*/
 FLUXES[f+F.resp_auto_growth]=ARFLUXES.OUT.AUTO_RESP_GROWTH;
 /*maintenance respiration*/
-FLUXES[f+F.resp_auto_maint]=ARFLUXES.OUT.AUTO_RESP_MAINTENANCE + LIU.OUT.Rd;
+FLUXES[f+F.resp_auto_maint]=ARFLUXES.OUT.AUTO_RESP_MAINTENANCE;
 
 // Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]/deltat;
 if (FLUXES[f+F.dlambda_dt] > 0){
@@ -955,7 +956,7 @@ EDCs[E.cwdsomtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.cwdsomtor].prerun=true;
 
 //EDC: foliar and root mr > wood mr
-EDC_mr_rates.big_par_index=P.rauto_mr_fr;
+EDC_mr_rates.big_par_index=P.rauto_mr_r;
 EDC_mr_rates.small_par_index=P.rauto_mr_w;
 EDCs[E.mr_rates].data=&EDC_mr_rates;
 EDCs[E.mr_rates].function=&DALEC_EDC_PARAMETER_INEQUALITY;

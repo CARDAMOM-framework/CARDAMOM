@@ -5,11 +5,12 @@ typedef struct {
         double deltat;//model timestep
         double TEMP;  //K
         double C_LIVE_W;// Live C in wood only. Note that this includes heartwood C, and overall maintenance respiration reflects bulk cost of live + dead wood.
-        double C_LIVE_FR;// Live C in other pools (other live pools, exluding NSCs themselves). 
+        double C_LIVE_R;// Live C in other pools (other live pools, exluding NSCs themselves). 
         double NSC;   //labile carbon pool, Clab, non-structural carbohydrates (gC)
         double GPP;
-        double mr_fr;    // parameter: maintenance respiration coefficient for foliar and root (gC/gC/d) - see Cannell and Thornley (2000, doi: 10.1006/anbo.1999.0996)
-        double mr_w;    // parameter: maintenance respiration coefficient for wood (gC/gC/d) - will be smaller than mr_fr from EDC. 
+        double Rd;    // Canopy level dark/day respiration
+        double mr_r;    // parameter: maintenance respiration coefficient for root (gC/gC/d) - see Cannell and Thornley (2000, doi: 10.1006/anbo.1999.0996)
+        double mr_w;    // parameter: maintenance respiration coefficient for wood (gC/gC/d) - will be smaller than mr_r from EDC. 
         double gr;    // parameter: growth respiration coefficient (gC/gC)
         double Q10mr; // parameter: Q10 parameter for maintenance respiration (unitless)
         double ALLOC_FOL_POT; // potential allocation flux to foliar pool (gC/m2/d)
@@ -47,7 +48,8 @@ int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
     //Maintenance respiration
     fT = pow(S->IN.Q10mr,(S->IN.TEMP-(25+DGCM_TK0C))/10); // reference temperature is 25 degrees C
     //Autotrophic maintenance for wood and non-wood
-    double POTENTIAL_AUTO_RESP_MAINTENANCE = S->IN.mr_w * fT * S->IN.C_LIVE_W + S->IN.mr_fr * fT * S->IN.C_LIVE_FR;
+    double POTENTIAL_AUTO_RESP_MAINTENANCE =  S->IN.Rd + S->IN.mr_w * fT * S->IN.C_LIVE_W + S->IN.mr_r * fT * S->IN.C_LIVE_R;
+
 
     S->OUT.F_LABPROD = S->IN.GPP;
     //- S->OUT.AUTO_RESP_MAINTENANCE;
