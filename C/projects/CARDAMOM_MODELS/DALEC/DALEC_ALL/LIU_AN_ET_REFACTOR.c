@@ -125,7 +125,7 @@ Vcmax = vcmax25*pow(q_10,0.1*(T_C-25.))/((1 + exp(0.3*(T_C-(Tupp-DGCM_TK0C))))*(
 
 Jmax = Vcmax*exp(1.);
 
-J = (0.3*PAR + Jmax - sqrt(pow(0.3*PAR + Jmax,2) - 4.*0.9*0.3*PAR*Jmax))/0.9;
+J = (0.3*PAR + Jmax - sqrt(pow(0.3*PAR + Jmax,2) - 4.*0.9*0.3*PAR*Jmax))/2./0.9;
 
 
 medlyn_term = 1. + g1/sqrt(VPD);
