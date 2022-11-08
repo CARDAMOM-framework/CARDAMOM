@@ -152,7 +152,7 @@ parmax[P.field_cap]=0.1;
 
 /*PAW depth (m)*/
 parmin[P.PAW_z]=0.01;
-parmax[P.PAW_z]=100;
+parmax[P.PAW_z]=20;
 
 /*PUW depth (m)*/
 parmin[P.PUW_z]=0.01;
