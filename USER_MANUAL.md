@@ -86,7 +86,7 @@ This section covers the standard outputs and formats for both CARDAMOM assimilat
 
 
 ## Running CARDAMOM in parallel <a name="submission-command-line"/>
-  ***Curator: Sarah Worden [Link to section]()
+  ***Curator: Sarah Worden [Link to section](MANUAL/PARALLELIZATION.md)
 
 It is common to run CARDAMOM in parallel on remote servers. Generally this is done by running multiple points across multiple CPUs. This section covers some helpful tips and examples for creating multiple point runs and submitting them to servers. Examples include limited information for servers commonly used with CARDAMOM as well as example SLURM submission scripts. See also, [CARDAMOM-MAPS](https://github.com/CARDAMOM-framework/CARDAMOM-MAPS).
 <br/>
