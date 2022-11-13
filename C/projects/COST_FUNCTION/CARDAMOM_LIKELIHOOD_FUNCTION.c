@@ -76,7 +76,7 @@ for (k=0;k<OBS->valid_obs_length;k++){
 if (OBS->opt_unc_type<2){
 OBS->unc[OBS->valid_obs_indices[k]]=OBS->single_unc;}
 else if (OBS->opt_unc_type==2){
-OBS->unc[OBS->valid_obs_indices[k]]=max(OBS->single_unc*OBS->values[k],OBS->single_unc*OBS->min_threshold);}}}
+OBS->unc[OBS->valid_obs_indices[k]]=max(OBS->single_unc*OBS->values[OBS->valid_obs_indices[k]],OBS->single_unc*OBS->min_threshold);}}}
 //Scale uncertainty with structural error
 if (OBS->structural_unc==DEFAULT_DOUBLE_VAL){OBS->structural_unc=0;}
 //Adding structural error
