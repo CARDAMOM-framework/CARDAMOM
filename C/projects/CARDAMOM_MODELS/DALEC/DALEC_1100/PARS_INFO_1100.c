@@ -42,9 +42,9 @@ parmax[P.rauto_mr_w]=0.05;
 parmin[P.rauto_mr_q10]=1.0;
 parmax[P.rauto_mr_q10]=3.0;
 
-/*Autotrophic growth respiration coefficient*/
-parmin[P.rauto_gr]=0.05;
-parmax[P.rauto_gr]=0.6;
+/*Growth yield (g C appearing in new biomass per g C used for growth; "growth yield" in Cannell and Thornley 2000)*/
+parmin[P.rauto_gr]=0.60;
+parmax[P.rauto_gr]=0.95;
 
 /*TOR wood* - 1% loss per year value*/
 parmin[P.t_wood]=0.000025;

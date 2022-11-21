@@ -11,7 +11,7 @@ typedef struct {
         double Rd;    // Canopy level dark/day respiration
         double mr_r;    // parameter: maintenance respiration coefficient for root (gC/gC/d) - see Cannell and Thornley (2000, doi: 10.1006/anbo.1999.0996)
         double mr_w;    // parameter: maintenance respiration coefficient for wood (gC/gC/d) - will be smaller than mr_r from EDC. 
-        double gr;    // parameter: growth respiration coefficient (gC/gC)
+        double gr;    // parameter: growth yield parameter (gC/gC) - see "growth yield" (Y_g) in Cannell and Thornley (2000, doi: 10.1006/anbo.1999.0996)
         double Q10mr; // parameter: Q10 parameter for maintenance respiration (unitless)
         double ALLOC_FOL_POT; // potential allocation flux to foliar pool (gC/m2/d)
         double ALLOC_WOO_POT; // potential allocation flux to wood pool (gC/m2/d)
@@ -107,9 +107,7 @@ S->OUT.MORTALITY_FACTOR=0;
     //NEW_PSEUDOCODE
 
     //Potential supply of labile carbon for plant growth
-    F_LABREL_SUPPLY = fmax(0,  (1 - S->IN.gr) * (LEFTOVER_NSC_RATE));
-
-
+    F_LABREL_SUPPLY = fmax(0,  S->IN.gr * (LEFTOVER_NSC_RATE));
     
     //NEW PSEUDOCODE: F_LABREL_SUPPLY = fmax(0,  (1 - S->IN.gr) * (LEFTOVER_NSC/ S->IN.deltat));
 
@@ -118,17 +116,18 @@ S->OUT.MORTALITY_FACTOR=0;
     F_LABREL_DEMAND = fmax(0, TOTAL_GROWTH_POT);
     //Actual release of labile carbon (before growth respiration costs subtracted)
     S->OUT.F_LABREL_ACTUAL = fmin(F_LABREL_SUPPLY, F_LABREL_DEMAND);
-    //Growth respiration
-    S->OUT.AUTO_RESP_GROWTH = S->IN.gr * S->OUT.F_LABREL_ACTUAL;
-    //Actual release of labile carbon i.e. growth flux (after subtracting growth respiration costs)
-    TOTAL_GROWTH_ACTUAL = (1 - S->IN.gr) * S->OUT.F_LABREL_ACTUAL;
 
     //Scaling factor for allocation fluxes, accounts for NSC limitation and growth respiration cost
     // - if actual growth is smaller than potential growth, we down-scale plant allocation fluxes
-    SCALE_ALLOC_FLUXES = fmin(1, TOTAL_GROWTH_ACTUAL / TOTAL_GROWTH_POT);
+    SCALE_ALLOC_FLUXES = fmin(1, S->OUT.F_LABREL_ACTUAL / TOTAL_GROWTH_POT);
     S->OUT.ALLOC_FOL_ACTUAL = SCALE_ALLOC_FLUXES * S->IN.ALLOC_FOL_POT;
     S->OUT.ALLOC_WOO_ACTUAL = SCALE_ALLOC_FLUXES * S->IN.ALLOC_WOO_POT;
-    S->OUT.ALLOC_ROO_ACTUAL = SCALE_ALLOC_FLUXES * S->IN.ALLOC_ROO_POT;}
+    S->OUT.ALLOC_ROO_ACTUAL = SCALE_ALLOC_FLUXES * S->IN.ALLOC_ROO_POT;
+
+    //Actual release of labile carbon i.e. growth flux (after subtracting growth respiration costs)
+    TOTAL_GROWTH_ACTUAL = TOTAL_GROWTH_POT * SCALE_ALLOC_FLUXES;
+    //Growth respiration
+    S->OUT.AUTO_RESP_GROWTH = (1-S->IN.gr)/S->IN.gr * TOTAL_GROWTH_ACTUAL;}
 
     //Diagnostic variables
     S->OUT.AUTO_RESP_TOTAL = S->OUT.AUTO_RESP_MAINTENANCE + S->OUT.AUTO_RESP_GROWTH;
