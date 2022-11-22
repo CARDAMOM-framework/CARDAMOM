@@ -76,7 +76,7 @@ parmax[P.LCMA]=200;
 
 /*C labile*/
 parmin[P.i_labile]=1.0;
-parmax[P.i_labile]=2000.0;
+parmax[P.i_labile]=100000.0;
 
 /*C foliar*/
 parmin[P.i_foliar]=1.0;
