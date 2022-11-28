@@ -41,6 +41,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
 
         // C_lab
         FIOMATRIX.SINK[F.lab_prod]=S.C_lab;
+        FIOMATRIX.SOURCE[F.resp_auto_maint]=S.C_lab;
         FIOMATRIX.SOURCE[F.foliar_prod]=S.C_lab;
         FIOMATRIX.SOURCE[F.root_prod]=S.C_lab;
         FIOMATRIX.SOURCE[F.wood_prod]=S.C_lab;

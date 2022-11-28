@@ -315,6 +315,7 @@ printf("Done reading all other edc ");
     
 	DATA->EDC_EQF=ncdf_read_single_double_var(ncid, "EDC_EQF");
 	    default_double_value(&DATA->EDC_EQF,2);
+    printf("EDC_EQF = %2.2f\n",DATA->EDC_EQF);
 
     
     DATA->ID=ncdf_read_single_double_var(ncid, "ID" );
