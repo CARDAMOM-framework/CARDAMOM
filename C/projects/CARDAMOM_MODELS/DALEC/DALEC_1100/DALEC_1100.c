@@ -114,7 +114,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SINK[F.paw2puw]=S.H2O_PUW;
 
         // E_PAW
-        FIOMATRIX.SINK[F.ground_heat]=S.E_PAW;
+        FIOMATRIX.SINK[F.gh_in]=S.E_PAW;
         FIOMATRIX.SINK[F.infil_e]=S.E_PAW;
         FIOMATRIX.SOURCE[F.et_e]=S.E_PAW;
         FIOMATRIX.SOURCE[F.q_paw_e]=S.E_PAW;
