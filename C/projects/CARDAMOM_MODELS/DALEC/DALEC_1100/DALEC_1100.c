@@ -114,7 +114,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SINK[F.paw2puw]=S.H2O_PUW;
 
         // E_PAW
-        FIOMATRIX.SINK[F.ground_heat]=S.E_PAW;
+        FIOMATRIX.SINK[F.gh_in]=S.E_PAW;
         FIOMATRIX.SINK[F.infil_e]=S.E_PAW;
         FIOMATRIX.SOURCE[F.et_e]=S.E_PAW;
         FIOMATRIX.SOURCE[F.q_paw_e]=S.E_PAW;
@@ -643,8 +643,9 @@ FLUXES[f+F.paw2puw_th_e] = 2*pars[P.thermal_cond]* (POOLS[p+S.D_TEMP_PAW] - POOL
 //Energy states
 //fraction of water in soil that is available 
 //double frac_paw = POOLS[nxp+S.H2O_PAW]/(POOLS[nxp+S.H2O_PAW]+POOLS[nxp+S.H2O_PUW]);
+        // E_PAW
 
-POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.gh_in] + FLUXES[f+F.infil_e] - FLUXES[f+F.et_e] - FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_paw_e]-FLUXES[f+F.paw2puw_th_e])*deltat;  
+POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.gh_in] + FLUXES[f+F.infil_e] - FLUXES[f+F.et_e]  - FLUXES[f+F.q_paw_e] - FLUXES[f+F.paw2puw_e] - FLUXES[f+F.paw2puw_th_e])*deltat;  
 POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_puw_e] +FLUXES[f+F.paw2puw_th_e])*deltat; 
 
 
