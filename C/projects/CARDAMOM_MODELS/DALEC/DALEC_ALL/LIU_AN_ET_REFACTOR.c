@@ -132,13 +132,15 @@ medlyn_term = 1. + g1/sqrt(VPD);
 
 ci = co2*(1. - 1./medlyn_term);
 
+    //CLM 4.5 does this
+    if (ci<cp){ci=cp;}
 
 //Two terms for C3 photosythesis
 a1 = Vcmax*(ci - cp)/(ci + Kc*(1.+209./Ko));
 a2 = J*(ci-cp)/(4.*(ci + 2.*cp));
 
 
-
+   
 // An_C3 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 Ag_C3 = fmin(a1*beta_factor,a2);
 Rd_C3 =  0.015*vcmax25*fT;
@@ -152,9 +154,12 @@ Ag_C4 = fmin(a1*beta_factor,a2);
 Rd_C4 = 0.015*vcmax25*fT;
 
 //Total photosynthesis 
+
 Ag = C3_frac*(Ag_C3) + (1. - C3_frac)*(Ag_C4);
 Rd = C3_frac*(Rd_C3) + (1. - C3_frac)*(Rd_C4);
 An = Ag - Rd;
+
+
 
 //To scale from leaf to canopy, comment out the following line and uncomment the one after
 //double canopy_scale = 1.;
