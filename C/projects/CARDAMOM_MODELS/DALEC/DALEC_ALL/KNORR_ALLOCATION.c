@@ -15,7 +15,7 @@ typedef struct {
         double plgr;
         double k_L;
         double pasm; 
-        double ET;
+        double transp;
         double tau_W;
         double t_c;
         double t_r;
@@ -51,7 +51,7 @@ int KNORR_ALLOCATION(KNORR_ALLOCATION_STRUCT * K)
   double T, T_memory, T_deviation, f_T, tau_m;
   double plgr, k_L;
   double f, r;
-  double pasm, ET;
+  double pasm, transp;
   double lambda, lambda_W, lambda_tilde_max, lambda_max;
   double dlambdadt, lambda_lim, laim, lambda_max_memory;
   double tau_W, tau_s;
@@ -72,7 +72,7 @@ int KNORR_ALLOCATION(KNORR_ALLOCATION_STRUCT * K)
    plgr=K->IN.plgr;//
    k_L=K->IN.k_L;
    pasm=K->IN.pasm;
-   ET=K->IN.ET;
+   transp=K->IN.transp;
    lambda_max=K->IN.lambda_max;
    tau_W=K->IN.tau_W;
    lambda_max_memory=K->IN.lambda_max_memory;  //TIME-DEPENDENT I.E. SAVE IN MEMORY
@@ -116,7 +116,7 @@ int KNORR_ALLOCATION(KNORR_ALLOCATION_STRUCT * K)
   r      = plgr * f + (1 - f)*k_L;
 
   /* compute water-limited maximum LAI */
-  lambda_W    = (pasm * lambda) / (tau_W * MaxExponentialSmooth(ET, 1e-3, 2e-2));
+  lambda_W    = (pasm * lambda) / (tau_W * MaxExponentialSmooth(transp, 1e-3, 2e-2));
   /* compute smoothed maximum LAI */
   lambda_tilde_max = MinQuadraticSmooth(lambda_max, lambda_W, 0.99);
   /* update LAI water/structural memory using an exponentially declining memory of water/structural limitation over the time period tau_s */
