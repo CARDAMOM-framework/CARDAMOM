@@ -62,22 +62,22 @@ parmax[P.canopy_eff]=50;
 
 /*Bday*/
 parmin[P.Bday]=365.25;
-parmax[P.Bday]=365.25*4;
+parmax[P.Bday]=1461.0; // 365.25*4;
 
 /*Fraction to Clab*/
 parmin[P.f_lab]=0.01;
 parmax[P.f_lab]=0.5;
 
 /*Clab Release period*/
-parmin[P.labile_rel]=365.25/12;
+parmin[P.labile_rel]=30.4375; // 365.25/12;
 parmax[P.labile_rel]=100;
 
 /*Fday*/
 parmin[P.Fday]=365.25;
-parmax[P.Fday]=365.25*4;
+parmax[P.Fday]=1461.0; // 365.25*4;
 
 /*Leaf fall period*/
-parmin[P.leaf_fall]=365.25/12;
+parmin[P.leaf_fall]=30.4375; // 365.25/12;
 parmax[P.leaf_fall]=150;
 
 /*LMCA*/
