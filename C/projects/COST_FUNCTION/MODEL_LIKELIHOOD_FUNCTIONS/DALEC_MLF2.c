@@ -36,7 +36,7 @@ P=P+Pedc1;
 }
 
 
-
+//printf("EDC prerun P = %2.2f\n",P);
 /*PARAMETER LOG LIKELIHOOD*/
 //P=P+LIKELIHOOD_P(DATA,PARS);
 
@@ -58,7 +58,8 @@ if (DATA.ncdf_data.EDC==1 & P>-INFINITY){
     double Pedc2 = RUN_DALEC_EDCs(&DATA, EDCs, false);
 
 P=P+Pedc2;}
-
+// printf("EDC postrun P = %2.2f\n",P);
+//     printf("Inside run MLF2: DATA->M_EDCs[3] = %2.2f\n",DATA.M_EDCs[3] );
 
 
 /*Likelihood*/
@@ -102,7 +103,7 @@ return P;}
 
      
 int DALEC_MLF2_MODCONFIG(MLF* MLF){
-    
+    printf("Using DALEC_MLF2_MODCONFIG...\n");
         //Populate LS 
      LIKELIHOODinfo LIKELIHOODinfo; DALEC_ALL_LIKELIHOOD_MODCONFIG(&LIKELIHOODinfo);
     //Store LS

@@ -66,7 +66,7 @@ EQF=1.1;
 
 p = E.pool_indices[s];
 
-double MPOOLSjan;
+double MPOOLSjan=0;
 double MPOOLS=mean_pool(DATA->M_POOLS,p,N_timesteps+1,nopools);
 
 
@@ -86,11 +86,10 @@ int dint=(int)floor(N_timesteps/(TIME_INDEX[N_timesteps-1]-TIME_INDEX[0])*365.25
 /*deriving mean jan pools*/
 /*based on all jan pools except initial conditions*/
 
-    int pidx = E.pool_indices[s];
     
 
 for (m=0;m<(N_timesteps/dint+1);m++){
-MPOOLSjan=MPOOLSjan+POOLS[nopools*(m*dint)+pidx]/(N_timesteps/dint+1);}
+MPOOLSjan=MPOOLSjan+POOLS[nopools*(m*dint)+p]/(N_timesteps/dint+1);}
 
 
 
@@ -108,8 +107,8 @@ for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nof
 //Loop through all fluxes
 //For each pool create "Fin" and "Fout", and add these to fluxe
 double Fin=0, Fout=0;
-    for (i=0;i<DALECmodel->SIOMATRIX[pidx].N_STATE_INPUT_FLUXES;i++){Fin += FT[DALECmodel->SIOMATRIX[pidx].STATE_INPUT_FLUXES[i]];}
-    for (i=0;i<DALECmodel->SIOMATRIX[pidx].N_STATE_OUTPUT_FLUXES;i++){Fout += FT[DALECmodel->SIOMATRIX[pidx].STATE_OUTPUT_FLUXES[i]];}
+    for (i=0;i<DALECmodel->SIOMATRIX[p].N_STATE_INPUT_FLUXES;i++){Fin += FT[DALECmodel->SIOMATRIX[p].STATE_INPUT_FLUXES[i]];}
+    for (i=0;i<DALECmodel->SIOMATRIX[p].N_STATE_OUTPUT_FLUXES;i++){Fout += FT[DALECmodel->SIOMATRIX[p].STATE_OUTPUT_FLUXES[i]];}
     
 free(FT);
 
@@ -133,8 +132,8 @@ double Rm, Rs;
 
 
 /*start and end pools*/
-Pstart=POOLS[pidx];
-Pend=POOLS[nopools*N_timesteps+pidx];
+Pstart=POOLS[p];
+Pend=POOLS[nopools*N_timesteps+p];
 /*mean input/output*/
 Rm=Fin/Fout;
 /*Theoretical starting input/output*/
@@ -145,6 +144,18 @@ Rs=Rm*MPOOLSjan/Pstart;
 {EDC=ipow(0,EDCD->SWITCH[7-1+n]);EDCD->PASSFAIL[7-1+n]=0;}*/
 
  PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
+
+//         printf("******Pool p = %i *********\n",p);
+//                 printf("Fin = %2.2f\n", Fin);
+//                 printf("dint = %i\n", dint);
+//             printf("Fout = %2.2f\n", Fout);
+//                         printf("Pstart = %2.2f\n", Pstart);
+//             printf("Pend = %2.2f\n", Pend);
+//             printf("MPOOLSjan= %2.2f\n", MPOOLSjan);
+// 
+//         printf("EQF P = %2.2f\n", -0.5*pow(log(Rs)/log(EQF),2));
+//             printf("Etol P = %2.2f\n", - 0.5 *pow((Rs-Rm)/etol,2));
+
 
 
     }

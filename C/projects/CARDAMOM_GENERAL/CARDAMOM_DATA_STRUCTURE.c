@@ -51,7 +51,7 @@ double M_PEQ_iniSOM;
 double *M_FLUXES;
 double *M_POOLS;
 /*even though sizes are known, memory needs to be explicitly allocated*/
-int *M_EDCD;
+int *M_EDCD;//Very very obsolete
 double *M_P;
 double *M_LIKELIHOODS;
 double *M_EDCs;

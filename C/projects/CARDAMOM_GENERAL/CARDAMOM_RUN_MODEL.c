@@ -148,8 +148,7 @@ FAILONERROR(nc_def_dim(ncid,"Time_fluxes",Ntimesteps,&timeFluxesDimID));
 const size_t probIdxLen=1;
 FAILONERROR(nc_def_dim(ncid,"Probability Index",probIdxLen,&probIdxDimID ));
 //Hard coded to 100
-const size_t edcIdxLen=100;
-FAILONERROR(nc_def_dim(ncid,"EDC Index",edcIdxLen,&edcIdxDimID ));
+FAILONERROR(nc_def_dim(ncid,"EDC Index",CARDADATA.noedcs,&edcIdxDimID ));
 
 FAILONERROR(nc_def_dim(ncid,"Parameter",CARDADATA.nopars,&noParsDimID ));
 FAILONERROR(nc_def_dim(ncid,"Likelihood Index",CARDADATA.nolikelihoods,&noLikelihoodsDimID ));
@@ -157,7 +156,7 @@ FAILONERROR(nc_def_dim(ncid,"Likelihood Index",CARDADATA.nolikelihoods,&noLikeli
 
 
 /*STEP 3.3 - create netCDF variables in preperation for writting them later*/
-int fluxesVarID, poolsVarID, edcdVarID, pVarID, parsVarID, likelihoodsVarID;
+int fluxesVarID, poolsVarID, edcsVarID, pVarID, parsVarID, likelihoodsVarID;
 
 int fluxes_dems[] = {sampleDimID,timeFluxesDimID,fluxDimID};
 FAILONERROR(nc_def_var(	ncid,"FLUXES" , NC_DOUBLE, 3, fluxes_dems, &fluxesVarID ));
@@ -172,9 +171,6 @@ WARNONERROR(nc_put_att_double	(	ncid,fluxesVarID,"example_doubles",NC_DOUBLE,4,(
 int pools_dems[] = {sampleDimID,timePoolsDimID,poolDimID};
 FAILONERROR(nc_def_var(	ncid,"POOLS" , NC_DOUBLE, 3, pools_dems, &poolsVarID ));
 
-int edcd_dems[] = {sampleDimID, edcIdxDimID };
-FAILONERROR(nc_def_var(	ncid,"EDCD" , NC_INT, 2, edcd_dems, &edcdVarID ));
-
 int prob_dems[] = {sampleDimID, probIdxDimID};
 FAILONERROR(nc_def_var(	ncid,"PROB" , NC_DOUBLE, 2, prob_dems, &pVarID ));
 
@@ -183,6 +179,9 @@ FAILONERROR(nc_def_var(	ncid,"PARS" , NC_DOUBLE, 2, pars_dems, &parsVarID ));
 
 int likelihoods_dems[] = {sampleDimID, noLikelihoodsDimID};
 FAILONERROR(nc_def_var(	ncid,"LIKELIHOODS" , NC_DOUBLE, 2, likelihoods_dems, &likelihoodsVarID ));
+
+int edcs_dems[] = {sampleDimID, edcIdxDimID };
+FAILONERROR(nc_def_var(	ncid,"EDCs" , NC_DOUBLE, 2, edcs_dems, &edcsVarID ));
 
 
 //End NetCDF definition phase, in order to allow for writting
@@ -258,7 +257,9 @@ FAILONERROR(nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,0,0}, (const
 //Write pools
 FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps+1,CARDADATA.nopools}, CARDADATA.M_POOLS));
 //write edcd
-FAILONERROR(nc_put_vara_int(ncid,edcdVarID,(const size_t[]){n,0}, (const size_t[]){1,edcIdxLen}, CARDADATA.M_EDCD));
+        printf("Inside CARDAMOM_RUN_MODEL: DATA->M_EDCs[3] = %2.2f\n",CARDADATA.M_EDCs[3] );
+
+FAILONERROR(nc_put_vara_double(ncid,edcsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.noedcs}, CARDADATA.M_EDCs));
 //write M_P
 FAILONERROR(nc_put_vara_double(ncid,pVarID,(const size_t[]){n,0}, (const size_t[]){1,probIdxLen}, CARDADATA.M_P));
 //write Pars

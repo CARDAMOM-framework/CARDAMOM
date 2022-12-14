@@ -37,7 +37,11 @@ double RUN_DALEC_EDCs(DATA * DATA, EDCs * EDCs, bool prerun){
             if (P>-INFINITY){
             DATA->M_EDCs[n]=EDCs[n].function(DATA, EDCs[n].data);
             //Add all probs up
-        P+=DATA->M_EDCs[n];}
+        P+=DATA->M_EDCs[n];
+                //printf("Inside run EDCs: DATA->M_EDCs[%i] = %2.2f\n",n,DATA->M_EDCs[n] );
+            
+            
+            }
         
         
         }}
@@ -46,7 +50,7 @@ double RUN_DALEC_EDCs(DATA * DATA, EDCs * EDCs, bool prerun){
 
     
 
-    
+
     
     return P;
 
