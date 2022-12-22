@@ -29,7 +29,7 @@ typedef struct {
         double AUTO_RESP_TOTAL; // autotrophic respiration (gC/m2/d)
         double NPP; // net primary productivity, GPP - Rauto (gC/m2/d)
         double CUE; // plant carbon use efficiency, NPP/GPP (gC/m2/d)
-        double MORTALITY_FACTOR; //Proportional removal from all three pools.
+        double NONLEAF_MORTALITY_FACTOR; //Proportional removal from all three pools.
     }OUT;
   }ALLOC_AND_AUTO_RESP_FLUXES_STRUCT;
 
@@ -48,10 +48,10 @@ int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
     //Maintenance respiration
     fT = pow(S->IN.Q10mr,(S->IN.TEMP-(25+DGCM_TK0C))/10); // reference temperature is 25 degrees C
     //Autotrophic maintenance for wood and non-wood
-    double POTENTIAL_AUTO_RESP_MAINTENANCE =  S->IN.Rd + S->IN.mr_w * fT * S->IN.C_LIVE_W + S->IN.mr_r * fT * S->IN.C_LIVE_R;
+    double POTENTIAL_AUTO_RESP_MAINTENANCE =   S->IN.mr_w * fT * S->IN.C_LIVE_W + S->IN.mr_r * fT * S->IN.C_LIVE_R;
 
-
-    S->OUT.F_LABPROD = S->IN.GPP;
+// Can be negative -- accounting for net Co2 loss in Ag - Rd -- but can't exceed NSC availability
+    S->OUT.F_LABPROD = S->IN.GPP - S->IN.Rd;
     //- S->OUT.AUTO_RESP_MAINTENANCE;
     //Calculate actual maintenance respiration, based on available NSCs
 
@@ -61,7 +61,7 @@ int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
     //Basically GPP + NSC available on daily basis...
     double NSC_PLUS_GPP_RATE = S->IN.NSC/S->IN.deltat  + S->IN.GPP;
 
-S->OUT.MORTALITY_FACTOR=0;
+S->OUT.NONLEAF_MORTALITY_FACTOR=0;
 
     //IF maintenance 
                //Spend all NSC on maintenance
@@ -77,7 +77,7 @@ S->OUT.MORTALITY_FACTOR=0;
                      //MORTALITY_FACTOR  = 1 - NSC_PLUS_GPP_RATE/POTENTIAL_AUTO_RESP_MAINTENANCE;
                      //Current model: if % maintenance resp not available, then lose same % of biomass.
                      //Alernative model: remobilize foliar and fine root sugars (if at all possible, check literature)
-                     S->OUT.MORTALITY_FACTOR  = 1 - NSC_PLUS_GPP_RATE/POTENTIAL_AUTO_RESP_MAINTENANCE;}
+                     S->OUT.NONLEAF_MORTALITY_FACTOR  = 1 - NSC_PLUS_GPP_RATE/POTENTIAL_AUTO_RESP_MAINTENANCE;}
 
     else
 
@@ -96,7 +96,7 @@ S->OUT.MORTALITY_FACTOR=0;
        S->OUT.ALLOC_WOO_ACTUAL =0;
        S->OUT.ALLOC_ROO_ACTUAL =0;
 
-    if (S->OUT.MORTALITY_FACTOR==0){
+    if (S->OUT.NONLEAF_MORTALITY_FACTOR==0){
     
 
         double LEFTOVER_NSC_RATE = NSC_PLUS_GPP_RATE - S->OUT.AUTO_RESP_MAINTENANCE;

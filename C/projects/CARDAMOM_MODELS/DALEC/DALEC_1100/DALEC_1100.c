@@ -432,10 +432,14 @@ LIU.IN.maxPevap=pars[P.maxPevap];
 LIU.IN.precip=PREC[n];
 LIU.IN.q10canopy=pars[P.q10canopy];
 LIU.IN.q10canopyRd=pars[P.rauto_mr_q10];
+LIU.IN.NSC=POOLS[p+S.C_lab];
+LIU.IN.deltat=deltat;
 
 
 //Call function: uses LIU->IN to update LIU->OUT
 LIU_AN_ET(&LIU);
+
+double LEAF_MORTALITY_FACTOR=LIU.OUT.LEAF_MORTALITY_FACTOR;
 
 // GPP
 FLUXES[f+F.gpp] = LIU.OUT.Ag;
@@ -695,7 +699,8 @@ ARFLUXES.IN.ALLOC_WOO_POT=fmax(0, (pars[P.phi_WL] * (FLUXES[f+F.target_LAI] * pa
 
 ALLOC_AND_AUTO_RESP_FLUXES(&ARFLUXES);
 
-    double MORTALITY_FACTOR=ARFLUXES.OUT.MORTALITY_FACTOR;
+    double NONLEAF_MORTALITY_FACTOR=ARFLUXES.OUT.NONLEAF_MORTALITY_FACTOR;
+    
 
 
 
@@ -821,10 +826,10 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
     //LIVE BIOMASS MORTALITY FLUXES
     //if MORTALITY
-    FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(MORTALITY_FACTOR + (1-MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))/deltat;
-    FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(MORTALITY_FACTOR + (1-MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience]))/deltat;
-    FLUXES[f+F.fx_roo2lit] = POOLS[nxp+S.C_roo]*(MORTALITY_FACTOR + (1-MORTALITY_FACTOR)*MORTALITY_FACTOR*BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience]))/deltat;
-    FLUXES[f+F.fx_woo2cwd] = POOLS[nxp+S.C_woo]*(MORTALITY_FACTOR + (1-MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience]))/deltat;
+    FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))/deltat;
+    FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(LEAF_MORTALITY_FACTOR + (1-LEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience]))/deltat;
+    FLUXES[f+F.fx_roo2lit] = POOLS[nxp+S.C_roo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience]))/deltat;
+    FLUXES[f+F.fx_woo2cwd] = POOLS[nxp+S.C_woo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience]))/deltat;
     //No mortality in these pools
     FLUXES[f+F.fx_cwd2som] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*(1-CF[S.C_cwd])*(1-pars[P.resilience])/deltat;
     FLUXES[f+F.fx_lit2som] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*(1-CF[S.C_lit])*(1-pars[P.resilience])/deltat;
@@ -946,8 +951,6 @@ static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_mr_rates;
 
 EDC_litcwdtor.big_par_index=P.t_lit;
 EDC_litcwdtor.small_par_index=P.t_cwd;
-
-
 EDCs[E.litcwdtor].data=&EDC_litcwdtor;
 EDCs[E.litcwdtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.litcwdtor].prerun=true;

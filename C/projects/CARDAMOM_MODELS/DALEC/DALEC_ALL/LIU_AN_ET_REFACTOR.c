@@ -23,6 +23,8 @@ typedef struct {
         double precip; 
         double q10canopy;
         double q10canopyRd;
+        double NSC;
+        double deltat;
     }IN;
     struct {
         double An;
@@ -30,6 +32,7 @@ typedef struct {
         double Rd;
         double transp;
         double evap;
+        double LEAF_MORTALITY_FACTOR;
     }OUT;
     
 }LIU_AN_ET_STRUCT;
@@ -102,6 +105,9 @@ double Rd;
 
 PAR = SRAD/(2*Ephoton*NA)*1e6;
 
+
+double canopy_scale = (1. - exp(-VegK*LAI*clumping))/(VegK); 
+
 //absorbed PAR assuming black canopy. 
 //PAR = PAR*(1. - exp(-LAI*VegK));
 
@@ -157,17 +163,28 @@ Rd_C4 = 0.015*vcmax25*fT;
 
 Ag = C3_frac*(Ag_C3) + (1. - C3_frac)*(Ag_C4);
 Rd = C3_frac*(Rd_C3) + (1. - C3_frac)*(Rd_C4);
+
+    //Potential Rd
+double Rd_daily_potential = Rd*canopy_scale*(12.e-6)*(24.*60.*60.);
+//Ensures NSCs available
+A->OUT.LEAF_MORTALITY_FACTOR=fmax( 1- A->IN.NSC/A->OUT.Rd* A->IN.deltat  ,0);
+//Actual daily Rd
+A->OUT.Rd =Rd_daily_potential*(1 - A->OUT.LEAF_MORTALITY_FACTOR);
+
+//Scaling Rd to available NSCs
+    Rd = Rd *(1 - A->OUT.LEAF_MORTALITY_FACTOR);
+
+
+    //Net A
 An = Ag - Rd;
 
 
 
 //To scale from leaf to canopy, comment out the following line and uncomment the one after
 //double canopy_scale = 1.;
-double canopy_scale = (1. - exp(-VegK*LAI*clumping))/(VegK); 
 
 //r[0] = An*canopy_scale*(12.e-6)*(24.*60.*60.); //from umolCO2m-2s-1 to gCm-2day-1
 A->OUT.Ag = Ag*canopy_scale*(12.e-6)*(24.*60.*60.);
-A->OUT.Rd = Rd*canopy_scale*(12.e-6)*(24.*60.*60.);
 
 //##################Transpiration#################
 
@@ -192,10 +209,15 @@ petVnum = (sV*(SRAD-SRADg)+1.225*1000*VPD_kPa*ga)/lambda0*60*60;
 petVnumB = 1.26*(sV*SRADg)/(sV+gammaV)/lambda0*60*60; //from mm.hr-1 
 if(beta_factor > 0 && SRAD >0){
 
-gs = 1.6*An/(co2-ci)*LAI*0.02405; 
+//Option 1. gs = 1.6*Ag/(co2-ci)*LAI*0.02405; 
+    //Option 1. gs = 1.6*An/(co2-ci)*LAI*0.02405; 
+gs = fmax(0,1.6*An/(co2-ci)*LAI*0.02405); 
+    
 
 //transp = petVnum/(sV+gammaV*(1+ga*(1/ga+1/gs)));
 transp = petVnum/(sV+gammaV*(1+ga*(1/ga+1/gs)));
+
+
 
 }
 else{
