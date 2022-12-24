@@ -1092,9 +1092,9 @@ EDCs[E.mr_rates].prerun=true;
 
  static DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
  
- static int edc_pool_indices[7];
+ static int edc_pool_indices[12];
 EDC_st.pool_indices=edc_pool_indices;
-EDC_st.no_pools_to_check=7;
+EDC_st.no_pools_to_check=12;
             
 //EDC_st.pool_indices[0]=S.E_PAW;
 //EDC_st.pool_indices[1]=S.E_PUW;
@@ -1106,12 +1106,17 @@ EDC_st.no_pools_to_check=7;
     
 EDC_st.pool_indices[0]=S.C_lab;
 EDC_st.pool_indices[1]=S.C_fol;
- EDC_st.pool_indices[2]=S.C_roo;
+EDC_st.pool_indices[2]=S.C_roo;
 EDC_st.pool_indices[3]=S.C_woo;
 EDC_st.pool_indices[4]=S.C_cwd;
 EDC_st.pool_indices[5]=S.C_lit;
- EDC_st.pool_indices[6]=S.C_som;
-    
+EDC_st.pool_indices[6]=S.C_som;
+EDC_st.pool_indices[7]=S.H2O_PAW;
+EDC_st.pool_indices[8]=S.H2O_PUW;
+EDC_st.pool_indices[9]=S.H2O_SWE;
+EDC_st.pool_indices[10]=S.E_PAW;
+EDC_st.pool_indices[11]=S.E_PUW;
+
 // //Rest can be done by code without additional input
     
 EDCs[E.state_trajectories].data=&EDC_st;
