@@ -368,15 +368,31 @@ else if (OBS->opt_filter==4 | OBS->opt_filter==5){//climatology and inter-annual
     }
         
         
-        
+else if (OBS->opt_filter==6){//three-year rolling mean
+                //EB added 12.12.22 as a test to constrain biomass trend with reduced noise: constrain fit to 3 year rolling mean obs/
+    int m, dn;
+                //Looping through years [1:-1] (except first and last)
+    for (m=1;m<(N/12)-1;m++){
+                /*1) Calculate 3 year mean of monthly values*/
+    double m3yrm=0, o3yrm=0;
+                //Looping through 3 years worth of months
+    for (n=0;n<36;n++){
+                                dn=n+(m-1)*12;
+                                m3yrm=m3yrm+mod[dn];
+                                o3yrm=o3yrm+obs[dn];
+                                }
+                /*2) normalize means*/
+    m3yrm=m3yrm/36;o3yrm=o3yrm/36;
+               /*3) Calculate 3-year mean cost function*/
+    tot_exp+=pow((o3yrm-m3yrm)/single_annual_unc,2);
+               
+                }
+}        
         
         
   
 
 free(mod);free(obs);free(unc);
-
-
-//something
 
 
 P=-0.5*tot_exp;}
