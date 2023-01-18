@@ -1179,7 +1179,8 @@ OBSOPE.SUPPORT_iniSOM_OBS=true;
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
 
-//GPP-specific variables//Assuming FLUXNET GPP is An (not Ag).
+//GPP-specific variables//Assuming FLUXNET GPP is assumed to be Ag.
+    //Wohlfahrt & Gu, 2015 
 OBSOPE.GPP_flux=F.gpp;
 //LAI-specific variables
 OBSOPE.LAI_pool=S.D_LAI;
