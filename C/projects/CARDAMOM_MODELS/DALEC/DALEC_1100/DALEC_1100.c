@@ -689,7 +689,7 @@ POOLS[nxp+S.M_LAI_TEMP]=KNORR.OUT.T;
 //************Allocation*******************
 
 ARFLUXES.IN.deltat=deltat;
-ARFLUXES.IN.GPP=FLUXES[f+F.gppnet];
+ARFLUXES.IN.GPP=FLUXES[f+F.gpp];
 ARFLUXES.IN.Rd=LIU.OUT.Rd;
 ARFLUXES.IN.TEMP=air_temp_k;
 ARFLUXES.IN.NSC=POOLS[p+S.C_lab];
