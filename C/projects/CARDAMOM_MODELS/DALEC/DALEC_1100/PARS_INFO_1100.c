@@ -48,7 +48,7 @@ parmax[P.rauto_gr]=0.95;
 
 /*TOR wood* - 1% loss per year value*/
 parmin[P.t_wood]=0.000025;
-parmax[P.t_wood]=0.001;
+parmax[P.t_wood]=0.01;
 
 /*TOR roots*/
 parmin[P.t_root]=0.0001;
@@ -56,15 +56,15 @@ parmax[P.t_root]=0.01;
 
 /*TOR litter*/
 parmin[P.t_lit]=0.0001;
-parmax[P.t_lit]=0.01;
+parmax[P.t_lit]=0.1;
 
 /*TOR CWD*/
 parmin[P.t_cwd]=0.00005;
-parmax[P.t_cwd]=0.005;
+parmax[P.t_cwd]=0.05;
 
 /*TOR SOM*/
 parmin[P.t_som]=0.0000001;
-parmax[P.t_som]=0.001;
+parmax[P.t_som]=0.01;
 
 /*\Q10 = 1.2-2.0*/
 parmin[P.Q10rhco2]=1.2;
@@ -176,7 +176,7 @@ parmax[P.Med_g1]=5.79;
 
 /*Vcmax25*/
 parmin[P.Vcmax25]=10;
-parmax[P.Vcmax25]=250;
+parmax[P.Vcmax25]=500;
 
 /*Tminmin scaling factor*/
 parmin[P.Tminmin]=258.15;
@@ -333,6 +333,11 @@ parmax[P.thermal_cond_surf]=2;
 /*Surface soil thermal conductivity in W/m/K */
 parmin[P.q10canopy]=1.5;
 parmax[P.q10canopy]=2.5;
+
+    /*Surface soil thermal conductivity in W/m/K */
+parmin[P.canopyRdsf]=0.005;
+parmax[P.canopyRdsf]=0.025;
+
   
 return 0;
 

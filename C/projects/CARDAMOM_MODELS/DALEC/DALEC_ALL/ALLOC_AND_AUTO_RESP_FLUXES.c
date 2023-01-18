@@ -59,14 +59,15 @@ int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
     // Most land models
     //We're using GPP for whole timesteo with rest of NSC
     //Basically GPP + NSC available on daily basis...
-    double NSC_PLUS_GPP_RATE = S->IN.NSC/S->IN.deltat  + S->IN.GPP;
+    //Removes Rd, which is accounted for separately
+    double NSC_PLUS_GPP_RATE = S->IN.NSC/S->IN.deltat  + (S->IN.GPP  - S->IN.Rd);
 
 S->OUT.NONLEAF_MORTALITY_FACTOR=0;
 
     //IF maintenance 
                //Spend all NSC on maintenance
    if (POTENTIAL_AUTO_RESP_MAINTENANCE>NSC_PLUS_GPP_RATE)
-                    {S->OUT.AUTO_RESP_MAINTENANCE =  NSC_PLUS_GPP_RATE;
+                    {S->OUT.AUTO_RESP_MAINTENANCE =  NSC_PLUS_GPP_RATE + S->IN.Rd;
                     //Basically a carbon starvation factor
                      //Insufficient NSCs to maintain tissues.
                      //Alternative: 
@@ -77,12 +78,12 @@ S->OUT.NONLEAF_MORTALITY_FACTOR=0;
                      //MORTALITY_FACTOR  = 1 - NSC_PLUS_GPP_RATE/POTENTIAL_AUTO_RESP_MAINTENANCE;
                      //Current model: if % maintenance resp not available, then lose same % of biomass.
                      //Alernative model: remobilize foliar and fine root sugars (if at all possible, check literature)
-                     S->OUT.NONLEAF_MORTALITY_FACTOR  = 1 - NSC_PLUS_GPP_RATE/POTENTIAL_AUTO_RESP_MAINTENANCE;}
+                     S->OUT.NONLEAF_MORTALITY_FACTOR  = fmin(1 - NSC_PLUS_GPP_RATE/POTENTIAL_AUTO_RESP_MAINTENANCE,1);}
 
     else
 
 //Spend full amount on maintenance resp
-    {S->OUT.AUTO_RESP_MAINTENANCE = POTENTIAL_AUTO_RESP_MAINTENANCE;}
+    {S->OUT.AUTO_RESP_MAINTENANCE = POTENTIAL_AUTO_RESP_MAINTENANCE + S->IN.Rd;}
      //Calculate leftover NSCs
     //Only use available NSC after maintenance resp accounted for
     

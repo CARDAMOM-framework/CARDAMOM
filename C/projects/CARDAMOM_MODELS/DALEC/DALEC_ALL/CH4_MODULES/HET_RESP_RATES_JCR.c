@@ -75,8 +75,8 @@ int HET_RESP_RATES_JCR(HET_RESP_RATES_JCR_STRUCT * S)
     //arrhenius method
     //fT = exp(pars[9]*(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-meantemp)); 
     //Q10 method
-    fT = pow(Q10rhco2,(S->IN.TEMP-reftemp)/10); 
-    jcr_o[0] = fT*S->IN.LF;
+    fT = pow(Q10rhco2,(S->IN.TEMP-reftemp)/10)*S->IN.LF; 
+    jcr_o[0] = fT;
     //fT = pow(pars[9],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-meantemp)/10);
     /* fV Volumetric factor seperating aerobic and anaerobic respiration */
     /* statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs) */
@@ -95,7 +95,7 @@ int HET_RESP_RATES_JCR(HET_RESP_RATES_JCR_STRUCT * S)
 	  jcr_o[2] = fW;
 	/* fCH4*/
     // fT_ch4 = exp(Q10ch4*(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-meantemp));
-    fT_ch4 = pow(Q10ch4,(S->IN.TEMP-reftemp)/10);
+    fT_ch4 = pow(Q10ch4,(S->IN.TEMP-reftemp)/10)*S->IN.LF;
     fCH4 = fmin(r_ch4 * fT_ch4,1);
     // fCH4 = r_ch4 * fT_ch4;
     /* fmin() won't be needed once CH4 data is assimilated, as CH4 portion of CO2 should be very small,
@@ -112,8 +112,8 @@ S->OUT.anaerobic_co2_c_ratio=(1-jcr_o[3]);
 S->OUT.fT = jcr_o[0];
 S->OUT.fV = jcr_o[1];
 S->OUT.fW = jcr_o[2];
+//printf(" %2.2f %2.2f %2.2f %2.2f\n",S->OUT.fT,S->OUT.fV,S->OUT.fW,S->IN.LF );
 
-    
     
     
 

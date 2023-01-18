@@ -88,6 +88,7 @@ int phi_WL;
 int thermal_cond;
 int thermal_cond_surf;
 int q10canopy;
+int canopyRdsf;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -96,12 +97,13 @@ int q10canopy;
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
-    70,71,72,73,74,75,76
+    70,71,72,73,74,75,76,77
 };
 
 struct DALEC_1100_FLUXES{
 /*DALEC FLUXES*/
 int gpp;   /*GPP*/
+int gppnet;   /*GPP*/
 int resp_auto;   /*Autotrophic respiration*/
 int lab_prod;   /*Labile production*/
 int foliar_prod;   /*Labile release*/
@@ -171,6 +173,7 @@ int SWout;
 int LWin;
 int LWout;
 int paw2puw_th_e;
+int resp_auto_maint_dark;
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -179,6 +182,7 @@ int paw2puw_th_e;
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
+    70,71
 };
 
 

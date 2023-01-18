@@ -432,6 +432,7 @@ LIU.IN.maxPevap=pars[P.maxPevap];
 LIU.IN.precip=PREC[n];
 LIU.IN.q10canopy=pars[P.q10canopy];
 LIU.IN.q10canopyRd=pars[P.rauto_mr_q10];
+LIU.IN.canopyRdsf=pars[P.canopyRdsf];
 LIU.IN.NSC=POOLS[p+S.C_lab];
 LIU.IN.deltat=deltat;
 
@@ -441,8 +442,10 @@ LIU_AN_ET(&LIU);
 
 double LEAF_MORTALITY_FACTOR=LIU.OUT.LEAF_MORTALITY_FACTOR;
 
-// GPP
+// GPP--- gross
 FLUXES[f+F.gpp] = LIU.OUT.Ag;
+// GPP net, i.e. GPP- Rd
+FLUXES[f+F.gppnet] = LIU.OUT.An;
 //transpiration//
 FLUXES[f+F.transp] = LIU.OUT.transp;
 //evaporation//
@@ -686,7 +689,7 @@ POOLS[nxp+S.M_LAI_TEMP]=KNORR.OUT.T;
 //************Allocation*******************
 
 ARFLUXES.IN.deltat=deltat;
-ARFLUXES.IN.GPP=FLUXES[f+F.gpp];
+ARFLUXES.IN.GPP=FLUXES[f+F.gppnet];
 ARFLUXES.IN.Rd=LIU.OUT.Rd;
 ARFLUXES.IN.TEMP=air_temp_k;
 ARFLUXES.IN.NSC=POOLS[p+S.C_lab];
@@ -711,6 +714,9 @@ FLUXES[f+F.resp_auto]=ARFLUXES.OUT.AUTO_RESP_TOTAL;
 FLUXES[f+F.resp_auto_growth]=ARFLUXES.OUT.AUTO_RESP_GROWTH;
 /*maintenance respiration*/
 FLUXES[f+F.resp_auto_maint]=ARFLUXES.OUT.AUTO_RESP_MAINTENANCE;
+FLUXES[f+F.resp_auto_maint_dark]=LIU.OUT.Rd;
+
+
 
 // Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]/deltat;
 if (FLUXES[f+F.dlambda_dt] > 0){
@@ -748,8 +754,8 @@ FLUXES[f+F.roo2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
        //JCR
        HET_RESP_RATES_JCR(&HRJCR);
        //OUtputs --- store anything we want here---
-       FLUXES[f+F.antr]=HRJCR.OUT.aerobic_tr;//Aerobic turnover rate scalar
-       FLUXES[f+F.aetr]=HRJCR.OUT.anaerobic_tr;//Anaerobic turnover rate scalar
+       FLUXES[f+F.aetr]=HRJCR.OUT.aerobic_tr;//Aerobic turnover rate scalar
+       FLUXES[f+F.antr]=HRJCR.OUT.anaerobic_tr;//Anaerobic turnover rate scalar
        FLUXES[f+F.an_co2_c_ratio]=HRJCR.OUT.anaerobic_co2_c_ratio;//CO2_C_ratio
         FLUXES[f+F.an_ch4_c_ratio]=HRJCR.OUT.anaerobic_ch4_c_ratio;//CH4_C_ratio
 
@@ -916,8 +922,8 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=77;
-DALECmodel->nofluxes=70;
+DALECmodel->nopars=78;
+DALECmodel->nofluxes=72;
 DALECmodel->noedcs=5;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
@@ -1173,7 +1179,7 @@ OBSOPE.SUPPORT_iniSOM_OBS=true;
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
 
-//GPP-specific variables
+//GPP-specific variables//Assuming FLUXNET GPP is An (not Ag).
 OBSOPE.GPP_flux=F.gpp;
 //LAI-specific variables
 OBSOPE.LAI_pool=S.D_LAI;

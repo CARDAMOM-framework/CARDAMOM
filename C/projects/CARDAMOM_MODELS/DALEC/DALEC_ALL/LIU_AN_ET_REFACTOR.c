@@ -23,6 +23,7 @@ typedef struct {
         double precip; 
         double q10canopy;
         double q10canopyRd;
+        double canopyRdsf;
         double NSC;
         double deltat;
     }IN;
@@ -149,7 +150,9 @@ a2 = J*(ci-cp)/(4.*(ci + 2.*cp));
    
 // An_C3 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 Ag_C3 = fmin(a1*beta_factor,a2);
-Rd_C3 =  0.015*vcmax25*fT;
+Rd_C3 =  A->IN.canopyRdsf*vcmax25*fT;
+
+
 
 //Two terms for C4 photosynthesis
 a1 = Vcmax;
@@ -157,7 +160,7 @@ a2 = J;
 
 // An_C4 = fmax(0., fmin(a1*beta_factor,a2) - 0.015*Vcmax*beta_factor);
 Ag_C4 = fmin(a1*beta_factor,a2);
-Rd_C4 = 0.015*vcmax25*fT;
+Rd_C4 =A->IN.canopyRdsf*vcmax25*fT;
 
 //Total photosynthesis 
 
@@ -185,6 +188,7 @@ An = Ag - Rd;
 
 //r[0] = An*canopy_scale*(12.e-6)*(24.*60.*60.); //from umolCO2m-2s-1 to gCm-2day-1
 A->OUT.Ag = Ag*canopy_scale*(12.e-6)*(24.*60.*60.);
+A->OUT.An = An*canopy_scale*(12.e-6)*(24.*60.*60.);
 
 //##################Transpiration#################
 
