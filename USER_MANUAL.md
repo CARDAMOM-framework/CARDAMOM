@@ -103,7 +103,7 @@ It is common to run CARDAMOM in parallel on remote servers. Generally this is do
 
 
 ## CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/>
-  ***Curator: Shuang Ma, [Link to section]("MANUAL/CARDAMOM_C_developer_guide.md")
+  ***Curator: Shuang Ma, [Link to section](MANUAL/CARDAMOM_C_developer_guide.md)
 
 This section covers the addition of models, processes, observations, and cost functions to the CARDAMOM C-code base. Before doing any of the following, either git branch and/or backup your C code. Regularly & frequently compile (e.g. CARDAMOM_COMPILE) when making any changes. The section covers making a new model, adding addtional parameters, pools and fluxes, as well as new datasets. Includes examples.
 
