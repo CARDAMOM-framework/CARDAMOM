@@ -23,8 +23,8 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
     struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
     struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
-    //Step 1. Declare & initialize
-    DALEC_FLUX_SOURCE_SINK_MATRIX FIOMATRIX;
+    // /Step 1. Declare & initialize 
+ DALEC_FLUX_SOURCE_SINK_MATRIX   FIOMATRIX;
     // external source or pool sink, or not conserved quantity
     //Default = -1 
    
@@ -101,6 +101,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
 
         // H2O_SWE
         FIOMATRIX.SOURCE[F.melt]=S.H2O_SWE;
+        FIOMATRIX.SOURCE[F.sublimation]=S.H2O_SWE;
         FIOMATRIX.SINK[F.snowfall]=S.H2O_SWE;
 
         // H2O_PAW
@@ -451,13 +452,20 @@ FLUXES[f+F.transp] = LIU.OUT.transp;
 //evaporation//
 FLUXES[f+F.evap] = LIU.OUT.evap;
 
-// Evapotranspiration
-FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
 
 /*Snow water equivalent*/
 FLUXES[f+F.snowfall] = SNOWFALL[n];
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snowfall]*deltat; /*first step snowfall to SWE*/
-FLUXES[f+F.melt]=fmin(fmax((air_temp_k-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
+ double SNOWLOSS=fmin(fmax((air_temp_k-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
+
+ //Splitting snow loss into sublimation and snow melt with constant frac
+FLUXES[f+F.melt]=SNOWLOSS*(1-pars[P.subfrac]);
+FLUXES[f+F.sublimation]=SNOWLOSS*pars[P.subfrac];
+
+
+// Evapotranspiration
+FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp] + FLUXES[f+F.sublimation];
+
 POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step remove snowmelt from SWE*/
 
 //Energy balance: Rn = LE + H - G
@@ -922,8 +930,8 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=78;
-DALECmodel->nofluxes=72;
+DALECmodel->nopars=79;
+DALECmodel->nofluxes=73;
 DALECmodel->noedcs=5;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);

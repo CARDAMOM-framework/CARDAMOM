@@ -338,6 +338,10 @@ parmax[P.q10canopy]=2.5;
 parmin[P.canopyRdsf]=0.005;
 parmax[P.canopyRdsf]=0.025;
 
+        /*Surface soil thermal conductivity in W/m/K */
+parmin[P.subfrac]=0.01;
+parmax[P.subfrac]=1;
+
   
 return 0;
 

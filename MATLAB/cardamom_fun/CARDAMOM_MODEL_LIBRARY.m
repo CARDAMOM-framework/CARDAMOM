@@ -45,10 +45,10 @@ dumpfiledir=dir(dumpfile);
 if isempty(dir(dumpfile)) | reread==1 | dumpfiledir.datenum<filedir.datenum
     disp('Re-reading file...');
 
+
+
+    %**************
 D=readalllines(filename);
-
-
-
 %searching for model attribute" line zero"
 %this line contains exactly '/*IDxMA*/' where x is the model ID number
 %line0=find(strcmp(D,sprintf('/*ID%dMA*/',ID)));
@@ -63,6 +63,11 @@ for n=1:numel(D)
     eval(st(1:find(st==';',1)));
     end
 end
+
+
+
+
+
 
 
 
@@ -165,6 +170,38 @@ MA.POOL_IDs=S;
  
 
 
+%******************If FIOMATRIX is available******
+
+D=readalllines(filename);
+
+strfss='int DALEC_1100_FLUX_SOURCES_SINKS';
+strncmp(D,strfss,numel(strfss));
+if sum(strncmp(D,strfss,numel(strfss)))>0;
+
+for n=1:numel(D);
+    if isempty(strfind(D{n},'FIOMATRIX.'))==0 & isempty(strfind(D{n},'calloc')) & isempty(strfind(D{n},'for'))
+        %E.g. evaluates  FIOMATRIX.SINK[F.lab_prod]=S.C_lab;
+%         st=D{n};st(st=='>')='.';st=st(st~='-');
+     st=D{n};
+        b1=find(st=='[');
+     b2=find(st==']');
+     st(b1)='(';
+     st(b2)=')';
+        eval(st(1:find(st==';',1)));
+    end
+
+    end
+    MA.FIOMATRIX=FIOMATRIX;
+else
+    MA.FIOMATRIX='No compliant FIOMATRIX structure in this model ID';
+end
+
+
+
+
+
+
+
 parfilename=sprintf('%s/projects/CARDAMOM_MODELS/DALEC/DALEC_%i/PARS_INFO_%i.c',Cpath,ID,ID);
 
 
@@ -242,99 +279,6 @@ end
 
 
 
-function MA=CARDAMOM_MODEL_LIBRARY_OLD(ID,MA,reread)
-%MA=CARDAMOM_MODEL_LIBRARY(ID)
-%
-%INPUTS: CARDAMOM model ID (integer) OR structure with ID field. 
-%This function reads C code and extracts model attributes
-%[Cpath]/projects/CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c
-%OUTPUTS: "MA" structure with CARDAMOM model attributes:
-%Specifically, the structure contains
-% MA.nopools: number of model pools
-%MA.nopars: number of model parameters
-%MA.nofluxes: number of stored model fluxes
-%
-%Example: 
-%   MA=CARDAMOM_MODEL_LIBRARY(2);
-%
-%Last modified by A.A. Bloom 2018/02/11 
-
-
-
-Cpath='C';
-
-%C script
-if nargin<2;MA=[];end
-if nargin<3;reread=0;end
-
-if isstruct(ID);MA=ID;ID=MA.ID;end
-dumpfile=sprintf('DUMPFILES/CARDAMOM_MODEL_LIBRARY_ID=%i.mat',ID);
-%TO DO: access new model types here (805 etc.) eventually making access to
-%CARDAMOM_MODEL_LIBRARY.c obsolete
-filename=sprintf('%s/projects/CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c',Cpath);
-filedir=dir(filename);
-dumpfiledir=dir(dumpfile);
-
-if isempty(dir(dumpfile)) | reread==1 | dumpfiledir.datenum<filedir.datenum
-    disp('Re-reading file...');
-
-D=readalllines(filename);
-
-
-%searching for model attribute" line zero"
-%this line contains exactly '/*IDxMA*/' where x is the model ID number
-line0=find(strcmp(D,sprintf('/*ID%dMA*/',ID)));
-
-
-for n=1:3
-    %reading strings that read as follows
-    %DATA->nopools=7;
-    linestr=D{line0+n};
-    linestr(linestr=='-')='';
-    linestr(linestr=='>')='.';
-    eval(linestr)
-end
-
-for f=fieldnames(DATA)';
-            MA.(f{1})=DATA.(f{1});
-end
-
-
-%repeat the same with model parameter value ranges
-%TO DO: need to set these up for other models too
-if ID==1
-filename=sprintf('%s/projects/DALEC_CODE/DALEC_CDEA/PARS_INFO_CDEA.c',Cpath);
-
-D=readalllines(filename);
-for n=1:numel(D)
-    linestr=D{n};
-    if numel(linestr)>21 & strcmp(linestr(1:12),'CARDADATA->p')==1  
-    linestr(linestr=='-')='';
-    linestr(linestr=='>')='.';
-    b1=find(linestr=='[');
-    b2=find(linestr==']');
-    linestr(b1)='(';
-    linestr(b2)=')';
-    lnum=num2str(str2num(linestr(b1+1:b2-1))+1);
-    linestr=[linestr(1:b1),lnum,linestr(b2:end)];
-    eval(linestr)
-    end
-end
-
-
-MA.parmin=CARDADATA.parmin;
-MA.parmax=CARDADATA.parmax;
-
-end;
-save(dumpfile,'MA');
-else
-    MAall=MA;
-   load(dumpfile,'MA');
-end
-
-MA.ID=ID;
-
-end
 
 
 function D=readalllines(fname)
