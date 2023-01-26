@@ -1183,7 +1183,7 @@ OBSOPE.SUPPORT_Vcmax25_OBS=true;
 OBSOPE.SUPPORT_C3frac_OBS=true;
 OBSOPE.SUPPORT_iniSnow_OBS=true;
 OBSOPE.SUPPORT_iniSOM_OBS=true;
-OBSOPE.SUPPORT_RAfrac_OBS=true;
+OBSOPE.SUPPORT_CUEmrg_OBS=true;
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.

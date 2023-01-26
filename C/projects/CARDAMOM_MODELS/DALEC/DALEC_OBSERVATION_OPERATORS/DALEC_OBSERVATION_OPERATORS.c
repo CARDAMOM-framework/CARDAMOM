@@ -74,7 +74,7 @@ bool SUPPORT_iniSOM_OBS;
 int iniSOM_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
 
-bool SUPPORT_RAfrac_OBS;
+bool SUPPORT_CUEmrg_OBS; //Emergent CUE (Rauto/GPP)
 int Rauto_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS
 
 
@@ -99,7 +99,7 @@ OBSOPE->SUPPORT_ROFF_OBS=false;
 OBSOPE->SUPPORT_SCF_OBS=false;
 
 
-OBSOPE->SUPPORT_RAfrac_OBS=false;
+OBSOPE->SUPPORT_CUEmrg_OBS=false;
 OBSOPE->SUPPORT_Cefficiency_OBS=false;
 OBSOPE->SUPPORT_CUE_OBS=false;
 OBSOPE->SUPPORT_C3frac_OBS=false;
@@ -193,22 +193,22 @@ return 0;}
 
 // Rauto fraction operator
 
-int DALEC_OBSOPE_RAfrac(DATA * D, OBSOPE * O){
+int DALEC_OBSOPE_CUEmrg(DATA * D, OBSOPE * O){
 
 int N=D->ncdf_data.TIME_INDEX.length;
 
 double MGPP;
 double MRauto;
-SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_RAfrac;
+SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_CUE;
 if (SOBS.validobs){
-    int n;D->M_PEQ_RAfrac=0;
+    int n;D->M_PEQ_CUE=0;
     for (n=0;n<N;n++){
         MGPP+=D->M_FLUXES[n*D->nofluxes+O->GPP_flux];
         MRauto+=D->M_FLUXES[n*D->nofluxes+O->Rauto_flux];
     };
     MGPP=MGPP/(double)N;
     MRauto=MRauto/(double)N;
-    D->M_PEQ_RAfrac=MRauto/MGPP;
+    D->M_PEQ_CUE=1-(MRauto/MGPP);
 }
 
 
@@ -494,7 +494,7 @@ if (O->SUPPORT_ROFF_OBS){DALEC_OBSOPE_ROFF(D, O);}
 if (O->SUPPORT_SCF_OBS ){DALEC_OBSOPE_SCF(D, O);}
 
 // Emergent quantities
-if (O->SUPPORT_RAfrac_OBS){DALEC_OBSOPE_RAfrac(D, O);}
+if (O->SUPPORT_CUEmrg_OBS){DALEC_OBSOPE_CUEmrg(D, O);}
 
 //Parameters
 
