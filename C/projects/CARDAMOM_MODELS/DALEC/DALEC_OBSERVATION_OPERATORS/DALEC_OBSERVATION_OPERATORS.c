@@ -197,8 +197,19 @@ int DALEC_OBSOPE_RAfrac(DATA * D, OBSOPE * O){
 
 int N=D->ncdf_data.TIME_INDEX.length;
 
+double MGPP;
+double MRauto;
 SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_RAfrac;
-if (SOBS.validobs){int n;D->M_PEQ_RAfrac=0;for (n=0;n<N;n++){D->M_PEQ_RAfrac+=D->M_FLUXES[n*D->nofluxes+O->Rauto_flux]/D->M_FLUXES[n*D->nofluxes+O->GPP_flux];};D->M_PEQ_RAfrac=D->M_PEQ_RAfrac/(double)N;}
+if (SOBS.validobs){
+    int n;D->M_PEQ_RAfrac=0;
+    for (n=0;n<N;n++){
+        MGPP+=D->M_FLUXES[n*D->nofluxes+O->GPP_flux];
+        MRauto+=D->M_FLUXES[n*D->nofluxes+O->Rauto_flux];
+    };
+    MGPP=MGPP/(double)N;
+    MRauto=MRauto/(double)N;
+    D->M_PEQ_RAfrac=MRauto/MGPP;
+}
 
 
 return 0;}
