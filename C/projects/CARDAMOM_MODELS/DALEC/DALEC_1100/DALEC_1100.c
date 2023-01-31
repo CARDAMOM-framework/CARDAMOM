@@ -1183,6 +1183,7 @@ OBSOPE.SUPPORT_Vcmax25_OBS=true;
 OBSOPE.SUPPORT_C3frac_OBS=true;
 OBSOPE.SUPPORT_iniSnow_OBS=true;
 OBSOPE.SUPPORT_iniSOM_OBS=true;
+OBSOPE.SUPPORT_CUEmrg_OBS=true;
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
@@ -1190,6 +1191,8 @@ OBSOPE.SUPPORT_iniSOM_OBS=true;
 //GPP-specific variables//Assuming FLUXNET GPP is assumed to be Ag.
     //Wohlfahrt & Gu, 2015 
 OBSOPE.GPP_flux=F.gpp;
+// For constraint on emergent autotrophic fraction
+OBSOPE.Rauto_flux=F.resp_auto;
 //LAI-specific variables
 OBSOPE.LAI_pool=S.D_LAI;
 //ET variabiles
