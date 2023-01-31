@@ -30,17 +30,17 @@ parmax[P.tr_lit2som]=0.99;
 parmin[P.tr_cwd2som]=0.01;
 parmax[P.tr_cwd2som]=0.99;
 
-/*Autotrophic maintenance respiration coefficient for foliar and roots - turnover rate at 25oC (d-1)*/
+/*Autotrophic maintenance respiration coefficient for roots - turnover rate at 25oC (d-1)*/
 parmin[P.rauto_mr_r]=0.0001;
-parmax[P.rauto_mr_r]=0.1;
+parmax[P.rauto_mr_r]=0.01;
 
 /*Autotrophic maintenance respiration coefficient for wood - turnover rate at 25oC (d-1)*/
 parmin[P.rauto_mr_w]=0.000001;
-parmax[P.rauto_mr_w]=0.05;
+parmax[P.rauto_mr_w]=0.005;
 
 /*Autotrophic maintenance respiration Q10 parameter*/
 parmin[P.rauto_mr_q10]=1.0;
-parmax[P.rauto_mr_q10]=3.0;
+parmax[P.rauto_mr_q10]=5.0;
 
 /*Growth yield (g C appearing in new biomass per g C used for growth; "growth yield" in Cannell and Thornley 2000)*/
 parmin[P.rauto_gr]=0.60;
@@ -67,7 +67,7 @@ parmin[P.t_som]=0.0000001;
 parmax[P.t_som]=0.01;
 
 /*\Q10 = 1.2-2.0*/
-parmin[P.Q10rhco2]=1.2;
+parmin[P.Q10rhco2]=1;
 parmax[P.Q10rhco2]=5.0;
 
 /*LMCA*; Kattge et al. 2011*;*Kattge et al., provide a range of 10 400 g m-2, i.e. 5 200 gC m-2*/
@@ -331,8 +331,8 @@ parmax[P.thermal_cond_surf]=2;
 
 
 /*Surface soil thermal conductivity in W/m/K */
-parmin[P.q10canopy]=1.5;
-parmax[P.q10canopy]=2.5;
+parmin[P.q10canopy]=1;
+parmax[P.q10canopy]=5;
 
     /*Surface soil thermal conductivity in W/m/K */
 parmin[P.canopyRdsf]=0.005;
