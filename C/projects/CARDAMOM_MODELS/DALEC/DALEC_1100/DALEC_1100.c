@@ -106,7 +106,8 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
 
         // H2O_PAW
         FIOMATRIX.SINK[F.infil]=S.H2O_PAW;
-        FIOMATRIX.SOURCE[F.et]=S.H2O_PAW;
+        FIOMATRIX.SOURCE[F.evap]=S.H2O_PAW;
+        FIOMATRIX.SOURCE[F.transp]=S.H2O_PAW;
         FIOMATRIX.SOURCE[F.paw2puw]=S.H2O_PAW;
         FIOMATRIX.SOURCE[F.q_paw]=S.H2O_PAW;
 
@@ -466,7 +467,7 @@ FLUXES[f+F.sublimation]=SNOWLOSS*pars[P.subfrac];
 // Evapotranspiration
 FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp] + FLUXES[f+F.sublimation];
 
-POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-FLUXES[f+F.melt]*deltat; /*second step remove snowmelt from SWE*/
+POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat; /*second step remove snowmelt from SWE*/
 
 //Energy balance: Rn = LE + H - G
 // Rn = SWin - SWout + LWin - LWout
@@ -619,7 +620,7 @@ TEMPxfer= POOLS[p+S.D_TEMP_PUW];//In K
 
 
 // Update pools, including ET from PAW
-POOLS[nxp+S.H2O_PAW] = POOLS[p+S.H2O_PAW] + (FLUXES[f+F.infil] - FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.et])*deltat;
+POOLS[nxp+S.H2O_PAW] = POOLS[p+S.H2O_PAW] + (FLUXES[f+F.infil] - FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.evap] - FLUXES[f+F.transp])*deltat;
 POOLS[nxp+S.H2O_PUW] = POOLS[p+S.H2O_PUW] + (FLUXES[f+F.paw2puw] - FLUXES[f+F.q_puw])*deltat;
 
 
