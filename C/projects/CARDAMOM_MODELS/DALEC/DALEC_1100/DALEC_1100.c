@@ -467,7 +467,7 @@ FLUXES[f+F.sublimation]=SNOWLOSS*pars[P.subfrac];
 // Evapotranspiration
 FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp] + FLUXES[f+F.sublimation];
 
-POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat; /*second step remove snowmelt from SWE*/
+
 
 //Energy balance: Rn = LE + H - G
 // Rn = SWin - SWout + LWin - LWout
@@ -493,7 +493,7 @@ double sigma = 5.67*1e-8;
 double LWin = STRD[n]*1e6/DGCM_SEC_DAY; // W m-2
 //Outgoing LW radiation
 double tskin_k = SKT[n]+DGCM_TK0C;
-double LWout = sigma*pow(tskin_k,4.); // W m-2
+double LWout = sigma*(tskin_k*tskin_k)*(tskin_k*tskin_k); // W m-2
 //Net radiation at the top of the canopy-soil continuum
 //
 //
