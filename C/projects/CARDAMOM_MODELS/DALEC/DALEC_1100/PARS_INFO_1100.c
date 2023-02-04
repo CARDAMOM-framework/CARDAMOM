@@ -42,6 +42,10 @@ parmax[P.rauto_mr_w]=0.005;
 parmin[P.rauto_mr_q10]=1.0;
 parmax[P.rauto_mr_q10]=5.0;
 
+/*Dark respiration Q10 parameter*/
+parmin[P.rauto_mrd_q10]=1.0;
+parmax[P.rauto_mrd_q10]=5.0;
+
 /*Growth yield (g C appearing in new biomass per g C used for growth; "growth yield" in Cannell and Thornley 2000)*/
 parmin[P.rauto_gr]=0.60;
 parmax[P.rauto_gr]=0.95;
