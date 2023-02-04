@@ -433,7 +433,7 @@ LIU.IN.leaf_refl_nir=pars[P.leaf_refl_nir];
 LIU.IN.maxPevap=pars[P.maxPevap];
 LIU.IN.precip=PREC[n];
 LIU.IN.q10canopy=pars[P.q10canopy];
-LIU.IN.q10canopyRd=pars[P.rauto_mr_q10];
+LIU.IN.q10canopyRd=pars[P.rauto_mrd_q10];
 LIU.IN.canopyRdsf=pars[P.canopyRdsf];
 LIU.IN.NSC=POOLS[p+S.C_lab];
 LIU.IN.deltat=deltat;
@@ -932,7 +932,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=79;
+DALECmodel->nopars=80;
 DALECmodel->nofluxes=73;
 DALECmodel->noedcs=6;
 
