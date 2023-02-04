@@ -934,7 +934,7 @@ DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=79;
 DALECmodel->nofluxes=73;
-DALECmodel->noedcs=5;
+DALECmodel->noedcs=6;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
@@ -1144,6 +1144,23 @@ EDCs[E.state_trajectories].prerun=false;
 
 
 
+
+ static DALEC_EDC_NSC_ABGB_RATIO_STRUCT EDC_nscr;
+
+    //
+    EDC_nscr.no_other_pool_indices=3;
+    static int nscratio_other_pool_indices[3];
+
+    EDC_nscr.other_pool_indices=nscratio_other_pool_indices;
+    EDC_nscr.other_pool_indices[0]=S.C_fol;
+    EDC_nscr.other_pool_indices[1]=S.C_roo;
+    EDC_nscr.other_pool_indices[2]=S.C_woo;
+    EDC_nscr.nsc_pool_index=S.C_lab;
+
+
+    EDCs[E.nsc_ratio].data=&EDC_nscr;
+    EDCs[E.nsc_ratio].function=&DALEC_EDC_NSC_ABGB_RATIO;
+    EDCs[E.nsc_ratio].prerun=false;
 
 
 

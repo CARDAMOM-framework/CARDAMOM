@@ -52,7 +52,6 @@ int nofluxes=DALECmodel->nofluxes;
 
 
   double EQF=DATA->ncdf_data.EDC_EQF;
-EQF=1.1;
      //Looping through all pools
     
      //Pool inde

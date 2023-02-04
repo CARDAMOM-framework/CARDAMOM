@@ -8,6 +8,7 @@
 #include "DALEC_EDC_START_TEMP.c"
 #include "DALEC_EDC_START_SM.c"
 #include "../DALEC_ALL/DALEC_MODULE.c"
+#include "DALEC_EDC_NSC_ABGB_RATIO.c"
 
 
 
