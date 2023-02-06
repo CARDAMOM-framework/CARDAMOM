@@ -9,6 +9,7 @@
 #include "DALEC_EDC_START_SM.c"
 #include "../DALEC_ALL/DALEC_MODULE.c"
 #include "DALEC_EDC_NSC_ABGB_RATIO.c"
+#include "DALEC_EDC_MEAN_PAW_TEMP.c"
 
 
 
@@ -43,7 +44,6 @@ double RUN_DALEC_EDCs(DATA * DATA, EDCs * EDCs, bool prerun){
             
             
             }
-        
         
         }}
 

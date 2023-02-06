@@ -232,8 +232,9 @@ int state_ranges;
 //int puw_temp;
 int state_trajectories;
 int nsc_ratio;
+int mean_paw_temp;
 } DALEC_1100_EDCs={
-   0,1,2,3,4,5
+   0,1,2,3,4,5,6
 };
 
 

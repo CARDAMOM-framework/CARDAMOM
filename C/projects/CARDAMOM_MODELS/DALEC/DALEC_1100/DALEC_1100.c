@@ -934,7 +934,7 @@ DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=80;
 DALECmodel->nofluxes=73;
-DALECmodel->noedcs=6;
+DALECmodel->noedcs=7;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
@@ -1161,6 +1161,21 @@ EDCs[E.state_trajectories].prerun=false;
     EDCs[E.nsc_ratio].data=&EDC_nscr;
     EDCs[E.nsc_ratio].function=&DALEC_EDC_NSC_ABGB_RATIO;
     EDCs[E.nsc_ratio].prerun=false;
+
+
+
+static DALEC_EDC_MEAN_PAW_TEMP_STRUCT EDC_mean_paw_temp;
+
+    //
+    EDC_mean_paw_temp.paw_temp_index=S.D_TEMP_PAW;
+
+
+
+
+
+    EDCs[E.mean_paw_temp].data=&EDC_mean_paw_temp;
+    EDCs[E.mean_paw_temp].function=&DALEC_EDC_MEAN_PAW_TEMP;
+    EDCs[E.mean_paw_temp].prerun=false;
 
 
 
