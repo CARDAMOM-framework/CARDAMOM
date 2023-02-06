@@ -48,7 +48,8 @@ int nopools=DALECmodel->nopools;
 double MEAN_PAW_TEMP=mean_pool(DATA->M_POOLS,E.paw_temp_index,N_timesteps+1,nopools);
 
 
-    double residual = (MEAN_PAW_TEMP - DATA->ncdf_data.SKT.reference_mean)/5;
+    double residual = (MEAN_PAW_TEMP - DATA->ncdf_data.SKT.reference_mean - DGCM_TK0C)/5;
+
 
 double PEDC=-0.5*residual*residual;
 
