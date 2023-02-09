@@ -257,7 +257,6 @@ FAILONERROR(nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,0,0}, (const
 //Write pools
 FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps+1,CARDADATA.nopools}, CARDADATA.M_POOLS));
 //write edcd
-        printf("Inside CARDAMOM_RUN_MODEL: DATA->M_EDCs[3] = %2.2f\n",CARDADATA.M_EDCs[3] );
 
 FAILONERROR(nc_put_vara_double(ncid,edcsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.noedcs}, CARDADATA.M_EDCs));
 //write M_P

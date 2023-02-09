@@ -44,6 +44,7 @@ double RUN_DALEC_EDCs(DATA * DATA, EDCs * EDCs, bool prerun){
             
             
             }
+//              else {     if (EDCs[n].prerun==false){ printf("EDC fail = %i\n",n);}}
         
         }}
 

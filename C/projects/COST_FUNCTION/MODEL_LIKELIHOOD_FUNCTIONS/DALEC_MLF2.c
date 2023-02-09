@@ -93,7 +93,7 @@ double P=0;
 double ML=DATA.MLF(DATA,PARS);
 
 /*overriding if model likelihood is zero or erroneous*/
-if (( isinf(ML)==-1 || isinf(ML)==1 || isnan(ML) )){P=log(0);}
+if (( isinf(ML)==-1 || isinf(ML)==1 || isnan(ML) )){P=-INFINITY;}
 
 
 return P;}

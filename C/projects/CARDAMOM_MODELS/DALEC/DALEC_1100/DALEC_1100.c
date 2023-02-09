@@ -237,6 +237,7 @@ double *POOLS=DATA.M_POOLS;
     PAWSOILTEMP.IN.internal_energy = POOLS[S.E_PAW];//Joules
     //Pass pointer to function 
     SOIL_TEMP_AND_LIQUID_FRAC(&PAWSOILTEMP);  //Outputs are in K
+
         //Store outputs 
     POOLS[S.D_TEMP_PAW]=PAWSOILTEMP.OUT.TEMP;  //In K  
     POOLS[S.D_LF_PAW]=PAWSOILTEMP.OUT.LF;
@@ -543,7 +544,7 @@ double moles_per_m3 = Psurf/(Rgas*air_temp_k);
 FLUXES[f+F.ground_heat] =(pars[P.thermal_cond_surf]* (tskin_k - POOLS[p+S.D_TEMP_PAW])/(pars[P.PAW_z]*0.5))*(1. - POOLS[p+S.D_SCF]);
 FLUXES[f+F.gh_in] =FLUXES[f+F.ground_heat] *DGCM_SEC_DAY;        
 //Using G, Rn and LE to derive H
-    // H = Rn - G  - LE
+// H = Rn - G  - LE
 FLUXES[f+F.sensible_heat] = Rn - FLUXES[f+F.ground_heat] - FLUXES[f+F.latent_heat];
         
 
@@ -830,7 +831,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 	/*Calculating all fire transfers (1. combustion, and 2. litter transfer)*/
 	/*note: all fluxes are in gC m-2 day-1*/
-    FLUXES[f+F.f_lab] = POOLS[nxp+S.C_lab]*BURNED_AREA[n]*CF[S.C_lab]/deltat;
+    FLUXES[f+F.f_lab] = POOLS[nxp+S.C_lab]*BURNED_AREA[n]*CF[S.C_lab]/deltat ;
     FLUXES[f+F.f_fol] = POOLS[nxp+S.C_fol]*BURNED_AREA[n]*CF[S.C_fol]/deltat;
     FLUXES[f+F.f_roo] = POOLS[nxp+S.C_roo]*BURNED_AREA[n]*CF[S.C_roo]/deltat;
     FLUXES[f+F.f_woo] = POOLS[nxp+S.C_woo]*BURNED_AREA[n]*CF[S.C_woo]/deltat;
@@ -918,7 +919,7 @@ return 0;
 }
 
 
-int DALEC_1100_MODCONFIG(DALEC * DALECmodel){
+int DALEC_1100_MODCONFIG(DALEC * DALECmodel, DATA * DATA){
 
 
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
@@ -1078,26 +1079,33 @@ EDCs[E.mr_rates].prerun=true;
     EDCs[E.state_ranges].prerun=false;
 
 
-//Start soil moistures for PAW and PUW
-//         static DALEC_EDC_START_SM_STRUCT EDCpawsm, EDCpuwsm;
+
+  static DALEC_EDC_START_TEMP_STRUCT EDC_paw_start_temp;
+
+
+//Calculating min LST and MAX LST
+    double minlst=DATA->ncdf_data.SKT.values[0];
+    double maxlst=DATA->ncdf_data.SKT.values[0];
+for (n=1;n<DATA->ncdf_data.TIME_INDEX.length;n++){
+minlst=fmin(minlst,DATA->ncdf_data.SKT.values[n]);
+maxlst=fmax(maxlst,DATA->ncdf_data.SKT.values[n]);}
+
+
+ EDC_paw_start_temp.min_temp=minlst+DGCM_TK0C;
+EDC_paw_start_temp.max_temp=maxlst+DGCM_TK0C;
+EDC_paw_start_temp.vhc_idx=P.PAW_vhc;
+EDC_paw_start_temp.por_idx=P.PAW_por;
+ EDC_paw_start_temp.z_idx=P.PAW_z;
+ EDC_paw_start_temp.i_SM_idx=P.i_PAW_SM;
+EDC_paw_start_temp.i_E_idx=P.i_PAW_E;
+
+ EDCs[E.paw_start_temp].data=&EDC_paw_start_temp;
+ EDCs[E.paw_start_temp].function=&DALEC_EDC_START_TEMP;
+EDCs[E.paw_start_temp].prerun=true;
 // 
-//     EDCpawsm.z_idx=P.PAW_z;
-// EDCpawsm.por_idx=P.PAW_por;
-// EDCpawsm.i_H2O_idx =P.i_PAW;
-// 
-// EDCpuwsm.z_idx=P.PUW_z;
-// EDCpuwsm.por_idx=P.PUW_por;
-// EDCpuwsm.i_H2O_idx =P.i_PUW;
-// 
-// 
-// 
-// EDCs[E.paw_sm].data=&EDCpawsm;
-// EDCs[E.paw_sm].function=&DALEC_EDC_START_SM;
-// EDCs[E.paw_sm].prerun=true;
-// 
-// EDCs[E.puw_sm].data=&EDCpuwsm;
-// EDCs[E.puw_sm].function=&DALEC_EDC_START_SM;
-// EDCs[E.puw_sm].prerun=true;
+
+
+
 
 
 

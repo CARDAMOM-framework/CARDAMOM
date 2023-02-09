@@ -30,7 +30,8 @@ while (PEDC==0 & n<DATA->ncdf_data.TIME_INDEX.length  & k==0){
   p+=1;
 
 }
-  
+       //printf("Fail check = %2.2i\n",p);
+
 
   
     return PEDC;

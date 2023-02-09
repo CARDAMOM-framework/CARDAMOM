@@ -157,7 +157,8 @@ Rs=Rm*MPOOLSjan/Pstart;
 
 
 
-    }
+     }
+     // printf("PEDC = %2.2f\n",PEDC);
     return PEDC;
 }
 

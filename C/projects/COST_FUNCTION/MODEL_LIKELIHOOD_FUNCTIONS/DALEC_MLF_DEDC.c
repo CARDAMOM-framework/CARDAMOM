@@ -47,6 +47,7 @@ if (DATA.ncdf_data.EDC==1){
 
     MODEL->edc2(PARS, DATA, &EDCD);
 P=P+EDCD.pEDC;}
+
 /*Likelihood*/
 
 P=P+LIKELIHOOD(DATA);

@@ -224,17 +224,16 @@ int M_LAI_TEMP;//KNORR LAI module temp memory
 };
 
 struct DALEC_1100_EDCs{
+int paw_start_temp;
 int litcwdtor;
 int cwdsomtor;
 int mr_rates;
-int state_ranges;
-//int paw_temp;
-//int puw_temp;
-int state_trajectories;
-int nsc_ratio;
 int mean_paw_temp;
+int nsc_ratio;
+int state_trajectories;
+int state_ranges;
 } DALEC_1100_EDCs={
-   0,1,2,3,4,5,6
+   0,1,2,3,4,5,6,7
 };
 
 

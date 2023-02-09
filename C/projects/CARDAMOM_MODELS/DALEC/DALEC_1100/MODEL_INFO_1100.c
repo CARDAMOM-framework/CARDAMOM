@@ -11,7 +11,7 @@ int MODEL_INFO_1100(DATA * DATA){
 
 /*Step 1. Declare structure*/
 /*"static" ensures that the memory is declared in one instance and visible to all functions (I think)*/
-static DALEC DALECmodel;DALEC_1100_MODCONFIG(&DALECmodel);
+static DALEC DALECmodel;DALEC_1100_MODCONFIG(&DALECmodel,DATA);
 static MLF MLF;DALEC_MLF2_MODCONFIG(&MLF);
 
 /*Step 2: Fill structure with model-specific info*/

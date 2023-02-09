@@ -53,7 +53,7 @@ MCOPT.minstepsize=1e-2;
 
 if (MCOPT_CARDAMOM->mcmcid==3){
 MCOPT.mcmcid=3;
-MCOPT.nOUT=2000;/*1;was 2000*/
+MCOPT.nOUT=200000;/*1;was 2000*/
 MCOPT.nPRINT=2000;/*1;was 2000*/
 MCOPT.minstepsize=1e-5;
 MCOPT.nchains=200;
