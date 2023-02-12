@@ -51,6 +51,7 @@ double MEAN_PAW_TEMP=mean_pool(DATA->M_POOLS,E.paw_temp_index,N_timesteps+1,nopo
     double residual = (MEAN_PAW_TEMP - DATA->ncdf_data.SKT.reference_mean - DGCM_TK0C)/5;
 
 
+
 double PEDC=-0.5*residual*residual;
 
 //printf(" M_NSC = %2.2f, M_ALL_ELSE = %2.2f, PEDC = %2.2f\n", M_NSC,M_ALL_ELSE,PEDC);

@@ -20,6 +20,7 @@
 typedef struct {
     int no_pools_to_check;
     int *pool_indices;
+    double *pool_eqf;
 } DALEC_EDC_TRAJECTORY_STRUCT;
 
 
@@ -51,7 +52,6 @@ int nofluxes=DALECmodel->nofluxes;
   //int nopools=DATA->nopools;
 
 
-  double EQF=DATA->ncdf_data.EDC_EQF;
      //Looping through all pools
     
      //Pool inde
@@ -62,6 +62,7 @@ int nofluxes=DALECmodel->nofluxes;
 
     for (s=0;s<E.no_pools_to_check;s++){
 
+  double EQF=E.pool_eqf[s];
 
 p = E.pool_indices[s];
 
