@@ -465,7 +465,8 @@ FLUXES[f+F.sublimation]=SNOWLOSS*pars[P.subfrac];
 
 
 // Evapotranspiration
-FLUXES[f+F.ets]=FLUXES[f+F.evap]+FLUXES[f+F.transp] + FLUXES[f+F.sublimation];
+FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
+FLUXES[f+F.ets]=FLUXES[f+F.et] + FLUXES[f+F.sublimation];
 
 POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat; /*second step remove snowmelt from SWE*/
 
