@@ -934,7 +934,7 @@ DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=80;
-DALECmodel->nofluxes=73;
+DALECmodel->nofluxes=74;
 DALECmodel->noedcs=9;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
