@@ -18,16 +18,16 @@
 
 //Doing all pools
 typedef struct {
-    int paw_temp_index;
-}  DALEC_EDC_MEAN_PAW_TEMP_STRUCT;
+    int temp_index;
+}  DALEC_EDC_MEAN_TEMP_STRUCT;
 
 
 //General inequality function
-double DALEC_EDC_MEAN_PAW_TEMP(DATA * DATA, void * EDCstruct){
+double DALEC_EDC_MEAN_TEMP(DATA * DATA, void * EDCstruct){
     
     //Casting struct
     
-    DALEC_EDC_MEAN_PAW_TEMP_STRUCT  E = *(DALEC_EDC_MEAN_PAW_TEMP_STRUCT  * ) EDCstruct;
+    DALEC_EDC_MEAN_TEMP_STRUCT  E = *(DALEC_EDC_MEAN_TEMP_STRUCT  * ) EDCstruct;
 
       
  
@@ -45,10 +45,10 @@ int nopools=DALECmodel->nopools;
 
 
 
-double MEAN_PAW_TEMP=mean_pool(DATA->M_POOLS,E.paw_temp_index,N_timesteps+1,nopools);
+double MEAN_TEMP=mean_pool(DATA->M_POOLS,E.temp_index,N_timesteps+1,nopools);
 
 
-    double residual = (MEAN_PAW_TEMP - DATA->ncdf_data.SKT.reference_mean - DGCM_TK0C)/5;
+    double residual = (MEAN_TEMP - DATA->ncdf_data.SKT.reference_mean - DGCM_TK0C)/5;
 
 
 

@@ -131,6 +131,7 @@ int fx_woo2cwd;   /*Fire transfer wood to CWD*/
 int fx_cwd2som;   /*Fire transfer CWD to soil*/
 int fx_lit2som;   /*Fire transfer litter to soil*/
 int et;   /*Evapotranspiration*/
+int ets;   /*Evapotranspiration + sublimation*/
 int q_paw;   /*PAW runoff*/
 int paw2puw;   /*PAW->PUW transfer*/
 int q_puw;   /*PUW runoff*/
@@ -185,7 +186,7 @@ int sublimation;
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
-    70,71,72
+    70,71,72,73
 };
 
 
@@ -229,11 +230,12 @@ int litcwdtor;
 int cwdsomtor;
 int mr_rates;
 int mean_paw_temp;
+int mean_puw_temp;
 int nsc_ratio;
 int state_trajectories;
 int state_ranges;
 } DALEC_1100_EDCs={
-   0,1,2,3,4,5,6,7
+   0,1,2,3,4,5,6,7,8
 };
 
 

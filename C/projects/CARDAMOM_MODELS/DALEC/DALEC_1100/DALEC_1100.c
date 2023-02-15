@@ -106,8 +106,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
 
         // H2O_PAW
         FIOMATRIX.SINK[F.infil]=S.H2O_PAW;
-        FIOMATRIX.SOURCE[F.evap]=S.H2O_PAW;
-        FIOMATRIX.SOURCE[F.transp]=S.H2O_PAW;
+        FIOMATRIX.SOURCE[F.et]=S.H2O_PAW;
         FIOMATRIX.SOURCE[F.paw2puw]=S.H2O_PAW;
         FIOMATRIX.SOURCE[F.q_paw]=S.H2O_PAW;
 
@@ -466,7 +465,7 @@ FLUXES[f+F.sublimation]=SNOWLOSS*pars[P.subfrac];
 
 
 // Evapotranspiration
-FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp] + FLUXES[f+F.sublimation];
+FLUXES[f+F.ets]=FLUXES[f+F.evap]+FLUXES[f+F.transp] + FLUXES[f+F.sublimation];
 
 POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat; /*second step remove snowmelt from SWE*/
 
@@ -515,7 +514,7 @@ FLUXES[f+F.LWout]=LWout;
         
 //Latent heat of Vaporization J kg-1 
 double lambda = DGCM_LATENT_HEAT_VAPORIZATION; //2.501*1e6 J kg-1 
-//Latente heat (W.m-2)
+//Latent heat (W.m-2)
 double LE = lambda*FLUXES[f+F.et]/DGCM_SEC_DAY; // W m-2
 FLUXES[f+F.latent_heat] = LE; // W m-2
 //specific heat capacity of dry air is 1.00464 KJ kg -1 K -1
@@ -647,7 +646,7 @@ if (FLUXES[f+F.melt]>0){infiltemp = (infiltemp-DGCM_TK0C)*(PREC[n] - SNOWFALL[n]
 //All energy fluxes
 
 FLUXES[f+F.infil_e] = FLUXES[f+F.infil]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(infiltemp);
-FLUXES[f+F.et_e] = FLUXES[f+F.et]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PAW]);
+FLUXES[f+F.et_e] = (FLUXES[f+F.transp]+FLUXES[f+F.evap])*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PAW]);
 FLUXES[f+F.paw2puw_e] = FLUXES[f+F.paw2puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(TEMPxfer);
 FLUXES[f+F.q_paw_e] = FLUXES[f+F.q_paw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PAW]);
 FLUXES[f+F.q_puw_e] =  FLUXES[f+F.q_puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PUW]);
@@ -935,7 +934,7 @@ DALECmodel->nopools=22;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=80;
 DALECmodel->nofluxes=73;
-DALECmodel->noedcs=7;
+DALECmodel->noedcs=9;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
@@ -1145,7 +1144,8 @@ EDC_st.pool_indices[11]=S.E_PUW;
 
 
 for (n=0;n<12;n++){EDC_st.pool_eqf[n]=2;}
-EDC_st.pool_eqf[10]=1.05;
+// EDC_st.pool_eqf[10]=1.05;
+// EDC_st.pool_eqf[11]=1.05;
 
 // //Rest can be done by code without additional input
     
@@ -1178,18 +1178,19 @@ EDCs[E.state_trajectories].prerun=false;
 
 
 
-static DALEC_EDC_MEAN_PAW_TEMP_STRUCT EDC_mean_paw_temp;
+static DALEC_EDC_MEAN_TEMP_STRUCT EDC_mean_paw_temp, EDC_mean_puw_temp;
 
     //
-    EDC_mean_paw_temp.paw_temp_index=S.D_TEMP_PAW;
-
-
-
-
-
+    EDC_mean_paw_temp.temp_index=S.D_TEMP_PAW;
     EDCs[E.mean_paw_temp].data=&EDC_mean_paw_temp;
-    EDCs[E.mean_paw_temp].function=&DALEC_EDC_MEAN_PAW_TEMP;
+    EDCs[E.mean_paw_temp].function=&DALEC_EDC_MEAN_TEMP;
     EDCs[E.mean_paw_temp].prerun=false;
+
+
+    EDC_mean_puw_temp.temp_index=S.D_TEMP_PUW;
+    EDCs[E.mean_puw_temp].data=&EDC_mean_puw_temp;
+    EDCs[E.mean_puw_temp].function=&DALEC_EDC_MEAN_TEMP;
+    EDCs[E.mean_puw_temp].prerun=false;
 
 
 
@@ -1244,7 +1245,7 @@ OBSOPE.Rauto_flux=F.resp_auto;
 //LAI-specific variables
 OBSOPE.LAI_pool=S.D_LAI;
 //ET variabiles
-OBSOPE.ET_flux=F.et;
+OBSOPE.ET_flux=F.ets;
 //Runoff variables
 static int ROFF_fluxes[3];
 ROFF_fluxes[0]=F.q_paw;
