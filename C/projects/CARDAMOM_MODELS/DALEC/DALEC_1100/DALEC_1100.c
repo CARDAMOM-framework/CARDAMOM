@@ -1115,11 +1115,11 @@ EDCs[E.paw_start_temp].prerun=true;
 
  static DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
  
- static int edc_pool_indices[10];
-    static double edc_pool_eqf[10];
+ static int edc_pool_indices[12];
+    static double edc_pool_eqf[12];
 EDC_st.pool_indices=edc_pool_indices;
 EDC_st.pool_eqf=edc_pool_eqf;
-EDC_st.no_pools_to_check=10;
+EDC_st.no_pools_to_check=12;
             
 //EDC_st.pool_indices[0]=S.E_PAW;
 //EDC_st.pool_indices[1]=S.E_PUW;
