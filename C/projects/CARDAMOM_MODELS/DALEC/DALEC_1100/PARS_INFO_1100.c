@@ -153,7 +153,7 @@ parmax[P.PUW_por]=0.8;
 /*Field capacity (negative) potential (-Mpa)*/
 parmin[P.field_cap]=0.01;
 parmax[P.field_cap]=0.1;
-
+    
 /*PAW depth (m)*/
 parmin[P.PAW_z]=0.01;
 parmax[P.PAW_z]=20;
@@ -180,7 +180,7 @@ parmax[P.Med_g1]=5.79;
 
 /*Vcmax25*/
 parmin[P.Vcmax25]=10;
-parmax[P.Vcmax25]=500;
+parmax[P.Vcmax25]=150;
 
 /*Tminmin scaling factor*/
 parmin[P.Tminmin]=258.15;
