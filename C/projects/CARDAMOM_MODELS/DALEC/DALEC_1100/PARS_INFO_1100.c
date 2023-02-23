@@ -179,7 +179,7 @@ parmin[P.Med_g1]=1.79;
 parmax[P.Med_g1]=5.79;
 
 /*Vcmax25*/
-parmin[P.Vcmax25]=10;
+parmin[P.Vcmax25]=1;
 parmax[P.Vcmax25]=150;
 
 /*Tminmin scaling factor*/
@@ -219,8 +219,8 @@ parmin[P.i_SWE]=0.000001;
 parmax[P.i_SWE]=10000;
 
 /*sn1: min threshold for melt*/
-parmin[P.min_melt]=240;
-parmax[P.min_melt]=270;
+parmin[P.min_melt]=263.15;
+parmax[P.min_melt]=283.15;
 
 /*sn2: slope*/
 parmin[P.melt_slope]=0.00001;
@@ -342,9 +342,9 @@ parmax[P.q10canopy]=5;
 parmin[P.canopyRdsf]=0.005;
 parmax[P.canopyRdsf]=0.025;
 
-        /*Surface soil thermal conductivity in W/m/K */
-parmin[P.subfrac]=0.01;
-parmax[P.subfrac]=1;
+        /*Sublimation rate: mm/day/SCF/kPha/(MJ/m2/d) Biggest = 1/0.5/2/2; Smallest = 1/1/10/10/*/
+parmin[P.sublimation_rate]=0.001;
+parmax[P.sublimation_rate]=10;
 
   
 return 0;

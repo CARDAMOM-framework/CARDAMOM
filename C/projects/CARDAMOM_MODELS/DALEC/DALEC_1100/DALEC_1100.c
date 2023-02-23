@@ -463,11 +463,29 @@ FLUXES[f+F.evap] = LIU.OUT.evap;
 /*Snow water equivalent*/
 FLUXES[f+F.snowfall] = SNOWFALL[n];
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snowfall]*deltat; /*first step snowfall to SWE*/
- double SNOWLOSS=fmin(fmax((air_temp_k-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
+//transient_SCF
+double SCFtemp = POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);
+    //Snow melt, based on new SWE
+ double SNOWMELT=fmin(fmax((DGCM_TK0C+SKT[n]-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
+double SUBLIMATION =  pars[P.sublimation_rate]*VPD[n]*SCFtemp;
 
- //Splitting snow loss into sublimation and snow melt with constant frac
-FLUXES[f+F.melt]=SNOWLOSS*(1-pars[P.subfrac]);
-FLUXES[f+F.sublimation]=SNOWLOSS*pars[P.subfrac];
+double slf=(SNOWMELT + SUBLIMATION)*deltat/POOLS[nxp+S.H2O_SWE];
+    if (slf>1){
+        FLUXES[f+F.melt]=SNOWMELT/slf;
+        FLUXES[f+F.sublimation]=SUBLIMATION/slf;}
+        else{
+                  FLUXES[f+F.melt]=SNOWMELT;
+        FLUXES[f+F.sublimation]=SUBLIMATION;}
+
+
+// 
+//  //Splitting snow loss into sublimation and snow melt with constant frac
+// FLUXES[f+F.melt]=SNOWMELT;
+//     //    POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
+// 
+// FLUXES[f+F.sublimation]=fmax( pars[P.sublimation_rate]*VPD[n]*SRAD[n]*POOLS[nxp+S.D_SCF]);
+// 
+
 
 
 // Evapotranspiration
@@ -1146,11 +1164,11 @@ EDCs[E.puw_start_temp].prerun=true;
 
  static DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
  
- static int edc_pool_indices[12];
-    static double edc_pool_eqf[12];
+ static int edc_pool_indices[11];
+    static double edc_pool_eqf[11];
 EDC_st.pool_indices=edc_pool_indices;
 EDC_st.pool_eqf=edc_pool_eqf;
-EDC_st.no_pools_to_check=12;
+EDC_st.no_pools_to_check=11;
             
 //EDC_st.pool_indices[0]=S.E_PAW;
 //EDC_st.pool_indices[1]=S.E_PUW;
@@ -1168,18 +1186,18 @@ EDC_st.pool_indices[4]=S.C_cwd;
 EDC_st.pool_indices[5]=S.C_lit;
 EDC_st.pool_indices[6]=S.C_som;
 EDC_st.pool_indices[7]=S.H2O_PAW;
-EDC_st.pool_indices[8]=S.H2O_SWE;
-EDC_st.pool_indices[9]=S.E_PAW;
-EDC_st.pool_indices[10]=S.H2O_PUW;
-EDC_st.pool_indices[11]=S.E_PUW;
-//EDC_st.pool_indices[12]=S.M_LAI_MAX;
+EDC_st.pool_indices[8]=S.E_PAW;
+EDC_st.pool_indices[9]=S.H2O_PUW;
+EDC_st.pool_indices[10]=S.E_PUW;
+//EDC_st.pool_indices[8]=S.H2O_SWE;
+//EDC_st.pool_indices[12]=S.M_LAI_MAX;```
 //EDC_st.pool_indices[13]=S.M_LAI_TEMP;
 
 
 
 for (n=0;n<EDC_st.no_pools_to_check;n++){EDC_st.pool_eqf[n]=DATA->ncdf_data.EDC_EQF;printf("DATA->ncdf_data.EDC_EQF = %2.2f\n",DATA->ncdf_data.EDC_EQF);}
-// EDC_st.pool_eqf[10]=1.05;
-// EDC_st.pool_eqf[11]=1.05;
+//  EDC_st.pool_eqf[9]=10;
+//     EDC_st.pool_eqf[10]=10;
 
 // //Rest can be done by code without additional input
     
