@@ -93,7 +93,6 @@ DATA->M_SCF=calloc(Ntimesteps,sizeof(double));//Warning, LAI larger than this!
 	DATA->M_EDCs=calloc(DATA->noedcs,sizeof(double));
 
 
-
 printf("Done with dynamic memory declaration\n");
 
 return 0;
@@ -138,10 +137,11 @@ printf("Successfully read NETCDF data...\n");
 // OBS_STRUCT_PREPROCESS(DATA->ncdf_data->ET);
 
 
+    //Setting number of EDCs to 100 as default.
+DATA->noedcs=100;
 
 
 	CARDAMOM_MODEL_LIBRARY(DATA);
-        /*This will eventually be obsolete*/
 
 
 
@@ -173,6 +173,7 @@ printf("***About to do dynamic allocation***\n");
 	CARDAMOM_DATA_CHECKS(DATA);
 
 
+printf("DATA->noedcs = %i\n",DATA->noedcs);
 printf("Done reading all data...\n");
 
 return 0;
