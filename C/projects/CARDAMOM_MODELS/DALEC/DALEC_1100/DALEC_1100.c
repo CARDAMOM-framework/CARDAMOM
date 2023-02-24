@@ -1164,11 +1164,11 @@ EDCs[E.puw_start_temp].prerun=true;
 
  static DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
  
- static int edc_pool_indices[11];
-    static double edc_pool_eqf[11];
+ static int edc_pool_indices[12];
+    static double edc_pool_eqf[12];
 EDC_st.pool_indices=edc_pool_indices;
 EDC_st.pool_eqf=edc_pool_eqf;
-EDC_st.no_pools_to_check=11;
+EDC_st.no_pools_to_check=12;
             
 //EDC_st.pool_indices[0]=S.E_PAW;
 //EDC_st.pool_indices[1]=S.E_PUW;
@@ -1189,7 +1189,7 @@ EDC_st.pool_indices[7]=S.H2O_PAW;
 EDC_st.pool_indices[8]=S.E_PAW;
 EDC_st.pool_indices[9]=S.H2O_PUW;
 EDC_st.pool_indices[10]=S.E_PUW;
-//EDC_st.pool_indices[8]=S.H2O_SWE;
+EDC_st.pool_indices[11]=S.H2O_SWE;
 //EDC_st.pool_indices[12]=S.M_LAI_MAX;```
 //EDC_st.pool_indices[13]=S.M_LAI_TEMP;
 
