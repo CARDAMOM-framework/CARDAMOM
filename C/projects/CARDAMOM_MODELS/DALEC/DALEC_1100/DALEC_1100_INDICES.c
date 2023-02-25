@@ -90,7 +90,7 @@ int thermal_cond;
 int thermal_cond_surf;
 int q10canopy;
 int canopyRdsf;
-int subfrac;
+int sublimation_rate;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -99,7 +99,7 @@ int subfrac;
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
-    70,71,72,73,74,75,76,77,78,79
+    70,71,72,73,74,75,76,77,78,79,
 };
 
 struct DALEC_1100_FLUXES{
@@ -131,6 +131,7 @@ int fx_woo2cwd;   /*Fire transfer wood to CWD*/
 int fx_cwd2som;   /*Fire transfer CWD to soil*/
 int fx_lit2som;   /*Fire transfer litter to soil*/
 int et;   /*Evapotranspiration*/
+int ets;   /*Evapotranspiration + sublimation*/
 int q_paw;   /*PAW runoff*/
 int paw2puw;   /*PAW->PUW transfer*/
 int q_puw;   /*PUW runoff*/
@@ -177,6 +178,7 @@ int LWout;
 int paw2puw_th_e;
 int resp_auto_maint_dark;
 int sublimation;
+int geological;
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -185,7 +187,7 @@ int sublimation;
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
-    70,71,72
+    70,71,72,73,74
 };
 
 
@@ -215,25 +217,29 @@ int D_LF_PAW;//PAW liquid h2o frac
 int D_LF_PUW;//PUW liquid h2o frac
 int D_SM_PAW;//PAW soil moisture
 int D_SM_PUW;//PUW soil moisture
+int D_PSI_PAW;//PAW soil moisture
+int D_PSI_PUW;//PUW soil moisture
 int M_LAI_MAX;//KNORR LAI module max LAI memory
 int M_LAI_TEMP;//KNORR LAI module temp memory
 } DALEC_1100_POOLS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
-    20,21
+    20,21,22,23
 };
 
 struct DALEC_1100_EDCs{
 int paw_start_temp;
+int puw_start_temp;
 int litcwdtor;
 int cwdsomtor;
 int mr_rates;
 int mean_paw_temp;
+int mean_puw_temp;
 int nsc_ratio;
 int state_trajectories;
 int state_ranges;
 } DALEC_1100_EDCs={
-   0,1,2,3,4,5,6,7
+   0,1,2,3,4,5,6,7,8,9
 };
 
 

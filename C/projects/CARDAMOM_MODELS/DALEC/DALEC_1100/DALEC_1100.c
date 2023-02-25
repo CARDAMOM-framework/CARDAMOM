@@ -106,8 +106,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
 
         // H2O_PAW
         FIOMATRIX.SINK[F.infil]=S.H2O_PAW;
-        FIOMATRIX.SOURCE[F.evap]=S.H2O_PAW;
-        FIOMATRIX.SOURCE[F.transp]=S.H2O_PAW;
+        FIOMATRIX.SOURCE[F.et]=S.H2O_PAW;
         FIOMATRIX.SOURCE[F.paw2puw]=S.H2O_PAW;
         FIOMATRIX.SOURCE[F.q_paw]=S.H2O_PAW;
 
@@ -125,6 +124,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
 
         // E_PUW
         FIOMATRIX.SINK[F.paw2puw_e]=S.E_PUW;
+        FIOMATRIX.SINK[F.geological]=S.E_PUW;
         FIOMATRIX.SINK[F.paw2puw_th_e]=S.E_PUW;
         FIOMATRIX.SOURCE[F.q_puw_e]=S.E_PUW;
 
@@ -215,17 +215,26 @@ double *POOLS=DATA.M_POOLS;
     POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]);} //snow cover fraction}
     else
     {POOLS[S.D_SCF]=0;};
-    
-    
-    //INITIALIZING PAW and PUW soil moisture
-        POOLS[S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
-        POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);//soil moisture PUW
+
 
         //Diagnostic time-invariant quantities
+        // Porosity scaling factor (see line 124 of HESS paper)
+        double psi_porosity = -0.117/100;
         double PAWmax=pars[P.PAW_por]*pars[P.PAW_z]*1000; //PAW capacity in mm
         double PUWmax=pars[P.PUW_por]*pars[P.PUW_z]*1000; //PUW capacity in mm
         
         
+    
+    //INITIALIZING PAW and PUW soil moisture
+        POOLS[S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
+        POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);//soil moisture PUW
+// Convert to potential
+
+        POOLS[S.D_PSI_PAW]=HYDROFUN_MOI2PSI(  POOLS[S.D_SM_PAW],psi_porosity,pars[P.retention]);
+        POOLS[S.D_PSI_PUW]=HYDROFUN_MOI2PSI(  POOLS[S.D_SM_PUW],psi_porosity,pars[P.retention]);
+
+
+
         
     //Declare stryct
     SOIL_TEMP_AND_LIQUID_FRAC_STRUCT PAWSOILTEMP, PUWSOILTEMP;
@@ -325,10 +334,6 @@ double *POOLS=DATA.M_POOLS;
 
 
 
-
-// Porosity scaling factor (see line 124 of HESS paper)
-double psi_porosity = -0.117/100;
-
 /*Combustion factors*/
 double CF[7];//AAB changed this
 CF[S.C_lab]=pars[P.cf_ligneous];
@@ -405,8 +410,8 @@ else {
 // H2O stress scaling factor
 	//We're also multiplying beta by cold-weather stress 
 //double psi_PAW0 = HYDROFUN_MOI2PSI(max(POOLS[p+S.D_SM_PAW],0),psi_porosity,pars[P.retention]);
-double psi_PAW0 = HYDROFUN_MOI2PSI(POOLS[p+S.D_SM_PAW],psi_porosity,pars[P.retention]);
-double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*psi_PAW0/pars[P.psi_50] - 1)));
+//double psi_PAW0 = HYDROFUN_MOI2PSI(POOLS[p+S.D_SM_PAW],psi_porosity,pars[P.retention_paw]);
+double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_PAW]/pars[P.psi_50] - 1)));
 
 // mean air temperature (K)
 double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
@@ -458,15 +463,34 @@ FLUXES[f+F.evap] = LIU.OUT.evap;
 /*Snow water equivalent*/
 FLUXES[f+F.snowfall] = SNOWFALL[n];
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snowfall]*deltat; /*first step snowfall to SWE*/
- double SNOWLOSS=fmin(fmax((air_temp_k-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
+//transient_SCF
+double SCFtemp = POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);
+    //Snow melt, based on new SWE
+ double SNOWMELT=fmin(fmax((DGCM_TK0C+SKT[n]-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
+double SUBLIMATION =  pars[P.sublimation_rate]*VPD[n]*SCFtemp;
 
- //Splitting snow loss into sublimation and snow melt with constant frac
-FLUXES[f+F.melt]=SNOWLOSS*(1-pars[P.subfrac]);
-FLUXES[f+F.sublimation]=SNOWLOSS*pars[P.subfrac];
+double slf=(SNOWMELT + SUBLIMATION)*deltat/POOLS[nxp+S.H2O_SWE];
+    if (slf>1){
+        FLUXES[f+F.melt]=SNOWMELT/slf;
+        FLUXES[f+F.sublimation]=SUBLIMATION/slf;}
+        else{
+                  FLUXES[f+F.melt]=SNOWMELT;
+        FLUXES[f+F.sublimation]=SUBLIMATION;}
+
+
+// 
+//  //Splitting snow loss into sublimation and snow melt with constant frac
+// FLUXES[f+F.melt]=SNOWMELT;
+//     //    POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
+// 
+// FLUXES[f+F.sublimation]=fmax( pars[P.sublimation_rate]*VPD[n]*SRAD[n]*POOLS[nxp+S.D_SCF]);
+// 
+
 
 
 // Evapotranspiration
-FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp] + FLUXES[f+F.sublimation];
+FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
+FLUXES[f+F.ets]=FLUXES[f+F.et] + FLUXES[f+F.sublimation];
 
 POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat; /*second step remove snowmelt from SWE*/
 
@@ -515,7 +539,7 @@ FLUXES[f+F.LWout]=LWout;
         
 //Latent heat of Vaporization J kg-1 
 double lambda = DGCM_LATENT_HEAT_VAPORIZATION; //2.501*1e6 J kg-1 
-//Latente heat (W.m-2)
+//Latent heat (W.m-2)
 double LE = lambda*FLUXES[f+F.et]/DGCM_SEC_DAY; // W m-2
 FLUXES[f+F.latent_heat] = LE; // W m-2
 //specific heat capacity of dry air is 1.00464 KJ kg -1 K -1
@@ -560,8 +584,8 @@ FLUXES[f+F.q_surf] = liquid_in - FLUXES[f+F.infil];
 
 // Volumetric soil moisture from water pools
 // Include infiltration into PAW ()
-double sm_PAW = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);
-double sm_PUW = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);
+// double sm_PAW = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]);
+// double sm_PUW = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);
 
 // Update PAW SM with infiltration
 //sm_PAW += HYDROFUN_EWT2MOI(infil*deltat,pars[P.PAW_por],pars[P.PAW_z]);
@@ -569,8 +593,8 @@ double sm_PUW = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z
 // Calculate drainage
 
 //printf("POOLS[p+S.D_LF_PAW] = %2.2f\n",POOLS[p+S.D_LF_PAW]);
-double drain_PAW = POOLS[p+S.D_LF_PAW]*DRAINAGE(sm_PAW,pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
-double drain_PUW = POOLS[p+S.D_LF_PUW]*DRAINAGE(sm_PUW,pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
+double drain_PAW = POOLS[p+S.D_LF_PAW]*DRAINAGE(POOLS[p+S.D_SM_PAW],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
+double drain_PUW = POOLS[p+S.D_LF_PUW]*DRAINAGE(POOLS[p+S.D_SM_PUW],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
 
 // Drainage becomes runoff from pools
 FLUXES[f+F.q_paw] = HYDROFUN_MOI2EWT(drain_PAW,pars[P.PAW_por],pars[P.PAW_z])/deltat;
@@ -582,17 +606,17 @@ FLUXES[f+F.q_puw] = HYDROFUN_MOI2EWT(drain_PUW,pars[P.PUW_por],pars[P.PUW_z])/de
 // sm_PUW -= drain_PUW;
 
 // Convert to conductivity
-double k_PAW = HYDROFUN_MOI2CON(sm_PAW,pars[P.hydr_cond],pars[P.retention]);
-double k_PUW = HYDROFUN_MOI2CON(sm_PUW,pars[P.hydr_cond],pars[P.retention]);
+double k_PAW = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_PAW],pars[P.hydr_cond],pars[P.retention]);
+double k_PUW = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_PUW],pars[P.hydr_cond],pars[P.retention]);
 
-// Convert to potential
-double psi_PAW = HYDROFUN_MOI2PSI(sm_PAW,psi_porosity,pars[P.retention]);
-double psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[P.retention]);
+// // Convert to potential
+// double psi_PAW = HYDROFUN_MOI2PSI(sm_PAW,psi_porosity,pars[P.retention_paw]);
+// double psi_PUW = HYDROFUN_MOI2PSI(sm_PUW,psi_porosity,pars[P.retention_puw]);
 
 
 
 // Calculate inter-pool transfer in m/s (positive is PAW to PUW)
-double pot_xfer = 1000 * sqrt(k_PAW*k_PUW) * (1000*(psi_PAW-psi_PUW)/(9.8*0.5*(pars[P.PAW_z]+pars[P.PUW_z])) + 1);
+double pot_xfer = 1000 * sqrt(k_PAW*k_PUW) * (1000*(POOLS[p+S.D_PSI_PAW]-POOLS[p+S.D_PSI_PUW])/(9.8*0.5*(pars[P.PAW_z]+pars[P.PUW_z])) + 1);
 double SPACEavail, H2Oavail, PAW2PUWmax, TEMPxfer;
 if (pot_xfer>0) {//Water is going PAW->PUW (down)
 // Available space in PUW (after runoff)
@@ -620,6 +644,9 @@ FLUXES[f+F.paw2puw] = -fmin(-PAW2PUWmax , fmin(SPACEavail, H2Oavail))/deltat;
 TEMPxfer= POOLS[p+S.D_TEMP_PUW];//In K
 }
 
+  
+
+
 
 // Update pools, including ET from PAW
 POOLS[nxp+S.H2O_PAW] = POOLS[p+S.H2O_PAW] + (FLUXES[f+F.infil] - FLUXES[f+F.paw2puw] - FLUXES[f+F.q_paw] - FLUXES[f+F.evap] - FLUXES[f+F.transp])*deltat;
@@ -633,7 +660,7 @@ FLUXES[f+F.q_paw] +=(POOLS[nxp+S.H2O_PAW]-PAWmax)/deltat;
 POOLS[nxp+S.H2O_PAW]=PAWmax;}
 
 if (POOLS[nxp+S.H2O_PUW]>PUWmax){
-//Dump excess into PAW Q
+//Dump excess into PUW Q
 FLUXES[f+F.q_puw] +=(POOLS[nxp+S.H2O_PUW]-PUWmax)/deltat;
 POOLS[nxp+S.H2O_PUW]=PUWmax;}
 
@@ -647,7 +674,7 @@ if (FLUXES[f+F.melt]>0){infiltemp = (infiltemp-DGCM_TK0C)*(PREC[n] - SNOWFALL[n]
 //All energy fluxes
 
 FLUXES[f+F.infil_e] = FLUXES[f+F.infil]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(infiltemp);
-FLUXES[f+F.et_e] = FLUXES[f+F.et]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PAW]);
+FLUXES[f+F.et_e] = (FLUXES[f+F.transp]+FLUXES[f+F.evap])*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PAW]);
 FLUXES[f+F.paw2puw_e] = FLUXES[f+F.paw2puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(TEMPxfer);
 FLUXES[f+F.q_paw_e] = FLUXES[f+F.q_paw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PAW]);
 FLUXES[f+F.q_puw_e] =  FLUXES[f+F.q_puw]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_PUW]);
@@ -663,8 +690,10 @@ FLUXES[f+F.paw2puw_th_e] = 2*pars[P.thermal_cond]* (POOLS[p+S.D_TEMP_PAW] - POOL
 //double frac_paw = POOLS[nxp+S.H2O_PAW]/(POOLS[nxp+S.H2O_PAW]+POOLS[nxp+S.H2O_PUW]);
         // E_PAW
 
+
+    FLUXES[f+F.geological]=0.105*3600*24;//In J/m2/d //105mW/m2
 POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (FLUXES[f+F.gh_in] + FLUXES[f+F.infil_e] - FLUXES[f+F.et_e]  - FLUXES[f+F.q_paw_e] - FLUXES[f+F.paw2puw_e] - FLUXES[f+F.paw2puw_th_e])*deltat;  
-POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_puw_e] +FLUXES[f+F.paw2puw_th_e])*deltat; 
+POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_puw_e] +FLUXES[f+F.paw2puw_th_e] + FLUXES[f + F.geological])*deltat; 
 
 
 
@@ -910,6 +939,9 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
         POOLS[nxp+S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);//soil moisture PUW
 
 
+        POOLS[nxp+S.D_PSI_PAW]=HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_PAW],psi_porosity,pars[P.retention]);
+        POOLS[nxp+S.D_PSI_PUW]=HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_PUW],psi_porosity,pars[P.retention]);
+
 
 }
 
@@ -931,11 +963,11 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
 
 DALECmodel->dalec=DALEC_1100;
-DALECmodel->nopools=22;
+DALECmodel->nopools=24;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=80;
-DALECmodel->nofluxes=73;
-DALECmodel->noedcs=7;
+DALECmodel->nofluxes=75;
+DALECmodel->noedcs=10;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
@@ -1080,7 +1112,7 @@ EDCs[E.mr_rates].prerun=true;
 
 
 
-  static DALEC_EDC_START_TEMP_STRUCT EDC_paw_start_temp;
+  static DALEC_EDC_START_TEMP_STRUCT EDC_paw_start_temp, EDC_puw_start_temp;
 
 
 //Calculating min LST and MAX LST
@@ -1099,12 +1131,28 @@ EDC_paw_start_temp.por_idx=P.PAW_por;
  EDC_paw_start_temp.i_SM_idx=P.i_PAW_SM;
 EDC_paw_start_temp.i_E_idx=P.i_PAW_E;
 
+
+
  EDCs[E.paw_start_temp].data=&EDC_paw_start_temp;
  EDCs[E.paw_start_temp].function=&DALEC_EDC_START_TEMP;
 EDCs[E.paw_start_temp].prerun=true;
 // 
 
 
+ EDC_puw_start_temp.min_temp=minlst+DGCM_TK0C;
+EDC_puw_start_temp.max_temp=maxlst+DGCM_TK0C;
+EDC_puw_start_temp.vhc_idx=P.PUW_vhc;
+EDC_puw_start_temp.por_idx=P.PUW_por;
+ EDC_puw_start_temp.z_idx=P.PUW_z;
+ EDC_puw_start_temp.i_SM_idx=P.i_PUW_SM;
+EDC_puw_start_temp.i_E_idx=P.i_PUW_E;
+
+
+
+EDCs[E.puw_start_temp].data=&EDC_puw_start_temp;
+ EDCs[E.puw_start_temp].function=&DALEC_EDC_START_TEMP;
+EDCs[E.puw_start_temp].prerun=true;
+// // 
 
 
 
@@ -1117,7 +1165,9 @@ EDCs[E.paw_start_temp].prerun=true;
  static DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
  
  static int edc_pool_indices[12];
+    static double edc_pool_eqf[12];
 EDC_st.pool_indices=edc_pool_indices;
+EDC_st.pool_eqf=edc_pool_eqf;
 EDC_st.no_pools_to_check=12;
             
 //EDC_st.pool_indices[0]=S.E_PAW;
@@ -1136,10 +1186,18 @@ EDC_st.pool_indices[4]=S.C_cwd;
 EDC_st.pool_indices[5]=S.C_lit;
 EDC_st.pool_indices[6]=S.C_som;
 EDC_st.pool_indices[7]=S.H2O_PAW;
-EDC_st.pool_indices[8]=S.H2O_PUW;
-EDC_st.pool_indices[9]=S.H2O_SWE;
-EDC_st.pool_indices[10]=S.E_PAW;
-EDC_st.pool_indices[11]=S.E_PUW;
+EDC_st.pool_indices[8]=S.E_PAW;
+EDC_st.pool_indices[9]=S.H2O_PUW;
+EDC_st.pool_indices[10]=S.E_PUW;
+EDC_st.pool_indices[11]=S.H2O_SWE;
+//EDC_st.pool_indices[12]=S.M_LAI_MAX;```
+//EDC_st.pool_indices[13]=S.M_LAI_TEMP;
+
+
+
+for (n=0;n<EDC_st.no_pools_to_check;n++){EDC_st.pool_eqf[n]=DATA->ncdf_data.EDC_EQF;printf("DATA->ncdf_data.EDC_EQF = %2.2f\n",DATA->ncdf_data.EDC_EQF);}
+//  EDC_st.pool_eqf[9]=10;
+//     EDC_st.pool_eqf[10]=10;
 
 // //Rest can be done by code without additional input
     
@@ -1172,18 +1230,19 @@ EDCs[E.state_trajectories].prerun=false;
 
 
 
-static DALEC_EDC_MEAN_PAW_TEMP_STRUCT EDC_mean_paw_temp;
+static DALEC_EDC_MEAN_TEMP_STRUCT EDC_mean_paw_temp, EDC_mean_puw_temp;
 
     //
-    EDC_mean_paw_temp.paw_temp_index=S.D_TEMP_PAW;
-
-
-
-
-
+    EDC_mean_paw_temp.temp_index=S.D_TEMP_PAW;
     EDCs[E.mean_paw_temp].data=&EDC_mean_paw_temp;
-    EDCs[E.mean_paw_temp].function=&DALEC_EDC_MEAN_PAW_TEMP;
+    EDCs[E.mean_paw_temp].function=&DALEC_EDC_MEAN_TEMP;
     EDCs[E.mean_paw_temp].prerun=false;
+
+
+    EDC_mean_puw_temp.temp_index=S.D_TEMP_PUW;
+    EDCs[E.mean_puw_temp].data=&EDC_mean_puw_temp;
+    EDCs[E.mean_puw_temp].function=&DALEC_EDC_MEAN_TEMP;
+    EDCs[E.mean_puw_temp].prerun=false;
 
 
 
@@ -1238,7 +1297,7 @@ OBSOPE.Rauto_flux=F.resp_auto;
 //LAI-specific variables
 OBSOPE.LAI_pool=S.D_LAI;
 //ET variabiles
-OBSOPE.ET_flux=F.et;
+OBSOPE.ET_flux=F.ets;
 //Runoff variables
 static int ROFF_fluxes[3];
 ROFF_fluxes[0]=F.q_paw;
