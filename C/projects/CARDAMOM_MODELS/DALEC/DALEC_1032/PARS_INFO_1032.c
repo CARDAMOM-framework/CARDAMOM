@@ -1,4 +1,6 @@
 #pragma once
+#include "DALEC_1032.c"
+
 /*PARAMETER_INFO (typedef struct) must have at least 3 fields
  *  * npars,
  *   * parmax
@@ -8,168 +10,170 @@
 /*MCMC sampling of GPP allocation priors approximated as 0.01-0.5 NPP for*/
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
-int PARS_INFO_1032(DATA *CARDADATA)
+int PARS_INFO_1032(double *parmin, double *parmax)
 {
 
+struct DALEC_1032_PARAMETERS P=DALEC_1032_PARAMETERS;
+
 /*Decomposition rate*/
-CARDADATA->parmin[0]=0.00001;
-CARDADATA->parmax[0]=0.01;
+parmin[P.tr_lit2soil]=0.00001;
+parmax[P.tr_lit2soil]=0.01;
 
 /*Fraction of GPP respired*/
-CARDADATA->parmin[1]=0.2;
-CARDADATA->parmax[1]=0.8;
+parmin[P.f_auto]=0.2;
+parmax[P.f_auto]=0.8;
 
 /*Fraction of (1-fgpp) to foliage*/
-CARDADATA->parmin[2]=0.01;
-CARDADATA->parmax[2]=0.5;
+parmin[P.f_foliar]=0.01;
+parmax[P.f_foliar]=0.5;
 
 /*Fraction of (1-fgpp) to roots*/
-CARDADATA->parmin[3]=0.01;
-CARDADATA->parmax[3]=1;
+parmin[P.f_root]=0.01;
+parmax[P.f_root]=1;
 
 /*Leaf Lifespan*/
-CARDADATA->parmin[4]=1.001;
-CARDADATA->parmax[4]=8;
+parmin[P.t_foliar]=1.001;
+parmax[P.t_foliar]=8;
 
 /*TOR wood* - 1% loss per year value*/
-CARDADATA->parmin[5]=0.000025;
-CARDADATA->parmax[5]=0.001;
+parmin[P.t_wood]=0.000025;
+parmax[P.t_wood]=0.001;
 
 /*TOR roots*/
-CARDADATA->parmin[6]=0.0001;
-CARDADATA->parmax[6]=0.01;
+parmin[P.t_root]=0.0001;
+parmax[P.t_root]=0.01;
 
 /*TOR litter*/
-CARDADATA->parmin[7]=0.0001;
-CARDADATA->parmax[7]=0.01;
+parmin[P.t_lit]=0.0001;
+parmax[P.t_lit]=0.01;
 
 /*TOR SOM*/
-CARDADATA->parmin[8]=0.0000001;
-CARDADATA->parmax[8]=0.001;
+parmin[P.t_soil]=0.0000001;
+parmax[P.t_soil]=0.001;
 
 /*Temp factor* = Q10 = 1.2-1.6*/
-CARDADATA->parmin[9]=0.018;
-CARDADATA->parmax[9]=0.08;
+parmin[P.temp_factor]=0.018;
+parmax[P.temp_factor]=0.08;
 
 /*Canopy Efficiency*/
-CARDADATA->parmin[10]=5;
-CARDADATA->parmax[10]=50;
+parmin[P.canopy_eff]=5;
+parmax[P.canopy_eff]=50;
 
 /*Bday*/
-CARDADATA->parmin[11]=365.25;
-CARDADATA->parmax[11]=365.25*4;
+parmin[P.Bday]=365.25;
+parmax[P.Bday]=365.25*4;
 
 /*Fraction to Clab*/
-CARDADATA->parmin[12]=0.01;
-CARDADATA->parmax[12]=0.5;
+parmin[P.f_lab]=0.01;
+parmax[P.f_lab]=0.5;
 
 /*Clab Release period*/
-CARDADATA->parmin[13]=365.25/12;
-CARDADATA->parmax[13]=100;
+parmin[P.labile_rel]=365.25/12;
+parmax[P.labile_rel]=100;
 
 /*Fday*/
-CARDADATA->parmin[14]=365.25;
-CARDADATA->parmax[14]=365.25*4;
+parmin[P.Fday]=365.25;
+parmax[P.Fday]=365.25*4;
 
 /*Leaf fall period*/
-CARDADATA->parmin[15]=365.25/12;
-CARDADATA->parmax[15]=150;
+parmin[P.leaf_fall]=365.25/12;
+parmax[P.leaf_fall]=150;
 
 /*LMCA*/
 /*Kattge et al. 2011*/
 /*Kattge et al., provide a range of 10 400 g m-2, i.e. 5 200 gC m-2*/
-CARDADATA->parmin[16]=5;
-CARDADATA->parmax[16]=200;
+parmin[P.LCMA]=5;
+parmax[P.LCMA]=200;
 
 /*INITIAL VALUES DECLARED HERE*/
 
 /*C labile*/
-CARDADATA->parmin[17]=1.0;
-CARDADATA->parmax[17]=2000.0;
+parmin[P.i_labile]=1.0;
+parmax[P.i_labile]=2000.0;
 
 /*C foliar*/
-CARDADATA->parmin[18]=1.0;
-CARDADATA->parmax[18]=2000.0;
+parmin[P.i_foliar]=1.0;
+parmax[P.i_foliar]=2000.0;
 
 /*C roots*/
-CARDADATA->parmin[19]=1.0;
-CARDADATA->parmax[19]=2000.0;
+parmin[P.i_root]=1.0;
+parmax[P.i_root]=2000.0;
 
 /*C_wood*/
-CARDADATA->parmin[20]=1.0;
-CARDADATA->parmax[20]=100000.0;
+parmin[P.i_wood]=1.0;
+parmax[P.i_wood]=100000.0;
 
 /*C litter*/
-CARDADATA->parmin[21]=1.0;
-CARDADATA->parmax[21]=2000.0;
+parmin[P.i_lit]=1.0;
+parmax[P.i_lit]=2000.0;
 
 /*C_som*/
-CARDADATA->parmin[22]=1.0;
-CARDADATA->parmax[22]=200000.0;
+parmin[P.i_soil]=1.0;
+parmax[P.i_soil]=200000.0;
 
 /*uWUE: GPP*sqrt(VPD)/ET: gC/kgH2o *hPa*/
-CARDADATA->parmin[23]=0.5;
-CARDADATA->parmax[23]=30;
+parmin[P.uWUE]=0.5;
+parmax[P.uWUE]=30;
 
 /*Runoff focal point (~maximum soil storage capacity x 4)*/
-CARDADATA->parmin[24]=1;
-CARDADATA->parmax[24]=100000;
+parmin[P.PAW_Qmax]=1;
+parmax[P.PAW_Qmax]=100000;
 
 /*"Wilting point"*/
-CARDADATA->parmin[25]=1;
-CARDADATA->parmax[25]=10000;
+parmin[P.wilting]=1;
+parmax[P.wilting]=10000;
 
 /*"Bucket at t0"*/
-CARDADATA->parmin[26]=1;
-CARDADATA->parmax[26]=10000;
+parmin[P.i_PAW]=1;
+parmax[P.i_PAW]=10000;
 
 /*Foliar biomass CF*/
-CARDADATA->parmin[27]=0.01;
-CARDADATA->parmax[27]=1;
+parmin[P.cf_foliar]=0.01;
+parmax[P.cf_foliar]=1;
 
 /*"Ligneous" biomass CF".*/
-CARDADATA->parmin[28]=0.01;
-CARDADATA->parmax[28]=1;
+parmin[P.cf_ligneous]=0.01;
+parmax[P.cf_ligneous]=1;
 
 /*DOM CF".*/
-CARDADATA->parmin[29]=0.01;
-CARDADATA->parmax[29]=1;
+parmin[P.cf_DOM]=0.01;
+parmax[P.cf_DOM]=1;
 
 /*Resilience factor (since transfer to litter is represented as (1-pars[30])) ".*/
-CARDADATA->parmin[30]=0.01;
-CARDADATA->parmax[30]=1;
+parmin[P.resilience]=0.01;
+parmax[P.resilience]=1;
 
 /*Lab pool lifespan*/
-CARDADATA->parmin[31]=1.001;
-CARDADATA->parmax[31]=8;
+parmin[P.t_labile]=1.001;
+parmax[P.t_labile]=8;
 
 /*Moisture factor*/
-CARDADATA->parmin[32]=0.01;
-CARDADATA->parmax[32]=1;
+parmin[P.moisture]=0.01;
+parmax[P.moisture]=1;
 
 /*PAW->PUW runoff fraction*/
-CARDADATA->parmin[33]=0.01;
-CARDADATA->parmax[33]=1;
+parmin[P.h2o_xfer]=0.01;
+parmax[P.h2o_xfer]=1;
 
 /*PUW Runoff focal point (~maximum soil storage capacity x 4)*/
-CARDADATA->parmin[34]=1;
-CARDADATA->parmax[34]=100000;
+parmin[P.PUW_Qmax]=1;
+parmax[P.PUW_Qmax]=100000;
 
 /*PUW pool*/
-CARDADATA->parmin[35]=1;
-CARDADATA->parmax[35]=10000;
-
-/*Reference VPD */
-CARDADATA->parmin[36]=10;
-CARDADATA->parmax[36]=10000;
-
-/*VPD curvature exponent */
-CARDADATA->parmin[37]=0.001;
-CARDADATA->parmax[37]=1000;
+parmin[P.i_PUW]=1;
+parmax[P.i_PUW]=10000;
 
 /*r: The chosen prior range in r conservatively captures the range of values by Boese et al.(2017)*/
-CARDADATA->parmin[38]=0.01;
-CARDADATA->parmax[38]=0.3;
+parmin[P.boese_r]=0.01;
+parmax[P.boese_r]=0.3;
+
+/*Reference VPD */
+parmin[P.vpd_ref]=10;
+parmax[P.vpd_ref]=10000;
+
+/*VPD curvature exponent */
+parmin[P.vpd_exp]=0.001;
+parmax[P.vpd_exp]=1000;
 
 return 0;
 

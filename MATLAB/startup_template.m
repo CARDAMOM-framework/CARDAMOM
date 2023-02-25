@@ -8,8 +8,13 @@ setenv('CARDAMOM_C_PATH','CARDAMOM_2.1.6c/C');
 setenv('CARDAMOM_DATA_PATH','CARDAMOM_2.1.6c/DATA');
 setenv('CARDAMOM_PATH','CARDAMOM_2.1.6c/');
 
-
 %****CARDAMOM matlab directory****
 addpath(genpath('CARDAMOM_2.1.6c/MATLAB/'));savepath
 
+%To figure this one out, type "which nc-config" on terminal window, and
+%replace "/usr/local/bin/nc-config" IN CASE VALUE IS DIFFERENT.
+setenv('CARDAMOM_NC_CONFIG_PATH','/usr/local/bin/nc-config');
 
+%******if CARDAMOM_COMPILE doesn't work on matlab*******
+%Manualy point to gcc compiler if matlab is giving you trouble with "CARDAMOM_COMPILE"
+%setenv('CARDAMOM_OPT_COMPILER','/opt/homebrew/bin/gcc-12');

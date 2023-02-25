@@ -19,19 +19,19 @@ DATA DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCO, MCMC_OUTPUT *MCOUT){
 
 /* ***********INPUTS************
  *
- * MODEL_LIKELIHOOD: A function wholly responsible for 
- * (a) running the model given the DATA and parameters, 
- * (b) comparing it to observations,and 
+ * MODEL_LIKELIHOOD: A function wholly responsible for
+ * (a) running the model given the DATA and parameters,
+ * (b) comparing it to observations,and
  * (c) returning  the (log) likelihood.
  * The function will be run as MODEL_LIKELIHOOD(DATA,PARS);
- * To facilitate this, ALL data can be 
- * passed to the MHMCMC function as a structure (in order to avoid 
- * repeated read/write computational time). 
+ * To facilitate this, ALL data can be
+ * passed to the MHMCMC function as a structure (in order to avoid
+ * repeated read/write computational time).
  *
  * DATA: All data needed for the MODEL_LIKELIHOOD. It can include
  * drivers, observations, etc.
  *
- * PARINFO: This structure contains information on 
+ * PARINFO: This structure contains information on
  * (a) pmin, pmax:	parameter ranges (compulsory)
  * (b) initpars:	parameter starting values (optional/recommended).
  * (c) npars:		number of pars (compulsory)
@@ -45,7 +45,7 @@ DATA DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCO, MCMC_OUTPUT *MCOUT){
  * */
 
 /* **************OUTPUTS*************
- * 
+ *
  * RESULTS FILE: File includes (a) results (b) likelihood and (c) final step size
  *
  * */
@@ -142,13 +142,15 @@ if (isinf(P[nn])==-1){printf("WARNING! P(0)=-inf - MHMCMC may get stuck - if so,
 for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
 	/*Looping through each chain*/
 	/*UPDATE: retaining parameter vector (as done in ter Braak, 2006) and moving on to next chain if metropolis ratio is rejected*/
-	
+
 	//PI.stepsize[0]=1e-1-(1e-1-1)*(double)(n % 10 == 0);
-	
+
 	for (nn=0;nn<NC;nn++){
 
+        
 	//ADEMCMC
-	if ((double)N.ITER<(double)MCO.nOUT*MCO.fADAPT){
+        double fadapt=(double)N.ITER/((double)MCO.nOUT*MCO.fADAPT);
+	if (fadapt<1){
         withinrange=STEP_ADEMCMC(PARS,pars_new,PI,nn,NC,&gratio);
 	}
 	//Standard DEMCMC
@@ -161,7 +163,7 @@ for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
 	gratio=0;
 	}
 
-	
+
 	lr=log((double)random()/RAND_MAX);
 	/*p(x) = 0 if parameters outside bounds*/
 	if (withinrange==1 & -P[nn]+gratio>lr){
@@ -175,7 +177,12 @@ wrlocal=wrlocal+1;
 	*/
 	/*treating nans as -inf*/
 	if (isnan(P_new)){P_new=log(0);}
+<<<<<<< HEAD
 if (P_new-P[nn]+gratio>lr || (isinf(P_new)==0 && isinf(P[nn]) && withinrange==1)){N.ACC=N.ACC+1;
+=======
+//if (P_new-P[nn]+gratio>lr || (isinf(P_new)==0 && isinf(P[nn]) && withinrange==1) ){N.ACC=N.ACC+1;
+    if (P_new-P[nn]+gratio>lr || (isinf(P[nn]) && withinrange==1) ){N.ACC=N.ACC+1;
+>>>>>>> 2e9d9d4fce245be9f66a37315729a22d990af276
 	if (isinf(P_new)==0 && isinf(P[nn])){printf("pnew = %2.1f, p = %2.1f, (P_new-P[nn]) = %2.1f\n",P_new,P[nn],P_new-P[nn]);}
 
 
@@ -186,11 +193,11 @@ if (P_new-P[nn]+gratio>lr || (isinf(P_new)==0 && isinf(P[nn]) && withinrange==1)
 		}
 		P[nn]=P_new;}
 	}
-	
+
 	/*regularly write results*/
 	if (MCO.nWRITE>0 && (N.ITER % MCO.nWRITE)==0){
 WRITE_DEMCMC_RESULTS(PARS,PI,MCO);}
-	
+
 	/*Printing Info to Screen*/
 	if (MCO.nPRINT>0 && N.ITER % MCO.nPRINT==0){
 		printf("%d out of %d iterations)\n",N.ITER,MCO.nOUT);
@@ -204,13 +211,16 @@ WRITE_DEMCMC_RESULTS(PARS,PI,MCO);}
 
 /*End of chain loop*/
 	/*END OF WHILE LOOP*/
-	
 
 
 	
-	}
+}
+//End of iteration loop	
 	
-	
+
+
+
+
 
 /*filling in MCOUT details*/
 /*best parameter combination*/

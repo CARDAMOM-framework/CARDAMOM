@@ -1,46 +1,45 @@
 //This file was moddified from CARDAMOM_READ_BINARY_DATA.c
 //it attepts to read in a netcdf file and store it
-//TODO: Work on integrating this with the rest of CARDAMOM using CARDAMOM_RUN_MODEL.m
-
-
-
-/*INCLUDING THE PARAMETER_INFO structure*/
-/*Note: it remains unclear as to where this structure should be defined*/
-// TODO: put in include guards
+//Note that a lot of this is derived from https://www.unidata.ucar.edu/software/netcdf/docs/simple_nc4_rd_8c-example.html
 
 #pragma once
 #include "../../auxi_fun/filediag.c"
-#include "../../auxi_fun/oksofar.c"
 #include "stdlib.h"
 #include "stdio.h"
 #include "memory.h"
-#include "CARDAMOM_DATA_STRUCTURE.c"
+#include <math.h>
+#include "CARDAMOM_NETCDF_DATA_STRUCTURE.c"
+//Data
+#include "../COST_FUNCTION/CARDAMOM_LIKELIHOOD_FUNCTION.c"
+#include "NETCDF_AUXILLIARY_FUNCTIONS.c"
+//Fusion
+
+
+#include <netcdf.h>
+
+
+//NOTE ABOUT THIS MACRO:
+//If set to 1, netCDF methods will continue to run and return with default values if they fail to find the requested variable or attribute
+//if set to 0, they will instantly die on failing to find any variable or attribute
+//This is meant as a debugging tool more than anything else, and can be used with a "fully complete" netcdf cardamom file containing every variable in order to check if there were typeos in the c code.
+//In the production enviroment, this should always be set to 1
+#define ALLOW_DEFAULTS 1
+
+
+//#include "CARDAMOM_MODEL_LIBRARY.c"
 
 
 
-#include "CARDAMOM_MODEL_LIBRARY.c"
 
+/* Handle errors by printing an error message and exiting with a
+ * non-zero status.*/
 
-
-int CARDAMOM_DATA_CHECKS(DATA *CDATA){
-/*General Checks*/
-printf("***CBF FILE SUMMARY***");
-printf("MODEL ID = %d\n",CDATA->ID);
-printf("No days = %d\n",CDATA->nodays);
-printf("Mean Rad = %f\n",CDATA->meanrad);
-printf("Mean Temp = %f\n",CDATA->meantemp);
-printf("Mean Prec = %f\n",CDATA->meanprec);
-printf("Latitude = %f\n",CDATA->LAT);
-printf("Number of MET drivers%d\n",CDATA->nomet);
-printf("Number of GPP obs. = %d\n",CDATA->ngpp);
-printf("Number of LAI obs. = %d\n",CDATA->nlai);
-printf("Number of NEE obs. = %d\n",CDATA->nnee);
-printf("Number of CH4 obs. = %d\n",CDATA->nch4);
-printf("Ecological & Dynamic Constraints options\n");
-printf("EDC likelihood option = %d\n",CDATA->EDC);
-printf("EDC diagnostics option = %d\n",CDATA->EDCDIAG);
-printf("*****END OF CBF FILE SUMMARY***");
-return 0;}
+#define ERRCODE 2
+#define ERR(e) {printf("Error in %s at %d: %s\n", __FILE__, __LINE__, nc_strerror(e)); exit(ERRCODE);}
+//Helper for errors in variable-getting methods
+#define ERR_VAR(e, var) {printf("Error in %s at %d with variable \"%s\": %s\n", __FILE__, __LINE__, var, nc_strerror(e)); exit(ERRCODE);}
+//Helper for errors in attribute-getting methods
+#define ERR_ATTR_AND_CONTEXT(e, attr, context, varID) {printf("Error in %s at %d with attribute \"%s\" in the context \"%s\" (%d):  %s\n", __FILE__, __LINE__, attr,context,varID, nc_strerror(e)); exit(ERRCODE);}
 
 
 
@@ -53,362 +52,334 @@ return 0;}
  * filename: The path of the file to be read
  * DATA: The DATA struct to read the data into
  *
- *  returns: the approximate value of pi obtained by suming the first n terms
- *           in the above series
- *           returns zero on error (if n is non-positive)
  *
  *	NOTE: if you intend to modify what is read in when reading a netCDF file,
  *  You MUST edit both this method, and the DATA struct in CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_DATA_STRUCTURE.c
  */
-int CARDAMOM_READ_NETCDF_DATA(char *filename,DATA *DATA)
+
+
+
+
+
+	int DEFAULT_REFERENCE_MEAN(TIMESERIES_DRIVER_STRUCT  * DRI){
+   if (DRI->reference_mean==DEFAULT_DOUBLE_VAL){
+     int n;DRI->reference_mean=0;
+     for (n=0;n<DRI->length;n++){
+     DRI->reference_mean+=DRI->values[n]/(double)DRI->length;}
+     }
+     
+     return 0;
+   }
+
+
+
+int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 {
+	int retval =0; //Return value variable for NCDF calls.
+	int ncid;
+	if ((retval = nc_open(filename, NC_NOWRITE, &ncid))){
+ 		ERR(retval);
+ 	}
+
+
+       
+
+    
+    
+// 
+// //Global defaults
+// default_int_value(OBS.opt_unc_type,0);
+// default_int_value(OBS.opt_normalization,0);//(0 = none, 1 = remove mean, 2 = divide by mean)
+// default_int_value(OBS.opt_filter,0);
+// default_double_value(OBS.opt_min_threshold,log(0));//minus infinity
+// default_double_value(OBS.structural_unc,0);
+
+   
+    
+
+//Read data
+DATA->ABGB=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ABGB");
+DATA->CH4=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "CH4");
+DATA->CWOO=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "CWOO");
+DATA->DOM=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "DOM");
+DATA->ET=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ET");
+DATA->EWT=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "EWT");
+DATA->GPP=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "GPP");
+DATA->SIF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "SIF");
+DATA->LAI=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "LAI");
+DATA->NBE=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "NBE");
+// printf("Just read NBE...\n");
+// printf("DATA->NBE.values[0] = %2.2f\n",DATA->NBE.values[0]);
+DATA->ROFF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ROFF");
+DATA->SCF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "SCF");
+//Read time-averaged data
+
+DATA->Mean_ABGB=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_ABGB");
+DATA->Mean_GPP=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_GPP");
+DATA->Mean_LAI=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_LAI");
+DATA->Mean_FIR=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_FIR");
+
+
+//Read parameters and single observations
+DATA->PEQ_Cefficiency=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Cefficiency");
+DATA->PEQ_CUE=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_CUE");
+DATA->PEQ_C3frac=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_C3frac");
+DATA->PEQ_Vcmax25=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Vcmax25");
+DATA->PEQ_iniSOM=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSOM");
+DATA->PEQ_iniSnow=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSnow");
+
+//Global defaults: these are set in pre-process if not defined below
+// default_int_value(&OBS->opt_unc_type,0);
+// default_int_value(&OBS->opt_normalization,0);
+// default_int_value(&OBS->opt_filter,0);
+// default_double_value(&OBS->opt_min_threshold,log(0));//minus infinity
+// default_double_value(&OBS->structural_unc,0);
+
+
+printf("Warning: No longer assigning default uncertainty values. Please double check your driver file contains uncertainties for all observations used.\n");
+printf("Example uncertainty values (used in the past) per variable:\n");
+// Default ABGB options
+printf("ABGB.opt_unc_type=1; ABGB.single_unc=2; ABGB.min_threshold=10 gC/m2;\n");
+default_int_value(&DATA->ABGB.opt_unc_type,1);
+default_double_value(&DATA->ABGB.single_unc,2);
+default_double_value(&DATA->ABGB.min_threshold,10);//gC/m2
+
+// Default CH4 options
+printf("CH4.opt_unc_type=1; CH4.single_unc=2; CH4.min_threshold=1e-5 mgCH4/m2/d;\n");
+default_int_value(&DATA->CH4.opt_unc_type,1);
+default_double_value(&DATA->CH4.single_unc,2);
+default_double_value(&DATA->CH4.min_threshold,1e-5);//mgCH4/m2/d
+
+//Default ET options
+printf("ET.opt_unc_type=1; ET.single_unc=2; ET.min_threshold=0.1 mm/d;\n");
+default_int_value(&DATA->ET.opt_unc_type,1);
+default_double_value(&DATA->ET.single_unc,2);
+default_double_value(&DATA->ET.min_threshold,0.1);
+
+//Default ROFF options
+printf("ROFF.opt_unc_type=1; ROFF.single_unc=2; ROFF.min_threshold=0.1 mm/d;\n");
+default_int_value(&DATA->ROFF.opt_unc_type,1);
+default_double_value(&DATA->ROFF.single_unc,2);
+default_double_value(&DATA->ROFF.min_threshold,0.1);
+
+//Default EWT options;
+printf("EWT.single_unc=2; EWT.opt_normalization=1;\n");
+default_double_value(&DATA->EWT.single_unc,50);//mm
+default_int_value(&DATA->EWT.opt_normalization,1);
+
+//Default GPP options
+printf("GPP.opt_unc_type=1; GPP.single_unc=2; GPP.min_threshold=0.1 gC/m2/d;\n");
+default_int_value(&DATA->GPP.opt_unc_type,1);
+default_double_value(&DATA->GPP.single_unc,2);
+default_double_value(&DATA->GPP.min_threshold,0.1);//gC/m2/d
+
+//Default SIF options - shuang added
+printf("SIF.opt_unc_type=1; SIF.single_unc=2; SIF.min_threshold=0.1 gC/m2/d;\n");
+default_int_value(&DATA->SIF.opt_unc_type,1);
+default_double_value(&DATA->SIF.single_unc,2);
+default_double_value(&DATA->SIF.min_threshold,0.1);//gC/m2/d
 
-/*NOTE: this function reads data as written by DALEC_FLUXCOM_MCMC_PROJECT_SITELEVEL.m
- * For any adaptations to this function make sure to keep in sync with matlab function*/
-
-/*TEMPLATE FOR ALL DALEC MCMC DATA files*/
-/*Static Elements: 1-100 - use as many as needed*/
-/*Parameter Priors: 101-150*/
-/*Parameter prior uncertainty: 151-200*/
-/*Other priors & uncertainties: 201-300*/
-/*TEMPORAL DRIVERS & DATA: 301-end*/
-
-
-
-
-FILE *fid=fopen(filename,"rb");
-filediag(fid,filename);
-
-/*READING STATIC DATA*/
-
-double statdat[100];
-/*reading 1-100*/
-fread(statdat,sizeof(double),100,fid);
-/*DALEC model run info*/
-DATA->ID=(int)statdat[0];
-DATA->LAT=statdat[1];
-DATA->nodays=(int)statdat[2];
-DATA->nomet=(int)statdat[3];
-DATA->noobs=(int)statdat[4];
-DATA->EDC=(int)statdat[5];
-DATA->EDCDIAG=(int)statdat[6];
-DATA->gppabs=(int)statdat[7];
-/*DALEC MCMC run info*/
-/*set to 1 for (a) few and (b) well constrained priors, otherwise 0*/
-/*binary file mcmc options (need to add all options HERE except inout files)*/
-DATA->edc_random_search=(int)statdat[10];
-DATA->gppiav=(int)statdat[11];
-DATA->laiiav=(int)statdat[12];
-DATA->nee_annual_unc=statdat[13];
-DATA->et_annual_unc=statdat[14];
-DATA->nee_obs_unc=statdat[15];if (statdat[15]<0){DATA->nee_obs_unc=0.5;}
-DATA->et_obs_unc=statdat[16];if (statdat[16]<0){DATA->et_obs_unc=2;}
-DATA->ewt_annual_unc=statdat[17];
-DATA->ewt_obs_unc=statdat[18];if (statdat[18]<0){DATA->ewt_obs_unc=50;}
-DATA->gpp_annual_unc=statdat[19];
-DATA->gpp_obs_unc=statdat[20];if (statdat[20]<0){DATA->gpp_obs_unc=2;}
-DATA->et_obs_threshold=statdat[21]; if (statdat[21]<0){DATA->et_obs_threshold=0;}
-DATA->gpp_obs_threshold=statdat[22]; if (statdat[22]<0){DATA->gpp_obs_threshold=0;}
-DATA->ch4iav=(int)statdat[23];  /*shuang*/
-DATA->ch4_annual_unc=statdat[24];  /*shuang*/
-DATA->ch4_obs_unc=statdat[25];if (statdat[25]<0){DATA->ch4_obs_unc=0.5;}  /*shuang*/
-DATA->ch4_obs_threshold=statdat[26]; if (statdat[26]<0){DATA->ch4_obs_threshold=0;}  /*shuang*/
-
-
-/*UP TO USER to read data and allocate it to DATA structure*/
-double parpriors[50],parpriorunc[50],otherpriors[50],otherpriorunc[50];
-fread(parpriors,sizeof(double),50,fid);
-fread(parpriorunc,sizeof(double),50,fid);
-fread(otherpriors,sizeof(double),50,fid);
-fread(otherpriorunc,sizeof(double),50,fid);
-
-/*For universal data structure, DATA contains 50 parameter prior spaces
- * use as many as needed!*/
-memcpy(DATA->parpriors,parpriors,50*sizeof(double));
-memcpy(DATA->parpriorunc,parpriorunc,50*sizeof(double));
-memcpy(DATA->otherpriors,otherpriors,50*sizeof(double));
-memcpy(DATA->otherpriorunc,otherpriorunc,50*sizeof(double));
-
-
-/*loading model specific values*/
-/*this includes information on the number of pools, number of parameters, etc.
-?*this allows an initialization of the model output fields (stored in DATA for simplicity)*/
-
-CARDAMOM_MODEL_LIBRARY(DATA);
-
-/*the following fields (begining by M_) are for storage purposes*/
-/*data stored in these fields is over-written at each model run*/
-/*Future versions: these should be declared within each model structure
-or generically declared for model types (e.g. DALEC, etc).*/
-/*Model-specific quantities (nodays, nofluxes, nopools), will be declared in MODEL_INFO for modularity*/
-DATA->M_LAI=calloc(DATA->nodays,sizeof(double));
-DATA->M_GPP=calloc(DATA->nodays,sizeof(double));
-DATA->M_NEE=calloc(DATA->nodays,sizeof(double));
-
-printf("DATA->nodays = %i\n", DATA->nodays);
-printf("DATA->nofluxes = %i\n", DATA->nofluxes);
-
-DATA->M_FLUXES=calloc(DATA->nodays*DATA->nofluxes,sizeof(double));
-DATA->M_POOLS=calloc((DATA->nodays+1)*DATA->nopools,sizeof(double));
-int noedc=100, noprob=1;
-DATA->M_EDCD=calloc(noedc,sizeof(int));
-DATA->M_P=calloc(noprob,sizeof(double));
-DATA->M_leo=calloc(1,sizeof(double));
-DATA->M_leo[0]=1.0/0.0;
-
-DATA->M_PARS=calloc(DATA->nopars,sizeof(double));
-
-
-/*READING TEMPORAL DATA*/
-/*For re-use of DATA structure (presumably), the data is only re-read if the fields are set to zero (or initialized)*/
-/*Currently not sure why this is here: however, this is harmless*/
-/*also it is good practice to initialize pointers in C*/
-if (DATA->MET==0){DATA->MET=calloc(DATA->nomet*DATA->nodays,sizeof(double));}
-if (DATA->GPP==0){DATA->GPP=calloc(DATA->nodays,sizeof(double));}
-if (DATA->NEE==0){DATA->NEE=calloc(DATA->nodays,sizeof(double));}
-if (DATA->LAI==0){DATA->LAI=calloc(DATA->nodays,sizeof(double));}
-if (DATA->WOO==0){DATA->WOO=calloc(DATA->nodays,sizeof(double));}
-if (DATA->ET==0){DATA->ET=calloc(DATA->nodays,sizeof(double));}
-if (DATA->EWT==0){DATA->EWT=calloc(DATA->nodays,sizeof(double));}
-if (DATA->BAND1==0){DATA->BAND1=calloc(DATA->nodays,sizeof(double));}
-if (DATA->BAND2==0){DATA->BAND2=calloc(DATA->nodays,sizeof(double));}
-if (DATA->BAND3==0){DATA->BAND3=calloc(DATA->nodays,sizeof(double));}
-if (DATA->BAND4==0){DATA->BAND4=calloc(DATA->nodays,sizeof(double));}
-if (DATA->SOM==0){DATA->SOM=calloc(DATA->nodays,sizeof(double));}
-if (DATA->NEEunc==0){DATA->NEEunc=calloc(DATA->nodays,sizeof(double));}
-if (DATA->CH4==0){DATA->CH4=calloc(DATA->nodays,sizeof(double));}
-
-DATA->ngpp=0;
-DATA->nlai=0;
-DATA->nnee=0;
-DATA->nwoo=0;
-DATA->net=0;
-DATA->newt=0;
-DATA->nband1=0;
-DATA->nband2=0;
-DATA->nband3=0;
-DATA->nband4=0;
-DATA->nsom=0;
-DATA->nneeunc=0;
-DATA->nch4=0; /*shuang*/
+//Default LAI options
+printf("LAI.opt_unc_type=1; LAI.single_unc=2; LAI.min_threshold=0.1 m2/m2;\n");
+default_int_value(&DATA->LAI.opt_unc_type,1);
+default_double_value(&DATA->LAI.single_unc,2);
+default_double_value(&DATA->LAI.min_threshold,0.1);//m2/m2
 
 
+//Default NBE options;
+printf("NBE.single_unc=1 gC/m2/d;\n");
+default_double_value(&DATA->NBE.single_unc,1);//gC/m2/d
 
-/*6 met fields for DALEC CDEA*/
+//Default DOM options
+printf("DOM.opt_unc_type=1; DOM.single_unc=2; DOM.min_threshold=10 gC/m2;\n");
+default_int_value(&DATA->DOM.opt_unc_type,1);
+default_double_value(&DATA->DOM.single_unc,2);
+default_double_value(&DATA->DOM.min_threshold,10);//gC/m2
 
-int n, nn;
-double *metline, *obsline;
-metline=calloc(DATA->nomet,sizeof(double));
-obsline=calloc(DATA->noobs,sizeof(double));
-/*mean met and mean obs line, in case user-defined*/
 
+//Default SCF options
+printf("SCF.opt_unc_type=0; SCF.single_unc=0.1; SCF.min_threshold=0.1 m2/m2;\n");
+default_int_value(&DATA->SCF.opt_unc_type,0);
+default_double_value(&DATA->SCF.single_unc,0.1);
+default_double_value(&DATA->SCF.min_threshold,0.1);//m2/m2
 
-int frfm,frfo;
+//No efault YIELD options
 
 
-printf("reading file...\n");
-for (n=0;n<DATA->nodays+1;n++){
-	frfm=fread(metline,sizeof(double),DATA->nomet,fid);
-	frfo=fread(obsline,sizeof(double),DATA->noobs,fid);
-	if (n<DATA->nodays){
-	for (nn=0;nn<DATA->nomet;nn++){DATA->MET[n*DATA->nomet+nn]=metline[nn];}
 
-	DATA->GPP[n]=obsline[0];
-	DATA->LAI[n]=obsline[1];
-	DATA->NEE[n]=obsline[2];
-	if (obsline[0]>-9998){DATA->ngpp=DATA->ngpp+1;}
-	if (obsline[1]>-9998){DATA->nlai=DATA->nlai+1;}
-	if (obsline[2]>-9998){DATA->nnee=DATA->nnee+1;}
-	if (DATA->noobs>3){DATA->WOO[n]=obsline[3];
-	if (obsline[3]>-9998){DATA->nwoo=DATA->nwoo+1;}}
-        if (DATA->noobs>4){DATA->ET[n]=obsline[4];
-        if (obsline[4]>-9998){DATA->net=DATA->net+1;}}
-        if (DATA->noobs>5){DATA->EWT[n]=obsline[5];
-        if (obsline[5]>-9998){DATA->newt=DATA->newt+1;}}
 
-        if (DATA->noobs>6){DATA->BAND1[n]=obsline[6];
-        if (obsline[6]>-9998){DATA->nband1=DATA->nband1+1;}}
+//pre-process obs to save time
+//Only required for timeseries obs
+    //Keep alphabetical order if possible 
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ABGB);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->CH4);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->CWOO);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->DOM);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ET);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->EWT);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->GPP);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->SIF);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->LAI);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->NBE);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ROFF);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->SCF);
 
-        if (DATA->noobs>7){DATA->BAND2[n]=obsline[7];
-        if (obsline[7]>-9998){DATA->nband2=DATA->nband2+1;}}
 
-        if (DATA->noobs>8){DATA->BAND3[n]=obsline[8];
-        if (obsline[8]>-9998){DATA->nband3=DATA->nband3+1;}}
 
-        if (DATA->noobs>9){DATA->BAND4[n]=obsline[9];
-        if (obsline[9]>-9998){DATA->nband4=DATA->nband4+1;}}
+printf("Done preprocess");
 
-        if (DATA->noobs>10){DATA->SOM[n]=obsline[10];
-        if (obsline[10]>-9998){DATA->nsom=DATA->nsom+1;}}
 
-        if (DATA->noobs>11){DATA->NEEunc[n]=obsline[11];
-        if (obsline[11]>-9998){DATA->nneeunc=DATA->nneeunc+1;}}
 
-        if (DATA->noobs>12){DATA->CH4[n]=obsline[12];
-        if (obsline[12]>-9998){DATA->nch4=DATA->nch4+1;}}        /*shuang*/
+    
+    
+printf("Done reading all other edc ");
+
+
+	DATA->BURNED_AREA.values=ncdf_read_double_var(ncid, "BURNED_AREA", &(DATA->BURNED_AREA.length));
+                DATA->BURNED_AREA.reference_mean=ncdf_read_double_attr(ncid, "BURNED_AREA","reference_mean");
+                                                DEFAULT_REFERENCE_MEAN(&DATA->BURNED_AREA);
+                                                
+                                                
+	DATA->CO2.values=ncdf_read_double_var(ncid, "CO2", &(DATA->CO2.length));
+		DATA->CO2.reference_mean=ncdf_read_double_attr(ncid, "CO2","reference_mean");
+                                                DEFAULT_REFERENCE_MEAN(&DATA->CO2);
+                                                
+
+
+        
+	DATA->DOY.values=ncdf_read_double_var(ncid, "DOY", &(DATA->DOY.length));
+		//DATA->DOY.reference_mean=ncdf_read_double_attr(ncid, "DOY","reference_mean");
+    
+                    	DATA->SKT.values=ncdf_read_double_var(ncid, "SKT", &(DATA->SKT.length));
+		DATA->SKT.reference_mean=ncdf_read_double_attr(ncid, "SKT","reference_mean");
+                DEFAULT_REFERENCE_MEAN(&DATA->SKT);
+
+	DATA->SNOWFALL.values=ncdf_read_double_var(ncid, "SNOWFALL", &(DATA->SNOWFALL.length));
+		DATA->SNOWFALL.reference_mean=ncdf_read_double_attr(ncid, "SNOWFALL","reference_mean");
+        DEFAULT_REFERENCE_MEAN(&DATA->SNOWFALL);
+
+	DATA->SSRD.values=ncdf_read_double_var(ncid, "SSRD", &(DATA->SSRD.length));
+		DATA->SSRD.reference_mean=ncdf_read_double_attr(ncid, "SSRD","reference_mean");
+                DEFAULT_REFERENCE_MEAN(&DATA->SSRD);
+                
+                	DATA->STRD.values=ncdf_read_double_var(ncid, "STRD", &(DATA->STRD.length));
+		DATA->STRD.reference_mean=ncdf_read_double_attr(ncid, "STRD","reference_mean");
+                DEFAULT_REFERENCE_MEAN(&DATA->STRD);
+
+
+	DATA->T2M_MAX.values=ncdf_read_double_var(ncid, "T2M_MAX", &(DATA->T2M_MAX.length));
+		DATA->T2M_MAX.reference_mean=ncdf_read_double_attr(ncid, "T2M_MAX","reference_mean");
+                        DEFAULT_REFERENCE_MEAN(&DATA->T2M_MAX);
+
+
+	DATA->T2M_MIN.values=ncdf_read_double_var(ncid, "T2M_MIN", &(DATA->T2M_MIN.length));
+		DATA->T2M_MIN.reference_mean=ncdf_read_double_attr(ncid, "T2M_MIN","reference_mean");
+                        DEFAULT_REFERENCE_MEAN(&DATA->T2M_MIN);
 
-};
 
-}
+	DATA->TIME_INDEX.values=ncdf_read_double_var(ncid, "time", &(DATA->TIME_INDEX.length));
+		//DATA->TIME_INDEX.reference_mean=ncdf_read_double_attr(ncid, "time","reference_mean");
 
 
-DATA->deltat=DATA->MET[DATA->nomet]-DATA->MET[0];
+	DATA->TOTAL_PREC.values=ncdf_read_double_var(ncid, "TOTAL_PREC", &(DATA->TOTAL_PREC.length));
+		DATA->TOTAL_PREC.reference_mean=ncdf_read_double_attr(ncid, "TOTAL_PREC","reference_mean");
+                                DEFAULT_REFERENCE_MEAN(&DATA->TOTAL_PREC);
 
 
+	DATA->VPD.values=ncdf_read_double_var(ncid, "VPD", &(DATA->VPD.length));
+		DATA->VPD.reference_mean=ncdf_read_double_attr(ncid, "VPD","reference_mean");
+                                DEFAULT_REFERENCE_MEAN(&DATA->VPD);
 
-fclose(fid);
 
-if (DATA->ngpp>0){DATA->gpppts=calloc(DATA->ngpp,sizeof(int));}
-if (DATA->nlai>0){DATA->laipts=calloc(DATA->nlai,sizeof(int));}
-if (DATA->nnee>0){DATA->neepts=calloc(DATA->nnee,sizeof(int));}
-if (DATA->nwoo>0){DATA->woopts=calloc(DATA->nwoo,sizeof(int));}
-if (DATA->net>0){DATA->etpts=calloc(DATA->net,sizeof(int));}
-if (DATA->newt>0){DATA->ewtpts=calloc(DATA->newt,sizeof(int));}
-if (DATA->nband1>0){DATA->band1pts=calloc(DATA->nband1,sizeof(int));}
-if (DATA->nband2>0){DATA->band2pts=calloc(DATA->nband2,sizeof(int));}
-if (DATA->nband3>0){DATA->band3pts=calloc(DATA->nband3,sizeof(int));}
-if (DATA->nband4>0){DATA->band4pts=calloc(DATA->nband4,sizeof(int));}
-if (DATA->nsom>0){DATA->sompts=calloc(DATA->nsom,sizeof(int));}
-if (DATA->nneeunc>0){DATA->neeuncpts=calloc(DATA->nneeunc,sizeof(int));}
-if (DATA->nch4>0){DATA->ch4pts=calloc(DATA->nch4,sizeof(int));}       /*shuang*/
+	DATA->YIELD.values=ncdf_read_double_var(ncid, "YIELD", &(DATA->YIELD.length));
+		DATA->YIELD.reference_mean=ncdf_read_double_attr(ncid, "YIELD","reference_mean");
+                                DEFAULT_REFERENCE_MEAN(&DATA->YIELD);
 
-/*Deriving laipts, gpppts, neepts*/
-int c;
-c=0;for (n=0;n<DATA->nodays;n++){if (DATA->GPP[n]>-9998){DATA->gpppts[c]=n;c=c+1;}};
-c=0;for (n=0;n<DATA->nodays;n++){if (DATA->LAI[n]>-9998){DATA->laipts[c]=n;c=c+1;}};
-c=0;for (n=0;n<DATA->nodays;n++){if (DATA->NEE[n]>-9998){DATA->neepts[c]=n;c=c+1;}};
-if (DATA->noobs>3){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->WOO[n]>-9998){DATA->woopts[c]=n;c=c+1;}}}
+        
+        
+        
+        //Summary & derived variables
+// double EDC;
+// double EDCDIAG;
+// double EDC_EQF;
+// double ID;
+// double LAT;
+// double Ntimesteps;
+// double deltat;
 
-if (DATA->noobs>4){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->ET[n]>-9998){DATA->etpts[c]=n;c=c+1;}}}
+	DATA->EDC=ncdf_read_single_double_var(ncid, "EDC");
+ 
+    DATA->EDCDIAG=ncdf_read_single_int_var(ncid, "EDCDIAG");
+    default_int_value(&DATA->EDCDIAG,0);
 
-if (DATA->noobs>5){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->EWT[n]>-9998){DATA->ewtpts[c]=n;c=c+1;}}}
+    
+	DATA->EDC_EQF=ncdf_read_single_double_var(ncid, "EDC_EQF");
+	    default_double_value(&DATA->EDC_EQF,2);
+    printf("EDC_EQF = %2.2f\n",DATA->EDC_EQF);
 
-if (DATA->noobs>6){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->BAND1[n]>-9998){DATA->band1pts[c]=n;c=c+1;}}}
+    
+    DATA->ID=ncdf_read_single_double_var(ncid, "ID" );
+	DATA->LAT=ncdf_read_single_double_var(ncid, "LAT" );
+    
+    //Pre-processing
+    //Ntimesteps
+    DATA->Ntimesteps=DATA->TIME_INDEX.length;
+    //Delta T
+    DATA->deltat=DATA->TIME_INDEX.values[1]-DATA->TIME_INDEX.values[0];
+    //Mean temp
+    DATA->meantemp=DATA->T2M_MIN.reference_mean*0.5 + DATA->T2M_MAX.reference_mean*0.5;
+    //Solar Zenith Angle
+    DATA->SZA=(double *)calloc(DATA->Ntimesteps, sizeof(double));
+    int n;
+    double pi=3.1415927;
+    for (n=0;n<DATA->Ntimesteps;n++){
+    /*Calculate light extinction coefficient*/
+double B = (DATA->DOY.values[n]-81)*2*pi/365.;
+double ET1 = 9.87*sin(2*B)-7.53*cos(B)-1.5*sin(B);
+double DA = 23.45*sin((284+DATA->DOY.values[n])*2*pi/365); //Deviation angle
+//double LST = (int) (DOY[n]*24*60) % (24*60);
+double LST=0.5*24*60;
+double AST = LST+ET1;
+double h = (AST-12*60)/4; //hour angle
+double alpha = asin((sin(pi/180*DATA->LAT)*sin(pi/180*DA)+cos(pi/180*DATA->LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
+ DATA->SZA[n] = 90-alpha;}
+    
+   
+printf("Done reading all data");
 
-if (DATA->noobs>7){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->BAND2[n]>-9998){DATA->band2pts[c]=n;c=c+1;}}}
 
-if (DATA->noobs>8){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->BAND3[n]>-9998){DATA->band3pts[c]=n;c=c+1;}}}
 
-if (DATA->noobs>9){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->BAND4[n]>-9998){DATA->band4pts[c]=n;c=c+1;}}}
 
-if (DATA->noobs>10){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->SOM[n]>-9998){DATA->sompts[c]=n;c=c+1;}}}
+MCMCID_STRUCT MCMCID;
 
-if (DATA->noobs>11){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->NEEunc[n]>-9998){DATA->neeuncpts[c]=n;c=c+1;}}}
+// MCOPT->nOUT=DATA.ncdf_data.MCMCID.nOUT;
+// MCOPT->nPRINT=DATA.ncdf_data.MCMCID.nPRINT;
+// MCOPT->nWRITE=DATA.ncdf_data.MCMCID.nWRITE;
+// MCOPT->minstepsize=DATA.ncdf_data.MCMCID.minstepsize;
+// MCOPT->mcmcid=DATA.ncdf_data.MCMCID.value;
+// MCOPT->nADAPT=DATA.ncdf_data.MCMCID.nADAPT;
 
-if (DATA->noobs>12){c=0;for (n=0;n<DATA->nodays;n++){if (DATA->CH4[n]>-9998){DATA->ch4pts[c]=n;c=c+1;}}} /*shuang*/
 
-/*deriving mean temp and mean rad*/
 
-DATA->meantemp=0;
-DATA->meanrad=0;
-DATA->meanprec=0;
+MCMCID.value = ncdf_read_single_double_var(ncid, "MCMCID");
+MCMCID.nITERATIONS = ncdf_read_int_attr(ncid, "MCMCID","nITERATIONS");
+MCMCID.nPRINT = ncdf_read_int_attr(ncid, "MCMCID","nPRINT");
+MCMCID.nSAMPLES= ncdf_read_int_attr(ncid, "MCMCID","nSAMPLES");
+MCMCID.nADAPT= ncdf_read_int_attr(ncid, "MCMCID","nADAPT");
+MCMCID.fADAPT= ncdf_read_double_attr(ncid, "MCMCID","fADAPT");
+MCMCID.minstepsize=ncdf_read_double_attr(ncid, "MCMCID","minstepsize");
+MCMCID.seed_number=ncdf_read_double_attr(ncid, "MCMCID","seed_number");
 
-/*2 options:*/
-/*1. derive mean met values based on "MET" (frfm = DATA->nomet)*/
-/*2. prescribe user-provided mean met values (frfm = 0)*/
+if (isnan(MCMCID.value)){MCMCID.value=DEFAULT_DOUBLE_VAL;}
 
-if (frfm==0){
-for (n=0;n<DATA->nodays;n++){DATA->meantemp+=0.5*DATA->MET[DATA->nomet*n+1]/(double)DATA->nodays;}
-for (n=0;n<DATA->nodays;n++){DATA->meantemp+=0.5*DATA->MET[DATA->nomet*n+2]/(double)DATA->nodays;}
-for (n=0;n<DATA->nodays;n++){DATA->meanrad+=DATA->MET[DATA->nomet*n+3]/(double)DATA->nodays;}
-/*only if no met > 6*/
-if (DATA->nomet>8){
-for (n=0;n<DATA->nodays;n++){DATA->meanprec+=DATA->MET[DATA->nomet*n+8]/(double)DATA->nodays;}};
-printf("No prescribed met reference means, calculating based on driver data\n");
-}
-else if (frfm==DATA->nomet){
-DATA->meantemp=0.5*metline[1] + 0.5*metline[2];
-DATA->meanrad=metline[3];
-if (DATA->nomet>6){DATA->meanprec=metline[8];}
-printf("Using prescribed met reference means\n");
-}
 
-printf("frf = %i\n",frfm);
 
+DATA->MCMCID=MCMCID;
 
-CARDAMOM_DATA_CHECKS(DATA);
+//
 
-free(metline);
-free(obsline);
+printf("Done reading MCMC valuea and attributes");
 
-return 0;
-
-
-
-}
-
-
-
-
-int INITIALIZE_DATA_STRUCT(DATA *CDATA){
-
-/*initialising array pointers as zero*/
-/*NOTE: These may need to be set to NULL*/
-CDATA->MET=0;
-CDATA->GPP=0;
-CDATA->LAI=0;
-CDATA->NEE=0;
-CDATA->WOO=0;
-CDATA->ET=0;
-CDATA->EWT=0;
-CDATA->BAND1=0;
-CDATA->BAND2=0;
-CDATA->BAND3=0;
-CDATA->BAND4=0;
-CDATA->SOM=0;
-CDATA->NEEunc=0;
-CDATA->CH4=0; /*shuang*/
-
-return 0;
-
-}
-
-
-int FREE_DATA_STRUCT(DATA DATA){
-
-
-if (DATA.ngpp>0){free(DATA.gpppts);}
-if (DATA.nlai>0){free(DATA.laipts);}
-if (DATA.nnee>0){free(DATA.neepts);}
-if (DATA.nwoo>0){free(DATA.woopts);}
-if (DATA.net>0){free(DATA.etpts);}
-if (DATA.newt>0){free(DATA.ewtpts);}
-if (DATA.nband1>0){free(DATA.band1pts);}
-if (DATA.nband2>0){free(DATA.band2pts);}
-if (DATA.nband3>0){free(DATA.band3pts);}
-if (DATA.nband4>0){free(DATA.band4pts);}
-if (DATA.nsom>0){free(DATA.sompts);}
-if (DATA.nneeunc>0){free(DATA.neeuncpts);}
-if (DATA.nch4>0){free(DATA.ch4pts);} /*shuang*/
-
-free(DATA.MET);
-free(DATA.LAI);
-free(DATA.NEE);
-free(DATA.WOO);
-free(DATA.ET);
-free(DATA.GPP);
-free(DATA.EWT);
-free(DATA.BAND4);
-free(DATA.BAND3);
-free(DATA.BAND2);
-free(DATA.BAND1);
-free(DATA.SOM);
-free(DATA.NEEunc);
-free(DATA.CH4);/*shuang*/
-
-free(DATA.M_PARS);
-free(DATA.M_LAI);
-free(DATA.M_GPP);
-free(DATA.M_FLUXES);
-free(DATA.M_NEE);
-free(DATA.M_POOLS);
-free(DATA.M_P);
-free(DATA.M_EDCD);
-
-free(DATA.parmin);
-free(DATA.parmax);
-free(DATA.M_leo);
-
-return 0;
-
+        
+	return 0;
 }

@@ -20,19 +20,19 @@ DATA DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCO, MCMC_OUTPUT *MCOUT){
 
 /* ***********INPUTS************
  *
- * MODEL_LIKELIHOOD: A function wholly responsible for 
- * (a) running the model given the DATA and parameters, 
- * (b) comparing it to observations,and 
+ * MODEL_LIKELIHOOD: A function wholly responsible for
+ * (a) running the model given the DATA and parameters,
+ * (b) comparing it to observations,and
  * (c) returning  the (log) likelihood.
  * The function will be run as MODEL_LIKELIHOOD(DATA,PARS);
- * To facilitate this, ALL data can be 
- * passed to the MHMCMC function as a structure (in order to avoid 
- * repeated read/write computational time). 
+ * To facilitate this, ALL data can be
+ * passed to the MHMCMC function as a structure (in order to avoid
+ * repeated read/write computational time).
  *
  * DATA: All data needed for the MODEL_LIKELIHOOD. It can include
  * drivers, observations, etc.
  *
- * PARINFO: This structure contains information on 
+ * PARINFO: This structure contains information on
  * (a) pmin, pmax:	parameter ranges (compulsory)
  * (b) initpars:	parameter starting values (optional/recommended).
  * (c) npars:		number of pars (compulsory)
@@ -46,7 +46,7 @@ DATA DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCO, MCMC_OUTPUT *MCOUT){
  * */
 
 /* **************OUTPUTS*************
- * 
+ *
  * RESULTS FILE: File includes (a) results (b) likelihood and (c) final step size
  *
  * */
@@ -126,11 +126,14 @@ for (n=0;n<PI.npars;n++){PARS0[n]=PI.parini[n];}
 memcpy(BESTPARS,PARS0,PI.npars*sizeof(double));
 
 /*STEP 1 - RUN MODEL WITH INITIAL PARAMETERS*/
+
+
 P0=MODEL_LIKELIHOOD(DATA,PI.parini);
+
 /*treating NaN as -inf*/
 if (isnan(P0)){printf("Warning: MLF generated NaN... treating as -Inf");P0=log(0);}
 
-printf("starting likelihood = %e\n",P0);
+
 
 if (isinf(P0)==-1){printf("WARNING! P0=-inf - MHMCMC may get stuck - if so, please check your initial conditions\n");}
 
@@ -142,7 +145,7 @@ while (N.ITER < MCO.nOUT){
 	withinrange=STEP_119(PARS0,PARS,PI,N,MCO);
 	P=log((double)withinrange);
 	wrloc=wrloc+withinrange;
-	
+
 	if (P==0){
 	/*Calculate new likelihood*/
 	P=MODEL_LIKELIHOOD(DATA,PARS);}
@@ -155,7 +158,7 @@ while (N.ITER < MCO.nOUT){
 		for (n=0;n<PI.npars;n++){
 		PARS0[n]=PARS[n];
 		if (P>P0){BESTPARS[n]=PARS[n];}}
-		
+
 		N.ACC=N.ACC+1;asw=1;
 		accloc=accloc+1;
 		P0=P;
@@ -163,14 +166,14 @@ while (N.ITER < MCO.nOUT){
                 /*writing ALL results! Changed on Sat 30 Nov 2013*/
 
 }
-		
+
 
 	/*Continuing in any case*/
 	N.ITER=N.ITER+1;
 	iterloc=iterloc+1;
 /*Writing results to file*/
 if (MCO.nWRITE>0 && (N.ITER % MCO.nWRITE)==0){WRITE_RESULTS(PARS0,P,PI,MCO);}
-	
+
 
 	/*Adapting Step Size*/
 	/*Critical difference is here (N.ITER as opposed to N.ACC)*/
@@ -178,7 +181,7 @@ if (MCO.nWRITE>0 && (N.ITER % MCO.nWRITE)==0){WRITE_RESULTS(PARS0,P,PI,MCO);}
 		N.ACCLOC=N.ITER/MCO.nADAPT;
                 for (n=0;n<PI.npars;n++){
 		PARSALL[(N.ACCLOC-1)*PI.npars+n]=PARS[n];}
-                
+
 
 		N.ACCRATE=(double)accloc/(double)iterloc;
 		accloc=0;iterloc=0;
@@ -198,12 +201,12 @@ if (MCO.nWRITE>0 && (N.ITER % MCO.nWRITE)==0){WRITE_RESULTS(PARS0,P,PI,MCO);}
 		printf("Mean step size (amp) = %5.5f(%5.5f)\n",meanstepsize,N.amp);
 		}
 	/*END OF WHILE LOOP*/
-	
+
 	/*if (P0==0){printf("Found P=1 solution");break;}*/
-	
+
 	}
-	
-	
+
+
 
 /*filling in MCOUT details*/
 /*best parameter combination*/

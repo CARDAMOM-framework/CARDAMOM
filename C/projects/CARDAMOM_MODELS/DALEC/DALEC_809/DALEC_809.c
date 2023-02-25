@@ -1,10 +1,79 @@
 #pragma once
-#include "../../../DALEC_CODE/DALEC_ALL/ACM.c"
-#include "../../../DALEC_CODE/DALEC_ALL/offset.c"
 #include "../../../DALEC_CODE/DALEC_ALL/DALEC_MODULE.c"
 
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
+
+
+
+/*Code used by Bloom et al., 2016
+See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
+
+int DALEC_809_MODCONFIG(DALEC * DALECmodel){
+
+
+DALECmodel->nopools=7;
+DALECmodel->nomet=9;/*This should be compatible with CBF file, if not then disp error*/
+DALECmodel->nopars=33;
+DALECmodel->nofluxes=30;
+
+//declaring observation operator structure, and filling with DALEC configurations
+static OBSOPE OBSOPE;
+//Initialize all SUPPORT OBS values (default value = false).
+INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
+
+//Set SUPPORT_OBS values to true if model supports observation operation.
+OBSOPE.SUPPORT_GPP_OBS=true;
+OBSOPE.SUPPORT_LAI_OBS=true;
+OBSOPE.SUPPORT_ET_OBS=true;
+OBSOPE.SUPPORT_NBE_OBS=true;
+OBSOPE.SUPPORT_ABGB_OBS=true;
+OBSOPE.SUPPORT_SOM_OBS=true;
+OBSOPE.SUPPORT_GRACE_EWT_OBS=false;
+OBSOPE.SUPPORT_FIR_OBS=true;
+
+//Provide values required by each OBS operator
+//Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
+//Note: no values required for any SUPPORT_*_OBS quantity set to false.
+
+//GPP-specific variables
+OBSOPE.GPP_flux=0;
+//LAI-specific variables
+OBSOPE.LAI_foliar_pool=1;
+OBSOPE.LAI_LCMA=16;
+//ET variabiles
+OBSOPE.ET_flux=28;
+//NBE-specific variables
+static int NBE_fluxes[]={0,2,12,13,16};
+OBSOPE.NBE_fluxes=NBE_fluxes;
+static double NBE_flux_signs[]={-1.,1.,1.,1.,1.};
+OBSOPE.NBE_flux_signs=NBE_flux_signs;
+OBSOPE.NBE_n_fluxes=5;
+
+//ABGB-specific variables
+static int ABGB_pools[]={0,1,2,3};
+OBSOPE.ABGB_pools=ABGB_pools;
+OBSOPE.ABGB_n_pools=4;
+
+//SOM-specific variables
+static int SOM_pools[]={4,5};
+OBSOPE.SOM_pools=SOM_pools;
+OBSOPE.SOM_n_pools=2;
+//H2O-specific variables
+//static int GRACE_EWT_h2o_pools[]={6,7};
+//OBSOPE.GRACE_EWT_h2o_pools=GRACE_EWT_h2o_pools;
+//OBSOPE.GRACE_EWT_n_h2o_pools=2;
+//Fire-specific variables
+OBSOPE.FIR_flux=16;
+
+DALECmodel->OBSOPE=OBSOPE;
+
+return 0;}
+
+
+
+
+
 
 
 int DALEC_809(DATA DATA, double const *pars)
@@ -33,8 +102,6 @@ int nr=DATA.nodays;
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
 double *FLUXES=DATA.M_FLUXES;
 double *POOLS=DATA.M_POOLS;
-double *LAI=DATA.M_LAI;
-double *NEE=DATA.M_NEE;
 
   /*assigning values to pools*/
   /*L,F,R,W,Lit,SOM*/
@@ -154,9 +221,9 @@ f=nofluxes*n;
 
 
 /*LAI*/
-LAI[n]=POOLS[p+1]/pars[16]; 
+double LAI=POOLS[p+1]/pars[16]; 
 /*GPP*/
-gpppars[0]=LAI[n];
+gpppars[0]=LAI;
 gpppars[1]=DATA.MET[m+2];
 gpppars[2]=DATA.MET[m+1];
 gpppars[4]=DATA.MET[m+4];
@@ -246,7 +313,7 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 	FLUXES[f+16]=0;for (nn=0;nn<6;nn++){FLUXES[f+16]+=FLUXES[f+17+nn];}
 
 	/*Net ecosystem exchange + Fires*/
-	NEE[n]=-FLUXES[f+0]+FLUXES[f+2]+FLUXES[f+12]+FLUXES[f+13]+FLUXES[f+16];
+	//NEE[n]=-FLUXES[f+0]+FLUXES[f+2]+FLUXES[f+12]+FLUXES[f+13]+FLUXES[f+16];
 
 
 }

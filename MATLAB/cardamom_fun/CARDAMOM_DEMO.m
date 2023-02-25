@@ -1,21 +1,14 @@
 function CARDAMOM_DEMO
 %
 %Step 1. Load CBF file
-CBF=CARDAMOM_READ_BINARY_FILEFORMAT([getenv('CARDAMOM_DATA_PATH'),'/CARDAMOM_DATA_DRIVERS_EXAMPLE.cbf']);
+nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
+CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
 
-%Step 2. Run one MCMC chain
-%MCO is a structure that contains  MCMC options 
-%"niteration" determines how many accepted samples are required
-%"printrate" determines how oftern MCMC progress stats are printed (in
-%terms of tested samples)
-%"samplerate" determines how often the accepted parameter samples are stored
-MCO.niterations=10000;
-MCO.printrate=1000;
-MCO.samplerate=100;
-MCO.mcmcid=119;
+
+
 %CARDAMOM_RUN_MDF runs the MCMC
 %All accepted parameters AND all corresponding variables are stored in "CBR"
-CBR=CARDAMOM_RUN_MDF(CBF,MCO);
+CBR=CARDAMOM_RUN_MDF(CBF);
 %Step 3. Run CARDAMOM with optimized parameters (This is done internally - at a basic level - inside "CARDAMOM_RUN_MDF")
 %CBR=CARDAMOM_RUN_MODEL(CBF,CBR.PARS);
 

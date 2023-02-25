@@ -53,7 +53,6 @@ int seedrandomnumber(char *charinput){
 
 
 long seed1=(long)charseed(charinput);
-
 //long seed2=(long)time(NULL);
 
 //long seed3=(long)&charinput;

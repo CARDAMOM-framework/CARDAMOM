@@ -12,11 +12,8 @@ int MODEL_INFO_809(DATA * DATA){
 /*"static" ensures that the memory is declared in one instance and visible to all functions (I think)*/
 static DALEC DALECmodel;
 
-/*Step 2: Fill structure with model-specific info*/
-DALECmodel.nopools=7;
-DALECmodel.nomet=9;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel.nopars=33;
-DALECmodel.nofluxes=30;
+DALEC_809_MODCONFIG(&DALECmodel);
+
 
 /*Short-term: copy quantities into DATA structure to reduce dependencies in CARDAMOM_MODEL_LIBRARY.c*/
 /*Long-term: remove dependencies on DATA.nofluxes... etc. in CARDAMOM_READ_BINARY_DATA and DALEC_ALL_LIKELIHOOD.c*/
