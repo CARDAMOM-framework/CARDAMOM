@@ -224,3 +224,84 @@ def rm99(xx):
     x =xx.copy()
     x[x==-9999.0] = np.nan
     return x
+
+
+def assim_data_fluxes(c_loc,modelid):
+    tf = open(c_loc+"C/projects/CARDAMOM_MODELS/DALEC/DALEC_"+str(modelid)+"/DALEC_"+str(modelid)+".c", "r")
+    d = tf.read()
+    tf.close()
+
+    s1 = d.find("INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);")
+    e1 = d.find('return 0;}',s1)
+    info = d[s1:e1]
+    info = info[info.rfind('OBSOPE.SUPPORT')+14:]
+    
+    f_info = flux_info(c_loc,modelid)
+    invfluxinfo = {v: k for k, v in f_info.items()} 
+    
+
+    ffs = {}
+    for rr in re.findall('OBSOPE.(.*);',info):
+        if('fluxes' in rr and '_n_' not in rr):
+            fluxn = rr[:rr.index('_')]
+            mf = re.findall(fluxn+'_flux_signs\[\](.*);',info)[0]
+            
+            fluxlocs = []
+            for aa in re.findall(fluxn+'_fluxes\[(.*);',info) :
+                if('=' in aa):
+                    fluxlocs+=[int(invfluxinfo[aa[aa.index('.')+1:]])]
+            
+            
+            multsigns = re.findall('-?\d+\.?\d*',mf)
+            multsigns = [eval(m) for m in multsigns]
+            ffs[fluxn] = [fluxlocs,multsigns]
+        elif('flux' in rr and 'signs' not in rr and 'fluxes' not in rr):
+            ffs[rr[:rr.index('_')]] =  invfluxinfo[rr[rr.index('.')+1:]]
+        
+    return ffs
+
+
+def assim_data_pools(c_loc,modelid):
+    tf = open(c_loc+"C/projects/CARDAMOM_MODELS/DALEC/DALEC_"+str(modelid)+"/DALEC_"+str(modelid)+".c", "r")
+    d = tf.read()
+    tf.close()
+
+    s1 = d.find("INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);")
+    e1 = d.find('return 0;}',s1)
+    info = d[s1:e1]
+    info = info[info.rfind('OBSOPE.SUPPORT')+14:]
+
+    pinfo = pool_info(c_loc,modelid)
+    invpoolinfo = {v: k for k, v in pinfo.items()} 
+
+    pps = {}
+    for rr in re.findall('OBSOPE.(.*);',info):
+        if('pools' in rr and '_n_' not in rr):
+            pooln = rr[:rr.index('_')]
+           
+
+            poollocs = []
+            for aa in re.findall(pooln+'_pools\[(.*);',info) :
+                if('=' in aa):
+                    poollocs+=[int(invpoolinfo[aa[aa.index('.')+1:]])]
+
+
+    
+            pps[pooln] = poollocs
+        elif('pool' in rr and 'signs' not in rr and 'pools' not in rr):
+            pps[rr[:rr.index('_')]] =  invpoolinfo[rr[rr.index('.')+1:]]
+
+    return pps
+
+def pltoutput(x,y,color,label=""):
+    sd = np.percentile(y,[25,75],axis = 0)
+    plt.plot(x,np.median(y,axis = 0),color = color, label = label)
+    plt.fill_between(x, sd[0,:], sd[-1,:], color=color, alpha=.3)
+    plt.xticks(rotation=45)
+    return np.median(y,axis = 0)
+
+def pltassimdata(x,y):
+    if(np.sum(~np.isnan(y)) < len(y)/10):
+        plt.scatter(x,y,color = 'black')
+    elif(np.sum(~np.isnan(y)) ):
+        plt.plot(x,y,color = 'black')
