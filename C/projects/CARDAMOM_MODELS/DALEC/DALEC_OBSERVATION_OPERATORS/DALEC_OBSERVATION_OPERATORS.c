@@ -74,6 +74,10 @@ bool SUPPORT_iniSOM_OBS;
 int iniSOM_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
 
+bool SUPPORT_LCMA_OBS;
+int LCMA_PARAM;//This is assuming it's a single parameter
+//Can add more parameters OR options
+
 bool SUPPORT_CUEmrg_OBS; //Emergent CUE (Rauto/GPP)
 int Rauto_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS
 
@@ -106,6 +110,7 @@ OBSOPE->SUPPORT_C3frac_OBS=false;
 OBSOPE->SUPPORT_Vcmax25_OBS=false;
 OBSOPE->SUPPORT_iniSnow_OBS=false;
 OBSOPE->SUPPORT_iniSOM_OBS=false;
+OBSOPE->SUPPORT_LCMA_OBS=false;
 //In-built observation operators
 
 
@@ -476,6 +481,13 @@ return 0;
 
 }
 
+int DALEC_OBSOPE_LCMA(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_LCMA;
+if  (SOBS.validobs){D->M_PEQ_LCMA=D->M_PARS[O->LCMA_PARAM];}
+return 0;
+
+}
+
 
 
 ///Full observation operator
@@ -504,6 +516,7 @@ if (O->SUPPORT_C3frac_OBS){DALEC_OBSOPE_C3frac(D, O);}
 if (O->SUPPORT_Vcmax25_OBS){DALEC_OBSOPE_Vcmax25(D, O);}
 if (O->SUPPORT_iniSnow_OBS){DALEC_OBSOPE_iniSnow(D, O);}
 if (O->SUPPORT_iniSOM_OBS){DALEC_OBSOPE_iniSOM(D, O);}
+if (O->SUPPORT_LCMA_OBS){DALEC_OBSOPE_LCMA(D, O);}
 
 
 return 0;}  
