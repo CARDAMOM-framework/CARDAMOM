@@ -35,6 +35,7 @@ int nITERATIONS;
 int nPRINT;
 int nSAMPLES;
 int nADAPT;
+int nSAMPLES_EDC_SEARCH;
 double fADAPT;
 double minstepsize;
 int seed_number;
