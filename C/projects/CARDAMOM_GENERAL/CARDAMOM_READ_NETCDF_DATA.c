@@ -127,6 +127,7 @@ DATA->PEQ_C3frac=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_C3frac");
 DATA->PEQ_Vcmax25=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Vcmax25");
 DATA->PEQ_iniSOM=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSOM");
 DATA->PEQ_iniSnow=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSnow");
+DATA->PEQ_iniSnow=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_LCMA");
 
 //Global defaults: these are set in pre-process if not defined below
 // default_int_value(&OBS->opt_unc_type,0);
