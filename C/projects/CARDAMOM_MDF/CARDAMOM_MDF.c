@@ -32,11 +32,8 @@ MCOPT->minstepsize=DATA.ncdf_data.MCMCID.minstepsize;
 MCOPT->mcmcid=DATA.ncdf_data.MCMCID.value;
 MCOPT->nADAPT=DATA.ncdf_data.MCMCID.nADAPT;
 MCOPT->fADAPT=DATA.ncdf_data.MCMCID.fADAPT;
-
+    
 if (DATA.ncdf_data.MCMCID.nSAMPLES==DEFAULT_INT_VAL){DATA.ncdf_data.MCMCID.nSAMPLES=2000;}
-
-
-
 if (MCOPT->nOUT==DEFAULT_INT_VAL){MCOPT->nOUT=10000;}
 if (MCOPT->nPRINT==DEFAULT_INT_VAL){MCOPT->nPRINT=1000;}
 if (MCOPT->minstepsize==DEFAULT_DOUBLE_VAL){MCOPT->minstepsize=1e-5;}
@@ -197,6 +194,13 @@ printf("CARDAMOM_MDF.c: Parameter info structure initialized\n");
 
 /*READ_PARI_DATA and READ_MCOPT should now be generic for all model types*/
 /*CONTAINS "FIND_EDC_INITIAL_VALUES(*DATA,PI);"*/
+
+
+
+
+    printf("DATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH=200000;\n");
+    printf("DATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH=%i\n",DATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH);
+
 DATA.edcsearch=1;
 READ_PARI_DATA(&PI, &DATA, &MCOUT, &MCOPT,CLA);
 printf("CARDAMOM_MDF.c: READ_PARI_DATA successfully executed\n");

@@ -467,7 +467,8 @@ POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snowfall]*deltat; /*first ste
 double SCFtemp = POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);
     //Snow melt, based on new SWE
  double SNOWMELT=fmin(fmax((DGCM_TK0C+SKT[n]-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
-double SUBLIMATION =  pars[P.sublimation_rate]*VPD[n]*SCFtemp;
+ //double SNOWMELT=fmin(fmax((DGCM_TK0C+SKT[n]-pars[P.min_melt])*pars[P.melt_slope],0),1)*SCFtemp; /*melted snow per day*/  
+double SUBLIMATION =  pars[P.sublimation_rate]*VPD[n]*SCFtemp;//
 
 double slf=(SNOWMELT + SUBLIMATION)*deltat/POOLS[nxp+S.H2O_SWE];
     if (slf>1){
@@ -1285,6 +1286,15 @@ OBSOPE.SUPPORT_SCF_OBS=true;
 // OBSOPE.SUPPORT_iniSnow_OBS=true;
 // OBSOPE.SUPPORT_iniSOM_OBS=true;
 // OBSOPE.SUPPORT_CUEmrg_OBS=true;
+
+// // OBSOPE.SUPPORT_CUE_OBS=true;
+// OBSOPE.SUPPORT_Vcmax25_OBS=true;
+// OBSOPE.SUPPORT_C3frac_OBS=true;
+// OBSOPE.SUPPORT_iniSnow_OBS=true;
+// OBSOPE.SUPPORT_iniSOM_OBS=true;
+// OBSOPE.SUPPORT_CUEmrg_OBS=true;
+// OBSOPE.SUPPORT_LCMA_OBS=true;
+
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
@@ -1348,7 +1358,8 @@ OBSOPE.SUPPORT_SCF_OBS=true;
 //SCF-specific variables
 OBSOPE.SCF_pool=S.D_SCF;
 
-// 
+
+
 // //Vcmax25 parameters
 // OBSOPE.Vcmax25_PARAM=P.Vcmax25;
 // // //C3frac parameters
@@ -1357,6 +1368,7 @@ OBSOPE.SCF_pool=S.D_SCF;
 // OBSOPE.iniSnow_PARAM=P.i_SWE;
 // //Initial SOM parameter
 // OBSOPE.iniSOM_PARAM=P.i_som;
+// OBSOPE.LCMA_PARAM=P.LCMA;
 // 
 // //CH4-specific variables 
 // OBSOPE.CH4_flux = F.rh_ch4;

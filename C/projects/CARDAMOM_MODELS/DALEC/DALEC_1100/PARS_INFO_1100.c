@@ -224,7 +224,7 @@ parmax[P.min_melt]=283.15;
 
 /*sn2: slope*/
 parmin[P.melt_slope]=0.00001;
-parmax[P.melt_slope]=1;
+parmax[P.melt_slope]=100;
 
 /*sn3: snow cover fraction scalar; SCF = SWE/(SWE +SWEcritical_par) */
 parmin[P.scf_scalar]=10;
@@ -344,7 +344,7 @@ parmax[P.scf_scalar]=1000.0;
 
         /*Sublimation rate: mm/day/SCF/kPha/(MJ/m2/d) Biggest = 1/0.5/2/2; Smallest = 1/1/10/10/*/
 parmin[P.sublimation_rate]=0.001;
-parmax[P.sublimation_rate]=10;
+parmax[P.sublimation_rate]=100;
 
   
 return 0;

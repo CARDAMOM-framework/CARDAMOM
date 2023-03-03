@@ -127,6 +127,7 @@ DATA->PEQ_C3frac=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_C3frac");
 DATA->PEQ_Vcmax25=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Vcmax25");
 DATA->PEQ_iniSOM=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSOM");
 DATA->PEQ_iniSnow=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSnow");
+DATA->PEQ_iniSnow=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_LCMA");
 
 //Global defaults: these are set in pre-process if not defined below
 // default_int_value(&OBS->opt_unc_type,0);
@@ -365,6 +366,8 @@ MCMCID.value = ncdf_read_single_double_var(ncid, "MCMCID");
 MCMCID.nITERATIONS = ncdf_read_int_attr(ncid, "MCMCID","nITERATIONS");
 MCMCID.nPRINT = ncdf_read_int_attr(ncid, "MCMCID","nPRINT");
 MCMCID.nSAMPLES= ncdf_read_int_attr(ncid, "MCMCID","nSAMPLES");
+MCMCID.nSAMPLES_EDC_SEARCH= ncdf_read_int_attr(ncid, "MCMCID","nSAMPLES_EDC_SEARCH");
+default_int_value(&MCMCID.nSAMPLES_EDC_SEARCH,200000);
 MCMCID.nADAPT= ncdf_read_int_attr(ncid, "MCMCID","nADAPT");
 MCMCID.fADAPT= ncdf_read_double_attr(ncid, "MCMCID","fADAPT");
 MCMCID.minstepsize=ncdf_read_double_attr(ncid, "MCMCID","minstepsize");

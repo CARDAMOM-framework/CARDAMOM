@@ -35,6 +35,7 @@ int nITERATIONS;
 int nPRINT;
 int nSAMPLES;
 int nADAPT;
+int nSAMPLES_EDC_SEARCH;
 double fADAPT;
 double minstepsize;
 int seed_number;
@@ -86,6 +87,7 @@ SINGLE_OBS_STRUCT PEQ_Vcmax25;
 SINGLE_OBS_STRUCT PEQ_C3frac;
 SINGLE_OBS_STRUCT PEQ_iniSnow;
 SINGLE_OBS_STRUCT PEQ_iniSOM;
+SINGLE_OBS_STRUCT PEQ_LCMA;
 
 
 //Drivers
