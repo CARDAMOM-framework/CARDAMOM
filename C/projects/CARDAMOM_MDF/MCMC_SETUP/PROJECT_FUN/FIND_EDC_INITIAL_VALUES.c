@@ -68,7 +68,7 @@ printf("C/projects/CARDAMOM_MDF/MCMC_SETUP/PROJECT_FUN/FIND_EDC_INITIAL_VALUES.c
 
 
 
-int n;
+int n,nnn;
 
 printf("PI->npars (INSIDE FIND_EDC_INITIAL_VALUES.c)= %d\n",PI->npars);
 
@@ -145,6 +145,11 @@ while (PEDC!=0){
 	printf("*******\n");
 	printf("*******\n");
 	printf("%i out of %i chains have non-zero prob\n",PEDCC,MCOPT.nchains);
+    printf("EDC stats\n");
+    for (nnn=0;nnn<CARDADATA.noedcs;nnn++){
+        double prcnt=100*(double)CARDADATA.EDC_PASS_COUNTER[nnn]/(double)CARDADATA.EDC_INSTANCE_COUNTER[nnn];
+printf("EDC no %i; attempts = %i; passes = %i (%2.2f\%);\n",nnn,CARDADATA.EDC_INSTANCE_COUNTER[nnn],CARDADATA.EDC_PASS_COUNTER[nnn],prcnt );
+    }
 	printf("*******\n");
 	printf("*******\n");
 

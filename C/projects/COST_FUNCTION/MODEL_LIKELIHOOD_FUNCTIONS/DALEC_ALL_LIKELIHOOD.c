@@ -133,8 +133,7 @@ if (O->SUPPORT_LCMA_OBS){   ML[LI.PEQ_LCMA]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.nc
 
 int n;
 double P=0;
-for (n=0;n<D.nolikelihoods;n++){P=P+ML[n];}
-
+ for (n=0;n<D.nolikelihoods;n++){P=P+ML[n];}
 
 
 /*Note: only use with model ID = 806*/

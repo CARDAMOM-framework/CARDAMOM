@@ -91,6 +91,9 @@ DATA->M_SCF=calloc(Ntimesteps,sizeof(double));//Warning, LAI larger than this!
 	DATA->M_PARS=calloc(DATA->nopars,sizeof(double));
     DATA->M_LIKELIHOODS=calloc(DATA->nolikelihoods,sizeof(double));
 	DATA->M_EDCs=calloc(DATA->noedcs,sizeof(double));
+//COunters for diagnostics
+    DATA->EDC_INSTANCE_COUNTER=calloc(DATA->noedcs,sizeof(int));
+    DATA->EDC_PASS_COUNTER=calloc(DATA->noedcs,sizeof(int));
 
 
 printf("Done with dynamic memory declaration\n");
