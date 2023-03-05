@@ -202,8 +202,9 @@ int DALEC_OBSOPE_CUEmrg(DATA * D, OBSOPE * O){
 
 int N=D->ncdf_data.TIME_INDEX.length;
 
-double MGPP;
-double MRauto;
+double MGPP=0;//Initializing as zero, to allow for loop averaging calculation
+double MRauto=0;//Initializing as zero, to allow for loop averaging calculation
+    //Note: consider using standard averaging function to avoid bugs
 SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_CUE;
 if (SOBS.validobs){
     int n;D->M_PEQ_CUE=0;
@@ -214,6 +215,7 @@ if (SOBS.validobs){
     MGPP=MGPP/(double)N;
     MRauto=MRauto/(double)N;
     D->M_PEQ_CUE=1-(MRauto/MGPP);
+
 }
 
 
