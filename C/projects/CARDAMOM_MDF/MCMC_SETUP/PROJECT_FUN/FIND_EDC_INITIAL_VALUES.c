@@ -53,7 +53,8 @@ MCOPT.minstepsize=1e-2;
 
 if (MCOPT_CARDAMOM->mcmcid==3){
 MCOPT.mcmcid=3;
-MCOPT.nOUT=CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ;/*Default =  200000*/
+default_int_value(&CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ,200000);
+MCOPT.nOUT=CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ;/*Default =  20000*/
 MCOPT.nPRINT=2000;/*1;was 2000*/
 MCOPT.minstepsize=1e-5;
 MCOPT.nchains=200;
@@ -148,7 +149,7 @@ while (PEDC!=0){
     printf("EDC stats\n");
     for (nnn=0;nnn<CARDADATA.noedcs;nnn++){
         double prcnt=100*(double)CARDADATA.EDC_PASS_COUNTER[nnn]/(double)CARDADATA.EDC_INSTANCE_COUNTER[nnn];
-printf("EDC no %i; attempts = %i; passes = %i (%2.2f\%);\n",nnn,CARDADATA.EDC_INSTANCE_COUNTER[nnn],CARDADATA.EDC_PASS_COUNTER[nnn],prcnt );
+printf("EDC no %i; attempts = %i; passes = %i (%2.2f%%);\n",nnn,CARDADATA.EDC_INSTANCE_COUNTER[nnn],CARDADATA.EDC_PASS_COUNTER[nnn],prcnt );
     }
 	printf("*******\n");
 	printf("*******\n");
