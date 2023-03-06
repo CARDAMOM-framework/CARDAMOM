@@ -367,7 +367,6 @@ MCMCID.nITERATIONS = ncdf_read_int_attr(ncid, "MCMCID","nITERATIONS");
 MCMCID.nPRINT = ncdf_read_int_attr(ncid, "MCMCID","nPRINT");
 MCMCID.nSAMPLES= ncdf_read_int_attr(ncid, "MCMCID","nSAMPLES");
 MCMCID.nSAMPLES_EDC_SEARCH= ncdf_read_int_attr(ncid, "MCMCID","nSAMPLES_EDC_SEARCH");
-default_int_value(&MCMCID.nSAMPLES_EDC_SEARCH,200000);
 MCMCID.nADAPT= ncdf_read_int_attr(ncid, "MCMCID","nADAPT");
 MCMCID.fADAPT= ncdf_read_double_attr(ncid, "MCMCID","fADAPT");
 MCMCID.minstepsize=ncdf_read_double_attr(ncid, "MCMCID","minstepsize");
