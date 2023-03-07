@@ -44,6 +44,7 @@ double M_PEQ_Vcmax25;
 double M_PEQ_C3frac;
 double M_PEQ_iniSnow;
 double M_PEQ_iniSOM;
+double M_PEQ_LCMA;
 
 
 
@@ -55,6 +56,10 @@ int *M_EDCD;//Very very obsolete
 double *M_P;
 double *M_LIKELIHOODS;
 double *M_EDCs;
+
+int *EDC_INSTANCE_COUNTER;
+int *EDC_PASS_COUNTER;
+
 /*static data*/
 // int nodays;
 // double deltat;

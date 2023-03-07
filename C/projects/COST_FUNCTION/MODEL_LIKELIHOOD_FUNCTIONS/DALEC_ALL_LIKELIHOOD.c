@@ -39,15 +39,17 @@ struct LIKELIHOOD_INDICES{
         int PEQ_iniSnow;
         int PEQ_iniSOM;
         int PEQ_C3frac;
-        int PEQ_Vcmax25;} LIKELIHOOD_INDICES={
+        int PEQ_Vcmax25;
+        int PEQ_LCMA;
+        } LIKELIHOOD_INDICES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
-    20};
+    20,21};
     
   
     
     int DALEC_ALL_LIKELIHOOD_MODCONFIG(LIKELIHOODinfo * LI){
-        LI->nolikelihoods=21;
+        LI->nolikelihoods=22;
         return 0;}
             
             
@@ -124,14 +126,14 @@ if (O->SUPPORT_iniSOM_OBS){   ML[LI.PEQ_iniSOM]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&
 if (O->SUPPORT_Vcmax25_OBS){   ML[LI.PEQ_Vcmax25]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_Vcmax25, D.M_PEQ_Vcmax25);};
 if (O->SUPPORT_C3frac_OBS){   ML[LI.PEQ_C3frac]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_C3frac, D.M_PEQ_C3frac);};
 if (O->SUPPORT_CUEmrg_OBS){   ML[LI.PEQ_CUE]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_CUE, D.M_PEQ_CUE);};
+if (O->SUPPORT_LCMA_OBS){   ML[LI.PEQ_LCMA]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_LCMA, D.M_PEQ_LCMA);};
 
 
 //Calculate sum here;
 
 int n;
 double P=0;
-for (n=0;n<D.nolikelihoods;n++){P=P+ML[n];}
-
+ for (n=0;n<D.nolikelihoods;n++){P=P+ML[n];}
 
 
 /*Note: only use with model ID = 806*/
