@@ -238,8 +238,10 @@ int mean_puw_temp;
 int nsc_ratio;
 int state_ranges;
 int state_trajectories;
+int vcmax_lcma;
 } DALEC_1100_EDCs={
-   0,1,2,3,4,5,6,7,8,9
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+   10
 };
 
 
