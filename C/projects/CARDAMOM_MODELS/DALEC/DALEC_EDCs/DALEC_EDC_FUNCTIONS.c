@@ -3,6 +3,7 @@
 
 #pragma once
 #include "DALEC_EDC_PARAMETER_INEQUALITY.c"
+#include "DALEC_EDC_PARAMETER_LOG_RATIO.c"
 #include "DALEC_EDC_STATE_RANGES.c"
 #include "DALEC_EDC_TRAJECTORY.c"
 #include "DALEC_EDC_START_TEMP.c"
