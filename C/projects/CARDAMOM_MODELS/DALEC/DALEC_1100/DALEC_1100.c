@@ -1022,8 +1022,8 @@ static DALEC_EDC_PARAMETER_LOG_RATIO_STRUCT EDC_vcmax_lcma;
 //EDC: ratio of Vcmax25 to LCMA
 EDC_vcmax_lcma.numerator_index=P.Vcmax25;
 EDC_vcmax_lcma.denominator_index=P.LCMA;
-EDC_vcmax_lcma.mean_ratio = 1.0399;
-EDC_vcmax_lcma.std_ratio = 0.1956;
+EDC_vcmax_lcma.mean_ratio = 1.0399; // From TRY database
+EDC_vcmax_lcma.std_ratio = 0.1956; // From TRY database
 EDCs[E.vcmax_lcma].data=&EDC_vcmax_lcma;
 EDCs[E.vcmax_lcma].function=&DALEC_EDC_PARAMETER_LOG_RATIO;
 EDCs[E.vcmax_lcma].prerun=true;
