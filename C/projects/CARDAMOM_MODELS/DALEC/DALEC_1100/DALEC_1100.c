@@ -203,6 +203,8 @@ double *POOLS=DATA.M_POOLS;
 //   POOLS[S.H2O_PAW]=HYDROFUN_MOI2EWT(pars[P.i_PAW_SM],pars[P.PAW_por],pars[P.PAW_z]);
 //   POOLS[S.H2O_PUW]=HYDROFUN_MOI2EWT(pars[P.i_PUW_SM],pars[P.PUW_por],pars[P.PUW_z]);
   POOLS[S.H2O_SWE]=pars[P.i_SWE];
+    //Assume SWE is at LST
+  POOLS[S.E_SWE]=pars[P.i_SWE];
   /*Energy pools*/
 //   POOLS[S.E_PAW]=pars[P.i_PAW_E]*pars[P.PAW_z];
 //   POOLS[S.E_PUW]=pars[P.i_PUW_E]*pars[P.PUW_z];
@@ -467,8 +469,8 @@ POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snowfall]*deltat; /*first ste
 double SCFtemp = POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);
     //Snow melt, based on new SWE
  double SNOWMELT=fmin(fmax((DGCM_TK0C+SKT[n]-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
- //double SNOWMELT=fmin(fmax((DGCM_TK0C+SKT[n]-pars[P.min_melt])*pars[P.melt_slope],0),1)*SCFtemp; /*melted snow per day*/  
-double SUBLIMATION =  pars[P.sublimation_rate]*VPD[n]*SCFtemp;//
+
+double SUBLIMATION =  pars[P.sublimation_rate]*SSRD[n]*SCFtemp;
 
 double slf=(SNOWMELT + SUBLIMATION)*deltat/POOLS[nxp+S.H2O_SWE];
     if (slf>1){
@@ -964,11 +966,12 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
 
 DALECmodel->dalec=DALEC_1100;
-DALECmodel->nopools=2;
+DALECmodel->nopools=3;
 //DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=5;
 DALECmodel->nofluxes=3;
 DALECmodel->noedcs=2;
+
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
@@ -1020,6 +1023,7 @@ EDCs * EDCs=DALECmodel->EDCs;
 // EDCs[E.mr_rates].prerun=true;
 // 
 // 
+
 
 //State ranges
    static DALEC_EDC_STATE_RANGES_STRUCT EDC_sr;

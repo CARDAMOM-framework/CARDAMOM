@@ -56,6 +56,10 @@ int *M_EDCD;//Very very obsolete
 double *M_P;
 double *M_LIKELIHOODS;
 double *M_EDCs;
+
+int *EDC_INSTANCE_COUNTER;
+int *EDC_PASS_COUNTER;
+
 /*static data*/
 // int nodays;
 // double deltat;

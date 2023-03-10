@@ -186,6 +186,7 @@ struct DALEC_1100_POOLS{
 /*DALEC POOLS*/
 int H2O_SWE; /*Snow water equivalent*/
 int D_SCF;//snow-covered fraction
+int E_SWE; /*Snow water equivalent energy*/
 // int C_lab; /*Labile C*/
 // int C_fol; /*Foliar C*/
 // int C_roo; /*Root C*/
@@ -209,7 +210,7 @@ int D_SCF;//snow-covered fraction
 // int M_LAI_MAX;//KNORR LAI module max LAI memory
 // int M_LAI_TEMP;//KNORR LAI module temp memory
 } DALEC_1100_POOLS={
-      0,1
+      0,1,2
 };
 
 struct DALEC_1100_EDCs{
@@ -223,9 +224,10 @@ struct DALEC_1100_EDCs{
 // int nsc_ratio;
 int state_trajectories;
 int state_ranges;
+//int state_trajectories;
+//int vcmax_lcma;
 } DALEC_1100_EDCs={
-   0,1
-};
+   0,1};
 
 
 
