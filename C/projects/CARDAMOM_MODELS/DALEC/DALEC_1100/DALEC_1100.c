@@ -204,7 +204,7 @@ double *POOLS=DATA.M_POOLS;
 //   POOLS[S.H2O_PUW]=HYDROFUN_MOI2EWT(pars[P.i_PUW_SM],pars[P.PUW_por],pars[P.PUW_z]);
   POOLS[S.H2O_SWE]=pars[P.i_SWE];
     //Assume SWE is at LST
-  POOLS[S.E_SWE]=pars[P.i_SWE];
+  POOLS[S.E_SWE]=pars[P.i_SWE]*INTERNAL_ENERGY_PER_H2O_UNIT_MASS(LST[0]+ DGCM_TK0C, 0);
   /*Energy pools*/
 //   POOLS[S.E_PAW]=pars[P.i_PAW_E]*pars[P.PAW_z];
 //   POOLS[S.E_PUW]=pars[P.i_PUW_E]*pars[P.PUW_z];
@@ -416,7 +416,7 @@ f=nofluxes*n;
 // double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_PAW]/pars[P.psi_50] - 1)));
 // 
 // // mean air temperature (K)
-// double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
+double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 // 
 // //******************Declare LIU STRUCT*********************
 // LIU_AN_ET_STRUCT LIU;
@@ -465,6 +465,9 @@ f=nofluxes*n;
 /*Snow water equivalent*/
 FLUXES[f+F.snowfall] = SNOWFALL[n];
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snowfall]*deltat; /*first step snowfall to SWE*/
+POOLS[nxp+S.E_SWE]=POOLS[p+S.E_SWE]+FLUXES[f+F.snowfall]*INTERNAL_ENERGY_PER_H2O_UNIT_MASS(air_temp_k, 0);
+    
+    *deltat; /*first step snowfall to SWE*/
 //transient_SCF
 double SCFtemp = POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);
     //Snow melt, based on new SWE
@@ -479,6 +482,7 @@ double slf=(SNOWMELT + SUBLIMATION)*deltat/POOLS[nxp+S.H2O_SWE];
         else{
                   FLUXES[f+F.melt]=SNOWMELT;
         FLUXES[f+F.sublimation]=SUBLIMATION;}
+
 
 
 // 
@@ -496,6 +500,11 @@ double slf=(SNOWMELT + SUBLIMATION)*deltat/POOLS[nxp+S.H2O_SWE];
 // FLUXES[f+F.ets]=FLUXES[f+F.et] + FLUXES[f+F.sublimation];
 
 POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat; /*second step remove snowmelt from SWE*/
+
+//Calculate corresponding energy fluxes
+
+    double E_MELT = FLUXES[f+F.melt] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C; 1);
+    double E_SUBLIMATION = FLUXES[f+F.melt] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C; 1);
 
 // 
 // //Energy balance: Rn = LE + H - G
