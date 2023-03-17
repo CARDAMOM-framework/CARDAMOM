@@ -39,65 +39,65 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
     //Step 2. Define
     
 
-        // C_lab
-        FIOMATRIX.SINK[F.gpp]=S.C_lab;
-        FIOMATRIX.SOURCE[F.resp_auto_maint]=S.C_lab;
-        FIOMATRIX.SOURCE[F.foliar_prod]=S.C_lab;
-        FIOMATRIX.SOURCE[F.root_prod]=S.C_lab;
-        FIOMATRIX.SOURCE[F.wood_prod]=S.C_lab;
-        FIOMATRIX.SOURCE[F.resp_auto_growth]=S.C_lab;
-        FIOMATRIX.SOURCE[F.f_lab]=S.C_lab;  
-        FIOMATRIX.SOURCE[F.fx_lab2lit]=S.C_lab;
+//         // C_lab
+//         FIOMATRIX.SINK[F.gpp]=S.C_lab;
+//         FIOMATRIX.SOURCE[F.resp_auto_maint]=S.C_lab;
+//         FIOMATRIX.SOURCE[F.foliar_prod]=S.C_lab;
+//         FIOMATRIX.SOURCE[F.root_prod]=S.C_lab;
+//         FIOMATRIX.SOURCE[F.wood_prod]=S.C_lab;
+//         FIOMATRIX.SOURCE[F.resp_auto_growth]=S.C_lab;
+//         FIOMATRIX.SOURCE[F.f_lab]=S.C_lab;  
+//         FIOMATRIX.SOURCE[F.fx_lab2lit]=S.C_lab;
 
 
-        // C_fol
-        FIOMATRIX.SINK[F.foliar_prod]=S.C_fol;
-        FIOMATRIX.SOURCE[F.fol2lit]=S.C_fol;
-        FIOMATRIX.SOURCE[F.f_fol]=S.C_fol;
-        FIOMATRIX.SOURCE[F.fx_fol2lit]=S.C_fol;
-        
-        // C_roo
-        FIOMATRIX.SINK[F.root_prod]=S.C_roo;
-        FIOMATRIX.SOURCE[F.roo2lit]=S.C_roo;
-        FIOMATRIX.SOURCE[F.f_roo]=S.C_roo;
-        FIOMATRIX.SOURCE[F.fx_roo2lit]=S.C_roo;
-        
-        // C_woo
-        FIOMATRIX.SINK[F.wood_prod]=S.C_woo;
-        FIOMATRIX.SOURCE[F.woo2cwd]=S.C_woo;
-        FIOMATRIX.SOURCE[F.f_woo]=S.C_woo;
-        FIOMATRIX.SOURCE[F.fx_woo2cwd]=S.C_woo;
+// //         // C_fol
+// //         FIOMATRIX.SINK[F.foliar_prod]=S.C_fol;
+// //         FIOMATRIX.SOURCE[F.fol2lit]=S.C_fol;
+// //         FIOMATRIX.SOURCE[F.f_fol]=S.C_fol;
+// //         FIOMATRIX.SOURCE[F.fx_fol2lit]=S.C_fol;
+// // //         
+//         // C_roo
+//         FIOMATRIX.SINK[F.root_prod]=S.C_roo;
+//         FIOMATRIX.SOURCE[F.roo2lit]=S.C_roo;
+//         FIOMATRIX.SOURCE[F.f_roo]=S.C_roo;
+// //         FIOMATRIX.SOURCE[F.fx_roo2lit]=S.C_roo;
+//         
+//         // C_woo
+//         FIOMATRIX.SINK[F.wood_prod]=S.C_woo;
+//         FIOMATRIX.SOURCE[F.woo2cwd]=S.C_woo;
+//         FIOMATRIX.SOURCE[F.f_woo]=S.C_woo;
+//         FIOMATRIX.SOURCE[F.fx_woo2cwd]=S.C_woo;
 
-        
-        // C_lit
-        FIOMATRIX.SINK[F.fx_lab2lit]=S.C_lit;
-        FIOMATRIX.SINK[F.fol2lit]=S.C_lit;
-        FIOMATRIX.SINK[F.fx_fol2lit]=S.C_lit;
-        FIOMATRIX.SINK[F.roo2lit]=S.C_lit;
-        FIOMATRIX.SINK[F.fx_roo2lit]=S.C_lit;
-        FIOMATRIX.SOURCE[F.ae_rh_lit]=S.C_lit;
-        FIOMATRIX.SOURCE[F.an_rh_lit]=S.C_lit;
-        FIOMATRIX.SOURCE[F.f_lit]=S.C_lit;
-        FIOMATRIX.SOURCE[F.lit2som]=S.C_lit;
-        FIOMATRIX.SOURCE[F.fx_lit2som]=S.C_lit;
-
-        // C_cwd
-        FIOMATRIX.SINK[F.woo2cwd]=S.C_cwd;
-        FIOMATRIX.SINK[F.fx_woo2cwd]=S.C_cwd;
-        FIOMATRIX.SOURCE[F.ae_rh_cwd]=S.C_cwd;
-        FIOMATRIX.SOURCE[F.an_rh_cwd]=S.C_cwd;
-        FIOMATRIX.SOURCE[F.f_cwd]=S.C_cwd;
-        FIOMATRIX.SOURCE[F.cwd2som]=S.C_cwd;
-        FIOMATRIX.SOURCE[F.fx_cwd2som]=S.C_cwd;
-
-        // C_som
-        FIOMATRIX.SINK[F.cwd2som]=S.C_som;
-        FIOMATRIX.SINK[F.fx_cwd2som]=S.C_som;        
-        FIOMATRIX.SINK[F.lit2som]=S.C_som;
-        FIOMATRIX.SINK[F.fx_lit2som]=S.C_som;
-        FIOMATRIX.SOURCE[F.ae_rh_som]=S.C_som;
-        FIOMATRIX.SOURCE[F.an_rh_som]=S.C_som;
-        FIOMATRIX.SOURCE[F.f_som]=S.C_som;
+//         
+//         // C_lit
+//         FIOMATRIX.SINK[F.fx_lab2lit]=S.C_lit;
+//         FIOMATRIX.SINK[F.fol2lit]=S.C_lit;
+//         FIOMATRIX.SINK[F.fx_fol2lit]=S.C_lit;
+//         FIOMATRIX.SINK[F.roo2lit]=S.C_lit;
+//         FIOMATRIX.SINK[F.fx_roo2lit]=S.C_lit;
+//         FIOMATRIX.SOURCE[F.ae_rh_lit]=S.C_lit;
+//         FIOMATRIX.SOURCE[F.an_rh_lit]=S.C_lit;
+//         FIOMATRIX.SOURCE[F.f_lit]=S.C_lit;
+//         FIOMATRIX.SOURCE[F.lit2som]=S.C_lit;
+// //         FIOMATRIX.SOURCE[F.fx_lit2som]=S.C_lit;
+// 
+//         // C_cwd
+//         FIOMATRIX.SINK[F.woo2cwd]=S.C_cwd;
+//         FIOMATRIX.SINK[F.fx_woo2cwd]=S.C_cwd;
+//         FIOMATRIX.SOURCE[F.ae_rh_cwd]=S.C_cwd;
+//         FIOMATRIX.SOURCE[F.an_rh_cwd]=S.C_cwd;
+//         FIOMATRIX.SOURCE[F.f_cwd]=S.C_cwd;
+//         FIOMATRIX.SOURCE[F.cwd2som]=S.C_cwd;
+// //         FIOMATRIX.SOURCE[F.fx_cwd2som]=S.C_cwd;
+// 
+//         // C_som
+//         FIOMATRIX.SINK[F.cwd2som]=S.C_som;
+//         FIOMATRIX.SINK[F.fx_cwd2som]=S.C_som;        
+//         FIOMATRIX.SINK[F.lit2som]=S.C_som;
+//         FIOMATRIX.SINK[F.fx_lit2som]=S.C_som;
+//         FIOMATRIX.SOURCE[F.ae_rh_som]=S.C_som;
+//         FIOMATRIX.SOURCE[F.an_rh_som]=S.C_som;
+//         FIOMATRIX.SOURCE[F.f_som]=S.C_som;
 
         // H2O_SWE
         FIOMATRIX.SOURCE[F.melt]=S.H2O_SWE;
@@ -161,6 +161,7 @@ struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
 
 
     
+double *LAI=DATA.ncdf_data.LAI.values;
 double *SSRD=DATA.ncdf_data.SSRD.values;
 double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
 double *T2M_MAX=DATA.ncdf_data.T2M_MAX.values;
@@ -192,14 +193,14 @@ double *POOLS=DATA.M_POOLS;
   /*assigning values to pools*/
 
   /*L,F,R,W,Lit,SOM*/
-  POOLS[S.C_lab]=pars[P.i_labile];
-  POOLS[S.C_fol]=pars[P.i_foliar];
-  POOLS[S.C_roo]=pars[P.i_root];
-  POOLS[S.C_woo]=pars[P.i_wood];
-  POOLS[S.C_cwd]=pars[P.i_cwd];
-  POOLS[S.C_lit]=pars[P.i_lit];
-  POOLS[S.C_som]=pars[P.i_som];
-  /*water pools*/
+//   POOLS[S.C_lab]=pars[P.i_labile];
+//   POOLS[S.C_fol]=pars[P.i_foliar];
+//   POOLS[S.C_roo]=pars[P.i_root];
+//   POOLS[S.C_woo]=pars[P.i_wood];
+//   POOLS[S.C_cwd]=pars[P.i_cwd];
+//   POOLS[S.C_lit]=pars[P.i_lit];
+//   POOLS[S.C_som]=pars[P.i_som];
+//   /*water pools*/
   POOLS[S.H2O_PAW]=HYDROFUN_MOI2EWT(pars[P.i_PAW_SM],pars[P.PAW_por],pars[P.PAW_z]);
   POOLS[S.H2O_PUW]=HYDROFUN_MOI2EWT(pars[P.i_PUW_SM],pars[P.PUW_por],pars[P.PUW_z]);
   POOLS[S.H2O_SWE]=pars[P.i_SWE];
@@ -209,7 +210,7 @@ double *POOLS=DATA.M_POOLS;
   
   
    //---INITIALIZING DIAGNOSTIC STATES---
-    POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; //LAI
+    //POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; //LAI
     
     if (POOLS[S.H2O_SWE]>0){
     POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]);} //snow cover fraction}
@@ -267,23 +268,23 @@ double *POOLS=DATA.M_POOLS;
     
     
     //******************Delcare KNORR STRUCT*********************
-    KNORR_ALLOCATION_STRUCT KNORR;
-//define time-invariant parameters
-         KNORR.IN.deltat=deltat;
-         KNORR.IN.n=0;
-         KNORR.IN.latitude=DATA.ncdf_data.LAT;
-         KNORR.IN.T_phi=pars[P.T_phi];
-         KNORR.IN.T_r=pars[P.T_range];
-         KNORR.IN.plgr=pars[P.plgr];
-         KNORR.IN.k_L=pars[P.k_leaf];
-         KNORR.IN.tau_W=pars[P.tau_W];//0.00000001;//
-         KNORR.IN.t_c=pars[P.time_c];
-         KNORR.IN.t_r=pars[P.time_r];;
-         KNORR.IN.lambda_max=pars[P.lambda_max];
-    //Initialize memory states
+//     KNORR_ALLOCATION_STRUCT KNORR;
+// //define time-invariant parameters
+//          KNORR.IN.deltat=deltat;
+//          KNORR.IN.n=0;
+//          KNORR.IN.latitude=DATA.ncdf_data.LAT;
+//          KNORR.IN.T_phi=pars[P.T_phi];
+//          KNORR.IN.T_r=pars[P.T_range];
+//          KNORR.IN.plgr=pars[P.plgr];
+//          KNORR.IN.k_L=pars[P.k_leaf];
+//          KNORR.IN.tau_W=pars[P.tau_W];//0.00000001;//
+//          KNORR.IN.t_c=pars[P.time_c];
+//          KNORR.IN.t_r=pars[P.time_r];;
+//          KNORR.IN.lambda_max=pars[P.lambda_max];
+//     //Initialize memory states
     
-    POOLS[S.M_LAI_TEMP]=pars[P.init_T_mem];
-    POOLS[S.M_LAI_MAX]=pars[P.init_LAIW_mem]*pars[P.lambda_max];
+    //POOLS[S.M_LAI_TEMP]=pars[P.init_T_mem];
+    //POOLS[S.M_LAI_MAX]=pars[P.init_LAIW_mem]*pars[P.lambda_max];
     
 
     //******************Allocation fluxes struct**********************
@@ -309,40 +310,40 @@ double *POOLS=DATA.M_POOLS;
     
    //Declare
     //Plant carbon allocation.
-     ALLOC_AND_AUTO_RESP_FLUXES_STRUCT ARFLUXES;
-     //define time-invariant parameters here
-        ARFLUXES.IN.mr_r=pars[P.rauto_mr_r];//
-        ARFLUXES.IN.mr_w=pars[P.rauto_mr_w];//
-        ARFLUXES.IN.gr=pars[P.rauto_gr];//
-        ARFLUXES.IN.Q10mr=pars[P.rauto_mr_q10];//
+//      ALLOC_AND_AUTO_RESP_FLUXES_STRUCT ARFLUXES;
+//      //define time-invariant parameters here
+//         ARFLUXES.IN.mr_r=pars[P.rauto_mr_r];//
+//         ARFLUXES.IN.mr_w=pars[P.rauto_mr_w];//
+//         ARFLUXES.IN.gr=pars[P.rauto_gr];//
+//         ARFLUXES.IN.Q10mr=pars[P.rauto_mr_q10];//
 
 
         //Heterotrophic respiration module
-    HET_RESP_RATES_JCR_STRUCT HRJCR;
+//     HET_RESP_RATES_JCR_STRUCT HRJCR;
     //define time invariant parameters here
     
 /* jc prep input for methane module*/
-        HRJCR.IN.S_FV=pars[P.S_fv];
-        HRJCR.IN.SM_OPT=pars[P.thetas_opt];
-        HRJCR.IN.FWC=pars[P.fwc];
-        HRJCR.IN.R_CH4=pars[P.r_ch4];
-        HRJCR.IN.Q10CH4=pars[P.Q10ch4];
-        HRJCR.IN.Q10CO2=pars[P.Q10rhco2];
+//         HRJCR.IN.S_FV=pars[P.S_fv];
+//         HRJCR.IN.SM_OPT=pars[P.thetas_opt];
+//         HRJCR.IN.FWC=pars[P.fwc];
+//         HRJCR.IN.R_CH4=pars[P.r_ch4];
+//         HRJCR.IN.Q10CH4=pars[P.Q10ch4];
+//         HRJCR.IN.Q10CO2=pars[P.Q10rhco2];
 
    
 
 
 
 
-/*Combustion factors*/
-double CF[7];//AAB changed this
-CF[S.C_lab]=pars[P.cf_ligneous];
-CF[S.C_fol]=pars[P.cf_foliar];
-CF[S.C_roo]=pars[P.cf_ligneous];
-CF[S.C_woo]=pars[P.cf_ligneous];
-CF[S.C_cwd]=pars[P.cf_ligneous];
-CF[S.C_lit]=pars[P.cf_foliar]/2+pars[P.cf_ligneous]/2;
-CF[S.C_som]=pars[P.cf_DOM];
+// /*Combustion factors*/
+// double CF[7];//AAB changed this
+// CF[S.C_lab]=pars[P.cf_ligneous];
+// CF[S.C_fol]=pars[P.cf_foliar];
+// CF[S.C_roo]=pars[P.cf_ligneous];
+// CF[S.C_woo]=pars[P.cf_ligneous];
+// CF[S.C_cwd]=pars[P.cf_ligneous];
+// CF[S.C_lit]=pars[P.cf_foliar]/2+pars[P.cf_ligneous]/2;
+// CF[S.C_som]=pars[P.cf_DOM];
 
 
 /*resilience factor*/
@@ -372,7 +373,7 @@ nxp=nopools*(n+1);
 f=nofluxes*n;
 
 
-double LAI=POOLS[p+S.D_LAI];
+//double LAI=POOLS[p+S.D_LAI];
      
         
 /*Calculate light extinction coefficient*/
@@ -427,7 +428,7 @@ LIU.IN.vcmax25=pars[P.Vcmax25];
 LIU.IN.co2=CO2[n];
 LIU.IN.beta_factor=fmin(beta,g)*POOLS[p+S.D_LF_PAW];
 LIU.IN.g1=pars[P.Med_g1];
-LIU.IN.LAI=LAI;
+LIU.IN.LAI=LAI[n];
 LIU.IN.ga=pars[P.ga];
 LIU.IN.VegK=VegK;
 LIU.IN.Tupp=pars[P.Tupp];
@@ -441,7 +442,7 @@ LIU.IN.precip=PREC[n];
 LIU.IN.q10canopy=pars[P.q10canopy];
 LIU.IN.q10canopyRd=pars[P.rauto_mrd_q10];
 LIU.IN.canopyRdsf=pars[P.canopyRdsf];
-LIU.IN.NSC=POOLS[p+S.C_lab];
+LIU.IN.NSC=1e10;//Assume infinite C_labPOOLS[p+S.C_lab];
 LIU.IN.deltat=deltat;
 
 
@@ -699,151 +700,151 @@ POOLS[nxp+S.E_PUW] = POOLS[p+S.E_PUW] + (FLUXES[f+F.paw2puw_e] - FLUXES[f+F.q_pu
 
 //*************KNORR LAI**************
 
-
-//Time varying KNORR function terms
-
-KNORR.IN.lambda_max_memory=  POOLS[p+S.M_LAI_MAX];
-KNORR.IN.T_memory=POOLS[p+S.M_LAI_TEMP];
-KNORR.IN.temp=air_temp_k;
-KNORR.IN.n=n;
-KNORR.IN.DOY=DOY[n];
-KNORR.IN.lambda=LAI;
-KNORR.IN.pasm=(POOLS[p+S.H2O_PAW]+POOLS[nxp+S.H2O_PAW])/2.0;//Note: soil moisture also available here
-KNORR.IN.transp= FLUXES[f+F.transp];
-//Call function: uses KNORR->IN to update KNORR->OUT
-KNORR_ALLOCATION(&KNORR);
- 
-FLUXES[f+F.target_LAI]=KNORR.OUT.lambda_next;
-//KNORR.OUT.dlambdadt is in units per timestep; converting thest to units per day (as required for CARDAMOM)
-//"FLUXES" have to be in "per day" units
-FLUXES[f+F.dlambda_dt]=KNORR.OUT.dlambdadt/deltat;
-FLUXES[f+F.f_temp_thresh]= KNORR.OUT.f_T;
-FLUXES[f+F.f_dayl_thresh]= KNORR.OUT.f_d;
-
-//Update KNORR memory variables for next iteration
-POOLS[nxp+S.M_LAI_MAX]=KNORR.OUT.laim;
-POOLS[nxp+S.M_LAI_TEMP]=KNORR.OUT.T;
-    
+// 
+// //Time varying KNORR function terms
+// 
+// KNORR.IN.lambda_max_memory=  POOLS[p+S.M_LAI_MAX];
+// KNORR.IN.T_memory=POOLS[p+S.M_LAI_TEMP];
+// KNORR.IN.temp=air_temp_k;
+// KNORR.IN.n=n;
+// KNORR.IN.DOY=DOY[n];
+// KNORR.IN.lambda=LAI;
+// KNORR.IN.pasm=(POOLS[p+S.H2O_PAW]+POOLS[nxp+S.H2O_PAW])/2.0;//Note: soil moisture also available here
+// KNORR.IN.transp= FLUXES[f+F.transp];
+// //Call function: uses KNORR->IN to update KNORR->OUT
+// KNORR_ALLOCATION(&KNORR);
+//  
+// FLUXES[f+F.target_LAI]=KNORR.OUT.lambda_next;
+// //KNORR.OUT.dlambdadt is in units per timestep; converting thest to units per day (as required for CARDAMOM)
+// //"FLUXES" have to be in "per day" units
+// FLUXES[f+F.dlambda_dt]=KNORR.OUT.dlambdadt/deltat;
+// FLUXES[f+F.f_temp_thresh]= KNORR.OUT.f_T;
+// FLUXES[f+F.f_dayl_thresh]= KNORR.OUT.f_d;
+// 
+// //Update KNORR memory variables for next iteration
+// POOLS[nxp+S.M_LAI_MAX]=KNORR.OUT.laim;
+// POOLS[nxp+S.M_LAI_TEMP]=KNORR.OUT.T;
+//     
 
     
 //************Allocation*******************
+// 
+// ARFLUXES.IN.deltat=deltat;
+// ARFLUXES.IN.GPP=FLUXES[f+F.gpp];
+// ARFLUXES.IN.Rd=LIU.OUT.Rd;
+// ARFLUXES.IN.TEMP=air_temp_k;
+// ARFLUXES.IN.NSC=POOLS[p+S.C_lab];
+// ARFLUXES.IN.C_LIVE_W=POOLS[p+S.C_woo];
+// ARFLUXES.IN.C_LIVE_R= POOLS[p+S.C_roo];
+// // Potential plant allocation (growth) fluxes
+// ARFLUXES.IN.ALLOC_FOL_POT=fmax(0, ((FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_fol])/deltat);
+// ARFLUXES.IN.ALLOC_ROO_POT=fmax(0, (pars[P.phi_RL] * (FLUXES[f+F.target_LAI] * pars[P.LCMA]))/deltat);
+// ARFLUXES.IN.ALLOC_WOO_POT=fmax(0, (pars[P.phi_WL] * (FLUXES[f+F.target_LAI] * pars[P.LCMA]))/deltat);
+// 
+// ALLOC_AND_AUTO_RESP_FLUXES(&ARFLUXES);
+// 
+//     double NONLEAF_MORTALITY_FACTOR=ARFLUXES.OUT.NONLEAF_MORTALITY_FACTOR;
+//     
+// 
+// 
 
-ARFLUXES.IN.deltat=deltat;
-ARFLUXES.IN.GPP=FLUXES[f+F.gpp];
-ARFLUXES.IN.Rd=LIU.OUT.Rd;
-ARFLUXES.IN.TEMP=air_temp_k;
-ARFLUXES.IN.NSC=POOLS[p+S.C_lab];
-ARFLUXES.IN.C_LIVE_W=POOLS[p+S.C_woo];
-ARFLUXES.IN.C_LIVE_R= POOLS[p+S.C_roo];
-// Potential plant allocation (growth) fluxes
-ARFLUXES.IN.ALLOC_FOL_POT=fmax(0, ((FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_fol])/deltat);
-ARFLUXES.IN.ALLOC_ROO_POT=fmax(0, (pars[P.phi_RL] * (FLUXES[f+F.target_LAI] * pars[P.LCMA]))/deltat);
-ARFLUXES.IN.ALLOC_WOO_POT=fmax(0, (pars[P.phi_WL] * (FLUXES[f+F.target_LAI] * pars[P.LCMA]))/deltat);
-
-ALLOC_AND_AUTO_RESP_FLUXES(&ARFLUXES);
-
-    double NONLEAF_MORTALITY_FACTOR=ARFLUXES.OUT.NONLEAF_MORTALITY_FACTOR;
-    
-
-
-
-
-/*respiration auto*/
-FLUXES[f+F.resp_auto]=ARFLUXES.OUT.AUTO_RESP_TOTAL;
-/*growth respiration*/
-FLUXES[f+F.resp_auto_growth]=ARFLUXES.OUT.AUTO_RESP_GROWTH;
-/*maintenance respiration*/
-FLUXES[f+F.resp_auto_maint]=ARFLUXES.OUT.AUTO_RESP_MAINTENANCE;
-FLUXES[f+F.resp_auto_maint_dark]=LIU.OUT.Rd;
-
-
-
-// Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]/deltat;
-if (FLUXES[f+F.dlambda_dt] > 0){
-  FLUXES[f+F.fol2lit]=POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))/deltat;
-}
-else {
-    //FLUXES[f+F.dlambda_dt] is in m2/m2/day
-    //LCMA = gC/m2/m2
-  FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA]+POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))/deltat;
-}
-
-/*labile production*/
-FLUXES[f+F.lab_prod] = ARFLUXES.OUT.F_LABPROD;
-/*labile production*/
-//FLUXES[f+F.lab_release] = ARFLUXES.OUT.F_LABREL_ACTUAL;
-/*foliar production*/
-FLUXES[f+F.foliar_prod] = ARFLUXES.OUT.ALLOC_FOL_ACTUAL;
-/*root production*/        
-FLUXES[f+F.root_prod] = ARFLUXES.OUT.ALLOC_ROO_ACTUAL;
-/*wood production*/       
-FLUXES[f+F.wood_prod] = ARFLUXES.OUT.ALLOC_WOO_ACTUAL;
-/*wood CWD production*/       
-FLUXES[f+F.woo2cwd] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
-/*root litter production*/
-FLUXES[f+F.roo2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
-
-/*-----------------------------------------------------------------------*/
+// 
+// /*respiration auto*/
+// FLUXES[f+F.resp_auto]=ARFLUXES.OUT.AUTO_RESP_TOTAL;
+// /*growth respiration*/
+// FLUXES[f+F.resp_auto_growth]=ARFLUXES.OUT.AUTO_RESP_GROWTH;
+// /*maintenance respiration*/
+// FLUXES[f+F.resp_auto_maint]=ARFLUXES.OUT.AUTO_RESP_MAINTENANCE;
+// FLUXES[f+F.resp_auto_maint_dark]=LIU.OUT.Rd;
+// // 
+// 
+// 
+// // Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]/deltat;
+// if (FLUXES[f+F.dlambda_dt] > 0){
+//   FLUXES[f+F.fol2lit]=POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))/deltat;
+// }
+// else {
+//     //FLUXES[f+F.dlambda_dt] is in m2/m2/day
+//     //LCMA = gC/m2/m2
+//   FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA]+POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))/deltat;
+// }
+// 
+// /*labile production*/
+// FLUXES[f+F.lab_prod] = ARFLUXES.OUT.F_LABPROD;
+// /*labile production*/
+// //FLUXES[f+F.lab_release] = ARFLUXES.OUT.F_LABREL_ACTUAL;
+// /*foliar production*/
+// FLUXES[f+F.foliar_prod] = ARFLUXES.OUT.ALLOC_FOL_ACTUAL;
+// /*root production*/        
+// FLUXES[f+F.root_prod] = ARFLUXES.OUT.ALLOC_ROO_ACTUAL;
+// /*wood production*/       
+// FLUXES[f+F.wood_prod] = ARFLUXES.OUT.ALLOC_WOO_ACTUAL;
+// /*wood CWD production*/       
+// FLUXES[f+F.woo2cwd] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
+// /*root litter production*/
+// FLUXES[f+F.roo2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))/deltat;
+// 
+// /*-----------------------------------------------------------------------*/
 
   
     //TIME-VARYING INPUTS
-     HRJCR.IN.SM=POOLS[p+S.D_SM_PAW];
-     HRJCR.IN.TEMP=POOLS[p+S.D_TEMP_PAW];; // Input in degrees K
-     HRJCR.IN.LF=POOLS[p+S.D_LF_PAW];; // Input in degrees 
+//      HRJCR.IN.SM=POOLS[p+S.D_SM_PAW];
+//      HRJCR.IN.TEMP=POOLS[p+S.D_TEMP_PAW];; // Input in degrees K
+//      HRJCR.IN.LF=POOLS[p+S.D_LF_PAW];; // Input in degrees 
+// 
+//        //JCR
+//        HET_RESP_RATES_JCR(&HRJCR);
+//        //OUtputs --- store anything we want here---
+//        FLUXES[f+F.aetr]=HRJCR.OUT.aerobic_tr;//Aerobic turnover rate scalar
+//        FLUXES[f+F.antr]=HRJCR.OUT.anaerobic_tr;//Anaerobic turnover rate scalar
+//        FLUXES[f+F.an_co2_c_ratio]=HRJCR.OUT.anaerobic_co2_c_ratio;//CO2_C_ratio
+//         FLUXES[f+F.an_ch4_c_ratio]=HRJCR.OUT.anaerobic_ch4_c_ratio;//CH4_C_ratio
+// 
 
-       //JCR
-       HET_RESP_RATES_JCR(&HRJCR);
-       //OUtputs --- store anything we want here---
-       FLUXES[f+F.aetr]=HRJCR.OUT.aerobic_tr;//Aerobic turnover rate scalar
-       FLUXES[f+F.antr]=HRJCR.OUT.anaerobic_tr;//Anaerobic turnover rate scalar
-       FLUXES[f+F.an_co2_c_ratio]=HRJCR.OUT.anaerobic_co2_c_ratio;//CO2_C_ratio
-        FLUXES[f+F.an_ch4_c_ratio]=HRJCR.OUT.anaerobic_ch4_c_ratio;//CH4_C_ratio
-
-
-
-//outputformat
-//jcr_o 0-3 fT,fV,fW,fCH4; /*jc*/ /* output from JCR module */
-double ae_loss_cwd = POOLS[p+S.C_cwd]*(1-pow(1-HRJCR.OUT.aerobic_tr*pars[P.t_cwd],deltat))/deltat;
-/* aerobic Rh from coarse woody debris*/
-FLUXES[f+F.ae_rh_cwd] = ae_loss_cwd*(1-pars[P.tr_cwd2som]);
-double ae_loss_lit = POOLS[p+S.C_lit]*(1-pow(1-HRJCR.OUT.aerobic_tr*pars[P.t_lit],deltat))/deltat;
-/* aerobic Rh from litter*/
-FLUXES[f+F.ae_rh_lit] = ae_loss_lit*(1-pars[P.tr_lit2som]);
-/* aerobic Rh from SOM*/
-FLUXES[f+F.ae_rh_som] = POOLS[p+S.C_som]*(1-pow(1-HRJCR.OUT.aerobic_tr*pars[P.t_som],deltat))/deltat;
-
-//******Anaerobic fluxes
-double an_loss_cwd = POOLS[p+S.C_cwd]*(1-pow(1-HRJCR.OUT.anaerobic_tr*pars[P.t_cwd],deltat))/deltat;
-/* anaerobic Rh from coarse woody debris*/
-FLUXES[f+F.an_rh_cwd] = an_loss_cwd*(1-pars[P.tr_cwd2som]);
-/* anaerobic Rh from litter*/
-double an_loss_lit = POOLS[p+S.C_lit]*(1-pow(1-HRJCR.OUT.anaerobic_tr*pars[P.t_lit],deltat))/deltat;
-FLUXES[f+F.an_rh_lit] = an_loss_lit*(1-pars[P.tr_lit2som]);
-/* anaerobic Rh from SOM*/
-FLUXES[f+F.an_rh_som] = POOLS[p+S.C_som]*(1-pow(1-HRJCR.OUT.anaerobic_tr*pars[P.t_som],deltat))/deltat;
-/*CWD to SOM*/
-FLUXES[f+F.cwd2som] = (an_loss_cwd + ae_loss_cwd)*pars[P.tr_cwd2som];
-/*litter to SOM*/
-FLUXES[f+F.lit2som] = (an_loss_lit + ae_loss_lit)*pars[P.tr_lit2som];
-/* Rh_CO2*/
-FLUXES[f+F.rh_co2] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*HRJCR.OUT.anaerobic_co2_c_ratio + (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.ae_rh_som]);
-/* Rh_CH4*/
-FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*HRJCR.OUT.anaerobic_ch4_c_ratio;
+// 
+// //outputformat
+// //jcr_o 0-3 fT,fV,fW,fCH4; /*jc*/ /* output from JCR module */
+// double ae_loss_cwd = POOLS[p+S.C_cwd]*(1-pow(1-HRJCR.OUT.aerobic_tr*pars[P.t_cwd],deltat))/deltat;
+// /* aerobic Rh from coarse woody debris*/
+// FLUXES[f+F.ae_rh_cwd] = ae_loss_cwd*(1-pars[P.tr_cwd2som]);
+// double ae_loss_lit = POOLS[p+S.C_lit]*(1-pow(1-HRJCR.OUT.aerobic_tr*pars[P.t_lit],deltat))/deltat;
+// /* aerobic Rh from litter*/
+// FLUXES[f+F.ae_rh_lit] = ae_loss_lit*(1-pars[P.tr_lit2som]);
+// /* aerobic Rh from SOM*/
+// FLUXES[f+F.ae_rh_som] = POOLS[p+S.C_som]*(1-pow(1-HRJCR.OUT.aerobic_tr*pars[P.t_som],deltat))/deltat;
+// 
+// //******Anaerobic fluxes
+// double an_loss_cwd = POOLS[p+S.C_cwd]*(1-pow(1-HRJCR.OUT.anaerobic_tr*pars[P.t_cwd],deltat))/deltat;
+// /* anaerobic Rh from coarse woody debris*/
+// FLUXES[f+F.an_rh_cwd] = an_loss_cwd*(1-pars[P.tr_cwd2som]);
+// /* anaerobic Rh from litter*/
+// double an_loss_lit = POOLS[p+S.C_lit]*(1-pow(1-HRJCR.OUT.anaerobic_tr*pars[P.t_lit],deltat))/deltat;
+// FLUXES[f+F.an_rh_lit] = an_loss_lit*(1-pars[P.tr_lit2som]);
+// /* anaerobic Rh from SOM*/
+// FLUXES[f+F.an_rh_som] = POOLS[p+S.C_som]*(1-pow(1-HRJCR.OUT.anaerobic_tr*pars[P.t_som],deltat))/deltat;
+// /*CWD to SOM*/
+// FLUXES[f+F.cwd2som] = (an_loss_cwd + ae_loss_cwd)*pars[P.tr_cwd2som];
+// /*litter to SOM*/
+// FLUXES[f+F.lit2som] = (an_loss_lit + ae_loss_lit)*pars[P.tr_lit2som];
+// /* Rh_CO2*/
+// FLUXES[f+F.rh_co2] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*HRJCR.OUT.anaerobic_co2_c_ratio + (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.ae_rh_som]);
+// /* Rh_CH4*/
+// FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*HRJCR.OUT.anaerobic_ch4_c_ratio;
 
 /*----------------------  end of JCR  --------------------------------------------*/
 
 
 /*total pool transfers (no fires yet)*/
-
-        POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto_maint]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
-        POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod] - FLUXES[f+F.fol2lit])*deltat;
-        POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.roo2lit])*deltat;
-        POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + (FLUXES[f+F.wood_prod] - FLUXES[f+F.woo2cwd])*deltat;
-        POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.woo2cwd] - FLUXES[f+F.ae_rh_cwd]-FLUXES[f+F.an_rh_cwd]-FLUXES[f+F.cwd2som])*deltat;
-        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.roo2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som])*deltat;
-        POOLS[nxp+S.C_som] = POOLS[p+S.C_som] + (FLUXES[f+F.lit2som] - FLUXES[f+F.ae_rh_som] - FLUXES[f+F.an_rh_som] + FLUXES[f+F.cwd2som])*deltat;
-
-        
+// 
+//         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto_maint]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
+//         POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod] - FLUXES[f+F.fol2lit])*deltat;
+//         POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.roo2lit])*deltat;
+//         POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + (FLUXES[f+F.wood_prod] - FLUXES[f+F.woo2cwd])*deltat;
+//         POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.woo2cwd] - FLUXES[f+F.ae_rh_cwd]-FLUXES[f+F.an_rh_cwd]-FLUXES[f+F.cwd2som])*deltat;
+//         POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.roo2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som])*deltat;
+//         POOLS[nxp+S.C_som] = POOLS[p+S.C_som] + (FLUXES[f+F.lit2som] - FLUXES[f+F.ae_rh_som] - FLUXES[f+F.an_rh_som] + FLUXES[f+F.cwd2som])*deltat;
+// 
+//         
         //Energy ppols
         //Root zone
           //POOLS[nxp+S.E_PAW] = POOLS[p+S.E_PAW] + (Renato's ground heat flux, inc LWup, etc.)*deltaT  - Runoff terms - Marcos' evaporation terms + Precip energ
@@ -860,56 +861,56 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 	/*Calculating all fire transfers (1. combustion, and 2. litter transfer)*/
 	/*note: all fluxes are in gC m-2 day-1*/
-    FLUXES[f+F.f_lab] = POOLS[nxp+S.C_lab]*BURNED_AREA[n]*CF[S.C_lab]/deltat ;
-    FLUXES[f+F.f_fol] = POOLS[nxp+S.C_fol]*BURNED_AREA[n]*CF[S.C_fol]/deltat;
-    FLUXES[f+F.f_roo] = POOLS[nxp+S.C_roo]*BURNED_AREA[n]*CF[S.C_roo]/deltat;
-    FLUXES[f+F.f_woo] = POOLS[nxp+S.C_woo]*BURNED_AREA[n]*CF[S.C_woo]/deltat;
-    FLUXES[f+F.f_cwd] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*CF[S.C_cwd]/deltat;
-    FLUXES[f+F.f_lit] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*CF[S.C_lit]/deltat;
-    FLUXES[f+F.f_som] = POOLS[nxp+S.C_som]*BURNED_AREA[n]*CF[S.C_som]/deltat;
+//     FLUXES[f+F.f_lab] = POOLS[nxp+S.C_lab]*BURNED_AREA[n]*CF[S.C_lab]/deltat ;
+//     FLUXES[f+F.f_fol] = POOLS[nxp+S.C_fol]*BURNED_AREA[n]*CF[S.C_fol]/deltat;
+//     FLUXES[f+F.f_roo] = POOLS[nxp+S.C_roo]*BURNED_AREA[n]*CF[S.C_roo]/deltat;
+//     FLUXES[f+F.f_woo] = POOLS[nxp+S.C_woo]*BURNED_AREA[n]*CF[S.C_woo]/deltat;
+//     FLUXES[f+F.f_cwd] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*CF[S.C_cwd]/deltat;
+//     FLUXES[f+F.f_lit] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*CF[S.C_lit]/deltat;
+//     FLUXES[f+F.f_som] = POOLS[nxp+S.C_som]*BURNED_AREA[n]*CF[S.C_som]/deltat;
 
 //P*M + P*(1-M)*BAf = P*M + P*BAf - P*M*BAf = P*(M + BAf - M*BAf)  = P*(BAf*(1 - M) + M)
+// 
+//     //LIVE BIOMASS MORTALITY FLUXES
+//     //if MORTALITY
+//     FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))/deltat;
+//     FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(LEAF_MORTALITY_FACTOR + (1-LEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience]))/deltat;
+//     FLUXES[f+F.fx_roo2lit] = POOLS[nxp+S.C_roo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience]))/deltat;
+//     FLUXES[f+F.fx_woo2cwd] = POOLS[nxp+S.C_woo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience]))/deltat;
+//     //No mortality in these pools
+//     FLUXES[f+F.fx_cwd2som] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*(1-CF[S.C_cwd])*(1-pars[P.resilience])/deltat;
+//     FLUXES[f+F.fx_lit2som] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*(1-CF[S.C_lit])*(1-pars[P.resilience])/deltat;
 
-    //LIVE BIOMASS MORTALITY FLUXES
-    //if MORTALITY
-    FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))/deltat;
-    FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(LEAF_MORTALITY_FACTOR + (1-LEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience]))/deltat;
-    FLUXES[f+F.fx_roo2lit] = POOLS[nxp+S.C_roo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience]))/deltat;
-    FLUXES[f+F.fx_woo2cwd] = POOLS[nxp+S.C_woo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience]))/deltat;
-    //No mortality in these pools
-    FLUXES[f+F.fx_cwd2som] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*(1-CF[S.C_cwd])*(1-pars[P.resilience])/deltat;
-    FLUXES[f+F.fx_lit2som] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*(1-CF[S.C_lit])*(1-pars[P.resilience])/deltat;
-
-
-	/*Adding all fire pool transfers here*/
-	/*live C pools*/	
-    
-    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-(FLUXES[f+F.f_lab]+FLUXES[f+F.fx_lab2lit])*deltat;
-    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-(FLUXES[f+F.f_fol]+FLUXES[f+F.fx_fol2lit])*deltat;
-    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-(FLUXES[f+F.f_roo]+FLUXES[f+F.fx_roo2lit])*deltat;
-    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-(FLUXES[f+F.f_woo]+FLUXES[f+F.fx_woo2cwd])*deltat;
-	/*dead C pools*/
-    /*CWD*/
-    POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]+(FLUXES[f+F.fx_woo2cwd]-FLUXES[f+F.f_cwd]-FLUXES[f+F.fx_cwd2som])*deltat;
-    /*litter*/
-    POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.fx_lab2lit]+FLUXES[f+F.fx_fol2lit]+FLUXES[f+F.fx_roo2lit]-FLUXES[f+F.f_lit]-FLUXES[f+F.fx_lit2som])*deltat;
-	/*som*/
-	POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]+(FLUXES[f+F.fx_cwd2som]+FLUXES[f+F.fx_lit2som]-FLUXES[f+F.f_som])*deltat;
-
-	/*fires - total flux in gC m-2 day-1*/
-	/*this term is now (essentially) obsolete*/
-	/*replace in next version of DALEC_FIRES*/
-    FLUXES[f+F.f_total] = FLUXES[f+F.f_lab] + FLUXES[f+F.f_fol] + FLUXES[f+F.f_roo] + FLUXES[f+F.f_woo] + FLUXES[f+F.f_cwd] + FLUXES[f+F.f_lit] + FLUXES[f+F.f_som];
-
-    /*Fraction of C-foliar lost due to fires*/
-    FLUXES[f+F.foliar_fire_frac] = BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
-    /*Calculate LAI (lambda) lost due to fire
-      - we lose the same fraction of LAI as we do C-foliar 
-      - FE_\Lambda^{(t+1)} = \Lambda^{(t+1)'} * BA ( k_{factor(i)} + (1 - k_{factor(i)}) r )*/
-    FLUXES[f+F.lai_fire] = (POOLS[p+S.C_fol]/pars[P.LCMA])*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
+// 
+// 	/*Adding all fire pool transfers here*/
+// 	/*live C pools*/	
+//     
+//     POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-(FLUXES[f+F.f_lab]+FLUXES[f+F.fx_lab2lit])*deltat;
+//     POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-(FLUXES[f+F.f_fol]+FLUXES[f+F.fx_fol2lit])*deltat;
+//     POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-(FLUXES[f+F.f_roo]+FLUXES[f+F.fx_roo2lit])*deltat;
+//     POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-(FLUXES[f+F.f_woo]+FLUXES[f+F.fx_woo2cwd])*deltat;
+// 	/*dead C pools*/
+//     /*CWD*/
+//     POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]+(FLUXES[f+F.fx_woo2cwd]-FLUXES[f+F.f_cwd]-FLUXES[f+F.fx_cwd2som])*deltat;
+//     /*litter*/
+//     POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.fx_lab2lit]+FLUXES[f+F.fx_fol2lit]+FLUXES[f+F.fx_roo2lit]-FLUXES[f+F.f_lit]-FLUXES[f+F.fx_lit2som])*deltat;
+// 	/*som*/
+// 	POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]+(FLUXES[f+F.fx_cwd2som]+FLUXES[f+F.fx_lit2som]-FLUXES[f+F.f_som])*deltat;
+// 
+// 	/*fires - total flux in gC m-2 day-1*/
+// 	/*this term is now (essentially) obsolete*/
+// 	/*replace in next version of DALEC_FIRES*/
+//     FLUXES[f+F.f_total] = FLUXES[f+F.f_lab] + FLUXES[f+F.f_fol] + FLUXES[f+F.f_roo] + FLUXES[f+F.f_woo] + FLUXES[f+F.f_cwd] + FLUXES[f+F.f_lit] + FLUXES[f+F.f_som];
+// 
+//     /*Fraction of C-foliar lost due to fires*/
+//     FLUXES[f+F.foliar_fire_frac] = BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
+//     /*Calculate LAI (lambda) lost due to fire
+//       - we lose the same fraction of LAI as we do C-foliar 
+//       - FE_\Lambda^{(t+1)} = \Lambda^{(t+1)'} * BA ( k_{factor(i)} + (1 - k_{factor(i)}) r )*/
+//     FLUXES[f+F.lai_fire] = (POOLS[p+S.C_fol]/pars[P.LCMA])*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
 
     /****************************RECORD t+1 DIAGNOSTIC STATES*************************/
-    POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
+//    POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
     POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
     
     
@@ -961,13 +962,12 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
 
 
-
 DALECmodel->dalec=DALEC_1100;
-DALECmodel->nopools=24;
-DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=80;
-DALECmodel->nofluxes=75;
-DALECmodel->noedcs=11;
+DALECmodel->nopools=14;
+//DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
+DALECmodel->nopars=40;
+DALECmodel->nofluxes=33;
+DALECmodel->noedcs=6;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
@@ -994,41 +994,41 @@ EDCs * EDCs=DALECmodel->EDCs;
 
 //EDC: litter tor > cwd tor
 //List all inequality calls here
-static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_litcwdtor; 
-static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_cwdsomtor;
-static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_mr_rates;
-
-EDC_litcwdtor.big_par_index=P.t_lit;
-EDC_litcwdtor.small_par_index=P.t_cwd;
-EDCs[E.litcwdtor].data=&EDC_litcwdtor;
-EDCs[E.litcwdtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
-EDCs[E.litcwdtor].prerun=true;
-
-//EDC: cwd tor > som tor
-EDC_cwdsomtor.big_par_index=P.t_cwd;
-EDC_cwdsomtor.small_par_index=P.t_som;
-EDCs[E.cwdsomtor].data=&EDC_cwdsomtor;
-EDCs[E.cwdsomtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
-EDCs[E.cwdsomtor].prerun=true;
-
-//EDC: foliar and root mr > wood mr
-EDC_mr_rates.big_par_index=P.rauto_mr_r;
-EDC_mr_rates.small_par_index=P.rauto_mr_w;
-EDCs[E.mr_rates].data=&EDC_mr_rates;
-EDCs[E.mr_rates].function=&DALEC_EDC_PARAMETER_INEQUALITY;
-EDCs[E.mr_rates].prerun=true;
-
-static DALEC_EDC_PARAMETER_LOG_RATIO_STRUCT EDC_vcmax_lcma;
-//EDC: ratio of Vcmax25 to LCMA
-EDC_vcmax_lcma.numerator_index=P.Vcmax25;
-EDC_vcmax_lcma.denominator_index=P.LCMA;
-EDC_vcmax_lcma.mean_ratio = 1.0399; // From TRY database
-EDC_vcmax_lcma.std_ratio = 0.1956; // From TRY database
-EDCs[E.vcmax_lcma].data=&EDC_vcmax_lcma;
-EDCs[E.vcmax_lcma].function=&DALEC_EDC_PARAMETER_LOG_RATIO;
-EDCs[E.vcmax_lcma].prerun=true;
-
-
+// static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_litcwdtor; 
+// static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_cwdsomtor;
+// static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_mr_rates;
+// 
+// EDC_litcwdtor.big_par_index=P.t_lit;
+// EDC_litcwdtor.small_par_index=P.t_cwd;
+// EDCs[E.litcwdtor].data=&EDC_litcwdtor;
+// EDCs[E.litcwdtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
+// EDCs[E.litcwdtor].prerun=true;
+// 
+// //EDC: cwd tor > som tor
+// EDC_cwdsomtor.big_par_index=P.t_cwd;
+// EDC_cwdsomtor.small_par_index=P.t_som;
+// EDCs[E.cwdsomtor].data=&EDC_cwdsomtor;
+// EDCs[E.cwdsomtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
+// EDCs[E.cwdsomtor].prerun=true;
+// 
+// //EDC: foliar and root mr > wood mr
+// EDC_mr_rates.big_par_index=P.rauto_mr_r;
+// EDC_mr_rates.small_par_index=P.rauto_mr_w;
+// EDCs[E.mr_rates].data=&EDC_mr_rates;
+// EDCs[E.mr_rates].function=&DALEC_EDC_PARAMETER_INEQUALITY;
+// EDCs[E.mr_rates].prerun=true;
+// 
+// static DALEC_EDC_PARAMETER_LOG_RATIO_STRUCT EDC_vcmax_lcma;
+// //EDC: ratio of Vcmax25 to LCMA
+// EDC_vcmax_lcma.numerator_index=P.Vcmax25;
+// EDC_vcmax_lcma.denominator_index=P.LCMA;
+// EDC_vcmax_lcma.mean_ratio = 1.0399; // From TRY database
+// EDC_vcmax_lcma.std_ratio = 0.1956; // From TRY database
+// EDCs[E.vcmax_lcma].data=&EDC_vcmax_lcma;
+// EDCs[E.vcmax_lcma].function=&DALEC_EDC_PARAMETER_LOG_RATIO;
+// EDCs[E.vcmax_lcma].prerun=true;
+// 
+// 
 
 
 
@@ -1046,28 +1046,28 @@ EDCs[E.vcmax_lcma].prerun=true;
    for (n=0;n<DALECmodel->nopools;n++){
    EDC_sr.min_val[n]=-INFINITY;
               EDC_sr.max_val[n]=INFINITY;}
-  
-   EDC_sr.min_val[S.C_lab]=0;
-   EDC_sr.max_val[S.C_lab]=DALECmodel->PARS_INFO.parmax[P.i_labile];
-                
-   EDC_sr.min_val[S.C_fol]=0;
-   EDC_sr.max_val[S.C_fol]=DALECmodel->PARS_INFO.parmax[P.i_foliar];
-                
-   EDC_sr.min_val[S.C_roo]=0;
-   EDC_sr.max_val[S.C_roo]=DALECmodel->PARS_INFO.parmax[P.i_root];
-                
-   EDC_sr.min_val[S.C_woo]=0;
-   EDC_sr.max_val[S.C_woo]=DALECmodel->PARS_INFO.parmax[P.i_wood];
-                
-   EDC_sr.min_val[S.C_cwd]=0;
-   EDC_sr.max_val[S.C_cwd]=DALECmodel->PARS_INFO.parmax[P.i_cwd];
-                
-   EDC_sr.min_val[S.C_lit]=0;
-   EDC_sr.max_val[S.C_lit]=DALECmodel->PARS_INFO.parmax[P.i_lit];
-                
-   EDC_sr.min_val[S.C_som]=0;
-   EDC_sr.max_val[S.C_som]=DALECmodel->PARS_INFO.parmax[P.i_som];
-                
+//   
+//    EDC_sr.min_val[S.C_lab]=0;
+//    EDC_sr.max_val[S.C_lab]=DALECmodel->PARS_INFO.parmax[P.i_labile];
+//                 
+//    EDC_sr.min_val[S.C_fol]=0;
+//    EDC_sr.max_val[S.C_fol]=DALECmodel->PARS_INFO.parmax[P.i_foliar];
+//                 
+//    EDC_sr.min_val[S.C_roo]=0;
+//    EDC_sr.max_val[S.C_roo]=DALECmodel->PARS_INFO.parmax[P.i_root];
+//                 
+//    EDC_sr.min_val[S.C_woo]=0;
+//    EDC_sr.max_val[S.C_woo]=DALECmodel->PARS_INFO.parmax[P.i_wood];
+//                 
+//    EDC_sr.min_val[S.C_cwd]=0;
+//    EDC_sr.max_val[S.C_cwd]=DALECmodel->PARS_INFO.parmax[P.i_cwd];
+//                 
+//    EDC_sr.min_val[S.C_lit]=0;
+//    EDC_sr.max_val[S.C_lit]=DALECmodel->PARS_INFO.parmax[P.i_lit];
+//                 
+//    EDC_sr.min_val[S.C_som]=0;
+//    EDC_sr.max_val[S.C_som]=DALECmodel->PARS_INFO.parmax[P.i_som];
+//                 
     EDC_sr.min_val[S.H2O_PAW]=0;
    //
                 
@@ -1080,10 +1080,10 @@ EDCs[E.vcmax_lcma].prerun=true;
     EDC_sr.min_val[S.E_PAW]=0;
 //     
     EDC_sr.min_val[S.E_PUW]=0;
-//     
-    EDC_sr.min_val[S.D_LAI]=0;
-    EDC_sr.max_val[S.D_LAI]=DALECmodel->PARS_INFO.parmax[P.lambda_max];
-//     
+// //     
+//     EDC_sr.min_val[S.D_LAI]=0;
+//     EDC_sr.max_val[S.D_LAI]=DALECmodel->PARS_INFO.parmax[P.lambda_max];
+// //     
 //     EDC_sr.min_val[S.D_SCF]=0;
 //     EDC_sr.max_val[S.D_SCF]=1;
 //     
@@ -1105,13 +1105,13 @@ EDCs[E.vcmax_lcma].prerun=true;
     EDC_sr.min_val[S.D_SM_PUW]=0;
     EDC_sr.max_val[S.D_SM_PUW]=1;
     
-   EDC_sr.min_val[S.M_LAI_MAX]=-INFINITY; // get a better value from Alex N.
-   EDC_sr.max_val[S.M_LAI_MAX]=INFINITY; // get a better value from Alex N.
-    
-   EDC_sr.min_val[S.M_LAI_TEMP]=-INFINITY;  // get a better value from Alex N.
-   EDC_sr.max_val[S.M_LAI_TEMP]=INFINITY; // get a better value from Alex N.
-
-
+//    EDC_sr.min_val[S.M_LAI_MAX]=-INFINITY; // get a better value from Alex N.
+//    EDC_sr.max_val[S.M_LAI_MAX]=INFINITY; // get a better value from Alex N.
+//     
+//    EDC_sr.min_val[S.M_LAI_TEMP]=-INFINITY;  // get a better value from Alex N.
+//    EDC_sr.max_val[S.M_LAI_TEMP]=INFINITY; // get a better value from Alex N.
+// 
+// 
 
 
 
@@ -1128,19 +1128,19 @@ EDCs[E.vcmax_lcma].prerun=true;
 
 
 //Calculating min LST and MAX LST
-    double minlst=DATA->ncdf_data.SKT.values[0];
-    double maxlst=DATA->ncdf_data.SKT.values[0];
+double minlst=DATA->ncdf_data.SKT.values[0];
+double maxlst=DATA->ncdf_data.SKT.values[0];
 for (n=1;n<DATA->ncdf_data.TIME_INDEX.length;n++){
 minlst=fmin(minlst,DATA->ncdf_data.SKT.values[n]);
 maxlst=fmax(maxlst,DATA->ncdf_data.SKT.values[n]);}
 
 
- EDC_paw_start_temp.min_temp=minlst+DGCM_TK0C;
+EDC_paw_start_temp.min_temp=minlst+DGCM_TK0C;
 EDC_paw_start_temp.max_temp=maxlst+DGCM_TK0C;
 EDC_paw_start_temp.vhc_idx=P.PAW_vhc;
 EDC_paw_start_temp.por_idx=P.PAW_por;
- EDC_paw_start_temp.z_idx=P.PAW_z;
- EDC_paw_start_temp.i_SM_idx=P.i_PAW_SM;
+EDC_paw_start_temp.z_idx=P.PAW_z;
+EDC_paw_start_temp.i_SM_idx=P.i_PAW_SM;
 EDC_paw_start_temp.i_E_idx=P.i_PAW_E;
 
 
@@ -1176,11 +1176,11 @@ EDCs[E.puw_start_temp].prerun=true;
 
  static DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
  
- static int edc_pool_indices[12];
-    static double edc_pool_eqf[12];
+ static int edc_pool_indices[5];
+    static double edc_pool_eqf[5];
 EDC_st.pool_indices=edc_pool_indices;
 EDC_st.pool_eqf=edc_pool_eqf;
-EDC_st.no_pools_to_check=12;
+EDC_st.no_pools_to_check=5;
             
 //EDC_st.pool_indices[0]=S.E_PAW;
 //EDC_st.pool_indices[1]=S.E_PUW;
@@ -1189,14 +1189,14 @@ EDC_st.no_pools_to_check=12;
 //EDC_st.pool_indices[4]=S.H2O_SWE;
 
 
-    
-EDC_st.pool_indices[0]=S.C_lab;
-EDC_st.pool_indices[1]=S.C_fol;
-EDC_st.pool_indices[2]=S.C_roo;
-EDC_st.pool_indices[3]=S.C_woo;
-EDC_st.pool_indices[4]=S.C_cwd;
-EDC_st.pool_indices[5]=S.C_lit;
-EDC_st.pool_indices[6]=S.C_som;
+//     
+// EDC_st.pool_indices[0]=S.C_lab;
+// EDC_st.pool_indices[1]=S.C_fol;
+// EDC_st.pool_indices[2]=S.C_roo;
+// EDC_st.pool_indices[3]=S.C_woo;
+// EDC_st.pool_indices[4]=S.C_cwd;
+// EDC_st.pool_indices[5]=S.C_lit;
+// EDC_st.pool_indices[6]=S.C_som;
 EDC_st.pool_indices[7]=S.H2O_PAW;
 EDC_st.pool_indices[8]=S.E_PAW;
 EDC_st.pool_indices[9]=S.H2O_PUW;
@@ -1222,23 +1222,23 @@ EDCs[E.state_trajectories].prerun=false;
 
 
 
-
- static DALEC_EDC_NSC_ABGB_RATIO_STRUCT EDC_nscr;
-
-    //
-    EDC_nscr.no_other_pool_indices=3;
-    static int nscratio_other_pool_indices[3];
-
-    EDC_nscr.other_pool_indices=nscratio_other_pool_indices;
-    EDC_nscr.other_pool_indices[0]=S.C_fol;
-    EDC_nscr.other_pool_indices[1]=S.C_roo;
-    EDC_nscr.other_pool_indices[2]=S.C_woo;
-    EDC_nscr.nsc_pool_index=S.C_lab;
-
-
-    EDCs[E.nsc_ratio].data=&EDC_nscr;
-    EDCs[E.nsc_ratio].function=&DALEC_EDC_NSC_ABGB_RATIO;
-    EDCs[E.nsc_ratio].prerun=false;
+// 
+//  static DALEC_EDC_NSC_ABGB_RATIO_STRUCT EDC_nscr;
+// 
+//     //
+//     EDC_nscr.no_other_pool_indices=3;
+//     static int nscratio_other_pool_indices[3];
+// 
+//     EDC_nscr.other_pool_indices=nscratio_other_pool_indices;
+//     EDC_nscr.other_pool_indices[0]=S.C_fol;
+//     EDC_nscr.other_pool_indices[1]=S.C_roo;
+//     EDC_nscr.other_pool_indices[2]=S.C_woo;
+//     EDC_nscr.nsc_pool_index=S.C_lab;
+// 
+// 
+//     EDCs[E.nsc_ratio].data=&EDC_nscr;
+//     EDCs[E.nsc_ratio].function=&DALEC_EDC_NSC_ABGB_RATIO;
+//     EDCs[E.nsc_ratio].prerun=false;
 
 
 
@@ -1277,14 +1277,14 @@ INITIALIZE_OBSOPE_SUPPORT(&OBSOPE);
 //Set SUPPORT_OBS values to true if model supports external observation operations.
 OBSOPE.SUPPORT_GPP_OBS=true;
 OBSOPE.SUPPORT_SIF_OBS=true;
-OBSOPE.SUPPORT_LAI_OBS=true;
+// OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
-OBSOPE.SUPPORT_NBE_OBS=true;
-OBSOPE.SUPPORT_ABGB_OBS=true;
-OBSOPE.SUPPORT_DOM_OBS=true;
+// OBSOPE.SUPPORT_NBE_OBS=true;
+// OBSOPE.SUPPORT_ABGB_OBS=true;
+// OBSOPE.SUPPORT_DOM_OBS=true;
 OBSOPE.SUPPORT_EWT_OBS=true;
-OBSOPE.SUPPORT_FIR_OBS=true;
-OBSOPE.SUPPORT_CH4_OBS=true;
+// OBSOPE.SUPPORT_FIR_OBS=true;
+// OBSOPE.SUPPORT_CH4_OBS=true;
 OBSOPE.SUPPORT_ROFF_OBS=true;
 OBSOPE.SUPPORT_SCF_OBS=true;
 
@@ -1296,8 +1296,8 @@ OBSOPE.SUPPORT_Vcmax25_OBS=true;
 OBSOPE.SUPPORT_C3frac_OBS=true;
 OBSOPE.SUPPORT_iniSnow_OBS=true;
 OBSOPE.SUPPORT_iniSOM_OBS=true;
-OBSOPE.SUPPORT_CUEmrg_OBS=true;
-OBSOPE.SUPPORT_LCMA_OBS=true;
+//OBSOPE.SUPPORT_CUEmrg_OBS=true;
+//OBSOPE.SUPPORT_LCMA_OBS=true;
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
@@ -1306,9 +1306,9 @@ OBSOPE.SUPPORT_LCMA_OBS=true;
     //Wohlfahrt & Gu, 2015 
 OBSOPE.GPP_flux=F.gpp;
 // For constraint on emergent autotrophic fraction
-OBSOPE.Rauto_flux=F.resp_auto;
+//OBSOPE.Rauto_flux=F.resp_auto;
 //LAI-specific variables
-OBSOPE.LAI_pool=S.D_LAI;
+//OBSOPE.LAI_pool=S.D_LAI;
 //ET variabiles
 OBSOPE.ET_flux=F.ets;
 //Runoff variables
@@ -1321,33 +1321,33 @@ static double ROFF_flux_signs[]={1.,1.,1.};
 OBSOPE.ROFF_flux_signs=ROFF_flux_signs;
 OBSOPE.ROFF_n_fluxes=3;
 //NBE-specific variables
-static int NBE_fluxes[4];
-NBE_fluxes[0]=F.gpp;
-NBE_fluxes[1]=F.resp_auto;
-NBE_fluxes[2]=F.rh_co2;
-NBE_fluxes[3]=F.f_total;
-OBSOPE.NBE_fluxes=NBE_fluxes;
+// static int NBE_fluxes[4];
+// NBE_fluxes[0]=F.gpp;
+// NBE_fluxes[1]=F.resp_auto;
+// NBE_fluxes[2]=F.rh_co2;
+// NBE_fluxes[3]=F.f_total;
+// OBSOPE.NBE_fluxes=NBE_fluxes;
 static double NBE_flux_signs[]={-1.,1.,1.,1.};
 OBSOPE.NBE_flux_signs=NBE_flux_signs;
 OBSOPE.NBE_n_fluxes=4;
 
-//ABGB-specific variables
-static int ABGB_pools[4];
-ABGB_pools[0]=S.C_lab;
-ABGB_pools[1]=S.C_fol;
-ABGB_pools[2]=S.C_roo;
-ABGB_pools[3]=S.C_woo;
-OBSOPE.ABGB_pools=ABGB_pools;
-OBSOPE.ABGB_n_pools=4;
+// //ABGB-specific variables
+// static int ABGB_pools[4];
+// ABGB_pools[0]=S.C_lab;
+// ABGB_pools[1]=S.C_fol;
+// ABGB_pools[2]=S.C_roo;
+// ABGB_pools[3]=S.C_woo;
+// OBSOPE.ABGB_pools=ABGB_pools;
+// OBSOPE.ABGB_n_pools=4;
 
 
 //SOM-specific variables
-static int DOM_pools[3]; 
-DOM_pools[0]=S.C_cwd;
-DOM_pools[1]=S.C_lit;
-DOM_pools[2]=S.C_som;
-OBSOPE.DOM_pools=DOM_pools;
-OBSOPE.DOM_n_pools=3;
+// static int DOM_pools[3]; 
+// DOM_pools[0]=S.C_cwd;
+// DOM_pools[1]=S.C_lit;
+// DOM_pools[2]=S.C_som;
+// OBSOPE.DOM_pools=DOM_pools;
+// OBSOPE.DOM_n_pools=3;
 //H2O-specific variables
 static int EWT_h2o_pools[3];
 EWT_h2o_pools[0]=S.H2O_PAW;
@@ -1356,7 +1356,7 @@ EWT_h2o_pools[2]=S.H2O_SWE;
 OBSOPE.EWT_h2o_pools=EWT_h2o_pools;
 OBSOPE.EWT_n_h2o_pools=3;
 //Fire-specific variables
-OBSOPE.FIR_flux=F.f_total;
+//OBSOPE.FIR_flux=F.f_total;
 
 //SCF-specific variables
 OBSOPE.SCF_pool=S.D_SCF;
@@ -1369,11 +1369,11 @@ OBSOPE.Vcmax25_PARAM=P.Vcmax25;
 //Initial Snow parameter
 OBSOPE.iniSnow_PARAM=P.i_SWE;
 //Initial SOM parameter
-OBSOPE.iniSOM_PARAM=P.i_som;
-OBSOPE.LCMA_PARAM=P.LCMA;
+// OBSOPE.iniSOM_PARAM=P.i_som;
+// OBSOPE.LCMA_PARAM=P.LCMA;
 
 //CH4-specific variables 
-OBSOPE.CH4_flux = F.rh_ch4;
+//OBSOPE.CH4_flux = F.rh_ch4;
 
 DALECmodel->OBSOPE=OBSOPE;
 

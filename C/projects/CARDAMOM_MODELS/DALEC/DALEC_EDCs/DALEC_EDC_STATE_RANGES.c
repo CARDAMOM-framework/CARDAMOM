@@ -25,12 +25,22 @@ while (PEDC==0 & n<DATA->ncdf_data.TIME_INDEX.length  & k==0){
          if (DATA->M_POOLS[p+n*DATA->nopools]<E.min_val[p] || DATA->M_POOLS[p+n*DATA->nopools]>E.max_val[p]){PEDC = -INFINITY;k=-1;}
        //if (p == 18){printf("E.max_val[p] = %2.2f, E.min_val[p] = %2.2f, SM = %2.2f\n",E.max_val[p], E.min_val[p],DATA->M_POOLS[p+n*DATA->nopools]);}
 
+// if (k==-1){
+//             printf("Pool Fail check = %i\n",p);
+//             printf("Pool fail timestep = %i\n",n);
+// 
+//           printf("DATA->M_POOLS[p+n*DATA->nopools] = %2.2f\n",DATA->M_POOLS[p+n*DATA->nopools]);
+//           printf("E.min_val[p] = %2.2f\n",E.min_val[p]);
+//           printf("E.max_val[p] = %2.2f\n",E.max_val[p]);}
+
   n+=1;}
+
+
+
  
   p+=1;
 
 }
-       //printf("Fail check = %2.2i\n",p);
 
 
   
