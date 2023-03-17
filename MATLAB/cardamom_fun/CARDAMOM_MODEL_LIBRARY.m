@@ -179,7 +179,9 @@ strncmp(D,strfss,numel(strfss));
 if sum(strncmp(D,strfss,numel(strfss)))>0;
 
 for n=1:numel(D);
-    if isempty(strfind(D{n},'FIOMATRIX.'))==0 & isempty(strfind(D{n},'calloc')) & isempty(strfind(D{n},'for'))
+    fullstr=D{n};
+     fullstr(fullstr==' ')='';
+    if isempty(strfind( fullstr,'FIOMATRIX.'))==0 & isempty(strfind( fullstr,'calloc')) & isempty(strfind( fullstr,'for')) & isempty(strfind(fullstr(1:2),'//'));
         %E.g. evaluates  FIOMATRIX.SINK[F.lab_prod]=S.C_lab;
 %         st=D{n};st(st=='>')='.';st=st(st~='-');
      st=D{n};
@@ -187,6 +189,7 @@ for n=1:numel(D);
      b2=find(st==']');
      st(b1)='(';
      st(b2)=')';
+     
         eval(st(1:find(st==';',1)));
     end
 
