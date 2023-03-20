@@ -487,7 +487,7 @@ FLUXES[f+F.gpp] = LIU.OUT.Ag;
 FLUXES[f+F.gppnet] = LIU.OUT.An;
 //transpiration//
 double transp = LIU.OUT.transp;
-FLUXES[f+F.transp1] = transp*POOLS[p+S.H2O_LY1]/POOLS[p+S.H2O_LY2];
+FLUXES[f+F.transp1] = transp*POOLS[p+S.H2O_LY1]/(POOLS[p+S.H2O_LY1]+POOLS[p+S.H2O_LY2]);
 FLUXES[f+F.transp2] = transp - FLUXES[f+F.transp1];
 //evaporation//
 FLUXES[f+F.evap] = LIU.OUT.evap;
