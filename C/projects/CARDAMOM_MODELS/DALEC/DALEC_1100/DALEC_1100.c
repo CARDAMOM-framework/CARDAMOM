@@ -703,7 +703,7 @@ TEMPxfer_2to3= POOLS[p+S.D_TEMP_LY3];//In K
 
 // Update pools, including ET from LY1
 POOLS[nxp+S.H2O_LY1] = POOLS[p+S.H2O_LY1] + (FLUXES[f+F.infil] - FLUXES[f+F.ly1xly2] - FLUXES[f+F.q_ly1] - FLUXES[f+F.evap] - FLUXES[f+F.transp1])*deltat;
-POOLS[nxp+S.H2O_LY1] = POOLS[p+S.H2O_LY1] + (FLUXES[f+F.ly1xly2] - FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly2] - FLUXES[f+F.transp2])*deltat;
+POOLS[nxp+S.H2O_LY2] = POOLS[p+S.H2O_LY2] + (FLUXES[f+F.ly1xly2] - FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly2] - FLUXES[f+F.transp2])*deltat;
 POOLS[nxp+S.H2O_LY3] = POOLS[p+S.H2O_LY3] + (FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly3])*deltat;
 
 
@@ -757,9 +757,11 @@ FLUXES[f+F.ly2xly3_th_e] = 2*pars[P.thermal_cond]* (POOLS[p+S.D_TEMP_LY2] - POOL
 
     FLUXES[f+F.geological]=0.105*3600*24;//In J/m2/d //105mW/m2
 POOLS[nxp+S.E_LY1] = POOLS[p+S.E_LY1] + (FLUXES[f+F.gh_in] + FLUXES[f+F.infil_e] - FLUXES[f+F.evap_e] - FLUXES[f+F.transp1_e]  - FLUXES[f+F.q_ly1_e] - FLUXES[f+F.ly1xly2_e] - FLUXES[f+F.ly1xly2_th_e])*deltat;  
-POOLS[nxp+S.E_LY2] = POOLS[p+S.E_LY2] + (FLUXES[f+F.ly1xly2_e] + FLUXES[f+F.ly1xly2_th_e] - FLUXES[f+F.transp1_e]  - FLUXES[f+F.q_ly2_e] - FLUXES[f+F.ly2xly3_e] - FLUXES[f+F.ly2xly3_th_e])*deltat;  
+POOLS[nxp+S.E_LY2] = POOLS[p+S.E_LY2] + (FLUXES[f+F.ly1xly2_e] + FLUXES[f+F.ly1xly2_th_e] - FLUXES[f+F.transp2_e]  - FLUXES[f+F.q_ly2_e] - FLUXES[f+F.ly2xly3_e] - FLUXES[f+F.ly2xly3_th_e])*deltat;  
 POOLS[nxp+S.E_LY3] = POOLS[p+S.E_LY3] + (FLUXES[f+F.ly2xly3_e] - FLUXES[f+F.q_ly3_e] + FLUXES[f+F.ly2xly3_th_e] + FLUXES[f + F.geological])*deltat; 
 
+// 
+// 
 
 
 //*************KNORR LAI**************
@@ -1039,7 +1041,7 @@ DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=85;
 DALECmodel->nofluxes=82;
-DALECmodel->noedcs=13;
+DALECmodel->noedcs=7;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
@@ -1164,14 +1166,14 @@ EDCs[E.vcmax_lcma].prerun=true;
 //     EDC_sr.min_val[S.D_SCF]=0;
 //     EDC_sr.max_val[S.D_SCF]=1;
 //     
-    EDC_sr.min_val[S.D_TEMP_LY1]=173.15;
-    EDC_sr.max_val[S.D_TEMP_LY1]=373.15;
-//     
-    EDC_sr.min_val[S.D_TEMP_LY2]=173.15;
-    EDC_sr.max_val[S.D_TEMP_LY2]=373.15;
-//     
-    EDC_sr.min_val[S.D_TEMP_LY3]=173.15;
-    EDC_sr.max_val[S.D_TEMP_LY3]=373.15;
+//     EDC_sr.min_val[S.D_TEMP_LY1]=173.15;
+//     EDC_sr.max_val[S.D_TEMP_LY1]=373.15;
+// //     
+//     EDC_sr.min_val[S.D_TEMP_LY2]=173.15;
+//     EDC_sr.max_val[S.D_TEMP_LY2]=373.15;
+// //     
+//     EDC_sr.min_val[S.D_TEMP_LY3]=173.15;
+//     EDC_sr.max_val[S.D_TEMP_LY3]=373.15;
 // //     
 //     EDC_sr.min_val[S.D_LF_LY1]=0;
 //     EDC_sr.max_val[S.D_LF_LY1]=1;
@@ -1228,9 +1230,9 @@ EDC_ly1_start_temp.i_E_idx=P.i_LY1_E;
 
 
 
- EDCs[E.ly1_start_temp].data=&EDC_ly1_start_temp;
- EDCs[E.ly1_start_temp].function=&DALEC_EDC_START_TEMP;
-EDCs[E.ly1_start_temp].prerun=true;
+//  EDCs[E.ly1_start_temp].data=&EDC_ly1_start_temp;
+//  EDCs[E.ly1_start_temp].function=&DALEC_EDC_START_TEMP;
+// EDCs[E.ly1_start_temp].prerun=true;
 // 
 
  EDC_ly2_start_temp.min_temp=minlst+DGCM_TK0C;
@@ -1243,10 +1245,10 @@ EDC_ly2_start_temp.i_E_idx=P.i_LY2_E;
 
 
 
- EDCs[E.ly2_start_temp].data=&EDC_ly2_start_temp;
- EDCs[E.ly2_start_temp].function=&DALEC_EDC_START_TEMP;
-EDCs[E.ly2_start_temp].prerun=true;
-// 
+//  EDCs[E.ly2_start_temp].data=&EDC_ly2_start_temp;
+//  EDCs[E.ly2_start_temp].function=&DALEC_EDC_START_TEMP;
+// EDCs[E.ly2_start_temp].prerun=true;
+// // 
 
 
  EDC_ly3_start_temp.min_temp=minlst+DGCM_TK0C;
@@ -1259,9 +1261,9 @@ EDC_ly3_start_temp.i_E_idx=P.i_LY3_E;
 
 
 
-EDCs[E.ly3_start_temp].data=&EDC_ly3_start_temp;
- EDCs[E.ly3_start_temp].function=&DALEC_EDC_START_TEMP;
-EDCs[E.ly3_start_temp].prerun=true;
+// EDCs[E.ly3_start_temp].data=&EDC_ly3_start_temp;
+//  EDCs[E.ly3_start_temp].function=&DALEC_EDC_START_TEMP;
+// EDCs[E.ly3_start_temp].prerun=true;
 // // 
 
 
@@ -1345,22 +1347,22 @@ EDCs[E.state_trajectories].prerun=false;
 static DALEC_EDC_MEAN_TEMP_STRUCT EDC_mean_ly1_temp, EDC_mean_ly2_temp, EDC_mean_ly3_temp;
 
     //
-    EDC_mean_ly1_temp.temp_index=S.D_TEMP_LY1;
-    EDCs[E.mean_ly1_temp].data=&EDC_mean_ly1_temp;
-    EDCs[E.mean_ly1_temp].function=&DALEC_EDC_MEAN_TEMP;
-    EDCs[E.mean_ly1_temp].prerun=false;
-
-
-    EDC_mean_ly2_temp.temp_index=S.D_TEMP_LY3;
-    EDCs[E.mean_ly2_temp].data=&EDC_mean_ly2_temp;
-    EDCs[E.mean_ly2_temp].function=&DALEC_EDC_MEAN_TEMP;
-    EDCs[E.mean_ly2_temp].prerun=false;
-
-
-    EDC_mean_ly3_temp.temp_index=S.D_TEMP_LY3;
-    EDCs[E.mean_ly3_temp].data=&EDC_mean_ly3_temp;
-    EDCs[E.mean_ly3_temp].function=&DALEC_EDC_MEAN_TEMP;
-    EDCs[E.mean_ly3_temp].prerun=false;
+//     EDC_mean_ly1_temp.temp_index=S.D_TEMP_LY1;
+//     EDCs[E.mean_ly1_temp].data=&EDC_mean_ly1_temp;
+//     EDCs[E.mean_ly1_temp].function=&DALEC_EDC_MEAN_TEMP;
+//     EDCs[E.mean_ly1_temp].prerun=false;
+// 
+// 
+//     EDC_mean_ly2_temp.temp_index=S.D_TEMP_LY2;
+//     EDCs[E.mean_ly2_temp].data=&EDC_mean_ly2_temp;
+//     EDCs[E.mean_ly2_temp].function=&DALEC_EDC_MEAN_TEMP;
+//     EDCs[E.mean_ly2_temp].prerun=false;
+// 
+// 
+//     EDC_mean_ly3_temp.temp_index=S.D_TEMP_LY3;
+//     EDCs[E.mean_ly3_temp].data=&EDC_mean_ly3_temp;
+//     EDCs[E.mean_ly3_temp].function=&DALEC_EDC_MEAN_TEMP;
+//     EDCs[E.mean_ly3_temp].prerun=false;
 
 
 

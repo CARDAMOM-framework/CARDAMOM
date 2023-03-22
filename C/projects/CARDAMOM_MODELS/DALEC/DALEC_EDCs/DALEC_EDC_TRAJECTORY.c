@@ -144,14 +144,15 @@ Rs=Rm*MPOOLSjan/Pstart;
 {EDC=ipow(0,EDCD->SWITCH[7-1+n]);EDCD->PASSFAIL[7-1+n]=0;}*/
 
  PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
+
+// 
+//         printf("******Pool p = %i *********\n",p);
+// 
 //                         printf("Rs = %2.2f\n",Rs);
 // 
 //                 printf("log(Rs) = %2.2f\n",log(Rs));
 // 
 //         printf("-0.5*pow(log(Rs)/log(EQF),2) = %2.2f\n",-0.5*pow(log(Rs)/log(EQF),2));
-//         printf("PEDC = %2.2f\n",PEDC);
-
-//         printf("******Pool p = %i *********\n",p);
 //                 printf("Fin = %2.2f\n", Fin);
 //                 printf("dint = %i\n", dint);
 //             printf("Fout = %2.2f\n", Fout);
@@ -161,6 +162,7 @@ Rs=Rm*MPOOLSjan/Pstart;
 // 
 //         printf("EQF P = %2.2f\n", -0.5*pow(log(Rs)/log(EQF),2));
 //             printf("Etol P = %2.2f\n", - 0.5 *pow((Rs-Rm)/etol,2));
+//         printf("PEDC = %2.2f\n",PEDC);
 
 
 
