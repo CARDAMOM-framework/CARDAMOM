@@ -63,8 +63,11 @@ P=P+Pedc2;}
 
 
 /*Likelihood*/
-   if (P>-INFINITY){P=P+LIKELIHOOD(DATA);}
-
+   if (P>-INFINITY){
+    // printf("Pre likelihood P = %2.2f\n",P);
+    P=P+LIKELIHOOD(DATA);
+    // printf("Post likelihood P = %2.2f\n",P);
+    }
 
 
 
