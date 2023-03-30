@@ -1,5 +1,5 @@
 #pragma once
-#include "DALEC_1100_INDICES.c"
+#include "DALEC_1109_INDICES.c"
 
 /*PARAMETER_INFO (typedef struct) must have at least 3 fields
  *  * npars,
@@ -11,9 +11,9 @@
 /*photosynthetic pools and 0.01-1 of remaining NPP for root and wood pool*/
 
 
-int PARS_INFO_1100(DALEC * DALECmodel){
+int PARS_INFO_1109(DALEC * DALECmodel){
 
-struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
+struct DALEC_1109_PARAMETERS P=DALEC_1109_PARAMETERS;
 
 
 DALECmodel->PARS_INFO.parmin= calloc(DALECmodel->nopars, sizeof(double));
@@ -110,13 +110,9 @@ parmax[P.i_som]=200000.0;
 parmin[P.retention]=1.5;
 parmax[P.retention]=10;
 
-/*"LY1 SM at t0"*/
-parmin[P.i_LY1_SM]=0.01;
-parmax[P.i_LY1_SM]=1;
-
-/*"LY2 SM at t0"*/
-parmin[P.i_LY2_SM]=0.01;
-parmax[P.i_LY2_SM]=1;
+/*"PAW SM at t0"*/
+parmin[P.i_PAW_SM]=0.01;
+parmax[P.i_PAW_SM]=1;
 
 /*Foliar biomass CF*/
 parmin[P.cf_foliar]=0.01;
@@ -142,49 +138,37 @@ parmax[P.hydr_cond]=1e-4;
 parmin[P.max_infil]=1;
 parmax[P.max_infil]=100;
 
-/*LY3 SM at t=0*/
-parmin[P.i_LY3_SM]=0.01;
-parmax[P.i_LY3_SM]=1;
+/*PUW SM at t=0*/
+parmin[P.i_PUW_SM]=0.01;
+parmax[P.i_PUW_SM]=1;
 
-/*LY1 porosity*/
-parmin[P.LY1_por]=0.2;
-parmax[P.LY1_por]=0.8;
+/*PAW porosity*/
+parmin[P.PAW_por]=0.2;
+parmax[P.PAW_por]=0.8;
 
-/*LY2 porosity*/
-parmin[P.LY2_por]=0.2;
-parmax[P.LY2_por]=0.8;
-
-/*LY3 porosity*/
-parmin[P.LY3_por]=0.2;
-parmax[P.LY3_por]=0.8;
+/*PUW porosity*/
+parmin[P.PUW_por]=0.2;
+parmax[P.PUW_por]=0.8;
 
 /*Field capacity (negative) potential (-Mpa)*/
 parmin[P.field_cap]=0.01;
 parmax[P.field_cap]=0.1;
     
-/*LY1 depth (m)*/
-parmin[P.LY1_z]=0.01;
-parmax[P.LY1_z]=1;
+/*PAW depth (m)*/
+parmin[P.PAW_z]=0.01;
+parmax[P.PAW_z]=20;
 
-/*LY2 depth (m)*/
-parmin[P.LY2_z]=0.01;
-parmax[P.LY2_z]=20;
+/*PUW depth (m)*/
+parmin[P.PUW_z]=0.01;
+parmax[P.PUW_z]=100;
 
-/*LY3 depth (m)*/
-parmin[P.LY3_z]=0.01;
-parmax[P.LY3_z]=100;
+/*PAW volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
+parmin[P.PAW_vhc]=1.3e6;
+parmax[P.PAW_vhc]=3e6;
 
-/*LY1 volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
-parmin[P.LY1_vhc]=1.3e6;
-parmax[P.LY1_vhc]=3e6;
-
-/*LY2 volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
-parmin[P.LY2_vhc]=1.3e6;
-parmax[P.LY2_vhc]=3e6;
-
-/*LY3 volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
-parmin[P.LY3_vhc]=1.3e6;
-parmax[P.LY3_vhc]=3e6;
+/*PUW volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
+parmin[P.PUW_vhc]=1.3e6;
+parmax[P.PUW_vhc]=3e6;
 
 /*Runoff excess*/
 parmin[P.Q_excess]=0.01;
@@ -246,7 +230,7 @@ parmax[P.melt_slope]=1;
 parmin[P.scf_scalar]=10;
 parmax[P.scf_scalar]=1000.0;
 
-/* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (LY1/LY1_fs)\n jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
+/* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)\n jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
 parmin[P.S_fv]=1;
 parmax[P.S_fv]=100.0;
 
@@ -290,7 +274,7 @@ parmax[P.k_leaf]=0.5;
 parmin[P.lambda_max]=0.1;
 parmax[P.lambda_max]=10.0;
 
-/*Target survival time for LAI under water-deficit conditions (days; or same unit as ET and LY1)*/
+/*Target survival time for LAI under water-deficit conditions (days; or same unit as ET and PAW)*/
 parmin[P.tau_W]=0.1;
 parmax[P.tau_W]=300;
 
@@ -314,17 +298,13 @@ parmax[P.init_LAIW_mem]=1;
 parmin[P.t_foliar]=0.001;
 parmax[P.t_foliar]=0.1;
 
-/*LY1 energy per meter soil (~ dry at -50C to wet at 50C)*/
-parmin[P.i_LY1_E]=2e8;
-parmax[P.i_LY1_E]=2e9;
+/*PAW energy per meter soil (~ dry at -50C to wet at 50C)*/
+parmin[P.i_PAW_E]=2e8;
+parmax[P.i_PAW_E]=2e9;
 
-/*LY2 energy per meter soil (~ dry at -50C to wet at 50C)*/
-parmin[P.i_LY2_E]=2e8;
-parmax[P.i_LY2_E]=2e9;
-
-/*LY3 energy pool (SWdown Wm2* seconds in year for very very rough OOM estimate)*/
-parmin[P.i_LY3_E]=2e8;
-parmax[P.i_LY3_E]=2e9;
+/*PUW energy pool (SWdown Wm2* seconds in year for very very rough OOM estimate)*/
+parmin[P.i_PUW_E]=2e8;
+parmax[P.i_PUW_E]=2e9;
 
 /*PSI 50: water potential when soil-plant continum is at 50% hydraulic conductivity (-MPa)*/
 parmin[P.psi_50]=0.1;

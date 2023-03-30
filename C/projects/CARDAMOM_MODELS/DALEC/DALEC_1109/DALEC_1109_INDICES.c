@@ -9,7 +9,7 @@ See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 /*Code used by Bloom et al., 2016
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
-struct DALEC_1100_PARAMETERS{
+struct DALEC_1109_PARAMETERS{
 /*DALEC PARAMETERS*/
 int tr_lit2som;
 int tr_cwd2som;
@@ -33,25 +33,21 @@ int i_cwd;
 int i_lit;
 int i_som;
 int retention;
-int i_LY1_SM;
-int i_LY2_SM;
+int i_PAW_SM;
 int cf_foliar;
 int cf_ligneous;
 int cf_DOM;
 int resilience;
 int hydr_cond;
 int max_infil;
-int i_LY3_SM;
-int LY1_por;
-int LY2_por;
-int LY3_por;
+int i_PUW_SM;
+int PAW_por;
+int PUW_por;
 int field_cap;
-int LY1_z;//LY1 depth
-int LY2_z;//LY2 depth
-int LY3_z;//LY3 depth
-int LY1_vhc;//LY1 volumetric heat capacity
-int LY2_vhc;//LY2 volumetric heat capacity
-int LY3_vhc;//LY3 volumetric heat capacity
+int PAW_z;//PAW depth
+int PUW_z;//PUW depth
+int PAW_vhc;//PAW volumetric heat capacity
+int PUW_vhc;//PUW volumetric heat capacity
 int Q_excess;
 int Med_g1;
 int Vcmax25;
@@ -84,9 +80,8 @@ int time_r;
 int init_T_mem;
 int init_LAIW_mem;
 int t_foliar;
-int i_LY1_E;
-int i_LY2_E;
-int i_LY3_E;
+int i_PAW_E;
+int i_PUW_E;
 int psi_50;
 int beta_lgr;
 int phi_RL;
@@ -96,7 +91,7 @@ int thermal_cond_surf;
 int q10canopy;
 int canopyRdsf;
 int sublimation_rate;
-} DALEC_1100_PARAMETERS={
+} DALEC_1109_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
@@ -105,10 +100,9 @@ int sublimation_rate;
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
     70,71,72,73,74,75,76,77,78,79,
-    80,81,82,83,84
 };
 
-struct DALEC_1100_FLUXES{
+struct DALEC_1109_FLUXES{
 /*DALEC FLUXES*/
 int gpp;   /*GPP*/
 int gppnet;   /*GPP*/
@@ -136,24 +130,19 @@ int fx_roo2lit;   /*Fire transfer root to litter*/
 int fx_woo2cwd;   /*Fire transfer wood to CWD*/
 int fx_cwd2som;   /*Fire transfer CWD to soil*/
 int fx_lit2som;   /*Fire transfer litter to soil*/
-int q_ly1;   /*LY1 runoff*/
-int q_ly2;   /*LY2 runoff*/
-int ly1xly2;   /*LY1->LY2 transfer*/
-int ly2xly3;   /*LY2->LY3 transfer*/
-int q_ly3;   /*LY3 runoff*/
+int et;   /*Evapotranspiration*/
+int ets;   /*Evapotranspiration + sublimation*/
+int q_paw;   /*PAW runoff*/
+int paw2puw;   /*PAW->PUW transfer*/
+int q_puw;   /*PUW runoff*/
 int q_surf;   /*Surface runoff*/
 int infil;   /*INFILTRATION*/
 int infil_e;   /*INFILTRATION IE: temp = weight average of snow melt (0C) + liquid precip (@air temp)*/
-int q_ly1_e;   /*Q LY1 IE: temp = LY1 temp*/
-int q_ly2_e;   /*Q LY2 IE: temp = LY2 temp*/
-int q_ly3_e;   /*Q LY3 IE: temp = LY3 temp*/
-int ly1xly2_e;   /*LY1->NDZ transfer IE: temp of donor*/
-int ly2xly3_e;   /*LY2->LY3 transfer IE: temp of donor*/
-int evap_e; /* See Retano's calculation*/
-int transp1_e; /* See Retano's calculation*/
-int transp2_e; /* See Retano's calculation*/
-int transp1;   /*Transpiration*/
-int transp2;   /*Transpiration*/
+int q_paw_e;   /*Q PAW IE: temp = PAW temp*/
+int q_puw_e;   /*Q PUW IE: temp = PUW temp*/
+int paw2puw_e;   /*PAW->PUW transfer IE: temp of donor*/
+int et_e; /* See Retano's calculation*/
+int transp;   /*Transpiration*/
 int evap;   /*Evaporation*/
 int snowfall;   /*Snowfall to SWE*/
 int melt;   /*Snow melt*/
@@ -186,13 +175,11 @@ int SWin;
 int SWout;
 int LWin;
 int LWout;
-int ly1xly2_th_e;
-int ly2xly3_th_e;
+int paw2puw_th_e;
 int resp_auto_maint_dark;
 int sublimation;
 int geological;
-int ets;  /* Total land-atmosphere water flux (evaporation + transpiration + sublimation) */
-} DALEC_1100_FLUXES={
+} DALEC_1109_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
@@ -200,8 +187,7 @@ int ets;  /* Total land-atmosphere water flux (evaporation + transpiration + sub
     40,41,42,43,44,45,46,47,48,49,
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
-    70,71,72,73,74,75,76,77,78,79,
-    80,81
+    70,71,72,73,74
 };
 
 
@@ -209,7 +195,7 @@ int ets;  /* Total land-atmosphere water flux (evaporation + transpiration + sub
 /*Prognostic states and Diagnostic states (dependent on other states)*/
 
 
-struct DALEC_1100_POOLS{
+struct DALEC_1109_POOLS{
 /*DALEC POOLS*/
 int C_lab; /*Labile C*/
 int C_fol; /*Foliar C*/
@@ -218,52 +204,44 @@ int C_woo; /*Wood C*/
 int C_cwd; /*Coarse woody debris C*/
 int C_lit; /*Litter C*/
 int C_som; /*Soil C*/
-int H2O_LY1; /*Layer 1 H2O*/
-int H2O_LY2; /*Layer 2 H2O*/
-int H2O_LY3; /*Layer 3 H2O*/
+int H2O_PAW; /*Plant available H2O*/
+int H2O_PUW; /*Plant unavailable H2O*/
 int H2O_SWE; /*Snow water equivalent*/
-int E_LY1; /*LY1 thermal energy state*/
-int E_LY2; /*LY2 thermal energy state*/
-int E_LY3; /*LY3 thermal energy state*/
+int E_PAW; /*PAW thermal energy state*/
+int E_PUW; /*PUW thermal energy state*/
 int D_LAI;//leaf area index
 int D_SCF;//snow-covered fraction
-int D_TEMP_LY1;//LY1 temp in K
-int D_TEMP_LY2;//LY2 temp in K
-int D_TEMP_LY3;//LY3 temp in K
-int D_LF_LY1;//LY1 liquid h2o frac
-int D_LF_LY2;//LY2 liquid h2o frac
-int D_LF_LY3;//LY3 liquid h2o frac
-int D_SM_LY1;//LY1 soil moisture
-int D_SM_LY2;//LY2 soil moisture
-int D_SM_LY3;//LY3 soil moisture
-int D_PSI_LY1;//LY1 soil moisture
-int D_PSI_LY2;//LY2 soil moisture
-int D_PSI_LY3;//LY3 soil moisture
+int D_TEMP_PAW;//PAW temp in K
+int D_TEMP_PUW;//PUW temp in K
+int D_LF_PAW;//PAW liquid h2o frac
+int D_LF_PUW;//PUW liquid h2o frac
+int D_SM_PAW;//PAW soil moisture
+int D_SM_PUW;//PUW soil moisture
+int D_PSI_PAW;//PAW soil moisture
+int D_PSI_PUW;//PUW soil moisture
 int M_LAI_MAX;//KNORR LAI module max LAI memory
 int M_LAI_TEMP;//KNORR LAI module temp memory
-} DALEC_1100_POOLS={
+} DALEC_1109_POOLS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
-    20,21,22,23,24,25,26,27,28,29
+    20,21,22,23
 };
 
-struct DALEC_1100_EDCs{
-int vcmax_lcma;
+struct DALEC_1109_EDCs{
+int paw_start_temp;
+int puw_start_temp;
 int litcwdtor;
 int cwdsomtor;
 int mr_rates;
+int mean_paw_temp;
+int mean_puw_temp;
+int nsc_ratio;
 int state_ranges;
 int state_trajectories;
-int nsc_ratio;
-// int ly1_start_temp;
-// int ly2_start_temp;
-// int ly3_start_temp;
-int mean_ly1_temp;
-int mean_ly2_temp;
-int mean_ly3_temp;
-} DALEC_1100_EDCs={
-    0, 1, 2, 3, 4, 5, 6, 
-    7, 8, 9,//10,11,12
+int vcmax_lcma;
+} DALEC_1109_EDCs={
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+   10
 };
 
 
