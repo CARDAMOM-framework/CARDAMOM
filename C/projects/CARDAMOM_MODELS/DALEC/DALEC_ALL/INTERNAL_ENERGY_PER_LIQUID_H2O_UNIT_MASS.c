@@ -1,3 +1,4 @@
+#pragma once
 double INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(double TEMP){
   //Internal energy per mm (or kg) H2O  
     //Temp is in kelvin
