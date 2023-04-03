@@ -442,7 +442,7 @@ else {
 	//We're also multiplying beta by cold-weather stress 
 //double psi_LY10 = HYDROFUN_MOI2PSI(max(POOLS[p+S.D_SM_LY1],0),psi_porosity,pars[P.retention]);
 //double psi_LY10 = HYDROFUN_MOI2PSI(POOLS[p+S.D_SM_LY1],psi_porosity,pars[P.retention_ly1]);
-double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50] - 1)));
+double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50] - 1)));
 
 // mean air temperature (K)
 double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
