@@ -3,8 +3,8 @@
 #include "../DALEC_ALL/LAI_KNORR.c"
 #include "../DALEC_ALL/LAI_KNORR_funcs.c"
 
-/*Code used by Bloom et al., 2016
-See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
+/*Code used by Norton et al., 2023
+See also Bloom et al., 2016; Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
 struct DALEC_1025_PARAMETERS{
 /*DALEC PARAMETERS*/
@@ -184,27 +184,6 @@ double meanrad = DATA.ncdf_data.SSRD.reference_mean;
 double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
 
 
-
-
-/*constants for exponents of leaffall and labrelease factors*/
-/*width*/
-// double wf=pars[P.leaf_fall]*sqrt(2)/2;
-// double wl=pars[P.labile_rel]*sqrt(2)/2;
-
-
-/*factor*/
-// double ff=(log(pars[P.t_foliar])-log(pars[P.t_foliar]-1))/2;
-/*double fl=(log(1.001)-log(0.001))/2;*/
-// double fl=(log(pars[P.t_labile])-log(pars[P.t_labile]-1))/2;
-
-
-
-
-/*additional offset*/
-// double osf=offset(pars[P.t_foliar],wf);
-// double osl=offset(pars[P.t_labile],wl);
-
-
 /*scaling to biyearly sine curve*/
 double sf=365.25/pi;
 
@@ -219,9 +198,6 @@ CF[S.C_som]=pars[P.cf_DOM];
 
 /*foliar carbon transfer intermediate variables*/
 double Fcfolavailable;
-
-/*resilience factor*/
-
 
 /*number of DALEC pools*/
 int nopools=((DALEC *)DATA.MODEL)->nopools;
@@ -286,7 +262,6 @@ if (n==0){
   lai_var_list[11]=pars[P.init_LAIW_mem]*pars[P.lambda_max];
 }
 lai_met_list[0]=(T2M_MAX[n]+T2M_MIN[n])/2.0;
-// lai_var_list[0]=n;
 lai_var_list[19]=deltat;
 lai_var_list[1]=LAI;
 lai_var_list[2]=LAI;
