@@ -366,6 +366,9 @@ parmax[P.canopyRdsf]=0.025;
 parmin[P.sublimation_rate]=0.001;
 parmax[P.sublimation_rate]=10;
 
+/*Fraction of LY2 to LY1 root biomass*/
+parmin[P.root_frac]=0.001;
+parmax[P.root_frac]=1;
   
 return 0;
 

@@ -459,7 +459,9 @@ else {
 	//We're also multiplying beta by cold-weather stress 
 //double psi_LY10 = HYDROFUN_MOI2PSI(max(POOLS[p+S.D_SM_LY1],0),psi_porosity,pars[P.retention]);
 //double psi_LY10 = HYDROFUN_MOI2PSI(POOLS[p+S.D_SM_LY1],psi_porosity,pars[P.retention_ly1]);
-double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50] - 1)));
+double beta1 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50] - 1)))*POOLS[p+S.D_LF_LY1];
+double beta2 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50] - 1)))*POOLS[p+S.D_LF_LY2];
+double beta = (beta1*pars[P.LY1_z] + beta2*pars[P.LY2_z]*pars[P.root_frac])/(pars[P.LY1_z]+pars[P.LY2_z]*pars[P.root_frac]);
 
 // mean air temperature (K)
 double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
@@ -473,7 +475,7 @@ LIU.IN.VPD=VPD[n]/10;
 LIU.IN.TEMP=air_temp_k;  
 LIU.IN.vcmax25=pars[P.Vcmax25];
 LIU.IN.co2=CO2[n];
-LIU.IN.beta_factor=fmin(beta,g)*POOLS[p+S.D_LF_LY1];
+LIU.IN.beta_factor=fmin(beta,g);
 LIU.IN.g1=pars[P.Med_g1];
 LIU.IN.LAI=LAI;
 LIU.IN.ga=pars[P.ga];
@@ -504,7 +506,8 @@ FLUXES[f+F.gpp] = LIU.OUT.Ag;
 FLUXES[f+F.gppnet] = LIU.OUT.An;
 //transpiration//
 double transp = LIU.OUT.transp;
-FLUXES[f+F.transp1] = transp*POOLS[p+S.H2O_LY1]/(POOLS[p+S.H2O_LY1]+POOLS[p+S.H2O_LY2]);
+FLUXES[f+F.transp1] = transp*beta1*pars[P.LY1_z]/(beta1*pars[P.LY1_z]+beta2*pars[P.LY2_z]*pars[P.root_frac]);
+// FLUXES[f+F.transp2] = transp*beta2*pars[P.LY2_z]*pars[P.root_frac]/(beta1*pars[P.LY1_z]+beta2*pars[P.LY2_z]*pars[P.root_frac]);
 FLUXES[f+F.transp2] = transp - FLUXES[f+F.transp1];
 //evaporation//
 FLUXES[f+F.evap] = LIU.OUT.evap;
@@ -1056,7 +1059,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=85;
+DALECmodel->nopars=86;
 DALECmodel->nofluxes=82;
 DALECmodel->noedcs=10;
 
