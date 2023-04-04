@@ -12,6 +12,7 @@
 #include "../DALEC_ALL/CH4_MODULES/HET_RESP_RATES_JCR.c"
 #include "../DALEC_ALL/KNORR_ALLOCATION.c"
 #include "../DALEC_ALL/SOIL_TEMP_AND_LIQUID_FRAC.c"
+#include "../DALEC_ALL/INITIALIZE_INTERNAL_SOIL_ENERGY.c"
 #include "../DALEC_ALL/INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS.c"
 #include "../DALEC_ALL/ALLOC_AND_AUTO_RESP_FLUXES.c"
 
@@ -221,9 +222,26 @@ double *POOLS=DATA.M_POOLS;
   POOLS[S.H2O_LY3]=HYDROFUN_MOI2EWT(pars[P.i_LY3_SM],pars[P.LY3_por],pars[P.LY3_z]);
   POOLS[S.H2O_SWE]=pars[P.i_SWE];
   /*Energy pools*/
-  POOLS[S.E_LY1]=pars[P.i_LY1_E]*pars[P.LY1_z];
-  POOLS[S.E_LY2]=pars[P.i_LY2_E]*pars[P.LY2_z];
-  POOLS[S.E_LY3]=pars[P.i_LY3_E]*pars[P.LY3_z];
+  //Step 1. derive temperature based on i_LY1_E (which will represent energy per mm H2O).
+    //INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(infiltemp);
+    //Declare stryct
+//     SOIL_TEMP_AND_LIQUID_FRAC_STRUCT LY1SOILTEMP, LY2SOILTEMP, LY3SOILTEMP;
+//   //Populate with run-specific constrants
+//     //LY1
+//     LY1SOILTEMP.IN.dry_soil_vol_heat_capacity =pars[P.LY1_vhc]; ;//J/m3/K
+//     LY1SOILTEMP.IN.depth = pars[P.LY1_z];//m 
+//     LY1SOILTEMP.IN.soil_water = POOLS[S.H2O_LY1];//mm (or kg/m2)
+//     LY1SOILTEMP.IN.internal_energy = POOLS[S.E_LY1];//Joules
+//     //Pass pointer to function 
+//     SOIL_TEMP_AND_LIQUID_FRAC(&LY1SOILTEMP);  //Outputs are in K
+    //
+
+
+    
+    //double INITIALIZE_INTERNAL_SOIL_ENERGY(double internal_energy_per_mm_H2O, double H2O_mm, double dry_soil_vol_heat_capacity, double depth )
+  POOLS[S.E_LY1]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY1_E],   POOLS[S.H2O_LY1], pars[P.LY1_vhc], pars[P.LY1_z] );
+  POOLS[S.E_LY2]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY2_E],   POOLS[S.H2O_LY2], pars[P.LY2_vhc], pars[P.LY2_z] );
+  POOLS[S.E_LY3]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY3_E],   POOLS[S.H2O_LY3], pars[P.LY3_vhc], pars[P.LY3_z] );
   
   
    //---INITIALIZING DIAGNOSTIC STATES---
@@ -342,23 +360,22 @@ double *POOLS=DATA.M_POOLS;
     //Plant carbon allocation.
      ALLOC_AND_AUTO_RESP_FLUXES_STRUCT ARFLUXES;
      //define time-invariant parameters here
-        ARFLUXES.IN.mr_r=pars[P.rauto_mr_r];//
-        ARFLUXES.IN.mr_w=pars[P.rauto_mr_w];//
-        ARFLUXES.IN.gr=pars[P.rauto_gr];//
-        ARFLUXES.IN.Q10mr=pars[P.rauto_mr_q10];//
+    ARFLUXES.IN.mr_r=pars[P.rauto_mr_r];//
+    ARFLUXES.IN.mr_w=pars[P.rauto_mr_w];//
+    ARFLUXES.IN.gr=pars[P.rauto_gr];//
+    ARFLUXES.IN.Q10mr=pars[P.rauto_mr_q10];//
 
-
-        //Heterotrophic respiration module
+    //Heterotrophic respiration module
     HET_RESP_RATES_JCR_STRUCT HRJCR;
     //define time invariant parameters here
     
-/* jc prep input for methane module*/
-        HRJCR.IN.S_FV=pars[P.S_fv];
-        HRJCR.IN.SM_OPT=pars[P.thetas_opt];
-        HRJCR.IN.FWC=pars[P.fwc];
-        HRJCR.IN.R_CH4=pars[P.r_ch4];
-        HRJCR.IN.Q10CH4=pars[P.Q10ch4];
-        HRJCR.IN.Q10CO2=pars[P.Q10rhco2];
+    /* jc prep input for methane module*/
+    HRJCR.IN.S_FV=pars[P.S_fv];
+    HRJCR.IN.SM_OPT=pars[P.thetas_opt];
+    HRJCR.IN.FWC=pars[P.fwc];
+    HRJCR.IN.R_CH4=pars[P.r_ch4];
+    HRJCR.IN.Q10CH4=pars[P.Q10ch4];
+    HRJCR.IN.Q10CO2=pars[P.Q10rhco2];
 
    
 
@@ -1209,67 +1226,6 @@ EDCs[E.vcmax_lcma].prerun=true;
 
 
 
-//   static DALEC_EDC_START_TEMP_STRUCT EDC_ly1_start_temp, EDC_ly2_start_temp, EDC_ly3_start_temp;
-
-
-// //Calculating min LST and MAX LST
-//     double minlst=DATA->ncdf_data.SKT.values[0];
-//     double maxlst=DATA->ncdf_data.SKT.values[0];
-// for (n=1;n<DATA->ncdf_data.TIME_INDEX.length;n++){
-// minlst=fmin(minlst,DATA->ncdf_data.SKT.values[n]);
-// maxlst=fmax(maxlst,DATA->ncdf_data.SKT.values[n]);}
-
-
-//  EDC_ly1_start_temp.min_temp=minlst+DGCM_TK0C;
-// EDC_ly1_start_temp.max_temp=maxlst+DGCM_TK0C;
-// EDC_ly1_start_temp.vhc_idx=P.LY1_vhc;
-// EDC_ly1_start_temp.por_idx=P.LY1_por;
-//  EDC_ly1_start_temp.z_idx=P.LY1_z;
-//  EDC_ly1_start_temp.i_SM_idx=P.i_LY1_SM;
-// EDC_ly1_start_temp.i_E_idx=P.i_LY1_E;
-
-
-
-//  EDCs[E.ly1_start_temp].data=&EDC_ly1_start_temp;
-//  EDCs[E.ly1_start_temp].function=&DALEC_EDC_START_TEMP;
-// EDCs[E.ly1_start_temp].prerun=true;
-
-
-//  EDC_ly2_start_temp.min_temp=minlst+DGCM_TK0C;
-// EDC_ly2_start_temp.max_temp=maxlst+DGCM_TK0C;
-// EDC_ly2_start_temp.vhc_idx=P.LY2_vhc;
-// EDC_ly2_start_temp.por_idx=P.LY2_por;
-//  EDC_ly2_start_temp.z_idx=P.LY2_z;
-//  EDC_ly2_start_temp.i_SM_idx=P.i_LY2_SM;
-// EDC_ly2_start_temp.i_E_idx=P.i_LY2_E;
-
-
-
-//  EDCs[E.ly2_start_temp].data=&EDC_ly2_start_temp;
-//  EDCs[E.ly2_start_temp].function=&DALEC_EDC_START_TEMP;
-// EDCs[E.ly2_start_temp].prerun=true;
-// // 
-
-
-//  EDC_ly3_start_temp.min_temp=minlst+DGCM_TK0C;
-// EDC_ly3_start_temp.max_temp=maxlst+DGCM_TK0C;
-// EDC_ly3_start_temp.vhc_idx=P.LY3_vhc;
-// EDC_ly3_start_temp.por_idx=P.LY3_por;
-//  EDC_ly3_start_temp.z_idx=P.LY3_z;
-//  EDC_ly3_start_temp.i_SM_idx=P.i_LY3_SM;
-// EDC_ly3_start_temp.i_E_idx=P.i_LY3_E;
-
-
-
-// EDCs[E.ly3_start_temp].data=&EDC_ly3_start_temp;
-//  EDCs[E.ly3_start_temp].function=&DALEC_EDC_START_TEMP;
-// EDCs[E.ly3_start_temp].prerun=true;
-// // 
-
-
-
-
-//Start temperatures for LY1, LY2, and LY3
 
 
 
@@ -1281,15 +1237,7 @@ EDCs[E.vcmax_lcma].prerun=true;
 EDC_st.pool_indices=edc_pool_indices;
 EDC_st.pool_eqf=edc_pool_eqf;
 EDC_st.no_pools_to_check=14;
-            
-//EDC_st.pool_indices[0]=S.E_LY1;
-//EDC_st.pool_indices[1]=S.E_LY3;
-//EDC_st.pool_indices[2]=S.H2O_LY1;
-//EDC_st.pool_indices[3]=S.H2O_LY3;
-//EDC_st.pool_indices[4]=S.H2O_SWE;
 
-
-    
 EDC_st.pool_indices[0]=S.C_lab;
 EDC_st.pool_indices[1]=S.C_fol;
 EDC_st.pool_indices[2]=S.C_roo;
