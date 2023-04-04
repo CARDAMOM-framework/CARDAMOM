@@ -314,17 +314,17 @@ parmax[P.init_LAIW_mem]=1;
 parmin[P.t_foliar]=0.001;
 parmax[P.t_foliar]=0.1;
 
-/*LY1 energy per meter soil (~ dry at -50C to wet at 50C)*/
-parmin[P.i_LY1_E]=2e8;
-parmax[P.i_LY1_E]=2e9;
+/*LY1 energy per mm H2O (~ Energy in 1mm H2O @ -50C to 1mm H2O@ +50C)*/
+parmin[P.i_LY1_E]=4.67e+05;
+parmax[P.i_LY1_E]=1.11e+06;
 
-/*LY2 energy per meter soil (~ dry at -50C to wet at 50C)*/
-parmin[P.i_LY2_E]=2e8;
-parmax[P.i_LY2_E]=2e9;
+/*LY2 energy per mm H2O(~ Energy in 1mm H2O @ -50C to 1mm H2O@ +50C)*/
+parmin[P.i_LY2_E]=4.67e+05;
+parmax[P.i_LY2_E]=1.11e+06;
 
-/*LY3 energy pool (SWdown Wm2* seconds in year for very very rough OOM estimate)*/
-parmin[P.i_LY3_E]=2e8;
-parmax[P.i_LY3_E]=2e9;
+/*LY3 energy per mm H2O (~ Energy in 1mm H2O @ -50C to 1mm H2O@ +50C)*/
+parmin[P.i_LY3_E]=4.67e+05;
+parmax[P.i_LY3_E]=1.11e+06;
 
 /*PSI 50: water potential when soil-plant continum is at 50% hydraulic conductivity (-MPa)*/
 parmin[P.psi_50]=0.1;
