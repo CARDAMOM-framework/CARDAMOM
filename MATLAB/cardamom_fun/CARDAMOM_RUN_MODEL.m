@@ -165,6 +165,12 @@ end
 
 
 
+if isnumeric(PARS) & ndims(PARS)==3
+
+    PARS=reshape(permute(PARS,[1,3,2]),[size(PARS,1)*size(PARS,3),size(PARS,2)]);
+
+end
+
 
 
 %Either read existing files, or read in stored files
