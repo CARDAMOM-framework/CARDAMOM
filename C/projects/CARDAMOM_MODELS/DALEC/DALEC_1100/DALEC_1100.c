@@ -466,6 +466,9 @@ double beta = (beta1*pars[P.LY1_z] + beta2*pars[P.LY2_z]*pars[P.root_frac])/(par
 // mean air temperature (K)
 double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 
+    FLUXES[f+F.beta_factor]=fmin(beta,g);
+    FLUXES[f+F.soil_beta_factor]=beta;
+
 //******************Declare LIU STRUCT*********************
 LIU_AN_ET_STRUCT LIU;
 
@@ -475,7 +478,7 @@ LIU.IN.VPD=VPD[n]/10;
 LIU.IN.TEMP=air_temp_k;  
 LIU.IN.vcmax25=pars[P.Vcmax25];
 LIU.IN.co2=CO2[n];
-LIU.IN.beta_factor=fmin(beta,g);
+LIU.IN.beta_factor=   FLUXES[f+F.beta_factor];
 LIU.IN.g1=pars[P.Med_g1];
 LIU.IN.LAI=LAI;
 LIU.IN.ga=pars[P.ga];
@@ -1060,7 +1063,7 @@ DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=86;
-DALECmodel->nofluxes=82;
+DALECmodel->nofluxes=84;
 DALECmodel->noedcs=10;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
@@ -1249,12 +1252,12 @@ EDC_st.pool_indices[4]=S.C_cwd;
 EDC_st.pool_indices[5]=S.C_lit;
 EDC_st.pool_indices[6]=S.C_som;
 EDC_st.pool_indices[7]=S.H2O_LY1;
-EDC_st.pool_indices[8]=S.E_LY1;
-EDC_st.pool_indices[9]=S.H2O_LY2;
-EDC_st.pool_indices[10]=S.E_LY2;
-EDC_st.pool_indices[11]=S.H2O_LY3;
-EDC_st.pool_indices[12]=S.E_LY3;
-EDC_st.pool_indices[13]=S.H2O_SWE;
+EDC_st.pool_indices[8]=S.H2O_LY2;
+EDC_st.pool_indices[9]=S.H2O_LY3;
+EDC_st.pool_indices[10]=S.H2O_SWE;
+EDC_st.pool_indices[11]=S.E_LY1;
+EDC_st.pool_indices[12]=S.E_LY2;
+EDC_st.pool_indices[13]=S.E_LY3;
 //EDC_st.pool_indices[12]=S.M_LAI_MAX;```
 //EDC_st.pool_indices[13]=S.M_LAI_TEMP;
 
