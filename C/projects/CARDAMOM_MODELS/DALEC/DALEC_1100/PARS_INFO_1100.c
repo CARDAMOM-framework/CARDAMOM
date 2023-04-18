@@ -335,7 +335,7 @@ parmin[P.beta_lgr]=4.1;
 parmax[P.beta_lgr]=50;
 
 /*scalar to translate water stress beta to hydraulic mortality fraction*/
-parmin[P.HMF_scalar]=0;
+parmin[P.HMF_scalar]=0.001;
 parmax[P.HMF_scalar]=1;
  
 /*Ratio of carbon allocation to root per target foliar pool size (gC/gC)*/
