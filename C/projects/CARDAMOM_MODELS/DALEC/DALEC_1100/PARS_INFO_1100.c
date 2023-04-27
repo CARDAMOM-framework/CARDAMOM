@@ -326,17 +326,21 @@ parmax[P.i_LY2_E]=1.11e+06;
 parmin[P.i_LY3_E]=4.67e+05;
 parmax[P.i_LY3_E]=1.11e+06;
 
-/*PSI 50: water potential when soil-plant continum is at 50% hydraulic conductivity (-MPa)*/
+/*PSI 50: water potential when soil-plant continuum is at 50% hydraulic conductivity (-MPa) due to stomatal closure*/
 parmin[P.psi_50]=0.1;
 parmax[P.psi_50]=30;
+
+/*PSI 50 HMF: water potential triggering 50% biomass mortality due to cavitation(-MPa)*/
+parmin[P.psi_50HMF]=0.1;
+parmax[P.psi_50HMF]=65;
 
 /*Beta function normalized logistic growth rate */
 parmin[P.beta_lgr]=4.1;
 parmax[P.beta_lgr]=50;
 
-/*scalar to translate water stress beta to hydraulic mortality fraction*/
-parmin[P.HMF_scalar]=0.001;
-parmax[P.HMF_scalar]=1;
+/*HMFBeta function normalized logistic growth rate */
+parmin[P.beta_lgrHMF]=4.1;
+parmax[P.beta_lgrHMF]=50;
  
 /*Ratio of carbon allocation to root per target foliar pool size (gC/gC)*/
 parmin[P.phi_RL]=0.0001;
