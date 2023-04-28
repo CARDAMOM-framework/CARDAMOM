@@ -80,27 +80,27 @@ parmax[P.LCMA]=200;
 
 /*C labile*/
 parmin[P.i_labile]=1.0;
-parmax[P.i_labile]=100000.0;
+parmax[P.i_labile]=20000.0;
 
 /*C foliar*/
 parmin[P.i_foliar]=1.0;
-parmax[P.i_foliar]=2000.0;
+parmax[P.i_foliar]=5000.0;
 
 /*C roots*/
 parmin[P.i_root]=1.0;
-parmax[P.i_root]=2000.0;
+parmax[P.i_root]=20000.0;
 
 /*C_wood*/
 parmin[P.i_wood]=1.0;
-parmax[P.i_wood]=100000.0;
+parmax[P.i_wood]=50000.0;
 
 /*C CWD*/
 parmin[P.i_cwd]=1.0;
-parmax[P.i_cwd]=100000.0;
+parmax[P.i_cwd]=20000.0;
 
 /*C litter*/
 parmin[P.i_lit]=1.0;
-parmax[P.i_lit]=2000.0;
+parmax[P.i_lit]=5000.0;
 
 /*C_som*/
 parmin[P.i_som]=1.0;
@@ -327,28 +327,28 @@ parmin[P.i_LY3_E]=4.67e+05;
 parmax[P.i_LY3_E]=1.11e+06;
 
 /*PSI 50: water potential when soil-plant continuum is at 50% hydraulic conductivity (-MPa) due to stomatal closure*/
-parmin[P.psi_50]=0.1;
-parmax[P.psi_50]=30;
+parmin[P.psi_50]=0.5;
+parmax[P.psi_50]=10;
 
 /*PSI 50 HMF: water potential triggering 50% biomass mortality due to cavitation(-MPa)*/
-parmin[P.psi_50HMF]=0.1;
-parmax[P.psi_50HMF]=65;
+parmin[P.psi_50HMF]=0.5;
+parmax[P.psi_50HMF]=15;
 
 /*Beta function normalized logistic growth rate */
 parmin[P.beta_lgr]=4.1;
-parmax[P.beta_lgr]=50;
+parmax[P.beta_lgr]=30;
 
 /*HMFBeta function normalized logistic growth rate */
 parmin[P.beta_lgrHMF]=4.1;
-parmax[P.beta_lgrHMF]=50;
+parmax[P.beta_lgrHMF]=30;
  
 /*Ratio of carbon allocation to root per target foliar pool size (gC/gC)*/
-parmin[P.phi_RL]=0.0001;
+parmin[P.phi_RL]=0.001;
 parmax[P.phi_RL]=5.;
 
 
 /*Ratio of carbon allocation to wood per target foliar pool size (gC/gC)*/
-parmin[P.phi_WL]=0.0001;
+parmin[P.phi_WL]=0.001;
 parmax[P.phi_WL]=50.;
   
 
@@ -375,7 +375,7 @@ parmin[P.sublimation_rate]=0.001;
 parmax[P.sublimation_rate]=10;
 
 /*Fraction of LY2 to LY1 root biomass*/
-parmin[P.root_frac]=0.001;
+parmin[P.root_frac]=0.01;
 parmax[P.root_frac]=1;
   
 return 0;
