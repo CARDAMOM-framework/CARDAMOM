@@ -1,4 +1,3 @@
-#include "../../auxi_fun/okcheck.c"
 #include "math.h"
 #include <stdio.h>
 #include "CARDAMOM_READ_BINARY_DATA.c"
@@ -78,7 +77,6 @@ DATA CARDADATA;
 int OK;
 printf("About to read data structure...");
 //OK=INITIALIZE_DATA_STRUCT(&CARDADATA);
-okcheck(OK,"CHECK: DATA structure successfully initialized");
 printf("Done with initializing data structure!\n");
 /*step 1 - read the met file & initialize model fields here*/
 /*NOTE: metfile contains information on which CARDAMOM model is being run*/

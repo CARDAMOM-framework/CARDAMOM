@@ -289,8 +289,7 @@ FLUXES[f+F.f_temp_thresh]=LAI_KNORR_OUTPUT[4];
 FLUXES[f+F.f_dayl_thresh]=LAI_KNORR_OUTPUT[5];
 lai_var_list[5]=FLUXES[f+F.T_memory];  /*Update LAI temperature memory state for next iteration*/
 lai_var_list[11]=FLUXES[f+F.lambda_max_memory];   /*Update water/structural memory state for next iteration*/
-/*temprate - now comparable to Q10 - factor at 0C is 1*/
-/* x (1 + a* P/P0)/(1+a)*/
+/*temprate */
 FLUXES[f+F.temprate]=exp(pars[P.temp_factor]*0.5*(T2M_MIN[n]+T2M_MAX[n]-meantemp))*((PREC[n]/meanprec-1)*pars[P.moisture]+1);
 /*respiration auto*/
 FLUXES[f+F.resp_auto]=pars[P.f_auto]*FLUXES[f+F.gpp];
@@ -317,10 +316,6 @@ else {
 FLUXES[f+F.root_prod] = (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod]-FLUXES[f+F.lab_prod])*pars[P.f_root];            
 /*wood production*/       
 FLUXES[f+F.wood_prod] = FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto]-FLUXES[f+F.fol_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.lab_prod]; 
-/*leaf fall factor*/
-// FLUXES[f+F.leaffall_fact] = (2/sqrt(pi))*(ff/wf)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Fday]+osf)/sf)*sf/wf,2));
-/*Labrelease factor*/
-// FLUXES[f+F.lab_release_fact]=(2/sqrt(pi))*(fl/wl)*exp(-pow(sin((TIME_INDEX[n]-pars[P.Bday]+osl)/sf)*sf/wl,2));
 /*wood litter production*/       
 FLUXES[f+F.wood2lit] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))/deltat;
 /*root litter production*/
@@ -382,13 +377,8 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
 
     /*Fraction of C-foliar lost due to fires*/
     FLUXES[f+F.foliar_fire_frac] = BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
-    /*Calculate LAI (lambda) lost due to fire
-      - we lose the same fraction of LAI as we do C-foliar 
-      - FE_\Lambda^{(t+1)} = \Lambda^{(t+1)'} * BA ( k_{factor(i)} + (1 - k_{factor(i)}) r )*/
-    // FLUXES[f+F.lai_fire] = FLUXES[f+F.target_LAI]*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
-    FLUXES[f+F.lai_fire] = (POOLS[p+S.C_fol]/pars[P.LCMA])*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
-    /*Subtract fire loss LAI from current LAI*/
-    // FLUXES[f+34] = FLUXES[f+34] - FLUXES[f+39];
+    //Calculate LAI (lambda) lost due to fire
+        FLUXES[f+F.lai_fire] = (POOLS[p+S.C_fol]/pars[P.LCMA])*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
 
 
 

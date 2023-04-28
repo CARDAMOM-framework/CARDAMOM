@@ -121,22 +121,6 @@ printf("Successfully read NETCDF data...\n");
 //Pre-process (to accelerate model)
 
 
-// 
-// printf("DATA->ncdf_data.ET.opt_unc_type = %i\n",DATA->ncdf_data.ET.opt_unc_type);
-// printf("DATA->ncdf_data.ET.opt_filter = %i\n",DATA->ncdf_data.ET.opt_filter);
-// printf("DATA->ncdf_data.ET.single_unc = %2.2f\n",DATA->ncdf_data.ET.single_unc);
-// printf("DATA->ncdf_data.ET.min_threshold = %2.2f\n", DATA->ncdf_data.ET.min_threshold);
-// printf("Successfully pre-processed ET...\n");
-
-// 
-// 
-// //Step 2. Default values
-// DATA->ncdf_data->ET.obs_unc_type=1;
-// DATA->ncdf_data->ET.single_unc=2;
-// DATA->ncdf_data->ET.threshold=0;
-// //Pre-process (to accelerate model)
-// OBS_STRUCT_PREPROCESS(DATA->ncdf_data->ET);
-
 
 
 
