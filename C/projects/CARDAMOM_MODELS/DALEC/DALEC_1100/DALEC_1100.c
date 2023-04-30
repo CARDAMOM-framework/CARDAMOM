@@ -465,17 +465,25 @@ double beta = (beta1*pars[P.LY1_z] + beta2*pars[P.LY2_z]*pars[P.root_frac])/(par
 
 // H2O stress biomass mortality factor: parallel structure to GPP scaling factor above
 
-double betaHMF_1 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50HMF] - 1)))*POOLS[p+S.D_LF_LY1];
-double betaHMF_2 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50HMF] - 1)))*POOLS[p+S.D_LF_LY2];
-double HMF = (betaHMF_1*pars[P.LY1_z] + betaHMF_2*pars[P.LY2_z]*pars[P.root_frac])/(pars[P.LY1_z]+pars[P.LY2_z]*pars[P.root_frac]);
+double betaHMF_1 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50HMF] - 
+1)))*POOLS[p+S.D_LF_LY1]; 
 
-HMF = 0;
+double betaHMF_2 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50HMF] - 
+1)))*POOLS[p+S.D_LF_LY2];
+
+double betaHMF = (betaHMF_1*pars[P.LY1_z] + betaHMF_2*pars[P.LY2_z]*pars[P.root_frac])/(pars[P.LY1_z]
++pars[P.LY2_z]*pars[P.root_frac]);
+
+//if (betaHMF>1 | betaHMF<0) {printf("error in HMF, =%2.2f \n",betaHMF);} 
+
+double HMF = (1-betaHMF);
 
 // mean air temperature (K)
 double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 
     FLUXES[f+F.beta_factor]=fmin(beta,g);
     FLUXES[f+F.soil_beta_factor]=beta;
+    FLUXES[f+F.hydraulic_mortality_factor]=HMF;
 
 //******************Declare LIU STRUCT*********************
 LIU_AN_ET_STRUCT LIU;
@@ -1071,7 +1079,7 @@ DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=88;
-DALECmodel->nofluxes=84;
+DALECmodel->nofluxes=85;
 DALECmodel->noedcs=10;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
