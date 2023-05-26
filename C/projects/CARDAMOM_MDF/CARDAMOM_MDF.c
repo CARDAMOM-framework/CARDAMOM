@@ -13,9 +13,8 @@
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
-
-
-
+#include <time.h>
+     
 /*MCMC OPTIONS*/
 int READ_MCOPT(MCMC_OPTIONS *MCOPT, DATA DATA, char *outfile){
 /*number of command line imputs*/
@@ -198,14 +197,27 @@ printf("CARDAMOM_MDF.c: Parameter info structure initialized\n");
 
 
 
-    printf("DATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH=200000;\n");
+    
     printf("DATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH=%i\n",DATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH);
 
+
+
+
+     
+
+       clock_t    start = clock();
 DATA.edcsearch=1;
 READ_PARI_DATA(&PI, &DATA, &MCOUT, &MCOPT,CLA);
 printf("CARDAMOM_MDF.c: READ_PARI_DATA successfully executed\n");
+ clock_t   end = clock();
 
 
+      double         cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+printf("***********************\n");
+printf("***********************\n");
+printf("Done with EDC search, time used = %6.2f seconds\n",cpu_time_used);
+printf("***********************\n");
+printf("***********************\n");
 /*calling the MHMCMC here*/
 DATA.edcsearch=0;
 
