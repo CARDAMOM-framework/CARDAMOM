@@ -205,20 +205,21 @@ printf("CARDAMOM_MDF.c: Parameter info structure initialized\n");
 
      
 
-       clock_t    start = clock();
-DATA.edcsearch=1;
+clock_t    start = clock();//Start timer
+
+    DATA.edcsearch=1;
 READ_PARI_DATA(&PI, &DATA, &MCOUT, &MCOPT,CLA);
 printf("CARDAMOM_MDF.c: READ_PARI_DATA successfully executed\n");
- clock_t   end = clock();
 
 
-      double         cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-printf("***********************\n");
-printf("***********************\n");
-printf("Done with EDC search, time used = %6.2f seconds\n",cpu_time_used);
-printf("***********************\n");
-printf("***********************\n");
+clock_t   end = clock();//Stop timer
+double         cpu_time_used_search = ((double) (end - start)) / CLOCKS_PER_SEC;
+
 /*calling the MHMCMC here*/
+
+    start = clock();//Start timer
+
+
 DATA.edcsearch=0;
 
 printf("CARDAMOM_MDF.c: about to start MCMC\n");
@@ -269,6 +270,16 @@ printf("CARDAMOM_MDF.c: Error: no valid mcmcid value prescribed...\n");
 // printf("DATA.ncdf_data.LAI.valid_obs_length=%i\n",(int)DATA.ncdf_data.LAI.valid_obs_length);
 // double * values;//Timeseries of observation values
 
+
+end = clock();//Stop timer
+
+double cpu_time_used_main = ((double) (end - start)) / CLOCKS_PER_SEC;
+printf("***********************\n");
+printf("***********************\n");
+printf("Done with EDC>0 search MCMC, time used = %6.2f seconds\n",cpu_time_used_search);
+printf("Done with main MCMC, time used = %6.2f seconds\n",cpu_time_used_main);
+printf("***********************\n");
+printf("***********************\n");
 
 /*???????*/
 /*User Defined function needed to clean up memory*/
