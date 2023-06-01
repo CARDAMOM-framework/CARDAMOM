@@ -869,7 +869,7 @@ if (FLUXES[f+F.dlambda_dt] > 0){
 else {
     //FLUXES[f+F.dlambda_dt] is in m2/m2/day
     //LCMA = gC/m2/m2
-  FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA]+POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))*one_over_deltat;
+  FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA]+POOLS[p+S.C_fol]*pars[P.t_foliar];
 }
 
 /*labile production*/
@@ -883,9 +883,9 @@ FLUXES[f+F.root_prod] = ARFLUXES.OUT.ALLOC_ROO_ACTUAL;
 /*wood production*/       
 FLUXES[f+F.wood_prod] = ARFLUXES.OUT.ALLOC_WOO_ACTUAL;
 /*wood CWD production*/       
-FLUXES[f+F.woo2cwd] = POOLS[p+S.C_woo]*(1-pow(1-pars[P.t_wood],deltat))*one_over_deltat;
+FLUXES[f+F.woo2cwd] = POOLS[p+S.C_woo]*pars[P.t_wood];
 /*root litter production*/
-FLUXES[f+F.roo2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))*one_over_deltat;
+FLUXES[f+F.roo2lit] = POOLS[p+S.C_roo]*pars[P.t_root];
 
 /*-----------------------------------------------------------------------*/
 
@@ -907,24 +907,24 @@ FLUXES[f+F.roo2lit] = POOLS[p+S.C_roo]*(1-pow(1-pars[P.t_root],deltat))*one_over
 
 //outputformat
 //jcr_o 0-3 fT,fV,fW,fCH4; /*jc*/ /* output from JCR module */
-double ae_loss_cwd = POOLS[p+S.C_cwd]*(1-pow(1-HRJCR.OUT.aerobic_tr*pars[P.t_cwd],deltat))*one_over_deltat;
+double ae_loss_cwd = POOLS[p+S.C_cwd]*HRJCR.OUT.aerobic_tr*pars[P.t_cwd];
 /* aerobic Rh from coarse woody debris*/
 FLUXES[f+F.ae_rh_cwd] = ae_loss_cwd*(1-pars[P.tr_cwd2som]);
-double ae_loss_lit = POOLS[p+S.C_lit]*(1-pow(1-HRJCR.OUT.aerobic_tr*pars[P.t_lit],deltat))*one_over_deltat;
+double ae_loss_lit = POOLS[p+S.C_lit]*HRJCR.OUT.aerobic_tr*pars[P.t_lit];
 /* aerobic Rh from litter*/
 FLUXES[f+F.ae_rh_lit] = ae_loss_lit*(1-pars[P.tr_lit2som]);
 /* aerobic Rh from SOM*/
-FLUXES[f+F.ae_rh_som] = POOLS[p+S.C_som]*(1-pow(1-HRJCR.OUT.aerobic_tr*pars[P.t_som],deltat))*one_over_deltat;
+FLUXES[f+F.ae_rh_som] = POOLS[p+S.C_som]*HRJCR.OUT.aerobic_tr*pars[P.t_som];
 
 //******Anaerobic fluxes
-double an_loss_cwd = POOLS[p+S.C_cwd]*(1-pow(1-HRJCR.OUT.anaerobic_tr*pars[P.t_cwd],deltat))*one_over_deltat;
+double an_loss_cwd = POOLS[p+S.C_cwd]*HRJCR.OUT.anaerobic_tr*pars[P.t_cwd];
 /* anaerobic Rh from coarse woody debris*/
 FLUXES[f+F.an_rh_cwd] = an_loss_cwd*(1-pars[P.tr_cwd2som]);
 /* anaerobic Rh from litter*/
-double an_loss_lit = POOLS[p+S.C_lit]*(1-pow(1-HRJCR.OUT.anaerobic_tr*pars[P.t_lit],deltat))*one_over_deltat;
+double an_loss_lit = POOLS[p+S.C_lit]*HRJCR.OUT.anaerobic_tr*pars[P.t_lit];
 FLUXES[f+F.an_rh_lit] = an_loss_lit*(1-pars[P.tr_lit2som]);
 /* anaerobic Rh from SOM*/
-FLUXES[f+F.an_rh_som] = POOLS[p+S.C_som]*(1-pow(1-HRJCR.OUT.anaerobic_tr*pars[P.t_som],deltat))*one_over_deltat;
+FLUXES[f+F.an_rh_som] = POOLS[p+S.C_som]*HRJCR.OUT.anaerobic_tr*pars[P.t_som];
 /*CWD to SOM*/
 FLUXES[f+F.cwd2som] = (an_loss_cwd + ae_loss_cwd)*pars[P.tr_cwd2som];
 /*litter to SOM*/

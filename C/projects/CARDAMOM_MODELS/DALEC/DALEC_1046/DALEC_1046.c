@@ -210,16 +210,16 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
 
 
 //Direct removals 
-        FLUXES[f+F.a_lab]= YIELD[n]*0.1;
-        FLUXES[f+F.a_fol]= YIELD[n]*0.05;
-        FLUXES[f+F.a_roo]= YIELD[n]*0.05;
-        FLUXES[f+F.a_woo]= YIELD[n]*0.3;
+        FLUXES[f+F.a_lab]= YIELD[n]*1;
+        FLUXES[f+F.a_fol]= YIELD[n]*0;
+        FLUXES[f+F.a_roo]= YIELD[n]*0;
+        FLUXES[f+F.a_woo]= YIELD[n]*0;
 //Transfers
 
-        FLUXES[f+F.ax_lab2lit]= YIELD[n]*0.1;
-        FLUXES[f+F.ax_fol2lit]= YIELD[n]*0.05;
-        FLUXES[f+F.ax_roo2lit]= YIELD[n]*0.05;
-        FLUXES[f+F.ax_woo2som]= YIELD[n]*0.3;
+        FLUXES[f+F.ax_lab2lit]= YIELD[n]*1;
+        FLUXES[f+F.ax_fol2lit]= 0;
+        FLUXES[f+F.ax_roo2lit]= YIELD[n]*0;
+        FLUXES[f+F.ax_woo2som]= YIELD[n]*0;
 
 //Total disturbance
 

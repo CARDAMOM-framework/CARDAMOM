@@ -70,6 +70,15 @@ int f_roo;   /*Wood fire loss*/
 int f_woo;   /*Root fire loss*/
 int f_lit;   /*Litter fire loss*/
 int f_som;   /*Soil fire loss*/
+
+int d_total;   /*Disturbance flux total*/
+int d_lab;   /*Labile disturbance loss*/
+int d_fol;   /*Foliar disturbance loss*/
+int d_roo;   /*Wood disturbance loss*/
+int d_woo;   /*Root disturbance loss*/
+int d_lit;   /*Litter disturbance loss*/
+int d_som;   /*Soil disturbance loss*/
+
 int fx_lab2lit;   /*Fire transfer labile to litter*/
 int fx_fol2lit;   /*Fire transfer foliar to litter*/
 int fx_roo2lit;   /*Fire transfer root to litter*/
