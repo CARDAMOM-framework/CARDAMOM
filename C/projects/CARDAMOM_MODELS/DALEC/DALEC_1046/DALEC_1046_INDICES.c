@@ -70,15 +70,6 @@ int f_roo;   /*Wood fire loss*/
 int f_woo;   /*Root fire loss*/
 int f_lit;   /*Litter fire loss*/
 int f_som;   /*Soil fire loss*/
-
-int d_total;   /*Disturbance flux total*/
-int d_lab;   /*Labile disturbance loss*/
-int d_fol;   /*Foliar disturbance loss*/
-int d_roo;   /*Wood disturbance loss*/
-int d_woo;   /*Root disturbance loss*/
-int d_lit;   /*Litter disturbance loss*/
-int d_som;   /*Soil disturbance loss*/
-
 int fx_lab2lit;   /*Fire transfer labile to litter*/
 int fx_fol2lit;   /*Fire transfer foliar to litter*/
 int fx_roo2lit;   /*Fire transfer root to litter*/
@@ -92,6 +83,17 @@ int ax_lab2lit;   /*Fire transfer labile to litter*/
 int ax_fol2lit;   /*Fire transfer foliar to litter*/
 int ax_roo2lit;   /*Fire transfer root to litter*/
 int ax_woo2som;   /*Fire transfer wood to soil*/
+int d_lab;   /*Labile disturbance loss*/
+int d_fol;   /*Foliar disturbance loss*/
+int d_roo;   /*Wood disturbance loss*/
+int d_woo;   /*Root disturbance loss*/
+int d_lit;   /*Litter disturbance loss*/
+int d_som;   /*Soil disturbance loss*/
+int dx_lab2lit;   /*Fire transfer labile to litter*/
+int dx_fol2lit;   /*Fire transfer foliar to litter*/
+int dx_roo2lit;   /*Fire transfer root to litter*/
+int dx_woo2som;   /*Fire transfer wood to soil*/
+int dx_lit2som;   /*Fire transfer litter to soil*/
 int et;   /*Evapotranspiration*/
 int q_paw;   /*Plant-available water drainage*/
 int paw2puw;   /*Plant-available water to plant-unavailable water transfer*/
@@ -100,7 +102,9 @@ int q_puw;   /*Plant-unavailable water runoff*/
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
-    30,31,32,33,34,35,36,37,38,39
+    30,31,32,33,34,35,36,37,38,39,
+    40,41,42,43,44,45,46,47,48,49,
+    50
 };
 
 struct DALEC_1046_POOLS{

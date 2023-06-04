@@ -227,7 +227,6 @@ free(MPOOLSjan);
 int Num_EDC=100;
 if (DIAG==1){for (n=0;n<Num_EDC;n++){if (EDCD->PASSFAIL[n]==0){EDC=0;}}}
 
-printf("EDCD->pEDC = %2.2f\n",EDCD->pEDC);
 
 /*Returning EDC */
 return EDC;
