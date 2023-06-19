@@ -4,12 +4,16 @@
 %Step 3. Adapth the paths to make sure these are consistent with your directory system (e.g. depending on where you placed the "CARDAMOM" folder)
 
 %*****CARDAMOM C PATH******
-setenv('CARDAMOM_C_PATH','CARDAMOM_2.1.6c/C');
-setenv('CARDAMOM_DATA_PATH','CARDAMOM_2.1.6c/DATA');
-setenv('CARDAMOM_PATH','CARDAMOM_2.1.6c/');
+%setenv('CARDAMOM_C_PATH','CARDAMOM_2.1.6c/C');
+%setenv('CARDAMOM_DATA_PATH','CARDAMOM_2.1.6c/DATA');
+%setenv('CARDAMOM_PATH','CARDAMOM_2.1.6c/');
+setenv('CARDAMOM_C_PATH','/Users/braghiere/Documents/models/CARDAMOM_2.1.6c/C');
+setenv('CARDAMOM_DATA_PATH','/Users/braghiere/Documents/models/CARDAMOM_2.1.6c/DATA');
+setenv('CARDAMOM_PATH','/Users/braghiere/Documents/models/CARDAMOM_2.1.6c/');
 
 %****CARDAMOM matlab directory****
-addpath(genpath('CARDAMOM_2.1.6c/MATLAB/'));savepath
+%addpath(genpath('CARDAMOM_2.1.6c/MATLAB/'));savepath
+addpath(genpath('/Users/braghiere/Documents/models/CARDAMOM_2.1.6c/MATLAB/'));savepath
 
 %To figure this one out, type "which nc-config" on terminal window, and
 %replace "/usr/local/bin/nc-config" IN CASE VALUE IS DIFFERENT.

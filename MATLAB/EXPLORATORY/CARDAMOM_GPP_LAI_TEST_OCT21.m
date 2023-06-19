@@ -1,7 +1,8 @@
 %STep 1. Load US-NR1
 
 
-nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
+%nccbffilename1100='CARDAMOM/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
+nccbffilename1100='/Users/braghiere/Documents/models/CARDAMOM_2.1.6c/DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc';
 
 CBF=CARDAMOM_READ_NC_CBF_FILE(nccbffilename1100);
 
@@ -12,7 +13,7 @@ CBFsubset=CARDAMOM_SUBSET_NC_CBF_STRUCTURE(CBF, 7);
 CBFsubset1100=CBFsubset;
 
 %Step 3. Prescribe only Cfoliar and LAI parameters
-MD1100=CARDAMOM_MODEL_LIBRARY(1100);
+MD1300=CARDAMOM_MODEL_LIBRARY(1300);
 MD1005=CARDAMOM_MODEL_LIBRARY(1005);
 
 
