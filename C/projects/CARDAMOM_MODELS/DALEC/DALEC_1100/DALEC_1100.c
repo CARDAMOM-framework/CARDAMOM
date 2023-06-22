@@ -477,11 +477,22 @@ double beta1 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_5
 double beta2 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50] - 1)))*POOLS[p+S.D_LF_LY2];
 double beta = (beta1*pars[P.LY1_z] + beta2*pars[P.LY2_z]*pars[P.root_frac])/(pars[P.LY1_z]+pars[P.LY2_z]*pars[P.root_frac]);
 
+// H2O stress biomass mortality factor: parallel structure to GPP scaling factor above
+
+double betaHMF_1 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50HMF] - 1)))*POOLS[p+S.D_LF_LY1]; 
+double betaHMF_2 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50HMF] - 1)))*POOLS[p+S.D_LF_LY2];
+double betaHMF = (betaHMF_1*pars[P.LY1_z] + betaHMF_2*pars[P.LY2_z]*pars[P.root_frac])/(pars[P.LY1_z] +pars[P.LY2_z]*pars[P.root_frac]);
+
+//if (betaHMF>1 | betaHMF<0) {printf("error in HMF, =%2.2f \n",betaHMF);} 
+
+double HMF = (1-betaHMF);
+
 // mean air temperature (K)
 double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 
     FLUXES[f+F.beta_factor]=fmin(beta,g);
     FLUXES[f+F.soil_beta_factor]=beta;
+    FLUXES[f+F.hydraulic_mortality_factor]=HMF;
 
 //******************Declare LIU STRUCT*********************
 LIU_AN_ET_STRUCT LIU;
@@ -976,10 +987,10 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
     //LIVE BIOMASS MORTALITY FLUXES
     //if MORTALITY
-    FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))*one_over_deltat;
-    FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(LEAF_MORTALITY_FACTOR + (1-LEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience]))*one_over_deltat;
-    FLUXES[f+F.fx_roo2lit] = POOLS[nxp+S.C_roo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience]))*one_over_deltat;
-    FLUXES[f+F.fx_woo2cwd] = POOLS[nxp+S.C_woo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience]))*one_over_deltat;
+    FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience])+HMF)/deltat;
+    FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(LEAF_MORTALITY_FACTOR + (1-LEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience])+HMF)/deltat;
+    FLUXES[f+F.fx_roo2lit] = POOLS[nxp+S.C_roo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience])+HMF)/deltat;
+    FLUXES[f+F.fx_woo2cwd] = POOLS[nxp+S.C_woo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience])+HMF)/deltat;
     //No mortality in these pools
     FLUXES[f+F.fx_cwd2som] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*(1-CF[S.C_cwd])*(1-pars[P.resilience])*one_over_deltat;
     FLUXES[f+F.fx_lit2som] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*(1-CF[S.C_lit])*(1-pars[P.resilience])*one_over_deltat;
