@@ -557,8 +557,9 @@ double slf=(SNOWMELT + SUBLIMATION)*deltat/POOLS[nxp+S.H2O_SWE];
 // 
 
 
-POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat; /*second step remove snowmelt from SWE*/
-
+/*Insure SWE does not go negative due to machine error*/
+POOLS[nxp+S.H2O_SWE]=fmax(POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat,0);
+	
 FLUXES[f+F.ets]=FLUXES[f+F.evap] + FLUXES[f+F.transp1] + FLUXES[f+F.transp2] + FLUXES[f+F.sublimation];
 
 //Energy balance: Rn = LE + H - G
