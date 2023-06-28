@@ -57,6 +57,7 @@ double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
 double *VPD=DATA.ncdf_data.VPD.values;
 double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
 double *YIELD=DATA.ncdf_data.YIELD.values;
+double *DISTURBANCE_FLUX=DATA.ncdf_data.DISTURBANCE_FLUX.values;
 double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 
 double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
@@ -209,20 +210,31 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
 	/*note: all fluxes are in gC m-2 day-1*/
 
 
+//Proportional removals for deforestation & degradation
+
+    double frac_lab, frac_fol, frac_roo, frac_woo, tot_abgb;
+    tot_abgb=POOLS[nxp+S.C_lab]+POOLS[nxp+S.C_fol] +POOLS[nxp+S.C_roo] + POOLS[nxp+S.C_woo];
+    frac_lab=POOLS[nxp+S.C_lab]/tot_abgb;
+    frac_fol=POOLS[nxp+S.C_fol]/tot_abgb;
+    frac_roo=POOLS[nxp+S.C_roo]/tot_abgb;
+    frac_woo=POOLS[nxp+S.C_woo]/tot_abgb;
+
+
+//    printf("DISTURBANCE_FLUX[n] = %2.2f\n", DISTURBANCE_FLUX[n]);
 //Direct removals 
-        FLUXES[f+F.a_lab]= YIELD[n]*0/deltat;
-        FLUXES[f+F.a_fol]= YIELD[n]*0/deltat;
-        FLUXES[f+F.a_roo]= YIELD[n]*0/deltat;
-        FLUXES[f+F.a_woo]= YIELD[n]*1/deltat;
+        FLUXES[f+F.a_lab]= (YIELD[n]*0 + DISTURBANCE_FLUX[n]*frac_lab)/deltat;
+        FLUXES[f+F.a_fol]= (YIELD[n]*0 + DISTURBANCE_FLUX[n]*frac_fol)/deltat;
+        FLUXES[f+F.a_roo]= (YIELD[n]*0 + DISTURBANCE_FLUX[n]*frac_roo)/deltat;
+        FLUXES[f+F.a_woo]= (YIELD[n]*1 + DISTURBANCE_FLUX[n]*frac_woo)/deltat;
+
 //Transfers
-
         FLUXES[f+F.ax_lab2lit]= YIELD[n]*0.2/deltat;
-        FLUXES[f+F.ax_fol2lit]= 0.1/deltat;
-        FLUXES[f+F.ax_roo2lit]= YIELD[n]*0.1/deltat;
-        FLUXES[f+F.ax_woo2som]= YIELD[n]*0.5/deltat;
+        FLUXES[f+F.ax_fol2lit]= YIELD[n]*0.2/deltat;
+        FLUXES[f+F.ax_roo2lit]= YIELD[n]*0.2/deltat;
+        FLUXES[f+F.ax_woo2som]= YIELD[n]*0.4/deltat;
 
 
-    //Fires only
+    //Land-to-atmoshere flux disturbance
     FLUXES[f+F.f_lab] = (POOLS[nxp+S.C_lab]*BURNED_AREA[n]*CF[S.C_lab] )/deltat;
     FLUXES[f+F.f_fol] = (POOLS[nxp+S.C_fol]*BURNED_AREA[n]*CF[S.C_fol] )/deltat;
     FLUXES[f+F.f_roo] = (POOLS[nxp+S.C_roo]*BURNED_AREA[n]*CF[S.C_roo] )/deltat;

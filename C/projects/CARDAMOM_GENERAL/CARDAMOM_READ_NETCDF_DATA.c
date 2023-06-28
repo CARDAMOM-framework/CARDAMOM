@@ -204,7 +204,6 @@ default_int_value(&DATA->SCF.opt_unc_type,0);
 default_double_value(&DATA->SCF.single_unc,0.1);
 default_double_value(&DATA->SCF.min_threshold,0.1);//m2/m2
 
-//No efault YIELD options
 
 
 
@@ -245,6 +244,9 @@ printf("Done reading all other edc ");
 		DATA->CO2.reference_mean=ncdf_read_double_attr(ncid, "CO2","reference_mean");
                                                 DEFAULT_REFERENCE_MEAN(&DATA->CO2);
                                                 
+	DATA->DISTURBANCE_FLUX.values=ncdf_read_double_var(ncid, "DISTURBANCE_FLUX", &(DATA->DISTURBANCE_FLUX.length));
+		DATA->DISTURBANCE_FLUX.reference_mean=ncdf_read_double_attr(ncid, "DISTURBANCE_FLUX","reference_mean");
+                                DEFAULT_REFERENCE_MEAN(&DATA->DISTURBANCE_FLUX);
 
 
         
