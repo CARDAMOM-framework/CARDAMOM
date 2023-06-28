@@ -1090,8 +1090,8 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=86;
-DALECmodel->nofluxes=84;
+DALECmodel->nopars=88;
+DALECmodel->nofluxes=85;
 DALECmodel->noedcs=10;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
