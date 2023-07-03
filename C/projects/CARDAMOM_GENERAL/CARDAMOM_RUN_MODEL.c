@@ -141,19 +141,19 @@ int Ntimesteps=CARDADATA.ncdf_data.Ntimesteps;
 /*STEP 3.2 - create netCDF output dimensions*/
 int sampleDimID, poolDimID, fluxDimID, timePoolsDimID,timeFluxesDimID, probIdxDimID,edcIdxDimID, noParsDimID, noLikelihoodsDimID;
 FAILONERROR(nc_def_dim(ncid,"Sample",N,&sampleDimID));
-FAILONERROR(nc_def_dim(ncid,"Pool",CARDADATA.nopools,&poolDimID ));
+// FAILONERROR(nc_def_dim(ncid,"Pool",CARDADATA.nopools,&poolDimID ));
 FAILONERROR(nc_def_dim(ncid,"Flux",CARDADATA.nofluxes,&fluxDimID ));
 //NOTE: this was going to be the NC_UNLIMITED dimension, however due to concerns with support for netcdf classic, it is now fixed, and split into two
-FAILONERROR(nc_def_dim(ncid,"Time_pools",Ntimesteps+1,&timePoolsDimID));
+// FAILONERROR(nc_def_dim(ncid,"Time_pools",Ntimesteps+1,&timePoolsDimID));
 FAILONERROR(nc_def_dim(ncid,"Time_fluxes",Ntimesteps,&timeFluxesDimID));
 //Hard coded to 1
 const size_t probIdxLen=1;
-FAILONERROR(nc_def_dim(ncid,"Probability Index",probIdxLen,&probIdxDimID ));
-//Hard coded to 100
-FAILONERROR(nc_def_dim(ncid,"EDC Index",CARDADATA.noedcs,&edcIdxDimID ));
+// FAILONERROR(nc_def_dim(ncid,"Probability Index",probIdxLen,&probIdxDimID ));
+// //Hard coded to 100
+// FAILONERROR(nc_def_dim(ncid,"EDC Index",CARDADATA.noedcs,&edcIdxDimID ));
 
-FAILONERROR(nc_def_dim(ncid,"Parameter",CARDADATA.nopars,&noParsDimID ));
-FAILONERROR(nc_def_dim(ncid,"Likelihood Index",CARDADATA.nolikelihoods,&noLikelihoodsDimID ));
+// FAILONERROR(nc_def_dim(ncid,"Parameter",CARDADATA.nopars,&noParsDimID ));
+// FAILONERROR(nc_def_dim(ncid,"Likelihood Index",CARDADATA.nolikelihoods,&noLikelihoodsDimID ));
 
 
 
@@ -170,20 +170,20 @@ WARNONERROR(nc_put_att_double	(	ncid,fluxesVarID,"example_doubles",NC_DOUBLE,4,(
 
 
 
-int pools_dems[] = {sampleDimID,timePoolsDimID,poolDimID};
-FAILONERROR(nc_def_var(	ncid,"POOLS" , NC_DOUBLE, 3, pools_dems, &poolsVarID ));
+// int pools_dems[] = {sampleDimID,timePoolsDimID,poolDimID};
+// FAILONERROR(nc_def_var(	ncid,"POOLS" , NC_DOUBLE, 3, pools_dems, &poolsVarID ));
 
-int prob_dems[] = {sampleDimID, probIdxDimID};
-FAILONERROR(nc_def_var(	ncid,"PROB" , NC_DOUBLE, 2, prob_dems, &pVarID ));
+// int prob_dems[] = {sampleDimID, probIdxDimID};
+// FAILONERROR(nc_def_var(	ncid,"PROB" , NC_DOUBLE, 2, prob_dems, &pVarID ));
 
-int pars_dems[] = {sampleDimID, noParsDimID};
-FAILONERROR(nc_def_var(	ncid,"PARS" , NC_DOUBLE, 2, pars_dems, &parsVarID ));
+// int pars_dems[] = {sampleDimID, noParsDimID};
+// FAILONERROR(nc_def_var(	ncid,"PARS" , NC_DOUBLE, 2, pars_dems, &parsVarID ));
 
-int likelihoods_dems[] = {sampleDimID, noLikelihoodsDimID};
-FAILONERROR(nc_def_var(	ncid,"LIKELIHOODS" , NC_DOUBLE, 2, likelihoods_dems, &likelihoodsVarID ));
+// int likelihoods_dems[] = {sampleDimID, noLikelihoodsDimID};
+// FAILONERROR(nc_def_var(	ncid,"LIKELIHOODS" , NC_DOUBLE, 2, likelihoods_dems, &likelihoodsVarID ));
 
-int edcs_dems[] = {sampleDimID, edcIdxDimID };
-FAILONERROR(nc_def_var(	ncid,"EDCs" , NC_DOUBLE, 2, edcs_dems, &edcsVarID ));
+// int edcs_dems[] = {sampleDimID, edcIdxDimID };
+// FAILONERROR(nc_def_var(	ncid,"EDCs" , NC_DOUBLE, 2, edcs_dems, &edcsVarID ));
 
 
 //End NetCDF definition phase, in order to allow for writting
@@ -262,16 +262,16 @@ clock_t    end = clock();//End timer
 //Write fluxes
 FAILONERROR(nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps,CARDADATA.nofluxes}, CARDADATA.M_FLUXES));
 //Write pools
-FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps+1,CARDADATA.nopools}, CARDADATA.M_POOLS));
+// FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps+1,CARDADATA.nopools}, CARDADATA.M_POOLS));
 //write edcd
 
-FAILONERROR(nc_put_vara_double(ncid,edcsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.noedcs}, CARDADATA.M_EDCs));
+// FAILONERROR(nc_put_vara_double(ncid,edcsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.noedcs}, CARDADATA.M_EDCs));
 //write M_P
-FAILONERROR(nc_put_vara_double(ncid,pVarID,(const size_t[]){n,0}, (const size_t[]){1,probIdxLen}, CARDADATA.M_P));
+// FAILONERROR(nc_put_vara_double(ncid,pVarID,(const size_t[]){n,0}, (const size_t[]){1,probIdxLen}, CARDADATA.M_P));
 //write Pars
-FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars));
+// FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars));
 //Write Likelihoods
-FAILONERROR(nc_put_vara_double(ncid,likelihoodsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nolikelihoods}, CARDADATA.M_LIKELIHOODS));
+// FAILONERROR(nc_put_vara_double(ncid,likelihoodsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nolikelihoods}, CARDADATA.M_LIKELIHOODS));
 
 
 //for (n=0;n<CARDADATA.nolikelihoods;n++){printf("%5.4f  ",CARDADATA.M_LIKELIHOODS[n]);}
