@@ -1119,8 +1119,11 @@ EDCs * EDCs=DALECmodel->EDCs;
 //List all inequality calls here
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_litcwdtor; 
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_cwdsomtor;
+static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_rootwoodtor;
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_mr_rates;
+static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_relativepsi50;
 
+//EDC: lit tor > cwd tor
 EDC_litcwdtor.big_par_index=P.t_lit;
 EDC_litcwdtor.small_par_index=P.t_cwd;
 EDCs[E.litcwdtor].data=&EDC_litcwdtor;
@@ -1134,12 +1137,26 @@ EDCs[E.cwdsomtor].data=&EDC_cwdsomtor;
 EDCs[E.cwdsomtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.cwdsomtor].prerun=true;
 
+//EDC: root tor > wood tor
+EDC_rootwoodtor.big_par_index=P.t_root;
+EDC_rootwoodtor.small_par_index=P.t_wood;
+EDCs[E.rootwoodtor].data=&EDC_rootwoodtor;
+EDCs[E.rootwoodtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
+EDCs[E.rootwoodtor].prerun=true;
+
 //EDC: foliar and root mr > wood mr
 EDC_mr_rates.big_par_index=P.rauto_mr_r;
 EDC_mr_rates.small_par_index=P.rauto_mr_w;
 EDCs[E.mr_rates].data=&EDC_mr_rates;
 EDCs[E.mr_rates].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.mr_rates].prerun=true;
+
+//EDC: psi50HMF > psi50 
+EDC_relativepsi50.big_par_index=P.psi_50HMF;
+EDC_relativepsi50.small_par_index=P.psi_50;
+EDCs[E.relativepsi50].data=&EDC_relativepsi50;
+EDCs[E.relativepsi50].function=&DALEC_EDC_PARAMETER_INEQUALITY;
+EDCs[E.relativepsi50].prerun=true;
 
 static DALEC_EDC_PARAMETER_LOG_RATIO_STRUCT EDC_vcmax_lcma;
 //EDC: ratio of Vcmax25 to LCMA
