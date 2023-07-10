@@ -1090,7 +1090,7 @@ DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=88;
 DALECmodel->nofluxes=85;
-DALECmodel->noedcs=10;
+DALECmodel->noedcs=12;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 

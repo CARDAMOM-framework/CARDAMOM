@@ -258,6 +258,8 @@ int vcmax_lcma;
 int litcwdtor;
 int cwdsomtor;
 int mr_rates;
+int rootwoodtor;
+int relativepsi50;
 int state_ranges;
 int state_trajectories;
 int nsc_ratio;
@@ -266,7 +268,7 @@ int mean_ly2_temp;
 int mean_ly3_temp;
 } DALEC_1100_EDCs={
     0, 1, 2, 3, 4, 5, 6, 
-    7, 8, 9
+    7, 8, 9,10,11
 };
 
 
