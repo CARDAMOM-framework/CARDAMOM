@@ -65,6 +65,9 @@ return 0;}
     //#include "../CARDAMOM_MODELS/DALEC/DALEC_1103/MODEL_INFO_1103.c"
     //#include "../CARDAMOM_MODELS/DALEC/DALEC_1105/MODEL_INFO_1105.c"
     //#include "../CARDAMOM_MODELS/DALEC/DALEC_1106/MODEL_INFO_1106.c"
+    // #include "../CARDAMOM_MODELS/DALEC/DALEC_1107/MODEL_INFO_1107.c"
+    // #include "../CARDAMOM_MODELS/DALEC/DALEC_1108/MODEL_INFO_1108.c"
+    #include "../CARDAMOM_MODELS/DALEC/DALEC_1109/MODEL_INFO_1109.c"
 
 /*This function attributes model specific variables based
  * on the ID number stored in ID*/
@@ -130,6 +133,9 @@ else if (ID==1047  ){MODEL_INFO_1047(DATA);}
     //else if (ID==1103  ){MODEL_INFO_1103(DATA);}
     //else if (ID==1105  ){MODEL_INFO_1105(DATA);}
         //else if (ID==1106  ){MODEL_INFO_1106(DATA);}
+        // else if (ID==1107  ){MODEL_INFO_1107(DATA);}
+        // else if (ID==1108  ){MODEL_INFO_1108(DATA);}
+        else if (ID==1109  ){MODEL_INFO_1109(DATA);}
         else {status=1;
         printf("*********************************************\n");
         printf("No loaded in CARDAMOM_MODEL_LIBRARY.c, expect error!\n");

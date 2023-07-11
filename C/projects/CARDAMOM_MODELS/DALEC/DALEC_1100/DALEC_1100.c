@@ -12,7 +12,9 @@
 #include "../DALEC_ALL/CH4_MODULES/HET_RESP_RATES_JCR.c"
 #include "../DALEC_ALL/KNORR_ALLOCATION.c"
 #include "../DALEC_ALL/SOIL_TEMP_AND_LIQUID_FRAC.c"
+#include "../DALEC_ALL/INITIALIZE_INTERNAL_SOIL_ENERGY.c"
 #include "../DALEC_ALL/INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS.c"
+#include "../DALEC_ALL/INTERNAL_ENERGY_PER_H2O_UNIT_MASS.c"
 #include "../DALEC_ALL/ALLOC_AND_AUTO_RESP_FLUXES.c"
 
 
@@ -180,13 +182,22 @@ int n=0,nn=0;
 //double pi=3.1415927;
 double pi=DGCM_PI;
 
+//PREDERIVED TERMS 
+
+    double PREDERIVED_GEO_FLUX=0.105*3600*24;
+
+
 double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.values[0];
+double one_over_deltat=1/deltat;
+ 
 int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 
 
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
 double *FLUXES=DATA.M_FLUXES;
 double *POOLS=DATA.M_POOLS;
+
+ 
 
 
   /*assigning values to pools*/
@@ -204,7 +215,7 @@ double *POOLS=DATA.M_POOLS;
 //   POOLS[S.H2O_PUW]=HYDROFUN_MOI2EWT(pars[P.i_PUW_SM],pars[P.PUW_por],pars[P.PUW_z]);
   POOLS[S.H2O_SWE]=pars[P.i_SWE];
     //Assume SWE is at LST
-  POOLS[S.E_SWE]=pars[P.i_SWE]*INTERNAL_ENERGY_PER_H2O_UNIT_MASS(LST[0]+ DGCM_TK0C, 0);
+  POOLS[S.E_SWE]=pars[P.i_SWE]*INTERNAL_ENERGY_PER_H2O_UNIT_MASS(SKT[0]+ DGCM_TK0C, 0);
   /*Energy pools*/
 //   POOLS[S.E_PAW]=pars[P.i_PAW_E]*pars[P.PAW_z];
 //   POOLS[S.E_PUW]=pars[P.i_PUW_E]*pars[P.PUW_z];
@@ -465,14 +476,14 @@ double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 /*Snow water equivalent*/
 FLUXES[f+F.snowfall] = SNOWFALL[n];
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snowfall]*deltat; /*first step snowfall to SWE*/
-POOLS[nxp+S.E_SWE]=POOLS[p+S.E_SWE]+FLUXES[f+F.snowfall]*INTERNAL_ENERGY_PER_H2O_UNIT_MASS(air_temp_k, 0);
+POOLS[nxp+S.E_SWE]=POOLS[p+S.E_SWE]+FLUXES[f+F.snowfall]*INTERNAL_ENERGY_PER_H2O_UNIT_MASS(air_temp_k, 0)*deltat;
     
-    *deltat; /*first step snowfall to SWE*/
+    
+    /*first step snowfall to SWE*/
 //transient_SCF
 double SCFtemp = POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);
     //Snow melt, based on new SWE
- double SNOWMELT=fmin(fmax((DGCM_TK0C+SKT[n]-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]/deltat; /*melted snow per day*/  
-
+ double SNOWMELT=fmin(fmax((DGCM_TK0C+SKT[n]-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]*one_over_deltat; /*melted snow per day*/  
 double SUBLIMATION =  pars[P.sublimation_rate]*SSRD[n]*SCFtemp;
 
 double slf=(SNOWMELT + SUBLIMATION)*deltat/POOLS[nxp+S.H2O_SWE];
@@ -503,8 +514,8 @@ POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublima
 
 //Calculate corresponding energy fluxes
 
-    double E_MELT = FLUXES[f+F.melt] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C; 1);
-    double E_SUBLIMATION = FLUXES[f+F.melt] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C; 1);
+    double E_MELT = FLUXES[f+F.melt] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C, 1);
+    double E_SUBLIMATION = FLUXES[f+F.melt] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C, 1);
 
 // 
 // //Energy balance: Rn = LE + H - G
@@ -1115,6 +1126,28 @@ EDCs * EDCs=DALECmodel->EDCs;
 // 
 // 
 // 
+//     
+//     
+//     
+//     
+//     EDC_sr.min_val[S.D_SCF]=0;
+//     EDC_sr.max_val[S.D_SCF]=1;
+//     
+//     EDC_sr.min_val[S.D_TEMP_LY1]=173.15;
+//     EDC_sr.max_val[S.D_TEMP_LY1]=373.15;
+// //     
+//     EDC_sr.min_val[S.D_TEMP_LY2]=173.15;
+//     EDC_sr.max_val[S.D_TEMP_LY2]=373.15;
+// //     
+//     EDC_sr.min_val[S.D_TEMP_LY3]=173.15;
+//     EDC_sr.max_val[S.D_TEMP_LY3]=373.15;
+// //     
+//     EDC_sr.min_val[S.D_LF_LY1]=0;
+//     EDC_sr.max_val[S.D_LF_LY1]=1;
+// //     
+//     EDC_sr.min_val[S.D_LF_LY3]=0;
+//     EDC_sr.max_val[S.D_LF_LY3]=1;
+//     
 
 
 //Adding EDC to the EDCs list
@@ -1123,7 +1156,6 @@ EDCs * EDCs=DALECmodel->EDCs;
     EDCs[E.state_ranges].data=&EDC_sr;
     EDCs[E.state_ranges].function=&DALEC_EDC_STATE_RANGES;
     EDCs[E.state_ranges].prerun=false;
-
 // 
 // 
 //   static DALEC_EDC_START_TEMP_STRUCT EDC_paw_start_temp, EDC_puw_start_temp;
@@ -1172,6 +1204,8 @@ EDCs * EDCs=DALECmodel->EDCs;
 
 
 //Start temperatures for PAW and PUW
+
+
 
 
 
@@ -1267,6 +1301,7 @@ EDCs[E.state_trajectories].prerun=false;
 // //Numerical checks
 // //EDCOPE.SUPPORT_FINITE_EDC=true;
 // 
+
 
 
 

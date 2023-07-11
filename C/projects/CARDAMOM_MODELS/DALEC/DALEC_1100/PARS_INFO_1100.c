@@ -346,6 +346,9 @@ parmax[P.scf_scalar]=1000.0;
 parmin[P.sublimation_rate]=0.001;
 parmax[P.sublimation_rate]=100;
 
+// /*Fraction of LY2 to LY1 root biomass*/
+// parmin[P.root_frac]=0.001;
+// parmax[P.root_frac]=1;
   
 return 0;
 

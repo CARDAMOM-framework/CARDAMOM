@@ -93,8 +93,7 @@ int sublimation_rate;
 // int q10canopy;
 // int canopyRdsf;
 } DALEC_1100_PARAMETERS={
-     0, 1, 2, 3, 4
-};
+     0, 1, 2, 3, 4};
 
 struct DALEC_1100_FLUXES{
 /*DALEC FLUXES*/
@@ -174,8 +173,7 @@ int sublimation;
 // int resp_auto_maint_dark;
 //int geological;
 } DALEC_1100_FLUXES={
-     0, 1, 2
-};
+     0, 1, 2};
 
 
 
@@ -210,8 +208,7 @@ int E_SWE; /*Snow water equivalent energy*/
 // int M_LAI_MAX;//KNORR LAI module max LAI memory
 // int M_LAI_TEMP;//KNORR LAI module temp memory
 } DALEC_1100_POOLS={
-      0,1,2
-};
+      0,1,2};
 
 struct DALEC_1100_EDCs{
 // int paw_start_temp;
