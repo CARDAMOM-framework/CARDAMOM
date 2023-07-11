@@ -27,11 +27,29 @@ int main(){
 //1mm H2O at + 50C
 printf("1mm H2O LF = 0 @ -50C = %2.2e\n",U); 
 
+
+
+    LF = 0;
+    TEMP=0+273.15;
+        U=(1 - LF) * DGCM_SPECIFIC_HEAT_ICE* TEMP + LF * DGCM_SPECIFIC_HEAT_WATER* (TEMP - DGCM_T_LIQUID_H2O_ZERO_ENERGY);
+
+printf("1mm H2O LF = 0 @ +0C = %2.2e\n",U);
+
+
+
+    LF = 1;
+    TEMP=0+273.15;
+        U=(1 - LF) * DGCM_SPECIFIC_HEAT_ICE* TEMP + LF * DGCM_SPECIFIC_HEAT_WATER* (TEMP - DGCM_T_LIQUID_H2O_ZERO_ENERGY);
+
+printf("1mm H2O LF = 1 @ +0C = %2.2e\n",U);
+
+
+
     LF = 1;
     TEMP=50+273.15;
         U=(1 - LF) * DGCM_SPECIFIC_HEAT_ICE* TEMP + LF * DGCM_SPECIFIC_HEAT_WATER* (TEMP - DGCM_T_LIQUID_H2O_ZERO_ENERGY);
 
-printf("1mm H2O LF = 0 @ +50C = %2.2e\n",U); 
+printf("1mm H2O LF = 1 @ +50C = %2.2e\n",U); 
 
 
 
