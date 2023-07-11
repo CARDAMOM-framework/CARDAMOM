@@ -219,8 +219,9 @@ parmin[P.i_SWE_H2O]=0.000001;
 parmax[P.i_SWE_H2O]=10000;
 
 /*iSWE: initial for state variable SWE snow water equivalent*/
-parmin[P.i_SWE_E]=0.000001;
-parmax[P.i_SWE]=10000;
+        /*LY1 energy per mm H2O (~ Energy in 1mm H2O @ -50C to 1mm H2O@ 0C with LF=0)*/
+parmin[P.i_SWE_E]=4.67e+05;
+parmax[P.i_SWE_E]=5.72e+05;
 
 /*sn1: min threshold for melt*/
 parmin[P.min_melt]=263.15;
