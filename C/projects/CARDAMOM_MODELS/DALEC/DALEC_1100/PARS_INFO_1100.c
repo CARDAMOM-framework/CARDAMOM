@@ -215,7 +215,11 @@ double * parmax =DALECmodel->PARS_INFO.parmax;
 // parmax[P.leaf_refl_nir]=0.7;
 
 /*iSWE: initial for state variable SWE snow water equivalent*/
-parmin[P.i_SWE]=0.000001;
+parmin[P.i_SWE_H2O]=0.000001;
+parmax[P.i_SWE_H2O]=10000;
+
+/*iSWE: initial for state variable SWE snow water equivalent*/
+parmin[P.i_SWE_E]=0.000001;
 parmax[P.i_SWE]=10000;
 
 /*sn1: min threshold for melt*/

@@ -1,6 +1,6 @@
-// static int attempt_count[100];
-// static int pass_count[100];
-
+ static int attempt_count[100];
+ static int pass_count[100];
+static int counter;
 
 typedef struct {
        double  * min_val;
@@ -19,11 +19,12 @@ double DALEC_EDC_STATE_RANGES(DATA * DATA, void * EDCstruct){
    
    //loop through all timesteps
   int p=0,k=0;
+    counter +=1;
   
 while (PEDC==0 & p<DATA->nopools & k==0 ){
             //looping through timesteps
     int n=0;
-        //attempt_count[p]+=1;
+        attempt_count[p]+=1;
 
 while (PEDC==0 & n<DATA->ncdf_data.TIME_INDEX.length  & k==0){
 
@@ -35,16 +36,18 @@ while (PEDC==0 & n<DATA->ncdf_data.TIME_INDEX.length  & k==0){
        //if (p == 18){printf("E.max_val[p] = %2.2f, E.min_val[p] = %2.2f, SM = %2.2f\n",E.max_val[p], E.min_val[p],DATA->M_POOLS[p+n*DATA->nopools]);}
 
   n+=1;}
-            //if(k==0){pass_count[p]+=1;}
+            if(k==0){pass_count[p]+=1;}
 
  
   p+=1;
 
 }
-//     if (k==0){
-//         for (p=0;p<DATA->nopools;p++){   
-//         printf("pool %i; Attempt = %i, Pass = %i, Percent = %2.2f\%\n",p,attempt_count[p], pass_count[p], 100*(double)pass_count[p]/(double)attempt_count[p]);
-//         }}
+     if (counter % 10000 == 0 ){
+         printf("************Interim state search stats (printing every 10000)*********");
+         for (p=0;p<DATA->nopools;p++){   
+
+         printf("pool %i; Attempt = %i, Pass = %i, Percent = %2.2f\%\n",p,attempt_count[p], pass_count[p], 100*(double)pass_count[p]/(double)attempt_count[p]);
+         }}
        //printf("Fail check = %2.2i\n",p);
 
 
