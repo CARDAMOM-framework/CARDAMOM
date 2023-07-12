@@ -988,10 +988,10 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
     //LIVE BIOMASS MORTALITY FLUXES
     //Compute aggregate mortality factor by pool: 
-    double AMF_C_lab = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))) * (1-HMF))
-    double AMF_C_fol = (1 - (1-LEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience]))) * (1-HMF))
-    double AMF_C_roo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience]))) * (1-HMF))
-    double AMF_C_woo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience]))) * (1-HMF))
+    double AMF_C_lab = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))) * (1-HMF));
+    double AMF_C_fol = (1 - (1-LEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience]))) * (1-HMF));
+    double AMF_C_roo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience]))) * (1-HMF));
+    double AMF_C_woo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience]))) * (1-HMF));
 
     //if MORTALITY
     FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(AMF_C_lab)*one_over_deltat;
