@@ -228,7 +228,10 @@ double *POOLS=DATA.M_POOLS;
 //     POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; //LAI
     
     if (POOLS[S.H2O_SWE]>0){
-    POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]);} //snow cover fraction}
+    //POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]);} //snow cover fraction gen1
+  //  double smr1=fmin(1.0,POOLS[S.H2O_SWE]/pars[P.SWEmax]); //___scf_gen3
+  //  POOLS[S.D_SCF]=1-(1/pi*acos(2*smr1-1))**pars[P.Nmelt]; //___scf_gen3
+      POOLS[S.D_SCF]=1-(1/pi*acos(2*fmin(1.0,POOLS[S.H2O_SWE]/pars[P.SWEmax])-1));} //___scf_gen3
     else
     {POOLS[S.D_SCF]=0;};
 
@@ -486,7 +489,9 @@ POOLS[nxp+S.E_SWE]=POOLS[p+S.E_SWE]+FLUXES[f+F.snowfall]*INTERNAL_ENERGY_PER_H2O
     
     /*first step snowfall to SWE*/
 //transient_SCF
-double SCFtemp = POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);
+//double smr2=fmin(1.0,POOLS[nxp+S.H2O_SWE]/pars[P.SWEmax]); //___scf_gen3
+double SCFtemp = 1-(1/pi*acos(2*fmin(1.0,POOLS[nxp+S.H2O_SWE]/pars[P.SWEmax])-1))**pars[P.Nmelt]; //___scf_gen3
+//double SCFtemp = POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //___scf_gen1
     //Snow melt, based on new SWE
  double SNOWMELT=fmin(fmax((DGCM_TK0C+SKT[n]-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]*one_over_deltat; /*melted snow per day*/  
 double SUBLIMATION =  pars[P.sublimation_rate]*SSRD[n]*SCFtemp;
@@ -525,9 +530,13 @@ POOLS[nxp+S.H2O_SWE]=fmax(POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.su
 
 //     /****************************RECORD t+1 DIAGNOSTIC STATES*************************/
 //     POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
-    POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
-    
-   
+
+//___scf_gen3 start
+//    POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction gen1
+//double smr3=fmin(1.0,POOLS[nxp+S.H2O_SWE]/pars[P.SWEmax]);
+    POOLS[nxp+S.D_SCF]=1-(1/pi*acos(2*fmin(1.0,POOLS[nxp+S.H2O_SWE]/pars[P.SWEmax])-1))**pars[P.Nmelt]; //snow cover fraction gen3
+//___scf_gen3 end  
+
     SWETEMP.IN.h2o = POOLS[nxp+S.H2O_SWE];//mm (or kg/m2)
     SWETEMP.IN.internal_energy = POOLS[nxp+S.E_SWE];//Joules
    H2O_TEMP_AND_LIQUID_FRAC(&SWETEMP);

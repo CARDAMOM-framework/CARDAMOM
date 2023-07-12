@@ -231,9 +231,20 @@ parmax[P.min_melt]=283.15;
 parmin[P.melt_slope]=0.00001;
 parmax[P.melt_slope]=100;
 
-/*sn3: snow cover fraction scalar; SCF = SWE/(SWE +SWEcritical_par) */
-parmin[P.scf_scalar]=10;
-parmax[P.scf_scalar]=1000.0;
+// ___scf_gen3 start
+///*sn3: snow cover fraction scalar; SCF = SWE/(SWE +SWEcritical_par) */
+//parmin[P.scf_scalar]=10;
+//parmax[P.scf_scalar]=1000.0;
+
+/*sn3: snow cover fraction parameter, an index of topographic variability defined in relation to the standard deviation of elevation within a grid cellcontrols the shape of the SCF */
+parmin[P.SWEmax]=10.0;
+parmax[P.SWEmax]=10000.0;
+
+/*sn4: snow cover fraction parameter, maximum accumulated SWE; SCF = 1-(1/pi * acos(2*SWE/SWEmax-1))**Nmelt */
+parmin[P.Nmelt]=0.00001;
+parmax[P.Nmelt]=10.0;
+// ___scf_gen3 end 
+
 // 
 // /* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (PAW/PAW_fs)\n jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
 // parmin[P.S_fv]=1;

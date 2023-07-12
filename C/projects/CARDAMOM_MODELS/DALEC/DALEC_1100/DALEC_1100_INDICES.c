@@ -15,10 +15,11 @@ int i_SWE_H2O;
 int i_SWE_E;
 int min_melt;
 int melt_slope;
-int scf_scalar;
+int SWEmax; //___scf_gen3
+int Nmelt;  //___scf_gen3
 int sublimation_rate;
 } DALEC_1100_PARAMETERS={
-     0, 1, 2, 3, 4, 5};
+     0, 1, 2, 3, 4, 5, 6};
 
 struct DALEC_1100_FLUXES{
 /*DALEC FLUXES*/
