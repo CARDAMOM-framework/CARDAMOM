@@ -19,7 +19,7 @@ int SWEmax; //___scf_gen3
 int Nmelt;  //___scf_gen3
 int sublimation_rate;
 } DALEC_1100_PARAMETERS={
-     0, 1, 2, 3, 4, 5, 6};
+     0, 1, 2, 3, 4, 5, 6}; //___scf_gen3
 
 struct DALEC_1100_FLUXES{
 /*DALEC FLUXES*/
