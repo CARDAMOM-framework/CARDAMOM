@@ -518,8 +518,6 @@ double slf=(SNOWMELT + SUBLIMATION)*deltat/POOLS[nxp+S.H2O_SWE];
 /*Insure SWE does not go negative due to machine error*/
 POOLS[nxp+S.H2O_SWE]=fmax(POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat,0); /*second step remove snowmelt from SWE*/
 
-
-
     double E_MELT = FLUXES[f+F.melt] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C, 1);
     double E_SUBLIMATION = FLUXES[f+F.sublimation] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C, 1);
 

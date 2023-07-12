@@ -25,7 +25,6 @@ struct DALEC_1100_FLUXES{
 int snowfall;   /*Snowfall to SWE*/
 int melt;   /*Snow melt*/
 int sublimation;
-
 } DALEC_1100_FLUXES={
      0, 1, 2};
 
@@ -40,7 +39,6 @@ int H2O_SWE; /*Snow water equivalent*/
 int E_SWE; /*Snow water equivalent energy*/
 int D_SCF;//snow-covered fraction
 int D_TEMP_SWE; /*Snow water equivalent energy*/
-
 } DALEC_1100_POOLS={
       0,1,2,3};
 
