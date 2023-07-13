@@ -752,9 +752,9 @@ TEMPxfer_2to3= POOLS[p+S.D_TEMP_LY3];//In K
 
 
 // Update pools, including ET from LY1
-POOLS[nxp+S.H2O_LY1] = POOLS[p+S.H2O_LY1] + (FLUXES[f+F.infil] - FLUXES[f+F.ly1xly2] - FLUXES[f+F.q_ly1] - FLUXES[f+F.evap] - FLUXES[f+F.transp1])*deltat;
-POOLS[nxp+S.H2O_LY2] = POOLS[p+S.H2O_LY2] + (FLUXES[f+F.ly1xly2] - FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly2] - FLUXES[f+F.transp2])*deltat;
-POOLS[nxp+S.H2O_LY3] = POOLS[p+S.H2O_LY3] + (FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly3])*deltat;
+POOLS[nxp+S.H2O_LY1] = fmax(POOLS[p+S.H2O_LY1] + (FLUXES[f+F.infil] - FLUXES[f+F.ly1xly2] - FLUXES[f+F.q_ly1] - FLUXES[f+F.evap] - FLUXES[f+F.transp1])*deltat,0);
+POOLS[nxp+S.H2O_LY2] = fmax(POOLS[p+S.H2O_LY2] + (FLUXES[f+F.ly1xly2] - FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly2] - FLUXES[f+F.transp2])*deltat,0);
+POOLS[nxp+S.H2O_LY3] = fmax(POOLS[p+S.H2O_LY3] + (FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly3])*deltat,0);
 
 
 
@@ -992,11 +992,17 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 //P*M + P*(1-M)*BAf = P*M + P*BAf - P*M*BAf = P*(M + BAf - M*BAf)  = P*(BAf*(1 - M) + M)
 
     //LIVE BIOMASS MORTALITY FLUXES
+    //Compute aggregate mortality factor by pool: 
+    double AMF_C_lab = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))) * (1-HMF)* (1-DMF));
+    double AMF_C_fol = (1 - (1-LEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience]))) * (1-HMF)* (1-DMF));
+    double AMF_C_roo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience]))) * (1-HMF)* (1-DMF));
+    double AMF_C_woo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience]))) * (1-HMF)* (1-DMF));
+
     //if MORTALITY
-    FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience])+HMF+DMF)*one_over_deltat;
-    FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(LEAF_MORTALITY_FACTOR + (1-LEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience])+HMF+DMF)*one_over_deltat;
-    FLUXES[f+F.fx_roo2lit] = POOLS[nxp+S.C_roo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience])+HMF+DMF)*one_over_deltat;
-    FLUXES[f+F.fx_woo2cwd] = POOLS[nxp+S.C_woo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience])+HMF+DMF)*one_over_deltat;
+    FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(AMF_C_lab)*one_over_deltat;
+    FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(AMF_C_fol)*one_over_deltat;
+    FLUXES[f+F.fx_roo2lit] = POOLS[nxp+S.C_roo]*(AMF_C_roo)*one_over_deltat;
+    FLUXES[f+F.fx_woo2cwd] = POOLS[nxp+S.C_woo]*(AMF_C_woo)*one_over_deltat;
     //No mortality in these pools
     FLUXES[f+F.fx_cwd2som] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*(1-CF[S.C_cwd])*(1-pars[P.resilience])*one_over_deltat;
     FLUXES[f+F.fx_lit2som] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*(1-CF[S.C_lit])*(1-pars[P.resilience])*one_over_deltat;
@@ -1095,7 +1101,7 @@ DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=88;
 DALECmodel->nofluxes=85;
-DALECmodel->noedcs=10;
+DALECmodel->noedcs=12;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
@@ -1124,8 +1130,11 @@ EDCs * EDCs=DALECmodel->EDCs;
 //List all inequality calls here
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_litcwdtor; 
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_cwdsomtor;
+static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_rootwoodtor;
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_mr_rates;
+static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_relativepsi50;
 
+//EDC: lit tor > cwd tor
 EDC_litcwdtor.big_par_index=P.t_lit;
 EDC_litcwdtor.small_par_index=P.t_cwd;
 EDCs[E.litcwdtor].data=&EDC_litcwdtor;
@@ -1139,12 +1148,26 @@ EDCs[E.cwdsomtor].data=&EDC_cwdsomtor;
 EDCs[E.cwdsomtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.cwdsomtor].prerun=true;
 
+//EDC: root tor > wood tor
+EDC_rootwoodtor.big_par_index=P.t_root;
+EDC_rootwoodtor.small_par_index=P.t_wood;
+EDCs[E.rootwoodtor].data=&EDC_rootwoodtor;
+EDCs[E.rootwoodtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
+EDCs[E.rootwoodtor].prerun=true;
+
 //EDC: foliar and root mr > wood mr
 EDC_mr_rates.big_par_index=P.rauto_mr_r;
 EDC_mr_rates.small_par_index=P.rauto_mr_w;
 EDCs[E.mr_rates].data=&EDC_mr_rates;
 EDCs[E.mr_rates].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.mr_rates].prerun=true;
+
+//EDC: psi50HMF > psi50 
+EDC_relativepsi50.big_par_index=P.psi_50HMF;
+EDC_relativepsi50.small_par_index=P.psi_50;
+EDCs[E.relativepsi50].data=&EDC_relativepsi50;
+EDCs[E.relativepsi50].function=&DALEC_EDC_PARAMETER_INEQUALITY;
+EDCs[E.relativepsi50].prerun=true;
 
 static DALEC_EDC_PARAMETER_LOG_RATIO_STRUCT EDC_vcmax_lcma;
 //EDC: ratio of Vcmax25 to LCMA
