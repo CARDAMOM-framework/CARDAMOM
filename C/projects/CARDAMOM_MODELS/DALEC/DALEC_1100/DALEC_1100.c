@@ -285,7 +285,7 @@ double *POOLS=DATA.M_POOLS;
 
 
         
-    //Declare stryct
+    //Declare struct
     SOIL_TEMP_AND_LIQUID_FRAC_STRUCT LY1SOILTEMP, LY2SOILTEMP, LY3SOILTEMP;
   //Populate with run-specific constrants
     //LY1
@@ -325,7 +325,7 @@ double *POOLS=DATA.M_POOLS;
     
     
     
-    //******************Delcare KNORR STRUCT*********************
+    //******************Declare KNORR STRUCT*********************
     KNORR_ALLOCATION_STRUCT KNORR;
 //define time-invariant parameters
          KNORR.IN.deltat=deltat;
@@ -751,7 +751,7 @@ TEMPxfer_2to3= POOLS[p+S.D_TEMP_LY3];//In K
 }
 
 
-// Update pools, including ET from LY1
+// Update pools, including ET from LY1; fmax to ensure positive values
 POOLS[nxp+S.H2O_LY1] = fmax(POOLS[p+S.H2O_LY1] + (FLUXES[f+F.infil] - FLUXES[f+F.ly1xly2] - FLUXES[f+F.q_ly1] - FLUXES[f+F.evap] - FLUXES[f+F.transp1])*deltat,0);
 POOLS[nxp+S.H2O_LY2] = fmax(POOLS[p+S.H2O_LY2] + (FLUXES[f+F.ly1xly2] - FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly2] - FLUXES[f+F.transp2])*deltat,0);
 POOLS[nxp+S.H2O_LY3] = fmax(POOLS[p+S.H2O_LY3] + (FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly3])*deltat,0);
@@ -952,6 +952,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 /*total pool transfers (no fires yet)*/
 
+/*LIVE CARBON POOL GROWTH*/
         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto_maint]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
         POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod] - FLUXES[f+F.fol2lit])*deltat;
         POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.roo2lit])*deltat;
@@ -969,32 +970,31 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 
 
-	/*total pool transfers - WITH FIRES*/
+	/*total pool transfers - WITH FIRES AND DISTURBANCE*/
 	/*first fluxes*/
 
-	/*CFF = Combusted C fire flux
-	NCFF = Non-combusted C fire flux*/
+    /*Calculating disturbance flux as percent of live biomass*/
+    /*NB: p=index of current pool timestep; nxp=index of next pool timestep; 
+    removals are scaled by pool(nxp) which has received additions from growth, above*/
+    double TotalABGB=POOLS[nxp+S.C_lab]+POOLS[nxp+S.C_fol]+POOLS[nxp+S.C_roo]+POOLS[nxp+S.C_woo]; 
+    double DMF = DIST[n]/TotalABGB; //DIST[n]=disturbance flux at current flux timestep, halfway in between p and nxp 
+    
+/*LIVE CARBON POOL REMOVALS PART 1 of 3: Removing ABGB disturbance from live pools here*/
+    /*Note: these are lateral fluxes, and are discarded, not transferred!*/
+    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-POOLS[nxp+S.C_lab]*DMF;
+    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-POOLS[nxp+S.C_fol]*DMF;
+    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-POOLS[nxp+S.C_roo]*DMF;
+    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-POOLS[nxp+S.C_woo]*DMF;
 
 	/*Calculating all fire transfers (1. combustion, and 2. litter transfer)*/
-	/*note: all fluxes are in gC m-2 day-1*/
+	    /*note: all fluxes are in gC m-2 day-1*/
     FLUXES[f+F.f_lab] = POOLS[nxp+S.C_lab]*BURNED_AREA[n]*CF[S.C_lab]*one_over_deltat;
     FLUXES[f+F.f_fol] = POOLS[nxp+S.C_fol]*BURNED_AREA[n]*CF[S.C_fol]*one_over_deltat;
     FLUXES[f+F.f_roo] = POOLS[nxp+S.C_roo]*BURNED_AREA[n]*CF[S.C_roo]*one_over_deltat;
     FLUXES[f+F.f_woo] = POOLS[nxp+S.C_woo]*BURNED_AREA[n]*CF[S.C_woo]*one_over_deltat;
     FLUXES[f+F.f_cwd] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*CF[S.C_cwd]*one_over_deltat;
     FLUXES[f+F.f_lit] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*CF[S.C_lit]*one_over_deltat;
-    FLUXES[f+F.f_som] = POOLS[nxp+S.C_som]*BURNED_AREA[n]*CF[S.C_som]*one_over_deltat;
-
-    /*Calculating disturbance flux as percent of live biomass*/
-    double TotalABGB=POOLS[p+S.C_lab]+POOLS[p+S.C_fol]+POOLS[p+S.C_roo]+POOLS[p+S.C_woo]; //p=index of current pool timestep; nxp=index of next pool timestep
-    double DMF = DIST[n]/TotalABGB; //DIST[n]=disturbance flux at current flux timestep, halfway in between p and nxp 
-
-/*LIVE CARBON POOL REMOVALS PART 1 of 3: Removing ABGB disturbance from live pools here*/
-    /*Note: these are lateral fluxes, and are discarded, not transferred!*/
-    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-POOLS[nxp+S.C_lab]*DMF*deltat;
-    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-POOLS[nxp+S.C_fol]*DMF*deltat;
-    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-POOLS[nxp+S.C_roo]*DMF*deltat;
-    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-POOLS[nxp+S.C_woo]*DMF*deltat;
+    FLUXES[f+F.f_som] = POOLS[nxp+S.C_som]*BURNED_AREA[n]*CF[S.C_som]*one_over_deltat;  
 
 /*LIVE CARBON POOL REMOVALS PART 2 of 3: Adding fire fluxes from live pools here*/
     POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.f_lab]*deltat;
