@@ -977,7 +977,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 	/*Calculating all fire transfers (1. combustion, and 2. litter transfer)*/
 	/*note: all fluxes are in gC m-2 day-1*/
-    FLUXES[f+F.f_lab] = POOLS[nxp+S.C_lab]*BURNED_AREA[n]*CF[S.C_lab]*one_over_deltat ;
+    FLUXES[f+F.f_lab] = POOLS[nxp+S.C_lab]*BURNED_AREA[n]*CF[S.C_lab]*one_over_deltat;
     FLUXES[f+F.f_fol] = POOLS[nxp+S.C_fol]*BURNED_AREA[n]*CF[S.C_fol]*one_over_deltat;
     FLUXES[f+F.f_roo] = POOLS[nxp+S.C_roo]*BURNED_AREA[n]*CF[S.C_roo]*one_over_deltat;
     FLUXES[f+F.f_woo] = POOLS[nxp+S.C_woo]*BURNED_AREA[n]*CF[S.C_woo]*one_over_deltat;
@@ -989,15 +989,30 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     double TotalABGB=POOLS[p+S.C_lab]+POOLS[p+S.C_fol]+POOLS[p+S.C_roo]+POOLS[p+S.C_woo]; //p=index of current pool timestep; nxp=index of next pool timestep
     double DMF = DIST[n]/TotalABGB; //DIST[n]=disturbance flux at current flux timestep, halfway in between p and nxp 
 
+/*LIVE CARBON POOL REMOVALS PART 1 of 3: Removing ABGB disturbance from live pools here*/
+    /*Note: these are lateral fluxes, and are discarded, not transferred!*/
+    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-POOLS[nxp+S.C_lab]*DMF*deltat;
+    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-POOLS[nxp+S.C_fol]*DMF*deltat;
+    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-POOLS[nxp+S.C_roo]*DMF*deltat;
+    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-POOLS[nxp+S.C_woo]*DMF*deltat;
+
+/*LIVE CARBON POOL REMOVALS PART 2 of 3: Adding fire fluxes from live pools here*/
+    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.f_lab]*deltat;
+    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.f_fol]*deltat;
+    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.f_roo]*deltat;
+    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.f_woo]*deltat;
+	
 //P*M + P*(1-M)*BAf = P*M + P*BAf - P*M*BAf = P*(M + BAf - M*BAf)  = P*(BAf*(1 - M) + M)
 
     //LIVE BIOMASS MORTALITY FLUXES
-    //Compute aggregate mortality factor by pool: 
-    double AMF_C_lab = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))) * (1-HMF)* (1-DMF));
-    double AMF_C_fol = (1 - (1-LEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience]))) * (1-HMF)* (1-DMF));
-    double AMF_C_roo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience]))) * (1-HMF)* (1-DMF));
-    double AMF_C_woo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience]))) * (1-HMF)* (1-DMF));
-
+    /* Compute aggregate mortality factor by pool from remaining sources: 
+    -C starvation 
+    -Hydraulic Failure 
+    -Fire mortality */ 
+    double AMF_C_lab = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))) * (1-HMF));
+    double AMF_C_fol = (1 - (1-LEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience]))) * (1-HMF));
+    double AMF_C_roo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience]))) * (1-HMF));
+    double AMF_C_woo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience]))) * (1-HMF));
     //if MORTALITY
     FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(AMF_C_lab)*one_over_deltat;
     FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(AMF_C_fol)*one_over_deltat;
@@ -1006,16 +1021,15 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     //No mortality in these pools
     FLUXES[f+F.fx_cwd2som] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*(1-CF[S.C_cwd])*(1-pars[P.resilience])*one_over_deltat;
     FLUXES[f+F.fx_lit2som] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*(1-CF[S.C_lit])*(1-pars[P.resilience])*one_over_deltat;
-
-
-	/*Adding all fire pool transfers here*/
-	/*live C pools*/	
+	
+/*LIVE CARBON POOL TRANSFERS PART 3 of 3: remaining mortality fluxes to dead pools*/	
     
-    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-(FLUXES[f+F.f_lab]+FLUXES[f+F.fx_lab2lit])*deltat;
-    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-(FLUXES[f+F.f_fol]+FLUXES[f+F.fx_fol2lit])*deltat;
-    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-(FLUXES[f+F.f_roo]+FLUXES[f+F.fx_roo2lit])*deltat;
-    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-(FLUXES[f+F.f_woo]+FLUXES[f+F.fx_woo2cwd])*deltat;
-	/*dead C pools*/
+    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.fx_lab2lit]*deltat;
+    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.fx_fol2lit]*deltat;
+    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.fx_roo2lit]*deltat;
+    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.fx_woo2cwd]*deltat;
+	
+/*DEAD C POOLS TRANSFERS PART 1 of 1: Adding fire removals here together with additions from live pools*/
     /*CWD*/
     POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]+(FLUXES[f+F.fx_woo2cwd]-FLUXES[f+F.f_cwd]-FLUXES[f+F.fx_cwd2som])*deltat;
     /*litter*/
@@ -1350,7 +1364,25 @@ EDCs[E.state_trajectories].prerun=false;
     EDCs[E.nsc_ratio].function=&DALEC_EDC_NSC_ABGB_RATIO;
     EDCs[E.nsc_ratio].prerun=false;
 
+static DALEC_EDC_POOL_RATIO_STRUCT EDC_cfcrr;
+    //
+    EDC_cfcrr.numerator_index=S.C_fol;
+    EDC_cfcrr.denominator_index=S.C_roo;
+    EDC_cfcrr.ratio_factor=5.0;
+    
+    EDCs[E.cfcr_ratio].data=&EDC_cfcrr;
+    EDCs[E.cfcr_ratio].function=&DALEC_EDC_POOL_RATIO;
+    EDCs[E.cfcr_ratio].prerun=false;    
 
+static DALEC_EDC_FLUX_RATIO_STRUCT EDC_fffrr;
+    //
+    EDC_fffrr.numerator_flux_index=F.foliar_prod;
+    EDC_fffrr.denominator_flux_index=F.root_prod;
+    EDC_fffrr.ratio_factor=5.0;
+    
+    EDCs[E.fffr_ratio].data=&EDC_fffrr;
+    EDCs[E.fffr_ratio].function=&DALEC_EDC_FLUX_RATIO;
+    EDCs[E.fffr_ratio].prerun=false;    
 
 static DALEC_EDC_MEAN_TEMP_STRUCT EDC_mean_ly1_temp, EDC_mean_ly2_temp, EDC_mean_ly3_temp;
 
