@@ -418,6 +418,9 @@ int nopools=((DALEC *)DATA.MODEL)->nopools;
 int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
 
 
+
+//********MAIN LOOP***********
+
 /*repeating loop for each timestep*/
 for (n=0; n < N_timesteps; n++){
 /*ppol index*/
@@ -751,10 +754,13 @@ TEMPxfer_2to3= POOLS[p+S.D_TEMP_LY3];//In K
 }
 
 
-// Update pools, including ET from LY1; fmax to ensure positive values
+// Update pools, including ET from LY1
+    //Ensure all pools greater or equal to zero
+
 POOLS[nxp+S.H2O_LY1] = fmax(POOLS[p+S.H2O_LY1] + (FLUXES[f+F.infil] - FLUXES[f+F.ly1xly2] - FLUXES[f+F.q_ly1] - FLUXES[f+F.evap] - FLUXES[f+F.transp1])*deltat,0);
 POOLS[nxp+S.H2O_LY2] = fmax(POOLS[p+S.H2O_LY2] + (FLUXES[f+F.ly1xly2] - FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly2] - FLUXES[f+F.transp2])*deltat,0);
 POOLS[nxp+S.H2O_LY3] = fmax(POOLS[p+S.H2O_LY3] + (FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly3])*deltat,0);
+
 
 
 
@@ -1091,6 +1097,11 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
         POOLS[nxp+S.D_PSI_LY3]=HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention]);
 
 
+    //Isfinite check for 14 progronstic pools only
+    int nnn, isfinitecheck=1;
+    for (nnn=0;nnn<14;nnn++){if ( isfinite(POOLS[nxp+nnn])==false){isfinitecheck=0;}};
+    if (isfinitecheck==0){break;};
+
 }
 
 
@@ -1344,9 +1355,6 @@ EDCs[E.state_trajectories].prerun=false;
 //Eventually adopt more succinct notation (to consider)
 //e.g. INEQUALITY_EDC(P.t_cwd,P.t_som,EDCs[E.cwdsomtor])
 
-
-
-
  static DALEC_EDC_NSC_ABGB_RATIO_STRUCT EDC_nscr;
 
     //
@@ -1368,7 +1376,6 @@ static DALEC_EDC_POOL_RATIO_STRUCT EDC_cfcrr;
     //
     EDC_cfcrr.numerator_index=S.C_fol;
     EDC_cfcrr.denominator_index=S.C_roo;
-    EDC_cfcrr.ratio_factor=5.0;
     
     EDCs[E.cfcr_ratio].data=&EDC_cfcrr;
     EDCs[E.cfcr_ratio].function=&DALEC_EDC_POOL_RATIO;
@@ -1378,7 +1385,6 @@ static DALEC_EDC_FLUX_RATIO_STRUCT EDC_fffrr;
     //
     EDC_fffrr.numerator_flux_index=F.foliar_prod;
     EDC_fffrr.denominator_flux_index=F.root_prod;
-    EDC_fffrr.ratio_factor=5.0;
     
     EDCs[E.fffr_ratio].data=&EDC_fffrr;
     EDCs[E.fffr_ratio].function=&DALEC_EDC_FLUX_RATIO;
