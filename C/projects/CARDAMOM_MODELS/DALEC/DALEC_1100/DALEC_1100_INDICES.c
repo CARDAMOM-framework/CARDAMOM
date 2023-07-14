@@ -17,17 +17,21 @@ int min_melt;
 int melt_slope;
 int scf_scalar;
 int sublimation_rate;
+int thermal_cond_swe;
 } DALEC_1100_PARAMETERS={
-     0, 1, 2, 3, 4, 5};
+     0, 1, 2, 3, 4, 5,6};
 
 struct DALEC_1100_FLUXES{
 /*DALEC FLUXES*/
 int snowfall;   /*Snowfall to SWE*/
+int e_snowfall;   /*Snowfall to SWE*/
 int melt;   /*Snow melt*/
 int sublimation;
-
+int e_melt;   
+int e_sublimation;
+int snow_heat;
 } DALEC_1100_FLUXES={
-     0, 1, 2};
+     0, 1, 2,3,4,5,6};
 
 
 
@@ -40,7 +44,6 @@ int H2O_SWE; /*Snow water equivalent*/
 int E_SWE; /*Snow water equivalent energy*/
 int D_SCF;//snow-covered fraction
 int D_TEMP_SWE; /*Snow water equivalent energy*/
-
 } DALEC_1100_POOLS={
       0,1,2,3};
 

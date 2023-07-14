@@ -240,15 +240,7 @@ double *POOLS=DATA.M_POOLS;
 //         double PUWmax=pars[P.PUW_por]*pars[P.PUW_z]*1000; //PUW capacity in mm
 //         
 //         
-//     
-//     //INITIALIZING PAW and PUW soil moisture
-//         POOLS[S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
-//         POOLS[S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);//soil moisture PUW
-// // Convert to potential
-// 
-//         POOLS[S.D_PSI_PAW]=HYDROFUN_MOI2PSI(  POOLS[S.D_SM_PAW],psi_porosity,pars[P.retention]);
-//         POOLS[S.D_PSI_PUW]=HYDROFUN_MOI2PSI(  POOLS[S.D_SM_PUW],psi_porosity,pars[P.retention]);
-// 
+
 // 
 // 
 //         
@@ -281,94 +273,7 @@ double *POOLS=DATA.M_POOLS;
 //     
 //     
 //     
-//     
-//     //******************Delcare KNORR STRUCT*********************
-//     KNORR_ALLOCATION_STRUCT KNORR;
-// //define time-invariant parameters
-//          KNORR.IN.deltat=deltat;
-//          KNORR.IN.n=0;
-//          KNORR.IN.latitude=DATA.ncdf_data.LAT;
-//          KNORR.IN.T_phi=pars[P.T_phi];
-//          KNORR.IN.T_r=pars[P.T_range];
-//          KNORR.IN.plgr=pars[P.plgr];
-//          KNORR.IN.k_L=pars[P.k_leaf];
-//          KNORR.IN.tau_W=pars[P.tau_W];//0.00000001;//
-//          KNORR.IN.t_c=pars[P.time_c];
-//          KNORR.IN.t_r=pars[P.time_r];;
-//          KNORR.IN.lambda_max=pars[P.lambda_max];
-//     //Initialize memory states
-//     
-//     POOLS[S.M_LAI_TEMP]=pars[P.init_T_mem];
-//     POOLS[S.M_LAI_MAX]=pars[P.init_LAIW_mem]*pars[P.lambda_max];
-//     
-// 
-//     //******************Allocation fluxes struct**********************
-// //    
-// //     typedef struct {    
-// //     struct {
-// //     double   TEMP;//deg C
-// //     double   SRAD;//MJ m2 d
-// //     double   NSC;//Clab
-// //     double   PAW_SM;//m3/m3
-// //     double   parameter1;//replace with any name, no constraints on naming convention
-// //     double   parameter2;//replace with any name, no constraints on naming convention
-// //     } IN;
-// //     struct {
-// //     double *    AUTO_RESP_MAINTENANCE;
-// //       double *       AUTO_RESP_GROWTH;
-// //       double *       ALLOC_FOL;
-// //       double *       ALLOC_WOO;
-// //      double *        ALLOC_ROO;}OUT;
-// //   }ALLOC_AND_AUTO_RESP_FLUXES_STRUCT;
-//     
-//     
-//     
-//    //Declare
-//     //Plant carbon allocation.
-//      ALLOC_AND_AUTO_RESP_FLUXES_STRUCT ARFLUXES;
-//      //define time-invariant parameters here
-//         ARFLUXES.IN.mr_r=pars[P.rauto_mr_r];//
-//         ARFLUXES.IN.mr_w=pars[P.rauto_mr_w];//
-//         ARFLUXES.IN.gr=pars[P.rauto_gr];//
-//         ARFLUXES.IN.Q10mr=pars[P.rauto_mr_q10];//
-// 
-// 
-//         //Heterotrophic respiration module
-//     HET_RESP_RATES_JCR_STRUCT HRJCR;
-//     //define time invariant parameters here
-//     
-// /* jc prep input for methane module*/
-//         HRJCR.IN.S_FV=pars[P.S_fv];
-//         HRJCR.IN.SM_OPT=pars[P.thetas_opt];
-//         HRJCR.IN.FWC=pars[P.fwc];
-//         HRJCR.IN.R_CH4=pars[P.r_ch4];
-//         HRJCR.IN.Q10CH4=pars[P.Q10ch4];
-//         HRJCR.IN.Q10CO2=pars[P.Q10rhco2];
-// 
-//    
-// 
-// 
-// 
-// 
-// /*Combustion factors*/
-// double CF[7];//AAB changed this
-// CF[S.C_lab]=pars[P.cf_ligneous];
-// CF[S.C_fol]=pars[P.cf_foliar];
-// CF[S.C_roo]=pars[P.cf_ligneous];
-// CF[S.C_woo]=pars[P.cf_ligneous];
-// CF[S.C_cwd]=pars[P.cf_ligneous];
-// CF[S.C_lit]=pars[P.cf_foliar]/2+pars[P.cf_ligneous]/2;
-// CF[S.C_som]=pars[P.cf_DOM];
-// 
-// 
-// /*resilience factor*/
-// 
-// /*foliar carbon transfer intermediate variables*/
-// double Fcfolavailable;
-// 
-// /*number of MET drivers*/
-// // int nomet=((DALEC *)DATA.MODEL)->nomet;
-// 
+
 // /*number of DALEC pools*/
 int nopools=((DALEC *)DATA.MODEL)->nopools;
 // 
@@ -387,117 +292,63 @@ nxp=nopools*(n+1);
 /*flux array index*/
 f=nofluxes*n;
 // 
-// 
-// double LAI=POOLS[p+S.D_LAI];
-//      
-//         
-// /*Calculate light extinction coefficient*/
-// double B = (DOY[n]-81)*2*pi/365.;
-// double ET1 = 9.87*sin(2*B)-7.53*cos(B)-1.5*sin(B);
-// double DA = 23.45*sin((284+DOY[n])*2*pi/365); //Deviation angle
-// double LST = (int) (DOY[n]*24*60) % (24*60);
-// LST=0.5*24*60;
-// double AST = LST+ET1;
-// double h = (AST-12*60)/4; //hour angle
-// double alpha = asin((sin(pi/180*DATA.ncdf_data.LAT)*sin(pi/180*DA)+cos(pi/180*DATA.ncdf_data.LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
-// double zenith_angle = 90-alpha;
-// 
-// //printf("SZA local = %2.2f, SZA global = %2.2f, SZA diff = %2.2f\n", zenith_angle,DATA.ncdf_data.SZA.values,DATA.ncdf_data.SZA.values - zenith_angle);
-// //double LAD = 1.0; //leaf angle distribution
-// //double VegK = sqrt(pow(LAD,2)+ pow(tan(zenith_angle/180*pi),2))/(LAD+1.774*pow((1+1.182),-0.733)); //Campbell and Norman 1998
-// 
-// double LAD = 0.5; //leaf angle distribution// optimize leaf angle distribution. 
-// double VegK = LAD/cos(zenith_angle/180*pi);
-// 
-// /*Temp scaling factor*/
-// double g;
-// double Tminmin = pars[P.Tminmin] - DGCM_TK0C; 
-// double Tminmax = pars[P.Tminmax] - DGCM_TK0C;
-// if( T2M_MIN[n] < Tminmin ) {
-//     g=0;
-// }
-// else if (T2M_MIN[n] > Tminmax) {
-//     g=1;
-// }
-// else {
-//     g=(T2M_MIN[n] - Tminmin)/(Tminmax - Tminmin);
-// }
-// 
-// // H2O stress scaling factor
-// 	//We're also multiplying beta by cold-weather stress 
-// //double psi_PAW0 = HYDROFUN_MOI2PSI(max(POOLS[p+S.D_SM_PAW],0),psi_porosity,pars[P.retention]);
-// //double psi_PAW0 = HYDROFUN_MOI2PSI(POOLS[p+S.D_SM_PAW],psi_porosity,pars[P.retention_paw]);
-// double beta = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_PAW]/pars[P.psi_50] - 1)));
-// 
-// // mean air temperature (K)
-double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
-// 
-// //******************Declare LIU STRUCT*********************
-// LIU_AN_ET_STRUCT LIU;
-// 
-// //define time-invariant parameters
-// LIU.IN.SRAD=SSRD[n]*1e6/DGCM_SEC_DAY;
-// LIU.IN.VPD=VPD[n]/10;
-// LIU.IN.TEMP=air_temp_k;  
-// LIU.IN.vcmax25=pars[P.Vcmax25];
-// LIU.IN.co2=CO2[n];
-// LIU.IN.beta_factor=fmin(beta,g)*POOLS[p+S.D_LF_PAW];
-// LIU.IN.g1=pars[P.Med_g1];
-// LIU.IN.LAI=LAI;
-// LIU.IN.ga=pars[P.ga];
-// LIU.IN.VegK=VegK;
-// LIU.IN.Tupp=pars[P.Tupp];
-// LIU.IN.Tdown=pars[P.Tdown];
-// LIU.IN.C3_frac=1., // pars[P.C3_frac]
-// LIU.IN.clumping=pars[P.clumping];
-// LIU.IN.leaf_refl_par=pars[P.leaf_refl_par];
-// LIU.IN.leaf_refl_nir=pars[P.leaf_refl_nir];
-// LIU.IN.maxPevap=pars[P.maxPevap];
-// LIU.IN.precip=PREC[n];
-// LIU.IN.q10canopy=pars[P.q10canopy];
-// LIU.IN.q10canopyRd=pars[P.rauto_mrd_q10];
-// LIU.IN.canopyRdsf=pars[P.canopyRdsf];
-// LIU.IN.NSC=POOLS[p+S.C_lab];
-// LIU.IN.deltat=deltat;
-// 
-// 
-// //Call function: uses LIU->IN to update LIU->OUT
-// LIU_AN_ET(&LIU);
-// 
-// double LEAF_MORTALITY_FACTOR=LIU.OUT.LEAF_MORTALITY_FACTOR;
-// 
-// // GPP--- gross
-// FLUXES[f+F.gpp] = LIU.OUT.Ag;
-// // GPP net, i.e. GPP- Rd
-// FLUXES[f+F.gppnet] = LIU.OUT.An;
-// //transpiration//
-// FLUXES[f+F.transp] = LIU.OUT.transp;
-// //evaporation//
-// FLUXES[f+F.evap] = LIU.OUT.evap;
+
+
+    
+    double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
+
+
+    double tskin_k = SKT[n]+DGCM_TK0C;
 
 
 /*Snow water equivalent*/
 FLUXES[f+F.snowfall] = SNOWFALL[n];
 
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snowfall]*deltat; /*first step snowfall to SWE*/
+    
 
-POOLS[nxp+S.E_SWE]=POOLS[p+S.E_SWE]+FLUXES[f+F.snowfall]*INTERNAL_ENERGY_PER_H2O_UNIT_MASS(fmin(air_temp_k,0), 0)*deltat;
-    
-    
+FLUXES[f+F.e_snowfall]=FLUXES[f+F.snowfall]*INTERNAL_ENERGY_PER_H2O_UNIT_MASS(fmin(air_temp_k,DGCM_TK0C), 0)*deltat;
+POOLS[nxp+S.E_SWE]=POOLS[p+S.E_SWE]+FLUXES[f+F.e_snowfall];
+
+
     /*first step snowfall to SWE*/
 //transient_SCF
-double SCFtemp = POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);
-    //Snow melt, based on new SWE
- double SNOWMELT=fmin(fmax((DGCM_TK0C+SKT[n]-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]*one_over_deltat; /*melted snow per day*/  
-double SUBLIMATION =  pars[P.sublimation_rate]*SSRD[n]*SCFtemp;
+    double SCFtemp = POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);
 
-double slf=(SNOWMELT + SUBLIMATION)*deltat/POOLS[nxp+S.H2O_SWE];
-    if (slf>1){
-        FLUXES[f+F.melt]=SNOWMELT/slf;
-        FLUXES[f+F.sublimation]=SUBLIMATION/slf;}
+// //Gh_in approach 2 based on soil and LST
+// FLUXES[f+F.ground_heat] =(pars[P.thermal_cond_surf]* (tskin_k - POOLS[p+S.D_TEMP_LY1])/(pars[P.LY1_z]*0.5))*(1. - POOLS[p+S.D_SCF]);
+// FLUXES[f+F.gh_in] =FLUXES[f+F.ground_heat] *DGCM_SEC_DAY;    
+
+FLUXES[f+F.snow_heat] = SCFtemp*(pars[P.thermal_cond_swe]* (tskin_k - POOLS[p+S.D_TEMP_SWE])/(POOLS[nxp+S.H2O_SWE]*1e-3*0.5))*DGCM_SEC_DAY;
+
+POOLS[nxp+S.E_SWE]+=FLUXES[f+F.snow_heat]*deltat;
+    
+    
+
+    //Snow melt, based on new SWE
+ //double SNOWMELT=fmin(fmax((DGCM_TK0C+SKT[n]-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]*one_over_deltat; /*melted snow per day*/  
+
+//*Remove snow melt first 
+    //Calculate liquid fraction
+       SWETEMP.IN.h2o=POOLS[nxp+S.H2O_SWE]; ;//mm
+     SWETEMP.IN.internal_energy = POOLS[nxp+S.E_SWE];//m 
+//     PAWSOILTEMP.IN.soil_water = POOLS[S.H2O_PAW];//mm (or kg/m2)
+//     PAWSOILTEMP.IN.internal_energy = POOLS[S.E_PAW];//Joules
+//     //Pass pointer to function 
+     H2O_TEMP_AND_LIQUID_FRAC(&SWETEMP);  //Outputs are in K
+
+//double SNOWMELT 
+     FLUXES[f+F.melt] = POOLS[nxp+S.H2O_SWE]*SWETEMP.OUT.LF/deltat;
+
+//Remove sublimation next
+    double SUBLIMATIONtemp =  pars[P.sublimation_rate]*SSRD[n]*SCFtemp;
+
+    if (POOLS[nxp+S.H2O_SWE] - deltat*(   FLUXES[f+F.melt] + SUBLIMATIONtemp)<0){
+        FLUXES[f+F.sublimation]=POOLS[nxp+S.H2O_SWE]/deltat -    FLUXES[f+F.melt];
+        POOLS[nxp+S.H2O_SWE]=0;}
         else{
-                  FLUXES[f+F.melt]=SNOWMELT;
-        FLUXES[f+F.sublimation]=SUBLIMATION;}
+        FLUXES[f+F.sublimation]=SUBLIMATIONtemp;
+        POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat; }
 
 
 
@@ -515,14 +366,23 @@ double slf=(SNOWMELT + SUBLIMATION)*deltat/POOLS[nxp+S.H2O_SWE];
 // FLUXES[f+F.et]=FLUXES[f+F.evap]+FLUXES[f+F.transp];
 // FLUXES[f+F.ets]=FLUXES[f+F.et] + FLUXES[f+F.sublimation];
 
-POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat; /*second step remove snowmelt from SWE*/
+/*second step remove snowmelt from SWE*/
 
 
+//Sublimation first 
+    if (      POOLS[nxp+S.H2O_SWE]>0){
+FLUXES[f+F.e_sublimation] = FLUXES[f+F.sublimation] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C, 1);
 
-    double E_MELT = FLUXES[f+F.melt] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C, 1);
-    double E_SUBLIMATION = FLUXES[f+F.sublimation] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C, 1);
+    //
+FLUXES[f+F.e_melt] = FLUXES[f+F.melt] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C, 1);
 
-    POOLS[nxp+S.E_SWE]=POOLS[nxp+S.E_SWE]-(E_MELT + E_SUBLIMATION )*deltat; /*second step remove snowmelt from SWE*/
+
+    POOLS[nxp+S.E_SWE]=POOLS[nxp+S.E_SWE]-(FLUXES[f+F.e_melt]+ FLUXES[f+F.e_sublimation]  )*deltat; }/*second step remove snowmelt from SWE*/
+
+    else
+    { POOLS[nxp+S.E_SWE]=0;
+    FLUXES[f+F.e_melt] =0;
+    FLUXES[f+F.e_sublimation] =0;}
 
 //     /****************************RECORD t+1 DIAGNOSTIC STATES*************************/
 //     POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
@@ -534,22 +394,11 @@ POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublima
    H2O_TEMP_AND_LIQUID_FRAC(&SWETEMP);
 
    POOLS[nxp+S.D_TEMP_SWE]=SWETEMP.OUT.TEMP;//In K
-// 
-//     //Pass pointers to function 
-// 
-//     
-//     //Soil moisture
-// 
-//         POOLS[nxp+S.D_SM_PAW]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PAW],pars[P.PAW_por],pars[P.PAW_z]); //soil moisture PAW
-//         POOLS[nxp+S.D_SM_PUW]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_PUW],pars[P.PUW_por],pars[P.PUW_z]);//soil moisture PUW
-// 
-// 
-//         POOLS[nxp+S.D_PSI_PAW]=HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_PAW],psi_porosity,pars[P.retention]);
-//         POOLS[nxp+S.D_PSI_PUW]=HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_PUW],psi_porosity,pars[P.retention]);
-// 
 
+
+
+    
 }
-
 
 
 return 0;
@@ -569,8 +418,8 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=4;
-DALECmodel->nopars=6;
-DALECmodel->nofluxes=3;
+DALECmodel->nopars=7;
+DALECmodel->nofluxes=7;
 DALECmodel->noedcs=2;
 
 
@@ -640,39 +489,12 @@ EDCs * EDCs=DALECmodel->EDCs;
    for (n=0;n<DALECmodel->nopools;n++){
    EDC_sr.min_val[n]=-INFINITY;
               EDC_sr.max_val[n]=INFINITY;}
-//   
-//    EDC_sr.min_val[S.C_lab]=0;
-//    EDC_sr.max_val[S.C_lab]=DALECmodel->PARS_INFO.parmax[P.i_labile];
-//                 
-//    EDC_sr.min_val[S.C_fol]=0;
-//    EDC_sr.max_val[S.C_fol]=DALECmodel->PARS_INFO.parmax[P.i_foliar];
-//                 
-//    EDC_sr.min_val[S.C_roo]=0;
-//    EDC_sr.max_val[S.C_roo]=DALECmodel->PARS_INFO.parmax[P.i_root];
-//                 
-//    EDC_sr.min_val[S.C_woo]=0;
-//    EDC_sr.max_val[S.C_woo]=DALECmodel->PARS_INFO.parmax[P.i_wood];
-//                 
-//    EDC_sr.min_val[S.C_cwd]=0;
-//    EDC_sr.max_val[S.C_cwd]=DALECmodel->PARS_INFO.parmax[P.i_cwd];
-//                 
-//    EDC_sr.min_val[S.C_lit]=0;
-//    EDC_sr.max_val[S.C_lit]=DALECmodel->PARS_INFO.parmax[P.i_lit];
-//                 
-//    EDC_sr.min_val[S.C_som]=0;
-//    EDC_sr.max_val[S.C_som]=DALECmodel->PARS_INFO.parmax[P.i_som];
-                
-//     EDC_sr.min_val[S.H2O_PAW]=0;
-//    //
-//                 
-//    EDC_sr.min_val[S.H2O_PUW]=0;
-//    //
-                
+
+//    //  
     EDC_sr.min_val[S.H2O_SWE]=0;
     EDC_sr.max_val[S.H2O_SWE]=DALECmodel->PARS_INFO.parmax[P.i_SWE_H2O];
 
-    EDC_sr.min_val[S.E_SWE]=0;
-    EDC_sr.max_val[S.E_SWE]=DALECmodel->PARS_INFO.parmax[P.i_SWE_E];
+    //EDC_sr.min_val[S.E_SWE]=0;
 
 
 

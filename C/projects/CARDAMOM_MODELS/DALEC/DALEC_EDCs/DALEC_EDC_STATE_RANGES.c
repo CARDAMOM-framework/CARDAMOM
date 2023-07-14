@@ -42,13 +42,12 @@ while (PEDC==0 & n<DATA->ncdf_data.TIME_INDEX.length  & k==0){
   p+=1;
 
 }
-     if (counter % 10000 == 0 ){
-         printf("************Interim state search stats (printing every 10000)*********");
-         for (p=0;p<DATA->nopools;p++){   
-
-         printf("pool %i; Attempt = %i, Pass = %i, Percent = %2.2f\%\n",p,attempt_count[p], pass_count[p], 100*(double)pass_count[p]/(double)attempt_count[p]);
-         }}
-       //printf("Fail check = %2.2i\n",p);
+//      if (counter % 10000 == 0 ){
+//          printf("************Interim state search stats (printing every 10000)*********\n");
+//          for (p=0;p<DATA->nopools;p++){   
+// 
+//          printf("pool %i; Attempt = %i, Pass = %i, Percent = %2.2f\%\n",p,attempt_count[p], pass_count[p], 100*(double)pass_count[p]/(double)attempt_count[p]);
+//          }}
 
 
   
