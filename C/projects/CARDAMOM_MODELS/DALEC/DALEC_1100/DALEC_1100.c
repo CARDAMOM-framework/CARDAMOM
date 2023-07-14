@@ -1061,10 +1061,10 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
         POOLS[nxp+S.D_PSI_LY3]=HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention]);
 
 
-    //Nancheck
-    int nnn, nancheck=1;
-    for (nnn=0;nnn<14;nnn++){if ( isfinite(POOLS[nxp+nnn])==false){nancheck=0;}};
-    if (nancheck==0){break;}
+    //Isfinite check for 14 progronstic pools only
+    int nnn, isfinitecheck=1;
+    for (nnn=0;nnn<14;nnn++){if ( isfinite(POOLS[nxp+nnn])==false){isfinitecheck=0;}};
+    if (isfinitecheck==0){break;};
 
 }
 
