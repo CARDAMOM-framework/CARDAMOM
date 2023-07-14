@@ -15,7 +15,6 @@ Comparable formulation of ((ffol+flab)>5*froot | (ffol+flab)*5<froot)) for v1100
 typedef struct {
     int numerator_flux_index;
     int denominator_flux_index;
-    int ratio_factor;
 }  DALEC_EDC_FLUX_RATIO_STRUCT;
 
 
@@ -38,13 +37,7 @@ int nofluxes=DALECmodel->nofluxes;
 double M_FNUMERATOR=mean_flux(DATA->M_FLUXES,E.numerator_flux_index,N_timesteps+1,nofluxes);
 double M_FDENOMINATOR=mean_flux(DATA->M_FLUXES,E.denominator_flux_index,N_timesteps+1,nofluxes);
 
-double ratio = M_FNUMERATOR / M_FDENOMINATOR;
-double residual = 0;
-if (ratio >= (1/E.ratio_factor) && ratio <= E.ratio_factor) {// The ratio is within the desired range
-    residual = 0;
-} else {// The ratio is outside the desired range
-    residual= log(M_FNUMERATOR/M_FDENOMINATOR)/log(2);
-}
+double residual= log(M_FNUMERATOR/M_FDENOMINATOR)/log(2);
   
 double PEDC=-0.5*residual*residual;
 

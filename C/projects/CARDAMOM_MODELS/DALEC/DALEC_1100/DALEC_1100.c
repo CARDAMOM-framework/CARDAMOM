@@ -1079,6 +1079,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
         POOLS[nxp+S.D_PSI_LY3]=HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention]);
 
 
+
 }
 
 
@@ -1332,9 +1333,6 @@ EDCs[E.state_trajectories].prerun=false;
 //Eventually adopt more succinct notation (to consider)
 //e.g. INEQUALITY_EDC(P.t_cwd,P.t_som,EDCs[E.cwdsomtor])
 
-
-
-
  static DALEC_EDC_NSC_ABGB_RATIO_STRUCT EDC_nscr;
 
     //
@@ -1356,7 +1354,6 @@ static DALEC_EDC_POOL_RATIO_STRUCT EDC_cfcrr;
     //
     EDC_cfcrr.numerator_index=S.C_fol;
     EDC_cfcrr.denominator_index=S.C_roo;
-    EDC_cfcrr.ratio_factor=5.0;
     
     EDCs[E.cfcr_ratio].data=&EDC_cfcrr;
     EDCs[E.cfcr_ratio].function=&DALEC_EDC_POOL_RATIO;
@@ -1366,7 +1363,6 @@ static DALEC_EDC_FLUX_RATIO_STRUCT EDC_fffrr;
     //
     EDC_fffrr.numerator_flux_index=F.foliar_prod;
     EDC_fffrr.denominator_flux_index=F.root_prod;
-    EDC_fffrr.ratio_factor=5.0;
     
     EDCs[E.fffr_ratio].data=&EDC_fffrr;
     EDCs[E.fffr_ratio].function=&DALEC_EDC_FLUX_RATIO;

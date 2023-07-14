@@ -15,7 +15,6 @@
 typedef struct {
     int numerator_index;
     int denominator_index;
-    int ratio_factor;
 }  DALEC_EDC_POOL_RATIO_STRUCT;
 
 
@@ -25,7 +24,6 @@ double DALEC_EDC_POOL_RATIO(DATA * DATA, void * EDCstruct){
     
     DALEC_EDC_POOL_RATIO_STRUCT  E = *(DALEC_EDC_POOL_RATIO_STRUCT * ) EDCstruct;
 
-      
  
   double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
   
@@ -41,13 +39,7 @@ int nopools=DALECmodel->nopools;
 double M_NUMERATOR=mean_pool(DATA->M_POOLS,E.numerator_index,N_timesteps+1,nopools);
 double M_DENOMINATOR=mean_pool(DATA->M_POOLS,E.denominator_index,N_timesteps+1,nopools);
 
-double ratio = M_NUMERATOR / M_DENOMINATOR;
-double residual = 0; 
-if (ratio >= (1/E.ratio_factor) && ratio <= (E.ratio_factor)) {// The ratio is within the desired range
-    residual = 0;
-} else {// The ratio is outside the desired range
-    residual= log(M_NUMERATOR/M_DENOMINATOR)/log(2);
-}
+double  residual= log(M_NUMERATOR/M_DENOMINATOR)/log(2);
   
 double PEDC=-0.5*residual*residual;
 
