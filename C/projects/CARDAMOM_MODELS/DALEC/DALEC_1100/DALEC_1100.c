@@ -1063,7 +1063,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
     //Nancheck
     int nnn, nancheck=1;
-    for (nnn=0;nnn<nopools;nnn++){if ( isfinite(POOLS[nxp+nnn])==false){nancheck=0;}};
+    for (nnn=0;nnn<14;nnn++){if ( isfinite(POOLS[nxp+nnn])==false){nancheck=0;}};
     if (nancheck==0){break;}
 
 }
