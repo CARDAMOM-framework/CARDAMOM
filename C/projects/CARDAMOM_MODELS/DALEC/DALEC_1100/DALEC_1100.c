@@ -17,6 +17,79 @@
 #include "../DALEC_ALL/ALLOC_AND_AUTO_RESP_FLUXES.c"
 
 
+
+typedef struct DALEC_1100_DATA{
+double * VegK;
+double example_const;
+} DALEC_1100_DATA;
+
+
+int PREDERIVE_DALEC_1100_DATA(DALEC * DALECmodel, DATA * DATA){
+
+    //Step 1. Define function here
+DALEC_1100_DATA DALEC_1100_DATA;
+//Step 2. Populate with any datasets that will be used repeatedly.
+
+
+    //******VegK calculcation********
+
+
+
+
+
+    //
+
+    double * DOY=DATA->ncdf_data.DOY.values;
+    double LAT = DATA->ncdf_data.LAT;
+    int N_timesteps=DATA->ncdf_data.TIME_INDEX.length;
+    double pi=DGCM_PI;
+
+//Declare VegK
+    double * VegK = calloc(N_timesteps, sizeof(double));
+    
+
+int n;
+
+for (n=0; n < N_timesteps; n++){
+ 
+/*Calculate light extinction coefficient for each timestep*/
+double B = (DOY[n]-81)*2*pi/365.;
+double ET1 = 9.87*sin(2*B)-7.53*cos(B)-1.5*sin(B);
+double DA = 23.45*sin((284+DOY[n])*2*pi/365); //Deviation angle
+double LST = (int) (DOY[n]*24*60) % (24*60);
+LST=0.5*24*60;
+double AST = LST+ET1;
+double h = (AST-12*60)/4; //hour angle
+double alpha = asin((sin(pi/180*LAT)*sin(pi/180*DA)+cos(pi/180*LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
+double zenith_angle = 90-alpha;
+
+//printf("SZA local = %2.2f, SZA global = %2.2f, SZA diff = %2.2f\n", zenith_angle,DATA.ncdf_data.SZA.values,DATA.ncdf_data.SZA.values - zenith_angle);
+//double LAD = 1.0; //leaf angle distribution
+//double VegK = sqrt(pow(LAD,2)+ pow(tan(zenith_angle/180*pi),2))/(LAD+1.774*pow((1+1.182),-0.733)); //Campbell and Norman 1998
+
+double LAD = 0.5; //leaf angle distribution// optimize leaf angle distribution. 
+
+    
+    VegK[n] = LAD/cos(zenith_angle/180*pi);
+    
+    
+
+
+}
+
+  
+    
+//Store data in  DALEC_1100_DATA
+    DALEC_1100_DATA.VegK=VegK;
+
+
+    //Store for later use
+    DALECmodel->MODEL_DATA=&DALEC_1100_DATA;
+
+return 0;
+}
+
+
 //Returns structure with sources and sinks, matches number of fluxes
 int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
     
@@ -452,6 +525,15 @@ double zenith_angle = 90-alpha;
 
 double LAD = 0.5; //leaf angle distribution// optimize leaf angle distribution. 
 double VegK = LAD/cos(zenith_angle/180*pi);
+    
+
+
+//MODEL_DATA=((DALEC_1100_DATA *)((DALEC *)DATA.MODEL)->MODEL_DATA)
+    
+//CONTINUE FROM HERE(
+    //printf("VegK internal, external = %2.2f,  %2.2f\n",VegK, ((DALEC *)DATA.MODEL->((DALEC_1100_DATA *)DATA.MODEL->MODEL_DATA)->VegK[n]);
+//printf("VegK internal, external = %2.2f,  %2.2f\n",VegK, ((DALEC_1100_DATA *)DATA.MODEL->MODEL_DATA)->VegK[n]);
+//printf("VegK internal, external = %2.2f,  %2.2f\n",VegK, ((DALEC_1100_DATA *)((DALEC *)DATA.MODEL)->MODEL_DATA)->VegK[n]);
 
 
 
@@ -1077,6 +1159,8 @@ return 0;
 int DALEC_1100_MODCONFIG(DALEC * DALECmodel, DATA * DATA){
 
 
+    PREDERIVE_DALEC_1100_DATA(DALECmodel, DATA);
+
 struct DALEC_1100_PARAMETERS P=DALEC_1100_PARAMETERS;
 struct DALEC_1100_FLUXES F=DALEC_1100_FLUXES;
 struct DALEC_1100_POOLS S=DALEC_1100_POOLS;
@@ -1085,6 +1169,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
 
 
+ //DALECmodel->data=DALEC_1100_DATA;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
