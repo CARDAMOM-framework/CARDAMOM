@@ -460,7 +460,7 @@ double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 // LIU.IN.q10canopyRd=pars[P.rauto_mrd_q10];
 // LIU.IN.canopyRdsf=pars[P.canopyRdsf];
 // LIU.IN.NSC=POOLS[p+S.C_lab];
-// LIU.IN.deltat=deltat;
+// LIU.IN.deltat=deltat;x
 // 
 // 
 // //Call function: uses LIU->IN to update LIU->OUT
@@ -576,7 +576,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=4;
-DALECmodel->nopars=6;
+DALECmodel->nopars=7;
 DALECmodel->nofluxes=3;
 DALECmodel->noedcs=2;
 
