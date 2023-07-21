@@ -992,10 +992,10 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
     /*LIVE CARBON POOL TRANSFERS PART 1 of 2: Adding fire transfers from live pools here*/
 
-    POOLS[nxp+S.C_lab] = fmax(0,POOLS[nxp+S.C_lab]-FLUXES[f+F.f_lab]*deltat);
-    POOLS[nxp+S.C_fol] = fmax(0,POOLS[nxp+S.C_fol]-FLUXES[f+F.f_fol]*deltat);
-    POOLS[nxp+S.C_roo] = fmax(0,POOLS[nxp+S.C_roo]-FLUXES[f+F.f_roo]*deltat);
-    POOLS[nxp+S.C_woo] = fmax(0,POOLS[nxp+S.C_woo]-FLUXES[f+F.f_woo]*deltat);
+    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.f_lab]*deltat;
+    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.f_fol]*deltat;
+    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.f_roo]*deltat;
+    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.f_woo]*deltat;
 	
 //P*M + P*(1-M)*BAf = P*M + P*BAf - P*M*BAf = P*(M + BAf - M*BAf)  = P*(BAf*(1 - M) + M)
 
@@ -1018,18 +1018,18 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 	
 	/*live C pools: remaining mortality removals*/	
     
-    POOLS[nxp+S.C_lab] = fmax(0,POOLS[nxp+S.C_lab]-FLUXES[f+F.fx_lab2lit]*deltat);
-    POOLS[nxp+S.C_fol] = fmax(0,POOLS[nxp+S.C_fol]-FLUXES[f+F.fx_fol2lit]*deltat);
-    POOLS[nxp+S.C_roo] = fmax(0,POOLS[nxp+S.C_roo]-FLUXES[f+F.fx_roo2lit]*deltat);
-    POOLS[nxp+S.C_woo] = fmax(0,POOLS[nxp+S.C_woo]-FLUXES[f+F.fx_woo2cwd]*deltat);
+    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.fx_lab2lit]*deltat;
+    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.fx_fol2lit]*deltat;
+    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.fx_roo2lit]*deltat;
+    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.fx_woo2cwd]*deltat;
 	
     /*dead C pools: Adding fire removals here together with additions from live pools*/
     /*CWD*/
-    POOLS[nxp+S.C_cwd] = fmax(0,POOLS[nxp+S.C_cwd]+(FLUXES[f+F.fx_woo2cwd]-FLUXES[f+F.f_cwd]-FLUXES[f+F.fx_cwd2som])*deltat);
+    POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]+(FLUXES[f+F.fx_woo2cwd]-FLUXES[f+F.f_cwd]-FLUXES[f+F.fx_cwd2som])*deltat;
     /*litter*/
-    POOLS[nxp+S.C_lit] = fmax(0,POOLS[nxp+S.C_lit]+(FLUXES[f+F.fx_lab2lit]+FLUXES[f+F.fx_fol2lit]+FLUXES[f+F.fx_roo2lit]-FLUXES[f+F.f_lit]-FLUXES[f+F.fx_lit2som])*deltat);
+    POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.fx_lab2lit]+FLUXES[f+F.fx_fol2lit]+FLUXES[f+F.fx_roo2lit]-FLUXES[f+F.f_lit]-FLUXES[f+F.fx_lit2som])*deltat;
 	/*som*/
-	POOLS[nxp+S.C_som] = fmax(0,POOLS[nxp+S.C_som]+(FLUXES[f+F.fx_cwd2som]+FLUXES[f+F.fx_lit2som]-FLUXES[f+F.f_som])*deltat);
+	POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]+(FLUXES[f+F.fx_cwd2som]+FLUXES[f+F.fx_lit2som]-FLUXES[f+F.f_som])*deltat;
 
 	/*fires - total flux in gC m-2 day-1*/
 	/*this term is now (essentially) obsolete*/
