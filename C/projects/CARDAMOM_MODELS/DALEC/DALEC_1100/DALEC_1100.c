@@ -18,16 +18,16 @@
 
 
 
-typedef struct DALEC_1100_DATA{
+typedef struct DALEC_1100_DATA_STRUCT{
 double * VegK;
 double example_const;
-} DALEC_1100_DATA;
+}DALEC_1100_DATA_STRUCT;
 
 
 int PREDERIVE_DALEC_1100_DATA(DALEC * DALECmodel, DATA * DATA){
 
     //Step 1. Define function here
-DALEC_1100_DATA DALEC_1100_DATA;
+static DALEC_1100_DATA_STRUCT DALEC_1100_DATA;
 //Step 2. Populate with any datasets that will be used repeatedly.
 
 
@@ -507,33 +507,34 @@ f=nofluxes*n;
 
 double LAI=POOLS[p+S.D_LAI];
      
-        
-/*Calculate light extinction coefficient*/
-double B = (DOY[n]-81)*2*pi/365.;
-double ET1 = 9.87*sin(2*B)-7.53*cos(B)-1.5*sin(B);
-double DA = 23.45*sin((284+DOY[n])*2*pi/365); //Deviation angle
-double LST = (int) (DOY[n]*24*60) % (24*60);
-LST=0.5*24*60;
-double AST = LST+ET1;
-double h = (AST-12*60)/4; //hour angle
-double alpha = asin((sin(pi/180*DATA.ncdf_data.LAT)*sin(pi/180*DA)+cos(pi/180*DATA.ncdf_data.LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
-double zenith_angle = 90-alpha;
+//         
+// /*Calculate light extinction coefficient*/
+// double B = (DOY[n]-81)*2*pi/365.;
+// double ET1 = 9.87*sin(2*B)-7.53*cos(B)-1.5*sin(B);
+// double DA = 23.45*sin((284+DOY[n])*2*pi/365); //Deviation angle
+// double LST = (int) (DOY[n]*24*60) % (24*60);
+// LST=0.5*24*60;
+// double AST = LST+ET1;
+// double h = (AST-12*60)/4; //hour angle
+// double alpha = asin((sin(pi/180*DATA.ncdf_data.LAT)*sin(pi/180*DA)+cos(pi/180*DATA.ncdf_data.LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
+// double zenith_angle = 90-alpha;
+// 
+// //printf("SZA local = %2.2f, SZA global = %2.2f, SZA diff = %2.2f\n", zenith_angle,DATA.ncdf_data.SZA.values,DATA.ncdf_data.SZA.values - zenith_angle);
+// //double LAD = 1.0; //leaf angle distribution
+// //double VegK = sqrt(pow(LAD,2)+ pow(tan(zenith_angle/180*pi),2))/(LAD+1.774*pow((1+1.182),-0.733)); //Campbell and Norman 1998
+// 
+// double LAD = 0.5; //leaf angle distribution// optimize leaf angle distribution. 
+// double VegK0 = LAD/cos(zenith_angle/180*pi);
+//     
 
-//printf("SZA local = %2.2f, SZA global = %2.2f, SZA diff = %2.2f\n", zenith_angle,DATA.ncdf_data.SZA.values,DATA.ncdf_data.SZA.values - zenith_angle);
-//double LAD = 1.0; //leaf angle distribution
-//double VegK = sqrt(pow(LAD,2)+ pow(tan(zenith_angle/180*pi),2))/(LAD+1.774*pow((1+1.182),-0.733)); //Campbell and Norman 1998
+  DALEC * DALECmodel=(DALEC *)DATA.MODEL;
 
-double LAD = 0.5; //leaf angle distribution// optimize leaf angle distribution. 
-double VegK = LAD/cos(zenith_angle/180*pi);
+DALEC_1100_DATA_STRUCT * DALEC_1100_DATA=(DALEC_1100_DATA_STRUCT *)DALECmodel->MODEL_DATA;
     
-
-
-//MODEL_DATA=((DALEC_1100_DATA *)((DALEC *)DATA.MODEL)->MODEL_DATA)
-    
+    double VegK=DALEC_1100_DATA->VegK[n];
 //CONTINUE FROM HERE(
-    //printf("VegK internal, external = %2.2f,  %2.2f\n",VegK, ((DALEC *)DATA.MODEL->((DALEC_1100_DATA *)DATA.MODEL->MODEL_DATA)->VegK[n]);
-//printf("VegK internal, external = %2.2f,  %2.2f\n",VegK, ((DALEC_1100_DATA *)DATA.MODEL->MODEL_DATA)->VegK[n]);
-//printf("VegK internal, external = %2.2f,  %2.2f\n",VegK, ((DALEC_1100_DATA *)((DALEC *)DATA.MODEL)->MODEL_DATA)->VegK[n]);
+    //printf("VegK internal, external = %2.2f,  %2.2f\n",VegK, DALEC_1100_DATA->VegK[n]);
+
 
 
 
@@ -1143,10 +1144,10 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
         POOLS[nxp+S.D_PSI_LY3]=HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention]);
 
 
-    //Isfinite check for 14 progronstic pools only
-    int nnn, isfinitecheck=1;
-    for (nnn=0;nnn<14;nnn++){if ( isfinite(POOLS[nxp+nnn])==false){isfinitecheck=0;}};
-    if (isfinitecheck==0){break;};
+//     //Isfinite check for 14 progronstic pools only
+//     int nnn, isfinitecheck=1;
+//     for (nnn=0;nnn<14;nnn++){if ( isfinite(POOLS[nxp+nnn])==false){isfinitecheck=0;}};
+//     if (isfinitecheck==0){break;};
 
 }
 
