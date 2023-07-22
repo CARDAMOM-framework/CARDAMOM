@@ -372,8 +372,8 @@ POOLS[nxp+S.E_SWE]+=FLUXES[f+F.snow_heat]*deltat;
 //Sublimation first 
     if (      POOLS[nxp+S.H2O_SWE]>0){
 FLUXES[f+F.e_sublimation] = FLUXES[f+F.sublimation] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C, 1);
-
-    //
+/*Ensure SWE does not go negative due to machine error*/
+//POOLS[nxp+S.H2O_SWE]=fmax(POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat,0); /*second step remove snowmelt from SWE*/
 FLUXES[f+F.e_melt] = FLUXES[f+F.melt] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C, 1);
 
 
