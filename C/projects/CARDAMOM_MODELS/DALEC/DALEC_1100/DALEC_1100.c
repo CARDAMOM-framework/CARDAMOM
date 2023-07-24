@@ -106,6 +106,13 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.melt]=S.H2O_SWE;
         FIOMATRIX.SOURCE[F.sublimation]=S.H2O_SWE;
         FIOMATRIX.SINK[F.snowfall]=S.H2O_SWE;
+
+
+        // E_SWE
+        FIOMATRIX.SOURCE[F.e_melt]=S.E_SWE;
+        FIOMATRIX.SOURCE[F.e_sublimation]=S.E_SWE;
+        FIOMATRIX.SINK[F.snow_heat]=S.E_SWE;
+        FIOMATRIX.SINK[F.e_snowfall]=S.E_SWE;
 // 
 //         // H2O_PAW
 //         FIOMATRIX.SINK[F.infil]=S.H2O_PAW;
@@ -307,8 +314,8 @@ FLUXES[f+F.snowfall] = SNOWFALL[n];
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snowfall]*deltat; /*first step snowfall to SWE*/
     
 
-FLUXES[f+F.e_snowfall]=FLUXES[f+F.snowfall]*INTERNAL_ENERGY_PER_H2O_UNIT_MASS(fmin(air_temp_k,DGCM_TK0C), 0)*deltat;
-POOLS[nxp+S.E_SWE]=POOLS[p+S.E_SWE]+FLUXES[f+F.e_snowfall];
+FLUXES[f+F.e_snowfall]=FLUXES[f+F.snowfall]*INTERNAL_ENERGY_PER_H2O_UNIT_MASS(fmin(air_temp_k,DGCM_TK0C), 0);
+POOLS[nxp+S.E_SWE]=POOLS[p+S.E_SWE]+FLUXES[f+F.e_snowfall]*deltat;
 
 
     /*first step snowfall to SWE*/
@@ -319,7 +326,7 @@ POOLS[nxp+S.E_SWE]=POOLS[p+S.E_SWE]+FLUXES[f+F.e_snowfall];
 // FLUXES[f+F.ground_heat] =(pars[P.thermal_cond_surf]* (tskin_k - POOLS[p+S.D_TEMP_LY1])/(pars[P.LY1_z]*0.5))*(1. - POOLS[p+S.D_SCF]);
 // FLUXES[f+F.gh_in] =FLUXES[f+F.ground_heat] *DGCM_SEC_DAY;    
 
-FLUXES[f+F.snow_heat] = SCFtemp*(pars[P.thermal_cond_swe]* (tskin_k - POOLS[p+S.D_TEMP_SWE])/(POOLS[nxp+S.H2O_SWE]*1e-3*0.5))*DGCM_SEC_DAY;
+FLUXES[f+F.snow_heat] =SCFtemp*(pars[P.thermal_cond_swe]* (tskin_k - POOLS[p+S.D_TEMP_SWE])/(POOLS[nxp+S.H2O_SWE]*1e-3*0.5))*DGCM_SEC_DAY;
 
 POOLS[nxp+S.E_SWE]+=FLUXES[f+F.snow_heat]*deltat;
     
@@ -330,13 +337,29 @@ POOLS[nxp+S.E_SWE]+=FLUXES[f+F.snow_heat]*deltat;
 
 //*Remove snow melt first 
     //Calculate liquid fraction
+    
+    if (POOLS[nxp+S.H2O_SWE]>0){
        SWETEMP.IN.h2o=POOLS[nxp+S.H2O_SWE]; ;//mm
      SWETEMP.IN.internal_energy = POOLS[nxp+S.E_SWE];//m 
 //     PAWSOILTEMP.IN.soil_water = POOLS[S.H2O_PAW];//mm (or kg/m2)
 //     PAWSOILTEMP.IN.internal_energy = POOLS[S.E_PAW];//Joules
 //     //Pass pointer to function 
-     H2O_TEMP_AND_LIQUID_FRAC(&SWETEMP);  //Outputs are in K
+    }
+    else
+    {
+        SWETEMP.OUT.TEMP=DGCM_TK0C;
+        SWETEMP.OUT.LF=0;}
 
+
+
+     H2O_TEMP_AND_LIQUID_FRAC(&SWETEMP);  //Outputs are in K
+    if(n>3 & n<12){
+        printf("*****%i-intermediate******\n",n);
+        printf("SWE t=0= %2.10f\n",POOLS[p+S.H2O_SWE]);
+        printf("SWE t+1= %2.10f\n",POOLS[nxp+S.H2O_SWE]);
+    printf("SNow temp temp, lf= %2.2f, %2.2f\n",SWETEMP.OUT.TEMP, SWETEMP.OUT.LF);}
+
+    double SNOWTEMPtemp=SWETEMP.OUT.TEMP;
 //double SNOWMELT 
      FLUXES[f+F.melt] = POOLS[nxp+S.H2O_SWE]*SWETEMP.OUT.LF/deltat;
 
@@ -345,7 +368,7 @@ POOLS[nxp+S.E_SWE]+=FLUXES[f+F.snow_heat]*deltat;
 
     if (POOLS[nxp+S.H2O_SWE] - deltat*(   FLUXES[f+F.melt] + SUBLIMATIONtemp)<0){
         FLUXES[f+F.sublimation]=POOLS[nxp+S.H2O_SWE]/deltat -    FLUXES[f+F.melt];
-        POOLS[nxp+S.H2O_SWE]=0;}
+        POOLS[nxp+S.H2O_SWE]=0.;}
         else{
         FLUXES[f+F.sublimation]=SUBLIMATIONtemp;
         POOLS[nxp+S.H2O_SWE]=POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat; }
@@ -371,13 +394,27 @@ POOLS[nxp+S.E_SWE]+=FLUXES[f+F.snow_heat]*deltat;
 
 //Sublimation first 
     if (      POOLS[nxp+S.H2O_SWE]>0){
-FLUXES[f+F.e_sublimation] = FLUXES[f+F.sublimation] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C, 1);
 /*Ensure SWE does not go negative due to machine error*/
 //POOLS[nxp+S.H2O_SWE]=fmax(POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat,0); /*second step remove snowmelt from SWE*/
-FLUXES[f+F.e_melt] = FLUXES[f+F.melt] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C, 1);
+            FLUXES[f+F.e_sublimation] = FLUXES[f+F.sublimation] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS( SNOWTEMPtemp, 0);
 
+        //Algorithm stability: ensure if LF>0, energy is calculated for 0C H2O with LF=0
+        //CONTINUE FROM HERE
+        if (FLUXES[f+F.melt]>0){
+            FLUXES[f+F.e_melt] = FLUXES[f+F.melt] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C, 1);
+            //Internal energ of 0C snow with LF=0;
+        
+            
+          POOLS[nxp+S.E_SWE]=          POOLS[nxp+S.H2O_SWE]*INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_TK0C,0);
 
-    POOLS[nxp+S.E_SWE]=POOLS[nxp+S.E_SWE]-(FLUXES[f+F.e_melt]+ FLUXES[f+F.e_sublimation]  )*deltat; }/*second step remove snowmelt from SWE*/
+        }
+
+            else{
+            POOLS[nxp+S.E_SWE]=POOLS[nxp+S.E_SWE]-FLUXES[f+F.e_sublimation]*deltat; }
+        
+        
+        
+        }/*second step remove snowmelt from SWE*/
 
     else
     { POOLS[nxp+S.E_SWE]=0;
@@ -389,11 +426,24 @@ FLUXES[f+F.e_melt] = FLUXES[f+F.melt] * INTERNAL_ENERGY_PER_H2O_UNIT_MASS(DGCM_T
     POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
     
    
+        if (      POOLS[nxp+S.H2O_SWE]>0){
+
     SWETEMP.IN.h2o = POOLS[nxp+S.H2O_SWE];//mm (or kg/m2)
     SWETEMP.IN.internal_energy = POOLS[nxp+S.E_SWE];//Joules
    H2O_TEMP_AND_LIQUID_FRAC(&SWETEMP);
+   POOLS[nxp+S.D_TEMP_SWE]=SWETEMP.OUT.TEMP;}//In K
+    else
+        
+    {   POOLS[nxp+S.D_TEMP_SWE] =DGCM_TK0C;}
 
-   POOLS[nxp+S.D_TEMP_SWE]=SWETEMP.OUT.TEMP;//In K
+        
+    if(n>3 & n<12){
+        printf("*****%i-final******\n",n);
+        printf("SWE t=0= %2.10f\n",POOLS[p+S.H2O_SWE]);
+        printf("SWE t+1= %2.10f\n",POOLS[nxp+S.H2O_SWE]);
+                printf("SWE  E t=0= %2.10f\n",POOLS[p+S.E_SWE]);
+        printf("SWE E t+1= %2.10f\n",POOLS[nxp+S.E_SWE]);
+    printf("SNow temp final, lf= %2.2f, %2.2f\n",SWETEMP.OUT.TEMP, SWETEMP.OUT.LF);}
 
 
 
