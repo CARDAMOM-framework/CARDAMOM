@@ -20,15 +20,15 @@ PARS_INFO.UNITS[gpp]='gC/m2/day';
 
 //Pool info
 
-PARS_INFO.NAME[twood]='Turnover rate of wood';
-PARS_INFO.ABBREVIATION[twood]='twood';
-PARS_INFO.UNITS[gpp]='gC/m2/day';
+POOLS_INFO.NAME[twood]='Turnover rate of wood';
+POOLS_INFO.ABBREVIATION[twood]='twood';
+POOLS_INFO.UNITS[gpp]='gC/m2/day';
 
 //EDC info
 
-PARS_INFO.NAME[twood]='Turnover rate of wood';
-PARS_INFO.ABBREVIATION[twood]='twood';
-PARS_INFO.UNITS[gpp]='gC/m2/day';
+EDCs_INFO.NAME[twood]='Turnover rate of wood';
+EDCs_INFO.ABBREVIATION[twood]='twood';
+EDCs_INFO.UNITS[gpp]='gC/m2/day';
 
 ...
 
