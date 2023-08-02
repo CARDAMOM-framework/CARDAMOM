@@ -41,33 +41,26 @@ parmax[P.min_melt]=283.15;
 parmin[P.melt_slope]=0.00001;
 parmax[P.melt_slope]=100;
 
-/*sn3: snow cover fraction scalar; SCF = SWE/(SWE +SWEcritical_par) */
-parmin[P.scf_scalar]=10;
-parmax[P.scf_scalar]=1000.0;
-
 /*Thermal conductivity of SWE (correcting for snow density) - W/m/K*/
     parmin[P.thermal_cond_swe]=0.001;
      parmax[P.thermal_cond_swe]=1;
-// 
+// ___scf_gen3 start
+///*sn3: snow cover fraction scalar; SCF = SWE/(SWE +SWEcritical_par) */
+//parmin[P.scf_scalar]=10;
+//parmax[P.scf_scalar]=1000.0;
 
-// 
-// 
-// /*Surface soil thermal conductivity in W/m/K */
-// parmin[P.q10canopy]=1;
-// parmax[P.q10canopy]=5;
-// 
-//     /*Surface soil thermal conductivity in W/m/K */
-// parmin[P.canopyRdsf]=0.005;
-// parmax[P.canopyRdsf]=0.025;
+/*sn3: snow cover fraction parameter, an index of topographic variability defined in relation to the standard deviation of elevation within a grid cellcontrols the shape of the SCF */
+parmin[P.SWEmax]=10.0;
+parmax[P.SWEmax]=10000.0;
 
-        /*Sublimation rate: mm/day/SCF/kPha/(MJ/m2/d) Biggest = 1/0.5/2/2; Smallest = 1/1/10/10/*/
+/*sn4: snow cover fraction parameter, maximum accumulated SWE; SCF = 1-(1/pi * acos(2*SWE/SWEmax-1))**Nmelt */
+parmin[P.Nmelt]=0.00001;
+parmax[P.Nmelt]=10.0;
+// ___scf_gen3 end 
+/*Sublimation rate: mm/day/SCF/kPha/(MJ/m2/d) Biggest = 1/0.5/2/2; Smallest = 1/1/10/10/*/
 parmin[P.sublimation_rate]=0.001;
 parmax[P.sublimation_rate]=100;
 
-// /*Fraction of LY2 to LY1 root biomass*/
-// parmin[P.root_frac]=0.001;
-// parmax[P.root_frac]=1;
-  
 return 0;
 
 }

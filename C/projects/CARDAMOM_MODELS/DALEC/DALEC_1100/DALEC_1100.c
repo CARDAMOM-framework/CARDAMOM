@@ -235,7 +235,9 @@ double *POOLS=DATA.M_POOLS;
 //     POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; //LAI
     
     if (POOLS[S.H2O_SWE]>0){
-    POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]);} //snow cover fraction}
+    //POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]);} //snow cover fraction gen1
+      double smr1=fmin(1.0,POOLS[S.H2O_SWE]/pars[P.SWEmax]); //___scf_gen3
+      POOLS[S.D_SCF]=1-pow((1/pi*acos(2*smr1-1)),pars[P.Nmelt]);} //___scf_gen3
     else
     {POOLS[S.D_SCF]=0;};
 
@@ -300,12 +302,13 @@ nxp=nopools*(n+1);
 f=nofluxes*n;
 // 
 
-
     
     double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 
 
     double tskin_k = SKT[n]+DGCM_TK0C;
+
+
 
 
 /*Snow water equivalent*/
@@ -320,7 +323,13 @@ POOLS[nxp+S.E_SWE]=POOLS[p+S.E_SWE]+FLUXES[f+F.e_snowfall]*deltat;
 
     /*first step snowfall to SWE*/
 //transient_SCF
-    double SCFtemp = POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);
+    //double SCFtemp = POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);
+double smr2=fmin(1.0,POOLS[nxp+S.H2O_SWE]/pars[P.SWEmax]); //___scf_gen3
+double SCFtemp = 1-pow((1/pi*acos(2*smr2-1)),pars[P.Nmelt]); //___scf_gen3
+//double SCFtemp = POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //___scf_gen1
+    //Snow melt, based on new SWE
+ //double SNOWMELT=fmin(fmax((DGCM_TK0C+SKT[n]-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]*one_over_deltat; /*melted snow per day*/  
+//double SUBLIMATION =  pars[P.sublimation_rate]*SSRD[n]*SCFtemp;
 
 // //Gh_in approach 2 based on soil and LST
 // FLUXES[f+F.ground_heat] =(pars[P.thermal_cond_surf]* (tskin_k - POOLS[p+S.D_TEMP_LY1])/(pars[P.LY1_z]*0.5))*(1. - POOLS[p+S.D_SCF]);
@@ -353,11 +362,11 @@ POOLS[nxp+S.E_SWE]+=FLUXES[f+F.snow_heat]*deltat;
 
 
      H2O_TEMP_AND_LIQUID_FRAC(&SWETEMP);  //Outputs are in K
-    if(n>3 & n<12){
-        printf("*****%i-intermediate******\n",n);
-        printf("SWE t=0= %2.10f\n",POOLS[p+S.H2O_SWE]);
-        printf("SWE t+1= %2.10f\n",POOLS[nxp+S.H2O_SWE]);
-    printf("SNow temp temp, lf= %2.2f, %2.2f\n",SWETEMP.OUT.TEMP, SWETEMP.OUT.LF);}
+//     if(n>3 & n<12){
+//         printf("*****%i-intermediate******\n",n);
+//         printf("SWE t=0= %2.10f\n",POOLS[p+S.H2O_SWE]);
+//         printf("SWE t+1= %2.10f\n",POOLS[nxp+S.H2O_SWE]);
+//     printf("SNow temp temp, lf= %2.2f, %2.2f\n",SWETEMP.OUT.TEMP, SWETEMP.OUT.LF);}
 
     double SNOWTEMPtemp=SWETEMP.OUT.TEMP;
 //double SNOWMELT 
@@ -423,10 +432,17 @@ POOLS[nxp+S.E_SWE]+=FLUXES[f+F.snow_heat]*deltat;
 
 //     /****************************RECORD t+1 DIAGNOSTIC STATES*************************/
 //     POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
-    POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
+//    POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
     
-   
-        if (      POOLS[nxp+S.H2O_SWE]>0){
+       double smr3=fmin(1.0,POOLS[nxp+S.H2O_SWE]/pars[P.SWEmax]);
+    POOLS[nxp+S.D_SCF]=1-pow((1/pi*acos(2*smr3-1)),pars[P.Nmelt]); //snow cover fraction gen3
+        
+    if (      POOLS[nxp+S.H2O_SWE]>0){
+
+//___scf_gen3 start
+//    POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction gen1
+
+//___scf_gen3 end  
 
     SWETEMP.IN.h2o = POOLS[nxp+S.H2O_SWE];//mm (or kg/m2)
     SWETEMP.IN.internal_energy = POOLS[nxp+S.E_SWE];//Joules
@@ -436,16 +452,16 @@ POOLS[nxp+S.E_SWE]+=FLUXES[f+F.snow_heat]*deltat;
         
     {   POOLS[nxp+S.D_TEMP_SWE] =DGCM_TK0C;}
 
-        
-    if(n>3 & n<12){
-        printf("*****%i-final******\n",n);
-        printf("SWE t=0= %2.10f\n",POOLS[p+S.H2O_SWE]);
-        printf("SWE t+1= %2.10f\n",POOLS[nxp+S.H2O_SWE]);
-                printf("SWE  E t=0= %2.10f\n",POOLS[p+S.E_SWE]);
-        printf("SWE E t+1= %2.10f\n",POOLS[nxp+S.E_SWE]);
-    printf("SNow temp final, lf= %2.2f, %2.2f\n",SWETEMP.OUT.TEMP, SWETEMP.OUT.LF);}
-
-
+//         
+//     if(n>3 & n<12){
+//         printf("*****%i-final******\n",n);
+//         printf("SWE t=0= %2.10f\n",POOLS[p+S.H2O_SWE]);
+//         printf("SWE t+1= %2.10f\n",POOLS[nxp+S.H2O_SWE]);
+//                 printf("SWE  E t=0= %2.10f\n",POOLS[p+S.E_SWE]);
+//         printf("SWE E t+1= %2.10f\n",POOLS[nxp+S.E_SWE]);
+//     printf("SNow temp final, lf= %2.2f, %2.2f\n",SWETEMP.OUT.TEMP, SWETEMP.OUT.LF);}
+// 
+// 
 
     
 }
@@ -468,7 +484,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=4;
-DALECmodel->nopars=7;
+DALECmodel->nopars=8;
 DALECmodel->nofluxes=7;
 DALECmodel->noedcs=2;
 
