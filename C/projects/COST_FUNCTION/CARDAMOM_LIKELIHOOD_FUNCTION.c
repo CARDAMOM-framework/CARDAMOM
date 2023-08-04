@@ -415,7 +415,102 @@ else if (OBS->opt_filter==6){//three-year rolling mean
                 }
 }                
         
-        
+else if (OBS->opt_filter==7){ //EB added 8.4.23 as a test to constrain biomass 
+    /*This cost function separately considers: 
+        1) time series mean; 
+        2) decadal anomaly from the time series mean; 
+        3) annual anomaly from the decadal mean.
+    Notes: 
+        1) Only use with more than 10 years of data; Future plans to generalize this ...
+        2) Only use with complete time series; missing months/years will undermine the calculation. 
+        3) provide 3 separate uncertainties: single_mean_unc, single_decadal_unc, single_annual_unc
+        4) ensure observation uncertainty type is *not* log-transformed (to handle negative or small anomalies)*/
+    
+    //1) compute total mean 
+    double tot_mean_mod=0, tot_mean_obs=0;
+
+        for (n=0;n<N;n++){
+            tot_mean_mod += mod[n];
+            tot_mean_obs += obs[n];
+            }
+            tot_mean_mod=tot_mean_mod/(double)N;
+            tot_mean_obs=tot_mean_obs/(double)N;
+
+    /* Calculate total mean cost function*/
+    tot_exp+=pow((tot_mean_obs-tot_mean_mod)/single_mean_unc,2);
+
+    //2) compute decadal anomaly relative to total mean
+                //A) Compute decadal mean: Looping through 2 decades  
+    double m10yrm1=0, o10yrm1=0, m10yrm2=0, o10yrm2=0; 
+                //A.1) Looping through first 10 years worth of months
+        for (n=0;n<120;n++){
+                        m10yrm1 += mod[n];
+                        o10yrm1 += obs[n];
+            }
+                //A.2) Looping through last (<)10 years worth of months
+                //Note, for Xu et al with 19 years of biomass, this partitions into 10 and 9 years
+        for (n=120;n<N;n++){
+                        m10yrm2 += mod[n];
+                        o10yrm2 += obs[n];
+            }
+                /*A.3) normalize means*/
+    m10yrm1=m10yrm1/120;o10yrm1=o10yrm1/120;
+    m10yrm2=m10yrm2/(N-120);o10yrm2=o10yrm2/(N-120);
+
+                /*B) Calculate decadal anomaly*/
+    double mDecadalAnom1=0, oDecadalAnom1=0; mDecadalAnom2=0, oDecadalAnom2=0; 
+
+    mDecadalAnom1=m10yrm1-tot_mean_mod;
+    mDecadalAnom2=m10yrm2-tot_mean_mod;
+    oDecadalAnom1=o10yrm1-tot_mean_obs;
+    oDecadalAnom2=o10yrm2-tot_mean_obs;
+
+            /* Calculate decadal anomaly cost function*/
+    tot_exp+=pow((oDecadalAnom1-mDecadalAnom1)/single_decadal_unc,2);
+    tot_exp+=pow((oDecadalAnom2-mDecadalAnom2)/single_decadal_unc,2);
+
+    //3) compute annual anomaly relative to decadal mean
+    
+    int y, dn;
+    
+        for (y=0;y<10;y++){ //Looping through first decade y=0-9
+        double m_annual=0, o_annual=0; //reset values to zero each year
+        double m_ann_anom=0, o_ann_anom=0; 
+            for (n=0;n<12;n++){ //sum annually
+                dn=n+(y*12); 
+                m_annual+=mod[dn]; 
+                o_annual+=obs[dn];
+            }
+            //Normalize to annual means
+            m_annual=m_annual/12;
+            o_annual=o_annual/12;
+            //Compute annual anomaly relative to decadal mean
+            m_ann_anom=m_annual-m10yrm1;
+            o_ann_anom=o_annual-o10yrm1;   
+            //Add to cost function
+            tot_exp+=pow((o_ann_anom-m_ann_anom)/single_annual_unc,2); 
+        }
+
+        for (y=10;y<(N/12);y++){ //Looping through second decade 10-(N/12)
+        double m_annual=0, o_annual=0; //reset values to zero each year
+        double m_ann_anom=0, o_ann_anom=0; 
+            for (n=0;n<12;n++){ //sum annually
+                dn=n+(y*12);
+                m_annual+=mod[dn];
+                o_annual+=obs[dn];
+            }
+            //Normalize to annual means
+            m_annual=m_annual/12;
+            o_annual=o_annual/12;
+            //Compute annual anomaly relative to decadal mean
+            m_ann_anom=m_annual-m10yrm2;
+            o_ann_anom=o_annual-o10yrm2;   
+            //Add to cost function
+            tot_exp+=pow((o_ann_anom-m_ann_anom)/single_annual_unc,2); 
+        }
+               
+                
+}           
   
 
 free(mod);free(obs);free(unc);
