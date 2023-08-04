@@ -122,6 +122,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.resp_auto_growth]=S.C_lab;
         FIOMATRIX.SOURCE[F.f_lab]=S.C_lab;  
         FIOMATRIX.SOURCE[F.fx_lab2lit]=S.C_lab;
+        FIOMATRIX.SOURCE[F.dist_lab]=S.C_lab;
 
 
         // C_fol
@@ -129,18 +130,21 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.fol2lit]=S.C_fol;
         FIOMATRIX.SOURCE[F.f_fol]=S.C_fol;
         FIOMATRIX.SOURCE[F.fx_fol2lit]=S.C_fol;
+        FIOMATRIX.SOURCE[F.dist_fol]=S.C_fol;
         
         // C_roo
         FIOMATRIX.SINK[F.root_prod]=S.C_roo;
         FIOMATRIX.SOURCE[F.roo2lit]=S.C_roo;
         FIOMATRIX.SOURCE[F.f_roo]=S.C_roo;
         FIOMATRIX.SOURCE[F.fx_roo2lit]=S.C_roo;
+        FIOMATRIX.SOURCE[F.dist_roo]=S.C_roo;
         
         // C_woo
         FIOMATRIX.SINK[F.wood_prod]=S.C_woo;
         FIOMATRIX.SOURCE[F.woo2cwd]=S.C_woo;
         FIOMATRIX.SOURCE[F.f_woo]=S.C_woo;
         FIOMATRIX.SOURCE[F.fx_woo2cwd]=S.C_woo;
+        FIOMATRIX.SOURCE[F.dist_woo]=S.C_woo;
 
         
         // C_lit
@@ -1068,6 +1072,12 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     double TotalABGB=POOLS[nxp+S.C_lab]+POOLS[nxp+S.C_fol]+POOLS[nxp+S.C_roo]+POOLS[nxp+S.C_woo]; 
     double DMF = DIST[n]/TotalABGB; //DIST[n]=disturbance flux at current flux timestep, halfway in between p and nxp 
     
+        //Store fluxes for FIOMATRIX balance checks 
+    FLUXES[f+F.dist_lab] = POOLS[nxp+S.C_lab]*DMF*one_over_deltat;
+    FLUXES[f+F.dist_fol] = POOLS[nxp+S.C_fol]*DMF*one_over_deltat;
+    FLUXES[f+F.dist_roo] = POOLS[nxp+S.C_roo]*DMF*one_over_deltat;
+    FLUXES[f+F.dist_woo] = POOLS[nxp+S.C_woo]*DMF*one_over_deltat;
+
 /*DIRECT LIVE CARBON POOL REMOVALS PART 1 of 3: Removing ABGB disturbance from live pools here*/
     /*Note: these are lateral fluxes, and are discarded, not transferred!*/
     POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-POOLS[nxp+S.C_lab]*DMF;
@@ -1211,7 +1221,7 @@ DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=88;
-DALECmodel->nofluxes=85;
+DALECmodel->nofluxes=89;
 DALECmodel->noedcs=14;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
