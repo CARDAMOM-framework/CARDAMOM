@@ -16,7 +16,8 @@ int opt_filter;//(0 = no filter, 1 = mean only, 2==annual mean & monthly anomaly
 double min_threshold;//Minimum value threshold: model and/or data will be rounded up to this value (default = -inf)
 double single_monthly_unc;//Fields to be used only with Filter=2 AND opt_unc_type=0;
 double single_annual_unc;//Fields to be used only with Filters=2 & 3 (AND opt_unc_type=0 or opt_unc_type=2 for filter = 2);
-double single_mean_unc;//Fields to be used only with Filter = 1;`
+double single_mean_unc;//Fields to be used only with Filter = 1;
+double single_decadal_unc;//Field for Filter = 7;
 double single_unc;//Fields to be used only with Filter = 0 ;
 double structural_unc;//this gets added to uncertainty in quadrature.
 //****Auxiliary variables, separate from timeseries variable****
@@ -127,6 +128,7 @@ OBS.opt_filter=ncdf_read_int_attr(ncid, OBSNAME,"opt_filter");
 OBS.min_threshold=ncdf_read_double_attr(ncid, OBSNAME,"min_threshold");
 OBS.single_monthly_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_monthly_unc");
 OBS.single_annual_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_annual_unc");
+OBS.single_decadal_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_decadal_unc");
 OBS.single_mean_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_mean_unc");
 OBS.single_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_unc");
 OBS.structural_unc=ncdf_read_double_attr(ncid, OBSNAME,"structural_unc");
@@ -247,7 +249,7 @@ unc[n] = OBS->unc[OBS->valid_obs_indices[n]];
 double single_mean_unc=OBS->single_mean_unc;
 double single_monthly_unc=OBS->single_monthly_unc;
 double single_annual_unc=OBS->single_annual_unc;
-
+double single_decadal_unc=OBS->single_decadal_unc;
 
 
 double mean_mod=0, mean_obs=0;
@@ -297,7 +299,7 @@ unc[n]=log(unc[n]);}
 single_mean_unc=log(single_mean_unc);
 single_monthly_unc=log(single_monthly_unc);
 single_annual_unc=log(single_annual_unc);
-
+single_decadal_unc=log(single_decadal_unc);
 }
 
 
@@ -414,7 +416,7 @@ else if (OBS->opt_filter==6){//three-year rolling mean
                
                 }
 }                
-        
+         
 else if (OBS->opt_filter==7){ //EB added 8.4.23 as a test to constrain biomass 
     /*This cost function separately considers: 
         1) time series mean; 
@@ -458,7 +460,7 @@ else if (OBS->opt_filter==7){ //EB added 8.4.23 as a test to constrain biomass
     m10yrm2=m10yrm2/(N-120);o10yrm2=o10yrm2/(N-120);
 
                 /*B) Calculate decadal anomaly*/
-    double mDecadalAnom1=0, oDecadalAnom1=0; mDecadalAnom2=0, oDecadalAnom2=0; 
+    double mDecadalAnom1=0, oDecadalAnom1=0, mDecadalAnom2=0, oDecadalAnom2=0; 
 
     mDecadalAnom1=m10yrm1-tot_mean_mod;
     mDecadalAnom2=m10yrm2-tot_mean_mod;
@@ -507,11 +509,8 @@ else if (OBS->opt_filter==7){ //EB added 8.4.23 as a test to constrain biomass
             o_ann_anom=o_annual-o10yrm2;   
             //Add to cost function
             tot_exp+=pow((o_ann_anom-m_ann_anom)/single_annual_unc,2); 
-        }
-               
-                
-}           
-  
+        }              
+} 
 
 free(mod);free(obs);free(unc);
 
