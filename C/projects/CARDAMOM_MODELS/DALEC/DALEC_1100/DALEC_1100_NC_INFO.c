@@ -199,17 +199,17 @@ FLUX_INFO.DESCRIPTION[F.ly2xly3_e]='LY2 to LY3 transfer IE: temp of donor';
 FLUX_INFO.NAME[F.evap_e]='Evaporation E';
 FLUX_INFO.ABBREVIATION[F.evap_e]='evap_e';
 FLUX_INFO.UNITS[F.evap_e]='TBD';
-FLUX_INFO.DESCRIPTION[F.evap_e]='See Retano's calculation';
+FLUX_INFO.DESCRIPTION[F.evap_e]='See Retano calculation';
 
 FLUX_INFO.NAME[F.transp1_e]='Transpiration 1 E';
 FLUX_INFO.ABBREVIATION[F.transp1_e]='transp1_e';
 FLUX_INFO.UNITS[F.transp1_e]='TBD';
-FLUX_INFO.DESCRIPTION[F.transp1_e]='See Retano's calculation';
+FLUX_INFO.DESCRIPTION[F.transp1_e]='See Retano calculation';
 
 FLUX_INFO.NAME[F.transp2_e]='Transpiration 2 E';
 FLUX_INFO.ABBREVIATION[F.transp2_e]='transp2_e';
 FLUX_INFO.UNITS[F.transp2_e]='TBD';
-FLUX_INFO.DESCRIPTION[F.transp2_e]='See Retano's calculation';
+FLUX_INFO.DESCRIPTION[F.transp2_e]='See Retano calculation';
 
 FLUX_INFO.NAME[F.transp1]='Transpiration 1';
 FLUX_INFO.ABBREVIATION[F.transp1]='transp1';
