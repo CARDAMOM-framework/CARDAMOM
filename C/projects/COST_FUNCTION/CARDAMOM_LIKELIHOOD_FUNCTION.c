@@ -72,18 +72,24 @@ for (n=0;n<N;n++){if (OBS->values[n]!=DEFAULT_DOUBLE_VAL){OBS->valid_obs_indices
 
 
 for (k=0;k<OBS->valid_obs_length;k++){
-
     if (OBS->unc[OBS->valid_obs_indices[k]]==DEFAULT_DOUBLE_VAL){
-if (OBS->opt_unc_type<2){
-OBS->unc[OBS->valid_obs_indices[k]]=OBS->single_unc;}
-else if (OBS->opt_unc_type==2){
-OBS->unc[OBS->valid_obs_indices[k]]=max(OBS->single_unc*OBS->values[OBS->valid_obs_indices[k]],OBS->single_unc*OBS->min_threshold);}}}
+        if (OBS->opt_unc_type<2){
+        OBS->unc[OBS->valid_obs_indices[k]]=OBS->single_unc;
+        }
+        else if (OBS->opt_unc_type==2){
+        OBS->unc[OBS->valid_obs_indices[k]]=max(OBS->single_unc*OBS->values[OBS->valid_obs_indices[k]],OBS->single_unc*OBS->min_threshold);
+        }
+    }
+}
+
 //Scale uncertainty with structural error
-if (OBS->structural_unc==DEFAULT_DOUBLE_VAL){OBS->structural_unc=0;}
+if (OBS->structural_unc==DEFAULT_DOUBLE_VAL){
+    OBS->structural_unc=0;
+    }
 //Adding structural error
 for (k=0;k<OBS->valid_obs_length;k++){
-    OBS->unc[OBS->valid_obs_indices[k]]=sqrt(pow(OBS->unc[OBS->valid_obs_indices[k]],2) + pow(OBS->structural_unc,2));}
-
+    OBS->unc[OBS->valid_obs_indices[k]]=sqrt(pow(OBS->unc[OBS->valid_obs_indices[k]],2) + pow(OBS->structural_unc,2));
+    }
 
 
 //isempty flag
@@ -342,7 +348,12 @@ else if (OBS->opt_filter==2 |  OBS->opt_filter==3){//monthly and annual flux
     /*normalize means*/
     mam=mam/12;oam=oam/12;
     /*Calculate seasonal cost function*/
-    if (OBS->opt_filter==2){for (n=0;n<12;n++){dn=n+m*12;tot_exp+=pow((mod[dn]-obs[dn]-mam+oam)/single_monthly_unc,2);}}
+    if (OBS->opt_filter==2){
+        for (n=0;n<12;n++){
+            dn=n+m*12;
+            tot_exp+=pow((mod[dn]-obs[dn]-mam+oam)/single_monthly_unc,2);
+            }
+        }
     /*Calculate annual cost function*/
     /*TEST: normalize model likelihood by normal distribution with mean zero and unc = x2 annual unc.*/
     tot_exp+=pow((oam-mam)/single_annual_unc,2);
@@ -426,7 +437,12 @@ else if (OBS->opt_filter==7){ //EB added 8.4.23 as a test to constrain biomass
         1) Only use with more than 10 years of data; Future plans to generalize this ...
         2) Only use with complete time series; missing months/years will undermine the calculation. 
         3) provide 3 separate uncertainties: single_mean_unc, single_decadal_unc, single_annual_unc
-        4) ensure observation uncertainty type is *not* log-transformed (to handle negative or small anomalies)*/
+        4) use uncertainty type = 2; this is implemented below as follows: 
+            single_mean_unc is evaluated as uncertainty type = 2, 
+            single_decadal_unc is evaluated as uncertainty type = 0 (i.e. no scaling),
+            single_annual_unc is evaluated as uncertainty type =2, but scaled by tot_mean_mod rather than
+                the magnitude of the annual anomaly (which can be <1) 
+        */
     
     //1) compute total mean 
     double tot_mean_mod=0, tot_mean_obs=0;
@@ -439,7 +455,7 @@ else if (OBS->opt_filter==7){ //EB added 8.4.23 as a test to constrain biomass
             tot_mean_obs=tot_mean_obs/(double)N;
 
     /* Calculate total mean cost function*/
-    tot_exp+=pow((tot_mean_obs-tot_mean_mod)/single_mean_unc,2);
+    tot_exp+=pow((tot_mean_obs-tot_mean_mod)/(single_mean_unc*tot_mean_obs),2);
 
     //2) compute decadal anomaly relative to total mean
                 //A) Compute decadal mean: Looping through 2 decades  
@@ -490,7 +506,7 @@ else if (OBS->opt_filter==7){ //EB added 8.4.23 as a test to constrain biomass
             m_ann_anom=m_annual-m10yrm1;
             o_ann_anom=o_annual-o10yrm1;   
             //Add to cost function
-            tot_exp+=pow((o_ann_anom-m_ann_anom)/single_annual_unc,2); 
+            tot_exp+=pow((o_ann_anom-m_ann_anom)/(single_annual_unc*tot_mean_obs),2); 
         }
 
         for (y=10;y<(N/12);y++){ //Looping through second decade 10-(N/12)
@@ -508,7 +524,7 @@ else if (OBS->opt_filter==7){ //EB added 8.4.23 as a test to constrain biomass
             m_ann_anom=m_annual-m10yrm2;
             o_ann_anom=o_annual-o10yrm2;   
             //Add to cost function
-            tot_exp+=pow((o_ann_anom-m_ann_anom)/single_annual_unc,2); 
+            tot_exp+=pow((o_ann_anom-m_ann_anom)/(single_annual_unc*tot_mean_obs),2); 
         }              
 } 
 
