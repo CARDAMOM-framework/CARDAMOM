@@ -764,7 +764,7 @@ double k_LY3 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY3],pars[P.hydr_cond],pars[P.ret
 
 
 // Calculate inter-pool transfer in m/s (positive is LY1 to LY2)
-double pot_xfer = 1000 * sqrt(k_LY1*k_LY2) * (1000*(POOLS[p+S.D_PSI_LY1]-POOLS[p+S.D_PSI_LY2])/(9.8*0.5*(pars[P.LY1_z]+pars[P.LY2_z])) + 1);
+double pot_xfer = 1000 * sqrt(k_LY1*k_LY2) * (1e-9*(POOLS[p+S.D_PSI_LY1]-POOLS[p+S.D_PSI_LY2])/(9.8*0.5*(pars[P.LY1_z]+pars[P.LY2_z])) + 1);
 double SPACEavail, H2Oavail, Max_H2O_xfer, TEMPxfer_1to2;
 if (pot_xfer>0) {//Water is going LY1->LY2 (down)
 // Available space in LY2 (after runoff)
@@ -772,7 +772,7 @@ SPACEavail=fmax(pars[P.LY2_z]*pars[P.LY2_por]*1e3 - POOLS[p+S.H2O_LY2] + (FLUXES
 // Available water in LY1 (after runoff, et, and infiltration)
 H2Oavail=fmax(POOLS[p+S.D_LF_LY1]*POOLS[p+S.H2O_LY1] + (FLUXES[f+F.infil] - FLUXES[f+F.q_ly1] - FLUXES[f+F.evap] - FLUXES[f+F.transp1])*deltat,0);
 // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
-Max_H2O_xfer= POOLS[p+S.D_LF_LY1]*pot_xfer*1000*DGCM_SEC_DAY*deltat;
+Max_H2O_xfer= POOLS[p+S.D_LF_LY1]*pot_xfer*DGCM_SEC_DAY*deltat;
 //Minimum of three terms for LY1->LY2
 //1. Max_H2O_xfer
 //2. Available space in LY2 (after runoff)
@@ -786,7 +786,7 @@ SPACEavail=fmax(pars[P.LY1_z]*pars[P.LY1_por]*1e3 - POOLS[p+S.H2O_LY1] - (FLUXES
 // Available water in LY2 after runoff
 H2Oavail= fmax(POOLS[p+S.D_LF_LY2]*POOLS[p+S.H2O_LY2] - (FLUXES[f+F.q_ly2] + FLUXES[f+F.transp2])*deltat,0);
 // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
-Max_H2O_xfer= POOLS[p+S.D_LF_LY2]*pot_xfer*1000*DGCM_SEC_DAY*deltat;
+Max_H2O_xfer= POOLS[p+S.D_LF_LY2]*pot_xfer*DGCM_SEC_DAY*deltat;
 // Reverse sign of previous case
 FLUXES[f+F.ly1xly2] = -fmin(-Max_H2O_xfer , fmin(SPACEavail, H2Oavail))*one_over_deltat;
 TEMPxfer_1to2= POOLS[p+S.D_TEMP_LY2];//In K
@@ -796,7 +796,7 @@ TEMPxfer_1to2= POOLS[p+S.D_TEMP_LY2];//In K
 
 
 // Calculate inter-pool transfer in m/s (positive is LY1 to LY3)
-pot_xfer = 1000 * sqrt(k_LY2*k_LY3) * (1000*(POOLS[p+S.D_PSI_LY2]-POOLS[p+S.D_PSI_LY3])/(9.8*0.5*(pars[P.LY2_z]+pars[P.LY3_z])) + 1);
+pot_xfer = 1000 * sqrt(k_LY2*k_LY3) * (1e-9*(POOLS[p+S.D_PSI_LY2]-POOLS[p+S.D_PSI_LY3])/(9.8*0.5*(pars[P.LY2_z]+pars[P.LY3_z])) + 1);
 double TEMPxfer_2to3;
 if (pot_xfer>0) {//Water is going LY2->LY3 (down)
 // Available space in LY3 (after runoff)
@@ -804,7 +804,7 @@ SPACEavail=fmax(pars[P.LY3_z]*pars[P.LY3_por]*1e3 - POOLS[p+S.H2O_LY3] + FLUXES[
 // Available water in LY2 (after runoff, et, and infiltration)
 H2Oavail=fmax(POOLS[p+S.D_LF_LY2]*POOLS[p+S.H2O_LY2] - (FLUXES[f+F.q_ly2] + FLUXES[f+F.transp2])*deltat,0);
 // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
-Max_H2O_xfer= POOLS[p+S.D_LF_LY2]*pot_xfer*1000*DGCM_SEC_DAY*deltat;
+Max_H2O_xfer= POOLS[p+S.D_LF_LY2]*pot_xfer*DGCM_SEC_DAY*deltat;
 //Minimum of three terms for LY2->LY3
 //1. Max_H2O_xfer
 //2. Available space in LY3 (after runoff)
@@ -818,7 +818,7 @@ SPACEavail=fmax(pars[P.LY2_z]*pars[P.LY2_por]*1e3 - POOLS[p+S.H2O_LY2] + (FLUXES
 // Available water in LY3 after runoff
 H2Oavail= fmax(POOLS[p+S.D_LF_LY3]*POOLS[p+S.H2O_LY3] - FLUXES[f+F.q_ly3]*deltat,0);
 // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
-Max_H2O_xfer= POOLS[p+S.D_LF_LY3]*pot_xfer*1000*DGCM_SEC_DAY*deltat;
+Max_H2O_xfer= POOLS[p+S.D_LF_LY3]*pot_xfer*DGCM_SEC_DAY*deltat;
 // Reverse sign of previous case
 FLUXES[f+F.ly2xly3] = -fmin(-Max_H2O_xfer , fmin(SPACEavail, H2Oavail))*one_over_deltat;
 TEMPxfer_2to3= POOLS[p+S.D_TEMP_LY3];//In K
