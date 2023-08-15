@@ -236,7 +236,190 @@ FLUX_INFO.ABBREVIATION[F.melt]='melt';
 FLUX_INFO.UNITS[F.melt]='kgH20/m2/day';
 FLUX_INFO.DESCRIPTION[F.melt]='melt';
 
+FLUX_INFO.NAME[F.ae_rh_cwd]='Aerobic heterotrophic respiration coarse woody debris';
+FLUX_INFO.ABBREVIATION[F.ae_rh_cwd]='ae_rh_cwd';
+FLUX_INFO.UNITS[F.ae_rh_cwd]='gC/m2/day';
+FLUX_INFO.DESCRIPTION[F.ae_rh_cwd]='Aerobic heterotrophic respiration from coarse woody debris pool';
 
+FLUX_INFO.NAME[F.ae_rh_lit]='Aerobic heterotrophic respiration coarse woody litter';
+FLUX_INFO.ABBREVIATION[F.ae_rh_lit]='ae_rh_lit';
+FLUX_INFO.UNITS[F.ae_rh_lit]='gC/m2/day';
+FLUX_INFO.DESCRIPTION[F.ae_rh_lit]='Aerobic heterotrophic respiration from litter pool';
+
+FLUX_INFO.NAME[F.ae_rh_som]='Aerobic heterotrophic respiration soil organic matter';
+FLUX_INFO.ABBREVIATION[F.ae_rh_som]='ae_rh_som';
+FLUX_INFO.UNITS[F.ae_rh_som]='gC/m2/day';
+FLUX_INFO.DESCRIPTION[F.ae_rh_som]='Aerobic heterotrophic respiration from soil organic matter pool';
+
+FLUX_INFO.NAME[F.an_rh_cwd]='Anaerobic heterotrophic respiration coarse woody debris';
+FLUX_INFO.ABBREVIATION[F.an_rh_cwd]='an_rh_cwd';
+FLUX_INFO.UNITS[F.an_rh_cwd]='gC/m2/day';
+FLUX_INFO.DESCRIPTION[F.an_rh_cwd]='Anaerobic heterotrophic respiration from coarse woody debris pool';
+
+FLUX_INFO.NAME[F.an_rh_lit]='Anaerobic heterotrophic respiration litter';
+FLUX_INFO.ABBREVIATION[F.an_rh_lit]='an_rh_lit';
+FLUX_INFO.UNITS[F.an_rh_lit]='gC/m2/day';
+FLUX_INFO.DESCRIPTION[F.an_rh_lit]='Anaerobic heterotrophic respiration from litter pool';
+
+FLUX_INFO.NAME[F.an_rh_som]='Anaerobic heterotrophic respiration soil organic matter';
+FLUX_INFO.ABBREVIATION[F.an_rh_som]='an_rh_som';
+FLUX_INFO.UNITS[F.an_rh_som]='gC/m2/day';
+FLUX_INFO.DESCRIPTION[F.an_rh_som]='Anaerobic heterotrophic respiration from soil organic matter pool';
+ 
+FLUX_INFO.NAME[F.rh_co2]='Heterotrophic respiration CO2 flux';
+FLUX_INFO.ABBREVIATION[F.rh_co2]='rh_co2';
+FLUX_INFO.UNITS[F.rh_co2]='gC/m2/day';
+FLUX_INFO.DESCRIPTION[F.rh_co2]='Total CO2 flux from heterotrophic respiration';
+ 
+FLUX_INFO.NAME[F.rh_ch4]='Heterotrophic respiration CH4 flux';
+FLUX_INFO.ABBREVIATION[F.rh_ch4]='rh_ch4';
+FLUX_INFO.UNITS[F.rh_ch4]='gCH4/m2/day';
+FLUX_INFO.DESCRIPTION[F.rh_ch4]='Total CH4 flux from heterotrophic respiration';
+ 
+FLUX_INFO.NAME[F.aetr]='Aerobic turnover scalar';
+FLUX_INFO.ABBREVIATION[F.aetr]='aetr';
+FLUX_INFO.UNITS[F.aetr]='scalar*';
+FLUX_INFO.DESCRIPTION[F.aetr]='Aerobic turnover scalar*';
+
+FLUX_INFO.NAME[F.antr]='Anaerobic turnover scalar';
+FLUX_INFO.ABBREVIATION[F.antr]='antr';
+FLUX_INFO.UNITS[F.antr]='scalar*';
+FLUX_INFO.DESCRIPTION[F.antr]='Anaerobic turnover scalar*';
+
+FLUX_INFO.NAME[F.an_co2_c_ratio]='Anaerobic CO2 C ratio';
+FLUX_INFO.ABBREVIATION[F.an_co2_c_ratio]='an_co2_c_ratio';
+FLUX_INFO.UNITS[F.an_co2_c_ratio]='fraction*';
+FLUX_INFO.DESCRIPTION[F.an_co2_c_ratio]='CO2 fraction in anaerobic C decomposition*';
+
+FLUX_INFO.NAME[F.an_ch4_c_ratio]='Anaerobic CH4 C ratio';
+FLUX_INFO.ABBREVIATION[F.an_ch4_c_ratio]='an_ch4_c_ratio';
+FLUX_INFO.UNITS[F.an_ch4_c_ratio]='fraction*';
+FLUX_INFO.DESCRIPTION[F.an_ch4_c_ratio]='CH4 fraction in anaerobic C decomposition*';
+
+FLUX_INFO.NAME[F.target_LAI]='Target leaf area index';
+FLUX_INFO.ABBREVIATION[F.target_LAI]='target_LAI';
+FLUX_INFO.UNITS[F.target_LAI]='m2/m2';
+FLUX_INFO.DESCRIPTION[F.target_LAI]='Target LAI calculated based on KNORR phenology scheme influenced by water, light, and temperature. Coded in KNORR_ALLOCATION.c';
+
+FLUX_INFO.NAME[F.dlambda_dt]='Delta leaf area index';
+FLUX_INFO.ABBREVIATION[F.dlambda_dt]='dlambda_dt';
+FLUX_INFO.UNITS[F.dlambda_dt]='m2/m2';
+FLUX_INFO.DESCRIPTION[F.dlambda_dt]='Difference between Target leaf area index (target_LAI) and current leaf area index. Coded in KNORR_ALLOCATION.c ';
+
+FLUX_INFO.NAME[F.f_temp_thresh]='Temperature threshold';
+FLUX_INFO.ABBREVIATION[F.f_temp_thresh]='f_temp_thresh';
+FLUX_INFO.UNITS[F.f_temp_thresh]='fraction';
+FLUX_INFO.DESCRIPTION[F.f_temp_thresh]='Fraction of plants within pixel able to grow foliage on temperature threshold. Coded in KNORR_ALLOCATION.c';
+
+FLUX_INFO.NAME[F.f_dayl_thresh]='Daylight threshold';
+FLUX_INFO.ABBREVIATION[F.f_dayl_thresh]='f_dayl_thresh';
+FLUX_INFO.UNITS[F.f_dayl_thresh]='fraction';
+FLUX_INFO.DESCRIPTION[F.f_dayl_thresh]='Fraction of plants within pixel able to grow foliage based on daylight threshold. Coded in KNORR_ALLOCATION.c';
+
+FLUX_INFO.NAME[F.lai_fire]='Leaf area index fire loss';
+FLUX_INFO.ABBREVIATION[F.lai_fire]='lai_fire';
+FLUX_INFO.UNITS[F.lai_fire]='m2/m2';
+FLUX_INFO.DESCRIPTION[F.lai_fire]='Leaf area index fire lost to fire*';
+
+FLUX_INFO.NAME[F.foliar_fire_frac]='C_fol fire loss fraction';
+FLUX_INFO.ABBREVIATION[F.foliar_fire_frac]='foliar_fire_frac';
+FLUX_INFO.UNITS[F.foliar_fire_frac]='fraction';
+FLUX_INFO.DESCRIPTION[F.foliar_fire_frac]='Foliage pool lost due to fire*';
+
+FLUX_INFO.NAME[F.net_radiation]='Net radiation flux';
+FLUX_INFO.ABBREVIATION[F.net_radiation]='net_radiation';
+FLUX_INFO.UNITS[F.net_radiation]='W/m2';
+FLUX_INFO.DESCRIPTION[F.net_radiation]='Net radiation flux defined as incoming shortwave radiation (SWin) - outgoing shortwave radiation (SWout) + incoming longwave radiation (LWin) - outgoing longwave radiation (LWout)';
+
+FLUX_INFO.NAME[F.latent_heat]='Latent heat flux';
+FLUX_INFO.ABBREVIATION[F.latent_heat]='latent_heat';
+FLUX_INFO.UNITS[F.latent_heat]='W/m2';
+FLUX_INFO.DESCRIPTION[F.latent_heat]='Latent heat flux';
+
+FLUX_INFO.NAME[F.sensible_heat]='Sensible heat flux';
+FLUX_INFO.ABBREVIATION[F.sensible_heat]='sensible_heat';
+FLUX_INFO.UNITS[F.sensible_heat]='W/m2';
+FLUX_INFO.DESCRIPTION[F.sensible_heat]='Sensible heat flux';
+
+FLUX_INFO.NAME[F.ground_heat]='Ground heat flux';
+FLUX_INFO.ABBREVIATION[F.ground_heat]='ground_heat';
+FLUX_INFO.UNITS[F.ground_heat]='W/m2';
+FLUX_INFO.DESCRIPTION[F.ground_heat]='Ground heat flux';
+
+FLUX_INFO.NAME[F.gh_in]='Ground heat flux in converted units';
+FLUX_INFO.ABBREVIATION[F.gh_in]='gh_in';
+FLUX_INFO.UNITS[F.gh_in]='J/m2/day';
+FLUX_INFO.DESCRIPTION[F.gh_in]='Ground heat flux in converted units';
+
+FLUX_INFO.NAME[F.resp_auto_growth]='Autotrophic growth respiration';
+FLUX_INFO.ABBREVIATION[F.resp_auto_growth]='resp_auto_growth';
+FLUX_INFO.UNITS[F.resp_auto_growth]='gC/m2/day';
+FLUX_INFO.DESCRIPTION[F.resp_auto_growth]='Autotrophic growth respiration';
+
+FLUX_INFO.NAME[F.resp_auto_maint]='Autotrophic maintenance respiration';
+FLUX_INFO.ABBREVIATION[F.resp_auto_maint]='resp_auto_maint';
+FLUX_INFO.UNITS[F.resp_auto_maint]='gC/m2/day';
+FLUX_INFO.DESCRIPTION[F.resp_auto_maint]='Autotrophic maintenance respiration';
+
+FLUX_INFO.NAME[F.SWin]='Incoming shortwave radiation';
+FLUX_INFO.ABBREVIATION[F.SWin]='SWin';
+FLUX_INFO.UNITS[F.SWin]='W/m2';
+FLUX_INFO.DESCRIPTION[F.SWin]='Incoming shortwave radiation';
+
+FLUX_INFO.NAME[F.SWout]='Outgoing shortwave radiation';
+FLUX_INFO.ABBREVIATION[F.SWout]='SWout';
+FLUX_INFO.UNITS[F.SWout]='W/m2';
+FLUX_INFO.DESCRIPTION[F.SWout]='Outgoing shortwave radiation';
+
+FLUX_INFO.NAME[F.LWin]='Incoming longwave radiation';
+FLUX_INFO.ABBREVIATION[F.LWin]='LWin';
+FLUX_INFO.UNITS[F.LWin]='W/m2';
+FLUX_INFO.DESCRIPTION[F.LWin]='Incoming longwave radiation';
+
+FLUX_INFO.NAME[F.LWout]='Outgoing longwave radiation';
+FLUX_INFO.ABBREVIATION[F.LWout]='LWout';
+FLUX_INFO.UNITS[F.LWout]='W/m2';
+FLUX_INFO.DESCRIPTION[F.LWout]='Outgoing longwave radiation';
+
+FLUX_INFO.NAME[F.ly1xly2_th_e]='Thermal conductivity layer one to layer two*';
+FLUX_INFO.ABBREVIATION[F.ly1xly2_th_e]='ly1xly2_th_e';
+FLUX_INFO.UNITS[F.ly1xly2_th_e]='J/m2/day';
+FLUX_INFO.DESCRIPTION[F.ly1xly2_th_e]='Thermal conductivity between layer one and layer two*';
+
+FLUX_INFO.NAME[F.ly2xly3_th_e]='Thermal conductivity layer two to layer three*';
+FLUX_INFO.ABBREVIATION[F.ly2xly3_th_e]='ly2xly3_th_e';
+FLUX_INFO.UNITS[F.ly2xly3_th_e]='J/m2/day';
+FLUX_INFO.DESCRIPTION[F.ly2xly3_th_e]='Thermal conductivity between layer two and layer three*';
+
+FLUX_INFO.NAME[F.resp_auto_maint_dark]='Autotrophic maintenance dark respiration';
+FLUX_INFO.ABBREVIATION[F.resp_auto_maint_dark]='resp_auto_maint_dark';
+FLUX_INFO.UNITS[F.resp_auto_maint_dark]='gC/m2/day';
+FLUX_INFO.DESCRIPTION[F.resp_auto_maint_dark]='Autotrophic maintenance dark respiration from foliage*';
+
+FLUX_INFO.NAME[F.sublimation]='Sublimation';
+FLUX_INFO.ABBREVIATION[F.sublimation]='sublimation';
+FLUX_INFO.UNITS[F.sublimation]='kgH2O/m2/day';
+FLUX_INFO.DESCRIPTION[F.sublimation]='Sublimation*';
+
+FLUX_INFO.NAME[F.geological]='Geological';
+FLUX_INFO.ABBREVIATION[F.geological]='geological';
+FLUX_INFO.UNITS[F.geological]='J/m2/day';
+FLUX_INFO.DESCRIPTION[F.geological]='Prederived geological flux in J/m2/day(105mW/m2)';
+
+FLUX_INFO.NAME[F.ets]='Total land-atmosphere water';
+FLUX_INFO.ABBREVIATION[F.ets]='ets';
+FLUX_INFO.UNITS[F.ets]='kgH2O/m2/day';
+FLUX_INFO.DESCRIPTION[F.ets]='Total land-atmosphere water flux (evaporation + transpiration + sublimation)';
+
+FLUX_INFO.NAME[F.beta_factor]='Stress scaling factor';
+FLUX_INFO.ABBREVIATION[F.beta_factor]='beta_factor';
+FLUX_INFO.UNITS[F.beta_factor]='fraction';
+FLUX_INFO.DESCRIPTION[F.beta_factor]='Stress due to cold weather and water availability';
+
+FLUX_INFO.NAME[F.soil_beta_factor]='H2O stress scaling factor';
+FLUX_INFO.ABBREVIATION[F.soil_beta_factor]='soil_beta_factor';
+FLUX_INFO.UNITS[F.soil_beta_factor]='fraction';
+FLUX_INFO.DESCRIPTION[F.soil_beta_factor]='Stress due to soil water availability';
 
 //Parameter info 
 
