@@ -828,9 +828,9 @@ TEMPxfer_2to3= POOLS[p+S.D_TEMP_LY3];//In K
 // Update pools, including ET from LY1
     //Ensure all pools greater or equal to zero
 
-POOLS[nxp+S.H2O_LY1] = fmax(POOLS[p+S.H2O_LY1] + (FLUXES[f+F.infil] - FLUXES[f+F.ly1xly2] - FLUXES[f+F.q_ly1] - FLUXES[f+F.evap] - FLUXES[f+F.transp1])*deltat,0);
-POOLS[nxp+S.H2O_LY2] = fmax(POOLS[p+S.H2O_LY2] + (FLUXES[f+F.ly1xly2] - FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly2] - FLUXES[f+F.transp2])*deltat,0);
-POOLS[nxp+S.H2O_LY3] = fmax(POOLS[p+S.H2O_LY3] + (FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly3])*deltat,0);
+POOLS[nxp+S.H2O_LY1] = POOLS[p+S.H2O_LY1] + (FLUXES[f+F.infil] - FLUXES[f+F.ly1xly2] - FLUXES[f+F.q_ly1] - FLUXES[f+F.evap] - FLUXES[f+F.transp1])*deltat;
+POOLS[nxp+S.H2O_LY2] = POOLS[p+S.H2O_LY2] + (FLUXES[f+F.ly1xly2] - FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly2] - FLUXES[f+F.transp2])*deltat;
+POOLS[nxp+S.H2O_LY3] = POOLS[p+S.H2O_LY3] + (FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly3])*deltat;
 
 
 
