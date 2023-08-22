@@ -427,6 +427,212 @@ PARS_INFO.NAME[P.twood]='Turnover rate of wood';
 PARS_INFO.ABBREVIATION[P.twood]='twood';
 PARS_INFO.UNITS[P.twood]='gC/m2/day';
 PARS_INFO.DESCRIPTION[P.twood]='Includes maintenance respiration and growth respiration';
+
+PARS_INFO.NAME[P.tr_lit2som]='Litter decomposition rate';
+PARS_INFO.ABBREVIATION[P.tr_lit2som]='lit2som';
+PARS_INFO.UNITS[P.tr_lit2som]='fraction';
+PARS_INFO.DESCRIPTION[P.tr_lit2som]='Fraction of litter lost to soil organic matter per day';
+
+PARS_INFO.NAME[P.tr_cwd2som]='CWD decomposition rate';
+PARS_INFO.ABBREVIATION[P.tr_cwd2som]='cwd2som';
+PARS_INFO.UNITS[P.tr_cwd2som]='fraction';
+PARS_INFO.DESCRIPTION[P.tr_cwd2som]='Fraction of course woody debris lost to soil organic matter per day';
+
+PARS_INFO.NAME[P.rauto_mr_r]='Autotrophic maintenance respiration coefficient for roots';
+PARS_INFO.ABBREVIATION[P.rauto_mr_r]='rauto_mr_r]';
+PARS_INFO.UNITS[P.rauto_mr_r]='';
+PARS_INFO.DESCRIPTION[P.rauto_mr_r]='Autotrophic maintenance respiration coefficient for roots - turnover rate at 25oC (d-1)';
+
+PARS_INFO.NAME[P.rauto_mr_w]='Autotrophic maintenance respiration coefficient for wood';
+PARS_INFO.ABBREVIATION[P.rauto_mr_w]='rauto_mr_w';
+PARS_INFO.UNITS[P.rauto_mr_w]='';
+PARS_INFO.DESCRIPTION[]='Autotrophic maintenance respiration coefficient for wood - turnover rate at 25oC (d-1)';
+
+PARS_INFO.NAME[P.rauto_mr_q10]='Autotrophic maintenance respiration Q10 parameter';
+PARS_INFO.ABBREVIATION[P.rauto_mr_q10]='rauto_mr_q10';
+PARS_INFO.UNITS[P.rauto_mr_q10]='';
+PARS_INFO.DESCRIPTION[P.rauto_mr_q10]='Autotrophic maintenance respiration Q10 parameter';
+
+PARS_INFO.NAME[P.rauto_mrd_q10]='Dark respiration Q10 parameter';
+PARS_INFO.ABBREVIATION[P.rauto_mrd_q10]='rauto_mrd_q10';
+PARS_INFO.UNITS[P.rauto_mrd_q10]='';
+PARS_INFO.DESCRIPTION[P.rauto_mrd_q10]='Dark respiration Q10 parameter';
+
+PARS_INFO.NAME[P.rauto_gr]='Growth yield';
+PARS_INFO.ABBREVIATION[P.rauto_gr]='rauto_gr';
+PARS_INFO.UNITS[P.rauto_gr]='g C';
+PARS_INFO.DESCRIPTION[P.rauto_gr]='Growth yield (g C appearing in new biomass per g C used for growth; "growth yield" in Cannell and Thornley 2000)';
+
+PARS_INFO.NAME[P.t_wood]='Turnover rate of wood';
+PARS_INFO.ABBREVIATION[P.t_wood]='t_wood';
+PARS_INFO.UNITS[P.t_wood]='gC/m2/day';
+PARS_INFO.DESCRIPTION[P.t_wood]='Rate of wood loss per day* - 1% loss per year value';
+ 
+PARS_INFO.NAME[P.t_root]='Turnover rate of roots';
+PARS_INFO.ABBREVIATION[P.t_root]='t_root';
+PARS_INFO.UNITS[P.t_root]='gC/m2/day';
+PARS_INFO.DESCRIPTION[P.t_root]='Rate of root loss per day';
+
+PARS_INFO.NAME[P.t_lit]='Turnover rate of litter';
+PARS_INFO.ABBREVIATION[P.t_lit]='t_lit';
+PARS_INFO.UNITS[P.t_lit]='gC/m2/day';
+PARS_INFO.DESCRIPTION[P.t_lit]='Rate of litter turnover per day';
+ 
+PARS_INFO.NAME[P.t_cwd]='Turnover rate of coarse woody debris';
+PARS_INFO.ABBREVIATION[P.t_cwd]='t_cwd';
+PARS_INFO.UNITS[P.t_cwd]='gC/m2/day';
+PARS_INFO.DESCRIPTION[P.t_cwd]='Rate of coarse woody debris turnover per day';
+
+PARS_INFO.NAME[P.t_som]='Turnover rate of soil organic matter';
+PARS_INFO.ABBREVIATION[P.t_som]='t_som';
+PARS_INFO.UNITS[P.t_som]='gC/m2/day';
+PARS_INFO.DESCRIPTION[P.t_som]='Rate of soil turnover to heterotrophic respiration';
+ 
+PARS_INFO.NAME[P.Q10rhco2]='Q10';
+PARS_INFO.ABBREVIATION[P.Q10rhco2]='';
+PARS_INFO.UNITS[P.Q10rhco2]='';
+PARS_INFO.DESCRIPTION[P.Q10rhco2]='';
+
+PARS_INFO.NAME[P.LCMA]='Leaf mass carbon per area';
+PARS_INFO.ABBREVIATION[P.LCMA]='LCMA';
+PARS_INFO.UNITS[P.LCMA]='gC/m2';
+PARS_INFO.DESCRIPTION[P.LCMA]=' Leaf mass carbon per unit leaf area; Kattge et al. 2011*;*Kattge et al., provide a range of 10 400 g m-2, i.e. 5 200 gC m-2*';
+
+PARS_INFO.NAME[P.i_labile]='Initial labile';
+PARS_INFO.ABBREVIATION[P.i_labile]='i_labile';
+PARS_INFO.UNITS[P.i_labile]='gC/m2';
+PARS_INFO.DESCRIPTION[P.i_labile]='Size of labile C pool at time step 1';
+
+PARS_INFO.NAME[P.i_foliar]='Initial foliar';
+PARS_INFO.ABBREVIATION[P.i_foliar]='i_foliar';
+PARS_INFO.UNITS[P.i_foliar]='gC/m2';
+PARS_INFO.DESCRIPTION[P.i_labile]='Size of foliar C pool at time step 1';
+
+PARS_INFO.NAME[P.i_root]='Initial roots';
+PARS_INFO.ABBREVIATION[P.i_root]='i_root';
+PARS_INFO.UNITS[P.i_root]='gC/m2';
+PARS_INFO.DESCRIPTION[P.i_root]='Size of roots C pool at time step 1';
+
+PARS_INFO.NAME[P.i_wood]='Initial wood';
+PARS_INFO.ABBREVIATION[P.i_wood]='i_wood';
+PARS_INFO.UNITS[P.i_wood]='gC/m2';
+PARS_INFO.DESCRIPTION[P.i_wood]='Size of wood C pool at time step 1';
+
+PARS_INFO.NAME[P.i_cwd]='Initial CWD';
+PARS_INFO.ABBREVIATION[P.i_cwd]='i_cwd';
+PARS_INFO.UNITS[P.i_cwd]='gC/m2';
+PARS_INFO.DESCRIPTION[P.i_cwd]='Size of coarse woody debris C pool at time step 1';
+
+PARS_INFO.NAME[P.i_lit]='Initial litter';
+PARS_INFO.ABBREVIATION[P.i_lit]='i_lit';
+PARS_INFO.UNITS[P.i_lit]='gC/m2';
+PARS_INFO.DESCRIPTION[P.i_lit]='Size of litter C pool at time step 1';
+
+PARS_INFO.NAME[P.i_som]='Initial soil organic matter';
+PARS_INFO.ABBREVIATION[P.i_som]='i_som';
+PARS_INFO.UNITS[P.i_som]='gC/m2';
+PARS_INFO.DESCRIPTION[P.i_som]='Size of soil organic matter C pool at time step 1';
+
+PARS_INFO.NAME[P.retention]='Retention parameter';
+PARS_INFO.ABBREVIATION[P.retention]='retention';
+PARS_INFO.UNITS[P.retention]='';
+PARS_INFO.DESCRIPTION[P.retention]='Retention parameter (b)';
+
+PARS_INFO.NAME[P.i_LY1_SM]='LY1 SM at t0';
+PARS_INFO.ABBREVIATION[P.i_LY1_SM]='i_LY1_SM';
+PARS_INFO.UNITS[P.i_LY1_SM]='';
+PARS_INFO.DESCRIPTION[P.i_LY1_SM]='LY1 SM at t0';
+
+PARS_INFO.NAME[P.cf_foliar]='Foliar biomass CF';
+PARS_INFO.ABBREVIATION[P.cf_foliar]='cf_foliar';
+PARS_INFO.UNITS[P.cf_foliar]='%';
+PARS_INFO.DESCRIPTION[P.cf_foliar]='Foliar biomass combustion factor';
+ 
+PARS_INFO.NAME[P.cf_ligneous]='Ligneous biomass CF';
+PARS_INFO.ABBREVIATION[P.cf_ligneous]='cf_ligneous';
+PARS_INFO.UNITS[P.cf_ligneous]='%';
+PARS_INFO.DESCRIPTION[P.cf_ligneous]='Ligneous biomass combustion factor';
+ 
+PARS_INFO.NAME[P.cf_DOM]='DOM CF';
+PARS_INFO.ABBREVIATION[P.cf_DOM]='cf_DOM';
+PARS_INFO.UNITS[P.cf_DOM]='%';
+PARS_INFO.DESCRIPTION[P.cf_DOM]='Dead organic matter combustion factor';
+
+PARS_INFO.NAME[P.resilience]='Resilience factor';
+PARS_INFO.ABBREVIATION[P.resilience]='resilience';
+PARS_INFO.UNITS[P.resilience]='%';
+PARS_INFO.DESCRIPTION[P.resilience]='Resilience factor (since transfer to litter is represented as (1-pars[30]))';
+
+PARS_INFO.NAME[P.hydr_cond]='Saturated hydraulic conductivity';
+PARS_INFO.ABBREVIATION[P.hydr_cond]='hydr_cond';
+PARS_INFO.UNITS[P.hydr_cond]='m/s';
+PARS_INFO.DESCRIPTION[P.hydr_cond]='Saturated hydraulic conductivity';
+
+PARS_INFO.NAME[P.max_infil]='Maximum infiltration';
+PARS_INFO.ABBREVIATION[P.max_infil]='max_infil';
+PARS_INFO.UNITS[P.max_infil]='mm/day';
+PARS_INFO.DESCRIPTION[P.max_infil]='Maximum infiltration';
+
+PARS_INFO.NAME[P.i_LY3_SM]='LY3 SM at t=0';
+PARS_INFO.ABBREVIATION[P.i_LY3_SM]='i_LY3_SM';
+PARS_INFO.UNITS[P.i_LY3_SM]='';
+PARS_INFO.DESCRIPTION[P.i_LY3_SM]='LY3 SM at t=0';
+
+PARS_INFO.NAME[P.LY1_por]='LY1 porosity';
+PARS_INFO.ABBREVIATION[P.LY1_por]='LY1_por';
+PARS_INFO.UNITS[P.LY1_por]='';
+PARS_INFO.DESCRIPTION[P.LY1_por]='LY1 porosity';
+
+PARS_INFO.NAME[P.LY2_por]='LY2 porosity';
+PARS_INFO.ABBREVIATION[P.LY2_por]='LY2_por';
+PARS_INFO.UNITS[P.LY2_por]='';
+PARS_INFO.DESCRIPTION[P.LY2_por]='LY2 porosity';
+
+PARS_INFO.NAME[P.LY3_por]='LY3 porosity';
+PARS_INFO.ABBREVIATION[P.LY3_por]='';
+PARS_INFO.UNITS[P.LY3_por]='';
+PARS_INFO.DESCRIPTION[P.LY3_por]='LY3 porosity';
+
+PARS_INFO.NAME[P.field_cap]='Field capacity (negative) potential';
+PARS_INFO.ABBREVIATION[P.field_cap]='field_cap';
+PARS_INFO.UNITS[P.field_cap]='-Mpa';
+PARS_INFO.DESCRIPTION[P.field_cap]='Field capacity (negative) potential';
+
+PARS_INFO.NAME[P.LY1_z]='LY1 depth';
+PARS_INFO.ABBREVIATION[P.LY1_z]='LY1_z';
+PARS_INFO.UNITS[P.LY1_z]='m';
+PARS_INFO.DESCRIPTION[P.LY1_z]='LY1 depth';
+
+PARS_INFO.NAME[P.LY2_z]='LY2 depth';
+PARS_INFO.ABBREVIATION[P.LY2_z]='LY2_z';
+PARS_INFO.UNITS[P.LY2_z]='m';
+PARS_INFO.DESCRIPTION[P.LY2_z]='LY2 depth';
+
+PARS_INFO.NAME[P.LY3_z]='LY3 depth';
+PARS_INFO.ABBREVIATION[P.LY3_z]='LY3_z';
+PARS_INFO.UNITS[P.LY3_z]='m';
+PARS_INFO.DESCRIPTION[P.LY3_z]='LY3 depth';
+
+PARS_INFO.NAME[P.LY1_vhc]='LY1 volumetric heat capacity';
+PARS_INFO.ABBREVIATION[P.LY1_vhc]='';
+PARS_INFO.UNITS[P.LY1_vhc]='';
+PARS_INFO.DESCRIPTION[P.LY1_vhc]='LY1 the change in heat content of a unit bulk volume of soil per unit change in temperature (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)';
+
+PARS_INFO.NAME[P.LY2_vhc]='LY2 volumetric heat capacity';
+PARS_INFO.ABBREVIATION[P.LY2_vhc]='';
+PARS_INFO.UNITS[P.LY2_vhc]='';
+PARS_INFO.DESCRIPTION[P.LY2_vhc]='LY2 the change in heat content of a unit bulk volume of soil per unit change in temperature (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)';
+
+PARS_INFO.NAME[P.LY3_vhc]='LY3 volumetric heat capacity';
+PARS_INFO.ABBREVIATION[P.LY3_vhc]='';
+PARS_INFO.UNITS[P.LY3_vhc]='';
+PARS_INFO.DESCRIPTION[P.LY3_vhc]='LY3 the change in heat content of a unit bulk volume of soil per unit change in temperature (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)';
+
+PARS_INFO.NAME[P.Q_excess]='Runoff excess';
+PARS_INFO.ABBREVIATION[P.Q_excess]='Q_excess';
+PARS_INFO.UNITS[P.Q_excess]='';
+PARS_INFO.DESCRIPTION[P.Q_excess]='Runoff excess';
+
 //Pool info
 
 POOLS_INFO.NAME[twood]='Turnover rate of wood';
