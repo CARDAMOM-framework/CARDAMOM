@@ -13,14 +13,12 @@ struct DALEC_1100_PARAMETERS{
 /*DALEC PARAMETERS*/
 int i_SWE_H2O;
 int i_SWE_E;
-int min_melt;
-int melt_slope;
 int SWEmax; //___scf_gen3
 int Nmelt;  //___scf_gen3
 int sublimation_rate;
 int thermal_cond_swe;
 } DALEC_1100_PARAMETERS={
-     0, 1, 2, 3, 4, 5, 6,7}; //___scf_gen3
+     0, 1, 2, 3, 4, 5}; //___scf_gen3
 
 struct DALEC_1100_FLUXES{
 /*DALEC FLUXES*/
@@ -57,9 +55,9 @@ struct DALEC_1100_EDCs{
 // int mean_paw_temp;
 // int mean_puw_temp;
 // int nsc_ratio;
-int state_trajectories;
-int state_ranges;
 //int state_trajectories;
+int state_ranges;
+int state_trajectories;
 //int vcmax_lcma;
 } DALEC_1100_EDCs={
    0,1};
