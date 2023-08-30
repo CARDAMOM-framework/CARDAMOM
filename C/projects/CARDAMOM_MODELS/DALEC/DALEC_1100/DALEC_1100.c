@@ -1350,11 +1350,11 @@ EDCs[E.vcmax_lcma].prerun=true;
 
  static DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
  
- static int edc_pool_indices[14];
-    static double edc_pool_eqf[14];
+ static int edc_pool_indices[13];
+    static double edc_pool_eqf[13];
 EDC_st.pool_indices=edc_pool_indices;
 EDC_st.pool_eqf=edc_pool_eqf;
-EDC_st.no_pools_to_check=14;
+EDC_st.no_pools_to_check=13;
 
 EDC_st.pool_indices[0]=S.C_lab;
 EDC_st.pool_indices[1]=S.C_fol;
@@ -1366,10 +1366,10 @@ EDC_st.pool_indices[6]=S.C_som;
 EDC_st.pool_indices[7]=S.H2O_LY1;
 EDC_st.pool_indices[8]=S.H2O_LY2;
 EDC_st.pool_indices[9]=S.H2O_LY3;
-EDC_st.pool_indices[10]=S.H2O_SWE;
-EDC_st.pool_indices[11]=S.E_LY1;
-EDC_st.pool_indices[12]=S.E_LY2;
-EDC_st.pool_indices[13]=S.E_LY3;
+// EDC_st.pool_indices[10]=S.H2O_SWE;
+EDC_st.pool_indices[10]=S.E_LY1;
+EDC_st.pool_indices[11]=S.E_LY2;
+EDC_st.pool_indices[12]=S.E_LY3;
 //EDC_st.pool_indices[12]=S.M_LAI_MAX;```
 //EDC_st.pool_indices[13]=S.M_LAI_TEMP;
 
