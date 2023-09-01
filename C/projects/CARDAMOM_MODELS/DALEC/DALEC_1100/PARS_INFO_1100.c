@@ -65,7 +65,11 @@ parmax[P.Nmelt]=10.0;
 parmin[P.sublimation_rate]=0.00001;
 parmax[P.sublimation_rate]=1;
 
-return 0;
+  
+parmin[P.snow_sub_temp_exp]=0.00001;
+parmax[P.snow_sub_temp_exp]=1;
+
+    return 0;
 
 }
 

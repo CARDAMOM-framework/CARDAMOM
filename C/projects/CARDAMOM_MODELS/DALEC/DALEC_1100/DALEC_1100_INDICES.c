@@ -17,17 +17,18 @@ int SWEmax; //___scf_gen3
 int Nmelt;  //___scf_gen3
 int sublimation_rate;
 int thermal_cond_swe;
+int snow_sub_temp_exp;
 } DALEC_1100_PARAMETERS={
-     0, 1, 2, 3, 4, 5}; //___scf_gen3
+     0, 1, 2, 3, 4, 5,6}; //___scf_gen3
 
 struct DALEC_1100_FLUXES{
 /*DALEC FLUXES*/
 int snowfall;   /*Snowfall to SWE*/
 int e_snowfall;   /*Snowfall to SWE*/
-int melt;   /*Snow melt*/
 int sublimation;
-int e_melt;   
 int e_sublimation;
+int melt;   /*Snow melt*/
+int e_melt;   
 int snow_heat;
 } DALEC_1100_FLUXES={
      0, 1, 2,3,4,5,6};
