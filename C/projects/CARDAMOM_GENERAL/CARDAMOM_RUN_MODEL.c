@@ -139,10 +139,11 @@ int Ntimesteps=CARDADATA.ncdf_data.Ntimesteps;
 
 
 /*STEP 3.2 - create netCDF output dimensions*/
-int sampleDimID, poolDimID, fluxDimID, timePoolsDimID,timeFluxesDimID, probIdxDimID,edcIdxDimID, noParsDimID, noLikelihoodsDimID;
+int sampleDimID, poolDimID,  timePoolsDimID,timeFluxesDimID, probIdxDimID,edcIdxDimID, noParsDimID, noLikelihoodsDimID;
 FAILONERROR(nc_def_dim(ncid,"Sample",N,&sampleDimID));
 FAILONERROR(nc_def_dim(ncid,"Pool",CARDADATA.nopools,&poolDimID ));
-FAILONERROR(nc_def_dim(ncid,"Flux",CARDADATA.nofluxes,&fluxDimID ));
+//int fluxDimID;
+//FAILONERROR(nc_def_dim(ncid,"Flux",CARDADATA.nofluxes,&fluxDimID ));
 //NOTE: this was going to be the NC_UNLIMITED dimension, however due to concerns with support for netcdf classic, it is now fixed, and split into two
 FAILONERROR(nc_def_dim(ncid,"Time_pools",Ntimesteps+1,&timePoolsDimID));
 FAILONERROR(nc_def_dim(ncid,"Time_fluxes",Ntimesteps,&timeFluxesDimID));
@@ -158,15 +159,24 @@ FAILONERROR(nc_def_dim(ncid,"Likelihood Index",CARDADATA.nolikelihoods,&noLikeli
 
 
 /*STEP 3.3 - create netCDF variables in preperation for writting them later*/
-int fluxesVarID, poolsVarID, edcsVarID, pVarID, parsVarID, likelihoodsVarID;
+int poolsVarID, edcsVarID, pVarID, parsVarID, likelihoodsVarID;
+int fluxesVarID[CARDADATA.nofluxes];
+//This is the int array that gets re-used for each flux, letting the nc_def_var function know that each flux needs to be based on the sample and time dimensions 
+int fluxes_dems[] = {sampleDimID,timeFluxesDimID};
+//Create each flux variable as its own var
+struct FLUX_META_STRUCT FluxInfo = ((DALEC *)CARDADATA.MODEL)->FLUX_META;
+for(int i = 0; i < CARDADATA.nofluxes; i++){
+  FAILONERROR(nc_def_var(	ncid,FluxInfo.ABBREVIATION[i] , NC_DOUBLE, 2, fluxes_dems, &(fluxesVarID[i]) ));
+  WARNONERROR(nc_put_att_text	(	ncid,fluxesVarID[i],"Name",strlen(FluxInfo.NAME[i]),FluxInfo.NAME[i]));
+  WARNONERROR(nc_put_att_text	(	ncid,fluxesVarID[i],"Description",strlen(FluxInfo.DESCRIPTION[i]),FluxInfo.DESCRIPTION[i]));
+  WARNONERROR(nc_put_att_text	(	ncid,fluxesVarID[i],"Units",strlen(FluxInfo.UNITS[i]),FluxInfo.UNITS[i]));
 
-int fluxes_dems[] = {sampleDimID,timeFluxesDimID,fluxDimID};
-FAILONERROR(nc_def_var(	ncid,"FLUXES" , NC_DOUBLE, 3, fluxes_dems, &fluxesVarID ));
+}
 //EXAMPLE ATTRIBUTES
-char fluxesLowercaseName[]="fluxes";
-WARNONERROR(nc_put_att_text	(	ncid,fluxesVarID,"example_lowercase_name",strlen(fluxesLowercaseName),fluxesLowercaseName));
+//char fluxesLowercaseName[]="fluxes";
+//WARNONERROR(nc_put_att_text	(	ncid,fluxesVarID[0],"example_lowercase_name",strlen(fluxesLowercaseName),fluxesLowercaseName));
 //This is an example of an array of doubles. Yes, you do need to specify NC_DOUBLE even though we used the type-safe method nc_put_att_double
-WARNONERROR(nc_put_att_double	(	ncid,fluxesVarID,"example_doubles",NC_DOUBLE,4,(double[]){12.44, 441.0, 3.14159265, 0.0}));
+//WARNONERROR(nc_put_att_double	(	ncid,fluxesVarID[0],"example_doubles",NC_DOUBLE,4,(double[]){12.44, 441.0, 3.14159265, 0.0}));
 
 
 
@@ -260,7 +270,10 @@ clock_t    end = clock();//End timer
 //(with N (Number of samples) being another dimension, applied to all vars)
 
 //Write fluxes
-FAILONERROR(nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps,CARDADATA.nofluxes}, CARDADATA.M_FLUXES));
+for(int i = 0; i < CARDADATA.nofluxes; i++){
+  //This is a strided write of a variable, which I admit looks like some black magic stuff. This resolves the issue with fluxes being stored row major
+  FAILONERROR(nc_put_vars_double(ncid,fluxesVarID[i],(const size_t []){n,i}, (const size_t[]){1,Ntimesteps},(const ptrdiff_t []){1,CARDADATA.nofluxes}, CARDADATA.M_FLUXES));
+} 
 //Write pools
 FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps+1,CARDADATA.nopools}, CARDADATA.M_POOLS));
 //write edcd
