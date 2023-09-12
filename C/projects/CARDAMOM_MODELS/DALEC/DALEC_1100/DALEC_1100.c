@@ -570,8 +570,16 @@ double betaHMF_2 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY2]/pars[
 double betaHMF = (betaHMF_1*pars[P.LY1_z] + betaHMF_2*pars[P.LY2_z]*pars[P.root_frac])/(pars[P.LY1_z] +pars[P.LY2_z]*pars[P.root_frac]);
 
 //if (betaHMF>1 | betaHMF<0) {printf("error in HMF, =%2.2f \n",betaHMF);} 
+double HMF; // Hydraulic mortality factor
 
-double HMF = (1-betaHMF);
+if( (POOLS[p+S.D_LF_LY1] + POOLS[p+S.D_LF_LY2]) == 2  ) { //no frozen water
+   HMF = (1-betaHMF);
+}
+else {
+    HMF = 0;
+}
+
+
 
 // mean air temperature (K)
 double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
