@@ -610,9 +610,14 @@ FLUXES[f+F.gpp] = LIU.OUT.Ag;
 FLUXES[f+F.gppnet] = LIU.OUT.An;
 //transpiration//
 double transp = LIU.OUT.transp;
+if (beta1>0 || beta2>0){
 FLUXES[f+F.transp1] = transp*beta1*pars[P.LY1_z]/(beta1*pars[P.LY1_z]+beta2*pars[P.LY2_z]*pars[P.root_frac]);
 // FLUXES[f+F.transp2] = transp*beta2*pars[P.LY2_z]*pars[P.root_frac]/(beta1*pars[P.LY1_z]+beta2*pars[P.LY2_z]*pars[P.root_frac]);
-FLUXES[f+F.transp2] = transp - FLUXES[f+F.transp1];
+FLUXES[f+F.transp2] = transp - FLUXES[f+F.transp1];}
+else {
+FLUXES[f+F.transp1] =0;
+FLUXES[f+F.transp2] =0;}
+	
 //evaporation//
 FLUXES[f+F.evap] = LIU.OUT.evap;
 
