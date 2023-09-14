@@ -15,9 +15,16 @@ Step 2. type "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c" m
 - See Git Clone FAQ below for troubleshooting
 
 **Do not use .zip approach** (!) unless you only intend to download code once, and do not anticipate collaborating with team.
- 
+
  
  ### git clone FAQ
+ 
+Q: "git clone doesn't work, because github needs a key: what do I do now?".
+
+A: To get a github key, follow instructions here: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+
+
+ 
  Get fatal error when typing "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c", what should I do?
  
  
