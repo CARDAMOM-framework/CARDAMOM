@@ -16,8 +16,21 @@ Step 2. type "git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c" m
 
 **Do not use .zip approach** (!) unless you only intend to download code once, and do not anticipate collaborating with team.
 
+
+#### Compiling CARDAMOM
+
+First sreo 
+
+### Tips 
+
+If you are working on a new machine, make sure to re-install required packages like python, homebrew, etc
  
- ### git clone FAQ
+ ### FAQ
+
+
+Q: "i get "Error: could not find any nc-config command." or something like that, what do I do?"
+
+ brew install netcdf
  
 Q: "git clone doesn't work, because github needs a key: what do I do now?".
 
