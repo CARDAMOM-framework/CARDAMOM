@@ -354,10 +354,10 @@ double *POOLS=DATA.M_POOLS;
         POOLS[S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY2],pars[P.LY2_por],pars[P.LY2_z]);//soil moisture LY3
         POOLS[S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3
 // Convert to potential
-
-        POOLS[S.D_PSI_LY1]=HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY1],psi_porosity,pars[P.retention]);
-        POOLS[S.D_PSI_LY2]=HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY2],psi_porosity,pars[P.retention]);
-        POOLS[S.D_PSI_LY3]=HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY3],psi_porosity,pars[P.retention]);
+        double min_psi=-30; // User set limit of physical soil dryness 
+        POOLS[S.D_PSI_LY1]=fmax(min_psi,HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY1],psi_porosity,pars[P.retention]));
+        POOLS[S.D_PSI_LY2]=fmax(min_psi,HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY2],psi_porosity,pars[P.retention]));
+        POOLS[S.D_PSI_LY3]=fmax(min_psi,HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY3],psi_porosity,pars[P.retention]));
 
 
 
@@ -1087,10 +1087,10 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 /*DIRECT LIVE CARBON POOL REMOVALS PART 1 of 3: Removing ABGB disturbance from live pools here*/
     /*Note: these are lateral fluxes, and are discarded, not transferred!*/
-    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-POOLS[nxp+S.C_lab]*DMF;
-    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-POOLS[nxp+S.C_fol]*DMF;
-    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-POOLS[nxp+S.C_roo]*DMF;
-    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-POOLS[nxp+S.C_woo]*DMF;
+    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.dist_lab]*deltat;
+    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.dist_fol]*deltat;
+    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.dist_roo]*deltat;
+    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.dist_woo]*deltat;
 
 	/*Calculating all fire transfers (1. combustion, and 2. litter transfer)*/
 	    /*note: all fluxes are in gC m-2 day-1*/
@@ -1192,9 +1192,9 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
         POOLS[nxp+S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3
 
 
-        POOLS[nxp+S.D_PSI_LY1]=HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY1],psi_porosity,pars[P.retention]);
-        POOLS[nxp+S.D_PSI_LY2]=HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY2],psi_porosity,pars[P.retention]);
-        POOLS[nxp+S.D_PSI_LY3]=HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention]);
+        POOLS[nxp+S.D_PSI_LY1]=fmax(min_psi, HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY1],psi_porosity,pars[P.retention]));
+        POOLS[nxp+S.D_PSI_LY2]=fmax(min_psi, HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY2],psi_porosity,pars[P.retention]));
+        POOLS[nxp+S.D_PSI_LY3]=fmax(min_psi, HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention]));
 
 
 //     //Isfinite check for 14 progronstic pools only
