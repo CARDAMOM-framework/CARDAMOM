@@ -564,6 +564,7 @@ else {
 	//We're also multiplying beta by cold-weather stress 
 //double psi_LY10 = HYDROFUN_MOI2PSI(max(POOLS[p+S.D_SM_LY1],0),psi_porosity,pars[P.retention]);
 //double psi_LY10 = HYDROFUN_MOI2PSI(POOLS[p+S.D_SM_LY1],psi_porosity,pars[P.retention_ly1]);
+
 double beta1 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50] - 1)))*POOLS[p+S.D_LF_LY1];
 double beta2 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50] - 1)))*POOLS[p+S.D_LF_LY2];
 double beta = (beta1*pars[P.LY1_z] + beta2*pars[P.LY2_z]*pars[P.root_frac])/(pars[P.LY1_z]+pars[P.LY2_z]*pars[P.root_frac]);
@@ -632,9 +633,18 @@ FLUXES[f+F.gpp] = LIU.OUT.Ag;
 FLUXES[f+F.gppnet] = LIU.OUT.An;
 //transpiration//
 double transp = LIU.OUT.transp;
+
+if (beta1>0 || beta2 >0) { 
+
 FLUXES[f+F.transp1] = transp*beta1*pars[P.LY1_z]/(beta1*pars[P.LY1_z]+beta2*pars[P.LY2_z]*pars[P.root_frac]);
 // FLUXES[f+F.transp2] = transp*beta2*pars[P.LY2_z]*pars[P.root_frac]/(beta1*pars[P.LY1_z]+beta2*pars[P.LY2_z]*pars[P.root_frac]);
 FLUXES[f+F.transp2] = transp - FLUXES[f+F.transp1];
+
+}
+else { FLUXES[f+F.transp1] = 0;
+       FLUXES[f+F.transp1] = 0;
+    }
+
 //evaporation//
 FLUXES[f+F.evap] = LIU.OUT.evap;
 
