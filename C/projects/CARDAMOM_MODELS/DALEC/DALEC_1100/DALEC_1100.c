@@ -127,21 +127,21 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
 
         // C_fol
         FIOMATRIX.SINK[F.foliar_prod]=S.C_fol;
-        FIOMATRIX.SOURCE[F.fol2lit]=S.C_fol;
+        //FIOMATRIX.SOURCE[F.fol2lit]=S.C_fol;
         FIOMATRIX.SOURCE[F.f_fol]=S.C_fol;
         FIOMATRIX.SOURCE[F.fx_fol2lit]=S.C_fol;
         FIOMATRIX.SOURCE[F.dist_fol]=S.C_fol;
         
         // C_roo
         FIOMATRIX.SINK[F.root_prod]=S.C_roo;
-        FIOMATRIX.SOURCE[F.roo2lit]=S.C_roo;
+        //FIOMATRIX.SOURCE[F.roo2lit]=S.C_roo;
         FIOMATRIX.SOURCE[F.f_roo]=S.C_roo;
         FIOMATRIX.SOURCE[F.fx_roo2lit]=S.C_roo;
         FIOMATRIX.SOURCE[F.dist_roo]=S.C_roo;
         
         // C_woo
         FIOMATRIX.SINK[F.wood_prod]=S.C_woo;
-        FIOMATRIX.SOURCE[F.woo2cwd]=S.C_woo;
+        //FIOMATRIX.SOURCE[F.woo2cwd]=S.C_woo;
         FIOMATRIX.SOURCE[F.f_woo]=S.C_woo;
         FIOMATRIX.SOURCE[F.fx_woo2cwd]=S.C_woo;
         FIOMATRIX.SOURCE[F.dist_woo]=S.C_woo;
@@ -149,9 +149,9 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         
         // C_lit
         FIOMATRIX.SINK[F.fx_lab2lit]=S.C_lit;
-        FIOMATRIX.SINK[F.fol2lit]=S.C_lit;
+        //FIOMATRIX.SINK[F.fol2lit]=S.C_lit;
         FIOMATRIX.SINK[F.fx_fol2lit]=S.C_lit;
-        FIOMATRIX.SINK[F.roo2lit]=S.C_lit;
+        //FIOMATRIX.SINK[F.roo2lit]=S.C_lit;
         FIOMATRIX.SINK[F.fx_roo2lit]=S.C_lit;
         FIOMATRIX.SOURCE[F.ae_rh_lit]=S.C_lit;
         FIOMATRIX.SOURCE[F.an_rh_lit]=S.C_lit;
@@ -160,7 +160,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.fx_lit2som]=S.C_lit;
 
         // C_cwd
-        FIOMATRIX.SINK[F.woo2cwd]=S.C_cwd;
+        //FIOMATRIX.SINK[F.woo2cwd]=S.C_cwd;
         FIOMATRIX.SINK[F.fx_woo2cwd]=S.C_cwd;
         FIOMATRIX.SOURCE[F.ae_rh_cwd]=S.C_cwd;
         FIOMATRIX.SOURCE[F.an_rh_cwd]=S.C_cwd;
@@ -583,7 +583,7 @@ if( (POOLS[p+S.D_LF_LY1] + POOLS[p+S.D_LF_LY2]) == 2  ) { //no frozen water
    HMF = (1-betaHMF);
 }
 else {
-    HMF = 0;
+    HMF = 0; //no hydraulic mortality when soils are frozen
 }
 
 // mean air temperature (K)
@@ -609,7 +609,7 @@ LIU.IN.ga=pars[P.ga];
 LIU.IN.VegK=VegK;
 LIU.IN.Tupp=pars[P.Tupp];
 LIU.IN.Tdown=pars[P.Tdown];
-LIU.IN.C3_frac=1., // pars[P.C3_frac]
+LIU.IN.C3_frac=1.; // pars[P.C3_frac]
 LIU.IN.clumping=pars[P.clumping];
 LIU.IN.leaf_refl_par=pars[P.leaf_refl_par];
 LIU.IN.leaf_refl_nir=pars[P.leaf_refl_nir];
@@ -634,12 +634,20 @@ FLUXES[f+F.gppnet] = LIU.OUT.An;
 //transpiration//
 double transp = LIU.OUT.transp;
 
-if (beta1>0 || beta2 >0) { 
-
+if (beta1>0 && beta2 >0) { 
+FLUXES[f+F.transp1] = transp*beta1*pars[P.LY1_z]/(beta1*pars[P.LY1_z]+beta2*pars[P.LY2_z]*pars[P.root_frac]);
+FLUXES[f+F.transp2] = transp*beta2*pars[P.LY2_z]*pars[P.root_frac]/(beta1*pars[P.LY1_z]+beta2*pars[P.LY2_z]*pars[P.root_frac]);
+//FLUXES[f+F.transp2] = transp - FLUXES[f+F.transp1];
+}
+else if (beta1>0 && !(beta2 >0)) {
 FLUXES[f+F.transp1] = transp*beta1*pars[P.LY1_z]/(beta1*pars[P.LY1_z]+beta2*pars[P.LY2_z]*pars[P.root_frac]);
 // FLUXES[f+F.transp2] = transp*beta2*pars[P.LY2_z]*pars[P.root_frac]/(beta1*pars[P.LY1_z]+beta2*pars[P.LY2_z]*pars[P.root_frac]);
 FLUXES[f+F.transp2] = transp - FLUXES[f+F.transp1];
-
+}
+else if (!(beta1>0) && beta2 >0) {
+//FLUXES[f+F.transp1] = transp*beta1*pars[P.LY1_z]/(beta1*pars[P.LY1_z]+beta2*pars[P.LY2_z]*pars[P.root_frac]);
+FLUXES[f+F.transp2] = transp*beta2*pars[P.LY2_z]*pars[P.root_frac]/(beta1*pars[P.LY1_z]+beta2*pars[P.LY2_z]*pars[P.root_frac]);
+FLUXES[f+F.transp1] = transp - FLUXES[f+F.transp2];
 }
 else { FLUXES[f+F.transp1] = 0;
        FLUXES[f+F.transp1] = 0;
@@ -936,7 +944,8 @@ KNORR.IN.n=n;
 KNORR.IN.DOY=DOY[n];
 KNORR.IN.lambda=LAI;
 KNORR.IN.pasm=(POOLS[p+S.H2O_LY1]+POOLS[nxp+S.H2O_LY1]+POOLS[p+S.H2O_LY2]+POOLS[nxp+S.H2O_LY2])*0.5;//Note: soil moisture also available here
-KNORR.IN.transp= FLUXES[f+F.transp1]+FLUXES[f+F.transp2];
+//KNORR.IN.transp= FLUXES[f+F.transp1]+FLUXES[f+F.transp2];
+KNORR.IN.transp= transp;
 //Call function: uses KNORR->IN to update KNORR->OUT
 KNORR_ALLOCATION(&KNORR);
  
@@ -994,6 +1003,7 @@ else {
     //LCMA = gC/m2/m2
   FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA]+POOLS[p+S.C_fol]*pars[P.t_foliar];
 }
+
 
 /*labile production*/
 FLUXES[f+F.lab_prod] = ARFLUXES.OUT.F_LABPROD;
@@ -1062,23 +1072,21 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 /*total pool transfers (no fires yet)*/
 
-/*LIVE CARBON POOL GROWTH*/
+/*CARBON POOL GROWTH*/
+            /*LIVE POOLS*/
         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto_maint]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
-        POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod] - FLUXES[f+F.fol2lit])*deltat;
-        POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.roo2lit])*deltat;
-        POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + (FLUXES[f+F.wood_prod] - FLUXES[f+F.woo2cwd])*deltat;
-        POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.woo2cwd] - FLUXES[f+F.ae_rh_cwd]-FLUXES[f+F.an_rh_cwd]-FLUXES[f+F.cwd2som])*deltat;
-        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.roo2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som])*deltat;
-        POOLS[nxp+S.C_som] = POOLS[p+S.C_som] + (FLUXES[f+F.lit2som] - FLUXES[f+F.ae_rh_som] - FLUXES[f+F.an_rh_som] + FLUXES[f+F.cwd2som])*deltat;
+        POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod])*deltat;
+        POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] )*deltat;
+        POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + (FLUXES[f+F.wood_prod] )*deltat;
+            /*DEAD POOLS*/
+        POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] - (FLUXES[f+F.ae_rh_cwd] + FLUXES[f+F.an_rh_cwd] + FLUXES[f+F.cwd2som])*deltat;
+        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] - (FLUXES[f+F.ae_rh_lit] + FLUXES[f+F.an_rh_lit] + FLUXES[f+F.lit2som])*deltat;
+        POOLS[nxp+S.C_som] = POOLS[p+S.C_som] + (FLUXES[f+F.lit2som] + FLUXES[f+F.cwd2som] - FLUXES[f+F.ae_rh_som] - FLUXES[f+F.an_rh_som])*deltat;
 
-        
-        //Energy ppols
-        //Root zone
-          //POOLS[nxp+S.E_LY1] = POOLS[p+S.E_LY1] + (Renato's ground heat flux, inc LWup, etc.)*deltaT  - Runoff terms - Marcos' evaporation terms + Precip energ
-        
-        //POOLS[nxp+S.E_LY3] = POOLS[p+S.E_LY1] + (Renato's ground heat flux)*deltaT 
-
-
+        //Background mortality rate computed for each live pool (except labile): 
+        double BGM_fol = (FLUXES[f+F.fol2lit]*deltat)/POOLS[nxp+S.C_fol];
+        double BGM_roo = (FLUXES[f+F.roo2lit]*deltat)/POOLS[nxp+S.C_roo];
+        double BGM_woo = (FLUXES[f+F.woo2cwd]*deltat)/POOLS[nxp+S.C_woo];
 
 	/*total pool transfers - WITH FIRES AND DISTURBANCE*/
 	/*first fluxes*/
@@ -1102,7 +1110,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.dist_roo]*deltat;
     POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.dist_woo]*deltat;
 
-	/*Calculating all fire transfers (1. combustion, and 2. litter transfer)*/
+	/*Calculating all fire transfers from  to atmosphere via combustion*/
 	    /*note: all fluxes are in gC m-2 day-1*/
     FLUXES[f+F.f_lab] = POOLS[nxp+S.C_lab]*BURNED_AREA[n]*CF[S.C_lab]*one_over_deltat;
     FLUXES[f+F.f_fol] = POOLS[nxp+S.C_fol]*BURNED_AREA[n]*CF[S.C_fol]*one_over_deltat;
@@ -1112,6 +1120,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     FLUXES[f+F.f_lit] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*CF[S.C_lit]*one_over_deltat;
     FLUXES[f+F.f_som] = POOLS[nxp+S.C_som]*BURNED_AREA[n]*CF[S.C_som]*one_over_deltat;  
 
+    
 /*LIVE CARBON POOL REMOVALS PART 2 of 3: Removing fire fluxes from live pools here*/
     POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.f_lab]*deltat;
     POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.f_fol]*deltat;
@@ -1124,11 +1133,12 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     /* Compute aggregate mortality factor by pool from remaining sources: 
     -C starvation 
     -Hydraulic Failure 
-    -Fire mortality */ 
+    -Fire mortality 
+    -Age-related/etc 'background' mortality*/ 
     double AMF_C_lab = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))) * (1-HMF));
-    double AMF_C_fol = (1 - (1-LEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience]))) * (1-HMF));
-    double AMF_C_roo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience]))) * (1-HMF));
-    double AMF_C_woo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience]))) * (1-HMF));
+    double AMF_C_fol = (1 - (1-LEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience]))) * (1-HMF) * (1-BGM_fol));
+    double AMF_C_roo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience]))) * (1-HMF) * (1-BGM_roo));
+    double AMF_C_woo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience]))) * (1-HMF)* (1-BGM_woo));
     //if MORTALITY
     FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(AMF_C_lab)*one_over_deltat;
     FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(AMF_C_fol)*one_over_deltat;
@@ -1152,7 +1162,8 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.fx_lab2lit]+FLUXES[f+F.fx_fol2lit]+FLUXES[f+F.fx_roo2lit]-FLUXES[f+F.f_lit]-FLUXES[f+F.fx_lit2som])*deltat;
 	/*som*/
 	POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]+(FLUXES[f+F.fx_cwd2som]+FLUXES[f+F.fx_lit2som]-FLUXES[f+F.f_som])*deltat;
-
+        
+        
 	/*fires - total flux in gC m-2 day-1*/
 	/*this term is now (essentially) obsolete*/
 	/*replace in next version of DALEC_FIRES*/
