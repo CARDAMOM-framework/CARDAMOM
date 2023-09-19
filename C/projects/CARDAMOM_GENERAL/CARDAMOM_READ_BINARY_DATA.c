@@ -64,6 +64,7 @@ int DYNAMIC_DATA_MEMORY_ALLOCATION(DATA * DATA){
 int Ntimesteps=DATA->ncdf_data.Ntimesteps;
 DATA->M_ABGB=calloc(Ntimesteps,sizeof(double));
 DATA->M_CH4=calloc(Ntimesteps,sizeof(double));
+DATA->M_PEQ_rhch4_rhco2=calloc(Ntimesteps,sizeof(double)); /*pMCMC*/
 DATA->M_CWOO=calloc(Ntimesteps,sizeof(double));
 DATA->M_DOM=calloc(Ntimesteps,sizeof(double));
 DATA->M_ET=calloc(Ntimesteps,sizeof(double));
@@ -193,6 +194,7 @@ int FREE_DATA_STRUCT(DATA DATA){
 //Cost function observations
 free(DATA.M_ABGB);
 free(DATA.M_CH4);
+free(DATA.M_PEQ_rhch4_rhco2); /*pMCMC*/
 free(DATA.M_DOM);
 free(DATA.M_ET);
 free(DATA.M_ROFF);

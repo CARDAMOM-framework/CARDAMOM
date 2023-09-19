@@ -260,7 +260,7 @@ parmax[P.fwc]=1.0;
 
 /* jc r_ch4   CH4:CO2 conversion ratio*/
 parmin[P.r_ch4]=0.001;
-parmax[P.r_ch4]=0.9;
+parmax[P.r_ch4]=1;//0.9;
 
 /* jc Q10ch4 Q10 for CH4 production  */
 parmin[P.Q10ch4]=1.0;

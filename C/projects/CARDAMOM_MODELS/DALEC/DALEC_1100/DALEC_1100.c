@@ -1360,6 +1360,23 @@ OBSOPE.SUPPORT_iniSnow_OBS=true;
 OBSOPE.SUPPORT_iniSOM_OBS=true;
 OBSOPE.SUPPORT_CUEmrg_OBS=true;
 OBSOPE.SUPPORT_LCMA_OBS=true;
+
+//add PEQ value and unc from previous MCMC *pMCMC*
+OBSOPE.SUPPORT_r_ch4_OBS=true;
+OBSOPE.SUPPORT_S_fv_OBS=true;
+//OBSOPE.SUPPORT_rhco2_rh_OBS=true;
+OBSOPE.SUPPORT_rhch4_rhco2_OBS=true;
+//OBSOPE.SUPPORT_thetas_opt_OBS=true;
+//OBSOPE.SUPPORT_fwc_OBS=true;
+//OBSOPE.SUPPORT_Q10ch4_OBS=true;
+//OBSOPE.SUPPORT_Q10rhco2_OBS=true;
+//OBSOPE.SUPPORT_retention_OBS=true;*/
+
+/*OBSOPE.SUPPORT_Med_g1_OBS=true;
+OBSOPE.SUPPORT_Vcmax25_OBS=true;
+OBSOPE.SUPPORT_ga_OBS=true;
+OBSOPE.SUPPORT_Tdown_OBS=true;*/
+
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
@@ -1438,6 +1455,24 @@ OBSOPE.LCMA_PARAM=P.LCMA;
 
 //CH4-specific variables 
 OBSOPE.CH4_flux = F.rh_ch4;
+
+
+    //add PEQ value and unc from previous MCMC *pMCMC*
+OBSOPE.r_ch4_PARAM = P.r_ch4;
+OBSOPE.S_fv_PARAM = P.S_fv;
+//OBSOPE.rhco2_rh = F.rh_co2/(F.rh_ch4+F.rh_co2);
+OBSOPE.rhch4_rhco2 = F.rh_ch4/F.rh_co2;
+//OBSOPE.thetas_opt_PARAM = P.thetas_opt;
+//OBSOPE.fwc_PARAM = P.fwc;
+//OBSOPE.Q10ch4_PARAM = P.Q10ch4;
+//OBSOPE.Q10rhco2_PARAM = P.Q10rhco2;
+//OBSOPE.retention_PARAM = P.retention;
+
+/*OBSOPE.Med_g1_PARAM = P.Med_g1;
+OBSOPE.Vcmax25_PARAM = P.Vcmax25;
+OBSOPE.ga_PARAM = P.ga;
+OBSOPE.Tdown_PARAM = P.Tdown;*/
+    // end of *pMCMC*
 
 DALECmodel->OBSOPE=OBSOPE;
 
