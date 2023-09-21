@@ -2,6 +2,8 @@
 //Note: DALEC_OBSERVATION_OPERATORS.c included in DALEC_MODULE.
 #include "DALEC_1100_INDICES.c"
 #include "PARS_INFO_1100.c"
+#include "DALEC_1100_NC_INFO.c"
+
 #include "../DALEC_ALL/DALEC_MODULE.c"//Includes all calls to DALEC-compatible EDC functions
 #include "../DALEC_ALL/HYDROLOGY_MODULES/DRAINAGE.c"
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_EWT2MOI.c"
@@ -1191,6 +1193,7 @@ DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
 //Define PARS_INFO here (ranges, and eventually names, etc)
 PARS_INFO_1100(DALECmodel);
+POPULATE_INFO_STRUCTS(DALECmodel);
 
 //EDC operator
 //Make sure has same number as number of EDCs
