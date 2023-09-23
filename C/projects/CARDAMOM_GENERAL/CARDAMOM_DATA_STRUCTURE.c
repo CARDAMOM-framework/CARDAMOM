@@ -48,7 +48,7 @@ double M_PEQ_LCMA;
 	//add PEQ value and unc from previous MCMC *pMCMC*
 double M_PEQ_r_ch4;
 double M_PEQ_S_fv;
-double *M_PEQ_rhch4_rhco2; // add '*' if it's timeseries
+double M_PEQ_rhch4_rhco2; // add '*' if it's timeseries
 /*double M_PEQ_thetas_opt;
 double M_PEQ_fwc;
 double M_PEQ_Q10ch4;

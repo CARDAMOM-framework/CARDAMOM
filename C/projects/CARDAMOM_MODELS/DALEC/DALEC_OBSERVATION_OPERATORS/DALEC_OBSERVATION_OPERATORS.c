@@ -89,7 +89,7 @@ int S_fv_PARAM;
 //bool SUPPORT_rhco2_rh_OBS;
 //int rhco2_rh;
 bool SUPPORT_rhch4_rhco2_OBS;
-int rhch4_rhco2;
+int rhch4_rhco2_flux;
 /*bool SUPPORT_thetas_opt_OBS;
 int thetas_opt_PARAM;
 bool SUPPORT_fwc_OBS;
@@ -213,7 +213,7 @@ int N=D->ncdf_data.TIME_INDEX.length;
 TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.PEQ_rhch4_rhco2;
 
 
-if (TOBS.validobs){int n;for (n=0;n<N;n++){D->M_PEQ_rhch4_rhco2[n]=D->M_FLUXES[D->nofluxes*n+O->rhch4_rhco2];}};
+if (TOBS.validobs){int n;for (n=0;n<N;n++){D->M_PEQ_rhch4_rhco2[n]=D->M_FLUXES[D->nofluxes*n+O->rhch4_rhco2_flux];}};
 
 return 0;}
 
