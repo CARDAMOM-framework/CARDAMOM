@@ -272,7 +272,7 @@ clock_t    end = clock();//End timer
 //Write fluxes
 for(int i = 0; i < CARDADATA.nofluxes; i++){
   //This is a strided write of a variable, which I admit looks like some black magic stuff. This resolves the issue with fluxes being stored row major
-  FAILONERROR(nc_put_vars_double(ncid,fluxesVarID[i],(const size_t []){n,i}, (const size_t[]){1,Ntimesteps},(const ptrdiff_t []){1,CARDADATA.nofluxes}, CARDADATA.M_FLUXES));
+  FAILONERROR(nc_put_varm_double(ncid,fluxesVarID[i],(const size_t []){n,0}, (const size_t[]){1,Ntimesteps},NULL,(const ptrdiff_t []){1,CARDADATA.nofluxes}, CARDADATA.M_FLUXES+i));
 } 
 //Write pools
 FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps+1,CARDADATA.nopools}, CARDADATA.M_POOLS));
