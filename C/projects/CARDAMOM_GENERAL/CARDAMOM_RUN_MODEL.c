@@ -167,6 +167,7 @@ int fluxes_dems[] = {sampleDimID,timeFluxesDimID};
 struct FLUX_META_STRUCT FluxInfo = ((DALEC *)CARDADATA.MODEL)->FLUX_META;
 for(int i = 0; i < CARDADATA.nofluxes; i++){
   FAILONERROR(nc_def_var(	ncid,FluxInfo.ABBREVIATION[i] , NC_DOUBLE, 2, fluxes_dems, &(fluxesVarID[i]) ));
+  WARNONERROR(nc_put_att_int	(	ncid,fluxesVarID[i],"ID",NC_INT,sizeof(int),&i));
   WARNONERROR(nc_put_att_text	(	ncid,fluxesVarID[i],"Name",strlen(FluxInfo.NAME[i]),FluxInfo.NAME[i]));
   WARNONERROR(nc_put_att_text	(	ncid,fluxesVarID[i],"Description",strlen(FluxInfo.DESCRIPTION[i]),FluxInfo.DESCRIPTION[i]));
   WARNONERROR(nc_put_att_text	(	ncid,fluxesVarID[i],"Units",strlen(FluxInfo.UNITS[i]),FluxInfo.UNITS[i]));
@@ -271,7 +272,7 @@ clock_t    end = clock();//End timer
 
 //Write fluxes
 for(int i = 0; i < CARDADATA.nofluxes; i++){
-  //This is a strided write of a variable, which I admit looks like some black magic stuff. This resolves the issue with fluxes being stored row major
+  //This is a normal write of a variable, BUT since this is a multidimension var, we do a mapped write to make sure it does so correctly, which I admit looks like some evil magic stuff.
   FAILONERROR(nc_put_varm_double(ncid,fluxesVarID[i],(const size_t []){n,0}, (const size_t[]){1,Ntimesteps},NULL,(const ptrdiff_t []){1,CARDADATA.nofluxes}, CARDADATA.M_FLUXES+i));
 } 
 //Write pools
