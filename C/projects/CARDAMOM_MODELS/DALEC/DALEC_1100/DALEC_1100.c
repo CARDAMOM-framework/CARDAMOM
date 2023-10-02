@@ -437,12 +437,16 @@ double SCF_PLUS_INPUTS = 1-pow((1/pi*acos(2*smr2-1)),pars[P.Nmelt]); //___scf_ge
         
           
 //Only calculate sublimation if snow hasn't 100% melted
-    if (nosnow==0){
+    if (nosnow==0 & SWETEMP.OUT.TEMP<DGCM_TK0C){
 
 
 
 //Remove sublimation next
-    double SUBLIMATIONpotential =  pars[P.sublimation_rate]*SSRD[n]*SCF_PLUS_INPUTS*exp((tskin_k - DGCM_TK0C)* pars[P.snow_sub_temp_exp])/3.0;
+    //double SUBLIMATIONpotential =  pars[P.sublimation_rate]*SSRD[n]*SCF_PLUS_INPUTS*exp((tskin_k - DGCM_TK0C)* pars[P.snow_sub_temp_exp])*(1-SWETEMP.OUT.LF);
+
+    double SUBLIMATIONpotential =  pars[P.sublimation_rate]*SSRD[n]*SCF_PLUS_INPUTS*(1-SWETEMP.OUT.LF);
+
+
 
         //Calculate sublimation as residual
     if ((H2O_SWE_PLUS_INPUTS - deltat*(   FLUXES[f+F.melt] + SUBLIMATIONpotential))<0.0){

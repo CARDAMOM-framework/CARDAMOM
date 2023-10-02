@@ -42,6 +42,7 @@ hold on
 
 
 %plotting rivers
+col='k'
 if rivers
     load riverdata
     %Plotting: Amazon(111,112,118), Congo(113,115), Ganges(88,89),
