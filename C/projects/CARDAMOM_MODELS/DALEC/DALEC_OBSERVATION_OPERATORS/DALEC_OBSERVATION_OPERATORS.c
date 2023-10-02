@@ -214,10 +214,7 @@ if (SOBS.validobs){
     };
     MGPP=MGPP/(double)N;
     MRauto=MRauto/(double)N;
-
-    if (MGPP>0 && MGPP>MRauto) {
-    D->M_PEQ_CUE=1-(MRauto/MGPP);} 
-    else {D->M_PEQ_CUE=9999;}
+    D->M_PEQ_CUE=1-(MRauto/MGPP);
 
 }
 
