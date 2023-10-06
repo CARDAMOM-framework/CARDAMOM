@@ -1,7 +1,7 @@
 #pragma once
 #include <netcdf.h>
 
-//TODO: break this into it's own shared file! See cardamom_run_model.c
+////TODO: break this into it's own shared file! See cardamom_run_model.c
 /* Handle netCDF library errors by printing an error message and exiting with a
  * non-zero status.*/
 #define ERREXITCODE 2
@@ -36,49 +36,36 @@ int WRITE_DEMCMC_RESULTS(double *PARS,PARAMETER_INFO PI,MCMC_OPTIONS MCO){
 int ncid = 0; //This is the netcdf id num
 int ncretval = 0; //This is a reused variable for the return value of ncdf methods.
 static int inited = 0;
-int paramDimID,; //Dim ID numbers, must be populated each run
+////TODO: UPDATE THIS TO write NetCDF
+int paramDimID,sampleDimID; //Dim ID numbers, must be populated each invocation
+
+int parsVarID; // Variable ID numbers, also must be repopulated each invocation
+
 if (!inited){  
         inited=1;
         FAILONERROR(nc_create(MCO.outfile,NC_CLOBBER, &ncid ));
-
         FAILONERROR(nc_def_dim(ncid,"Parameter",PI.npars,&paramDimID));
-        FAILONERROR(nc_def_dim(ncid,"Sample",NC_UNLIMITED,&paramDimID));
+        FAILONERROR(nc_def_dim(ncid,"Sample",NC_UNLIMITED,&sampleDimID));
+        FAILONERROR(nc_def_var(ncid,"Parameters",NC_DOUBLE,2,(const int[]){sampleDimID,paramDimID},&parsVarID));
+
+        //End NetCDF definition phase, in order to allow for writting
+        nc_enddef(ncid);
 
 }else{
+        //dims and data already exist, so we only need to reacquire the IDs
         FAILONERROR(nc_open(MCO.outfile,NC_WRITE, &ncid ));
-         
-        //TODO: populate DIM IDs
+        FAILONERROR(nc_inq_dimid(ncid,"Parameter",&paramDimID));
+        FAILONERROR(nc_inq_dimid(ncid,"Sample", &sampleDimID));
+        FAILONERROR(nc_inq_varid(ncid,"Parameters",&parsVarID));
+
 }
+//Decide on where to put our write based on the current length of the unlimited dimension Sample
+size_t currentSamples;
+FAILONERROR(nc_inq_dimlen(ncid,sampleDimID, &currentSamples));
+//Do the write. Remember to start at currentSamples
+FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){currentSamples,0}, (const size_t[]){MCO.nchains,PI.npars},PARS ));
 
-
-
-
-
-
-
-//MCO.nchains is the slab 
-
-
-
-
-
-
-
-int n;
-
-FILE *fileout=fopen(MCO.outfile,"ab");
-for (n=0;n<PI.npars*MCO.nchains;n++){
-        fwrite(&PARS[n],1,sizeof(double),fileout);}
-    
-/*writing likelyhood*/
-/*NOTE: As of July 11th 2014, probability no longer written to file*/
-/*Probability is a "re-derivable" quantity, therefore if needed, it can
-either (a) be re-derived using the MODEL_LIKELIHOOD function, or (b) 
-written to a separate file.*/
-/*fwrite(&PROB,1,sizeof(double),fileout);*/
-
-fclose(fileout);
-
+FAILONERROR(nc_close(ncid));
 
 return 0;
 

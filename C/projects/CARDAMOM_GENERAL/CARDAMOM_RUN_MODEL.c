@@ -95,7 +95,7 @@ printf("done with reading cbf data!\n");
 
 
 /*step 2 - read (first time) parameter file here*/
-
+////TODO: UPDATE THIS TO READ NetCDF
 FILE *fd;
 /*opening file*/
 fd=fopen(parfile,"rb");
@@ -195,6 +195,7 @@ nc_enddef(ncid);
 for (n=0;n<N;n++){
 
 /*step 4.1 - reading parameter vector from file*/
+////TODO: UPDATE THIS TO READ NetCDF
 fread(pars,sizeof(double),CARDADATA.nopars,fd);
 
 
