@@ -36,7 +36,6 @@ int WRITE_DEMCMC_RESULTS(double *PARS,PARAMETER_INFO PI,MCMC_OPTIONS MCO){
 int ncid = 0; //This is the netcdf id num
 int ncretval = 0; //This is a reused variable for the return value of ncdf methods.
 static int inited = 0;
-////TODO: UPDATE THIS TO write NetCDF
 int paramDimID,sampleDimID; //Dim ID numbers, must be populated each invocation
 
 int parsVarID; // Variable ID numbers, also must be repopulated each invocation
