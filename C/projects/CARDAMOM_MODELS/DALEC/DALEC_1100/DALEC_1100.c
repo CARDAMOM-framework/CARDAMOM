@@ -997,7 +997,7 @@ FLUXES[f+F.roo2lit] = POOLS[p+S.C_roo]*pars[P.t_root];
        FLUXES[f+F.aetr]=HRJCR.OUT.aerobic_tr;//Aerobic turnover rate scalar
        FLUXES[f+F.antr]=HRJCR.OUT.anaerobic_tr;//Anaerobic turnover rate scalar
        FLUXES[f+F.an_co2_c_ratio]=HRJCR.OUT.anaerobic_co2_c_ratio;//CO2_C_ratio
-        FLUXES[f+F.an_ch4_c_ratio]=HRJCR.OUT.anaerobic_ch4_c_ratio;//CH4_C_ratio
+       FLUXES[f+F.an_ch4_c_ratio]=HRJCR.OUT.anaerobic_ch4_c_ratio;//CH4_C_ratio
 
 
 
@@ -1072,7 +1072,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
     //LIVE BIOMASS MORTALITY FLUXES
     //if MORTALITY
-    FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(LEAF_MORTALITY_FACTOR + (1-LEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))*one_over_deltat; 
+    FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(NONLEAF_MORTALITY_FACTOR + (1-LEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))*one_over_deltat; 
     FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(LEAF_MORTALITY_FACTOR + (1-LEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience]))*one_over_deltat;
     FLUXES[f+F.fx_roo2lit] = POOLS[nxp+S.C_roo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience]))*one_over_deltat;
     FLUXES[f+F.fx_woo2cwd] = POOLS[nxp+S.C_woo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience]))*one_over_deltat;
