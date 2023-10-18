@@ -965,7 +965,7 @@ if (FLUXES[f+F.dlambda_dt] > 0){
 else {
     //FLUXES[f+F.dlambda_dt] is in m2/m2/day
     //LCMA = gC/m2/m2
-  FLUXES[f+F.fol2lit]=fmax(-FLUXES[f+F.dlambda_dt]*pars[P.LCMA],POOLS[p+S.C_fol]*pars[P.t_foliar]);
+  FLUXES[f+F.fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA]+POOLS[p+S.C_fol]*pars[P.t_foliar];
 }
 
 /*labile production*/
@@ -1072,7 +1072,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
     //LIVE BIOMASS MORTALITY FLUXES
     //if MORTALITY
-    FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))*one_over_deltat; // Labile pool can't transfer to litter if nonleaf_mortality>0
+    FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(LEAF_MORTALITY_FACTOR + (1-LEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))*one_over_deltat; 
     FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(LEAF_MORTALITY_FACTOR + (1-LEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience]))*one_over_deltat;
     FLUXES[f+F.fx_roo2lit] = POOLS[nxp+S.C_roo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience]))*one_over_deltat;
     FLUXES[f+F.fx_woo2cwd] = POOLS[nxp+S.C_woo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience]))*one_over_deltat;
