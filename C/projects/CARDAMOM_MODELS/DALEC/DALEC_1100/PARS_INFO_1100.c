@@ -381,5 +381,3 @@ parmax[P.root_frac]=1;
 return 0;
 
 }
-
-
