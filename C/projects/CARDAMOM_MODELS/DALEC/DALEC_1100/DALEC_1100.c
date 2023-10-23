@@ -1015,10 +1015,6 @@ FLUXES[f+F.foliar_prod] = ARFLUXES.OUT.ALLOC_FOL_ACTUAL;
 FLUXES[f+F.root_prod] = ARFLUXES.OUT.ALLOC_ROO_ACTUAL;
 /*wood production*/       
 FLUXES[f+F.wood_prod] = ARFLUXES.OUT.ALLOC_WOO_ACTUAL;
-/*wood CWD production*/       
-FLUXES[f+F.woo2cwd] = POOLS[p+S.C_woo]*pars[P.t_wood];
-/*root litter production*/
-FLUXES[f+F.roo2lit] = POOLS[p+S.C_roo]*pars[P.t_root];
 
 /*-----------------------------------------------------------------------*/
 
@@ -1076,11 +1072,11 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
             /*LIVE POOLS*/
         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto_maint]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
         POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod] - FLUXES[f+F.fol2lit])*deltat;
-        POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod] - FLUXES[f+F.roo2lit])*deltat;
-        POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + (FLUXES[f+F.wood_prod] - FLUXES[f+F.woo2cwd])*deltat;
+        POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + (FLUXES[f+F.root_prod])*deltat;
+        POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + (FLUXES[f+F.wood_prod])*deltat;
             /*DEAD POOLS*/
-        POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] + (FLUXES[f+F.woo2cwd] - FLUXES[f+F.ae_rh_cwd]-FLUXES[f+F.an_rh_cwd]-FLUXES[f+F.cwd2som])*deltat;
-        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] + FLUXES[f+F.roo2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som])*deltat;
+        POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] - (FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.cwd2som])*deltat;
+        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.fol2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som])*deltat;
         POOLS[nxp+S.C_som] = POOLS[p+S.C_som] + (FLUXES[f+F.lit2som] - FLUXES[f+F.ae_rh_som] - FLUXES[f+F.an_rh_som] + FLUXES[f+F.cwd2som])*deltat;
 
         //Background mortality rate computed for each live pool (except labile): 
@@ -1153,12 +1149,23 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.fx_fol2lit]*deltat;
     POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.fx_roo2lit]*deltat;
     POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.fx_woo2cwd]*deltat;
+
+/*LIVE CARBON POOL TRANSFERS PART 4 of 3: remaining mortality fluxes to dead pools*/	
+
+/*wood CWD production*/       
+FLUXES[f+F.woo2cwd] = POOLS[nxp+S.C_woo]*pars[P.t_wood];
+/*root litter production*/
+FLUXES[f+F.roo2lit] = POOLS[nxp+S.C_roo]*pars[P.t_root];
+
+//Apply flux
+POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.roo2lit]*deltat;
+POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.woo2cwd]*deltat;
 	
 /*DEAD C POOLS TRANSFERS PART 1 of 1: Adding fire removals here together with additions from live pools*/
     /*CWD*/
-    POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]+(FLUXES[f+F.fx_woo2cwd]-FLUXES[f+F.f_cwd]-FLUXES[f+F.fx_cwd2som])*deltat;
+    POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]+(FLUXES[f+F.woo2cwd]+FLUXES[f+F.fx_woo2cwd]-FLUXES[f+F.f_cwd]-FLUXES[f+F.fx_cwd2som])*deltat;
     /*litter*/
-    POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.fx_lab2lit]+FLUXES[f+F.fx_fol2lit]+FLUXES[f+F.fx_roo2lit]-FLUXES[f+F.f_lit]-FLUXES[f+F.fx_lit2som])*deltat;
+    POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.roo2lit]+FLUXES[f+F.fx_lab2lit]+FLUXES[f+F.fx_fol2lit]+FLUXES[f+F.fx_roo2lit]-FLUXES[f+F.f_lit]-FLUXES[f+F.fx_lit2som])*deltat;
 	/*som*/
 	POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]+(FLUXES[f+F.fx_cwd2som]+FLUXES[f+F.fx_lit2som]-FLUXES[f+F.f_som])*deltat;
         
