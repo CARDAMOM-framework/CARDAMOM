@@ -1379,25 +1379,25 @@ EDCs[E.vcmax_lcma].prerun=true;
               EDC_sr.max_val[n]=INFINITY;}
   
    EDC_sr.min_val[S.C_lab]=0;
-   EDC_sr.max_val[S.C_lab]=DALECmodel->PARS_INFO.parmax[P.i_labile];
+   EDC_sr.max_val[S.C_lab]=3*(DALECmodel->PARS_INFO.parmax[P.i_labile]);
                 
    EDC_sr.min_val[S.C_fol]=0;
-   EDC_sr.max_val[S.C_fol]=DALECmodel->PARS_INFO.parmax[P.i_foliar];
+   EDC_sr.max_val[S.C_fol]=3*(DALECmodel->PARS_INFO.parmax[P.i_foliar]);
                 
    EDC_sr.min_val[S.C_roo]=0;
-   EDC_sr.max_val[S.C_roo]=DALECmodel->PARS_INFO.parmax[P.i_root];
+   EDC_sr.max_val[S.C_roo]=3*(DALECmodel->PARS_INFO.parmax[P.i_root]);
                 
    EDC_sr.min_val[S.C_woo]=0;
-   EDC_sr.max_val[S.C_woo]=DALECmodel->PARS_INFO.parmax[P.i_wood];
+   EDC_sr.max_val[S.C_woo]=3*(DALECmodel->PARS_INFO.parmax[P.i_wood]);
                 
    EDC_sr.min_val[S.C_cwd]=0;
-   EDC_sr.max_val[S.C_cwd]=DALECmodel->PARS_INFO.parmax[P.i_cwd];
+   EDC_sr.max_val[S.C_cwd]=3*(DALECmodel->PARS_INFO.parmax[P.i_cwd]);
                 
    EDC_sr.min_val[S.C_lit]=0;
-   EDC_sr.max_val[S.C_lit]=DALECmodel->PARS_INFO.parmax[P.i_lit];
+   EDC_sr.max_val[S.C_lit]=3*(DALECmodel->PARS_INFO.parmax[P.i_lit]);
                 
    EDC_sr.min_val[S.C_som]=0;
-   EDC_sr.max_val[S.C_som]=DALECmodel->PARS_INFO.parmax[P.i_som];
+   EDC_sr.max_val[S.C_som]=3*(DALECmodel->PARS_INFO.parmax[P.i_som]);
                 
     EDC_sr.min_val[S.H2O_LY1]=0;
    //
@@ -1420,23 +1420,23 @@ EDCs[E.vcmax_lcma].prerun=true;
     EDC_sr.min_val[S.D_LAI]=0;
     EDC_sr.max_val[S.D_LAI]=DALECmodel->PARS_INFO.parmax[P.lambda_max];
 //     
-//     EDC_sr.min_val[S.D_SCF]=0;
-//     EDC_sr.max_val[S.D_SCF]=1;
+    EDC_sr.min_val[S.D_SCF]=0;
+    EDC_sr.max_val[S.D_SCF]=1;
 //     
-//     EDC_sr.min_val[S.D_TEMP_LY1]=173.15;
-//     EDC_sr.max_val[S.D_TEMP_LY1]=373.15;
-// //     
-//     EDC_sr.min_val[S.D_TEMP_LY2]=173.15;
-//     EDC_sr.max_val[S.D_TEMP_LY2]=373.15;
-// //     
-//     EDC_sr.min_val[S.D_TEMP_LY3]=173.15;
-//     EDC_sr.max_val[S.D_TEMP_LY3]=373.15;
-// //     
-//     EDC_sr.min_val[S.D_LF_LY1]=0;
-//     EDC_sr.max_val[S.D_LF_LY1]=1;
-// //     
-//     EDC_sr.min_val[S.D_LF_LY3]=0;
-//     EDC_sr.max_val[S.D_LF_LY3]=1;
+    EDC_sr.min_val[S.D_TEMP_LY1]=173.15;
+    EDC_sr.max_val[S.D_TEMP_LY1]=373.15;
+//     
+    EDC_sr.min_val[S.D_TEMP_LY2]=173.15;
+    EDC_sr.max_val[S.D_TEMP_LY2]=373.15;
+//     
+    EDC_sr.min_val[S.D_TEMP_LY3]=173.15;
+    EDC_sr.max_val[S.D_TEMP_LY3]=373.15;
+//     
+    EDC_sr.min_val[S.D_LF_LY1]=0;
+    EDC_sr.max_val[S.D_LF_LY1]=1;
+//     
+    EDC_sr.min_val[S.D_LF_LY3]=0;
+    EDC_sr.max_val[S.D_LF_LY3]=1;
 //     
    EDC_sr.min_val[S.D_SM_LY1]=0;
     EDC_sr.max_val[S.D_SM_LY1]=1;
@@ -1447,11 +1447,11 @@ EDCs[E.vcmax_lcma].prerun=true;
     EDC_sr.min_val[S.D_SM_LY3]=0;
     EDC_sr.max_val[S.D_SM_LY3]=1;
     
-   EDC_sr.min_val[S.M_LAI_MAX]=-INFINITY; // get a better value from Alex N.
-   EDC_sr.max_val[S.M_LAI_MAX]=INFINITY; // get a better value from Alex N.
+//    EDC_sr.min_val[S.M_LAI_MAX]=-INFINITY; // get a better value from Alex N.
+//    EDC_sr.max_val[S.M_LAI_MAX]=INFINITY; // get a better value from Alex N.
     
-   EDC_sr.min_val[S.M_LAI_TEMP]=-INFINITY;  // get a better value from Alex N.
-   EDC_sr.max_val[S.M_LAI_TEMP]=INFINITY; // get a better value from Alex N.
+//    EDC_sr.min_val[S.M_LAI_TEMP]=-INFINITY;  // get a better value from Alex N.
+//    EDC_sr.max_val[S.M_LAI_TEMP]=INFINITY; // get a better value from Alex N.
 
 
 
