@@ -54,6 +54,10 @@ parmax[P.rauto_gr]=0.95;
 parmin[P.t_wood]=0.000025;
 parmax[P.t_wood]=0.01;
 
+/*TOR labile C*/ //Setting to be equal to roots as first guess (10.21.23)
+parmin[P.t_lab]=0.0001;
+parmax[P.t_lab]=0.01;
+
 /*TOR roots*/
 parmin[P.t_root]=0.0001;
 parmax[P.t_root]=0.01;
@@ -314,6 +318,7 @@ parmax[P.init_LAIW_mem]=1;
 parmin[P.t_foliar]=0.001;
 parmax[P.t_foliar]=0.1;
 
+
 /*LY1 energy per mm H2O (~ Energy in 1mm H2O @ -50C to 1mm H2O@ +50C)*/
 parmin[P.i_LY1_E]=4.67e+05;
 parmax[P.i_LY1_E]=1.11e+06;
@@ -381,3 +386,5 @@ parmax[P.root_frac]=1;
 return 0;
 
 }
+
+

@@ -99,6 +99,7 @@ int sublimation_rate;
 int root_frac;
 int beta_lgrHMF;
 int psi_50HMF; 
+int t_lab;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -108,7 +109,7 @@ int psi_50HMF;
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
     70,71,72,73,74,75,76,77,78,79,
-    80,81,82,83,84,85,86,87
+    80,81,82,83,84,85,86,87,88
 };
 
 struct DALEC_1100_FLUXES{
@@ -120,9 +121,11 @@ int lab_prod;   /*Labile production*/
 int foliar_prod;   /*Labile release*/
 int root_prod;   /*Root production*/
 int wood_prod;   /*Wood production*/
+int ph_fol2lit;  /*Foliar phenological senescence*/
 int fol2lit;   /*Foliar decomposition*/
 int woo2cwd;   /*Wood decomposition*/
 int roo2lit;   /*Root decomposition*/
+int lab2lit;   /*Labile C decomposition*/
 int cwd2som;   /*CWD decomposition*/
 int lit2som;   /*Litter decomposition*/
 int f_total;   /*Flux description*/
@@ -176,8 +179,8 @@ int target_LAI;   /*LAI environmental target*/
 int dlambda_dt;   /*dLAI/dt*/
 int f_temp_thresh;   /*f_temp_thres*/
 int f_dayl_thresh;   /*f_dayl_thres*/
-int lai_fire;   /*LAI fire loss*/
-int foliar_fire_frac;   /*C_fol fire loss frac*/
+/*int lai_fire;   LAI fire loss*/
+/*int foliar_fire_frac;   C_fol fire loss frac*/
 int net_radiation; /*Net radiation flux*/
 int latent_heat; /*latent heat flux*/
 int sensible_heat; /*sensible heat flux*/
@@ -202,7 +205,6 @@ int dist_lab;
 int dist_fol;
 int dist_roo;
 int dist_woo;
-int ph_fol2lit;
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -212,7 +214,7 @@ int ph_fol2lit;
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
     70,71,72,73,74,75,76,77,78,79,
-    80,81,82,83,84,85,86,87,88,89
+    80,81,82,83,84,85,86,87,88,
 };
 
 
@@ -277,3 +279,6 @@ int mean_ly3_temp;
     0, 1, 2, 3, 4, 5, 6, 
     7, 8, 9,10,11,12,13
 };
+
+
+

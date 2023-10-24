@@ -121,6 +121,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.wood_prod]=S.C_lab;
         FIOMATRIX.SOURCE[F.resp_auto_growth]=S.C_lab;
         FIOMATRIX.SOURCE[F.f_lab]=S.C_lab;  
+        FIOMATRIX.SOURCE[F.lab2lit]=S.C_lab;
         FIOMATRIX.SOURCE[F.fx_lab2lit]=S.C_lab;
         FIOMATRIX.SOURCE[F.dist_lab]=S.C_lab;
 
@@ -149,6 +150,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
 
         
         // C_lit
+        FIOMATRIX.SINK[F.lab2lit]=S.C_lit;
         FIOMATRIX.SINK[F.fx_lab2lit]=S.C_lit;
         FIOMATRIX.SINK[F.ph_fol2lit]=S.C_lit;
         FIOMATRIX.SINK[F.fol2lit]=S.C_lit;
@@ -1156,32 +1158,36 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.fx_roo2lit]*deltat;
     POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.fx_woo2cwd]*deltat;
 
-/*LIVE CARBON POOL TRANSFERS PART 4 of 4: background mortality fluxes to dead pools*/	
-
-/*foliar litter production*/
-if (FLUXES[f+F.dlambda_dt] > 0){
-  FLUXES[f+F.fol2lit]=POOLS[nxp+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))*one_over_deltat;
-  }
-else {
-    //FLUXES[f+F.dlambda_dt] is in m2/m2/day
-    //LCMA = gC/m2/m2
-  FLUXES[f+F.fol2lit]=POOLS[nxp+S.C_fol]*pars[P.t_foliar];
-  }
+/*Calculating background mortality (age/herbivory/impact) flux as percent of remaining live biomass*/
 /*wood CWD production*/       
 FLUXES[f+F.woo2cwd] = POOLS[nxp+S.C_woo]*pars[P.t_wood];
 /*root litter production*/
 FLUXES[f+F.roo2lit] = POOLS[nxp+S.C_roo]*pars[P.t_root];
+/*labile litter production*/
+FLUXES[f+F.lab2lit] = POOLS[nxp+S.C_lab]*pars[P.t_lab];
 
-//Apply flux
-POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.fol2lit]*deltat;
-POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.roo2lit]*deltat;
-POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.woo2cwd]*deltat;
+// Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]*one_over_deltat;
+if (FLUXES[f+F.dlambda_dt] > 0){
+  FLUXES[f+F.fol2lit]=POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))*one_over_deltat;
+}
+else {
+    //FLUXES[f+F.dlambda_dt] is in m2/m2/day
+    //LCMA = gC/m2/m2
+  FLUXES[f+F.fol2lit]=POOLS[p+S.C_fol]*pars[P.t_foliar];
+}
+
+/*LIVE CARBON POOL TRANSFERS PART 4 of 4: background mortality fluxes to dead pools*/	
+
+    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.lab2lit]*deltat;
+    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.fol2lit]*deltat;
+    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.roo2lit]*deltat;
+    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.woo2cwd]*deltat;
 	
 /*DEAD C POOLS TRANSFERS PART 1 of 1: Adding fire removals here together with additions from live pools*/
     /*CWD*/
     POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]+(FLUXES[f+F.woo2cwd]+FLUXES[f+F.fx_woo2cwd]-FLUXES[f+F.f_cwd]-FLUXES[f+F.fx_cwd2som])*deltat;
     /*litter*/
-    POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.fol2lit]+FLUXES[f+F.roo2lit]+FLUXES[f+F.fx_lab2lit]+FLUXES[f+F.fx_fol2lit]+FLUXES[f+F.fx_roo2lit]-FLUXES[f+F.f_lit]-FLUXES[f+F.fx_lit2som])*deltat;
+    POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.lab2lit]+FLUXES[f+F.fx_lab2lit]+FLUXES[f+F.fol2lit]+FLUXES[f+F.fx_fol2lit]+FLUXES[f+F.roo2lit]+FLUXES[f+F.fx_roo2lit]-FLUXES[f+F.f_lit]-FLUXES[f+F.fx_lit2som])*deltat;
 	/*som*/
 	POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]+(FLUXES[f+F.fx_cwd2som]+FLUXES[f+F.fx_lit2som]-FLUXES[f+F.f_som])*deltat;
         
@@ -1192,11 +1198,11 @@ POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.woo2cwd]*deltat;
     FLUXES[f+F.f_total] = FLUXES[f+F.f_lab] + FLUXES[f+F.f_fol] + FLUXES[f+F.f_roo] + FLUXES[f+F.f_woo] + FLUXES[f+F.f_cwd] + FLUXES[f+F.f_lit] + FLUXES[f+F.f_som];
 
     /*Fraction of C-foliar lost due to fires*/
-    FLUXES[f+F.foliar_fire_frac] = BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
+    //FLUXES[f+F.foliar_fire_frac] = BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
     /*Calculate LAI (lambda) lost due to fire
       - we lose the same fraction of LAI as we do C-foliar 
       - FE_\Lambda^{(t+1)} = \Lambda^{(t+1)'} * BA ( k_{factor(i)} + (1 - k_{factor(i)}) r )*/
-    FLUXES[f+F.lai_fire] = (POOLS[p+S.C_fol]/pars[P.LCMA])*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
+    //FLUXES[f+F.lai_fire] = (POOLS[p+S.C_fol]/pars[P.LCMA])*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
 
     /****************************RECORD t+1 DIAGNOSTIC STATES*************************/
     POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
@@ -1270,8 +1276,8 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=88;
-DALECmodel->nofluxes=90;
+DALECmodel->nopars=89;
+DALECmodel->nofluxes=89;
 DALECmodel->noedcs=14;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
