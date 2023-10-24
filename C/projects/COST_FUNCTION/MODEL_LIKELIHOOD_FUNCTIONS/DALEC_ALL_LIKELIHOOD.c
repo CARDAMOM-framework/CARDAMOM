@@ -134,7 +134,7 @@ if (O->SUPPORT_LCMA_OBS){   ML[LI.PEQ_LCMA]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.nc
 //add PEQ value and unc from previous MCMC *pMCMC*
 if (O->SUPPORT_r_ch4_OBS){ML[LI.PEQ_r_ch4]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_r_ch4, D.M_PEQ_r_ch4);};
 if (O->SUPPORT_S_fv_OBS){ML[LI.PEQ_S_fv]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_S_fv, D.M_PEQ_S_fv);};
-if (O->SUPPORT_rhch4_rhco2_OBS){ML[LI.PEQ_rhch4_rhco2]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_rhch4_rhco2, D.M_PEQ_rhch4_rhco2);};
+if (O->SUPPORT_rhch4_rhco2_OBS){ML[LI.PEQ_rhch4_rhco2]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_rhch4_rhco2, D.M_PEQ_rhch4_rhco2);};
 //if (O->SUPPORT_rhco2_rh_OBS){ML[LI.PEQ_rhco2_rh]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_rhco2_rh, D.PEQ_rhco2_rh);};
 /*if (O->SUPPORT_thetas_opt_OBS){ML[LI.PEQ_thetas_opt]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_thetas_opt, D.M_PEQ_thetas_opt);};
 if (O->SUPPORT_fwc_OBS){ML[LI.PEQ_fwc]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_fwc, D.M_PEQ_fwc);};

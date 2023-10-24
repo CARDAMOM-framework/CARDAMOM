@@ -207,15 +207,14 @@ return 0;}
 
 
 //rhch4_rhco2 observation operators     /*pMCMC*/
-int DALEC_OBSOPE_rhch4_rhco2(DATA * D, OBSOPE * O){
+//int DALEC_OBSOPE_rhch4_rhco2(DATA * D, OBSOPE * O){
 
-int N=D->ncdf_data.TIME_INDEX.length;
-TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.PEQ_rhch4_rhco2;
+//int N=D->ncdf_data.TIME_INDEX.length;
+//TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.PEQ_rhch4_rhco2;
 
+//if (TOBS.validobs){int n;for (n=0;n<N;n++){D->M_PEQ_rhch4_rhco2[n]=D->M_FLUXES[D->nofluxes*n+O->rhch4_rhco2_flux];}};
 
-if (TOBS.validobs){int n;for (n=0;n<N;n++){D->M_PEQ_rhch4_rhco2[n]=D->M_FLUXES[D->nofluxes*n+O->rhch4_rhco2_flux];}};
-
-return 0;}
+//return 0;}
 
 
 //ET observation operator, assuming one flux
@@ -559,6 +558,13 @@ D->M_PEQ_S_fv=D->M_PARS[O->S_fv_PARAM];
 return 0;
 }
 
+int DALEC_OBSOPE_rhch4_rhco2(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_rhch4_rhco2;
+
+if  (SOBS.validobs){D->M_PEQ_rhch4_rhco2=1-D->M_PARS[O->rhch4_rhco2_flux];}
+return 0;
+
+}
 /*
 int DALEC_OBSOPE_thetas_opt(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_thetas_opt;
