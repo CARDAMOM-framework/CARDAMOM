@@ -1141,18 +1141,18 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     -C starvation 
     -Hydraulic Failure 
     -Fire injury mortality*/ 
-    double AMF_C_lab = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-pars[P.resilience]))) * (1-HMF));
-    double AMF_C_fol = (1 - (1-LEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-pars[P.resilience]))) * (1-HMF));
-    double AMF_C_roo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-pars[P.resilience]))) * (1-HMF));
-    double AMF_C_woo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-pars[P.resilience]))) * (1-HMF));
+    double AMF_C_lab = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(pars[P.resilience]))) * (1-HMF));
+    double AMF_C_fol = (1 - (1-LEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(pars[P.resilience]))) * (1-HMF));
+    double AMF_C_roo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(pars[P.resilience]))) * (1-HMF));
+    double AMF_C_woo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(pars[P.resilience]))) * (1-HMF));
    
     FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(AMF_C_lab)*one_over_deltat;
     FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(AMF_C_fol)*one_over_deltat;
     FLUXES[f+F.fx_roo2lit] = POOLS[nxp+S.C_roo]*(AMF_C_roo)*one_over_deltat;
     FLUXES[f+F.fx_woo2cwd] = POOLS[nxp+S.C_woo]*(AMF_C_woo)*one_over_deltat;
     //No mortality in these pools
-    FLUXES[f+F.fx_cwd2som] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*(1-pars[P.resilience])*one_over_deltat;
-    FLUXES[f+F.fx_lit2som] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*(1-pars[P.resilience])*one_over_deltat;
+    FLUXES[f+F.fx_cwd2som] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*(pars[P.resilience])*one_over_deltat;
+    FLUXES[f+F.fx_lit2som] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*(pars[P.resilience])*one_over_deltat;
 	
 /*LIVE CARBON POOL TRANSFERS PART 3 of 4: environmental stress mortality fluxes to dead pools*/	
     
@@ -1281,7 +1281,7 @@ DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=89;
 DALECmodel->nofluxes=89;
-DALECmodel->noedcs=14;
+DALECmodel->noedcs=15;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
@@ -1312,6 +1312,7 @@ static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_litcwdtor;
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_cwdsomtor;
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_rootwoodtor;
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_mr_rates;
+static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_fol2lig_cf;
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_relativepsi50;
 
 //EDC: lit tor > cwd tor
@@ -1341,6 +1342,13 @@ EDC_mr_rates.small_par_index=P.rauto_mr_w;
 EDCs[E.mr_rates].data=&EDC_mr_rates;
 EDCs[E.mr_rates].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.mr_rates].prerun=true;
+
+//EDC: cf_foliar > cf_ligneous
+EDC_fol2lig_cf.big_par_index=P.cf_foliar;
+EDC_fol2lig_cf.small_par_index=P.cf_ligneous;
+EDCs[E.fol2lig_cf].data=&EDC_fol2lig_cf;
+EDCs[E.fol2lig_cf].function=&DALEC_EDC_PARAMETER_INEQUALITY;
+EDCs[E.fol2lig_cf].prerun=true;
 
 //EDC: psi50HMF > psi50 
 EDC_relativepsi50.big_par_index=P.psi_50HMF;
