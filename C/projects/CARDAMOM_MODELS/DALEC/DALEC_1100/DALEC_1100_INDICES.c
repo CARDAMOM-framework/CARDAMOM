@@ -179,8 +179,8 @@ int target_LAI;   /*LAI environmental target*/
 int dlambda_dt;   /*dLAI/dt*/
 int f_temp_thresh;   /*f_temp_thres*/
 int f_dayl_thresh;   /*f_dayl_thres*/
-/*int lai_fire;   LAI fire loss*/
-/*int foliar_fire_frac;   C_fol fire loss frac*/
+int lai_fire;   /*LAI fire loss*/
+int foliar_fire_frac;   /*C_fol fire loss frac*/
 int net_radiation; /*Net radiation flux*/
 int latent_heat; /*latent heat flux*/
 int sensible_heat; /*sensible heat flux*/
@@ -215,7 +215,8 @@ int dist_woo;
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
     70,71,72,73,74,75,76,77,78,79,
-    80,81,82,83,84,85,86,87,88,89
+    80,81,82,83,84,85,86,87,88,89,
+    90,91
 };
 
 
