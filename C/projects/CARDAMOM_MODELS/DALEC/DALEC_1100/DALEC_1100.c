@@ -1153,7 +1153,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     FLUXES[f+F.fx_woo2cwd] = POOLS[nxp+S.C_woo]*(AMF_C_woo)*one_over_deltat;
     //No mortality in these pools
     FLUXES[f+F.fx_cwd2som] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*(1-pars[P.resilience])*one_over_deltat;
-    FLUXES[f+F.fx_lit2som] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*1-(pars[P.resilience])*one_over_deltat;
+    FLUXES[f+F.fx_lit2som] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*(1-pars[P.resilience])*one_over_deltat;
 	
 /*LIVE CARBON POOL TRANSFERS PART 3 of 4: environmental stress mortality fluxes to dead pools*/	
     
