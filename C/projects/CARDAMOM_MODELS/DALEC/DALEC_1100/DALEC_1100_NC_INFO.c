@@ -633,12 +633,158 @@ PARS_INFO.ABBREVIATION[P.Q_excess]='Q_excess';
 PARS_INFO.UNITS[P.Q_excess]='';
 PARS_INFO.DESCRIPTION[P.Q_excess]='Runoff excess';
 
-//Pool info
+//Pool info {Eren Bilir added this section 9/15/2023}
 
-POOLS_INFO.NAME[twood]='Turnover rate of wood';
-POOLS_INFO.ABBREVIATION[twood]='twood';
-POOLS_INFO.UNITS[gpp]='gC/m2/day';
-POOLS_INFO.DESCRIPTION[F.gpp]='Includes maintenance respiration and growth respiration';
+POOLS_INFO.NAME[S.C_lab]='Labile carbon pool';
+POOLS_INFO.ABBREVIATION[S.C_lab]='C_lab';
+POOLS_INFO.UNITS[S.C_lab]='gC/m2';
+POOLS_INFO.DESCRIPTION[S.C_lab]='Stored non-structural carbohydrate (NSC) pool; also includes any structural C that is not wood, root, or leaf, e.g. flowers/fruit/seeds';
+
+POOLS_INFO.NAME[S.C_fol]='Foliar carbon pool';
+POOLS_INFO.ABBREVIATION[S.C_fol]='C_fol';
+POOLS_INFO.UNITS[S.C_fol]='gC/m2';
+POOLS_INFO.DESCRIPTION[S.C_fol]='Leaf carbon pool';
+
+POOLS_INFO.NAME[S.C_roo]='Fine root carbon pool';
+POOLS_INFO.ABBREVIATION[S.C_roo]='C_roo';
+POOLS_INFO.UNITS[S.C_roo]='gC/m2';
+POOLS_INFO.DESCRIPTION[S.C_roo]='Fine root carbon pool; does not include woody root biomass';
+
+POOLS_INFO.NAME[S.C_woo]='Wood/ligneous carbon pool';
+POOLS_INFO.ABBREVIATION[S.C_woo]='C_woo';
+POOLS_INFO.UNITS[S.C_woo]='gC/m2';
+POOLS_INFO.DESCRIPTION[S.C_woo]='Wood/ligneous carbon pool; includes woody root biomass';
+
+POOLS_INFO.NAME[S.C_cwd]='Coarse woody debris carbon pool';
+POOLS_INFO.ABBREVIATION[S.C_cwd]='C_cwd';
+POOLS_INFO.UNITS[S.C_cwd]='gC/m2';
+POOLS_INFO.DESCRIPTION[S.C_cwd]='Coarse woody debris carbon pool';
+
+POOLS_INFO.NAME[S.C_lit]='Litter carbon pool';
+POOLS_INFO.ABBREVIATION[S.C_lit]='C_lit';
+POOLS_INFO.UNITS[S.C_lit]='gC/m2';
+POOLS_INFO.DESCRIPTION[S.C_lit]='Litter carbon pool';
+
+POOLS_INFO.NAME[S.C_som]='soil organic matter carbon pool';
+POOLS_INFO.ABBREVIATION[S.C_som]='C_som';
+POOLS_INFO.UNITS[S.C_som]='gC/m2';
+POOLS_INFO.DESCRIPTION[S.C_som]='soil organic matter carbon pool';
+
+POOLS_INFO.NAME[S.H2O_LY1]='Layer 1 water content';
+POOLS_INFO.ABBREVIATION[S.H2O_LY1]='H2O_LY1';
+POOLS_INFO.UNITS[S.H2O_LY1]='(kg H2O)/m2';
+POOLS_INFO.DESCRIPTION[S.H2O_LY1]='Bulk water content of the first belowground layer. This layer hosts shallow vegetation roots and supplies water for transpiration, evaporation, runoff, and infiltration to LY2.';
+
+POOLS_INFO.NAME[S.H2O_LY2]='Layer 2 water content';
+POOLS_INFO.ABBREVIATION[S.H2O_LY2]='H2O_LY2';
+POOLS_INFO.UNITS[S.H2O_LY2]='(kg H2O)/m2';
+POOLS_INFO.DESCRIPTION[S.H2O_LY2]='Bulk water content of the second belowground layer. This layer hosts deep vegetation roots and supplies water for transpiration), runoff, and infiltration to LY3.';
+
+POOLS_INFO.NAME[S.H2O_LY3]='Layer 3 water content';
+POOLS_INFO.ABBREVIATION[S.H2O_LY3]='H2O_LY3';
+POOLS_INFO.UNITS[S.H2O_LY3]='(kg H2O)/m2';
+POOLS_INFO.DESCRIPTION[S.H2O_LY3]='Bulk water content of the third belowground layer. This layer is inaccessible to vegetation roots, and supplies water for runoff only.';
+
+POOLS_INFO.NAME[S.H2O_SWE]='Snow Water Equivalent';
+POOLS_INFO.ABBREVIATION[S.H2O_SWE]='H2O_SWE';
+POOLS_INFO.UNITS[S.H2O_SWE]='(kg H2O)/m2';
+POOLS_INFO.DESCRIPTION[S.H2O_SWE]='Bulk water content of the snow pack layer. ';
+
+POOLS_INFO.NAME[S.E_LY1]='Layer 1 energy content';
+POOLS_INFO.ABBREVIATION[S.E_LY1]='E_LY1';
+POOLS_INFO.UNITS[S.E_LY1]='J/m2';
+POOLS_INFO.DESCRIPTION[S.E_LY1]='Energy content of the first belowground layer. ';
+
+POOLS_INFO.NAME[S.E_LY2]='Layer 2 energy content';
+POOLS_INFO.ABBREVIATION[S.E_LY2]='E_LY2';
+POOLS_INFO.UNITS[S.E_LY2]='J/m2';
+POOLS_INFO.DESCRIPTION[S.E_LY2]='Energy content of the second belowground layer. ';
+
+POOLS_INFO.NAME[S.E_LY3]='Layer 3 energy content';
+POOLS_INFO.ABBREVIATION[S.E_LY3]='E_LY3';
+POOLS_INFO.UNITS[S.E_LY3]='J/m2';
+POOLS_INFO.DESCRIPTION[S.E_LY3]='Energy content of the third belowground layer. ';
+
+POOLS_INFO.NAME[S.D_LAI]='Leaf Area Index';
+POOLS_INFO.ABBREVIATION[S.D_LAI]='D_LAI';
+POOLS_INFO.UNITS[S.D_LAI]='m2/m2';
+POOLS_INFO.DESCRIPTION[S.D_LAI]='Leaf Area Index. \'D_\' flag denotes a diagnostic variable, which is stored for the user but is not passed to downstream model calculations.';
+
+POOLS_INFO.NAME[S.D_SCF]='Snow Covered Fraction';
+POOLS_INFO.ABBREVIATION[S.D_SCF]='D_SCF';
+POOLS_INFO.UNITS[S.D_SCF]='m2/m2';
+POOLS_INFO.DESCRIPTION[S.D_SCF]='Fraction of non-vegetation-covered land surface (gap fraction) that is covered by a layer of snow. ';
+
+POOLS_INFO.NAME[S.D_TEMP_LY1]='Layer 1 temperature';
+POOLS_INFO.ABBREVIATION[S.D_TEMP_LY1]='D_TEMP_LY1';
+POOLS_INFO.UNITS[S.D_TEMP_LY1]='K';
+POOLS_INFO.DESCRIPTION[S.D_TEMP_LY1]='Temperature (K) of the first belowground layer. ';
+
+POOLS_INFO.NAME[S.D_TEMP_LY2]='Layer 2 temperature';
+POOLS_INFO.ABBREVIATION[S.D_TEMP_LY2]='D_TEMP_LY2';
+POOLS_INFO.UNITS[S.D_TEMP_LY2]='K';
+POOLS_INFO.DESCRIPTION[S.D_TEMP_LY2]='Temperature (K) of the second belowground layer. ';
+
+POOLS_INFO.NAME[S.D_TEMP_LY3]='Layer 3 temperature';
+POOLS_INFO.ABBREVIATION[S.D_TEMP_LY3]='D_TEMP_LY3';
+POOLS_INFO.UNITS[S.D_TEMP_LY3]='K';
+POOLS_INFO.DESCRIPTION[S.D_TEMP_LY3]='Temperature (K) of the third belowground layer. ';
+
+POOLS_INFO.NAME[S.D_LF_LY1]='Layer 1 Liquid Fraction';
+POOLS_INFO.ABBREVIATION[S.D_LF_LY1]='D_LF_LY1';
+POOLS_INFO.UNITS[S.D_LF_LY1]='(kg H20 liquid water)/(kg H20 total water)';
+POOLS_INFO.DESCRIPTION[S.D_LF_LY1]='Fraction of the bulk water content existing in liquid state in the first belowground layer. ';
+
+POOLS_INFO.NAME[S.D_LF_LY2]='Layer 2 Liquid Fraction';
+POOLS_INFO.ABBREVIATION[S.D_LF_LY2]='D_LF_LY2';
+POOLS_INFO.UNITS[S.D_LF_LY2]='(kg H20 liquid water)/(kg H20 total water)';
+POOLS_INFO.DESCRIPTION[S.D_LF_LY2]='Fraction of the bulk water content existing in liquid state in the second belowground layer. ';
+
+POOLS_INFO.NAME[S.D_LF_LY3]='Layer 3 Liquid Fraction';
+POOLS_INFO.ABBREVIATION[S.D_LF_LY3]='D_LF_LY3';
+POOLS_INFO.UNITS[S.D_LF_LY3]='(kg H20 liquid water)/(kg H20 total water)';
+POOLS_INFO.DESCRIPTION[S.D_LF_LY3]='Fraction of the bulk water content existing in liquid state in the third belowground layer. ';
+
+POOLS_INFO.NAME[S.D_SM_LY1]='Layer 1 soil moisture';
+POOLS_INFO.ABBREVIATION[S.D_SM_LY1]='D_SM_LY1';
+POOLS_INFO.UNITS[S.D_SM_LY1]='((m3 H20)/(m3 total volume of pore space in soil volume)';
+POOLS_INFO.DESCRIPTION[S.D_SM_LY1]='Volumetric water content relative to available pore space in the first belowground layer.';
+
+POOLS_INFO.NAME[S.D_SM_LY2]='Layer 2 soil moisture';
+POOLS_INFO.ABBREVIATION[S.D_SM_LY2]='D_SM_LY2';
+POOLS_INFO.UNITS[S.D_SM_LY2]='((m3 H20)/(m3 total volume of pore space in soil volume)';
+POOLS_INFO.DESCRIPTION[S.D_SM_LY2]='Volumetric water content relative to available pore space in the second belowground layer.';
+
+POOLS_INFO.NAME[S.D_SM_LY3]='Layer 3 soil moisture';
+POOLS_INFO.ABBREVIATION[S.D_SM_LY3]='D_SM_LY3';
+POOLS_INFO.UNITS[S.D_SM_LY3]='((m3 H20)/(m3 total volume of pore space in soil volume)';
+POOLS_INFO.DESCRIPTION[S.D_SM_LY3]='Volumetric water content relative to available pore space in the third belowground layer.';
+
+POOLS_INFO.NAME[S.D_PSI_LY1]='Layer 1 water potential';
+POOLS_INFO.ABBREVIATION[S.D_PSI_LY1]='D_PSI_LY1';
+POOLS_INFO.UNITS[S.D_PSI_LY1]='MPa';
+POOLS_INFO.DESCRIPTION[S.D_PSI_LY1]='Water potential of the first belowground layer';
+
+POOLS_INFO.NAME[S.D_PSI_LY2]='Layer 2 water potential';
+POOLS_INFO.ABBREVIATION[S.D_PSI_LY2]='D_PSI_LY2';
+POOLS_INFO.UNITS[S.D_PSI_LY2]='MPa';
+POOLS_INFO.DESCRIPTION[S.D_PSI_LY2]='Water potential of the second belowground layer';
+
+POOLS_INFO.NAME[S.D_PSI_LY3]='Layer 3 water potential';
+POOLS_INFO.ABBREVIATION[S.D_PSI_LY3]='D_PSI_LY3';
+POOLS_INFO.UNITS[S.D_PSI_LY3]='MPa';
+POOLS_INFO.DESCRIPTION[S.D_PSI_LY3]='Water potential of the third belowground layer';
+
+POOLS_INFO.NAME[S.M_LAI_MAX]='Past Maximum Leaf Area Index in vegetation memory';
+POOLS_INFO.ABBREVIATION[S.M_LAI_MAX]='M_LAI_MAX';
+POOLS_INFO.UNITS[S.M_LAI_MAX]='m2/m2';
+POOLS_INFO.DESCRIPTION[S.M_LAI_MAX]='Exponentially declining term encoding vegetation \'memory\' of past water/structural limitations for LAI, to capture lagged effects of past stress.';
+
+POOLS_INFO.NAME[S.M_LAI_TEMP]='Past Leaf temperature in vegetation memory';
+POOLS_INFO.ABBREVIATION[S.M_LAI_TEMP]='M_LAI_TEMP';
+POOLS_INFO.UNITS[S.M_LAI_TEMP]='K';
+POOLS_INFO.DESCRIPTION[S.M_LAI_TEMP]='Exponentially declining term encoding vegetation \'memory\' of past temperature limitations for LAI, to capture lagged effects of past stress.';
+
 //EDC info
 
 EDCs_INFO.NAME[twood]='Turnover rate of wood';
