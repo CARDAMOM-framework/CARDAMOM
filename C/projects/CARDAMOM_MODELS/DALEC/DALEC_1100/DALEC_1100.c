@@ -1151,9 +1151,9 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 
 //     //Isfinite check for 14 progronstic pools only
-//     int nnn, isfinitecheck=1;
-//     for (nnn=0;nnn<14;nnn++){if ( isfinite(POOLS[nxp+nnn])==false){isfinitecheck=0;}};
-//     if (isfinitecheck==0){break;};
+     int nnn, isfinitecheck=1;
+    for (nnn=0;nnn<14;nnn++){if ( isfinite(POOLS[nxp+nnn])==false){isfinitecheck=0;}};
+    if (isfinitecheck==0){break;};
 
 }
 
