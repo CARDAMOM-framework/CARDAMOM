@@ -62,28 +62,30 @@ int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
     //Removes Rd, which is accounted for separately
     double NSC_PLUS_GPP_RATE = S->IN.NSC/S->IN.deltat  + (S->IN.GPP  - S->IN.Rd);
 
-S->OUT.NONLEAF_MORTALITY_FACTOR=0;
+S->OUT.NONLEAF_MORTALITY_FACTOR=1-(1/exp(NSC_PLUS_GPP_RATE/POTENTIAL_AUTO_RESP_MAINTENANCE)); //new
 
-    //IF maintenance 
-               //Spend all NSC on maintenance
-   if (POTENTIAL_AUTO_RESP_MAINTENANCE>NSC_PLUS_GPP_RATE)
-                    {S->OUT.AUTO_RESP_MAINTENANCE =  NSC_PLUS_GPP_RATE + S->IN.Rd;
-                    //Basically a carbon starvation factor
-                     //Insufficient NSCs to maintain tissues.
-                     //Alternative: 
-                     //if NSC_PLUS_GPP_RATE = 0; MORTALITY = 1; all biomass is lost.
-                     //if NSC_PLUS_GPP_RATE = POTENTIAL_AUTO_RESP_MAINTENANCE; MORTALITY = 0; all biomass is lost.
+//     //IF maintenance 
+//                //Spend all NSC on maintenance
+//    if (POTENTIAL_AUTO_RESP_MAINTENANCE>NSC_PLUS_GPP_RATE)
+//                     {S->OUT.AUTO_RESP_MAINTENANCE =  NSC_PLUS_GPP_RATE + S->IN.Rd;
+//                     //Basically a carbon starvation factor
+//                      //Insufficient NSCs to maintain tissues.
+//                      //Alternative: 
+//                      //if NSC_PLUS_GPP_RATE = 0; MORTALITY = 1; all biomass is lost.
+//                      //if NSC_PLUS_GPP_RATE = POTENTIAL_AUTO_RESP_MAINTENANCE; MORTALITY = 0; all biomass is lost.
 
-                     //MORTALITY_FACTOR  = 1 - NSC_PLUS_GPP_RATE/POTENTIAL_AUTO_RESP_MAINTENANCE;
-                     //MORTALITY_FACTOR  = 1 - NSC_PLUS_GPP_RATE/POTENTIAL_AUTO_RESP_MAINTENANCE;
-                     //Current model: if % maintenance resp not available, then lose same % of biomass.
-                     //Alernative model: remobilize foliar and fine root sugars (if at all possible, check literature)
-                     S->OUT.NONLEAF_MORTALITY_FACTOR  = fmin(1 - NSC_PLUS_GPP_RATE/POTENTIAL_AUTO_RESP_MAINTENANCE,1);}
+//                      //MORTALITY_FACTOR  = 1 - NSC_PLUS_GPP_RATE/POTENTIAL_AUTO_RESP_MAINTENANCE;
+//                      //MORTALITY_FACTOR  = 1 - NSC_PLUS_GPP_RATE/POTENTIAL_AUTO_RESP_MAINTENANCE;
+//                      //Current model: if % maintenance resp not available, then lose same % of biomass.
+//                      //Alernative model: remobilize foliar and fine root sugars (if at all possible, check literature)
+//                      S->OUT.NONLEAF_MORTALITY_FACTOR  = fmin(1 - NSC_PLUS_GPP_RATE/POTENTIAL_AUTO_RESP_MAINTENANCE,1);}
 
-    else
+//     else
 
 //Spend full amount on maintenance resp
-    {S->OUT.AUTO_RESP_MAINTENANCE = POTENTIAL_AUTO_RESP_MAINTENANCE + S->IN.Rd;}
+    //{S->OUT.AUTO_RESP_MAINTENANCE = POTENTIAL_AUTO_RESP_MAINTENANCE + S->IN.Rd;} //new
+    S->OUT.AUTO_RESP_MAINTENANCE = POTENTIAL_AUTO_RESP_MAINTENANCE * ( 1 - S->OUT.NONLEAF_MORTALITY_FACTOR) ; //new
+
      //Calculate leftover NSCs
     //Only use available NSC after maintenance resp accounted for
     
@@ -97,10 +99,10 @@ S->OUT.NONLEAF_MORTALITY_FACTOR=0;
        S->OUT.ALLOC_WOO_ACTUAL =0;
        S->OUT.ALLOC_ROO_ACTUAL =0;
 
-    if (S->OUT.NONLEAF_MORTALITY_FACTOR==0){
+    // if (S->OUT.NONLEAF_MORTALITY_FACTOR==0){
     
 
-        double LEFTOVER_NSC_RATE = NSC_PLUS_GPP_RATE - S->OUT.AUTO_RESP_MAINTENANCE + S->IN.Rd;
+        double LEFTOVER_NSC_RATE = NSC_PLUS_GPP_RATE - S->OUT.AUTO_RESP_MAINTENANCE; //
 
    
     //Only proceed if AUTO_RESP_MAINTENANCE>=NSC
@@ -115,28 +117,32 @@ S->OUT.NONLEAF_MORTALITY_FACTOR=0;
     //Potential demand of labile carbon by plant growth
     TOTAL_GROWTH_POT = S->IN.ALLOC_FOL_POT + S->IN.ALLOC_WOO_POT + S->IN.ALLOC_ROO_POT;
     F_LABREL_DEMAND = fmax(0, TOTAL_GROWTH_POT);
+
+    // Compute exponential growth factor representing amount of growth resources mobilizable 
+
+    double GF = 1 - (1/exp(F_LABREL_SUPPLY/F_LABREL_DEMAND));
     //Actual release of labile carbon (before growth respiration costs subtracted)
-    S->OUT.F_LABREL_ACTUAL = fmin(F_LABREL_SUPPLY, F_LABREL_DEMAND);
+    //S->OUT.F_LABREL_ACTUAL = fmin(F_LABREL_SUPPLY, F_LABREL_DEMAND);
+    S->OUT.F_LABREL_ACTUAL = F_LABREL_DEMAND * (1 -GF); 
+
 
     //Scaling factor for allocation fluxes, accounts for NSC limitation and growth respiration cost
     // - if actual growth is smaller than potential growth, we down-scale plant allocation fluxes
-    SCALE_ALLOC_FLUXES = fmin(1, S->OUT.F_LABREL_ACTUAL / TOTAL_GROWTH_POT);
-    S->OUT.ALLOC_FOL_ACTUAL = SCALE_ALLOC_FLUXES * S->IN.ALLOC_FOL_POT;
-    S->OUT.ALLOC_WOO_ACTUAL = SCALE_ALLOC_FLUXES * S->IN.ALLOC_WOO_POT;
-    S->OUT.ALLOC_ROO_ACTUAL = SCALE_ALLOC_FLUXES * S->IN.ALLOC_ROO_POT;
+    //SCALE_ALLOC_FLUXES = fmin(1, S->OUT.F_LABREL_ACTUAL / TOTAL_GROWTH_POT);//rid
+    S->OUT.ALLOC_FOL_ACTUAL = S->IN.ALLOC_FOL_POT * (1 - GF);
+    S->OUT.ALLOC_WOO_ACTUAL = S->IN.ALLOC_WOO_POT * (1 - GF);
+    S->OUT.ALLOC_ROO_ACTUAL = S->IN.ALLOC_ROO_POT * (1 - GF);
 
     //Actual release of labile carbon i.e. growth flux (after subtracting growth respiration costs)
-    TOTAL_GROWTH_ACTUAL = TOTAL_GROWTH_POT * SCALE_ALLOC_FLUXES;
+    //TOTAL_GROWTH_ACTUAL = TOTAL_GROWTH_POT * SCALE_ALLOC_FLUXES;
+    TOTAL_GROWTH_ACTUAL = S->OUT.ALLOC_FOL_ACTUAL + S->OUT.ALLOC_WOO_ACTUAL + S->OUT.ALLOC_ROO_ACTUAL;
     //Growth respiration
-    S->OUT.AUTO_RESP_GROWTH = (1-S->IN.gr)/S->IN.gr * TOTAL_GROWTH_ACTUAL;}
+    S->OUT.AUTO_RESP_GROWTH = (1-S->IN.gr)/S->IN.gr * TOTAL_GROWTH_ACTUAL;
 
     //Diagnostic variables
     S->OUT.AUTO_RESP_TOTAL = S->OUT.AUTO_RESP_MAINTENANCE + S->OUT.AUTO_RESP_GROWTH;
     S->OUT.NPP = S->IN.GPP - S->OUT.AUTO_RESP_TOTAL;
     S->OUT.CUE = S->OUT.NPP/S->IN.GPP;
-
-    
-
 
 
 

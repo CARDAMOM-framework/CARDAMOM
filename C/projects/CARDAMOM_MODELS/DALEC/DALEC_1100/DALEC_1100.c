@@ -504,6 +504,7 @@ int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
 
 /*repeating loop for each timestep*/
 for (n=0; n < N_timesteps; n++){
+    if (n == 10){ exit(0); }
 /*ppol index*/
 p=nopools*n;
 /*next pool index*/
@@ -514,8 +515,13 @@ nxp=nopools*(n+1);
 f=nofluxes*n;
 
 
+
 double LAI=POOLS[p+S.D_LAI];
-     
+printf("\n C_fol %f \n ", POOLS[p+S.C_fol]);
+
+    printf("\n D_LAI %f \n ", POOLS[p+S.D_LAI]);
+
+     printf("\n LAI to LIU %f \n ", LAI);
 //         
 // /*Calculate light extinction coefficient*/
 // double B = (DOY[n]-81)*2*pi/365.;
@@ -626,10 +632,16 @@ LIU.IN.NSC=POOLS[p+S.C_lab];
 LIU.IN.deltat=deltat;
 
 
+
 //Call function: uses LIU->IN to update LIU->OUT
 LIU_AN_ET(&LIU);
 
+printf("\n LIU %f %f \n", LIU.IN.NSC,LIU.OUT.Rd); 
+
 double LEAF_MORTALITY_FACTOR=LIU.OUT.LEAF_MORTALITY_FACTOR;
+
+ /*track C starvation here*/
+FLUXES[f+F.leaf_mortality_factor]=LEAF_MORTALITY_FACTOR;
 
 // GPP--- gross
 FLUXES[f+F.gpp] = LIU.OUT.Ag;
@@ -957,6 +969,9 @@ FLUXES[f+F.target_LAI]=KNORR.OUT.lambda_next;
 //KNORR.OUT.dlambdadt is in units per timestep; converting thest to units per day (as required for CARDAMOM)
 //"FLUXES" have to be in "per day" units
 FLUXES[f+F.dlambda_dt]=KNORR.OUT.dlambdadt*one_over_deltat;
+
+printf( " target LAI, current LAI, dlambda_dt: %f %f %f", FLUXES[f+F.target_LAI]*pars[P.LCMA], LAI*pars[P.LCMA], FLUXES[f+F.dlambda_dt]*pars[P.LCMA]);
+
 FLUXES[f+F.f_temp_thresh]= KNORR.OUT.f_T;
 FLUXES[f+F.f_dayl_thresh]= KNORR.OUT.f_d;
 
@@ -997,6 +1012,8 @@ FLUXES[f+F.resp_auto_growth]=ARFLUXES.OUT.AUTO_RESP_GROWTH;
 FLUXES[f+F.resp_auto_maint]=ARFLUXES.OUT.AUTO_RESP_MAINTENANCE;
 FLUXES[f+F.resp_auto_maint_dark]=LIU.OUT.Rd;
 
+
+
 /*Compute leaf senescence: 
 this is a C_fol removal based on Knorr output dlambda_dt,
 which itself is computed based on the LAI passed to Knorr module, 
@@ -1016,7 +1033,7 @@ else { // i.e. when leaf fall is occuring
 
 
 /*labile production*/
-FLUXES[f+F.lab_prod] = ARFLUXES.OUT.F_LABPROD;
+FLUXES[f+F.lab_prod] = ARFLUXES.OUT.F_LABPROD; //Could also be LIUET.OUT.An? 
 /*labile production*/
 //FLUXES[f+F.lab_release] = ARFLUXES.OUT.F_LABREL_ACTUAL;
 /*foliar production*/
@@ -1082,6 +1099,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
             /*LIVE POOLS*/
         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto_maint]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
         POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod]-FLUXES[f+F.ph_fol2lit])*deltat;
+        printf(" \n Next pool, prod, phenological flux %f %f %f ", POOLS[p+S.C_fol], FLUXES[f+F.foliar_prod]*deltat,FLUXES[f+F.ph_fol2lit]*deltat ); 
         POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + FLUXES[f+F.root_prod]*deltat;
         POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + FLUXES[f+F.wood_prod]*deltat;
             /*DEAD POOLS*/
@@ -1214,6 +1232,7 @@ else {
     
     
     
+    
     //Update time-varying inputs
     LY1SOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_LY1];//mm (or kg/m2)
     LY2SOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_LY2];//mm (or kg/m2)
@@ -1281,7 +1300,7 @@ DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=89;
-DALECmodel->nofluxes=92;
+DALECmodel->nofluxes=93;
 DALECmodel->noedcs=15;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);

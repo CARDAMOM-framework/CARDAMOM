@@ -97,6 +97,9 @@ consts[6] = lambda_max = 6.0.   # parameter: maximum potential leaf area index (
 
   // lambda_next is the updated target LAI (units of m2/m2)
   lambda_next = lambda_lim - (lambda_lim - lambda)*exp(-r*deltat);
+
+  printf( " \n  lambda_next %f \n ",   lambda_next);
+
   // dlambdadt is the change in LAI over the period deltat (units of m2/m2)
   dlambdadt = lambda_next - lambda;
 

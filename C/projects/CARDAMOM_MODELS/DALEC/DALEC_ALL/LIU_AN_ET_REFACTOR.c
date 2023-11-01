@@ -109,6 +109,8 @@ PAR = SRAD/(2*Ephoton*NA)*1e6;
 
 double canopy_scale = (1. - exp(-VegK*LAI*clumping))/(VegK); 
 
+printf(" \n Initial LAI %f \n ", LAI);
+
 //absorbed PAR assuming black canopy. 
 //PAR = PAR*(1. - exp(-LAI*VegK));
 
@@ -167,10 +169,15 @@ Rd_C4 =A->IN.canopyRdsf*vcmax25*fT;
 Ag = C3_frac*(Ag_C3) + (1. - C3_frac)*(Ag_C4);
 Rd = C3_frac*(Rd_C3) + (1. - C3_frac)*(Rd_C4);
 
+printf(" \n Initial Rd %f \n ", Rd);
+
     //Potential Rd
 double Rd_daily_potential = Rd*canopy_scale*(12.e-6)*(24.*60.*60.);
+
+printf(" \n Daily Potential Rd %f \n ", Rd_daily_potential);
 //Ensures NSCs available
-A->OUT.LEAF_MORTALITY_FACTOR=fmax( 1- A->IN.NSC/(Rd_daily_potential * A->IN.deltat)  ,0);
+//A->OUT.LEAF_MORTALITY_FACTOR=fmax( 1- A->IN.NSC/(Rd_daily_potential * A->IN.deltat)  ,0);
+A->OUT.LEAF_MORTALITY_FACTOR=(1-(1/(exp(A->IN.NSC/(Rd_daily_potential * A->IN.deltat))))); // new exponential formulation 11/1/2023
 //Actual daily Rd
 A->OUT.Rd =Rd_daily_potential*(1 - A->OUT.LEAF_MORTALITY_FACTOR);
 
