@@ -504,7 +504,9 @@ int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
 
 /*repeating loop for each timestep*/
 for (n=0; n < N_timesteps; n++){
-    if (n == 10){ exit(0); }
+    //if (n == 3){ exit(0); }
+
+//    printf("\n---------- %d ---------- n ",n );
 /*ppol index*/
 p=nopools*n;
 /*next pool index*/
@@ -517,11 +519,13 @@ f=nofluxes*n;
 
 
 double LAI=POOLS[p+S.D_LAI];
-printf("\n C_fol %f \n ", POOLS[p+S.C_fol]);
+//printf("\n C_fol %f \n ", POOLS[p+S.C_fol]);
 
-    printf("\n D_LAI %f \n ", POOLS[p+S.D_LAI]);
+    
 
-     printf("\n LAI to LIU %f \n ", LAI);
+//    printf("\n D_LAI %f \n ", POOLS[p+S.D_LAI]);
+
+//     printf("\n LAI to LIU %f \n ", LAI);
 //         
 // /*Calculate light extinction coefficient*/
 // double B = (DOY[n]-81)*2*pi/365.;
@@ -636,9 +640,11 @@ LIU.IN.deltat=deltat;
 //Call function: uses LIU->IN to update LIU->OUT
 LIU_AN_ET(&LIU);
 
-printf("\n LIU %f %f \n", LIU.IN.NSC,LIU.OUT.Rd); 
+//printf("\n LIU %f %f \n", LIU.IN.NSC,LIU.OUT.Rd); 
 
 double LEAF_MORTALITY_FACTOR=LIU.OUT.LEAF_MORTALITY_FACTOR;
+
+//printf("\n LMF %f \n", LEAF_MORTALITY_FACTOR); 
 
  /*track C starvation here*/
 FLUXES[f+F.leaf_mortality_factor]=LEAF_MORTALITY_FACTOR;
@@ -970,7 +976,7 @@ FLUXES[f+F.target_LAI]=KNORR.OUT.lambda_next;
 //"FLUXES" have to be in "per day" units
 FLUXES[f+F.dlambda_dt]=KNORR.OUT.dlambdadt*one_over_deltat;
 
-printf( " target LAI, current LAI, dlambda_dt: %f %f %f", FLUXES[f+F.target_LAI]*pars[P.LCMA], LAI*pars[P.LCMA], FLUXES[f+F.dlambda_dt]*pars[P.LCMA]);
+//printf( " target LAI, current LAI, dlambda_dt: %f %f %f", FLUXES[f+F.target_LAI]*pars[P.LCMA], LAI*pars[P.LCMA], FLUXES[f+F.dlambda_dt]*pars[P.LCMA]*deltat);
 
 FLUXES[f+F.f_temp_thresh]= KNORR.OUT.f_T;
 FLUXES[f+F.f_dayl_thresh]= KNORR.OUT.f_d;
@@ -1098,8 +1104,15 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 /*CARBON POOL GROWTH AND PHENOLOGICAL LEAF FLUX*/
             /*LIVE POOLS*/
         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto_maint]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
+        
+        //printf("\n foliar0 %f \n" ,POOLS[p+S.C_fol]);
+        //printf("\n prod-lit %f \n" ,(FLUXES[f+F.foliar_prod]-FLUXES[f+F.ph_fol2lit])*deltat);
+        //printf("\n prod %f \n" ,(FLUXES[f+F.foliar_prod])*deltat);
+        //printf("\n lit %f \n" ,(FLUXES[f+F.ph_fol2lit])*deltat);
         POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod]-FLUXES[f+F.ph_fol2lit])*deltat;
-        printf(" \n Next pool, prod, phenological flux %f %f %f ", POOLS[p+S.C_fol], FLUXES[f+F.foliar_prod]*deltat,FLUXES[f+F.ph_fol2lit]*deltat ); 
+        //printf("\n foliar %f \n" ,POOLS[nxp+S.C_fol]);
+
+        // printf(" \n Next pool, prod, phenological flux %f %f %f ", POOLS[nxp+S.C_fol], FLUXES[f+F.foliar_prod]*deltat,FLUXES[f+F.ph_fol2lit]*deltat ); 
         POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + FLUXES[f+F.root_prod]*deltat;
         POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + FLUXES[f+F.wood_prod]*deltat;
             /*DEAD POOLS*/
@@ -1130,7 +1143,9 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 /*DIRECT LIVE CARBON POOL REMOVALS PART 1 of 4: Removing ABGB disturbance from live pools here*/
     /*Note: these are lateral fluxes, and are discarded, not transferred!*/
     POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.dist_lab]*deltat;
+    //printf("\n foliarpred %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.dist_fol]*deltat;
+    //printf("\n foliarpostd %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.dist_roo]*deltat;
     POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.dist_woo]*deltat;
 
@@ -1147,7 +1162,9 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     
 /*LIVE CARBON POOL REMOVALS PART 2 of 4: Removing fire fluxes from live pools here*/
     POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.f_lab]*deltat;
+    //printf("\n foliarprefire %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.f_fol]*deltat;
+    //printf("\n foliarpostfire %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.f_roo]*deltat;
     POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.f_woo]*deltat;
 	/*DEAD CARBON POOL removals for fire*/
@@ -1176,7 +1193,9 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 /*LIVE CARBON POOL TRANSFERS PART 3 of 4: environmental stress mortality fluxes to dead pools*/	
     
     POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.fx_lab2lit]*deltat;
+    //printf("\n foliarpreenv %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.fx_fol2lit]*deltat;
+    //printf("\n foliarpostenv %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.fx_roo2lit]*deltat;
     POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.fx_woo2cwd]*deltat;
 
@@ -1190,18 +1209,20 @@ FLUXES[f+F.lab2lit] = POOLS[nxp+S.C_lab]*pars[P.t_lab];
 
 // Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]*one_over_deltat;
 if (FLUXES[f+F.dlambda_dt] > 0){
-  FLUXES[f+F.fol2lit]=POOLS[p+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))*one_over_deltat;
+  FLUXES[f+F.fol2lit]=POOLS[nxp+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))*one_over_deltat;
 }
 else {
     //FLUXES[f+F.dlambda_dt] is in m2/m2/day
     //LCMA = gC/m2/m2
-  FLUXES[f+F.fol2lit]=POOLS[p+S.C_fol]*pars[P.t_foliar];
+  FLUXES[f+F.fol2lit]=POOLS[nxp+S.C_fol]*pars[P.t_foliar];
 }
 
 /*LIVE CARBON POOL TRANSFERS PART 4 of 4: background mortality fluxes to dead pools*/	
 
     POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.lab2lit]*deltat;
+    //printf("\n foliarprebgm %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.fol2lit]*deltat;
+    //printf("\n foliarpostbgm %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.roo2lit]*deltat;
     POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.woo2cwd]*deltat;
 	
