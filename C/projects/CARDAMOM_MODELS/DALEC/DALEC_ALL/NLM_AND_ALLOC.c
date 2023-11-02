@@ -78,10 +78,14 @@ int NLM_AND_ALLOC(NLM_AND_ALLOC_STRUCT * S){
     //Autotrophic maintenance for wood and non-wood
     double POTENTIAL_AUTO_RESP_MAINTENANCE =   S->IN.mr_w * fT * S->IN.C_LIVE_W + S->IN.mr_r * fT * S->IN.C_LIVE_R;
 
+    
 
     double NSC_PLUS_GPP_RATE = S->IN.NSC/S->IN.deltat  + (S->IN.GPP  - S->IN.Rd);
 
     S->OUT.NONLEAF_MORTALITY_FACTOR=0;
+
+    printf("Rd: %f\n", S->IN.Rd);
+
 
     //IF maintenance 
     //Spend all NSC on maintenance
@@ -97,6 +101,8 @@ int NLM_AND_ALLOC(NLM_AND_ALLOC_STRUCT * S){
     //Calculate leftover NSCs
     //Only use available NSC after maintenance resp accounted for
     double LEFTOVER_NSC_RATE = NSC_PLUS_GPP_RATE - S->OUT.AUTO_RESP_MAINTENANCE  ;
+
+    printf("LEFTOVER_NSC_RATE: %f\n", LEFTOVER_NSC_RATE);
     S->OUT.growth_carbon = LEFTOVER_NSC_RATE;
 
     
@@ -130,7 +136,7 @@ int NLM_AND_ALLOC(NLM_AND_ALLOC_STRUCT * S){
 
 
     printf("\n %f %f %f %f %f %f \n", LEFTOVER_NSC_RATE, S->OUT.AUTO_RESP_GROWTH,S->OUT.ALLOC_FOL_ACTUAL,S->OUT.ALLOC_WOO_ACTUAL,S->OUT.ALLOC_ROO_ACTUAL,S->OUT.ALLOC_NSC_ACTUAL);
-    exit(0);
+    
     //Diagnostic variables
     S->OUT.AUTO_RESP_TOTAL = S->OUT.AUTO_RESP_MAINTENANCE + S->OUT.AUTO_RESP_GROWTH;
     S->OUT.NPP = S->IN.GPP - S->OUT.AUTO_RESP_TOTAL;

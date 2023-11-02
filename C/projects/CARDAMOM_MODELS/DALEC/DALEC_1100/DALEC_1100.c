@@ -116,6 +116,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         // C_lab
         FIOMATRIX.SINK[F.gpp]=S.C_lab;
         FIOMATRIX.SOURCE[F.resp_auto_maint]=S.C_lab;
+        FIOMATRIX.SOURCE[F.Rd]=S.C_lab;
         FIOMATRIX.SOURCE[F.foliar_prod]=S.C_lab;
         FIOMATRIX.SOURCE[F.root_prod]=S.C_lab;
         FIOMATRIX.SOURCE[F.wood_prod]=S.C_lab;
@@ -651,6 +652,9 @@ FLUXES[f+F.leaf_mortality_factor]=LEAF_MORTALITY_FACTOR;
 
 // GPP--- gross
 FLUXES[f+F.gpp] = LIU.OUT.Ag;
+
+// Rd--- Canopy
+FLUXES[f+F.Rd] = LIU.OUT.Rd;
 // GPP net, i.e. GPP- Rd
 FLUXES[f+F.gppnet] = LIU.OUT.An;
 //transpiration//
@@ -1091,7 +1095,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 /*CARBON POOL GROWTH AND PHENOLOGICAL LEAF FLUX*/
             /*LIVE POOLS*/
-        POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto_maint]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
+        POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.gpp]-FLUXES[f+F.Rd]-FLUXES[f+F.resp_auto_maint]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
         
         //printf("\n foliar0 %f \n" ,POOLS[p+S.C_fol]);
         //printf("\n prod-lit %f \n" ,(FLUXES[f+F.foliar_prod]-FLUXES[f+F.ph_fol2lit])*deltat);
@@ -1309,7 +1313,7 @@ DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=89;
-DALECmodel->nofluxes=93;
+DALECmodel->nofluxes=94;
 DALECmodel->noedcs=15;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);

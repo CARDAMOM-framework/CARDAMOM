@@ -14,7 +14,7 @@
 #include "../DALEC_ALL/SOIL_TEMP_AND_LIQUID_FRAC.c"
 #include "../DALEC_ALL/INITIALIZE_INTERNAL_SOIL_ENERGY.c"
 #include "../DALEC_ALL/INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS.c"
-#include "../DALEC_ALL/c.c"
+#include "../DALEC_ALL/NLM_AND_ALLOC.c"
 
 
 
@@ -116,6 +116,7 @@ int DALEC_1130_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         // C_lab
         FIOMATRIX.SINK[F.gpp]=S.C_lab;
         FIOMATRIX.SOURCE[F.resp_auto_maint]=S.C_lab;
+        FIOMATRIX.SOURCE[F.Rd]=S.C_lab;
         FIOMATRIX.SOURCE[F.foliar_prod]=S.C_lab;
         FIOMATRIX.SOURCE[F.root_prod]=S.C_lab;
         FIOMATRIX.SOURCE[F.wood_prod]=S.C_lab;
@@ -449,7 +450,7 @@ double *POOLS=DATA.M_POOLS;
     
    //Declare
     //Plant carbon allocation.
-     NLM_AND_ALLOC ARFLUXES;
+     NLM_AND_ALLOC_STRUCT ARFLUXES;
      //define time-invariant parameters here
     ARFLUXES.IN.mr_r=pars[P.rauto_mr_r];//
     ARFLUXES.IN.mr_w=pars[P.rauto_mr_w];//
@@ -649,6 +650,8 @@ LIU.IN.deltat=deltat;
 //Call function: uses LIU->IN to update LIU->OUT
 LIU_AN_ET(&LIU);
 
+
+
 //printf("\n LIU %f %f \n", LIU.IN.NSC,LIU.OUT.Rd); 
 
 double LEAF_MORTALITY_FACTOR=LIU.OUT.LEAF_MORTALITY_FACTOR;
@@ -660,6 +663,8 @@ FLUXES[f+F.leaf_mortality_factor]=LEAF_MORTALITY_FACTOR;
 
 // GPP--- gross
 FLUXES[f+F.gpp] = LIU.OUT.Ag;
+//Rd Canopy
+FLUXES[f+F.Rd] = LIU.OUT.Rd;
 // GPP net, i.e. GPP- Rd
 FLUXES[f+F.gppnet] = LIU.OUT.An;
 //transpiration//
@@ -997,10 +1002,10 @@ ARFLUXES.IN.C_LIVE_R= POOLS[p+S.C_roo];
 ARFLUXES.IN.ALLOC_FOL_POT=fmax(0, ((FLUXES[f+F.target_LAI] * pars[P.LCMA]) - POOLS[p+S.C_fol])*one_over_deltat);
 
 
-ddouble Paweffect = (POOLS[p+S.D_SM_LY1]*pars[P.LY1_z] + POOLS[p+S.D_SM_LY2]*pars[P.LY2_z]*pars[P.root_frac])/(pars[P.LY1_z]+pars[P.LY2_z]*pars[P.root_frac]);
+double Paweffect = (POOLS[p+S.D_SM_LY1]*pars[P.LY1_z] + POOLS[p+S.D_SM_LY2]*pars[P.LY2_z]*pars[P.root_frac])/(pars[P.LY1_z]+pars[P.LY2_z]*pars[P.root_frac]);
 ARFLUXES.IN.Paw_norm =Paweffect;
 
-ALLOC_AND_AUTO_RESP_FLUXES(&ARFLUXES);
+NLM_AND_ALLOC(&ARFLUXES);
 
 double NONLEAF_MORTALITY_FACTOR=ARFLUXES.OUT.NONLEAF_MORTALITY_FACTOR;
     
@@ -1102,8 +1107,13 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 /*CARBON POOL GROWTH AND PHENOLOGICAL LEAF FLUX*/
             /*LIVE POOLS*/
-        POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto_maint]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
-        
+        printf("\n lab0 %f \n" ,POOLS[p+S.C_lab]/deltat);
+
+        printf("\n leftoverNSC %f \n" ,POOLS[p+S.C_lab]/deltat + (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto_maint]));
+
+        POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.gpp]-FLUXES[f+F.Rd]-FLUXES[f+F.resp_auto_maint]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
+        printf("\n lab1 %f \n" ,POOLS[nxp+S.C_lab]/deltat);
+        exit(0);
         //printf("\n foliar0 %f \n" ,POOLS[p+S.C_fol]);
         //printf("\n prod-lit %f \n" ,(FLUXES[f+F.foliar_prod]-FLUXES[f+F.ph_fol2lit])*deltat);
         //printf("\n prod %f \n" ,(FLUXES[f+F.foliar_prod])*deltat);
@@ -1320,7 +1330,7 @@ DALECmodel->dalec=DALEC_1130;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=94;
-DALECmodel->nofluxes=93;
+DALECmodel->nofluxes=94;
 DALECmodel->noedcs=17;
 
 DALEC_1130_FLUX_SOURCES_SINKS(DALECmodel);
