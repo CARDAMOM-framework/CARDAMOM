@@ -1613,6 +1613,24 @@ static DALEC_EDC_MEAN_TEMP_STRUCT EDC_mean_ly1_temp, EDC_mean_ly2_temp, EDC_mean
     EDCs[E.mean_ly3_temp].function=&DALEC_EDC_MEAN_TEMP;
     EDCs[E.mean_ly3_temp].prerun=false;
 
+static DALEC_EDC_PARAMETER_ZEROONE_STRUCT EDC_wetalloc;
+static DALEC_EDC_PARAMETER_ZEROONE_STRUCT EDC_dryalloc;
+
+EDC_wetalloc.parone=P.s_ar;
+EDC_wetalloc.partwo=P.s_wood;
+EDC_wetalloc.parthree=P.s_root;
+EDCs[E.EDC_wetalloc].data=&EDC_wetalloc;
+EDCs[E.EDC_wetalloc].function=&DALEC_EDC_PARAMETER_ZEROONE;
+EDCs[E.EDC_wetalloc].prerun=true;
+
+
+EDC_dryalloc.parone=P.e_ar;
+EDC_dryalloc.partwo=P.e_wood;
+EDC_dryalloc.parthree=P.e_root;
+EDCs[E.EDC_dryalloc].data=&EDC_dryalloc;
+EDCs[E.EDC_dryalloc].function=&DALEC_EDC_PARAMETER_ZEROONE;
+EDCs[E.EDC_dryalloc].prerun=true;
+
 
 
 //ecological
