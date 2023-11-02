@@ -84,7 +84,6 @@ int NLM_AND_ALLOC(NLM_AND_ALLOC_STRUCT * S){
 
     S->OUT.NONLEAF_MORTALITY_FACTOR=0;
 
-    printf("Rd: %f\n", S->IN.Rd);
 
 
     //IF maintenance 
@@ -102,7 +101,6 @@ int NLM_AND_ALLOC(NLM_AND_ALLOC_STRUCT * S){
     //Only use available NSC after maintenance resp accounted for
     double LEFTOVER_NSC_RATE = NSC_PLUS_GPP_RATE - S->OUT.AUTO_RESP_MAINTENANCE  ;
 
-    printf("LEFTOVER_NSC_RATE: %f\n", LEFTOVER_NSC_RATE);
     S->OUT.growth_carbon = LEFTOVER_NSC_RATE;
 
     
@@ -135,7 +133,6 @@ int NLM_AND_ALLOC(NLM_AND_ALLOC_STRUCT * S){
     // printf("ALLOC_ROO_ACTUAL: %f\n", S->OUT.ALLOC_ROO_ACTUAL);
 
 
-    printf("\n %f %f %f %f %f %f \n", LEFTOVER_NSC_RATE, S->OUT.AUTO_RESP_GROWTH,S->OUT.ALLOC_FOL_ACTUAL,S->OUT.ALLOC_WOO_ACTUAL,S->OUT.ALLOC_ROO_ACTUAL,S->OUT.ALLOC_NSC_ACTUAL);
     
     //Diagnostic variables
     S->OUT.AUTO_RESP_TOTAL = S->OUT.AUTO_RESP_MAINTENANCE + S->OUT.AUTO_RESP_GROWTH;

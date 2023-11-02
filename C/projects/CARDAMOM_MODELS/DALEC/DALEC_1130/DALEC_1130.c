@@ -1107,13 +1107,9 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 /*CARBON POOL GROWTH AND PHENOLOGICAL LEAF FLUX*/
             /*LIVE POOLS*/
-        printf("\n lab0 %f \n" ,POOLS[p+S.C_lab]/deltat);
-
-        printf("\n leftoverNSC %f \n" ,POOLS[p+S.C_lab]/deltat + (FLUXES[f+F.gpp]-FLUXES[f+F.resp_auto_maint]));
 
         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.gpp]-FLUXES[f+F.Rd]-FLUXES[f+F.resp_auto_maint]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
-        printf("\n lab1 %f \n" ,POOLS[nxp+S.C_lab]/deltat);
-        exit(0);
+
         //printf("\n foliar0 %f \n" ,POOLS[p+S.C_fol]);
         //printf("\n prod-lit %f \n" ,(FLUXES[f+F.foliar_prod]-FLUXES[f+F.ph_fol2lit])*deltat);
         //printf("\n prod %f \n" ,(FLUXES[f+F.foliar_prod])*deltat);
