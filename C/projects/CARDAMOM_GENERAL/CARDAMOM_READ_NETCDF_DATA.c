@@ -129,6 +129,11 @@ DATA->PEQ_iniSOM=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSOM");
 DATA->PEQ_iniSnow=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSnow");
 DATA->PEQ_LCMA=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_LCMA");
 
+//add PEQ value and unc from previous MCMC *pMCMC*
+DATA->PEQ_r_ch4=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_r_ch4");
+DATA->PEQ_S_fv=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_S_fv");
+DATA->PEQ_rhch4_rhco2=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_rhch4_rhco2");
+
 //Global defaults: these are set in pre-process if not defined below
 // default_int_value(&OBS->opt_unc_type,0);
 // default_int_value(&OBS->opt_normalization,0);
