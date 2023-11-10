@@ -514,9 +514,9 @@ int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
 
 /*repeating loop for each timestep*/
 for (n=0; n < N_timesteps; n++){
-    //if (n == 3){ exit(0); }
+    if (n == 20){ exit(0); }
 
-//    printf("\n---------- %d ---------- n ",n );
+   printf("\n---------- %d ---------- n ",n );
 /*ppol index*/
 p=nopools*n;
 /*next pool index*/
@@ -1108,6 +1108,14 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 /*CARBON POOL GROWTH AND PHENOLOGICAL LEAF FLUX*/
             /*LIVE POOLS*/
 
+        printf("\n lab %f \n" ,POOLS[p+S.C_lab]);
+        printf("\n fol %f \n" ,POOLS[p+S.C_fol]);
+        printf("\n roo %f \n" ,POOLS[p+S.C_roo]);
+        printf("\n woo %f \n" ,POOLS[p+S.C_woo]);
+        printf("\n cwd %f \n" ,POOLS[p+S.C_cwd]);
+        printf("\n lit %f \n" ,POOLS[p+S.C_lit]);
+        printf("\n som %f \n" ,POOLS[p+S.C_som]);
+
         POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.gpp]-FLUXES[f+F.Rd]-FLUXES[f+F.resp_auto_maint]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
 
         //printf("\n foliar0 %f \n" ,POOLS[p+S.C_fol]);
@@ -1116,7 +1124,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
         //printf("\n lit %f \n" ,(FLUXES[f+F.ph_fol2lit])*deltat);
         POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod]-FLUXES[f+F.ph_fol2lit])*deltat;
         //printf("\n foliar %f \n" ,POOLS[nxp+S.C_fol]);
-
+        printf("\n C_fol_phenology %f \n ", POOLS[nxp+S.C_fol]);
         // printf(" \n Next pool, prod, phenological flux %f %f %f ", POOLS[nxp+S.C_fol], FLUXES[f+F.foliar_prod]*deltat,FLUXES[f+F.ph_fol2lit]*deltat ); 
         POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + FLUXES[f+F.root_prod]*deltat;
         POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + FLUXES[f+F.wood_prod]*deltat;
@@ -1150,7 +1158,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.dist_lab]*deltat;
     //printf("\n foliarpred %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.dist_fol]*deltat;
-    //printf("\n foliarpostd %f \n" ,POOLS[nxp+S.C_fol]);
+    printf("\n foliarpostd %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.dist_roo]*deltat;
     POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.dist_woo]*deltat;
 
@@ -1169,7 +1177,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.f_lab]*deltat;
     //printf("\n foliarprefire %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.f_fol]*deltat;
-    //printf("\n foliarpostfire %f \n" ,POOLS[nxp+S.C_fol]);
+    printf("\n foliarpostfire %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.f_roo]*deltat;
     POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.f_woo]*deltat;
 	/*DEAD CARBON POOL removals for fire*/
@@ -1200,7 +1208,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
     POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.fx_lab2lit]*deltat;
     //printf("\n foliarpreenv %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.fx_fol2lit]*deltat;
-    //printf("\n foliarpostenv %f \n" ,POOLS[nxp+S.C_fol]);
+    printf("\n foliarpostenv %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.fx_roo2lit]*deltat;
     POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.fx_woo2cwd]*deltat;
 
@@ -1215,11 +1223,16 @@ FLUXES[f+F.lab2lit] = POOLS[nxp+S.C_lab]*pars[P.t_lab];
 // Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]*one_over_deltat;
 if (FLUXES[f+F.dlambda_dt] > 0){
   FLUXES[f+F.fol2lit]=POOLS[nxp+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))*one_over_deltat;
+  printf("\n growing leaves :( ) %f \n" ,FLUXES[f+F.fol2lit]);
 }
 else {
     //FLUXES[f+F.dlambda_dt] is in m2/m2/day
     //LCMA = gC/m2/m2
   FLUXES[f+F.fol2lit]=POOLS[nxp+S.C_fol]*pars[P.t_foliar];
+ 
+ printf("\n h1lp paraamter %f \n" ,pars[P.t_foliar]);
+printf("\n send help  pool %f \n" ,POOLS[nxp+S.C_fol]);
+  printf("\n dieing leaves :( ) %f \n" ,FLUXES[f+F.fol2lit]);
 }
 
 /*LIVE CARBON POOL TRANSFERS PART 4 of 4: background mortality fluxes to dead pools*/	
@@ -1227,7 +1240,7 @@ else {
     POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.lab2lit]*deltat;
     //printf("\n foliarprebgm %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.fol2lit]*deltat;
-    //printf("\n foliarpostbgm %f \n" ,POOLS[nxp+S.C_fol]);
+    printf("\n foliarpostbgm %f \n" ,POOLS[nxp+S.C_fol]);
     POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.roo2lit]*deltat;
     POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.woo2cwd]*deltat;
 	
