@@ -297,118 +297,100 @@ double *POOLS=DATA.M_POOLS;
  
 
 
-  /*assigning values to pools*/
+//******************INITIALIZING POOLS******************
 
-  /*L,F,R,W,Lit,SOM*/
-  POOLS[S.C_lab]=pars[P.i_labile];
-  POOLS[S.C_fol]=pars[P.i_foliar];
-  POOLS[S.C_roo]=pars[P.i_root];
-  POOLS[S.C_woo]=pars[P.i_wood];
-  POOLS[S.C_cwd]=pars[P.i_cwd];
-  POOLS[S.C_lit]=pars[P.i_lit];
-  POOLS[S.C_som]=pars[P.i_som];
-  /*water pools*/
-  POOLS[S.H2O_LY1]=HYDROFUN_MOI2EWT(pars[P.i_LY1_SM],pars[P.LY1_por],pars[P.LY1_z]);
-  POOLS[S.H2O_LY2]=HYDROFUN_MOI2EWT(pars[P.i_LY2_SM],pars[P.LY2_por],pars[P.LY2_z]);
-  POOLS[S.H2O_LY3]=HYDROFUN_MOI2EWT(pars[P.i_LY3_SM],pars[P.LY3_por],pars[P.LY3_z]);
-  POOLS[S.H2O_SWE]=pars[P.i_SWE];
-  /*Energy pools*/
-  //Step 1. derive temperature based on i_LY1_E (which will represent energy per mm H2O).
-    //INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(infiltemp);
-    //Declare stryct
-//     SOIL_TEMP_AND_LIQUID_FRAC_STRUCT LY1SOILTEMP, LY2SOILTEMP, LY3SOILTEMP;
-//   //Populate with run-specific constrants
-//     //LY1
-//     LY1SOILTEMP.IN.dry_soil_vol_heat_capacity =pars[P.LY1_vhc]; ;//J/m3/K
-//     LY1SOILTEMP.IN.depth = pars[P.LY1_z];//m 
-//     LY1SOILTEMP.IN.soil_water = POOLS[S.H2O_LY1];//mm (or kg/m2)
-//     LY1SOILTEMP.IN.internal_energy = POOLS[S.E_LY1];//Joules
-//     //Pass pointer to function 
-//     SOIL_TEMP_AND_LIQUID_FRAC(&LY1SOILTEMP);  //Outputs are in K
-    //
-
-
-    
-    //double INITIALIZE_INTERNAL_SOIL_ENERGY(double internal_energy_per_mm_H2O, double H2O_mm, double dry_soil_vol_heat_capacity, double depth )
-  POOLS[S.E_LY1]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY1_E],   POOLS[S.H2O_LY1], pars[P.LY1_vhc], pars[P.LY1_z] );
-  POOLS[S.E_LY2]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY2_E],   POOLS[S.H2O_LY2], pars[P.LY2_vhc], pars[P.LY2_z] );
-  POOLS[S.E_LY3]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY3_E],   POOLS[S.H2O_LY3], pars[P.LY3_vhc], pars[P.LY3_z] );
+    /*Carbon pools: 
+        Live: labile, foliar, root, wood, 
+        Dead: litter, coarse woody debris, soil organic matter*/
+POOLS[S.C_lab]=pars[P.i_labile];
+POOLS[S.C_fol]=pars[P.i_foliar];
+POOLS[S.C_roo]=pars[P.i_root];
+POOLS[S.C_woo]=pars[P.i_wood];
+POOLS[S.C_cwd]=pars[P.i_cwd];
+POOLS[S.C_lit]=pars[P.i_lit];
+POOLS[S.C_som]=pars[P.i_som];
+    /*water pools*/
+POOLS[S.H2O_LY1]=HYDROFUN_MOI2EWT(pars[P.i_LY1_SM],pars[P.LY1_por],pars[P.LY1_z]);
+POOLS[S.H2O_LY2]=HYDROFUN_MOI2EWT(pars[P.i_LY2_SM],pars[P.LY2_por],pars[P.LY2_z]);
+POOLS[S.H2O_LY3]=HYDROFUN_MOI2EWT(pars[P.i_LY3_SM],pars[P.LY3_por],pars[P.LY3_z]);
+POOLS[S.H2O_SWE]=pars[P.i_SWE];
+    /*Energy pools*/
+POOLS[S.E_LY1]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY1_E],   POOLS[S.H2O_LY1], pars[P.LY1_vhc], pars[P.LY1_z] );
+POOLS[S.E_LY2]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY2_E],   POOLS[S.H2O_LY2], pars[P.LY2_vhc], pars[P.LY2_z] );
+POOLS[S.E_LY3]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY3_E],   POOLS[S.H2O_LY3], pars[P.LY3_vhc], pars[P.LY3_z] );
   
   
-   //---INITIALIZING DIAGNOSTIC STATES---
-    POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; //LAI
-    
-    if (POOLS[S.H2O_SWE]>0){
-    POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]);} //snow cover fraction}
-    else
-    {POOLS[S.D_SCF]=0;};
-
-
-        //Diagnostic time-invariant quantities
+//******************INITIALIZING DIAGNOSTIC STATES******************
+    //LAI
+POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; 
+    //snow cover fraction
+if (POOLS[S.H2O_SWE]>0){
+POOLS[S.D_SCF]=POOLS[S.H2O_SWE]/(POOLS[S.H2O_SWE]+pars[P.scf_scalar]);} 
+else
+{POOLS[S.D_SCF]=0;};
+    //Diagnostic time-invariant quantities:
         // Porosity scaling factor (see line 124 of HESS paper)
-        double psi_porosity = -0.117/100;
-        double LY1max=pars[P.LY1_por]*pars[P.LY1_z]*1000; //LY1 capacity in mm
-        double LY2max=pars[P.LY2_por]*pars[P.LY2_z]*1000; //LY3 capacity in mm
-        double LY3max=pars[P.LY3_por]*pars[P.LY3_z]*1000; //LY3 capacity in mm
-        
-        
-    
+double psi_porosity = -0.117/100; 
+        //LY1 capacity in mm
+double LY1max=pars[P.LY1_por]*pars[P.LY1_z]*1000; 
+        //LY2 capacity in mm
+double LY2max=pars[P.LY2_por]*pars[P.LY2_z]*1000; 
+        //LY3 capacity in mm
+double LY3max=pars[P.LY3_por]*pars[P.LY3_z]*1000; 
     //INITIALIZING soil moisture
-        POOLS[S.D_SM_LY1]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY1],pars[P.LY1_por],pars[P.LY1_z]); //soil moisture LY1
-        POOLS[S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY2],pars[P.LY2_por],pars[P.LY2_z]);//soil moisture LY3
-        POOLS[S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3
-// Convert to potential
-//Min psi ensures large negative psis not resolved by model needlessly
-	double minpsi=-30;
-        POOLS[S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY1],psi_porosity,pars[P.retention]),minpsi);
-        POOLS[S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY2],psi_porosity,pars[P.retention]),minpsi);
-        POOLS[S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY3],psi_porosity,pars[P.retention]),minpsi);
+POOLS[S.D_SM_LY1]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY1],pars[P.LY1_por],pars[P.LY1_z]); //soil moisture LY1
+POOLS[S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY2],pars[P.LY2_por],pars[P.LY2_z]);//soil moisture LY3
+POOLS[S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3
+    // Convert to potential
+        //Min psi ensures large negative psis not resolved by model needlessly
+	        double minpsi=-30;
+POOLS[S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY1],psi_porosity,pars[P.retention]),minpsi);
+POOLS[S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY2],psi_porosity,pars[P.retention]),minpsi);
+POOLS[S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY3],psi_porosity,pars[P.retention]),minpsi);
 
 
-
-        
-    //Declare struct
-    SOIL_TEMP_AND_LIQUID_FRAC_STRUCT LY1SOILTEMP, LY2SOILTEMP, LY3SOILTEMP;
-  //Populate with run-specific constrants
-    //LY1
+//******************Declare SOIL_TEMP_AND_LIQUID_FRAC STRUCT*********************       
+SOIL_TEMP_AND_LIQUID_FRAC_STRUCT LY1SOILTEMP, LY2SOILTEMP, LY3SOILTEMP;
+    //Populate with run-specific constrants
+        //LY1
     LY1SOILTEMP.IN.dry_soil_vol_heat_capacity =pars[P.LY1_vhc]; ;//J/m3/K
     LY1SOILTEMP.IN.depth = pars[P.LY1_z];//m 
     LY1SOILTEMP.IN.soil_water = POOLS[S.H2O_LY1];//mm (or kg/m2)
     LY1SOILTEMP.IN.internal_energy = POOLS[S.E_LY1];//Joules
+    
     //Pass pointer to function 
-    SOIL_TEMP_AND_LIQUID_FRAC(&LY1SOILTEMP);  //Outputs are in K
+SOIL_TEMP_AND_LIQUID_FRAC(&LY1SOILTEMP);  //Outputs are in K
+    
     //Store outputs 
-    POOLS[S.D_TEMP_LY1]=LY1SOILTEMP.OUT.TEMP;  //In K  
-    POOLS[S.D_LF_LY1]=LY1SOILTEMP.OUT.LF;
+POOLS[S.D_TEMP_LY1]=LY1SOILTEMP.OUT.TEMP;  //In K  
+POOLS[S.D_LF_LY1]=LY1SOILTEMP.OUT.LF;
 
-    //LY2
+        //LY2
     LY2SOILTEMP.IN.dry_soil_vol_heat_capacity =pars[P.LY2_vhc]; ;//J/m3/K
     LY2SOILTEMP.IN.depth = pars[P.LY2_z];//m 
     LY2SOILTEMP.IN.soil_water = POOLS[S.H2O_LY2];//mm (or kg/m2)
     LY2SOILTEMP.IN.internal_energy = POOLS[S.E_LY2];//Joules
     //Pass pointer to function 
-    SOIL_TEMP_AND_LIQUID_FRAC(&LY2SOILTEMP);  //Outputs are in K
+SOIL_TEMP_AND_LIQUID_FRAC(&LY2SOILTEMP);  //Outputs are in K
+    
     //Store outputs 
-    POOLS[S.D_TEMP_LY2]=LY2SOILTEMP.OUT.TEMP;  //In K  
-    POOLS[S.D_LF_LY2]=LY2SOILTEMP.OUT.LF;
+POOLS[S.D_TEMP_LY2]=LY2SOILTEMP.OUT.TEMP;  //In K  
+POOLS[S.D_LF_LY2]=LY2SOILTEMP.OUT.LF;
 
-    //LY3
+        //LY3
     LY3SOILTEMP.IN.dry_soil_vol_heat_capacity =pars[P.LY3_vhc]; ;//J/m3/K
     LY3SOILTEMP.IN.depth = pars[P.LY3_z];//m 
     LY3SOILTEMP.IN.soil_water = POOLS[S.H2O_LY3];//mm (or kg/m2)
     LY3SOILTEMP.IN.internal_energy = POOLS[S.E_LY3];//Joules
     //Pass pointer to function 
-    SOIL_TEMP_AND_LIQUID_FRAC(&LY3SOILTEMP);//Outputs are in K
+SOIL_TEMP_AND_LIQUID_FRAC(&LY3SOILTEMP);//Outputs are in K
     //Store outputs 
-    POOLS[S.D_TEMP_LY3]=LY3SOILTEMP.OUT.TEMP;    //In K
-    POOLS[S.D_LF_LY3]=LY3SOILTEMP.OUT.LF;
+POOLS[S.D_TEMP_LY3]=LY3SOILTEMP.OUT.TEMP;    //In K
+POOLS[S.D_LF_LY3]=LY3SOILTEMP.OUT.LF;
 
     
-    
-    
-    
-    //******************Declare KNORR STRUCT*********************
-    KNORR_ALLOCATION_STRUCT KNORR;
+//******************Declare KNORR STRUCT*********************
+KNORR_ALLOCATION_STRUCT KNORR;
 //define time-invariant parameters
          KNORR.IN.deltat=deltat;
          KNORR.IN.n=0;
@@ -427,55 +409,31 @@ double *POOLS=DATA.M_POOLS;
     POOLS[S.M_LAI_MAX]=pars[P.init_LAIW_mem]*pars[P.lambda_max];
     
 
-    //******************Allocation fluxes struct**********************
-//    
-//     typedef struct {    
-//     struct {
-//     double   TEMP;//deg C
-//     double   SRAD;//MJ m2 d
-//     double   NSC;//Clab
-//     double   LY1_SM;//m3/m3
-//     double   parameter1;//replace with any name, no constraints on naming convention
-//     double   parameter2;//replace with any name, no constraints on naming convention
-//     } IN;
-//     struct {
-//     double *    AUTO_RESP_MAINTENANCE;
-//       double *       AUTO_RESP_GROWTH;
-//       double *       ALLOC_FOL;
-//       double *       ALLOC_WOO;
-//      double *        ALLOC_ROO;}OUT;
-//   }ALLOC_AND_AUTO_RESP_FLUXES_STRUCT;
-    
-    
-    
-   //Declare
-    //Plant carbon allocation.
-     ALLOC_AND_AUTO_RESP_FLUXES_STRUCT ARFLUXES;
-     //define time-invariant parameters here
-    ARFLUXES.IN.mr_r=pars[P.rauto_mr_r];//
-    ARFLUXES.IN.mr_w=pars[P.rauto_mr_w];//
-    ARFLUXES.IN.gr=pars[P.rauto_gr];//
-    ARFLUXES.IN.Q10mr=pars[P.rauto_mr_q10];//
+//******************Allocation fluxes struct**********************
 
-    //Heterotrophic respiration module
-    HET_RESP_RATES_JCR_STRUCT HRJCR;
+ALLOC_AND_AUTO_RESP_FLUXES_STRUCT ARFLUXES;
+    //define time-invariant parameters here
+ARFLUXES.IN.mr_r=pars[P.rauto_mr_r];//
+ARFLUXES.IN.mr_w=pars[P.rauto_mr_w];//
+ARFLUXES.IN.gr=pars[P.rauto_gr];//
+ARFLUXES.IN.Q10mr=pars[P.rauto_mr_q10];//
+
+
+//******************Heterotrophic respiration module*********************
+HET_RESP_RATES_JCR_STRUCT HRJCR;
     //define time invariant parameters here
-    
+
     /* jc prep input for methane module*/
-    HRJCR.IN.S_FV=pars[P.S_fv];
-    HRJCR.IN.SM_OPT=pars[P.thetas_opt];
-    HRJCR.IN.FWC=pars[P.fwc];
-    HRJCR.IN.R_CH4=pars[P.r_ch4];
-    HRJCR.IN.Q10CH4=pars[P.Q10ch4];
-    HRJCR.IN.Q10CO2=pars[P.Q10rhco2];
-
-   
+HRJCR.IN.S_FV=pars[P.S_fv];
+HRJCR.IN.SM_OPT=pars[P.thetas_opt];
+HRJCR.IN.FWC=pars[P.fwc];
+HRJCR.IN.R_CH4=pars[P.r_ch4];
+HRJCR.IN.Q10CH4=pars[P.Q10ch4];
+HRJCR.IN.Q10CO2=pars[P.Q10rhco2];
 
 
-
-
-/*Combustion factors*/
-double CF[7];//AAB changed this
+//******************Combustion factors*********************
+double CF[7];
 CF[S.C_lab]=pars[P.cf_ligneous];
 CF[S.C_fol]=pars[P.cf_foliar];
 CF[S.C_roo]=pars[P.cf_ligneous];
@@ -484,84 +442,42 @@ CF[S.C_cwd]=pars[P.cf_ligneous];
 CF[S.C_lit]=(pars[P.cf_foliar]+pars[P.cf_ligneous])*0.5;
 CF[S.C_som]=pars[P.cf_DOM];
 
-
-/*resilience factor*/
-
-/*foliar carbon transfer intermediate variables*/
+//******************Misc*********************
+    /*foliar carbon transfer intermediate variables*/
 double Fcfolavailable;
-
-/*number of MET drivers*/
-// int nomet=((DALEC *)DATA.MODEL)->nomet;
-
-/*number of DALEC pools*/
+    /*number of DALEC pools*/
 int nopools=((DALEC *)DATA.MODEL)->nopools;
-
-/*number of DALEC fluxes to store*/
+    /*number of DALEC fluxes to store*/
 int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
 
 
+//******************************************************************************
+//------------------------------------------------------------------------------
+//************************************ Main Loop *********************************
+//------------------------------------------------------------------------------
+//******************************************************************************
 
-//********MAIN LOOP***********
 
-/*repeating loop for each timestep*/
+    /*repeating loop for each timestep*/
 for (n=0; n < N_timesteps; n++){
-    //if (n == 3){ exit(0); }
-
-//    printf("\n---------- %d ---------- n ",n );
-/*ppol index*/
+ 
+    /*pool index*/
 p=nopools*n;
-/*next pool index*/
+    /*next pool index*/
 nxp=nopools*(n+1);
-/*met index*/
-// m=nomet*n;
-/*flux array index*/
+    /*flux array index*/
 f=nofluxes*n;
 
 
+double LAI=POOLS[p+S.D_LAI]; 
 
-double LAI=POOLS[p+S.D_LAI];
-//printf("\n C_fol %f \n ", POOLS[p+S.C_fol]);
-
-    
-
-//    printf("\n D_LAI %f \n ", POOLS[p+S.D_LAI]);
-
-//     printf("\n LAI to LIU %f \n ", LAI);
-//         
-// /*Calculate light extinction coefficient*/
-// double B = (DOY[n]-81)*2*pi/365.;
-// double ET1 = 9.87*sin(2*B)-7.53*cos(B)-1.5*sin(B);
-// double DA = 23.45*sin((284+DOY[n])*2*pi/365); //Deviation angle
-// double LST = (int) (DOY[n]*24*60) % (24*60);
-// LST=0.5*24*60;
-// double AST = LST+ET1;
-// double h = (AST-12*60)/4; //hour angle
-// double alpha = asin((sin(pi/180*DATA.ncdf_data.LAT)*sin(pi/180*DA)+cos(pi/180*DATA.ncdf_data.LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
-// double zenith_angle = 90-alpha;
-// 
-// //printf("SZA local = %2.2f, SZA global = %2.2f, SZA diff = %2.2f\n", zenith_angle,DATA.ncdf_data.SZA.values,DATA.ncdf_data.SZA.values - zenith_angle);
-// //double LAD = 1.0; //leaf angle distribution
-// //double VegK = sqrt(pow(LAD,2)+ pow(tan(zenith_angle/180*pi),2))/(LAD+1.774*pow((1+1.182),-0.733)); //Campbell and Norman 1998
-// 
-// double LAD = 0.5; //leaf angle distribution// optimize leaf angle distribution. 
-// double VegK0 = LAD/cos(zenith_angle/180*pi);
-//     
-
-  DALEC * DALECmodel=(DALEC *)DATA.MODEL;
+DALEC * DALECmodel=(DALEC *)DATA.MODEL;
 
 DALEC_1100_DATA_STRUCT * DALEC_1100_DATA=(DALEC_1100_DATA_STRUCT *)DALECmodel->MODEL_DATA;
     
-    double VegK=DALEC_1100_DATA->VegK[n];
-//CONTINUE FROM HERE(
-    //printf("VegK internal, external = %2.2f,  %2.2f\n",VegK, DALEC_1100_DATA->VegK[n]);
+double VegK=DALEC_1100_DATA->VegK[n];
 
-
-
-
-
-
-
-/*Temp scaling factor*/
+//******************Cold temperature stress factor*********************
 double g;
 double Tminmin = pars[P.Tminmin] - DGCM_TK0C; 
 double Tminmax = pars[P.Tminmax] - DGCM_TK0C;
@@ -575,22 +491,19 @@ else {
     g=(T2M_MIN[n] - Tminmin)/(Tminmax - Tminmin);
 }
 
-// H2O stress scaling factor
-	//We're also multiplying beta by cold-weather stress 
-//double psi_LY10 = HYDROFUN_MOI2PSI(max(POOLS[p+S.D_SM_LY1],0),psi_porosity,pars[P.retention]);
-//double psi_LY10 = HYDROFUN_MOI2PSI(POOLS[p+S.D_SM_LY1],psi_porosity,pars[P.retention_ly1]);
+//*****************************Water stress********************************
+
+    //stomatal closure factor
 
 double beta1 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50] - 1)))*POOLS[p+S.D_LF_LY1];
 double beta2 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50] - 1)))*POOLS[p+S.D_LF_LY2];
 double beta = (beta1*pars[P.LY1_z] + beta2*pars[P.LY2_z]*pars[P.root_frac])/(pars[P.LY1_z]+pars[P.LY2_z]*pars[P.root_frac]);
 
-// H2O stress biomass mortality factor: parallel structure to GPP scaling factor above
+    //biomass mortality factor
 
 double betaHMF_1 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50HMF] - 1)))*POOLS[p+S.D_LF_LY1]; 
 double betaHMF_2 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50HMF] - 1)))*POOLS[p+S.D_LF_LY2];
 double betaHMF = (betaHMF_1*pars[P.LY1_z] + betaHMF_2*pars[P.LY2_z]*pars[P.root_frac])/(pars[P.LY1_z] +pars[P.LY2_z]*pars[P.root_frac]);
-
-//if (betaHMF>1 | betaHMF<0) {printf("error in HMF, =%2.2f \n",betaHMF);} 
 
 double HMF; // Hydraulic mortality factor
 
@@ -600,18 +513,20 @@ if( (POOLS[p+S.D_LF_LY1] + POOLS[p+S.D_LF_LY2]) == 2  ) { //no frozen water
 else {
     HMF = 0; //no hydraulic mortality when soils are frozen
 }
+    //store values
+FLUXES[f+F.beta_factor]=fmin(beta,g);
+FLUXES[f+F.soil_beta_factor]=beta;
+FLUXES[f+F.hydraulic_mortality_factor]=HMF;
 
-// mean air temperature (K)
+
+    // mean air temperature (K)
 double air_temp_k = DGCM_TK0C+0.5*(T2M_MIN[n]+T2M_MAX[n]);
 
-    FLUXES[f+F.beta_factor]=fmin(beta,g);
-    FLUXES[f+F.soil_beta_factor]=beta;
-    FLUXES[f+F.hydraulic_mortality_factor]=HMF;
 
 //******************Declare LIU STRUCT*********************
 LIU_AN_ET_STRUCT LIU;
 
-//define time-invariant parameters
+    //define time-invariant parameters
 LIU.IN.SRAD=SSRD[n]*1e6/DGCM_SEC_DAY;
 LIU.IN.VPD=VPD[n]/10;
 LIU.IN.TEMP=air_temp_k;  
@@ -638,46 +553,40 @@ LIU.IN.deltat=deltat;
 
 
 
-//Call function: uses LIU->IN to update LIU->OUT
+    //Call function: uses LIU->IN to update LIU->OUT
 LIU_AN_ET(&LIU);
-
-//printf("\n LIU %f %f \n", LIU.IN.NSC,LIU.OUT.Rd); 
 
 double LEAF_MORTALITY_FACTOR=LIU.OUT.LEAF_MORTALITY_FACTOR;
 
-//printf("\n LMF %f \n", LEAF_MORTALITY_FACTOR); 
-
- /*track C starvation here*/
+    /*track C starvation here*/
 FLUXES[f+F.leaf_mortality_factor]=LEAF_MORTALITY_FACTOR;
 
-// GPP--- gross
+    // GPP--- gross
 FLUXES[f+F.gpp] = LIU.OUT.Ag;
-
-// Rd--- Canopy
+    // Rd--- Canopy
 FLUXES[f+F.Rd] = LIU.OUT.Rd;
-// GPP net, i.e. GPP- Rd
+    // GPP net, i.e. GPP- Rd
 FLUXES[f+F.gppnet] = LIU.OUT.An;
-//transpiration//
+    //transpiration//
 double transp = LIU.OUT.transp;
+    //partition transp between two soil layers
 if (beta1>0 || beta2>0){
 FLUXES[f+F.transp1] = transp*beta1*pars[P.LY1_z]/(beta1*pars[P.LY1_z]+beta2*pars[P.LY2_z]*pars[P.root_frac]);
-// FLUXES[f+F.transp2] = transp*beta2*pars[P.LY2_z]*pars[P.root_frac]/(beta1*pars[P.LY1_z]+beta2*pars[P.LY2_z]*pars[P.root_frac]);
 FLUXES[f+F.transp2] = transp - FLUXES[f+F.transp1];}
 else {
 FLUXES[f+F.transp1] =0;
 FLUXES[f+F.transp2] =0;}
 	
-//evaporation//
+    //evaporation//
 FLUXES[f+F.evap] = LIU.OUT.evap;
 
-
-/*Snow water equivalent*/
+    /*Snow water equivalent*/
 FLUXES[f+F.snowfall] = SNOWFALL[n];
 POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snowfall]*deltat; /*first step snowfall to SWE*/
-//transient_SCF
+    //transient_SCF
 double SCFtemp = POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);
     //Snow melt, based on new SWE
- double SNOWMELT=fmin(fmax((DGCM_TK0C+SKT[n]-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]*one_over_deltat; /*melted snow per day*/  
+double SNOWMELT=fmin(fmax((DGCM_TK0C+SKT[n]-pars[P.min_melt])*pars[P.melt_slope],0),1)*POOLS[nxp+S.H2O_SWE]*one_over_deltat; /*melted snow per day*/  
 double SUBLIMATION =  pars[P.sublimation_rate]*SSRD[n]*SCFtemp;
 
 double slf=(SNOWMELT + SUBLIMATION)*deltat/POOLS[nxp+S.H2O_SWE];
@@ -687,76 +596,62 @@ double slf=(SNOWMELT + SUBLIMATION)*deltat/POOLS[nxp+S.H2O_SWE];
         else{
                   FLUXES[f+F.melt]=SNOWMELT;
         FLUXES[f+F.sublimation]=SUBLIMATION;}
-
-
-// 
-//  //Splitting snow loss into sublimation and snow melt with constant frac
-// FLUXES[f+F.melt]=SNOWMELT;
-//     //    POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
-// 
-// FLUXES[f+F.sublimation]=fmax( pars[P.sublimation_rate]*VPD[n]*SRAD[n]*POOLS[nxp+S.D_SCF]);
-// 
-
-
-/*Insure SWE does not go negative due to machine error*/
+    
+    /*second step: remove snowmelt from SWE*/
+        /*Ensure SWE does not go negative due to machine error*/
 POOLS[nxp+S.H2O_SWE]=fmax(POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat,0);
-/*second step remove snowmelt from SWE*/
+    //Store total land-to-atmosphere water flux
 FLUXES[f+F.ets]=FLUXES[f+F.evap] + FLUXES[f+F.transp1] + FLUXES[f+F.transp2] + FLUXES[f+F.sublimation];
 
 //Energy balance: Rn = LE + H - G
 // Rn = SWin - SWout + LWin - LWout
 
-
 double SWin = SSRD[n]*1e6/DGCM_SEC_DAY; // W m-2
 
-//Snow free
+    //Snow free
 double SWout_snowfree =(SWin*0.5*(pars[P.leaf_refl_par]+pars[P.leaf_refl_nir])); // W m-2
-//Weighted average of surface albedo considering SW snow albedo as 0.9
+    //Weighted average of surface albedo considering SW snow albedo as 0.9
 double snow_albedo=0.9;//Consider age-dependent albedo.
     
-//SW out
+    //SW out
 double SWout = (1. - POOLS[p+S.D_SCF])*SWout_snowfree + POOLS[p+S.D_SCF]*(SWin*snow_albedo); // W m-2
-        
 
-
-
-//Stefan-Boltzmann constant W.m-2.K-4
+    //Stefan-Boltzmann constant W.m-2.K-4
 double sigma = 5.67*1e-8;
-//Incident LW radiation - calculated
-//double LWin = sigma*pow(air_temp_k,4.);
+    //Incident LW radiation - calculated
+    //double LWin = sigma*pow(air_temp_k,4.);
 double LWin = STRD[n]*1e6/DGCM_SEC_DAY; // W m-2
-//Outgoing LW radiation
+    //Outgoing LW radiation
 double tskin_k = SKT[n]+DGCM_TK0C;
 double LWout = sigma*(tskin_k*tskin_k)*(tskin_k*tskin_k); // W m-2
-//Net radiation at the top of the canopy-soil continuum
-//
-//
+
+    //Net radiation at the top of the canopy-soil continuum
 double Rn = SWin - SWout + LWin - LWout; // W m-2
-//Rnet only into soil
+    //Rnet only into soil
 FLUXES[f+F.net_radiation] = Rn; // W m-2
 
-//Rnet snow free
+    //Rnet snow free
 double Rn_snowfree = SWin - SWout_snowfree + LWin - LWout; // W m-2
 
 
-//These are only fluxes into LY1 and out of LY1
+    //These are only fluxes into LY1 and out of LY1
 FLUXES[f+F.SWin]=SWin;//flag for redundancy and deletion
 FLUXES[f+F.LWin]=LWin;//flag for redundancy and deletion
 FLUXES[f+F.SWout]=SWout;
 FLUXES[f+F.LWout]=LWout;
         
-//Latent heat of Vaporization J kg-1 
+    //Latent heat of Vaporization J kg-1 
 double lambda = DGCM_LATENT_HEAT_VAPORIZATION; //2.501*1e6 J kg-1 
-//Latent heat (W.m-2)
+    //Latent heat (W.m-2)
 double LE = lambda*(FLUXES[f+F.evap]+FLUXES[f+F.transp1]+FLUXES[f+F.transp2])/DGCM_SEC_DAY; // W m-2
 FLUXES[f+F.latent_heat] = LE; // W m-2
-//specific heat capacity of dry air is 1.00464 KJ kg -1 K -1
-// Consider surface pressure as forcing for more accurate conversion from mol to m3
-// Consider explicitly calculating cp based on humidity (derived from VPD and pressure)
+    //specific heat capacity of dry air is 1.00464 KJ kg -1 K -1
+        // Consider surface pressure as forcing for more accurate conversion from mol to m3
+        // Consider explicitly calculating cp based on humidity (derived from VPD and pressure)
 double cp = 29.2; // J mol-1 K-1 representative specific heat of moist air at const pressure from Bonan book
 double Psurf = 1e5; // Pa (representative surface pressure)
 double Rgas = 8.31; // Universal gas constant (J mol-1 K-1)
-// Pa / (J mol-1 K-1 * K) = mol m-3
+    // Pa / (J mol-1 K-1 * K) = mol m-3
 double moles_per_m3 = Psurf/(Rgas*air_temp_k);
 //Sensible heat 
 // double H = cp*(tskin_k - air_temp_k)*pars[P.ga]*moles_per_m3; // ga in m s-1, 
@@ -778,71 +673,54 @@ FLUXES[f+F.gh_in] =FLUXES[f+F.ground_heat] *DGCM_SEC_DAY;
 //Using G, Rn and LE to derive H
 // H = Rn - G  - LE
 FLUXES[f+F.sensible_heat] = Rn - FLUXES[f+F.ground_heat] - FLUXES[f+F.latent_heat];
-        
 
-// Infiltration (mm/day)
+    // Infiltration (mm/day)
 double liquid_in = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]);
 FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-liquid_in/pars[P.max_infil]));
 
-
-
-// Surface runoff (mm/day)
-
+    // Surface runoff (mm/day)
 FLUXES[f+F.q_surf] = liquid_in - FLUXES[f+F.infil];
 
-// Volumetric soil moisture from water pools
-// Include infiltration into LY1 ()
-// double sm_LY1 = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_LY1],pars[P.LY1_por],pars[P.LY1_z]);
-// double sm_LY3 = HYDROFUN_EWT2MOI(POOLS[p+S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);
-
-// Update LY1 SM with infiltration
-//sm_LY1 += HYDROFUN_EWT2MOI(infil*deltat,pars[P.LY1_por],pars[P.LY1_z]);
-
-// Calculate drainage
-
-//printf("POOLS[p+S.D_LF_LY1] = %2.2f\n",POOLS[p+S.D_LF_LY1]);
+    // Calculate drainage
 double drain_LY1 = POOLS[p+S.D_LF_LY1]*DRAINAGE(POOLS[p+S.D_SM_LY1],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
 double drain_LY2 = POOLS[p+S.D_LF_LY2]*DRAINAGE(POOLS[p+S.D_SM_LY2],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
 double drain_LY3 = POOLS[p+S.D_LF_LY3]*DRAINAGE(POOLS[p+S.D_SM_LY3],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
 
-// Drainage becomes runoff from pools
+    // Drainage becomes runoff from pools
 FLUXES[f+F.q_ly1] = HYDROFUN_MOI2EWT(drain_LY1,pars[P.LY1_por],pars[P.LY1_z])*one_over_deltat;
 FLUXES[f+F.q_ly2] = HYDROFUN_MOI2EWT(drain_LY2,pars[P.LY2_por],pars[P.LY2_z])*one_over_deltat;
 FLUXES[f+F.q_ly3] = HYDROFUN_MOI2EWT(drain_LY3,pars[P.LY3_por],pars[P.LY3_z])*one_over_deltat;
 
-
-// Convert to conductivity
+    // Convert to conductivity
 double k_LY1 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY1],pars[P.hydr_cond],pars[P.retention]);
 double k_LY2 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY2],pars[P.hydr_cond],pars[P.retention]);
 double k_LY3 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY3],pars[P.hydr_cond],pars[P.retention]);
 
-
-
-// Calculate inter-pool transfer in m/s (positive is LY1 to LY2)
+    // Calculate inter-pool transfer in m/s (positive is LY1 to LY2)
 double pot_xfer = 1000 * sqrt(k_LY1*k_LY2) * (1e-9*(POOLS[p+S.D_PSI_LY1]-POOLS[p+S.D_PSI_LY2])/(9.8*0.5*(pars[P.LY1_z]+pars[P.LY2_z])) + 1);
 double SPACEavail, H2Oavail, Max_H2O_xfer, TEMPxfer_1to2;
 if (pot_xfer>0) {//Water is going LY1->LY2 (down)
-// Available space in LY2 (after runoff)
+    // Available space in LY2 (after runoff)
 SPACEavail=fmax(pars[P.LY2_z]*pars[P.LY2_por]*1e3 - POOLS[p+S.H2O_LY2] + (FLUXES[f+F.q_ly2] + FLUXES[f+F.transp2])*deltat,0);
-// Available water in LY1 (after runoff, et, and infiltration)
+    // Available water in LY1 (after runoff, et, and infiltration)
 H2Oavail=fmax(POOLS[p+S.D_LF_LY1]*POOLS[p+S.H2O_LY1] + (FLUXES[f+F.infil] - FLUXES[f+F.q_ly1] - FLUXES[f+F.evap] - FLUXES[f+F.transp1])*deltat,0);
-// Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
+    // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
 Max_H2O_xfer= POOLS[p+S.D_LF_LY1]*pot_xfer*DGCM_SEC_DAY*deltat;
-//Minimum of three terms for LY1->LY2
-//1. Max_H2O_xfer
-//2. Available space in LY2 (after runoff)
-//3. LY1*LF (after runoff, et, and infiltration)
+    //Minimum of three terms for LY1->LY2
+        //1. Max_H2O_xfer
+        //2. Available space in LY2 (after runoff)
+        //3. LY1*LF (after runoff, et, and infiltration)
 FLUXES[f+F.ly1xly2] =fmin(Max_H2O_xfer , fmin(SPACEavail, H2Oavail))*one_over_deltat;
 TEMPxfer_1to2= POOLS[p+S.D_TEMP_LY1];//In K
 }
 else { //Water is going LY2->LY1 (up)
-// Available space in LY1 after runoff, et, and infiltration
+    // Available space in LY1 after runoff, et, and infiltration
 SPACEavail=fmax(pars[P.LY1_z]*pars[P.LY1_por]*1e3 - POOLS[p+S.H2O_LY1] - (FLUXES[f+F.infil] - FLUXES[f+F.q_ly1] - FLUXES[f+F.evap] - FLUXES[f+F.transp1])*deltat,0);
-// Available water in LY2 after runoff
+    // Available water in LY2 after runoff
 H2Oavail= fmax(POOLS[p+S.D_LF_LY2]*POOLS[p+S.H2O_LY2] - (FLUXES[f+F.q_ly2] + FLUXES[f+F.transp2])*deltat,0);
-// Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
+    // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
 Max_H2O_xfer= POOLS[p+S.D_LF_LY2]*pot_xfer*DGCM_SEC_DAY*deltat;
-// Reverse sign of previous case
+    // Reverse sign of previous case
 FLUXES[f+F.ly1xly2] = -fmin(-Max_H2O_xfer , fmin(SPACEavail, H2Oavail))*one_over_deltat;
 TEMPxfer_1to2= POOLS[p+S.D_TEMP_LY2];//In K
 }
@@ -850,31 +728,31 @@ TEMPxfer_1to2= POOLS[p+S.D_TEMP_LY2];//In K
   
 
 
-// Calculate inter-pool transfer in m/s (positive is LY1 to LY3)
+    // Calculate inter-pool transfer in m/s (positive is LY1 to LY3)
 pot_xfer = 1000 * sqrt(k_LY2*k_LY3) * (1e-9*(POOLS[p+S.D_PSI_LY2]-POOLS[p+S.D_PSI_LY3])/(9.8*0.5*(pars[P.LY2_z]+pars[P.LY3_z])) + 1);
 double TEMPxfer_2to3;
 if (pot_xfer>0) {//Water is going LY2->LY3 (down)
-// Available space in LY3 (after runoff)
+    // Available space in LY3 (after runoff)
 SPACEavail=fmax(pars[P.LY3_z]*pars[P.LY3_por]*1e3 - POOLS[p+S.H2O_LY3] + FLUXES[f+F.q_ly3]*deltat,0);
-// Available water in LY2 (after runoff, et, and infiltration)
+    // Available water in LY2 (after runoff, et, and infiltration)
 H2Oavail=fmax(POOLS[p+S.D_LF_LY2]*POOLS[p+S.H2O_LY2] - (FLUXES[f+F.q_ly2] + FLUXES[f+F.transp2])*deltat,0);
-// Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
+    // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
 Max_H2O_xfer= POOLS[p+S.D_LF_LY2]*pot_xfer*DGCM_SEC_DAY*deltat;
-//Minimum of three terms for LY2->LY3
-//1. Max_H2O_xfer
-//2. Available space in LY3 (after runoff)
-//3. LY2*LF (after runoff, et, and infiltration)
+    //Minimum of three terms for LY2->LY3
+        //1. Max_H2O_xfer
+        //2. Available space in LY3 (after runoff)
+        //3. LY2*LF (after runoff, et, and infiltration)                
 FLUXES[f+F.ly2xly3] =fmin(Max_H2O_xfer , fmin(SPACEavail, H2Oavail))*one_over_deltat;
 TEMPxfer_2to3= POOLS[p+S.D_TEMP_LY2];//In K
 }
 else { //Water is going LY3->LY2 (up)
-// Available space in LY2 after runoff, et, and infiltration
+    // Available space in LY2 after runoff, et, and infiltration
 SPACEavail=fmax(pars[P.LY2_z]*pars[P.LY2_por]*1e3 - POOLS[p+S.H2O_LY2] + (FLUXES[f+F.q_ly2] + FLUXES[f+F.transp2])*deltat,0);
-// Available water in LY3 after runoff
+    // Available water in LY3 after runoff
 H2Oavail= fmax(POOLS[p+S.D_LF_LY3]*POOLS[p+S.H2O_LY3] - FLUXES[f+F.q_ly3]*deltat,0);
-// Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
+    // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
 Max_H2O_xfer= POOLS[p+S.D_LF_LY3]*pot_xfer*DGCM_SEC_DAY*deltat;
-// Reverse sign of previous case
+    // Reverse sign of previous case
 FLUXES[f+F.ly2xly3] = -fmin(-Max_H2O_xfer , fmin(SPACEavail, H2Oavail))*one_over_deltat;
 TEMPxfer_2to3= POOLS[p+S.D_TEMP_LY3];//In K
 }
@@ -888,32 +766,25 @@ POOLS[nxp+S.H2O_LY2] = POOLS[p+S.H2O_LY2] + (FLUXES[f+F.ly1xly2] - FLUXES[f+F.ly
 POOLS[nxp+S.H2O_LY3] = POOLS[p+S.H2O_LY3] + (FLUXES[f+F.ly2xly3] - FLUXES[f+F.q_ly3])*deltat;
 
 
-
-
-if (POOLS[nxp+S.H2O_LY1]>LY1max){
-//Dump excess into LY1 Q
+if (POOLS[nxp+S.H2O_LY1]>LY1max){//Dump excess into LY1 Q
 FLUXES[f+F.q_ly1] +=(POOLS[nxp+S.H2O_LY1]-LY1max)*one_over_deltat;
 POOLS[nxp+S.H2O_LY1]=LY1max;}
 
-if (POOLS[nxp+S.H2O_LY2]>LY2max){
-//Dump excess into LY2 Q
+if (POOLS[nxp+S.H2O_LY2]>LY2max){//Dump excess into LY2 Q
 FLUXES[f+F.q_ly1] +=(POOLS[nxp+S.H2O_LY2]-LY2max)*one_over_deltat;
 POOLS[nxp+S.H2O_LY2]=LY2max;}
 
-if (POOLS[nxp+S.H2O_LY3]>LY3max){
-//Dump excess into LY3 Q
+if (POOLS[nxp+S.H2O_LY3]>LY3max){//Dump excess into LY3 Q
 FLUXES[f+F.q_ly3] +=(POOLS[nxp+S.H2O_LY3]-LY3max)*one_over_deltat;
 POOLS[nxp+S.H2O_LY3]=LY3max;}
 
 
-//**********INTERNAL ENERGT FLUXES FOR ALL H2O FLUXES***************
-//Add INFILTRATION, LY1, LY3, LY1xLY3, ET
-double infiltemp = air_temp_k ;//Infiltemp needs to be in degrees celcius for IF statement to work
+//**********INTERNAL ENERGY FLUXES FOR ALL H2O FLUXES***************
+double infiltemp = air_temp_k ;//Infiltemp needs to be in degrees C for IF statement to work
 if (FLUXES[f+F.melt]>0){infiltemp = (infiltemp-DGCM_TK0C)*(PREC[n] - SNOWFALL[n])/(PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt])+DGCM_TK0C;}//snowmelt temp = 0, so term multiplied by zero in weighted average 
 
 
-//All energy fluxes
-
+    //All energy fluxes
 FLUXES[f+F.infil_e] = FLUXES[f+F.infil]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(infiltemp);
 FLUXES[f+F.evap_e] = FLUXES[f+F.evap]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_LY1]);
 FLUXES[f+F.transp1_e] = FLUXES[f+F.transp1]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_LY1]);
@@ -923,33 +794,19 @@ FLUXES[f+F.ly2xly3_e] = FLUXES[f+F.ly2xly3]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_
 FLUXES[f+F.q_ly1_e] = FLUXES[f+F.q_ly1]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_LY1]);
 FLUXES[f+F.q_ly2_e] = FLUXES[f+F.q_ly2]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_LY2]);
 FLUXES[f+F.q_ly3_e] =  FLUXES[f+F.q_ly3]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_LY3]);
-//Thermal conductivity = k*dT/dz, units are W/m2, converting to J/m2/d
+    //Thermal conductivity = k*dT/dz, units are W/m2, converting to J/m2/d
 FLUXES[f+F.ly1xly2_th_e] = 2*pars[P.thermal_cond]* (POOLS[p+S.D_TEMP_LY1] - POOLS[p+S.D_TEMP_LY2])/(pars[P.LY1_z] + pars[P.LY2_z])*DGCM_SEC_DAY;
 FLUXES[f+F.ly2xly3_th_e] = 2*pars[P.thermal_cond]* (POOLS[p+S.D_TEMP_LY2] - POOLS[p+S.D_TEMP_LY3])/(pars[P.LY2_z] + pars[P.LY3_z])*DGCM_SEC_DAY;
 
-        
-//Thermal energy flux only
-//FLUXES[f+F.ly1xly3_e_thermal] = 
 
-//Energy states
-//fraction of water in soil that is available 
-//double frac_ly1 = POOLS[nxp+S.H2O_LY1]/(POOLS[nxp+S.H2O_LY1]+POOLS[nxp+S.H2O_LY3]);
-        // E_LY1
-
-
-    FLUXES[f+F.geological]=PREDERIVED_GEO_FLUX;//In J/m2/d //105mW/m2
+FLUXES[f+F.geological]=PREDERIVED_GEO_FLUX;//In J/m2/d //105mW/m2
 POOLS[nxp+S.E_LY1] = POOLS[p+S.E_LY1] + (FLUXES[f+F.gh_in] + FLUXES[f+F.infil_e] - FLUXES[f+F.evap_e] - FLUXES[f+F.transp1_e]  - FLUXES[f+F.q_ly1_e] - FLUXES[f+F.ly1xly2_e] - FLUXES[f+F.ly1xly2_th_e])*deltat;  
 POOLS[nxp+S.E_LY2] = POOLS[p+S.E_LY2] + (FLUXES[f+F.ly1xly2_e] + FLUXES[f+F.ly1xly2_th_e] - FLUXES[f+F.transp2_e]  - FLUXES[f+F.q_ly2_e] - FLUXES[f+F.ly2xly3_e] - FLUXES[f+F.ly2xly3_th_e])*deltat;  
 POOLS[nxp+S.E_LY3] = POOLS[p+S.E_LY3] + (FLUXES[f+F.ly2xly3_e] - FLUXES[f+F.q_ly3_e] + FLUXES[f+F.ly2xly3_th_e] + FLUXES[f + F.geological])*deltat; 
 
-// 
-// 
 
-
-//*************KNORR LAI**************
-
-
-//Time varying KNORR function terms
+//**************************KNORR LAI***************************
+    //Time varying KNORR function terms
 
 KNORR.IN.lambda_max_memory=  POOLS[p+S.M_LAI_MAX];
 KNORR.IN.T_memory=POOLS[p+S.M_LAI_TEMP];
@@ -958,28 +815,24 @@ KNORR.IN.n=n;
 KNORR.IN.DOY=DOY[n];
 KNORR.IN.lambda=LAI;
 KNORR.IN.pasm=(POOLS[p+S.H2O_LY1]+POOLS[nxp+S.H2O_LY1]+POOLS[p+S.H2O_LY2]+POOLS[nxp+S.H2O_LY2])*0.5;//Note: soil moisture also available here
-//KNORR.IN.transp= FLUXES[f+F.transp1]+FLUXES[f+F.transp2];
 KNORR.IN.transp= transp;
-//Call function: uses KNORR->IN to update KNORR->OUT
+    //Call function: uses KNORR->IN to update KNORR->OUT
 KNORR_ALLOCATION(&KNORR);
  
 FLUXES[f+F.target_LAI]=KNORR.OUT.lambda_next;
-//KNORR.OUT.dlambdadt is in units per timestep; converting thest to units per day (as required for CARDAMOM)
-//"FLUXES" have to be in "per day" units
+    //KNORR.OUT.dlambdadt is in units per timestep; converting thest to units per day (as required for CARDAMOM)
+    //"FLUXES" have to be in "per day" units
 FLUXES[f+F.dlambda_dt]=KNORR.OUT.dlambdadt*one_over_deltat;
-
-//printf( " target LAI, current LAI, dlambda_dt: %f %f %f", FLUXES[f+F.target_LAI]*pars[P.LCMA], LAI*pars[P.LCMA], FLUXES[f+F.dlambda_dt]*pars[P.LCMA]*deltat);
-
 FLUXES[f+F.f_temp_thresh]= KNORR.OUT.f_T;
 FLUXES[f+F.f_dayl_thresh]= KNORR.OUT.f_d;
 
-//Update KNORR memory variables for next iteration
+    //Update KNORR memory variables for next iteration
 POOLS[nxp+S.M_LAI_MAX]=KNORR.OUT.laim;
 POOLS[nxp+S.M_LAI_TEMP]=KNORR.OUT.T;
     
 
     
-//************Allocation*******************
+//************************************Allocation*******************************
 
 ARFLUXES.IN.deltat=deltat;
 ARFLUXES.IN.GPP=FLUXES[f+F.gpp];
@@ -1002,22 +855,22 @@ ALLOC_AND_AUTO_RESP_FLUXES(&ARFLUXES);
 FLUXES[f+F.nonleaf_mortality_factor]=NONLEAF_MORTALITY_FACTOR;
 
 
-/*respiration auto*/
+    /*respiration auto*/
 FLUXES[f+F.resp_auto]=ARFLUXES.OUT.AUTO_RESP_TOTAL;
-/*growth respiration*/
+    /*growth respiration*/
 FLUXES[f+F.resp_auto_growth]=ARFLUXES.OUT.AUTO_RESP_GROWTH;
-/*maintenance respiration*/
+    /*maintenance respiration*/
 FLUXES[f+F.resp_auto_maint]=ARFLUXES.OUT.AUTO_RESP_MAINTENANCE;
 FLUXES[f+F.resp_auto_maint_dark]=LIU.OUT.Rd;
 
 
 
 /*Compute leaf senescence: 
-this is a C_fol removal based on Knorr output dlambda_dt,
-which itself is computed based on the LAI passed to Knorr module, 
-which is based on start-of-month C_fol; hence subsequent removals 
-based on this flux should also go first into C_fol, to maintain 
-compatible pool size */
+    this is a C_fol removal based on Knorr output dlambda_dt,
+    which itself is computed based on the LAI passed to Knorr module, 
+    which is based on start-of-month C_fol; hence subsequent removals 
+    based on this flux should also go first into C_fol, to maintain 
+    compatible pool size */
 if (FLUXES[f+F.dlambda_dt] > 0){ // i.e. when leaf growth is occuring 
     FLUXES[f+F.ph_fol2lit]=0;
 }
@@ -1027,263 +880,218 @@ else { // i.e. when leaf fall is occuring
     FLUXES[f+F.ph_fol2lit]=-FLUXES[f+F.dlambda_dt]*pars[P.LCMA];
 }
 
-
-
-
-/*labile production*/
+    /*labile production*/
 FLUXES[f+F.lab_prod] = ARFLUXES.OUT.F_LABPROD; //Could also be LIUET.OUT.An? 
-/*labile production*/
-//FLUXES[f+F.lab_release] = ARFLUXES.OUT.F_LABREL_ACTUAL;
-/*foliar production*/
+    /*foliar production*/
 FLUXES[f+F.foliar_prod] = ARFLUXES.OUT.ALLOC_FOL_ACTUAL;
-/*root production*/        
+    /*root production*/        
 FLUXES[f+F.root_prod] = ARFLUXES.OUT.ALLOC_ROO_ACTUAL;
-/*wood production*/       
+    /*wood production*/       
 FLUXES[f+F.wood_prod] = ARFLUXES.OUT.ALLOC_WOO_ACTUAL;
 
-/*-----------------------------------------------------------------------*/
-
-  
+/*--------------------Heterotrophic Respiration-------------------------------*/
     //TIME-VARYING INPUTS
-     HRJCR.IN.SM=POOLS[p+S.D_SM_LY1];
-     HRJCR.IN.TEMP=POOLS[p+S.D_TEMP_LY1];; // Input in degrees K
-     HRJCR.IN.LF=POOLS[p+S.D_LF_LY1];; // Input in degrees 
+HRJCR.IN.SM=POOLS[p+S.D_SM_LY1];
+HRJCR.IN.TEMP=POOLS[p+S.D_TEMP_LY1];; // Input in degrees K
+HRJCR.IN.LF=POOLS[p+S.D_LF_LY1];; // Input in degrees 
 
-       //JCR
-       HET_RESP_RATES_JCR(&HRJCR);
-       //OUtputs --- store anything we want here---
-       FLUXES[f+F.aetr]=HRJCR.OUT.aerobic_tr;//Aerobic turnover rate scalar
-       FLUXES[f+F.antr]=HRJCR.OUT.anaerobic_tr;//Anaerobic turnover rate scalar
-       FLUXES[f+F.an_co2_c_ratio]=HRJCR.OUT.anaerobic_co2_c_ratio;//CO2_C_ratio
-       FLUXES[f+F.an_ch4_c_ratio]=HRJCR.OUT.anaerobic_ch4_c_ratio;//CH4_C_ratio
+    //JCR
+HET_RESP_RATES_JCR(&HRJCR);
+    /* output from JCR module */
+FLUXES[f+F.aetr]=HRJCR.OUT.aerobic_tr;//Aerobic turnover rate scalar
+FLUXES[f+F.antr]=HRJCR.OUT.anaerobic_tr;//Anaerobic turnover rate scalar
+FLUXES[f+F.an_co2_c_ratio]=HRJCR.OUT.anaerobic_co2_c_ratio;//CO2_C_ratio
+FLUXES[f+F.an_ch4_c_ratio]=HRJCR.OUT.anaerobic_ch4_c_ratio;//CH4_C_ratio
 
-
-
-//outputformat
-//jcr_o 0-3 fT,fV,fW,fCH4; /*jc*/ /* output from JCR module */
+//**********Aerobic fluxes**********
 double ae_loss_cwd = POOLS[p+S.C_cwd]*HRJCR.OUT.aerobic_tr*pars[P.t_cwd];
-/* aerobic Rh from coarse woody debris*/
+    /* aerobic Rh from coarse woody debris*/
 FLUXES[f+F.ae_rh_cwd] = ae_loss_cwd*(1-pars[P.tr_cwd2som]);
 double ae_loss_lit = POOLS[p+S.C_lit]*HRJCR.OUT.aerobic_tr*pars[P.t_lit];
-/* aerobic Rh from litter*/
+    /* aerobic Rh from litter*/
 FLUXES[f+F.ae_rh_lit] = ae_loss_lit*(1-pars[P.tr_lit2som]);
-/* aerobic Rh from SOM*/
+    /* aerobic Rh from SOM*/
 FLUXES[f+F.ae_rh_som] = POOLS[p+S.C_som]*HRJCR.OUT.aerobic_tr*pars[P.t_som];
 
-//******Anaerobic fluxes
+//**********Anaerobic fluxes**********
 double an_loss_cwd = POOLS[p+S.C_cwd]*HRJCR.OUT.anaerobic_tr*pars[P.t_cwd];
-/* anaerobic Rh from coarse woody debris*/
+    /* anaerobic Rh from coarse woody debris*/
 FLUXES[f+F.an_rh_cwd] = an_loss_cwd*(1-pars[P.tr_cwd2som]);
-/* anaerobic Rh from litter*/
+    /* anaerobic Rh from litter*/
 double an_loss_lit = POOLS[p+S.C_lit]*HRJCR.OUT.anaerobic_tr*pars[P.t_lit];
 FLUXES[f+F.an_rh_lit] = an_loss_lit*(1-pars[P.tr_lit2som]);
-/* anaerobic Rh from SOM*/
+    /* anaerobic Rh from SOM*/
 FLUXES[f+F.an_rh_som] = POOLS[p+S.C_som]*HRJCR.OUT.anaerobic_tr*pars[P.t_som];
-/*CWD to SOM*/
+    /*CWD to SOM*/
 FLUXES[f+F.cwd2som] = (an_loss_cwd + ae_loss_cwd)*pars[P.tr_cwd2som];
-/*litter to SOM*/
+    /*litter to SOM*/
 FLUXES[f+F.lit2som] = (an_loss_lit + ae_loss_lit)*pars[P.tr_lit2som];
-/* Rh_CO2*/
+    /* Rh_CO2*/
 FLUXES[f+F.rh_co2] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*HRJCR.OUT.anaerobic_co2_c_ratio + (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.ae_rh_som]);
-/* Rh_CH4*/
+    /* Rh_CH4*/
 FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*HRJCR.OUT.anaerobic_ch4_c_ratio;
 
 /*----------------------  end of JCR  --------------------------------------------*/
 
-
-/*total pool transfers (no fires yet)*/
+/*----------------------  Begin carbon pool transfers  --------------------------------------------*/
 
 /*CARBON POOL GROWTH AND PHENOLOGICAL LEAF FLUX*/
-            /*LIVE POOLS*/
+    /*LIVE POOLS*/
+POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.gpp]-FLUXES[f+F.Rd]-FLUXES[f+F.resp_auto_maint]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
+POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod]-FLUXES[f+F.ph_fol2lit])*deltat;
+POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + FLUXES[f+F.root_prod]*deltat;
+POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + FLUXES[f+F.wood_prod]*deltat;
+    /*DEAD POOLS*/
+POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] - (FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.cwd2som])*deltat;
+POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.ph_fol2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som])*deltat;
+POOLS[nxp+S.C_som] = POOLS[p+S.C_som] + (FLUXES[f+F.lit2som] - FLUXES[f+F.ae_rh_som] - FLUXES[f+F.an_rh_som] + FLUXES[f+F.cwd2som])*deltat;
 
-        POOLS[nxp+S.C_lab] = POOLS[p+S.C_lab] + (FLUXES[f+F.gpp]-FLUXES[f+F.Rd]-FLUXES[f+F.resp_auto_maint]-FLUXES[f+F.foliar_prod]-FLUXES[f+F.root_prod]-FLUXES[f+F.wood_prod]-FLUXES[f+F.resp_auto_growth])*deltat;
-
-        //printf("\n foliar0 %f \n" ,POOLS[p+S.C_fol]);
-        //printf("\n prod-lit %f \n" ,(FLUXES[f+F.foliar_prod]-FLUXES[f+F.ph_fol2lit])*deltat);
-        //printf("\n prod %f \n" ,(FLUXES[f+F.foliar_prod])*deltat);
-        //printf("\n lit %f \n" ,(FLUXES[f+F.ph_fol2lit])*deltat);
-        POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod]-FLUXES[f+F.ph_fol2lit])*deltat;
-        //printf("\n foliar %f \n" ,POOLS[nxp+S.C_fol]);
-
-        // printf(" \n Next pool, prod, phenological flux %f %f %f ", POOLS[nxp+S.C_fol], FLUXES[f+F.foliar_prod]*deltat,FLUXES[f+F.ph_fol2lit]*deltat ); 
-        POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + FLUXES[f+F.root_prod]*deltat;
-        POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + FLUXES[f+F.wood_prod]*deltat;
-            /*DEAD POOLS*/
-        POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] - (FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.cwd2som])*deltat;
-        POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.ph_fol2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som])*deltat;
-        POOLS[nxp+S.C_som] = POOLS[p+S.C_som] + (FLUXES[f+F.lit2som] - FLUXES[f+F.ae_rh_som] - FLUXES[f+F.an_rh_som] + FLUXES[f+F.cwd2som])*deltat;
-
-	/*Carbon pool transfers - 
+/*CARBON POOL MORTALITY REDUCTRIONS - 
     WITH FIRES, 
     HYDRAULIC FAILURE, 
     CARBON STARVATION, 
     HUMAN DISTURBANCE, 
     AND BACKGROUND MORTALITY*/
-	/*first fluxes*/
-
-    /*Calculating disturbance flux as percent of live biomass*/
-    /*NB: p=index of current pool timestep; nxp=index of next pool timestep; 
+/****Disturbance (i.e. Deforestation & Degradation)*****/
+    /*Calculating disturbance flux as percent of live biomass:
+    p=index of current pool timestep; nxp=index of next pool timestep; 
     removals are scaled by pool(nxp) which has received additions from growth, above*/
-    double TotalABGB=POOLS[nxp+S.C_lab]+POOLS[nxp+S.C_fol]+POOLS[nxp+S.C_roo]+POOLS[nxp+S.C_woo]; 
-    double DMF = DIST[n]/TotalABGB; //DIST[n]=disturbance flux at current flux timestep, halfway in between p and nxp 
-    
-        //Store fluxes for FIOMATRIX balance checks 
-    FLUXES[f+F.dist_lab] = POOLS[nxp+S.C_lab]*DMF*one_over_deltat;
-    FLUXES[f+F.dist_fol] = POOLS[nxp+S.C_fol]*DMF*one_over_deltat;
-    FLUXES[f+F.dist_roo] = POOLS[nxp+S.C_roo]*DMF*one_over_deltat;
-    FLUXES[f+F.dist_woo] = POOLS[nxp+S.C_woo]*DMF*one_over_deltat;
+double TotalABGB=POOLS[nxp+S.C_lab]+POOLS[nxp+S.C_fol]+POOLS[nxp+S.C_roo]+POOLS[nxp+S.C_woo]; 
+double DMF = DIST[n]/TotalABGB; //DIST[n]=disturbance flux at current flux timestep, halfway in between p and nxp 
+ 
+FLUXES[f+F.dist_lab] = POOLS[nxp+S.C_lab]*DMF*one_over_deltat;
+FLUXES[f+F.dist_fol] = POOLS[nxp+S.C_fol]*DMF*one_over_deltat;
+FLUXES[f+F.dist_roo] = POOLS[nxp+S.C_roo]*DMF*one_over_deltat;
+FLUXES[f+F.dist_woo] = POOLS[nxp+S.C_woo]*DMF*one_over_deltat;
 
-/*DIRECT LIVE CARBON POOL REMOVALS PART 1 of 4: Removing ABGB disturbance from live pools here*/
-    /*Note: these are lateral fluxes, and are discarded, not transferred!*/
-    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.dist_lab]*deltat;
-    //printf("\n foliarpred %f \n" ,POOLS[nxp+S.C_fol]);
-    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.dist_fol]*deltat;
-    //printf("\n foliarpostd %f \n" ,POOLS[nxp+S.C_fol]);
-    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.dist_roo]*deltat;
-    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.dist_woo]*deltat;
+    /*LIVE CARBON POOL REMOVALS PART 1 of 4: 
+        Removing ABGB disturbance from live pools here;
+        these are lateral fluxes, and are discarded, not transferred!*/
+POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.dist_lab]*deltat;
+POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.dist_fol]*deltat;
+POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.dist_roo]*deltat;
+POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.dist_woo]*deltat;
 
-	/*Calculating all fire transfers from C pools to atmosphere via combustion*/
-	    /*note: all fluxes are in gC m-2 day-1*/
-    FLUXES[f+F.f_lab] = POOLS[nxp+S.C_lab]*BURNED_AREA[n]*CF[S.C_lab]*one_over_deltat;
-    FLUXES[f+F.f_fol] = POOLS[nxp+S.C_fol]*BURNED_AREA[n]*CF[S.C_fol]*one_over_deltat;
-    FLUXES[f+F.f_roo] = POOLS[nxp+S.C_roo]*BURNED_AREA[n]*CF[S.C_roo]*one_over_deltat;
-    FLUXES[f+F.f_woo] = POOLS[nxp+S.C_woo]*BURNED_AREA[n]*CF[S.C_woo]*one_over_deltat;
-    FLUXES[f+F.f_cwd] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*CF[S.C_cwd]*one_over_deltat;
-    FLUXES[f+F.f_lit] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*CF[S.C_lit]*one_over_deltat;
-    FLUXES[f+F.f_som] = POOLS[nxp+S.C_som]*BURNED_AREA[n]*CF[S.C_som]*one_over_deltat;  
+/****Fire combustion*****/
+    /*Calculating all fire transfers from C pools to atmosphere via combustion*/
+    /*note: all fluxes are in gC m-2 day-1*/
+FLUXES[f+F.f_lab] = POOLS[nxp+S.C_lab]*BURNED_AREA[n]*CF[S.C_lab]*one_over_deltat;
+FLUXES[f+F.f_fol] = POOLS[nxp+S.C_fol]*BURNED_AREA[n]*CF[S.C_fol]*one_over_deltat;
+FLUXES[f+F.f_roo] = POOLS[nxp+S.C_roo]*BURNED_AREA[n]*CF[S.C_roo]*one_over_deltat;
+FLUXES[f+F.f_woo] = POOLS[nxp+S.C_woo]*BURNED_AREA[n]*CF[S.C_woo]*one_over_deltat;
+FLUXES[f+F.f_cwd] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*CF[S.C_cwd]*one_over_deltat;
+FLUXES[f+F.f_lit] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*CF[S.C_lit]*one_over_deltat;
+FLUXES[f+F.f_som] = POOLS[nxp+S.C_som]*BURNED_AREA[n]*CF[S.C_som]*one_over_deltat;  
 
-    
-/*LIVE CARBON POOL REMOVALS PART 2 of 4: Removing fire fluxes from live pools here*/
-    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.f_lab]*deltat;
-    //printf("\n foliarprefire %f \n" ,POOLS[nxp+S.C_fol]);
-    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.f_fol]*deltat;
-    //printf("\n foliarpostfire %f \n" ,POOLS[nxp+S.C_fol]);
-    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.f_roo]*deltat;
-    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.f_woo]*deltat;
-	/*DEAD CARBON POOL removals for fire*/
-    POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]-FLUXES[f+F.f_cwd]*deltat;
-    POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]-FLUXES[f+F.f_lit]*deltat;
-    POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]-FLUXES[f+F.f_som]*deltat; 
+    /*LIVE CARBON POOL REMOVALS PART 2 of 4: 
+        Removing fire combustion fluxes from live pools here*/
+POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.f_lab]*deltat;
+POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.f_fol]*deltat;
+POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.f_roo]*deltat;
+POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.f_woo]*deltat;
+	/*DEAD CARBON POOL removals PART 1 of 2:
+        Removing fire combustion fluxes from live pools here*/
+POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]-FLUXES[f+F.f_cwd]*deltat;
+POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]-FLUXES[f+F.f_lit]*deltat;
+POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]-FLUXES[f+F.f_som]*deltat; 
 
-  //LIVE BIOMASS MORTALITY FLUXES
+/****Aggregate Mortality Factor*****/
     /* Compute aggregate mortality factor by pool from competing environmental stress: 
     -C starvation 
     -Hydraulic Failure 
     -Fire injury mortality*/ 
-    double AMF_C_lab = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-pars[P.resilience]))) * (1-HMF));
-    double AMF_C_fol = (1 - (1-LEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-pars[P.resilience]))) * (1-HMF));
-    double AMF_C_roo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-pars[P.resilience]))) * (1-HMF));
-    double AMF_C_woo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-pars[P.resilience]))) * (1-HMF));
-   
-    FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(AMF_C_lab)*one_over_deltat;
-    FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(AMF_C_fol)*one_over_deltat;
-    FLUXES[f+F.fx_roo2lit] = POOLS[nxp+S.C_roo]*(AMF_C_roo)*one_over_deltat;
-    FLUXES[f+F.fx_woo2cwd] = POOLS[nxp+S.C_woo]*(AMF_C_woo)*one_over_deltat;
-    //No mortality in these pools
-    FLUXES[f+F.fx_cwd2som] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*(1-pars[P.resilience])*one_over_deltat;
-    FLUXES[f+F.fx_lit2som] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*(1-pars[P.resilience])*one_over_deltat;
-	
-/*LIVE CARBON POOL TRANSFERS PART 3 of 4: environmental stress mortality fluxes to dead pools*/	
-    
-    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.fx_lab2lit]*deltat;
-    //printf("\n foliarpreenv %f \n" ,POOLS[nxp+S.C_fol]);
-    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.fx_fol2lit]*deltat;
-    //printf("\n foliarpostenv %f \n" ,POOLS[nxp+S.C_fol]);
-    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.fx_roo2lit]*deltat;
-    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.fx_woo2cwd]*deltat;
+double AMF_C_lab = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-pars[P.resilience]))) * (1-HMF));
+double AMF_C_fol = (1 - (1-LEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-pars[P.resilience]))) * (1-HMF));
+double AMF_C_roo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-pars[P.resilience]))) * (1-HMF));
+double AMF_C_woo = (1 - (1-NONLEAF_MORTALITY_FACTOR) * (1-(BURNED_AREA[n]*(1-pars[P.resilience]))) * (1-HMF));
 
-/*Calculating background mortality (age/herbivory/impact) flux as percent of remaining live biomass*/
-/*wood CWD production*/       
+FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(AMF_C_lab)*one_over_deltat;
+FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(AMF_C_fol)*one_over_deltat;
+FLUXES[f+F.fx_roo2lit] = POOLS[nxp+S.C_roo]*(AMF_C_roo)*one_over_deltat;
+FLUXES[f+F.fx_woo2cwd] = POOLS[nxp+S.C_woo]*(AMF_C_woo)*one_over_deltat;
+    //Fire-accelerated decomposition in dead pools
+FLUXES[f+F.fx_cwd2som] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*(1-pars[P.resilience])*one_over_deltat;
+FLUXES[f+F.fx_lit2som] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*(1-pars[P.resilience])*one_over_deltat;
+
+    /*LIVE CARBON POOL REMOVALS PART 3 of 4: 
+        environmental stress mortality fluxes to dead pools*/	
+POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.fx_lab2lit]*deltat;
+POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.fx_fol2lit]*deltat;
+POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.fx_roo2lit]*deltat;
+POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.fx_woo2cwd]*deltat;
+
+/****Background Mortality Factor*****/
+    /*Calculating background mortality (age/herbivory/impact) flux as percent of remaining live biomass*/      
 FLUXES[f+F.woo2cwd] = POOLS[nxp+S.C_woo]*pars[P.t_wood];
-/*root litter production*/
 FLUXES[f+F.roo2lit] = POOLS[nxp+S.C_roo]*pars[P.t_root];
-/*labile litter production*/
 FLUXES[f+F.lab2lit] = POOLS[nxp+S.C_lab]*pars[P.t_lab];
-
-// Fcfolavailable=FLUXES[f+F.lab_prod] + POOLS[p+S.C_lab]*one_over_deltat;
 if (FLUXES[f+F.dlambda_dt] > 0){
   FLUXES[f+F.fol2lit]=POOLS[nxp+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))*one_over_deltat;
 }
 else {
-    //FLUXES[f+F.dlambda_dt] is in m2/m2/day
-    //LCMA = gC/m2/m2
-  FLUXES[f+F.fol2lit]=POOLS[nxp+S.C_fol]*pars[P.t_foliar];
+      FLUXES[f+F.fol2lit]=POOLS[nxp+S.C_fol]*pars[P.t_foliar];
 }
 
-/*LIVE CARBON POOL TRANSFERS PART 4 of 4: background mortality fluxes to dead pools*/	
-
-    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.lab2lit]*deltat;
-    //printf("\n foliarprebgm %f \n" ,POOLS[nxp+S.C_fol]);
-    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.fol2lit]*deltat;
-    //printf("\n foliarpostbgm %f \n" ,POOLS[nxp+S.C_fol]);
-    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.roo2lit]*deltat;
-    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.woo2cwd]*deltat;
+    /*LIVE CARBON POOL REMOVALS PART 4 of 4: 
+        background mortality fluxes to dead pools*/	
+POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-FLUXES[f+F.lab2lit]*deltat;
+POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-FLUXES[f+F.fol2lit]*deltat;
+POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-FLUXES[f+F.roo2lit]*deltat;
+POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.woo2cwd]*deltat;
 	
-/*DEAD C POOLS TRANSFERS PART 1 of 1: Adding fire removals here together with additions from live pools*/
-    /*CWD*/
-    POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]+(FLUXES[f+F.woo2cwd]+FLUXES[f+F.fx_woo2cwd]-FLUXES[f+F.fx_cwd2som])*deltat;
-    /*litter*/
-    POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.lab2lit]+FLUXES[f+F.fx_lab2lit]+FLUXES[f+F.fol2lit]+FLUXES[f+F.fx_fol2lit]+FLUXES[f+F.roo2lit]+FLUXES[f+F.fx_roo2lit]-FLUXES[f+F.fx_lit2som])*deltat;
-	/*som*/
-	POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]+(FLUXES[f+F.fx_cwd2som]+FLUXES[f+F.fx_lit2som])*deltat;
-        
+    /*DEAD C POOLS TRANSFERS PART 2 of 2: 
+        Adding fire decomposition removals here together with additions from live pools*/
+POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]+(FLUXES[f+F.woo2cwd]+FLUXES[f+F.fx_woo2cwd]-FLUXES[f+F.fx_cwd2som])*deltat;
+POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.lab2lit]+FLUXES[f+F.fx_lab2lit]+FLUXES[f+F.fol2lit]+FLUXES[f+F.fx_fol2lit]+FLUXES[f+F.roo2lit]+FLUXES[f+F.fx_roo2lit]-FLUXES[f+F.fx_lit2som])*deltat;
+POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]+(FLUXES[f+F.fx_cwd2som]+FLUXES[f+F.fx_lit2som])*deltat;
         
 	/*fires - total flux in gC m-2 day-1*/
-	/*this term is now (essentially) obsolete*/
-	/*replace in next version of DALEC_FIRES*/
-    FLUXES[f+F.f_total] = FLUXES[f+F.f_lab] + FLUXES[f+F.f_fol] + FLUXES[f+F.f_roo] + FLUXES[f+F.f_woo] + FLUXES[f+F.f_cwd] + FLUXES[f+F.f_lit] + FLUXES[f+F.f_som];
+FLUXES[f+F.f_total] = FLUXES[f+F.f_lab] + FLUXES[f+F.f_fol] + FLUXES[f+F.f_roo] + FLUXES[f+F.f_woo] + FLUXES[f+F.f_cwd] + FLUXES[f+F.f_lit] + FLUXES[f+F.f_som];
 
     /*Fraction of C-foliar lost due to fires*/
-    FLUXES[f+F.foliar_fire_frac] = BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
+FLUXES[f+F.foliar_fire_frac] = BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
     /*Calculate LAI (lambda) lost due to fire
       - we lose the same fraction of LAI as we do C-foliar 
       - FE_\Lambda^{(t+1)} = \Lambda^{(t+1)'} * BA ( k_{factor(i)} + (1 - k_{factor(i)}) r )*/
-    FLUXES[f+F.lai_fire] = (POOLS[p+S.C_fol]/pars[P.LCMA])*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
+FLUXES[f+F.lai_fire] = (POOLS[p+S.C_fol]/pars[P.LCMA])*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
 
-    /****************************RECORD t+1 DIAGNOSTIC STATES*************************/
-    POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
-    POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
+/****************************RECORD t+1 DIAGNOSTIC STATES*************************/
+POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
+POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
     
-    
-    
-    
+     
     //Update time-varying inputs
-    LY1SOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_LY1];//mm (or kg/m2)
-    LY2SOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_LY2];//mm (or kg/m2)
-    LY3SOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_LY3];//mm (or kg/m2)
-    LY1SOILTEMP.IN.internal_energy = POOLS[nxp+S.E_LY1];//Joules
-    LY2SOILTEMP.IN.internal_energy = POOLS[nxp+S.E_LY2];//Joules
-    LY3SOILTEMP.IN.internal_energy = POOLS[nxp+S.E_LY3];//Joules
+LY1SOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_LY1];//mm (or kg/m2)
+LY2SOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_LY2];//mm (or kg/m2)
+LY3SOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_LY3];//mm (or kg/m2)
+LY1SOILTEMP.IN.internal_energy = POOLS[nxp+S.E_LY1];//Joules
+LY2SOILTEMP.IN.internal_energy = POOLS[nxp+S.E_LY2];//Joules
+LY3SOILTEMP.IN.internal_energy = POOLS[nxp+S.E_LY3];//Joules
     
     SOIL_TEMP_AND_LIQUID_FRAC(&LY1SOILTEMP);
     SOIL_TEMP_AND_LIQUID_FRAC(&LY2SOILTEMP);
     SOIL_TEMP_AND_LIQUID_FRAC(&LY3SOILTEMP);
 
-    POOLS[nxp+S.D_TEMP_LY1]=LY1SOILTEMP.OUT.TEMP;//In K
-    POOLS[nxp+S.D_TEMP_LY2]=LY2SOILTEMP.OUT.TEMP;//In K
-    POOLS[nxp+S.D_TEMP_LY3]=LY3SOILTEMP.OUT.TEMP;//In K
-    
-    POOLS[nxp+S.D_LF_LY1]=LY1SOILTEMP.OUT.LF;
-    POOLS[nxp+S.D_LF_LY2]=LY2SOILTEMP.OUT.LF;
-    POOLS[nxp+S.D_LF_LY3]=LY3SOILTEMP.OUT.LF;
+POOLS[nxp+S.D_TEMP_LY1]=LY1SOILTEMP.OUT.TEMP;//In K
+POOLS[nxp+S.D_TEMP_LY2]=LY2SOILTEMP.OUT.TEMP;//In K
+POOLS[nxp+S.D_TEMP_LY3]=LY3SOILTEMP.OUT.TEMP;//In K
+
+POOLS[nxp+S.D_LF_LY1]=LY1SOILTEMP.OUT.LF;
+POOLS[nxp+S.D_LF_LY2]=LY2SOILTEMP.OUT.LF;
+POOLS[nxp+S.D_LF_LY3]=LY3SOILTEMP.OUT.LF;
     
 
-    //Pass pointers to function 
-
-    
     //Soil moisture
+POOLS[nxp+S.D_SM_LY1]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY1],pars[P.LY1_por],pars[P.LY1_z]); //soil moisture LY1
+POOLS[nxp+S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY2],pars[P.LY2_por],pars[P.LY2_z]);//soil moisture LY2
+POOLS[nxp+S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3
 
-        POOLS[nxp+S.D_SM_LY1]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY1],pars[P.LY1_por],pars[P.LY1_z]); //soil moisture LY1
-        POOLS[nxp+S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY2],pars[P.LY2_por],pars[P.LY2_z]);//soil moisture LY2
-        POOLS[nxp+S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3
-
-
-        POOLS[nxp+S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY1],psi_porosity,pars[P.retention]),minpsi);
-        POOLS[nxp+S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY2],psi_porosity,pars[P.retention]),minpsi);
-        POOLS[nxp+S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention]),minpsi);
+POOLS[nxp+S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY1],psi_porosity,pars[P.retention]),minpsi);
+POOLS[nxp+S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY2],psi_porosity,pars[P.retention]),minpsi);
+POOLS[nxp+S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention]),minpsi);
 
 
-//     //Isfinite check for 14 progronstic pools only
+//Isfinite check for 14 progronstic pools only
     int nnn, isfinitecheck=1;
     for (nnn=0;nnn<14;nnn++){if ( isfinite(POOLS[nxp+nnn])==false){isfinitecheck=0;}};
     if (isfinitecheck==0){break;};
@@ -1319,9 +1127,6 @@ DALECmodel->noedcs=15;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
-
-
-
 //Define PARS_INFO here (ranges, and eventually names, etc)
 PARS_INFO_1100(DALECmodel);
 
@@ -1330,61 +1135,47 @@ PARS_INFO_1100(DALECmodel);
 //This is generic EDCs structure defined in ../DALEC_EDCs/DALEC_EDC_FUNCTIONS.c
 //Has three args, data (void), function (in "DATA", and "void *", and "double" out), and "boolean" prerun.
 
-
-
-
-
 DALECmodel->EDCs=calloc(DALECmodel->noedcs,sizeof(EDCs));
 //Abbrieviate
 EDCs * EDCs=DALECmodel->EDCs;
-
-//Som lit turnover rate
-
-//EDC: litter tor > cwd tor
-//List all inequality calls here
+    //List all inequality calls here
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_litcwdtor; 
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_cwdsomtor;
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_rootwoodtor;
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_mr_rates;
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_fol2lig_cf;
 static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_relativepsi50;
-
-//EDC: lit tor > cwd tor
+    //EDC: lit tor > cwd tor
 EDC_litcwdtor.big_par_index=P.t_lit;
 EDC_litcwdtor.small_par_index=P.t_cwd;
 EDCs[E.litcwdtor].data=&EDC_litcwdtor;
 EDCs[E.litcwdtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.litcwdtor].prerun=true;
-
-//EDC: cwd tor > som tor
+    //EDC: cwd tor > som tor
 EDC_cwdsomtor.big_par_index=P.t_cwd;
 EDC_cwdsomtor.small_par_index=P.t_som;
 EDCs[E.cwdsomtor].data=&EDC_cwdsomtor;
 EDCs[E.cwdsomtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.cwdsomtor].prerun=true;
-
-//EDC: root tor > wood tor
+    //EDC: root tor > wood tor
 EDC_rootwoodtor.big_par_index=P.t_root;
 EDC_rootwoodtor.small_par_index=P.t_wood;
 EDCs[E.rootwoodtor].data=&EDC_rootwoodtor;
 EDCs[E.rootwoodtor].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.rootwoodtor].prerun=true;
-
-//EDC: foliar and root mr > wood mr
+    //EDC: foliar and root mr > wood mr
 EDC_mr_rates.big_par_index=P.rauto_mr_r;
 EDC_mr_rates.small_par_index=P.rauto_mr_w;
 EDCs[E.mr_rates].data=&EDC_mr_rates;
 EDCs[E.mr_rates].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.mr_rates].prerun=true;
-
-//EDC: cf_foliar > cf_ligneous
+    //EDC: cf_foliar > cf_ligneous
 EDC_fol2lig_cf.big_par_index=P.cf_foliar;
 EDC_fol2lig_cf.small_par_index=P.cf_ligneous;
 EDCs[E.fol2lig_cf].data=&EDC_fol2lig_cf;
 EDCs[E.fol2lig_cf].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.fol2lig_cf].prerun=true;
-
-//EDC: psi50HMF > psi50 
+    //EDC: psi50HMF > psi50 
 EDC_relativepsi50.big_par_index=P.psi_50HMF;
 EDC_relativepsi50.small_par_index=P.psi_50;
 EDCs[E.relativepsi50].data=&EDC_relativepsi50;
@@ -1392,7 +1183,7 @@ EDCs[E.relativepsi50].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.relativepsi50].prerun=true;
 
 static DALEC_EDC_PARAMETER_LOG_RATIO_STRUCT EDC_vcmax_lcma;
-//EDC: ratio of Vcmax25 to LCMA
+    //EDC: ratio of Vcmax25 to LCMA
 EDC_vcmax_lcma.numerator_index=P.Vcmax25;
 EDC_vcmax_lcma.denominator_index=P.LCMA;
 EDC_vcmax_lcma.mean_ratio = 1.0399; // From TRY database
@@ -1400,10 +1191,6 @@ EDC_vcmax_lcma.std_ratio = 0.1956; // From TRY database
 EDCs[E.vcmax_lcma].data=&EDC_vcmax_lcma;
 EDCs[E.vcmax_lcma].function=&DALEC_EDC_PARAMETER_LOG_RATIO;
 EDCs[E.vcmax_lcma].prerun=true;
-
-
-
-
 
 //State ranges
    static DALEC_EDC_STATE_RANGES_STRUCT EDC_sr;
@@ -1442,50 +1229,48 @@ EDCs[E.vcmax_lcma].prerun=true;
    EDC_sr.max_val[S.C_som]=(DALECmodel->PARS_INFO.parmax[P.i_som]);
                 
     EDC_sr.min_val[S.H2O_LY1]=0;
-   //
+
                 
    EDC_sr.min_val[S.H2O_LY2]=0;
-   //
+   
                 
    EDC_sr.min_val[S.H2O_LY3]=0;
-   //
+   
                 
     EDC_sr.min_val[S.H2O_SWE]=0;
 //    EDC_sr.max_val[S.H2O_SWE]=DALECmodel->PARS_INFO.parmax[P.i_SWE];
-//     
+    
     EDC_sr.min_val[S.E_LY1]=0;
-//     
     EDC_sr.min_val[S.E_LY2]=0;
-//     
     EDC_sr.min_val[S.E_LY3]=0;
-//     
+
     EDC_sr.min_val[S.D_LAI]=0;
     EDC_sr.max_val[S.D_LAI]=DALECmodel->PARS_INFO.parmax[P.lambda_max];
-//     
+
     EDC_sr.min_val[S.D_SCF]=0;
     EDC_sr.max_val[S.D_SCF]=1;
-//     
+ 
     EDC_sr.min_val[S.D_TEMP_LY1]=173.15;
     EDC_sr.max_val[S.D_TEMP_LY1]=373.15;
-//     
+  
     EDC_sr.min_val[S.D_TEMP_LY2]=173.15;
     EDC_sr.max_val[S.D_TEMP_LY2]=373.15;
-//     
+  
     EDC_sr.min_val[S.D_TEMP_LY3]=173.15;
     EDC_sr.max_val[S.D_TEMP_LY3]=373.15;
-//     
+  
     EDC_sr.min_val[S.D_LF_LY1]=0;
     EDC_sr.max_val[S.D_LF_LY1]=1;
-//     
+   
     EDC_sr.min_val[S.D_LF_LY3]=0;
     EDC_sr.max_val[S.D_LF_LY3]=1;
-//     
+    
    EDC_sr.min_val[S.D_SM_LY1]=0;
     EDC_sr.max_val[S.D_SM_LY1]=1;
-//     
+    
     EDC_sr.min_val[S.D_SM_LY2]=0;
     EDC_sr.max_val[S.D_SM_LY2]=1;
-//     
+     
     EDC_sr.min_val[S.D_SM_LY3]=0;
     EDC_sr.max_val[S.D_SM_LY3]=1;
     
@@ -1495,22 +1280,11 @@ EDCs[E.vcmax_lcma].prerun=true;
 //    EDC_sr.min_val[S.M_LAI_TEMP]=-INFINITY;  // get a better value from Alex N.
 //    EDC_sr.max_val[S.M_LAI_TEMP]=INFINITY; // get a better value from Alex N.
 
-
-
-
-
 //Adding EDC to the EDCs list
-
 
     EDCs[E.state_ranges].data=&EDC_sr;
     EDCs[E.state_ranges].function=&DALEC_EDC_STATE_RANGES;
     EDCs[E.state_ranges].prerun=false;
-
-
-
-
-
-
 
  static DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
  
@@ -1536,7 +1310,6 @@ EDC_st.pool_indices[12]=S.E_LY2;
 EDC_st.pool_indices[13]=S.E_LY3;
 //EDC_st.pool_indices[12]=S.M_LAI_MAX;```
 //EDC_st.pool_indices[13]=S.M_LAI_TEMP;
-
 
 
 for (n=0;n<EDC_st.no_pools_to_check;n++){EDC_st.pool_eqf[n]=DATA->ncdf_data.EDC_EQF;printf("DATA->ncdf_data.EDC_EQF = %2.2f\n",DATA->ncdf_data.EDC_EQF);}
