@@ -316,7 +316,7 @@ parmax[P.init_LAIW_mem]=1;
 
 /*Inverse of leaf longevity at any period i.e. background turnover (days-1)*/
 parmin[P.t_foliar]=0.001;
-parmax[P.t_foliar]=0.1;
+parmax[P.t_foliar]=0.0334;
 
 
 /*LY1 energy per mm H2O (~ Energy in 1mm H2O @ -50C to 1mm H2O@ +50C)*/

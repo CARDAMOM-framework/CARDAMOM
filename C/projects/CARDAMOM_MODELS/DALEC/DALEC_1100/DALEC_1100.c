@@ -1025,12 +1025,13 @@ POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.fx_woo2cwd]*deltat;
 FLUXES[f+F.woo2cwd] = POOLS[nxp+S.C_woo]*pars[P.t_wood];
 FLUXES[f+F.roo2lit] = POOLS[nxp+S.C_roo]*pars[P.t_root];
 FLUXES[f+F.lab2lit] = POOLS[nxp+S.C_lab]*pars[P.t_lab];
-if (FLUXES[f+F.dlambda_dt] > 0){
-  FLUXES[f+F.fol2lit]=POOLS[nxp+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))*one_over_deltat;
-}
-else {
-      FLUXES[f+F.fol2lit]=POOLS[nxp+S.C_fol]*pars[P.t_foliar];
-}
+FLUXES[f+F.fol2lit]=POOLS[nxp+S.C_fol]*pars[P.t_foliar];
+// if (FLUXES[f+F.dlambda_dt] > 0){
+//   FLUXES[f+F.fol2lit]=POOLS[nxp+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))*one_over_deltat;
+// }
+// else {
+      
+// }
 
     /*LIVE CARBON POOL REMOVALS PART 4 of 4: 
         background mortality fluxes to dead pools*/	
