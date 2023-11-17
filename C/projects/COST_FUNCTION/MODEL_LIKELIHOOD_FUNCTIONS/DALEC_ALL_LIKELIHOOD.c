@@ -41,15 +41,18 @@ struct LIKELIHOOD_INDICES{
         int PEQ_C3frac;
         int PEQ_Vcmax25;
         int PEQ_LCMA;
+        int PEQ_r_ch4;
+        int PEQ_S_fv;
+        int PEQ_rhch4_rhco2;  
         } LIKELIHOOD_INDICES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
-    20,21};
+    20,21,22,23,24}; /*pMCMC*/
     
   
     
     int DALEC_ALL_LIKELIHOOD_MODCONFIG(LIKELIHOODinfo * LI){
-        LI->nolikelihoods=22;
+        LI->nolikelihoods=25;
         return 0;}
             
             
@@ -128,6 +131,10 @@ if (O->SUPPORT_C3frac_OBS){   ML[LI.PEQ_C3frac]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&
 if (O->SUPPORT_CUEmrg_OBS){   ML[LI.PEQ_CUE]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_CUE, D.M_PEQ_CUE);};
 if (O->SUPPORT_LCMA_OBS){   ML[LI.PEQ_LCMA]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_LCMA, D.M_PEQ_LCMA);};
 
+//add PEQ value and unc from previous MCMC *pMCMC*
+if (O->SUPPORT_r_ch4_OBS){ML[LI.PEQ_r_ch4]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_r_ch4, D.M_PEQ_r_ch4);};
+if (O->SUPPORT_S_fv_OBS){ML[LI.PEQ_S_fv]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_S_fv, D.M_PEQ_S_fv);};
+if (O->SUPPORT_rhch4_rhco2_OBS){ML[LI.PEQ_rhch4_rhco2]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_rhch4_rhco2, D.M_PEQ_rhch4_rhco2);};
 
 //Calculate sum here;
 

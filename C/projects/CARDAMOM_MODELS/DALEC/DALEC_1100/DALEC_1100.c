@@ -999,7 +999,7 @@ FLUXES[f+F.roo2lit] = POOLS[p+S.C_roo]*pars[P.t_root];
        FLUXES[f+F.aetr]=HRJCR.OUT.aerobic_tr;//Aerobic turnover rate scalar
        FLUXES[f+F.antr]=HRJCR.OUT.anaerobic_tr;//Anaerobic turnover rate scalar
        FLUXES[f+F.an_co2_c_ratio]=HRJCR.OUT.anaerobic_co2_c_ratio;//CO2_C_ratio
-        FLUXES[f+F.an_ch4_c_ratio]=HRJCR.OUT.anaerobic_ch4_c_ratio;//CH4_C_ratio
+       FLUXES[f+F.an_ch4_c_ratio]=HRJCR.OUT.anaerobic_ch4_c_ratio;//CH4_C_ratio
 
 
 
@@ -1074,7 +1074,7 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
     //LIVE BIOMASS MORTALITY FLUXES
     //if MORTALITY
-    FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))*one_over_deltat;
+    FLUXES[f+F.fx_lab2lit] = POOLS[nxp+S.C_lab]*(NONLEAF_MORTALITY_FACTOR + (1-LEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience]))*one_over_deltat; 
     FLUXES[f+F.fx_fol2lit] = POOLS[nxp+S.C_fol]*(LEAF_MORTALITY_FACTOR + (1-LEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience]))*one_over_deltat;
     FLUXES[f+F.fx_roo2lit] = POOLS[nxp+S.C_roo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience]))*one_over_deltat;
     FLUXES[f+F.fx_woo2cwd] = POOLS[nxp+S.C_woo]*(NONLEAF_MORTALITY_FACTOR + (1-NONLEAF_MORTALITY_FACTOR)*BURNED_AREA[n]*(1-CF[S.C_woo])*(1-pars[P.resilience]))*one_over_deltat;
@@ -1153,9 +1153,9 @@ FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_
 
 
 //     //Isfinite check for 14 progronstic pools only
-//     int nnn, isfinitecheck=1;
-//     for (nnn=0;nnn<14;nnn++){if ( isfinite(POOLS[nxp+nnn])==false){isfinitecheck=0;}};
-//     if (isfinitecheck==0){break;};
+     int nnn, isfinitecheck=1;
+    for (nnn=0;nnn<14;nnn++){if ( isfinite(POOLS[nxp+nnn])==false){isfinitecheck=0;}};
+    if (isfinitecheck==0){break;};
 
 }
 
@@ -1485,6 +1485,11 @@ OBSOPE.SUPPORT_LCMA_OBS=true;
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
 
+//add PEQ value and unc based on previous MCMC, all the changes are marked with "*pMCMC*"
+OBSOPE.SUPPORT_r_ch4_OBS=true;
+OBSOPE.SUPPORT_S_fv_OBS=true;
+OBSOPE.SUPPORT_rhch4_rhco2_OBS=true;
+
 //GPP-specific variables//Assuming FLUXNET GPP is assumed to be Ag.
     //Wohlfahrt & Gu, 2015 
 OBSOPE.GPP_flux=F.gpp;
@@ -1559,6 +1564,11 @@ OBSOPE.LCMA_PARAM=P.LCMA;
 
 //CH4-specific variables 
 OBSOPE.CH4_flux = F.rh_ch4;
+
+//add PEQ value and unc from previous MCMC *pMCMC*
+OBSOPE.r_ch4_PARAM = P.r_ch4;
+OBSOPE.S_fv_PARAM = P.S_fv;
+OBSOPE.rhch4_rhco2_flux = F.rh_ch4/F.rh_co2;
 
 DALECmodel->OBSOPE=OBSOPE;
 
