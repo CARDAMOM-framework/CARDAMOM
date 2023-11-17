@@ -47,6 +47,20 @@ struct FLUX_META_STRUCT {
    char ** UNITS;
    char ** DESCRIPTION;} FLUX_META;
 
+struct POOLS_META_STRUCT {
+   char ** NAME;
+   char ** ABBREVIATION;
+   char ** UNITS;
+   char ** DESCRIPTION;} POOLS_META;
+
+/*
+struct EDC_META_STRUCT {
+   char ** NAME;
+   char ** ABBREVIATION;
+   char ** UNITS;
+   char ** DESCRIPTION;} EDC_META;
+   */
+
 int (*dalec)(DATA,const double *);
 //To become obsolete, once EDCs refactored
 int (*edc1)(const double *, DATA, struct EDCDIAGNOSTIC * EDCD);
@@ -54,11 +68,11 @@ int (*edc2)(const double *, DATA, struct EDCDIAGNOSTIC * EDCD);
 /*contains all the EDCD relevant info*/
 struct EDCDIAGNOSTIC * EDCD;
 
-DALEC_FLUX_SOURCE_SINK_MATRIX FIOMATRIX;
-DALEC_STATE_SOURCE_SINK_MATRIX * SIOMATRIX;
-OBSOPE OBSOPE;
-EDCs * EDCs;//Pointer, as each element is a unique EDC
-    void * MODEL_DATA;
+   DALEC_FLUX_SOURCE_SINK_MATRIX FIOMATRIX;
+   DALEC_STATE_SOURCE_SINK_MATRIX * SIOMATRIX;
+   OBSOPE OBSOPE;
+   EDCs * EDCs;//Pointer, as each element is a unique EDC
+   void * MODEL_DATA;
 } DALEC;
 
 #include "../DALEC_EDCs/DALEC_EDC_FUNCTIONS.c"

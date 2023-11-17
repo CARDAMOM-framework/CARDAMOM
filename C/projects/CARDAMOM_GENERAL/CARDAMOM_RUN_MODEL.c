@@ -139,11 +139,24 @@ int Ntimesteps=CARDADATA.ncdf_data.Ntimesteps;
 
 
 /*STEP 3.2 - create netCDF output dimensions*/
-int sampleDimID, poolDimID,  timePoolsDimID,timeFluxesDimID, probIdxDimID,edcIdxDimID, noParsDimID, noLikelihoodsDimID;
+int sampleDimID,  timePoolsDimID,timeFluxesDimID, probIdxDimID,edcIdxDimID, noLikelihoodsDimID;
 FAILONERROR(nc_def_dim(ncid,"Sample",N,&sampleDimID));
-FAILONERROR(nc_def_dim(ncid,"Pool",CARDADATA.nopools,&poolDimID ));
+//These have been withdrawn, as they are now broken into individual grouped vars
+//int poolDimID;
+//FAILONERROR(nc_def_dim(ncid,"Pool",CARDADATA.nopools,&poolDimID ));
 //int fluxDimID;
 //FAILONERROR(nc_def_dim(ncid,"Flux",CARDADATA.nofluxes,&fluxDimID ));
+//int noParsDimID;
+//FAILONERROR(nc_def_dim(ncid,"Parameter",CARDADATA.nopars,&noParsDimID ));
+
+
+//GROUP CREATION: This is where the pools, fluxes, and pars are bunched into groups
+int poolsGrpId, fluxesGrpId, parsGrpId;
+FAILONERROR(nc_def_grp(ncid,"Pools", &poolsGrpId )));
+FAILONERROR(nc_def_grp(ncid,"Fluxes", &fluxesGrpId )));
+FAILONERROR(nc_def_grp(ncid,"Parameters", &parsGrpId )));
+
+
 //NOTE: this was going to be the NC_UNLIMITED dimension, however due to concerns with support for netcdf classic, it is now fixed, and split into two
 FAILONERROR(nc_def_dim(ncid,"Time_pools",Ntimesteps+1,&timePoolsDimID));
 FAILONERROR(nc_def_dim(ncid,"Time_fluxes",Ntimesteps,&timeFluxesDimID));
@@ -153,42 +166,60 @@ FAILONERROR(nc_def_dim(ncid,"Probability Index",probIdxLen,&probIdxDimID ));
 //Hard coded to 100
 FAILONERROR(nc_def_dim(ncid,"EDC Index",CARDADATA.noedcs,&edcIdxDimID ));
 
-FAILONERROR(nc_def_dim(ncid,"Parameter",CARDADATA.nopars,&noParsDimID ));
 FAILONERROR(nc_def_dim(ncid,"Likelihood Index",CARDADATA.nolikelihoods,&noLikelihoodsDimID ));
 
 
 
-/*STEP 3.3 - create netCDF variables in preperation for writting them later*/
-int poolsVarID, edcsVarID, pVarID, parsVarID, likelihoodsVarID;
+/*STEP 3.3 - create netCDF variables in preparation for writing them later*/
+int edcsVarID, pVarID, parsVarID, likelihoodsVarID;
+
+//FLUXES DEFINITION
 int fluxesVarID[CARDADATA.nofluxes];
 //This is the int array that gets re-used for each flux, letting the nc_def_var function know that each flux needs to be based on the sample and time dimensions 
 int fluxes_dems[] = {sampleDimID,timeFluxesDimID};
 //Create each flux variable as its own var
-struct FLUX_META_STRUCT FluxInfo = ((DALEC *)CARDADATA.MODEL)->FLUX_META;
+struct FLUX_META_STRUCT fluxInfo = ((DALEC *)CARDADATA.MODEL)->FLUX_META;
 for(int i = 0; i < CARDADATA.nofluxes; i++){
-  FAILONERROR(nc_def_var(	ncid,FluxInfo.ABBREVIATION[i] , NC_DOUBLE, 2, fluxes_dems, &(fluxesVarID[i]) ));
-  WARNONERROR(nc_put_att_int	(	ncid,fluxesVarID[i],"ID",NC_INT,sizeof(int),&i));
-  WARNONERROR(nc_put_att_text	(	ncid,fluxesVarID[i],"Name",strlen(FluxInfo.NAME[i]),FluxInfo.NAME[i]));
-  WARNONERROR(nc_put_att_text	(	ncid,fluxesVarID[i],"Description",strlen(FluxInfo.DESCRIPTION[i]),FluxInfo.DESCRIPTION[i]));
-  WARNONERROR(nc_put_att_text	(	ncid,fluxesVarID[i],"Units",strlen(FluxInfo.UNITS[i]),FluxInfo.UNITS[i]));
+  FAILONERROR(nc_def_var(	fluxesGrpId,fluxInfo.ABBREVIATION[i] , NC_DOUBLE, 2, fluxes_dems, &(fluxesVarID[i]) ));
+  WARNONERROR(nc_put_att_int	(	fluxesGrpId,fluxesVarID[i],"ID",NC_INT,sizeof(int),&i));
+  WARNONERROR(nc_put_att_text	(	fluxesGrpId,fluxesVarID[i],"Name",strlen(fluxInfo.NAME[i]),fluxInfo.NAME[i]));
+  WARNONERROR(nc_put_att_text	(	fluxesGrpId,fluxesVarID[i],"Description",strlen(fluxInfo.DESCRIPTION[i]),fluxInfo.DESCRIPTION[i]));
+  WARNONERROR(nc_put_att_text	(	fluxesGrpId,fluxesVarID[i],"Units",strlen(fluxInfo.UNITS[i]),fluxInfo.UNITS[i]));
+}
+
+//POOLS DEFINITION
+//Create each pool variable as its own var inside 
+int poolsVarID[CARDADATA.nopools];
+struct POOLS_META_STRUCT poolsInfo = ((DALEC *)CARDADATA.MODEL)->POOLS_META;
+int pools_dems[] = {sampleDimID,timePoolsDimID}; //poolsDimId was last in the order
+for(int i = 0; i < CARDADATA.nopools; i++){
+  FAILONERROR(nc_def_var(	poolsGrpId,poolsInfo.ABBREVIATION[i] , NC_DOUBLE, 2, pools_dems, &(poolsVarID[i]) ));
+  WARNONERROR(nc_put_att_int	(	poolsGrpId,poolsVarID[i],"ID",NC_INT,sizeof(int),&i));
+  WARNONERROR(nc_put_att_text	(	poolsGrpId,poolsVarID[i],"Name",strlen(poolsInfo.NAME[i]),poolsInfo.NAME[i]));
+  WARNONERROR(nc_put_att_text	(	poolsGrpId,poolsVarID[i],"Description",strlen(poolsInfo.DESCRIPTION[i]),poolsInfo.DESCRIPTION[i]));
+  WARNONERROR(nc_put_att_text	(	poolsGrpId,poolsVarID[i],"Units",strlen(poolsInfo.UNITS[i]),poolsInfo.UNITS[i]));
 
 }
-//EXAMPLE ATTRIBUTES
-//char fluxesLowercaseName[]="fluxes";
-//WARNONERROR(nc_put_att_text	(	ncid,fluxesVarID[0],"example_lowercase_name",strlen(fluxesLowercaseName),fluxesLowercaseName));
-//This is an example of an array of doubles. Yes, you do need to specify NC_DOUBLE even though we used the type-safe method nc_put_att_double
-//WARNONERROR(nc_put_att_double	(	ncid,fluxesVarID[0],"example_doubles",NC_DOUBLE,4,(double[]){12.44, 441.0, 3.14159265, 0.0}));
-
-
-
-int pools_dems[] = {sampleDimID,timePoolsDimID,poolDimID};
-FAILONERROR(nc_def_var(	ncid,"POOLS" , NC_DOUBLE, 3, pools_dems, &poolsVarID ));
 
 int prob_dems[] = {sampleDimID, probIdxDimID};
 FAILONERROR(nc_def_var(	ncid,"PROB" , NC_DOUBLE, 2, prob_dems, &pVarID ));
 
-int pars_dems[] = {sampleDimID, noParsDimID};
-FAILONERROR(nc_def_var(	ncid,"PARS" , NC_DOUBLE, 2, pars_dems, &parsVarID ));
+
+
+//PARS DEFINITION
+//Create each paramater variable as its own var inside 
+int parsVarID[CARDADATA.nopars];
+struct PARS_META_STRUCT parsInfo = ((DALEC *)CARDADATA.MODEL)->PARS_META;
+int pars_dems[] = {sampleDimID}; //noParsDimID was last in the order
+for(int i = 0; i < CARDADATA.nopars; i++){
+  FAILONERROR(nc_def_var(	parsGrpId,parsInfo.ABBREVIATION[i] , NC_DOUBLE, 2, pars_dems, &(parsVarID[i]) ));
+  WARNONERROR(nc_put_att_int	(	parsGrpId,parsVarID[i],"ID",NC_INT,sizeof(int),&i));
+  WARNONERROR(nc_put_att_text	(	parsGrpId,parsVarID[i],"Name",strlen(parsInfo.NAME[i]),parsInfo.NAME[i]));
+  WARNONERROR(nc_put_att_text	(	parsGrpId,parsVarID[i],"Description",strlen(parsInfo.DESCRIPTION[i]),parsInfo.DESCRIPTION[i]));
+  WARNONERROR(nc_put_att_text	(	parsGrpId,parsVarID[i],"Units",strlen(parsInfo.UNITS[i]),parsInfo.UNITS[i]));
+
+}
+
 
 int likelihoods_dems[] = {sampleDimID, noLikelihoodsDimID};
 FAILONERROR(nc_def_var(	ncid,"LIKELIHOODS" , NC_DOUBLE, 2, likelihoods_dems, &likelihoodsVarID ));
@@ -272,18 +303,26 @@ clock_t    end = clock();//End timer
 
 //Write fluxes
 for(int i = 0; i < CARDADATA.nofluxes; i++){
-  //This is a normal write of a variable, BUT since this is a multidimension var, we do a mapped write to make sure it does so correctly, which I admit looks like some evil magic stuff.
+  //This is a normal write of a variable, BUT since this is a multidimension var in cardamom, we do a mapped write to make sure it does so correctly, which I admit looks like some evil magic stuff.
   FAILONERROR(nc_put_varm_double(ncid,fluxesVarID[i],(const size_t []){n,0}, (const size_t[]){1,Ntimesteps},NULL,(const ptrdiff_t []){1,CARDADATA.nofluxes}, CARDADATA.M_FLUXES+i));
 } 
 //Write pools
-FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps+1,CARDADATA.nopools}, CARDADATA.M_POOLS));
-//write edcd
+for(int i = 0; i < CARDADATA.nopools; i++){
+  FAILONERROR(nc_put_varm_double(ncid,poolsVarID[i],(const size_t []){n,0}, (const size_t[]){1,Ntimesteps+1},NULL,(const ptrdiff_t []){1,CARDADATA.nopools}, CARDADATA.M_POOLS+i));
+} 
+//FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps+1,CARDADATA.nopools}, CARDADATA.M_POOLS));
 
+//write Pars
+for(int i = 0; i < CARDADATA.nopars; i++){
+  FAILONERROR(nc_put_varm_double(ncid,parsVarID[i],(const size_t []){n}, (const size_t[]){1},NULL,(const ptrdiff_t []){CARDADATA.nopars}, CARDADATA.M_PARS+i));
+} 
+FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars));
+
+
+//write edcd
 FAILONERROR(nc_put_vara_double(ncid,edcsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.noedcs}, CARDADATA.M_EDCs));
 //write M_P
 FAILONERROR(nc_put_vara_double(ncid,pVarID,(const size_t[]){n,0}, (const size_t[]){1,probIdxLen}, CARDADATA.M_P));
-//write Pars
-FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars));
 //Write Likelihoods
 FAILONERROR(nc_put_vara_double(ncid,likelihoodsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nolikelihoods}, CARDADATA.M_LIKELIHOODS));
 
