@@ -27,10 +27,12 @@ void POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
     DALECmodel->POOLS_META.UNITS= calloc(DALECmodel->nopools, sizeof(char *));
     DALECmodel->POOLS_META.DESCRIPTION= calloc(DALECmodel->nopools, sizeof(char *));
 
+    /*  --NOT YET IMPLEMENTED--
     DALECmodel->EDC_META.NAME= calloc(DALECmodel->noedcs, sizeof(char *));
     DALECmodel->EDC_META.ABBREVIATION= calloc(DALECmodel->noedcs, sizeof(char *));
     DALECmodel->EDC_META.UNITS= calloc(DALECmodel->noedcs, sizeof(char *));
     DALECmodel->EDC_META.DESCRIPTION= calloc(DALECmodel->noedcs, sizeof(char *));
+    */
 
 
     //----------------METADATA DEFINITIONS----------------

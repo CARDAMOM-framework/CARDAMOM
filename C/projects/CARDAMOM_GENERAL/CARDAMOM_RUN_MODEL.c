@@ -152,9 +152,9 @@ FAILONERROR(nc_def_dim(ncid,"Sample",N,&sampleDimID));
 
 //GROUP CREATION: This is where the pools, fluxes, and pars are bunched into groups
 int poolsGrpId, fluxesGrpId, parsGrpId;
-FAILONERROR(nc_def_grp(ncid,"Pools", &poolsGrpId )));
-FAILONERROR(nc_def_grp(ncid,"Fluxes", &fluxesGrpId )));
-FAILONERROR(nc_def_grp(ncid,"Parameters", &parsGrpId )));
+FAILONERROR(nc_def_grp(ncid,"Pools", &poolsGrpId ));
+FAILONERROR(nc_def_grp(ncid,"Fluxes", &fluxesGrpId ));
+FAILONERROR(nc_def_grp(ncid,"Parameters", &parsGrpId ));
 
 
 //NOTE: this was going to be the NC_UNLIMITED dimension, however due to concerns with support for netcdf classic, it is now fixed, and split into two
@@ -171,7 +171,7 @@ FAILONERROR(nc_def_dim(ncid,"Likelihood Index",CARDADATA.nolikelihoods,&noLikeli
 
 
 /*STEP 3.3 - create netCDF variables in preparation for writing them later*/
-int edcsVarID, pVarID, parsVarID, likelihoodsVarID;
+int edcsVarID, pVarID, likelihoodsVarID;
 
 //FLUXES DEFINITION
 int fluxesVarID[CARDADATA.nofluxes];
@@ -316,7 +316,7 @@ for(int i = 0; i < CARDADATA.nopools; i++){
 for(int i = 0; i < CARDADATA.nopars; i++){
   FAILONERROR(nc_put_varm_double(ncid,parsVarID[i],(const size_t []){n}, (const size_t[]){1},NULL,(const ptrdiff_t []){CARDADATA.nopars}, CARDADATA.M_PARS+i));
 } 
-FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars));
+// TODO: delete: FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars));
 
 
 //write edcd
