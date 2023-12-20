@@ -38,6 +38,7 @@ double M_Mean_LAI;
 //Miscelaneous
 double M_ABGB_t0;
 //Parameters and emergent quantities
+double M_PEQ_NBEmrg;
 double M_PEQ_Cefficiency;
 double M_PEQ_CUE;
 double M_PEQ_Vcmax25;

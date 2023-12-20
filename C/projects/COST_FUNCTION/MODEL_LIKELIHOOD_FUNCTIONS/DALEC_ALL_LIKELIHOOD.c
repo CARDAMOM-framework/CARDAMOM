@@ -36,6 +36,7 @@ struct LIKELIHOOD_INDICES{
         int Mean_LAI;
         int PEQ_Cefficiency;       
         int PEQ_CUE;
+        int PEQ_NBEmrg;
         int PEQ_iniSnow;
         int PEQ_iniSOM;
         int PEQ_C3frac;
@@ -44,7 +45,7 @@ struct LIKELIHOOD_INDICES{
         } LIKELIHOOD_INDICES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
-    20,21};
+    20,21,22};
     
   
     
@@ -119,6 +120,7 @@ if (O->SUPPORT_GPP_OBS){   ML[LI.Mean_GPP]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncd
 if (O->SUPPORT_LAI_OBS){   ML[LI.Mean_LAI]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_LAI, D.M_Mean_LAI);};
 
 //Parameters and emergent quantities
+if (O->SUPPORT_NBEmrg_OBS){   ML[LI.PEQ_NBEmrg]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_NBEmrg, D.M_PEQ_NBEmrg);};
 if (O->SUPPORT_Cefficiency_OBS){   ML[LI.PEQ_Cefficiency]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_Cefficiency, D.M_PEQ_Cefficiency);};
 if (O->SUPPORT_CUE_OBS){   ML[LI.PEQ_CUE]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_CUE, D.M_PEQ_CUE);};
 if (O->SUPPORT_iniSnow_OBS){   ML[LI.PEQ_iniSnow]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_iniSnow, D.M_PEQ_iniSnow);};

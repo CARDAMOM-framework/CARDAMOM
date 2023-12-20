@@ -121,6 +121,7 @@ DATA->Mean_FIR=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_FIR");
 
 
 //Read parameters and single observations
+DATA->PEQ_NBEmrg=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_NBEmrg");
 DATA->PEQ_Cefficiency=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Cefficiency");
 DATA->PEQ_CUE=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_CUE");
 DATA->PEQ_C3frac=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_C3frac");

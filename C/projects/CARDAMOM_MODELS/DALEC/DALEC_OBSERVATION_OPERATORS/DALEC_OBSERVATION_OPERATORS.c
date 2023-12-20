@@ -50,7 +50,10 @@ int SCF_pool;
 
 
 //
-//Parameters and emergen quantities
+//Parameters and emergent quantities
+//Can add more parameters OR options
+
+
 bool SUPPORT_Cefficiency_OBS;
 int Cefficiency_PARAM;///This is assuming it's a single parameter
 
@@ -81,7 +84,9 @@ int LCMA_PARAM;//This is assuming it's a single parameter
 bool SUPPORT_CUEmrg_OBS; //Emergent CUE (Rauto/GPP)
 int Rauto_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS
 
-
+bool SUPPORT_NBEmrg_OBS; //Emergent land sink (GPP/(reco+fire))
+int Rhet_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS, Rauto_flux to be set in SUPPORT_CUEmrg_OBS.
+int fire_flux;
 
 }OBSOPE;
 
@@ -103,6 +108,7 @@ OBSOPE->SUPPORT_ROFF_OBS=false;
 OBSOPE->SUPPORT_SCF_OBS=false;
 
 
+OBSOPE->SUPPORT_NBEmrg_OBS=false;
 OBSOPE->SUPPORT_CUEmrg_OBS=false;
 OBSOPE->SUPPORT_Cefficiency_OBS=false;
 OBSOPE->SUPPORT_CUE_OBS=false;
@@ -215,6 +221,32 @@ if (SOBS.validobs){
     MGPP=MGPP/(double)N;
     MRauto=MRauto/(double)N;
         D->M_PEQ_CUE=1-(MRauto/MGPP);
+}
+
+
+return 0;}
+
+// GPP/(r_eco + fire) balance operator
+int DALEC_OBSOPE_NBEmrg(DATA * D, OBSOPE * O){
+
+int N=D->ncdf_data.TIME_INDEX.length;
+
+double MGPP=0;//Initializing as zero, to allow for loop averaging calculation
+double MReco=0;//Initializing as zero, to allow for loop averaging calculation
+double Mfire=0;//Initializing as zero, to allow for loop averaging calculation
+    //Note: consider using standard averaging function to avoid bugs
+SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_NBEmrg;
+if (SOBS.validobs){
+    int n;D->M_PEQ_NBEmrg=0;
+    for (n=0;n<N;n++){
+        MGPP+=D->M_FLUXES[n*D->nofluxes+O->GPP_flux];
+        MReco+=(D->M_FLUXES[n*D->nofluxes+O->Rhet_flux]+D->M_FLUXES[n*D->nofluxes+O->Rauto_flux]);
+        Mfire+=D->M_FLUXES[n*D->nofluxes+O->fire_flux];
+    };
+    MGPP=MGPP/(double)N;
+    MReco=MReco/(double)N;
+    Mfire=Mfire/(double)N;
+        D->M_PEQ_NBEmrg=(MGPP/(MReco+Mfire));
 }
 
 
@@ -508,6 +540,8 @@ if (O->SUPPORT_SCF_OBS ){DALEC_OBSOPE_SCF(D, O);}
 
 // Emergent quantities
 if (O->SUPPORT_CUEmrg_OBS){DALEC_OBSOPE_CUEmrg(D, O);}
+if (O->SUPPORT_NBEmrg_OBS){DALEC_OBSOPE_NBEmrg(D, O);}
+
 
 //Parameters
 
