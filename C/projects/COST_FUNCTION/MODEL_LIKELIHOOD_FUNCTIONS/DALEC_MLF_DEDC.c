@@ -46,7 +46,10 @@ MODEL->dalec(DATA, PARS);
 if (DATA.ncdf_data.EDC==1){
 
     MODEL->edc2(PARS, DATA, &EDCD);
-P=P+EDCD.pEDC;}
+P=P+EDCD.pEDC;
+}
+
+    
 
 /*Likelihood*/
 
