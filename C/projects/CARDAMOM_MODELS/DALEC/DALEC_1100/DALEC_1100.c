@@ -1432,6 +1432,9 @@ OBSOPE.SUPPORT_LCMA_OBS=true;
 OBSOPE.GPP_flux=F.gpp;
 // For constraint on emergent autotrophic fraction
 OBSOPE.Rauto_flux=F.resp_auto;
+// For constraint on emergent heterotrophic & fire fraction
+OBSOPE.Rhet_flux=F.rh_co2;
+OBSOPE.fire_flux=F.f_total;
 //LAI-specific variables
 OBSOPE.LAI_pool=S.D_LAI;
 //ET variables
