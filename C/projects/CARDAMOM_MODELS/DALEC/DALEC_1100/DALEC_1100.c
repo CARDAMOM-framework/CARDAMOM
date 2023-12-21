@@ -1421,6 +1421,7 @@ OBSOPE.SUPPORT_Vcmax25_OBS=true;
 OBSOPE.SUPPORT_C3frac_OBS=true;
 OBSOPE.SUPPORT_iniSnow_OBS=true;
 OBSOPE.SUPPORT_iniSOM_OBS=true;
+OBSOPE.SUPPORT_NBEmrg_OBS=true;
 OBSOPE.SUPPORT_CUEmrg_OBS=true;
 OBSOPE.SUPPORT_LCMA_OBS=true;
 //Provide values required by each OBS operator
