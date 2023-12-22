@@ -13,6 +13,7 @@
 #define NCDFERR(e) {printf("Error in %s at %d: %s\n", __FILE__, __LINE__, nc_strerror(e));}
 #define FILE_NAME_MAX_LEN 1000
 
+
 //This is a tiny macro used to do error handeling for netCDF methods with the standard format of returning a result code.
 //It helps make the code look less insane by allowing one-line calls
 //This as a macro because we want the __FILE__ and __LINE__ macros to work
@@ -130,7 +131,7 @@ double *pars=calloc(CARDADATA.nopars,sizeof(double));
 /*STEP 3.1 - create netCDF output file*/
 int ncid = 0; //This is the netcdf id num
 int ncretval = 0; //This is a reused variable for the return value of ncdf methods.
-ncretval = nc_create(ncdffile,NC_CLOBBER, &ncid );
+ncretval = nc_create(ncdffile,NC_CLOBBER|NC_NETCDF4, &ncid );
 if (ncretval != NC_NOERR){
   //If nc_create did anything but return no error, then fail
   ERR(ncretval);
@@ -180,11 +181,27 @@ int fluxes_dems[] = {sampleDimID,timeFluxesDimID};
 //Create each flux variable as its own var
 struct FLUX_META_STRUCT fluxInfo = ((DALEC *)CARDADATA.MODEL)->FLUX_META;
 for(int i = 0; i < CARDADATA.nofluxes; i++){
-  FAILONERROR(nc_def_var(	fluxesGrpId,fluxInfo.ABBREVIATION[i] , NC_DOUBLE, 2, fluxes_dems, &(fluxesVarID[i]) ));
+  char* ncVarAbbreviation = NULL;
+  if (fluxInfo.ABBREVIATION[i] != NULL){
+    ncVarAbbreviation =fluxInfo.ABBREVIATION[i];
+  } else {
+    //just make up an abbrev
+    ncVarAbbreviation = calloc(sizeof(char), 100 );
+    snprintf( ncVarAbbreviation,100,"%d_UNKNOWN_FLUX", i);
+    printf("ERROR in %s at %d: Flux ID %d has no defined ABBREVIATION in it's FLUX_META. Add it to your DALEC_####_NC_INFO.c file! This flux will be called %s until you do!\n", __FILE__, __LINE__,i,ncVarAbbreviation);
+
+  }
+  FAILONERROR(nc_def_var(	fluxesGrpId,ncVarAbbreviation , NC_DOUBLE, 2, fluxes_dems, &(fluxesVarID[i]) ));
   WARNONERROR(nc_put_att_int	(	fluxesGrpId,fluxesVarID[i],"ID",NC_INT,sizeof(int),&i));
-  WARNONERROR(nc_put_att_text	(	fluxesGrpId,fluxesVarID[i],"Name",strlen(fluxInfo.NAME[i]),fluxInfo.NAME[i]));
-  WARNONERROR(nc_put_att_text	(	fluxesGrpId,fluxesVarID[i],"Description",strlen(fluxInfo.DESCRIPTION[i]),fluxInfo.DESCRIPTION[i]));
-  WARNONERROR(nc_put_att_text	(	fluxesGrpId,fluxesVarID[i],"Units",strlen(fluxInfo.UNITS[i]),fluxInfo.UNITS[i]));
+  if (fluxInfo.NAME[i] != NULL){
+    WARNONERROR(nc_put_att_text	(	fluxesGrpId,fluxesVarID[i],"Name",strlen(fluxInfo.NAME[i]),fluxInfo.NAME[i]));
+  }
+  if (fluxInfo.DESCRIPTION[i] != NULL){
+    WARNONERROR(nc_put_att_text	(	fluxesGrpId,fluxesVarID[i],"Description",strlen(fluxInfo.DESCRIPTION[i]),fluxInfo.DESCRIPTION[i]));
+  }
+  if (fluxInfo.UNITS[i] != NULL){
+    WARNONERROR(nc_put_att_text	(	fluxesGrpId,fluxesVarID[i],"Units",strlen(fluxInfo.UNITS[i]),fluxInfo.UNITS[i]));
+  }
 }
 
 //POOLS DEFINITION
@@ -193,11 +210,27 @@ int poolsVarID[CARDADATA.nopools];
 struct POOLS_META_STRUCT poolsInfo = ((DALEC *)CARDADATA.MODEL)->POOLS_META;
 int pools_dems[] = {sampleDimID,timePoolsDimID}; //poolsDimId was last in the order
 for(int i = 0; i < CARDADATA.nopools; i++){
-  FAILONERROR(nc_def_var(	poolsGrpId,poolsInfo.ABBREVIATION[i] , NC_DOUBLE, 2, pools_dems, &(poolsVarID[i]) ));
+  char* ncVarAbbreviation = NULL;
+  if (poolsInfo.ABBREVIATION[i] != NULL){
+    ncVarAbbreviation = poolsInfo.ABBREVIATION[i];
+  } else {
+    //just make up a name
+    ncVarAbbreviation = calloc(sizeof(char), 100 );
+    snprintf( ncVarAbbreviation,100,"%d_UNKNOWN_POOL", i);
+    printf("ERROR in %s at %d: pool ID %d has no defined ABBREVIATION in it's POOLS_META. Add it to your DALEC_####_NC_INFO.c file! This pool will be called %s until you do!\n", __FILE__, __LINE__,i,ncVarAbbreviation);
+
+  }
+  FAILONERROR(nc_def_var(	poolsGrpId,ncVarAbbreviation, NC_DOUBLE, 2, pools_dems, &(poolsVarID[i]) ));
   WARNONERROR(nc_put_att_int	(	poolsGrpId,poolsVarID[i],"ID",NC_INT,sizeof(int),&i));
-  WARNONERROR(nc_put_att_text	(	poolsGrpId,poolsVarID[i],"Name",strlen(poolsInfo.NAME[i]),poolsInfo.NAME[i]));
-  WARNONERROR(nc_put_att_text	(	poolsGrpId,poolsVarID[i],"Description",strlen(poolsInfo.DESCRIPTION[i]),poolsInfo.DESCRIPTION[i]));
-  WARNONERROR(nc_put_att_text	(	poolsGrpId,poolsVarID[i],"Units",strlen(poolsInfo.UNITS[i]),poolsInfo.UNITS[i]));
+  if (poolsInfo.NAME[i] != NULL){
+    WARNONERROR(nc_put_att_text	(	poolsGrpId,poolsVarID[i],"Name",strlen(poolsInfo.NAME[i]),poolsInfo.NAME[i]));
+  }
+  if (poolsInfo.DESCRIPTION[i] != NULL){
+    WARNONERROR(nc_put_att_text	(	poolsGrpId,poolsVarID[i],"Description",strlen(poolsInfo.DESCRIPTION[i]),poolsInfo.DESCRIPTION[i]));
+  }
+  if (poolsInfo.UNITS[i] != NULL){
+    WARNONERROR(nc_put_att_text	(	poolsGrpId,poolsVarID[i],"Units",strlen(poolsInfo.UNITS[i]),poolsInfo.UNITS[i]));
+  }
 
 }
 
@@ -212,11 +245,26 @@ int parsVarID[CARDADATA.nopars];
 struct PARS_META_STRUCT parsInfo = ((DALEC *)CARDADATA.MODEL)->PARS_META;
 int pars_dems[] = {sampleDimID}; //noParsDimID was last in the order
 for(int i = 0; i < CARDADATA.nopars; i++){
-  FAILONERROR(nc_def_var(	parsGrpId,parsInfo.ABBREVIATION[i] , NC_DOUBLE, 2, pars_dems, &(parsVarID[i]) ));
+  char* ncVarAbbreviation = NULL;
+  if (parsInfo.ABBREVIATION[i] != NULL){
+    ncVarAbbreviation = parsInfo.ABBREVIATION[i];
+  } else {
+    //just make up a name
+    ncVarAbbreviation = calloc(sizeof(char), 100 );
+    snprintf( ncVarAbbreviation,100,"%d_UNKNOWN_PAR", i);
+    printf("ERROR in %s at %d: paramater ID %d has no defined ABBREVIATION in it's PARS_META. Add it to your DALEC_####_NC_INFO.c file! This paramater will be called %s until you do!\n", __FILE__, __LINE__,i,ncVarAbbreviation );
+  }
+  FAILONERROR(nc_def_var(	parsGrpId, ncVarAbbreviation, NC_DOUBLE, 1, pars_dems, &(parsVarID[i]) ));
   WARNONERROR(nc_put_att_int	(	parsGrpId,parsVarID[i],"ID",NC_INT,sizeof(int),&i));
-  WARNONERROR(nc_put_att_text	(	parsGrpId,parsVarID[i],"Name",strlen(parsInfo.NAME[i]),parsInfo.NAME[i]));
-  WARNONERROR(nc_put_att_text	(	parsGrpId,parsVarID[i],"Description",strlen(parsInfo.DESCRIPTION[i]),parsInfo.DESCRIPTION[i]));
-  WARNONERROR(nc_put_att_text	(	parsGrpId,parsVarID[i],"Units",strlen(parsInfo.UNITS[i]),parsInfo.UNITS[i]));
+  if (parsInfo.NAME[i] != NULL){
+    WARNONERROR(nc_put_att_text	(	parsGrpId,parsVarID[i],"Name",strlen(parsInfo.NAME[i]),parsInfo.NAME[i]));
+  }
+  if (parsInfo.DESCRIPTION[i] != NULL){
+    WARNONERROR(nc_put_att_text	(	parsGrpId,parsVarID[i],"Description",strlen(parsInfo.DESCRIPTION[i]),parsInfo.DESCRIPTION[i]));
+  }
+  if (parsInfo.UNITS[i] != NULL){
+    WARNONERROR(nc_put_att_text	(	parsGrpId,parsVarID[i],"Units",strlen(parsInfo.UNITS[i]),parsInfo.UNITS[i]));
+  }
 
 }
 
@@ -304,17 +352,17 @@ clock_t    end = clock();//End timer
 //Write fluxes
 for(int i = 0; i < CARDADATA.nofluxes; i++){
   //This is a normal write of a variable, BUT since this is a multidimension var in cardamom, we do a mapped write to make sure it does so correctly, which I admit looks like some evil magic stuff.
-  FAILONERROR(nc_put_varm_double(ncid,fluxesVarID[i],(const size_t []){n,0}, (const size_t[]){1,Ntimesteps},NULL,(const ptrdiff_t []){1,CARDADATA.nofluxes}, CARDADATA.M_FLUXES+i));
+  FAILONERROR(nc_put_varm_double(fluxesGrpId,fluxesVarID[i],(const size_t []){n,0}, (const size_t[]){1,Ntimesteps},NULL,(const ptrdiff_t []){1,CARDADATA.nofluxes}, CARDADATA.M_FLUXES+i));
 } 
 //Write pools
 for(int i = 0; i < CARDADATA.nopools; i++){
-  FAILONERROR(nc_put_varm_double(ncid,poolsVarID[i],(const size_t []){n,0}, (const size_t[]){1,Ntimesteps+1},NULL,(const ptrdiff_t []){1,CARDADATA.nopools}, CARDADATA.M_POOLS+i));
+  FAILONERROR(nc_put_varm_double(poolsGrpId,poolsVarID[i],(const size_t []){n,0}, (const size_t[]){1,Ntimesteps+1},NULL,(const ptrdiff_t []){1,CARDADATA.nopools}, CARDADATA.M_POOLS+i));
 } 
 //FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps+1,CARDADATA.nopools}, CARDADATA.M_POOLS));
 
 //write Pars
 for(int i = 0; i < CARDADATA.nopars; i++){
-  FAILONERROR(nc_put_varm_double(ncid,parsVarID[i],(const size_t []){n}, (const size_t[]){1},NULL,(const ptrdiff_t []){CARDADATA.nopars}, CARDADATA.M_PARS+i));
+  FAILONERROR(nc_put_varm_double(parsGrpId,parsVarID[i],(const size_t []){n}, (const size_t[]){1},NULL,(const ptrdiff_t []){CARDADATA.nopars}, CARDADATA.M_PARS+i));
 } 
 // TODO: delete: FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars));
 
