@@ -181,13 +181,13 @@ int fluxes_dems[] = {sampleDimID,timeFluxesDimID};
 //Create each flux variable as its own var
 struct FLUX_META_STRUCT fluxInfo = ((DALEC *)CARDADATA.MODEL)->FLUX_META;
 for(int i = 0; i < CARDADATA.nofluxes; i++){
-  char* ncVarAbbreviation = NULL;
+  const char* ncVarAbbreviation = NULL;
   if (fluxInfo.ABBREVIATION[i] != NULL){
     ncVarAbbreviation =fluxInfo.ABBREVIATION[i];
   } else {
     //just make up an abbrev
-    ncVarAbbreviation = calloc(sizeof(char), 100 );
-    snprintf( ncVarAbbreviation,100,"%d_UNKNOWN_FLUX", i);
+    ncVarAbbreviation = (const char *) calloc(sizeof(char), 100 );//WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
+    snprintf( (char *) ncVarAbbreviation,100,"%d_UNKNOWN_FLUX", i);//Write to it once, overriding the const qualifier so it is set
     printf("ERROR in %s at %d: Flux ID %d has no defined ABBREVIATION in it's FLUX_META. Add it to your DALEC_####_NC_INFO.c file! This flux will be called %s until you do!\n", __FILE__, __LINE__,i,ncVarAbbreviation);
 
   }
@@ -210,13 +210,13 @@ int poolsVarID[CARDADATA.nopools];
 struct POOLS_META_STRUCT poolsInfo = ((DALEC *)CARDADATA.MODEL)->POOLS_META;
 int pools_dems[] = {sampleDimID,timePoolsDimID}; //poolsDimId was last in the order
 for(int i = 0; i < CARDADATA.nopools; i++){
-  char* ncVarAbbreviation = NULL;
+  const char* ncVarAbbreviation = NULL;
   if (poolsInfo.ABBREVIATION[i] != NULL){
     ncVarAbbreviation = poolsInfo.ABBREVIATION[i];
   } else {
     //just make up a name
-    ncVarAbbreviation = calloc(sizeof(char), 100 );
-    snprintf( ncVarAbbreviation,100,"%d_UNKNOWN_POOL", i);
+    ncVarAbbreviation = (const char *) calloc(sizeof(char), 100 ); //WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
+    snprintf( (char *) ncVarAbbreviation,100,"%d_UNKNOWN_POOL", i);//Write to it once, overriding the const qualifier so it is set
     printf("ERROR in %s at %d: pool ID %d has no defined ABBREVIATION in it's POOLS_META. Add it to your DALEC_####_NC_INFO.c file! This pool will be called %s until you do!\n", __FILE__, __LINE__,i,ncVarAbbreviation);
 
   }
@@ -231,7 +231,7 @@ for(int i = 0; i < CARDADATA.nopools; i++){
   if (poolsInfo.UNITS[i] != NULL){
     WARNONERROR(nc_put_att_text	(	poolsGrpId,poolsVarID[i],"Units",strlen(poolsInfo.UNITS[i]),poolsInfo.UNITS[i]));
   }
-
+  
 }
 
 int prob_dems[] = {sampleDimID, probIdxDimID};
@@ -245,13 +245,13 @@ int parsVarID[CARDADATA.nopars];
 struct PARS_META_STRUCT parsInfo = ((DALEC *)CARDADATA.MODEL)->PARS_META;
 int pars_dems[] = {sampleDimID}; //noParsDimID was last in the order
 for(int i = 0; i < CARDADATA.nopars; i++){
-  char* ncVarAbbreviation = NULL;
+  const char* ncVarAbbreviation = NULL;
   if (parsInfo.ABBREVIATION[i] != NULL){
     ncVarAbbreviation = parsInfo.ABBREVIATION[i];
   } else {
     //just make up a name
-    ncVarAbbreviation = calloc(sizeof(char), 100 );
-    snprintf( ncVarAbbreviation,100,"%d_UNKNOWN_PAR", i);
+    ncVarAbbreviation = (const char *) calloc(sizeof(char), 100 ); //WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
+    snprintf( (char *) ncVarAbbreviation,100,"%d_UNKNOWN_PAR", i); //Write to it once, overriding the const qualifier so it is set
     printf("ERROR in %s at %d: paramater ID %d has no defined ABBREVIATION in it's PARS_META. Add it to your DALEC_####_NC_INFO.c file! This paramater will be called %s until you do!\n", __FILE__, __LINE__,i,ncVarAbbreviation );
   }
   FAILONERROR(nc_def_var(	parsGrpId, ncVarAbbreviation, NC_DOUBLE, 1, pars_dems, &(parsVarID[i]) ));
