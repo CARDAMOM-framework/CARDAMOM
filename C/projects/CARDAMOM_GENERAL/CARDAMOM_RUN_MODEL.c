@@ -182,7 +182,7 @@ int fluxes_dems[] = {sampleDimID,timeFluxesDimID};
 struct FLUX_META_STRUCT fluxInfo = ((DALEC *)CARDADATA.MODEL)->FLUX_META;
 for(int i = 0; i < CARDADATA.nofluxes; i++){
   const char* ncVarAbbreviation = NULL;
-  if (fluxInfo.ABBREVIATION[i] != NULL){
+  if (fluxInfo.ABBREVIATION != NULL && fluxInfo.ABBREVIATION[i] != NULL){
     ncVarAbbreviation =fluxInfo.ABBREVIATION[i];
   } else {
     //just make up an abbrev
@@ -193,13 +193,13 @@ for(int i = 0; i < CARDADATA.nofluxes; i++){
   }
   FAILONERROR(nc_def_var(	fluxesGrpId,ncVarAbbreviation , NC_DOUBLE, 2, fluxes_dems, &(fluxesVarID[i]) ));
   WARNONERROR(nc_put_att_int	(	fluxesGrpId,fluxesVarID[i],"ID",NC_INT,sizeof(int),&i));
-  if (fluxInfo.NAME[i] != NULL){
+  if (fluxInfo.NAME != NULL && fluxInfo.NAME[i] != NULL){
     WARNONERROR(nc_put_att_text	(	fluxesGrpId,fluxesVarID[i],"Name",strlen(fluxInfo.NAME[i]),fluxInfo.NAME[i]));
   }
-  if (fluxInfo.DESCRIPTION[i] != NULL){
+  if (fluxInfo.DESCRIPTION != NULL && fluxInfo.DESCRIPTION[i] != NULL){
     WARNONERROR(nc_put_att_text	(	fluxesGrpId,fluxesVarID[i],"Description",strlen(fluxInfo.DESCRIPTION[i]),fluxInfo.DESCRIPTION[i]));
   }
-  if (fluxInfo.UNITS[i] != NULL){
+  if (fluxInfo.UNITS != NULL && fluxInfo.UNITS[i] != NULL){
     WARNONERROR(nc_put_att_text	(	fluxesGrpId,fluxesVarID[i],"Units",strlen(fluxInfo.UNITS[i]),fluxInfo.UNITS[i]));
   }
 }
@@ -211,7 +211,7 @@ struct POOLS_META_STRUCT poolsInfo = ((DALEC *)CARDADATA.MODEL)->POOLS_META;
 int pools_dems[] = {sampleDimID,timePoolsDimID}; //poolsDimId was last in the order
 for(int i = 0; i < CARDADATA.nopools; i++){
   const char* ncVarAbbreviation = NULL;
-  if (poolsInfo.ABBREVIATION[i] != NULL){
+  if (poolsInfo.ABBREVIATION != NULL && poolsInfo.ABBREVIATION[i] != NULL ){
     ncVarAbbreviation = poolsInfo.ABBREVIATION[i];
   } else {
     //just make up a name
@@ -222,13 +222,13 @@ for(int i = 0; i < CARDADATA.nopools; i++){
   }
   FAILONERROR(nc_def_var(	poolsGrpId,ncVarAbbreviation, NC_DOUBLE, 2, pools_dems, &(poolsVarID[i]) ));
   WARNONERROR(nc_put_att_int	(	poolsGrpId,poolsVarID[i],"ID",NC_INT,sizeof(int),&i));
-  if (poolsInfo.NAME[i] != NULL){
+  if (poolsInfo.NAME != NULL && poolsInfo.NAME[i] != NULL){
     WARNONERROR(nc_put_att_text	(	poolsGrpId,poolsVarID[i],"Name",strlen(poolsInfo.NAME[i]),poolsInfo.NAME[i]));
   }
-  if (poolsInfo.DESCRIPTION[i] != NULL){
+  if (poolsInfo.DESCRIPTION != NULL && poolsInfo.DESCRIPTION[i] != NULL){
     WARNONERROR(nc_put_att_text	(	poolsGrpId,poolsVarID[i],"Description",strlen(poolsInfo.DESCRIPTION[i]),poolsInfo.DESCRIPTION[i]));
   }
-  if (poolsInfo.UNITS[i] != NULL){
+  if (poolsInfo.UNITS != NULL && poolsInfo.UNITS[i] != NULL){
     WARNONERROR(nc_put_att_text	(	poolsGrpId,poolsVarID[i],"Units",strlen(poolsInfo.UNITS[i]),poolsInfo.UNITS[i]));
   }
   
@@ -246,7 +246,7 @@ struct PARS_META_STRUCT parsInfo = ((DALEC *)CARDADATA.MODEL)->PARS_META;
 int pars_dems[] = {sampleDimID}; //noParsDimID was last in the order
 for(int i = 0; i < CARDADATA.nopars; i++){
   const char* ncVarAbbreviation = NULL;
-  if (parsInfo.ABBREVIATION[i] != NULL){
+  if (parsInfo.ABBREVIATION != NULL && parsInfo.ABBREVIATION[i] != NULL){
     ncVarAbbreviation = parsInfo.ABBREVIATION[i];
   } else {
     //just make up a name
@@ -256,13 +256,13 @@ for(int i = 0; i < CARDADATA.nopars; i++){
   }
   FAILONERROR(nc_def_var(	parsGrpId, ncVarAbbreviation, NC_DOUBLE, 1, pars_dems, &(parsVarID[i]) ));
   WARNONERROR(nc_put_att_int	(	parsGrpId,parsVarID[i],"ID",NC_INT,sizeof(int),&i));
-  if (parsInfo.NAME[i] != NULL){
+  if (parsInfo.NAME != NULL && parsInfo.NAME[i] != NULL){
     WARNONERROR(nc_put_att_text	(	parsGrpId,parsVarID[i],"Name",strlen(parsInfo.NAME[i]),parsInfo.NAME[i]));
   }
-  if (parsInfo.DESCRIPTION[i] != NULL){
+  if (parsInfo.DESCRIPTION != NULL && parsInfo.DESCRIPTION[i] != NULL){
     WARNONERROR(nc_put_att_text	(	parsGrpId,parsVarID[i],"Description",strlen(parsInfo.DESCRIPTION[i]),parsInfo.DESCRIPTION[i]));
   }
-  if (parsInfo.UNITS[i] != NULL){
+  if (parsInfo.UNITS != NULL && parsInfo.UNITS[i] != NULL){
     WARNONERROR(nc_put_att_text	(	parsGrpId,parsVarID[i],"Units",strlen(parsInfo.UNITS[i]),parsInfo.UNITS[i]));
   }
 
