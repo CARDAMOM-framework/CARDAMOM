@@ -130,6 +130,8 @@ double q_10 = A->IN.q10canopy;
 
 double fT = pow(A->IN.q10canopyRd,(T_C-25.)/10); // reference temperature is 25 degrees C
 
+
+
 Vcmax = vcmax25*pow(q_10,0.1*(T_C-25.))/((1 + exp(0.3*(T_C-(Tupp-DGCM_TK0C))))*(1 +exp(0.3*((Tdown-DGCM_TK0C)-T_C))));
 
 Jmax = Vcmax*exp(1.);
@@ -169,15 +171,16 @@ Rd_C4 =A->IN.canopyRdsf*vcmax25*fT;
 Ag = C3_frac*(Ag_C3) + (1. - C3_frac)*(Ag_C4);
 Rd = C3_frac*(Rd_C3) + (1. - C3_frac)*(Rd_C4);
 
-//printf(" \n Initial Rd %f \n ", Rd);
-
     //Potential Rd
 double Rd_daily_potential = Rd*canopy_scale*(12.e-6)*(24.*60.*60.);
 
-// printf(" \n Daily Potential Rd %f \n ", Rd_daily_potential);
 //Ensures NSCs available
 //A->OUT.LEAF_MORTALITY_FACTOR=fmax( 1- A->IN.NSC/(Rd_daily_potential * A->IN.deltat)  ,0);
+if (Rd_daily_potential==0){
+    A->OUT.LEAF_MORTALITY_FACTOR=0;
+} else {
 A->OUT.LEAF_MORTALITY_FACTOR=(1/(exp(A->IN.NSC/(Rd_daily_potential * A->IN.deltat)))); // new exponential formulation 11/1/2023
+}
 // printf(" \n Rd_pot and NSC:  %f %f \n ", Rd_daily_potential * A->IN.deltat, A->IN.NSC);
 //Actual daily Rd
 A->OUT.Rd =Rd_daily_potential*(1 - A->OUT.LEAF_MORTALITY_FACTOR);

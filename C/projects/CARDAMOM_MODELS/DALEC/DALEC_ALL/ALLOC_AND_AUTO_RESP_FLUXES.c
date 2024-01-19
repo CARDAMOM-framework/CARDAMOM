@@ -61,9 +61,11 @@ int ALLOC_AND_AUTO_RESP_FLUXES(ALLOC_AND_AUTO_RESP_FLUXES_STRUCT * S){
     //Basically GPP + NSC available on daily basis...
     //Removes Rd, which is accounted for separately
     double NSC_PLUS_GPP_RATE = S->IN.NSC/S->IN.deltat  + (S->IN.GPP  - S->IN.Rd);
-
+if (POTENTIAL_AUTO_RESP_MAINTENANCE==0){
+    S->OUT.NONLEAF_MORTALITY_FACTOR=0;
+} else {
 S->OUT.NONLEAF_MORTALITY_FACTOR=1/exp(NSC_PLUS_GPP_RATE/POTENTIAL_AUTO_RESP_MAINTENANCE); //new
-
+}
 //     //IF maintenance 
 //                //Spend all NSC on maintenance
 //    if (POTENTIAL_AUTO_RESP_MAINTENANCE>NSC_PLUS_GPP_RATE)
@@ -119,8 +121,10 @@ S->OUT.NONLEAF_MORTALITY_FACTOR=1/exp(NSC_PLUS_GPP_RATE/POTENTIAL_AUTO_RESP_MAIN
     F_LABREL_DEMAND = fmax(0, TOTAL_GROWTH_POT);
 
     // Compute exponential growth factor representing amount of growth resources mobilizable 
-
-    double GF = 1/exp(F_LABREL_SUPPLY/F_LABREL_DEMAND);
+    double GF=0;
+    if (F_LABREL_DEMAND!=0){
+    GF = 1/exp(F_LABREL_SUPPLY/F_LABREL_DEMAND);
+    }
     //Actual release of labile carbon (before growth respiration costs subtracted)
     //S->OUT.F_LABREL_ACTUAL = fmin(F_LABREL_SUPPLY, F_LABREL_DEMAND);
     S->OUT.F_LABREL_ACTUAL = F_LABREL_DEMAND * (1 -GF); 
