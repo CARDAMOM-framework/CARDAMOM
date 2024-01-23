@@ -272,7 +272,6 @@ double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
 double *SKT=DATA.ncdf_data.SKT.values;
 double *STRD=DATA.ncdf_data.STRD.values;
 double *DIST=DATA.ncdf_data.DISTURBANCE_FLUX.values;
-double *YIELD=DATA.ncdf_data.YIELD.values;
 
 /*C-pools, fluxes, meteorology indices*/
 int p=0,f,m,nxp, i;
@@ -953,23 +952,17 @@ POOLS[nxp+S.C_som] = POOLS[p+S.C_som] + (FLUXES[f+F.lit2som] - FLUXES[f+F.ae_rh_
     CARBON STARVATION, 
     HUMAN DISTURBANCE, 
     AND BACKGROUND MORTALITY*/
-/****Disturbance (i.e. Deforestation & Degradation & Cropping)*****/
-    /*Calculating Deforestation & Degradation flux DMF as percent of live biomass:
+/****Disturbance (i.e. Deforestation & Degradation)*****/
+    /*Calculating disturbance flux as percent of live biomass:
     p=index of current pool timestep; nxp=index of next pool timestep; 
-    removals are scaled by pool(nxp) which has received additions from growth, above
-    Calculating total Crop disturbance as 200% of YIELD: 
-    Crop NPP = Crop Yield + Crop Residue
-    Crop yield ~ Crop Residue (from literature sources that have Crop NPP at ~1000gC/yr and Crop Yield at ~450gC/yr).*/
-
+    removals are scaled by pool(nxp) which has received additions from growth, above*/
 double TotalABGB=POOLS[nxp+S.C_lab]+POOLS[nxp+S.C_fol]+POOLS[nxp+S.C_roo]+POOLS[nxp+S.C_woo]; 
 double DMF = DIST[n]/TotalABGB; //DIST[n]=disturbance flux at current flux timestep, halfway in between p and nxp 
-double CROPYIELD=YIELD[n]; //applied to the wood pool
-double CROPRESIDUE=YIELD[n]; //applied to all pools
-
-FLUXES[f+F.dist_lab] = (CROPRESIDUE*0.2+POOLS[nxp+S.C_lab]*DMF)*one_over_deltat;
-FLUXES[f+F.dist_fol] = (CROPRESIDUE*0.2+POOLS[nxp+S.C_fol]*DMF)*one_over_deltat;
-FLUXES[f+F.dist_roo] = (CROPRESIDUE*0.2+POOLS[nxp+S.C_roo]*DMF)*one_over_deltat;
-FLUXES[f+F.dist_woo] = (CROPYIELD+CROPRESIDUE*0.4+POOLS[nxp+S.C_woo]*DMF)*one_over_deltat;
+ 
+FLUXES[f+F.dist_lab] = POOLS[nxp+S.C_lab]*DMF*one_over_deltat;
+FLUXES[f+F.dist_fol] = POOLS[nxp+S.C_fol]*DMF*one_over_deltat;
+FLUXES[f+F.dist_roo] = POOLS[nxp+S.C_roo]*DMF*one_over_deltat;
+FLUXES[f+F.dist_woo] = POOLS[nxp+S.C_woo]*DMF*one_over_deltat;
 
     /*LIVE CARBON POOL REMOVALS PART 1 of 4: 
         Removing ABGB disturbance from live pools here;
