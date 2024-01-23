@@ -307,26 +307,25 @@ single_decadal_unc=log(single_decadal_unc);
 //Cost function
 //This is the only option available for single value (e.g. time invariant) observations
 if (OBS->opt_filter==0){//no filter
-    for (n=0;n<N;n++){tot_exp += pow((mod[n] - obs[n])/unc[n],2);}}
+    for (n=0;n<N;n++){
+        tot_exp += pow((mod[n] - obs[n])/unc[n],2);
+    }
+}
 
 else if (OBS->opt_filter==1){//mean only
 
     double mean_mod_of1=0, mean_obs_of1=0;
 
     for (n=0;n<N;n++){
-mean_mod_of1 += mod[n];
-mean_obs_of1 += obs[n];
-
+        mean_mod_of1 += mod[n];
+        mean_obs_of1 += obs[n];
+    }
+    mean_mod_of1=mean_mod_of1/(double)N;
+    mean_obs_of1=mean_obs_of1/(double)N;
+    tot_exp += pow((mean_mod_of1 - mean_obs_of1)/single_mean_unc,2);
 }
-mean_mod_of1=mean_mod_of1/(double)N;
-mean_obs_of1=mean_obs_of1/(double)N;
 
-
-    
-    
-    tot_exp  = pow((mean_mod_of1 - mean_obs_of1)/single_mean_unc,2);}
-
-else if (OBS->opt_filter==2 |  OBS->opt_filter==3){//monthly and annual flux
+else if (OBS->opt_filter==2 |  OBS->opt_filter==3 ){//monthly and annual flux
     /*Decoupling seasonal from interannual variations*/
     /*Only use with monthly resolution fluxes, complete years & no missing data*/
     /*Step 1. Mean model & data annual NBE*/
@@ -335,19 +334,28 @@ else if (OBS->opt_filter==2 |  OBS->opt_filter==3){//monthly and annual flux
     int m, dn;
     //Looping through all years
     for (m=0;m<N/12;m++){
-    /*Calculate annual mean of monthly values*/
-    double mam=0, oam=0;
-    //Looping through all months
-    for (n=0;n<12;n++){dn=n+m*12;mam=mam+mod[dn];oam=oam+obs[dn];}
-    /*normalize means*/
-    mam=mam/12;oam=oam/12;
-    /*Calculate seasonal cost function*/
-    if (OBS->opt_filter==2){for (n=0;n<12;n++){dn=n+m*12;tot_exp+=pow((mod[dn]-obs[dn]-mam+oam)/single_monthly_unc,2);}}
+        /*Calculate annual mean of monthly values*/
+        double mam=0, oam=0;
+        //Looping through all months
+        for (n=0;n<12;n++){
+            dn=n+m*12;mam=mam+mod[dn];
+            oam=oam+obs[dn];
+        }
+            /*normalize means*/
+        mam=mam/12;oam=oam/12;
+        /*Calculate seasonal cost function*/
+        if (OBS->opt_filter==2){
+            for (n=0;n<12;n++){
+                dn=n+m*12;
+                tot_exp+=pow((mod[dn]-obs[dn]-mam+oam)/single_monthly_unc,2);
+            }
+        }
     /*Calculate annual cost function*/
     /*TEST: normalize model likelihood by normal distribution with mean zero and unc = x2 annual unc.*/
-    tot_exp+=pow((oam-mam)/single_annual_unc,2);
+        tot_exp+=pow((oam-mam)/single_annual_unc,2);
       
-    }}
+    }
+}
 
 
 else if (OBS->opt_filter==4 | OBS->opt_filter==5){//climatology and inter-annual variability, only to use with monthly data
@@ -360,12 +368,10 @@ else if (OBS->opt_filter==4 | OBS->opt_filter==5){//climatology and inter-annual
     double * modcm = calloc(sizeof(double),12);
     double * obscm = calloc(sizeof(double),12);
     int * countcm = calloc(sizeof(int),12);
-    
     int * icm = calloc(sizeof(double),N);
 
     //Step 1. 
     //Loop through valid_obs_indices, and bin into mod(I,12) 
-    
     for (m=0;m<N;m++){
         //Obs index from 1-12
         icm[m]=OBS->valid_obs_indices[m] % 12;i=icm[m];
@@ -373,48 +379,46 @@ else if (OBS->opt_filter==4 | OBS->opt_filter==5){//climatology and inter-annual
         modcm[i] +=mod[m];
         obscm[i] +=obs[m];
         countcm[i]+=1;
-
-        }
-    
-        //Climatological cost function component: Avoid averaging by scaling cost function uncertainties accordingly!
-        for (i=0;i<12;i++){
-            if (countcm[i]>0){
-            obscm[i]/=(double)countcm[i];
-            modcm[i]/=(double)countcm[i];
-               tot_exp+=pow((modcm[i]-obscm[i])/single_monthly_unc,2);}}
-        
-         //Inter-annual cost function component: Avoid averaging by scaling cost function uncertainties accordingly!
-               if (OBS->opt_filter==4){
-                       for (m=0;m<N;m++){
-                                       i=icm[m];
-            if (countcm[i]>1){
-                tot_exp+=pow((mod[m] - modcm[i] - obs[m]  + obscm[i])/single_annual_unc,2);}}}
-//Free pointers
-        free(modcm);free(obscm);free(countcm);free(icm);
-
     }
-        
-        
+    //Climatological cost function component: Avoid averaging by scaling cost function uncertainties accordingly!
+    for (i=0;i<12;i++){
+        if (countcm[i]>0){
+        obscm[i]/=(double)countcm[i];
+        modcm[i]/=(double)countcm[i];
+        tot_exp+=pow((modcm[i]-obscm[i])/single_monthly_unc,2);
+        }
+    }
+    //Inter-annual cost function component: Avoid averaging by scaling cost function uncertainties accordingly!
+    if (OBS->opt_filter==4){
+        for (m=0;m<N;m++){
+            i=icm[m];
+                if (countcm[i]>1){
+                    tot_exp+=pow((mod[m] - modcm[i] - obs[m]  + obscm[i])/single_annual_unc,2);
+                }
+            }
+        }
+//Free pointers
+    free(modcm);free(obscm);free(countcm);free(icm);
+}
 
 else if (OBS->opt_filter==6){//three-year rolling mean
-                //EB added 12.12.22 as a test to constrain biomass trend with reduced noise: constrain fit to 3 year rolling mean obs/
+    //EB added 12.12.22 as a test to constrain biomass trend with reduced noise: constrain fit to 3 year rolling mean obs/
     int m, dn;
-                //Looping through years [1:-1] (except first and last)
+    //Looping through years [1:-1] (except first and last)
     for (m=1;m<(N/12)-1;m++){
-                /*1) Calculate 3 year mean of monthly values*/
-    double m3yrm=0, o3yrm=0;
-                //Looping through 3 years worth of months
-    for (n=0;n<36;n++){
-                                dn=n+(m-1)*12;
-                                m3yrm=m3yrm+mod[dn];
-                                o3yrm=o3yrm+obs[dn];
-                                }
-                /*2) normalize means*/
-    m3yrm=m3yrm/36;o3yrm=o3yrm/36;
-               /*3) Calculate 3-year mean cost function*/
-    tot_exp+=pow((o3yrm-m3yrm)/single_annual_unc,2);
-               
-                }
+        /*1) Calculate 3 year mean of monthly values*/
+        double m3yrm=0, o3yrm=0;
+        //Looping through 3 years worth of months
+        for (n=0;n<36;n++){
+            dn=n+(m-1)*12;
+            m3yrm=m3yrm+mod[dn];
+            o3yrm=o3yrm+obs[dn];
+        }
+        /*2) normalize means*/
+        m3yrm=m3yrm/36;o3yrm=o3yrm/36;
+        /*3) Calculate 3-year mean cost function*/
+        tot_exp+=pow((o3yrm-m3yrm)/single_annual_unc,2);
+    }
 }                
          
 else if (OBS->opt_filter==7){ //EB added 8.4.23 as a test to constrain biomass 
@@ -512,10 +516,60 @@ else if (OBS->opt_filter==7){ //EB added 8.4.23 as a test to constrain biomass
         }              
 } 
 
+else if (OBS->opt_filter==8 ){/* copy of opt filters 1 + 2, i.e. now with mean included;
+    *time series mean flux, annual mean flux, and monthly flux
+    *Decoupling seasonal from interannual variations
+    *Only use with monthly resolution fluxes, complete years & no missing data
+    *Step 1. Compare NBE Mean
+    *Step 2. Compare NBE annual anomaly
+    *Step 3. Compare NBE seasonal anomaly relative to annual mean*/
+
+    //Compute total mean
+    double mean_mod_of1=0, mean_obs_of1=0;
+    for (n=0;n<N;n++){
+        mean_mod_of1 += mod[n];
+        mean_obs_of1 += obs[n];
+    }
+    mean_mod_of1=mean_mod_of1/(double)N;
+    mean_obs_of1=mean_obs_of1/(double)N;
+    //add to cost
+    tot_exp += pow((mean_mod_of1 - mean_obs_of1)/single_mean_unc,2);
+
+    //Compute annual mean
+    int m, dn;
+    double m_ann_anom=0, o_ann_anom=0;
+    double monthly_mod_anom, monthly_obs_anom;
+    //Looping through all years
+    for (m=0;m<N/12;m++){
+        //Calculate annual mean of monthly values
+        double mam=0, oam=0;
+        //Looping through all months
+        for (n=0;n<12;n++){
+            dn=n+m*12;
+            mam=mam+mod[dn];
+            oam=oam+obs[dn];
+        }
+        //normalize means
+        mam=mam/12;
+        oam=oam/12;
+        //calculate anomaly relative to total mean
+        m_ann_anom=mam-mean_mod_of1;
+        o_ann_anom=oam-mean_obs_of1;
+        //add to cost
+        tot_exp+=pow((o_ann_anom-m_ann_anom)/single_annual_unc,2);
+
+        //Calculate seasonal anomaly from annual mean
+        for (n=0;n<12;n++){
+            dn=n+m*12;
+            monthly_mod_anom=mod[dn]-mam;
+            monthly_obs_anom=obs[dn]-oam;
+            //add to cost
+            tot_exp+=pow((monthly_mod_anom-monthly_obs_anom)/single_monthly_unc,2);
+        }      
+    }
+}
+
 free(mod);free(obs);free(unc);
-
-
-
 
 
 P=-0.5*tot_exp;}
