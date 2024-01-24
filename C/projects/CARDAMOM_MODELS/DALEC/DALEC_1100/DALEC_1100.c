@@ -963,13 +963,13 @@ POOLS[nxp+S.C_som] = POOLS[p+S.C_som] + (FLUXES[f+F.lit2som] - FLUXES[f+F.ae_rh_
 
 double TotalABGB=POOLS[nxp+S.C_lab]+POOLS[nxp+S.C_fol]+POOLS[nxp+S.C_roo]+POOLS[nxp+S.C_woo]; 
 double DMF = DIST[n]/TotalABGB; //DIST[n]=disturbance flux at current flux timestep, halfway in between p and nxp 
-double CROPYIELD=YIELD[n]; //applied to the wood pool
-double CROPRESIDUE=YIELD[n]; //applied to all pools
+double CROPYIELD_factor=YIELD[n]/TotalABGB; //applied to the wood pool
+// double CROPRESIDUE_factor=YIELD[n]/TotalABGB; //applied to all pools
 
-FLUXES[f+F.dist_lab] = (CROPYIELD*0.2+CROPRESIDUE*0.2+POOLS[nxp+S.C_lab]*DMF)*one_over_deltat;
-FLUXES[f+F.dist_fol] = (CROPYIELD*0.2+CROPRESIDUE*0.2+POOLS[nxp+S.C_fol]*DMF)*one_over_deltat;
-FLUXES[f+F.dist_roo] = (CROPYIELD*0.2+CROPRESIDUE*0.2+POOLS[nxp+S.C_roo]*DMF)*one_over_deltat;
-FLUXES[f+F.dist_woo] = (CROPYIELD*0.4+CROPRESIDUE*0.4+POOLS[nxp+S.C_woo]*DMF)*one_over_deltat;
+FLUXES[f+F.dist_lab] = POOLS[nxp+S.C_lab]*(2*CROPYIELD_factor+DMF)*one_over_deltat;
+FLUXES[f+F.dist_fol] = POOLS[nxp+S.C_fol]*(2*CROPYIELD_factor+DMF)*one_over_deltat;
+FLUXES[f+F.dist_roo] = POOLS[nxp+S.C_roo]*(2*CROPYIELD_factor+DMF)*one_over_deltat;
+FLUXES[f+F.dist_woo] = POOLS[nxp+S.C_woo]*(2*CROPYIELD_factor+DMF)*one_over_deltat;
 
     /*LIVE CARBON POOL REMOVALS PART 1 of 4: 
         Removing ABGB disturbance from live pools here;
