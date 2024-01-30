@@ -826,6 +826,8 @@ FLUXES[f+F.target_LAI]=KNORR.OUT.lambda_next;
 FLUXES[f+F.dlambda_dt]=KNORR.OUT.dlambdadt*one_over_deltat;
 FLUXES[f+F.f_temp_thresh]= KNORR.OUT.f_T;
 FLUXES[f+F.f_dayl_thresh]= KNORR.OUT.f_d;
+FLUXES[f+F.lambda_tilde_max]= KNORR.OUT.lambda_tilde_max;
+FLUXES[f+F.lambda_W]= KNORR.OUT.lambda_W;
 
     //Update KNORR memory variables for next iteration
 POOLS[nxp+S.M_LAI_MAX]=KNORR.OUT.laim;
@@ -1130,7 +1132,7 @@ DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=89;
-DALECmodel->nofluxes=94;
+DALECmodel->nofluxes=96;
 DALECmodel->noedcs=15;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
