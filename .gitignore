@@ -14,3 +14,10 @@ MATLAB/CARDAMOM_DISK/*
 # Python specific
 __pycache__/
 *.py[cod]
+
+#vscoe specfic
+.vscode/c_cpp_properties.json
+.vscode/settings.json
+C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.dSYM/Contents/Info.plist
+.vscode/tasks.json
+
