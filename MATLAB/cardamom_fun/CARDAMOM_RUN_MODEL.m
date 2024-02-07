@@ -43,6 +43,7 @@ if isfield(OPT,'filelatterhalf')==0;OPT.filelatterhalf=1;end
 if isfield(OPT,'Cpath')==0;OPT.Cpath=getenv('CARDAMOM_C_PATH');end
 if isfield(OPT,'command_only')==0;OPT.command_only=0;end
 if isfield(OPT,'make_output_nc')==0;OPT.make_output_nc=[];end
+if isfield(OPT,'make_output_cbr')==0;OPT.make_output_cbr=[];end
 
 
 if OPT.STORE==1 & isstruct(CBF);warning('"STORE" option will be ignored as no .cbf file provided for reference');OPT.STORE=0;end
@@ -225,6 +226,10 @@ end
 
 if isempty(OPT.make_output_nc)==0
 copyfile(fluxfile,OPT.make_output_nc);
+end
+
+if isempty(OPT.make_output_cbr)==0
+copyfile(parfile,OPT.make_output_cbr);
 end
 
 
