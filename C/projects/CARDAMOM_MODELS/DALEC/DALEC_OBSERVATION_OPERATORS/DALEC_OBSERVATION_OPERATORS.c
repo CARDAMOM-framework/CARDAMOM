@@ -87,6 +87,13 @@ int Rauto_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS
 bool SUPPORT_NBEmrg_OBS; //Emergent land sink (GPP/(reco+fire))
 int Rhet_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS, Rauto_flux to be set in SUPPORT_CUEmrg_OBS.
 int fire_flux;
+//add PEQ value and unc from previous MCMC *pMCMC*
+bool SUPPORT_r_ch4_OBS;
+int r_ch4_PARAM;
+bool SUPPORT_S_fv_OBS;
+int S_fv_PARAM;
+bool SUPPORT_rhch4_rhco2_OBS;
+int rhch4_rhco2_flux;
 
 }OBSOPE;
 
@@ -119,6 +126,10 @@ OBSOPE->SUPPORT_iniSOM_OBS=false;
 OBSOPE->SUPPORT_LCMA_OBS=false;
 //In-built observation operators
 
+//add PEQ value and unc from previous MCMC *pMCMC*
+OBSOPE->SUPPORT_r_ch4_OBS=false;
+OBSOPE->SUPPORT_S_fv_OBS=false;
+OBSOPE->SUPPORT_rhch4_rhco2_OBS=false;
 
 return 0;
 }
@@ -521,7 +532,27 @@ return 0;
 
 }
 
+//add PEQ value and unc from previous MCMC *pMCMC*
+int DALEC_OBSOPE_r_ch4(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_r_ch4;
+if  (SOBS.validobs){D->M_PEQ_r_ch4=D->M_PARS[O->r_ch4_PARAM];}
+//D->M_PEQ_r_ch4=D->M_PARS[O->r_ch4_PARAM];
+return 0;
+}
 
+int DALEC_OBSOPE_S_fv(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_S_fv;
+if  (SOBS.validobs){D->M_PEQ_S_fv=D->M_PARS[O->S_fv_PARAM];}
+//D->M_PEQ_S_fv=D->M_PARS[O->S_fv_PARAM];
+return 0;
+}
+
+int DALEC_OBSOPE_rhch4_rhco2(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_rhch4_rhco2;
+
+if  (SOBS.validobs){D->M_PEQ_rhch4_rhco2=1-D->M_PARS[O->rhch4_rhco2_flux];}
+return 0;
+}
 
 ///Full observation operator
 int DALEC_OBSOPE(DATA * D, OBSOPE * O){
@@ -552,7 +583,9 @@ if (O->SUPPORT_Vcmax25_OBS){DALEC_OBSOPE_Vcmax25(D, O);}
 if (O->SUPPORT_iniSnow_OBS){DALEC_OBSOPE_iniSnow(D, O);}
 if (O->SUPPORT_iniSOM_OBS){DALEC_OBSOPE_iniSOM(D, O);}
 if (O->SUPPORT_LCMA_OBS){DALEC_OBSOPE_LCMA(D, O);}
-
+if (O->SUPPORT_r_ch4_OBS){DALEC_OBSOPE_r_ch4(D, O);} /*pMCMC*/
+if (O->SUPPORT_S_fv_OBS){DALEC_OBSOPE_S_fv(D, O);}
+if (O->SUPPORT_rhch4_rhco2_OBS){DALEC_OBSOPE_rhch4_rhco2(D, O);}
 
 return 0;}  
 

@@ -1443,6 +1443,11 @@ OBSOPE.SUPPORT_LCMA_OBS=true;
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
 
+//add PEQ value and unc based on previous MCMC, all the changes are marked with "*pMCMC*"
+OBSOPE.SUPPORT_r_ch4_OBS=true;
+OBSOPE.SUPPORT_S_fv_OBS=true;
+OBSOPE.SUPPORT_rhch4_rhco2_OBS=true;
+
 //GPP-specific variables//Assuming FLUXNET GPP is assumed to be Ag.
     //Wohlfahrt & Gu, 2015 
 OBSOPE.GPP_flux=F.gpp;
@@ -1520,6 +1525,11 @@ OBSOPE.LCMA_PARAM=P.LCMA;
 
 //CH4-specific variables 
 OBSOPE.CH4_flux = F.rh_ch4;
+
+//add PEQ value and unc from previous MCMC *pMCMC*
+OBSOPE.r_ch4_PARAM = P.r_ch4;
+OBSOPE.S_fv_PARAM = P.S_fv;
+OBSOPE.rhch4_rhco2_flux = F.rh_ch4/F.rh_co2;
 
 DALECmodel->OBSOPE=OBSOPE;
 
