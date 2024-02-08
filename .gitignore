@@ -14,3 +14,9 @@ MATLAB/CARDAMOM_DISK/*
 # Python specific
 __pycache__/
 *.py[cod]
+
+#vscode files
+.vscode/*
+#dSYM debug files
+C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.dSYM/Contents/Info.plist
+**/.vscode/
