@@ -192,6 +192,7 @@ for(int i = 0; i < CARDADATA.nofluxes; i++){
 
   }
   FAILONERROR(nc_def_var(	fluxesGrpId,ncVarAbbreviation , NC_DOUBLE, 2, fluxes_dems, &(fluxesVarID[i]) ));
+  FAILONERROR(nc_def_var_chunking(ncid,fluxesVarID[i], NC_CHUNKED, NULL));
   WARNONERROR(nc_put_att_int	(	fluxesGrpId,fluxesVarID[i],"ID",NC_INT,sizeof(int),&i));
   if (fluxInfo.NAME != NULL && fluxInfo.NAME[i] != NULL){
     WARNONERROR(nc_put_att_text	(	fluxesGrpId,fluxesVarID[i],"Name",strlen(fluxInfo.NAME[i]),fluxInfo.NAME[i]));
@@ -221,6 +222,8 @@ for(int i = 0; i < CARDADATA.nopools; i++){
 
   }
   FAILONERROR(nc_def_var(	poolsGrpId,ncVarAbbreviation, NC_DOUBLE, 2, pools_dems, &(poolsVarID[i]) ));
+  FAILONERROR(nc_def_var_chunking(ncid,poolsVarID[i], NC_CHUNKED, NULL));
+
   WARNONERROR(nc_put_att_int	(	poolsGrpId,poolsVarID[i],"ID",NC_INT,sizeof(int),&i));
   if (poolsInfo.NAME != NULL && poolsInfo.NAME[i] != NULL){
     WARNONERROR(nc_put_att_text	(	poolsGrpId,poolsVarID[i],"Name",strlen(poolsInfo.NAME[i]),poolsInfo.NAME[i]));
@@ -255,6 +258,8 @@ for(int i = 0; i < CARDADATA.nopars; i++){
     printf("ERROR in %s at %d: paramater ID %d has no defined ABBREVIATION in it's PARS_META. Add it to your DALEC_####_NC_INFO.c file! This paramater will be called %s until you do!\n", __FILE__, __LINE__,i,ncVarAbbreviation );
   }
   FAILONERROR(nc_def_var(	parsGrpId, ncVarAbbreviation, NC_DOUBLE, 1, pars_dems, &(parsVarID[i]) ));
+  FAILONERROR(nc_def_var_chunking(ncid,parsVarID[i], NC_CHUNKED, NULL));
+  
   WARNONERROR(nc_put_att_int	(	parsGrpId,parsVarID[i],"ID",NC_INT,sizeof(int),&i));
   if (parsInfo.NAME != NULL && parsInfo.NAME[i] != NULL){
     WARNONERROR(nc_put_att_text	(	parsGrpId,parsVarID[i],"Name",strlen(parsInfo.NAME[i]),parsInfo.NAME[i]));
