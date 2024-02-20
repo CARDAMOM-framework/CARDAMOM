@@ -270,10 +270,6 @@ parmax[P.r_ch4]=0.9;
 parmin[P.Q10ch4]=1.0;
 parmax[P.Q10ch4]=5.0;
 
-/* maxPevap in mm/day*/
-parmin[P.maxPevap]=0.01;
-parmax[P.maxPevap]=100;
-
 /*Mean temperature at leaf onset (T_phi) (degrees kelvin)*/
 parmin[P.T_phi]=268.15;
 parmax[P.T_phi]=323.15;

@@ -150,11 +150,14 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.dist_woo]=S.C_woo;
 
         // C_lit
+        FIOMATRIX.SINK[F.labyield2lit]=S.C_lit;
         FIOMATRIX.SINK[F.lab2lit]=S.C_lit;
         FIOMATRIX.SINK[F.fx_lab2lit]=S.C_lit;
         FIOMATRIX.SINK[F.ph_fol2lit]=S.C_lit;
+        FIOMATRIX.SINK[F.folyield2lit]=S.C_lit;
         FIOMATRIX.SINK[F.fol2lit]=S.C_lit;
         FIOMATRIX.SINK[F.fx_fol2lit]=S.C_lit;
+        FIOMATRIX.SINK[F.rooyield2lit]=S.C_lit;
         FIOMATRIX.SINK[F.roo2lit]=S.C_lit;
         FIOMATRIX.SINK[F.fx_roo2lit]=S.C_lit;
         FIOMATRIX.SOURCE[F.ae_rh_lit]=S.C_lit;
@@ -164,6 +167,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.fx_lit2som]=S.C_lit;
 
         // C_cwd
+        FIOMATRIX.SINK[F.wooyield2cwd]=S.C_cwd;
         FIOMATRIX.SINK[F.woo2cwd]=S.C_cwd;
         FIOMATRIX.SINK[F.fx_woo2cwd]=S.C_cwd;
         FIOMATRIX.SOURCE[F.ae_rh_cwd]=S.C_cwd;
@@ -544,8 +548,7 @@ LIU.IN.C3_frac=1.; // pars[P.C3_frac]
 LIU.IN.clumping=pars[P.clumping];
 LIU.IN.leaf_refl_par=pars[P.leaf_refl_par];
 LIU.IN.leaf_refl_nir=pars[P.leaf_refl_nir];
-LIU.IN.maxPevap=pars[P.maxPevap];
-LIU.IN.precip=PREC[n];
+LIU.IN.p_H2O_ly1=POOLS[p+S.H2O_LY1];
 LIU.IN.q10canopy=pars[P.q10canopy];
 LIU.IN.q10canopyRd=pars[P.rauto_mrd_q10];
 LIU.IN.canopyRdsf=pars[P.canopyRdsf];
@@ -558,7 +561,8 @@ LIU.IN.deltat=deltat;
 LIU_AN_ET(&LIU);
 
 double LEAF_MORTALITY_FACTOR=LIU.OUT.LEAF_MORTALITY_FACTOR;
-
+double beta_evap=LIU.OUT.beta_evap;
+FLUXES[f+F.beta_evap]=beta_evap;
     /*track C starvation here*/
 FLUXES[f+F.leaf_mortality_factor]=LEAF_MORTALITY_FACTOR;
 
@@ -973,6 +977,13 @@ FLUXES[f+F.dist_fol] = POOLS[nxp+S.C_fol]*(2*CROPYIELD_factor+DMF)*one_over_delt
 FLUXES[f+F.dist_roo] = POOLS[nxp+S.C_roo]*(2*CROPYIELD_factor+DMF)*one_over_deltat;
 FLUXES[f+F.dist_woo] = POOLS[nxp+S.C_woo]*(2*CROPYIELD_factor+DMF)*one_over_deltat;
 
+//This portion is transfered to dead pools
+FLUXES[f+F.labyield2lit] = POOLS[nxp+S.C_lab]*CROPYIELD_factor*one_over_deltat;
+FLUXES[f+F.folyield2lit] = POOLS[nxp+S.C_fol]*CROPYIELD_factor*one_over_deltat;
+FLUXES[f+F.rooyield2lit] = POOLS[nxp+S.C_roo]*CROPYIELD_factor*one_over_deltat;
+FLUXES[f+F.wooyield2cwd] = POOLS[nxp+S.C_woo]*CROPYIELD_factor*one_over_deltat;
+
+
     /*LIVE CARBON POOL REMOVALS PART 1 of 4: 
         Removing ABGB disturbance from live pools here;
         these are lateral fluxes, and are discarded, not transferred!*/
@@ -1051,8 +1062,19 @@ POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.woo2cwd]*deltat;
 	
     /*DEAD C POOLS TRANSFERS PART 2 of 2: 
         Adding fire decomposition removals here together with additions from live pools*/
-POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]+(FLUXES[f+F.woo2cwd]+FLUXES[f+F.fx_woo2cwd]-FLUXES[f+F.fx_cwd2som])*deltat;
-POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.lab2lit]+FLUXES[f+F.fx_lab2lit]+FLUXES[f+F.fol2lit]+FLUXES[f+F.fx_fol2lit]+FLUXES[f+F.roo2lit]+FLUXES[f+F.fx_roo2lit]-FLUXES[f+F.fx_lit2som])*deltat;
+POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]+(FLUXES[f+F.wooyield2cwd]+
+                                         FLUXES[f+F.fx_woo2cwd]-
+                                         FLUXES[f+F.fx_cwd2som])*deltat;
+POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.labyield2lit]+
+                                         FLUXES[f+F.lab2lit]+
+                                         FLUXES[f+F.fx_lab2lit]+
+                                         FLUXES[f+F.folyield2lit]+
+                                         FLUXES[f+F.fol2lit]+
+                                         FLUXES[f+F.fx_fol2lit]+
+                                         FLUXES[f+F.rooyield2lit]+
+                                         FLUXES[f+F.roo2lit]+
+                                         FLUXES[f+F.fx_roo2lit]-
+                                         FLUXES[f+F.fx_lit2som])*deltat;
 POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]+(FLUXES[f+F.fx_cwd2som]+FLUXES[f+F.fx_lit2som])*deltat;
         
 	/*fires - total flux in gC m-2 day-1*/
@@ -1106,10 +1128,10 @@ POOLS[nxp+S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosit
     for (nnn=0;nnn<14;nnn++){if ( isfinite(POOLS[nxp+nnn])==false){isfinitecheck=0;}};
     if (isfinitecheck==0){break;};
 
-if (n<=10){
-    printf("\nNBE: %f\n", 
-    FLUXES[f+F.resp_auto]+FLUXES[f+F.rh_co2]+FLUXES[f+F.f_total]-FLUXES[f+F.gpp]);}
-else {exit(0);}
+// if (n<=10){
+//     printf("\nNBE: %f\n", 
+//     FLUXES[f+F.resp_auto]+FLUXES[f+F.rh_co2]+FLUXES[f+F.f_total]-FLUXES[f+F.gpp]);}
+// else {exit(0);}
 
 }
 
@@ -1137,8 +1159,8 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=89;
-DALECmodel->nofluxes=96;
+DALECmodel->nopars=88;
+DALECmodel->nofluxes=101;
 DALECmodel->noedcs=15;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
