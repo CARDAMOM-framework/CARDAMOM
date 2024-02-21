@@ -554,6 +554,7 @@ LIU.IN.q10canopyRd=pars[P.rauto_mrd_q10];
 LIU.IN.canopyRdsf=pars[P.canopyRdsf];
 LIU.IN.NSC=POOLS[p+S.C_lab];
 LIU.IN.deltat=deltat;
+LIU.IN.evap_lim=pars[P.evap_lim];
 
 
 
@@ -1159,7 +1160,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=88;
+DALECmodel->nopars=89;
 DALECmodel->nofluxes=101;
 DALECmodel->noedcs=15;
 

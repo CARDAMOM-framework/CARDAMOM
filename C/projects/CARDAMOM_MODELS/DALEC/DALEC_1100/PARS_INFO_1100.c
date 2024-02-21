@@ -378,6 +378,10 @@ parmax[P.sublimation_rate]=10;
 /*Fraction of LY2 to LY1 root biomass*/
 parmin[P.root_frac]=0.001;
 parmax[P.root_frac]=1;
+
+/*scalar to adjust steepness/flatness of evaporation exponential function*/
+parmin[P.evap_lim]=0.001;
+parmax[P.evap_lim]=1;
   
 return 0;
 

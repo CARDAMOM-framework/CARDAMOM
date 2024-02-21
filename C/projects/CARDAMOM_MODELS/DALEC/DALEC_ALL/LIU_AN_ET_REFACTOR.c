@@ -25,6 +25,7 @@ typedef struct {
         double NSC;
         double deltat;
         double p_H2O_ly1;
+        double evap_lim;
     }IN;
     struct {
         double beta_evap;
@@ -242,7 +243,7 @@ A->OUT.transp = transp*24;
 
 
 
-A->OUT.beta_evap = 1-(1/exp(A->IN.p_H2O_ly1/(petVnumB*24*A->IN.deltat)));
+A->OUT.beta_evap = 1-(1/exp(A->IN.evap_lim*(A->IN.p_H2O_ly1/(petVnumB*24*A->IN.deltat))));
 
 evap = petVnumB*A->OUT.beta_evap;
 
