@@ -19,15 +19,15 @@ typedef struct {
         double clumping;
         double leaf_refl_par;
         double leaf_refl_nir;
+        double maxPevap;
+        double precip; 
         double q10canopy;
         double q10canopyRd;
         double canopyRdsf;
         double NSC;
         double deltat;
-        double p_H2O_ly1;
     }IN;
     struct {
-        double beta_evap;
         double An;
         double Ag;
         double Rd;
@@ -61,6 +61,8 @@ double C3_frac=A->IN.C3_frac;
 double clumping=A->IN.clumping;
 double leaf_refl_par=A->IN.leaf_refl_par;
 double leaf_refl_nir=A->IN.leaf_refl_nir;
+double maxPevap=A->IN.maxPevap;
+double precip=A->IN.precip;
 
 //CONSTS
 double Ephoton = 2.0e-25/500.0e-9;// Planck constant times speed of light (J.s*m.s-1) divided by light wavelength (m)
@@ -210,6 +212,7 @@ double transp; // transpiration
 double evap; // evaporation
 double Psurf = 100.0; //Surface pressure in kPa
 double VPD_kPa = VPD;//*Psurf; //100.0 kPa = 1000.0 hPa => Surface pressure
+double evap_scale_factpr;
 
 sV = 0.04145*exp(0.06088*T_C); 
 
@@ -242,9 +245,9 @@ A->OUT.transp = transp*24;
 
 
 
-A->OUT.beta_evap = 1-(1/exp(A->IN.p_H2O_ly1/(petVnumB*24*A->IN.deltat)));
+evap_scale_factpr = fmin(precip/maxPevap, 1.);
 
-evap = petVnumB*A->OUT.beta_evap;
+evap = petVnumB*evap_scale_factpr;
 
 //evap = petVnumB;
 

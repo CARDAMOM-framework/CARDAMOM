@@ -72,7 +72,6 @@ int thetas_opt;
 int fwc;
 int r_ch4;
 int Q10ch4;
-int maxPevap;
 int T_phi;
 int T_range;
 int plgr;
@@ -100,6 +99,7 @@ int root_frac;
 int beta_lgrHMF;
 int psi_50HMF; 
 int t_lab;
+int maxPevap;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -210,6 +210,10 @@ int dist_woo;
 int Rd;
 int lambda_tilde_max;
 int lambda_W;
+int labyield2lit;
+int folyield2lit;
+int rooyield2lit;
+int wooyield2cwd;
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -220,7 +224,7 @@ int lambda_W;
     60,61,62,63,64,65,66,67,68,69,
     70,71,72,73,74,75,76,77,78,79,
     80,81,82,83,84,85,86,87,88,89,
-    90,91,92,93,94,95
+    90,91,92,93,94,95,96,97,98,99,
 };
 
 
