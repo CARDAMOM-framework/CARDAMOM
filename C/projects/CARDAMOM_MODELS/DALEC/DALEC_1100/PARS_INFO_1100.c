@@ -270,6 +270,10 @@ parmax[P.r_ch4]=0.9;
 parmin[P.Q10ch4]=1.0;
 parmax[P.Q10ch4]=5.0;
 
+/* maxPevap in mm/day*/
+parmin[P.maxPevap]=0.01;
+parmax[P.maxPevap]=100;
+
 /*Mean temperature at leaf onset (T_phi) (degrees kelvin)*/
 parmin[P.T_phi]=268.15;
 parmax[P.T_phi]=323.15;
@@ -378,10 +382,6 @@ parmax[P.sublimation_rate]=10;
 /*Fraction of LY2 to LY1 root biomass*/
 parmin[P.root_frac]=0.001;
 parmax[P.root_frac]=1;
-
-/*scalar to adjust steepness/flatness of evaporation exponential function*/
-parmin[P.evap_lim]=0.001;
-parmax[P.evap_lim]=1;
   
 return 0;
 

@@ -534,6 +534,7 @@ LIU_AN_ET_STRUCT LIU;
     //define time-invariant parameters
 LIU.IN.SRAD=SSRD[n]*1e6/DGCM_SEC_DAY;
 LIU.IN.VPD=VPD[n]/10;
+LIU.IN.precip=PREC[n];
 LIU.IN.TEMP=air_temp_k;  
 LIU.IN.vcmax25=pars[P.Vcmax25];
 LIU.IN.co2=CO2[n];
@@ -548,13 +549,12 @@ LIU.IN.C3_frac=1.; // pars[P.C3_frac]
 LIU.IN.clumping=pars[P.clumping];
 LIU.IN.leaf_refl_par=pars[P.leaf_refl_par];
 LIU.IN.leaf_refl_nir=pars[P.leaf_refl_nir];
-LIU.IN.infil=FLUXES[f+F.infil];
 LIU.IN.q10canopy=pars[P.q10canopy];
 LIU.IN.q10canopyRd=pars[P.rauto_mrd_q10];
 LIU.IN.canopyRdsf=pars[P.canopyRdsf];
+LIU.IN.maxPevap=pars[P.maxPevap];
 LIU.IN.NSC=POOLS[p+S.C_lab];
 LIU.IN.deltat=deltat;
-LIU.IN.evap_lim=pars[P.evap_lim];
 
 
 
@@ -562,8 +562,7 @@ LIU.IN.evap_lim=pars[P.evap_lim];
 LIU_AN_ET(&LIU);
 
 double LEAF_MORTALITY_FACTOR=LIU.OUT.LEAF_MORTALITY_FACTOR;
-double beta_evap=LIU.OUT.beta_evap;
-FLUXES[f+F.beta_evap]=beta_evap;
+
     /*track C starvation here*/
 FLUXES[f+F.leaf_mortality_factor]=LEAF_MORTALITY_FACTOR;
 
@@ -1161,7 +1160,7 @@ DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=89;
-DALECmodel->nofluxes=101;
+DALECmodel->nofluxes=100;
 DALECmodel->noedcs=15;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
