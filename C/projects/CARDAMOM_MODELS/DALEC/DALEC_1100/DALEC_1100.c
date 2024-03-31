@@ -1128,11 +1128,14 @@ POOLS[nxp+S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosit
     for (nnn=0;nnn<14;nnn++){if ( isfinite(POOLS[nxp+nnn])==false){isfinitecheck=0;}};
     if (isfinitecheck==0){break;};
 
+<<<<<<< HEAD
 // if (n<=10){
 //     printf("\nNBE: %f\n", 
 //     FLUXES[f+F.resp_auto]+FLUXES[f+F.rh_co2]+FLUXES[f+F.f_total]-FLUXES[f+F.gpp]);}
 // else {exit(0);}
 
+=======
+>>>>>>> main
 }
 
 
