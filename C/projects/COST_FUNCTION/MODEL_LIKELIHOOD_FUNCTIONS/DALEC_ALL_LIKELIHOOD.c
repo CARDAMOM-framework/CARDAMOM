@@ -30,6 +30,7 @@ struct LIKELIHOOD_INDICES{
         int NBE;
         int ROFF;
         int SCF;
+        int FIR;
         int Mean_ABGB;      
         int Mean_FIR;
         int Mean_GPP;
@@ -48,7 +49,7 @@ struct LIKELIHOOD_INDICES{
         } LIKELIHOOD_INDICES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
-    20,21,22,23,24,25}; /*pMCMC*/
+    20,21,22,23,24,25,26}; /*pMCMC*/
     
   
     
@@ -113,6 +114,7 @@ if (O->SUPPORT_LAI_OBS ){ML[LI.LAI]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_d
 if (O->SUPPORT_NBE_OBS){   ML[LI.NBE]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.NBE, D.M_NBE);};
 if (O->SUPPORT_ROFF_OBS){   ML[LI.ROFF]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ROFF, D.M_ROFF);};
 if ( O->SUPPORT_SCF_OBS){ML[LI.SCF]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.SCF, D.M_SCF);};
+if (O->SUPPORT_FIR_OBS ){ML[LI.FIR]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.FIR, D.M_FIR);};
 
 //Mean OBS
 

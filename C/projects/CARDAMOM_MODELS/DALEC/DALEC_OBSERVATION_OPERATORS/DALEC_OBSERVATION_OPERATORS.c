@@ -287,6 +287,8 @@ D->M_EWT[n]+=(D->M_POOLS[D->nopools*n+h2op[nn]] +D->M_POOLS[D->nopools*(n+1)+h2o
 return 0;}
 
 
+////
+
 
 
 //Mean fire co2 flux
@@ -294,10 +296,24 @@ int DALEC_OBSOPE_FIR(DATA * D, OBSOPE * O){
 
 int N=D->ncdf_data.TIME_INDEX.length;
 
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.FIR;
 SINGLE_OBS_STRUCT SOBS=D->ncdf_data.Mean_FIR;
 
-if (SOBS.validobs){int n;D->M_Mean_FIR=0;for (n=0;n<N;n++){D->M_Mean_FIR+=D->M_FLUXES[n*D->nofluxes+O->FIR_flux];};D->M_Mean_FIR=D->M_Mean_FIR/(double)N;}
+if (TOBS.validobs){
+    int n;
+    for (n=0;n<N;n++){
+        D->M_FIR[n]=D->M_FLUXES[D->nofluxes*n+O->FIR_flux];
+        }
+    };
 
+if (SOBS.validobs){
+    int n;
+    D->M_Mean_FIR=0;
+    for (n=0;n<N;n++){
+        D->M_Mean_FIR+=D->M_FLUXES[n*D->nofluxes+O->FIR_flux];
+        };
+    D->M_Mean_FIR=D->M_Mean_FIR/(double)N;
+    }
 
 return 0;}
 

@@ -27,6 +27,7 @@ double *M_EWT;
 double *M_GPP;
 double *M_SIF;
 double *M_LAI;
+double *M_FIR;
 double *M_NBE;
 double *M_ROFF;
 double *M_SCF;
