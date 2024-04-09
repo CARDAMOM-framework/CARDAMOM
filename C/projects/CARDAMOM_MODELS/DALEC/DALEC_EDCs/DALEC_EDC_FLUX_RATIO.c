@@ -34,8 +34,8 @@ int nofluxes=DALECmodel->nofluxes;
 
 //compute mean foliar and mean root allocation fluxes  
 
-double M_FNUMERATOR=mean_flux(DATA->M_FLUXES,E.numerator_flux_index,N_timesteps+1,nofluxes);
-double M_FDENOMINATOR=mean_flux(DATA->M_FLUXES,E.denominator_flux_index,N_timesteps+1,nofluxes);
+double M_FNUMERATOR=mean_flux(DATA->M_FLUXES,E.numerator_flux_index,N_timesteps,nofluxes);
+double M_FDENOMINATOR=mean_flux(DATA->M_FLUXES,E.denominator_flux_index,N_timesteps,nofluxes);
 
 double residual= log(M_FNUMERATOR/M_FDENOMINATOR)/log(2);
   
