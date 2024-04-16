@@ -143,7 +143,9 @@ Rs=Rm*MPOOLSjan/Pstart;
 & ((fabs(log(Rs))>log(EQF)) || (fabs(Rs-Rm)>etol)))
 {EDC=ipow(0,EDCD->SWITCH[7-1+n]);EDCD->PASSFAIL[7-1+n]=0;}*/
 
- PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
+ //PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
+ PEDC+=-0.5*pow(log(Rm)/log(EQF),2) - 0.5 *pow(log(Rs)/log(etol),2);
+
 //         printf("******Pool p = %i *********\n",p);
 // 
 //         printf("p = %i\n",s);

@@ -423,11 +423,6 @@ FLUX_INFO.DESCRIPTION[F.soil_beta_factor]='Stress due to soil water availability
 
 //Parameter info 
 
-PARS_INFO.NAME[P.twood]='Turnover rate of wood';
-PARS_INFO.ABBREVIATION[P.twood]='twood';
-PARS_INFO.UNITS[P.twood]='gC/m2/day';
-PARS_INFO.DESCRIPTION[P.twood]='Includes maintenance respiration and growth respiration';
-
 PARS_INFO.NAME[P.tr_lit2som]='Litter decomposition rate';
 PARS_INFO.ABBREVIATION[P.tr_lit2som]='lit2som';
 PARS_INFO.UNITS[P.tr_lit2som]='fraction';
@@ -488,10 +483,15 @@ PARS_INFO.ABBREVIATION[P.t_som]='t_som';
 PARS_INFO.UNITS[P.t_som]='gC/m2/day';
 PARS_INFO.DESCRIPTION[P.t_som]='Rate of soil turnover to heterotrophic respiration';
  
-PARS_INFO.NAME[P.Q10rhco2]='Q10';
+PARS_INFO.NAME[P.Q10rhco2]='Q10rhco2';
 PARS_INFO.ABBREVIATION[P.Q10rhco2]='';
 PARS_INFO.UNITS[P.Q10rhco2]='';
-PARS_INFO.DESCRIPTION[P.Q10rhco2]='';
+PARS_INFO.DESCRIPTION[P.Q10rhco2]='Q10 parameter for heterotrophic aerobic respiration';
+
+PARS_INFO.NAME[P.Q10ch4]='Q10ch4';
+PARS_INFO.ABBREVIATION[P.Q10ch4]='';
+PARS_INFO.UNITS[P.Q10ch4]='';
+PARS_INFO.DESCRIPTION[P.Q10ch4]='Q10 parameter for heterotrophic anaerobic respiration';
 
 PARS_INFO.NAME[P.LCMA]='Leaf mass carbon per area';
 PARS_INFO.ABBREVIATION[P.LCMA]='LCMA';

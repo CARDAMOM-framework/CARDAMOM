@@ -62,6 +62,10 @@ parmax[P.t_lab]=0.01;
 parmin[P.t_root]=0.0001;
 parmax[P.t_root]=0.01;
 
+/*Inverse of leaf longevity at any period i.e. background turnover (days-1)*/
+parmin[P.t_foliar]=0.001;
+parmax[P.t_foliar]=0.0334;
+
 /*TOR litter*/
 parmin[P.t_lit]=0.0001;
 parmax[P.t_lit]=0.1;
@@ -254,7 +258,7 @@ parmax[P.scf_scalar]=1000.0;
 parmin[P.S_fv]=1;
 parmax[P.S_fv]=100.0;
 
-/* jc thetas_opt   optimum thetas for water scaler fW*/
+/* jc thetas_opt optimum thetas for water scaler fW*/
 parmin[P.thetas_opt]=0.2;
 parmax[P.thetas_opt]=1.0;
 
@@ -314,9 +318,7 @@ parmax[P.init_T_mem]=323.15;
 parmin[P.init_LAIW_mem]=0.01;
 parmax[P.init_LAIW_mem]=1;
 
-/*Inverse of leaf longevity at any period i.e. background turnover (days-1)*/
-parmin[P.t_foliar]=0.001;
-parmax[P.t_foliar]=0.0334;
+
 
 
 /*LY1 energy per mm H2O (~ Energy in 1mm H2O @ -50C to 1mm H2O@ +50C)*/
