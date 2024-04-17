@@ -289,6 +289,12 @@ return 0;}
 
 ////
 
+if (TOBS.validobs){
+int n,nn;
+for (n=0;n<N;n++){
+D->M_ROFF[n]=0;
+for (nn=0;nn<O->ROFF_n_fluxes;nn++){
+D->M_ROFF[n]+=D->M_FLUXES[D->nofluxes*n+O->ROFF_fluxes[nn]];}}};
 
 
 //Mean fire co2 flux
@@ -302,6 +308,7 @@ TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.FIR;
 
 if (TOBS.validobs){
     int n;
+    D->M_FIR[n]=0;
     for (n=0;n<N;n++){
         D->M_FIR[n]=D->M_FLUXES[D->nofluxes*n+O->FIR_flux];
         }
