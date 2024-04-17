@@ -85,8 +85,8 @@ bool SUPPORT_CUEmrg_OBS; //Emergent CUE (Rauto/GPP)
 int Rauto_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS
 
 bool SUPPORT_NBEmrg_OBS; //Emergent land sink (GPP/(reco+fire))
-int Rhet_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS, Rauto_flux to be set in SUPPORT_CUEmrg_OBS.
-int fire_flux;
+int Rhet_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS, Rauto_flux to be set in SUPPORT_CUEmrg_OBS, FIR_flux to be set in SUPPORT_FIR_OBS.
+
 //add PEQ value and unc from previous MCMC *pMCMC*
 bool SUPPORT_r_ch4_OBS;
 int r_ch4_PARAM;
@@ -252,7 +252,7 @@ if (SOBS.validobs){
     for (n=0;n<N;n++){
         MGPP+=D->M_FLUXES[n*D->nofluxes+O->GPP_flux];
         MReco+=(D->M_FLUXES[n*D->nofluxes+O->Rhet_flux]+D->M_FLUXES[n*D->nofluxes+O->Rauto_flux]);
-        Mfire+=D->M_FLUXES[n*D->nofluxes+O->fire_flux];
+        Mfire+=D->M_FLUXES[n*D->nofluxes+O->FIR_flux];
     };
     MGPP=MGPP/(double)N;
     MReco=MReco/(double)N;
@@ -294,10 +294,11 @@ return 0;}
 //Mean fire co2 flux
 int DALEC_OBSOPE_FIR(DATA * D, OBSOPE * O){
 
+//FIR timeseries length
 int N=D->ncdf_data.TIME_INDEX.length;
 
+//Time-varying FIR obs
 TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.FIR;
-SINGLE_OBS_STRUCT SOBS=D->ncdf_data.Mean_FIR;
 
 if (TOBS.validobs){
     int n;
@@ -306,6 +307,8 @@ if (TOBS.validobs){
         }
     };
 
+//Mean FIR
+SINGLE_OBS_STRUCT SOBS=D->ncdf_data.Mean_FIR;
 if (SOBS.validobs){
     int n;
     D->M_Mean_FIR=0;
@@ -314,8 +317,8 @@ if (SOBS.validobs){
         };
     D->M_Mean_FIR=D->M_Mean_FIR/(double)N;
     }
-
-return 0;}
+return 0;
+}
 
 
 
@@ -328,14 +331,26 @@ int N=D->ncdf_data.TIME_INDEX.length;
 
 //Time varying GPP 
 TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.GPP;
-if (TOBS.validobs){int n;for (n=0;n<N;n++){D->M_GPP[n]=D->M_FLUXES[D->nofluxes*n+O->GPP_flux];}};
+if (TOBS.validobs){int n;
+    for (n=0;n<N;n++){
+        D->M_GPP[n]=D->M_FLUXES[D->nofluxes*n+O->GPP_flux];
+        }
+    };
 
 
 //Mean GPP 
 SINGLE_OBS_STRUCT SOBS=D->ncdf_data.Mean_GPP;
-if (SOBS.validobs){int n;D->M_Mean_GPP=0;for (n=0;n<N;n++){D->M_Mean_GPP+=D->M_FLUXES[n*D->nofluxes+O->GPP_flux];};D->M_Mean_GPP=D->M_Mean_GPP/(double)N;}
+if (SOBS.validobs){
+    int n;
+    D->M_Mean_GPP=0;
+    for (n=0;n<N;n++){
+        D->M_Mean_GPP+=D->M_FLUXES[n*D->nofluxes+O->GPP_flux];
+        };
+    D->M_Mean_GPP=D->M_Mean_GPP/(double)N;
+    }
 
-return 0;}
+return 0;
+}
 
 
 // SIF operator is made the same as GPP, be careful with its opt_filter and opt_normalization set up - shuang
@@ -398,7 +413,13 @@ for (n=0;n<N;n++){
 }}
 
 //Mean LAI
-if (SOBS.validobs){int n;D->M_Mean_LAI=0;for (n=0;n<N;n++){D->M_Mean_LAI+=D->M_LAI[n];}D->M_Mean_LAI=D->M_Mean_LAI/(double)N;}
+if (SOBS.validobs){
+    int n;D->M_Mean_LAI=0;
+    for (n=0;n<N;n++){
+        D->M_Mean_LAI+=D->M_LAI[n];
+        }
+    D->M_Mean_LAI=D->M_Mean_LAI/(double)N;
+    }
 
 return 0;}
 
