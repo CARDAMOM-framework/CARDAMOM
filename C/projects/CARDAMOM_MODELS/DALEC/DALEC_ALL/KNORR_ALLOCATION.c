@@ -29,6 +29,8 @@ typedef struct {
         double dlambdadt;
         double  f_T;
         double f_d;
+        double lambda_tilde_max;
+        double lambda_W;
     }OUT;
     
     
@@ -138,6 +140,9 @@ int KNORR_ALLOCATION(KNORR_ALLOCATION_STRUCT * K)
  K->OUT.dlambdadt = dlambdadt;//dLAI/dt units = change of LAI per timestep
  K->OUT.f_T=f_T;
  K->OUT.f_d= f_d;
+ K->OUT.lambda_tilde_max= lambda_tilde_max;
+ K->OUT.lambda_W= lambda_W;
+ 
  
 
 

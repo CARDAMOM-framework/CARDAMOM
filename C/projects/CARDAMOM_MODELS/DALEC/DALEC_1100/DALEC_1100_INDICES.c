@@ -97,6 +97,9 @@ int q10canopy;
 int canopyRdsf;
 int sublimation_rate;
 int root_frac;
+int beta_lgrHMF;
+int psi_50HMF; 
+int t_lab;
 } DALEC_1100_PARAMETERS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -106,7 +109,7 @@ int root_frac;
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
     70,71,72,73,74,75,76,77,78,79,
-    80,81,82,83,84,85
+    80,81,82,83,84,85,86,87,88
 };
 
 struct DALEC_1100_FLUXES{
@@ -118,9 +121,11 @@ int lab_prod;   /*Labile production*/
 int foliar_prod;   /*Labile release*/
 int root_prod;   /*Root production*/
 int wood_prod;   /*Wood production*/
+int ph_fol2lit;  /*Foliar phenological senescence*/
 int fol2lit;   /*Foliar decomposition*/
 int woo2cwd;   /*Wood decomposition*/
 int roo2lit;   /*Root decomposition*/
+int lab2lit;   /*Labile C decomposition*/
 int cwd2som;   /*CWD decomposition*/
 int lit2som;   /*Litter decomposition*/
 int f_total;   /*Flux description*/
@@ -194,7 +199,17 @@ int sublimation;
 int geological;
 int ets;  /* Total land-atmosphere water flux (evaporation + transpiration + sublimation) */
 int beta_factor; 
-int soil_beta_factor; 
+int soil_beta_factor;
+int hydraulic_mortality_factor; 
+int nonleaf_mortality_factor;
+int leaf_mortality_factor;
+int dist_lab;
+int dist_fol;
+int dist_roo;
+int dist_woo;
+int Rd;
+int lambda_tilde_max;
+int lambda_W;
 } DALEC_1100_FLUXES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -204,7 +219,8 @@ int soil_beta_factor;
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
     70,71,72,73,74,75,76,77,78,79,
-    80,81,82,83
+    80,81,82,83,84,85,86,87,88,89,
+    90,91,92,93,94,95
 };
 
 
@@ -255,15 +271,21 @@ int vcmax_lcma;
 int litcwdtor;
 int cwdsomtor;
 int mr_rates;
+int rootwoodtor;
+int fol2lig_cf;
+int relativepsi50;
 int state_ranges;
 int state_trajectories;
 int nsc_ratio;
+int cfcr_ratio;
+int fffr_ratio;
 int mean_ly1_temp;
 int mean_ly2_temp;
 int mean_ly3_temp;
 } DALEC_1100_EDCs={
     0, 1, 2, 3, 4, 5, 6, 
-    7, 8, 9
+    7, 8, 9,10,11,12,13,
+    14
 };
 
 

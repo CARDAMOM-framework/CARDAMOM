@@ -50,7 +50,10 @@ int SCF_pool;
 
 
 //
-//Parameters and emergen quantities
+//Parameters and emergent quantities
+//Can add more parameters OR options
+
+
 bool SUPPORT_Cefficiency_OBS;
 int Cefficiency_PARAM;///This is assuming it's a single parameter
 
@@ -81,7 +84,16 @@ int LCMA_PARAM;//This is assuming it's a single parameter
 bool SUPPORT_CUEmrg_OBS; //Emergent CUE (Rauto/GPP)
 int Rauto_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS
 
-
+bool SUPPORT_NBEmrg_OBS; //Emergent land sink (GPP/(reco+fire))
+int Rhet_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS, Rauto_flux to be set in SUPPORT_CUEmrg_OBS.
+int fire_flux;
+//add PEQ value and unc from previous MCMC *pMCMC*
+bool SUPPORT_r_ch4_OBS;
+int r_ch4_PARAM;
+bool SUPPORT_S_fv_OBS;
+int S_fv_PARAM;
+bool SUPPORT_rhch4_rhco2_OBS;
+int rhch4_rhco2_flux;
 
 }OBSOPE;
 
@@ -103,6 +115,7 @@ OBSOPE->SUPPORT_ROFF_OBS=false;
 OBSOPE->SUPPORT_SCF_OBS=false;
 
 
+OBSOPE->SUPPORT_NBEmrg_OBS=false;
 OBSOPE->SUPPORT_CUEmrg_OBS=false;
 OBSOPE->SUPPORT_Cefficiency_OBS=false;
 OBSOPE->SUPPORT_CUE_OBS=false;
@@ -113,6 +126,10 @@ OBSOPE->SUPPORT_iniSOM_OBS=false;
 OBSOPE->SUPPORT_LCMA_OBS=false;
 //In-built observation operators
 
+//add PEQ value and unc from previous MCMC *pMCMC*
+OBSOPE->SUPPORT_r_ch4_OBS=false;
+OBSOPE->SUPPORT_S_fv_OBS=false;
+OBSOPE->SUPPORT_rhch4_rhco2_OBS=false;
 
 return 0;
 }
@@ -214,8 +231,33 @@ if (SOBS.validobs){
     };
     MGPP=MGPP/(double)N;
     MRauto=MRauto/(double)N;
-    D->M_PEQ_CUE=1-(MRauto/MGPP);
+        D->M_PEQ_CUE=1-(MRauto/MGPP);
+}
 
+
+return 0;}
+
+// GPP/(r_eco + fire) balance operator
+int DALEC_OBSOPE_NBEmrg(DATA * D, OBSOPE * O){
+
+int N=D->ncdf_data.TIME_INDEX.length;
+
+double MGPP=0;//Initializing as zero, to allow for loop averaging calculation
+double MReco=0;//Initializing as zero, to allow for loop averaging calculation
+double Mfire=0;//Initializing as zero, to allow for loop averaging calculation
+    //Note: consider using standard averaging function to avoid bugs
+SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_NBEmrg;
+if (SOBS.validobs){
+    int n;D->M_PEQ_NBEmrg=0;
+    for (n=0;n<N;n++){
+        MGPP+=D->M_FLUXES[n*D->nofluxes+O->GPP_flux];
+        MReco+=(D->M_FLUXES[n*D->nofluxes+O->Rhet_flux]+D->M_FLUXES[n*D->nofluxes+O->Rauto_flux]);
+        Mfire+=D->M_FLUXES[n*D->nofluxes+O->fire_flux];
+    };
+    MGPP=MGPP/(double)N;
+    MReco=MReco/(double)N;
+    Mfire=Mfire/(double)N;
+        D->M_PEQ_NBEmrg=(MGPP/(MReco+Mfire));
 }
 
 
@@ -490,7 +532,27 @@ return 0;
 
 }
 
+//add PEQ value and unc from previous MCMC *pMCMC*
+int DALEC_OBSOPE_r_ch4(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_r_ch4;
+if  (SOBS.validobs){D->M_PEQ_r_ch4=D->M_PARS[O->r_ch4_PARAM];}
+//D->M_PEQ_r_ch4=D->M_PARS[O->r_ch4_PARAM];
+return 0;
+}
 
+int DALEC_OBSOPE_S_fv(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_S_fv;
+if  (SOBS.validobs){D->M_PEQ_S_fv=D->M_PARS[O->S_fv_PARAM];}
+//D->M_PEQ_S_fv=D->M_PARS[O->S_fv_PARAM];
+return 0;
+}
+
+int DALEC_OBSOPE_rhch4_rhco2(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_rhch4_rhco2;
+
+if  (SOBS.validobs){D->M_PEQ_rhch4_rhco2=1-D->M_PARS[O->rhch4_rhco2_flux];}
+return 0;
+}
 
 ///Full observation operator
 int DALEC_OBSOPE(DATA * D, OBSOPE * O){
@@ -509,6 +571,8 @@ if (O->SUPPORT_SCF_OBS ){DALEC_OBSOPE_SCF(D, O);}
 
 // Emergent quantities
 if (O->SUPPORT_CUEmrg_OBS){DALEC_OBSOPE_CUEmrg(D, O);}
+if (O->SUPPORT_NBEmrg_OBS){DALEC_OBSOPE_NBEmrg(D, O);}
+
 
 //Parameters
 
@@ -519,7 +583,9 @@ if (O->SUPPORT_Vcmax25_OBS){DALEC_OBSOPE_Vcmax25(D, O);}
 if (O->SUPPORT_iniSnow_OBS){DALEC_OBSOPE_iniSnow(D, O);}
 if (O->SUPPORT_iniSOM_OBS){DALEC_OBSOPE_iniSOM(D, O);}
 if (O->SUPPORT_LCMA_OBS){DALEC_OBSOPE_LCMA(D, O);}
-
+if (O->SUPPORT_r_ch4_OBS){DALEC_OBSOPE_r_ch4(D, O);} /*pMCMC*/
+if (O->SUPPORT_S_fv_OBS){DALEC_OBSOPE_S_fv(D, O);}
+if (O->SUPPORT_rhch4_rhco2_OBS){DALEC_OBSOPE_rhch4_rhco2(D, O);}
 
 return 0;}  
 

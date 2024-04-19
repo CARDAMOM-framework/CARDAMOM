@@ -57,7 +57,7 @@ default_int_value(&CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ,200000);
 MCOPT.nOUT=CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ;/*Default =  20000*/
 MCOPT.nPRINT=2000;/*1;was 2000*/
 MCOPT.minstepsize=1e-5;
-MCOPT.nchains=200;
+MCOPT.nchains=400;
 MCOPT.fixedpars=0;
 MCOPT.fADAPT=0;
 //declaring best_pars
