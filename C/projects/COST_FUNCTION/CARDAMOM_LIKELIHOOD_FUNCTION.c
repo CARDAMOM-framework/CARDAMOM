@@ -62,9 +62,9 @@ default_double_value(&OBS->structural_unc,0);
     
 int n;
 int N=(int)OBS->length;
-printf("obs length: %2d ", N);
+printf("obs length: %2d, ", N);
 if (N==0){
-    printf("Obs not included");
+    printf("(Obs not included)\n");
     }
 OBS->valid_obs_length=0;
 for (n=0;n<N;n++){
@@ -73,7 +73,7 @@ for (n=0;n<N;n++){
         }
     }
 if (N!=0){
-    printf("%2d Valid obs", OBS->valid_obs_length);
+    printf("%2d Valid obs\n", OBS->valid_obs_length);
     }
 OBS->valid_obs_indices=calloc(OBS->valid_obs_length,sizeof(int));
 int k=0;

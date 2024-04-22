@@ -222,31 +222,31 @@ printf("Warning: No longer assigning default uncertainty values. Please double c
 //pre-process obs to save time
 //Only required for timeseries obs
     //Keep alphabetical order if possible 
-printf("Preprocess ABGB");
+printf("Preprocess ABGB: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ABGB);
-printf("Preprocess CH4");
+printf("Preprocess CH4: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->CH4);
-printf("Preprocess CWOO");
+printf("Preprocess CWOO: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->CWOO);
-printf("Preprocess DOM");
+printf("Preprocess DOM: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->DOM);
-printf("Preprocess ET");
+printf("Preprocess ET: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ET);
-printf("Preprocess EWT");
+printf("Preprocess EWT: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->EWT);
-printf("Preprocess GPP");
+printf("Preprocess GPP: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->GPP);
-printf("Preprocess FIR");
+printf("Preprocess FIR: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->FIR);
-printf("Preprocess LAI");
+printf("Preprocess LAI: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->LAI);
-printf("Preprocess NBE");
+printf("Preprocess NBE: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->NBE);
-printf("Preprocess ROFF");
+printf("Preprocess ROFF: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ROFF);
-printf("Preprocess SCF");
+printf("Preprocess SCF: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->SCF);
-printf("Preprocess SIF");
+printf("Preprocess SIF: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->SIF);
 
 
