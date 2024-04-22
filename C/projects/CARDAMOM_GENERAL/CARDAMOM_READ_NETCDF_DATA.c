@@ -104,15 +104,20 @@ DATA->CWOO=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "CWOO");
 DATA->DOM=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "DOM");
 DATA->ET=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ET");
 DATA->EWT=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "EWT");
-DATA->GPP=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "GPP");
-DATA->SIF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "SIF");
-DATA->LAI=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "LAI");
 DATA->FIR=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "FIR");
+DATA->GPP=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "GPP");
+DATA->LAI=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "LAI");
 DATA->NBE=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "NBE");
-// printf("Just read NBE...\n");
-// printf("DATA->NBE.values[0] = %2.2f\n",DATA->NBE.values[0]);
 DATA->ROFF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ROFF");
 DATA->SCF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "SCF");
+DATA->SIF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "SIF");
+
+
+
+// printf("Just read NBE...\n");
+// printf("DATA->NBE.values[0] = %2.2f\n",DATA->NBE.values[0]);
+
+
 //Read time-averaged data
 
 DATA->Mean_ABGB=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_ABGB");
@@ -193,6 +198,11 @@ default_int_value(&DATA->LAI.opt_unc_type,1);
 default_double_value(&DATA->LAI.single_unc,2);
 default_double_value(&DATA->LAI.min_threshold,0.1);//m2/m2
 
+// //Default FIR options
+// printf("FIR.opt_unc_type=0; FIR.single_unc=0.2; FIR.min_threshold=0.001 gC/m2/day;\n");
+// default_int_value(&DATA->FIR.opt_unc_type,0);
+// default_double_value(&DATA->FIR.single_unc,0.2);
+// default_double_value(&DATA->FIR.min_threshold,0.001);//m2/m2
 
 //Default NBE options;
 printf("NBE.single_unc=1 gC/m2/d;\n");
@@ -226,6 +236,7 @@ TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ET);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->EWT);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->GPP);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->SIF);
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->FIR);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->LAI);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->NBE);
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ROFF);

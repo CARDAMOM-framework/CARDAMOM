@@ -155,9 +155,9 @@ int q_ly2_e;   /*Q LY2 IE: temp = LY2 temp*/
 int q_ly3_e;   /*Q LY3 IE: temp = LY3 temp*/
 int ly1xly2_e;   /*LY1->NDZ transfer IE: temp of donor*/
 int ly2xly3_e;   /*LY2->LY3 transfer IE: temp of donor*/
-int evap_e; /* See Retano's calculation*/
-int transp1_e; /* See Retano's calculation*/
-int transp2_e; /* See Retano's calculation*/
+int evap_e; /* See Renato's calculation*/
+int transp1_e; /* See Renato's calculation*/
+int transp2_e; /* See Renato's calculation*/
 int transp1;   /*Transpiration*/
 int transp2;   /*Transpiration*/
 int evap;   /*Evaporation*/

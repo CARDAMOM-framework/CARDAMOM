@@ -62,6 +62,7 @@ default_double_value(&OBS->structural_unc,0);
     
     
 int n,N=(int)OBS->length;
+printf("%2d ", n);
 OBS->valid_obs_length=0;
 for (n=0;n<N;n++){if (OBS->values[n]!=DEFAULT_DOUBLE_VAL){OBS->valid_obs_length=OBS->valid_obs_length+1;}}
 OBS->valid_obs_indices=calloc(OBS->valid_obs_length,sizeof(int));
