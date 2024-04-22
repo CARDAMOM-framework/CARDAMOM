@@ -47,5 +47,5 @@ return 0;
 	a) create and assign the model quantities that are needed to evaluate the obsop, matching variable names declared in step b of modifying DALEC_OBSERVATION_OPERATORS.c  (e.g. 
 OBSOPE.GPP_flux=F.gpp;) and 
 	b) turn the obsop on (e.g. OBSOPE.SUPPORT_GPP_OBS=true;)
-8) If this is a completely new variable for the CBF, then in CARDAMOM_READ_BINARY_DATA.c, add a memory allocation (eg., DATA->M_GPP=calloc(Ntimesteps,sizeof(double));)
+8) If this is a completely new variable for the CBF, then in CARDAMOM_READ_BINARY_DATA.c, add a memory allocation (eg., DATA->M_GPP=calloc(Ntimesteps,sizeof(double));) NOTE: can trigger bus error if skipped
 9) When putting data into the CBF under the new field, also check a) unc name matches filter type, etc (e.g., opt_filter=1 takes single_mean_unc, nothing else will work), b) filter logic matches obs values ranges (e.g. don’t use opt_unc_type=1 on something with negative values), c) fill value encoding & time encoding (not shown in xarray, use ncdump to check)
