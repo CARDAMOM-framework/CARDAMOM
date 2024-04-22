@@ -858,8 +858,8 @@ ALLOC_AND_AUTO_RESP_FLUXES(&ARFLUXES);
 FLUXES[f+F.nonleaf_mortality_factor]=NONLEAF_MORTALITY_FACTOR;
 
 
-    /*respiration auto*/
-FLUXES[f+F.resp_auto]=ARFLUXES.OUT.AUTO_RESP_TOTAL;
+    /*respiration auto: note, at some point fix the names*/
+FLUXES[f+F.resp_auto]=ARFLUXES.OUT.AUTO_RESP_TOTAL+LIU.OUT.Rd;
     /*growth respiration*/
 FLUXES[f+F.resp_auto_growth]=ARFLUXES.OUT.AUTO_RESP_GROWTH;
     /*maintenance respiration*/
