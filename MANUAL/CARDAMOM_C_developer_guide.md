@@ -7,7 +7,7 @@
   * [Make a new model](#Make-a-new-model)
   * [Add more parameters to the model](#Add-more-parameters-to-the-model)
   * [Add more pools to the model](#Add-more-pools-to-the-model)
-  * [Guidelines on naming conventions, comments and variable descriptions](#Guidelines-on-naming-conventions,-comments-and-variable-descriptions)
+  * [Guidelines on comments and naming conventions](#Guidelines-on-comments-and-naming-conventions)
   * [Define prior range for parameters and why log transformed prior range is used](#Define-prior-range-for-parameters-and-why-log-transformed-prior-range-is-used)
   * [Add a new dataset to CARDAMOM DATA structure](#Add-a-new-dataset-to-CARDAMOM-DATA-structure)
   * [Make a new cost function](#Make-a-new-cost-function)
@@ -90,7 +90,7 @@ MD=CARDAMOM_MODEL_LIBRARY(<newmodelid>,[],1);
     * Define prior range for parameters and why log transformed prior range is used 
     * Avoid using zero as either the minimum or maximum parameter values, as log transformation is used for creating the new parameter values so that there is equal chance being selected within the same magnitude. Log transformation is essential for parameters spanning several magnitudes, like Soil Organic Carbon turnover rate, while doesn’t make a big difference for parameters like Q10; 
 
-### Guidelines on naming conventions, comments and variable descriptions
+### Guidelines on comments and naming conventions
 
 I think we would do well to have a lot more comments in our code describing what the variables are. Maybe some “rule of thumb” that every new variable definition requires a comment that explains exactly what it is? 
 
