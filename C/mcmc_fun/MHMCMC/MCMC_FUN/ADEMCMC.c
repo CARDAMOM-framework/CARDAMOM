@@ -194,6 +194,14 @@ wrlocal=wrlocal+1;
 	if (MCO.nWRITE>0 && (N.ITER % MCO.nWRITE)==0){
 WRITE_DEMCMC_RESULTS(PARS,PI,MCO);}
 
+	/*******regularly write restart file***********/
+	//if (MCO.nWRITE>0 && (N.ITER % 1000)==0){
+//WRITE_DEMCMC_RESTART(PARS,PI,MCO);}
+	//Is identical function to WRITE_DEMCMC_RESULTS(PARS,PI,MCO);}
+// Except it writes one instance of "PARS" and overwrites previous file
+	//Include also attribute with N.ITER
+	//If possible, include attribute with random seed (this is optional).
+
 	/*Printing Info to Screen*/
 	if (MCO.nPRINT>0 && N.ITER % MCO.nPRINT==0){
 		printf("%d out of %d iterations)\n",N.ITER,MCO.nOUT);
