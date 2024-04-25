@@ -6,7 +6,7 @@ usage() {
   echo "Usage: CARDAMOM_COMPILE.sh " 1>&2
   echo "          -c Compiler - C compiler to use. Defaults to the CARDAMOM_OPT_COMPILER enviroment var, and then gcc" 1>&2
   echo "          -p Cardamom C path - Path to the Cardamom C code directory. Defaults to the CARDAMOM_C_PATH enviroment variable, and then looks for the c path relative to this script assuming the standard cardamom file structure. " 1>&2
-  echo "          -d  Compile in debug mode - Builds Cardamom C code with debugging symbols" 1>&2
+  echo "          -d  Compile in debug mode - Builds Cardamom C code with debugging symbols, and LLVM sanitizers if possible" 1>&2
   echo "          -n nc-config path - Path to the nc-config command, used to get info for compileing with the netcdf libraries. Defaults to the value of the CARDAMOM_NC_CONFIG_PATH enviroment variable, then whatever nc-config command can be found with the which command, and then finally defaults to /usr/local/bin/nc-config" 1>&2
   exit 1
 }
@@ -67,6 +67,15 @@ if [[ -z "${CARDAMOM_NC_CONFIG_PATH}" ]]; then
 else
   echo "setting CARDAMOM_NC_CONFIG_PATH to ${CARDAMOM_NC_CONFIG_PATH}"
 fi
+
+
+#   TODO-----TODO
+#Decide special Compiler flags
+if [ $(gcc --version | grep -ic 'clang') -ge 1 ]; then
+  #We have a clang of some sort! Add in sanitizer options!
+  -fsanitize=address -fno-omit-frame-pointer
+fi
+
 
 #Something went wrong here for different environments, hardcoding this as gcc compiler.
 echo COMPILER=$COMPILER
