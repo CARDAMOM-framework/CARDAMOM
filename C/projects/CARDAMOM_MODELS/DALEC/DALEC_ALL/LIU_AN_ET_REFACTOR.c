@@ -170,7 +170,7 @@ Rd = C3_frac*(Rd_C3) + (1. - C3_frac)*(Rd_C4);
     //Potential Rd
 double Rd_daily_potential = Rd*canopy_scale*(12.e-6)*(24.*60.*60.);
 //Ensures NSCs available
-A->OUT.LEAF_MORTALITY_FACTOR=fmax( 1- A->IN.NSC/A->OUT.Rd* A->IN.deltat  ,0);
+A->OUT.LEAF_MORTALITY_FACTOR=fmax( 1- A->IN.NSC/(Rd_daily_potential * A->IN.deltat)  ,0);
 //Actual daily Rd
 A->OUT.Rd =Rd_daily_potential*(1 - A->OUT.LEAF_MORTALITY_FACTOR);
 

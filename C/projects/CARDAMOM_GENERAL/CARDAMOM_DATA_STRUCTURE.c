@@ -45,20 +45,10 @@ double M_PEQ_C3frac;
 double M_PEQ_iniSnow;
 double M_PEQ_iniSOM;
 double M_PEQ_LCMA;
-	//add PEQ value and unc from previous MCMC *pMCMC*
+//add PEQ value and unc from previous MCMC *pMCMC*
 double M_PEQ_r_ch4;
 double M_PEQ_S_fv;
 double M_PEQ_rhch4_rhco2; // add '*' if it's timeseries
-/*double M_PEQ_thetas_opt;
-double M_PEQ_fwc;
-double M_PEQ_Q10ch4;
-double M_PEQ_Q10rhco2;
-double M_PEQ_retention;*/
-/*double M_PEQ_Med_g1;
-double M_PEQ_Vcmax25;
-double M_PEQ_ga;
-double M_PEQ_Tdown; */
-    // end of pMCMC
 
 
 //Fyll state variables

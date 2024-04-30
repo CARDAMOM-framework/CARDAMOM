@@ -141,7 +141,6 @@ Fout[S.H2O_PUW]=FT[F.q_puw];
 double Rm, Rs;
 
 
-
 for (n=0;n<noprogpools;n++){
 /*start and end pools*/
 Pstart=POOLS[n];
@@ -158,6 +157,7 @@ EDCD->pEDC=EDCD->pEDC-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
 /*of each constraint*/
 EDCD->EDCPROB[7-1+n]=-0.5*pow(log(Rs)/log(EQF),2);/*-0.5*pow((Rs-Rm)/etol,2);*/
 }
+    
 
 if (psw==1){
 printf("****\n");
@@ -230,6 +230,7 @@ if (DIAG==1){for (n=0;n<Num_EDC;n++){if (EDCD->PASSFAIL[n]==0){EDC=0;}}}
 
 /*Returning EDC */
 return EDC;
+    
 
 }
 

@@ -81,34 +81,13 @@ int LCMA_PARAM;//This is assuming it's a single parameter
 bool SUPPORT_CUEmrg_OBS; //Emergent CUE (Rauto/GPP)
 int Rauto_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS
 
-    //add PEQ value and unc from previous MCMC *pMCMC*
+//add PEQ value and unc from previous MCMC *pMCMC*
 bool SUPPORT_r_ch4_OBS;
 int r_ch4_PARAM;
 bool SUPPORT_S_fv_OBS;
 int S_fv_PARAM;
-//bool SUPPORT_rhco2_rh_OBS;
-//int rhco2_rh;
 bool SUPPORT_rhch4_rhco2_OBS;
 int rhch4_rhco2_flux;
-/*bool SUPPORT_thetas_opt_OBS;
-int thetas_opt_PARAM;
-bool SUPPORT_fwc_OBS;
-int fwc_PARAM;
-bool SUPPORT_Q10ch4_OBS;
-int Q10ch4_PARAM;
-bool SUPPORT_Q10rhco2_OBS;
-int Q10rhco2_PARAM;
-bool SUPPORT_retention_OBS;
-int retention_PARAM;*/
-/* bool SUPPORT_Med_g1_OBS;
-int Med_g1_PARAM;
-bool SUPPORT_Vcmax25_OBS;
-int Vcmax25_PARAM;
-bool SUPPORT_ga_OBS;
-int ga_PARAM;
-bool SUPPORT_Tdown_OBS;
-int Tdown_PARAM;*/
-    // end of pMCMC
 
 }OBSOPE;
 
@@ -139,20 +118,11 @@ OBSOPE->SUPPORT_iniSnow_OBS=false;
 OBSOPE->SUPPORT_iniSOM_OBS=false;
 OBSOPE->SUPPORT_LCMA_OBS=false;
 //In-built observation operators
-    //add PEQ value and unc from previous MCMC *pMCMC*
+
+//add PEQ value and unc from previous MCMC *pMCMC*
 OBSOPE->SUPPORT_r_ch4_OBS=false;
 OBSOPE->SUPPORT_S_fv_OBS=false;
 OBSOPE->SUPPORT_rhch4_rhco2_OBS=false;
-/*OBSOPE->SUPPORT_thetas_opt_OBS=false;
-OBSOPE->SUPPORT_fwc_OBS=false;
-OBSOPE->SUPPORT_Q10ch4_OBS=false;
-OBSOPE->SUPPORT_Q10rhco2_OBS=false;
-OBSOPE->SUPPORT_retention_OBS=false;*/
-/* OBSOPE->SUPPORT_Med_g1_OBS=false;
-OBSOPE->SUPPORT_Vcmax25_OBS=false;
-OBSOPE->SUPPORT_ga_OBS=false;
-OBSOPE->SUPPORT_Tdown_OBS=false; */
-    // end of pMCMC
 
 return 0;
 }
@@ -194,7 +164,6 @@ if (SOBS.validobs){int n;D->M_Mean_ABGB=0;for (n=0;n<N;n++){D->M_Mean_ABGB+=D->M
 return 0;}
 
 
-//CH4 observation operator
 int DALEC_OBSOPE_CH4(DATA * D, OBSOPE * O){
 
 int N=D->ncdf_data.TIME_INDEX.length;
@@ -204,18 +173,6 @@ TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.CH4;
 if (TOBS.validobs){int n;for (n=0;n<N;n++){D->M_CH4[n]=D->M_FLUXES[D->nofluxes*n+O->CH4_flux];}};
 
 return 0;}
-
-
-//rhch4_rhco2 observation operators     /*pMCMC*/
-//int DALEC_OBSOPE_rhch4_rhco2(DATA * D, OBSOPE * O){
-
-//int N=D->ncdf_data.TIME_INDEX.length;
-//TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.PEQ_rhch4_rhco2;
-
-//if (TOBS.validobs){int n;for (n=0;n<N;n++){D->M_PEQ_rhch4_rhco2[n]=D->M_FLUXES[D->nofluxes*n+O->rhch4_rhco2_flux];}};
-
-//return 0;}
-
 
 //ET observation operator, assuming one flux
 
@@ -408,7 +365,7 @@ int DALEC_OBSOPE_SCF(DATA * D, OBSOPE * O){
 //Run length
 int N=D->ncdf_data.TIME_INDEX.length;
 
-//Time varying SCF
+//Time varying GPP and mean GPP
 TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.SCF;
 
 
@@ -558,15 +515,12 @@ if  (SOBS.validobs){D->M_PEQ_S_fv=D->M_PARS[O->S_fv_PARAM];}
 return 0;
 }
 
-
 int DALEC_OBSOPE_rhch4_rhco2(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_rhch4_rhco2;
 
 if  (SOBS.validobs){D->M_PEQ_rhch4_rhco2=1-D->M_PARS[O->rhch4_rhco2_flux];}
 return 0;
-
 }
-
 
 ///Full observation operator
 int DALEC_OBSOPE(DATA * D, OBSOPE * O){
