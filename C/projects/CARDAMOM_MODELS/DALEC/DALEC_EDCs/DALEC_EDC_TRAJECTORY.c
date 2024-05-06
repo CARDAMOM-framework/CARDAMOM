@@ -137,17 +137,17 @@ Pend=POOLS[nopools*N_timesteps+p];
 /*mean input/output*/
 Rm=Fin/Fout;
 /*Theoretical starting input/output*/
-Rs=Rm*MPOOLSjan/Pstart;
+// Rs=Rm*MPOOLSjan/Pstart;
  /*EB test version*/
-// Rs=MPOOLSjan/Pstart;
+Rs=MPOOLSjan/Pstart;
 
 /*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[7-1+n]==1))
 & ((fabs(log(Rs))>log(EQF)) || (fabs(Rs-Rm)>etol)))
 {EDC=ipow(0,EDCD->SWITCH[7-1+n]);EDCD->PASSFAIL[7-1+n]=0;}*/
 
- PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
+//  PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
  /*EB test version*/
-//  PEDC+=-0.5*pow(log(Rm)/log(EQF),2) - 0.5 *pow(log(Rs)/log(1+etol),2);
+ PEDC+=-0.5*pow(log(Rm)/log(EQF),2) - 0.5 *pow(log(Rs)/log(1+etol),2);
 
 //         printf("******Pool p = %i *********\n",p);
 // 

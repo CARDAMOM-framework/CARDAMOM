@@ -92,7 +92,7 @@ parmax[P.i_labile]=100000.0;
 
 /*C foliar*/
 parmin[P.i_foliar]=1.0;
-parmax[P.i_foliar]=4000.0;
+parmax[P.i_foliar]=2000.0;
 
 /*C roots*/
 parmin[P.i_root]=1.0;
@@ -108,7 +108,7 @@ parmax[P.i_cwd]=100000.0;
 
 /*C litter*/
 parmin[P.i_lit]=1.0;
-parmax[P.i_lit]=2000.0;
+parmax[P.i_lit]=4000.0;
 
 /*C_som*/
 parmin[P.i_som]=1.0;
