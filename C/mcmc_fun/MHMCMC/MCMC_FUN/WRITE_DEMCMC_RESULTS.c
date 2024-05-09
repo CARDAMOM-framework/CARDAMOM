@@ -33,40 +33,70 @@ void str_inplace_replace(char * str, const char * toFind, const char toReplace){
 
 int WRITE_DEMCMC_RESULTS(double *PARS,PARAMETER_INFO PI,MCMC_OPTIONS MCO){
 
-int ncid = 0; //This is the netcdf id num
-int ncretval = 0; //This is a reused variable for the return value of ncdf methods.
-static int inited = 0;
-int paramDimID,sampleDimID; //Dim ID numbers, must be populated each invocation
+  int ncid = 0; //This is the netcdf id num
+  int ncretval = 0; //This is a reused variable for the return value of ncdf methods.
+  static int inited = 0;
+  int paramDimID,sampleDimID; //Dim ID numbers, must be populated each invocation
 
-int parsVarID; // Variable ID numbers, also must be repopulated each invocation
+  int parsVarID; // Variable ID numbers, also must be repopulated each invocation
 
-if (!inited){  
-        inited=1;
-        FAILONERROR(nc_create(MCO.outfile,NC_CLOBBER, &ncid ));
-        FAILONERROR(nc_def_dim(ncid,"Parameter",PI.npars,&paramDimID));
-        FAILONERROR(nc_def_dim(ncid,"Sample",NC_UNLIMITED,&sampleDimID));
-        FAILONERROR(nc_def_var(ncid,"Parameters",NC_DOUBLE,2,(const int[]){sampleDimID,paramDimID},&parsVarID));
+  if (!inited){  
+          inited=1;
+          FAILONERROR(nc_create(MCO.outfile,NC_CLOBBER, &ncid ));
+          FAILONERROR(nc_def_dim(ncid,"Parameter",PI.npars,&paramDimID));
+          FAILONERROR(nc_def_dim(ncid,"Sample",NC_UNLIMITED,&sampleDimID));
+          FAILONERROR(nc_def_var(ncid,"Parameters",NC_DOUBLE,2,(const int[]){sampleDimID,paramDimID},&parsVarID));
 
-        //End NetCDF definition phase, in order to allow for writting
-        nc_enddef(ncid);
+          //End NetCDF definition phase, in order to allow for writting
+          nc_enddef(ncid);
 
-}else{
-        //dims and data already exist, so we only need to reacquire the IDs
-        FAILONERROR(nc_open(MCO.outfile,NC_WRITE, &ncid ));
-        FAILONERROR(nc_inq_dimid(ncid,"Parameter",&paramDimID));
-        FAILONERROR(nc_inq_dimid(ncid,"Sample", &sampleDimID));
-        FAILONERROR(nc_inq_varid(ncid,"Parameters",&parsVarID));
+  }else{
+          //dims and data already exist, so we only need to reacquire the IDs
+          FAILONERROR(nc_open(MCO.outfile,NC_WRITE, &ncid ));
+          FAILONERROR(nc_inq_dimid(ncid,"Parameter",&paramDimID));
+          FAILONERROR(nc_inq_dimid(ncid,"Sample", &sampleDimID));
+          FAILONERROR(nc_inq_varid(ncid,"Parameters",&parsVarID));
+
+  }
+  //Decide on where to put our write based on the current length of the unlimited dimension Sample
+  size_t currentSamples;
+  FAILONERROR(nc_inq_dimlen(ncid,sampleDimID, &currentSamples));
+  //Do the write. Remember to start at currentSamples
+  FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){currentSamples,0}, (const size_t[]){MCO.nchains,PI.npars},PARS ));
+
+  FAILONERROR(nc_close(ncid));
+
+  return 0;
+
 
 }
-//Decide on where to put our write based on the current length of the unlimited dimension Sample
-size_t currentSamples;
-FAILONERROR(nc_inq_dimlen(ncid,sampleDimID, &currentSamples));
-//Do the write. Remember to start at currentSamples
-FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){currentSamples,0}, (const size_t[]){MCO.nchains,PI.npars},PARS ));
 
-FAILONERROR(nc_close(ncid));
 
-return 0;
+	//Is identical function to WRITE_DEMCMC_RESULTS(PARS,PI,MCO);}
+	//Except it writes one instance of "PARS" and overwrites previous file
+	//Include also attribute with N.ITER
+	//If possible, include attribute with random seed (this is optional).
+int WRITE_DEMCMC_RESTART(double *PARS,PARAMETER_INFO PI,MCMC_OPTIONS MCO){
+
+  int ncid = 0; //This is the netcdf id num
+  int ncretval = 0; //This is a reused variable for the return value of ncdf methods.
+  int paramDimID; //Dim ID number, must be populated each invocation
+
+  int parsVarID; // Variable ID numbers, also must be repopulated each invocation
+
+  FAILONERROR(nc_create(MCO.startfile,NC_CLOBBER, &ncid ));
+  FAILONERROR(nc_def_dim(ncid,"Parameter",PI.npars,&paramDimID));
+  FAILONERROR(nc_def_var(ncid,"Parameters",NC_DOUBLE,1,(const int[]){paramDimID},&parsVarID));
+
+  //End NetCDF definition phase, in order to allow for writting
+  nc_enddef(ncid);
+
+  //Do the write.
+  FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){0}, (const size_t[]){PI.npars},PARS ));
+
+  FAILONERROR(nc_close(ncid));
+
+  return 0;
 
 
 }
