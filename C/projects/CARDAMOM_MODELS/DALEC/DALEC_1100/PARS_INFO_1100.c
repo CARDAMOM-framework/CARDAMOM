@@ -63,7 +63,7 @@ parmin[P.t_root]=0.0001;
 parmax[P.t_root]=0.01;
 
 /*Inverse of leaf longevity at any period i.e. background turnover (days-1)*/
-parmin[P.t_foliar]=0.0001;
+parmin[P.t_foliar]=0.001;
 parmax[P.t_foliar]=0.0334;
 
 /*TOR litter*/
@@ -83,7 +83,7 @@ parmin[P.Q10rhco2]=1;
 parmax[P.Q10rhco2]=5.0;
 
 /*LMCA*; Kattge et al. 2011*;*Kattge et al., provide a range of 10 400 g m-2, i.e. 5 200 gC m-2*/
-parmin[P.LCMA]=15;
+parmin[P.LCMA]=5;
 parmax[P.LCMA]=200;
 
 /*C labile*/
@@ -108,7 +108,7 @@ parmax[P.i_cwd]=100000.0;
 
 /*C litter*/
 parmin[P.i_lit]=1.0;
-parmax[P.i_lit]=4000.0;
+parmax[P.i_lit]=2000.0;
 
 /*C_som*/
 parmin[P.i_som]=1.0;
