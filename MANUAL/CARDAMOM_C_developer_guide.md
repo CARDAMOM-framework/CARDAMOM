@@ -7,6 +7,7 @@
   * [Make a new model](#Make-a-new-model)
   * [Add more parameters to the model](#Add-more-parameters-to-the-model)
   * [Add more pools to the model](#Add-more-pools-to-the-model)
+  * [Guidelines on comments and naming conventions](#Guidelines-on-comments-and-naming-conventions)
   * [Define prior range for parameters and why log transformed prior range is used](#Define-prior-range-for-parameters-and-why-log-transformed-prior-range-is-used)
   * [Add a new dataset to CARDAMOM DATA structure](#Add-a-new-dataset-to-CARDAMOM-DATA-structure)
   * [Make a new cost function](#Make-a-new-cost-function)
@@ -88,6 +89,15 @@ MD=CARDAMOM_MODEL_LIBRARY(<newmodelid>,[],1);
     * (b) limit EDC checks to previously existing pools only (check for instances where “nopools” variable is used in loops). This is (unfortunately) a less-than-elegant approach, and we’re working on a comprehensive solution in the long run.
     * Define prior range for parameters and why log transformed prior range is used 
     * Avoid using zero as either the minimum or maximum parameter values, as log transformation is used for creating the new parameter values so that there is equal chance being selected within the same magnitude. Log transformation is essential for parameters spanning several magnitudes, like Soil Organic Carbon turnover rate, while doesn’t make a big difference for parameters like Q10; 
+
+### Guidelines on comments and naming conventions
+
+I think we would do well to have a lot more comments in our code describing what the variables are. Maybe some “rule of thumb” that every new variable definition requires a comment that explains exactly what it is? 
+
+Of course, if those comments are incorrect, then they will be more hurtful than helpful, so it is important that any subsequent changes to the code are accounted for in the comments. For example, at one point, AUTO_RESP_MAINTENANCE did contain the total maintenance respiration flux from all pools, and then subsequently changed to exclude foliar. So if we had defined AUTO_RESP_MAINTENANCE with a comment, that comment would have needed to be updated. Forgetting to update the comment would then leave us more vulnerable than we’d have been with no comment to begin with.
+
+I suppose another thing that would help is to be careful with variable names, especially when we change a variable as we did with AUTO_RESP_MAINTENANCE. Maybe another rule of thumb would be that we MUST rename a variable when redefining what it means? That way, some other person who may be unaware of the change won’t falsely think they know what a variable is based on knowing it’s previous definition.
+
 
 #### Two examples make it easier to understand:
 + Soil organic C turnover rate (1e-7 to 1e-3 gC yr-1)
