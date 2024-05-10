@@ -1063,6 +1063,7 @@ POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.woo2cwd]*deltat;
     /*DEAD C POOLS TRANSFERS PART 2 of 2: 
         Adding fire decomposition removals here together with additions from live pools*/
 POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]+(FLUXES[f+F.wooyield2cwd]+
+                                         FLUXES[f+F.woo2cwd]+
                                          FLUXES[f+F.fx_woo2cwd]-
                                          FLUXES[f+F.fx_cwd2som])*deltat;
 POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.labyield2lit]+
