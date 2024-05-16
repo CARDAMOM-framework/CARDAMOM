@@ -60,42 +60,52 @@ default_int_value(&OBS->opt_filter,0);
 default_double_value(&OBS->min_threshold,log(0));//minus infinity
 default_double_value(&OBS->structural_unc,0);
     
-    
-int n,N=(int)OBS->length;
+int n;
+int N=(int)OBS->length;
+printf("obs length: %2d, ", N);
+if (N==0){
+    printf("(Obs not included)\n");
+    }
 OBS->valid_obs_length=0;
-for (n=0;n<N;n++){if (OBS->values[n]!=DEFAULT_DOUBLE_VAL){OBS->valid_obs_length=OBS->valid_obs_length+1;}}
+for (n=0;n<N;n++){
+    if (OBS->values[n]!=DEFAULT_DOUBLE_VAL){
+        OBS->valid_obs_length=OBS->valid_obs_length+1;
+        }
+    }
+if (N!=0){
+    printf("%2d Valid obs\n", OBS->valid_obs_length);
+    }
 OBS->valid_obs_indices=calloc(OBS->valid_obs_length,sizeof(int));
 int k=0;
-for (n=0;n<N;n++){if (OBS->values[n]!=DEFAULT_DOUBLE_VAL){OBS->valid_obs_indices[k]=n;k=k+1;}}
+for (n=0;n<N;n++){
+    if (OBS->values[n]!=DEFAULT_DOUBLE_VAL){
+        OBS->valid_obs_indices[k]=n;k=k+1;}
+    }
 
 //Populate uncertainty if no values are provided
-
-
 for (k=0;k<OBS->valid_obs_length;k++){
-
     if (OBS->unc[OBS->valid_obs_indices[k]]==DEFAULT_DOUBLE_VAL){
-if (OBS->opt_unc_type<2){
-OBS->unc[OBS->valid_obs_indices[k]]=OBS->single_unc;}
-else if (OBS->opt_unc_type==2){
-OBS->unc[OBS->valid_obs_indices[k]]=max(OBS->single_unc*OBS->values[OBS->valid_obs_indices[k]],OBS->single_unc*OBS->min_threshold);}}}
+        if (OBS->opt_unc_type<2){
+            OBS->unc[OBS->valid_obs_indices[k]]=OBS->single_unc;
+            }
+        else if (OBS->opt_unc_type==2){
+            OBS->unc[OBS->valid_obs_indices[k]]=max(OBS->single_unc*OBS->values[OBS->valid_obs_indices[k]],OBS->single_unc*OBS->min_threshold);
+            }
+        }
+    }
 //Scale uncertainty with structural error
-if (OBS->structural_unc==DEFAULT_DOUBLE_VAL){OBS->structural_unc=0;}
+if (OBS->structural_unc==DEFAULT_DOUBLE_VAL){
+    OBS->structural_unc=0;
+    }
 //Adding structural error
 for (k=0;k<OBS->valid_obs_length;k++){
-    OBS->unc[OBS->valid_obs_indices[k]]=sqrt(pow(OBS->unc[OBS->valid_obs_indices[k]],2) + pow(OBS->structural_unc,2));}
-
-
-
+    OBS->unc[OBS->valid_obs_indices[k]]=sqrt(pow(OBS->unc[OBS->valid_obs_indices[k]],2) + pow(OBS->structural_unc,2));
+    }
 //isempty flag
 OBS->validobs=false;
 if (OBS->valid_obs_length>0){OBS->validobs=true;}
 
-
 return 0;}
-
-
-
-
 
 //Function for reading these
 TIMESERIES_OBS_STRUCT  READ_NETCDF_TIMESERIES_OBS_FIELDS(int ncid, char * OBSNAME){
@@ -119,8 +129,6 @@ if (OBS.unc_length==0){
         OBS.unc = ncdf_read_double_var(ncid, OBSNAME , &(OBS.unc_length));
         int n;for (n=0;n<OBS.unc_length;n++){OBS.unc[n]=DEFAULT_DOUBLE_VAL;}}
         
-        
-        
 
 OBS.opt_unc_type=ncdf_read_int_attr(ncid, OBSNAME,"opt_unc_type");//absolute, log, percentage
 OBS.opt_normalization=ncdf_read_int_attr(ncid, OBSNAME,"opt_normalization");
@@ -132,13 +140,6 @@ OBS.single_decadal_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_decadal_unc")
 OBS.single_mean_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_mean_unc");
 OBS.single_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_unc");
 OBS.structural_unc=ncdf_read_double_attr(ncid, OBSNAME,"structural_unc");
-
-
-
-
-
-
-
 
 
 return OBS;

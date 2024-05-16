@@ -85,8 +85,8 @@ bool SUPPORT_CUEmrg_OBS; //Emergent CUE (Rauto/GPP)
 int Rauto_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS
 
 bool SUPPORT_NBEmrg_OBS; //Emergent land sink (GPP/(reco+fire))
-int Rhet_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS, Rauto_flux to be set in SUPPORT_CUEmrg_OBS.
-int fire_flux;
+int Rhet_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS, Rauto_flux to be set in SUPPORT_CUEmrg_OBS, FIR_flux to be set in SUPPORT_FIR_OBS.
+
 //add PEQ value and unc from previous MCMC *pMCMC*
 bool SUPPORT_r_ch4_OBS;
 int r_ch4_PARAM;
@@ -108,11 +108,11 @@ OBSOPE->SUPPORT_ET_OBS=false;
 OBSOPE->SUPPORT_EWT_OBS=false;
 OBSOPE->SUPPORT_FIR_OBS=false;
 OBSOPE->SUPPORT_GPP_OBS=false;
-OBSOPE->SUPPORT_SIF_OBS=false;
 OBSOPE->SUPPORT_LAI_OBS=false;
 OBSOPE->SUPPORT_NBE_OBS=false;
 OBSOPE->SUPPORT_ROFF_OBS=false;
 OBSOPE->SUPPORT_SCF_OBS=false;
+OBSOPE->SUPPORT_SIF_OBS=false;
 
 
 OBSOPE->SUPPORT_NBEmrg_OBS=false;
@@ -137,84 +137,311 @@ return 0;
 
 
 
-
 //ABGB observation operator
 int DALEC_OBSOPE_ABGB(DATA * D, OBSOPE * O){
 //int folc_pool,double lcma_pars_index
     
-//GPP timeseries length
+//ABGB timeseries length
 int N=D->ncdf_data.TIME_INDEX.length;
 
 //Time varying GPP and mean GPP
 TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.ABGB;
 SINGLE_OBS_STRUCT SOBS=D->ncdf_data.Mean_ABGB;
 
-//Calculating full time series in case needed for tim
+//Calculating full time series
 if (TOBS.valid_obs_length>0 || SOBS.value!=DEFAULT_DOUBLE_VAL){
     //declarations
-int p,nxp,n,nn;
-//Looping through timesteps
-for (n=0;n<N;n++){
-//indices
-nxp=D->nopools*(n+1);p=D->nopools*n;
-//inialize
-D->M_ABGB[n]=0;
-//loop through pools
-for (nn=0;nn<O->ABGB_n_pools;nn++){
-D->M_ABGB[n]+=(D->M_POOLS[p+O->ABGB_pools[nn]]+D->M_POOLS[nxp+O->ABGB_pools[nn]])*0.5;}  
-}}
+    int p,nxp,n,nn;
+    //Looping through timesteps
+    for (n=0;n<N;n++){
+        //indices
+        nxp=D->nopools*(n+1);p=D->nopools*n;
+        //inialize
+        D->M_ABGB[n]=0;
+        //loop through pools
+        for (nn=0;nn<O->ABGB_n_pools;nn++){
+            D->M_ABGB[n]+=(D->M_POOLS[p+O->ABGB_pools[nn]]+D->M_POOLS[nxp+O->ABGB_pools[nn]])*0.5;
+            }  
+        }
+    }
 
 //Mean ABGB
-if (SOBS.validobs){int n;D->M_Mean_ABGB=0;for (n=0;n<N;n++){D->M_Mean_ABGB+=D->M_ABGB[n];};D->M_Mean_ABGB=D->M_Mean_ABGB/(double)N;};
-
+if (SOBS.validobs){
+    int n;D->M_Mean_ABGB=0;
+    for (n=0;n<N;n++){D->M_Mean_ABGB+=D->M_ABGB[n];};D->M_Mean_ABGB=D->M_Mean_ABGB/(double)N;
+    };
 
 return 0;}
 
-
+//Methane observation operator
 int DALEC_OBSOPE_CH4(DATA * D, OBSOPE * O){
 
 int N=D->ncdf_data.TIME_INDEX.length;
 TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.CH4;
 
-
-if (TOBS.validobs){int n;for (n=0;n<N;n++){D->M_CH4[n]=D->M_FLUXES[D->nofluxes*n+O->CH4_flux];}};
+if (TOBS.validobs){
+    int n;for (n=0;n<N;n++){
+        D->M_CH4[n]=D->M_FLUXES[D->nofluxes*n+O->CH4_flux];
+        }
+    };
 
 return 0;}
 
+//Wood pool
+int DALEC_OBSOPE_CWOO(DATA * D, OBSOPE * O){
+
+int N=D->ncdf_data.TIME_INDEX.length;
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.CWOO;
+
+if (TOBS.valid_obs_length>0){
+    //declare constants
+    int p,nxp,n,nn;
+    //loop through days
+    for (n=0;n<N;n++){
+        //indices
+        nxp=D->nopools*(n+1);p=D->nopools*n;
+        //inialize
+        D->M_CWOO[n]=0;
+        //loop through pools
+        for (nn=0;nn<O->CWOO_n_pools;nn++){
+            D->M_CWOO[n]+=(D->M_CWOO[p+O->CWOO_pools[nn]]+D->M_CWOO[nxp+O->CWOO_pools[nn]])*0.5;
+            }
+        }
+    }
+return 0;}
+
+//Dead organic matter
+int DALEC_OBSOPE_DOM(DATA * D, OBSOPE * O){
+
+int N=D->ncdf_data.TIME_INDEX.length;
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.DOM;
+
+    if (TOBS.valid_obs_length>0){
+    //declare constanta
+    int p,nxp,n,nn;
+    //loop through days
+        for (n=0;n<N;n++){
+            //indices
+            nxp=D->nopools*(n+1);p=D->nopools*n;
+            //inialize
+            D->M_DOM[n]=0;
+            //loop through pools
+            for (nn=0;nn<O->DOM_n_pools;nn++){
+                D->M_DOM[n]+=(D->M_POOLS[p+O->DOM_pools[nn]]+D->M_POOLS[nxp+O->DOM_pools[nn]])*0.5;
+                }
+            }
+        }
+
+return 0;
+}
+
 //ET observation operator, assuming one flux
-
-
 int DALEC_OBSOPE_ET(DATA * D, OBSOPE * O){
 
 int N=D->ncdf_data.TIME_INDEX.length;
 TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.ET;
 
+if (TOBS.validobs){
+    int n;
+    for (n=0;n<N;n++){
+        D->M_ET[n]=D->M_FLUXES[D->nofluxes*n+O->ET_flux];
+        }
+    };
 
-if (TOBS.validobs){int n;for (n=0;n<N;n++){D->M_ET[n]=D->M_FLUXES[D->nofluxes*n+O->ET_flux];}};
+return 0;}
 
+
+//GRACE H2O timeseries (Terrestrial Water Storage)
+int DALEC_OBSOPE_EWT(DATA * D, OBSOPE * O){
+
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.EWT;
+
+if (TOBS.validobs){
+    int n,nn;
+
+    int N=D->ncdf_data.TIME_INDEX.length;
+    int * h2op=O->EWT_h2o_pools;
+
+    for (n=0;n<N;n++){
+        D->M_EWT[n]=0;
+        for (nn=0;nn<O->EWT_n_h2o_pools;nn++){
+            D->M_EWT[n]+=(D->M_POOLS[D->nopools*n+h2op[nn]] +D->M_POOLS[D->nopools*(n+1)+h2op[nn]])*0.5;
+            }
+        }
+    }
+
+return 0;}
+
+
+//Mean and time series fire co2 flux
+int DALEC_OBSOPE_FIR(DATA * D, OBSOPE * O){
+
+//FIR timeseries length
+int N=D->ncdf_data.TIME_INDEX.length;
+
+//Time-varying FIR obs
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.FIR;
+
+if (TOBS.validobs){
+    int n;
+    D->M_FIR[n]=0;
+    for (n=0;n<N;n++){
+        D->M_FIR[n]=D->M_FLUXES[D->nofluxes*n+O->FIR_flux];
+        }
+    };
+
+//Mean FIR
+SINGLE_OBS_STRUCT SOBS=D->ncdf_data.Mean_FIR;
+if (SOBS.validobs){
+    int n;
+    D->M_Mean_FIR=0;
+    for (n=0;n<N;n++){
+        D->M_Mean_FIR+=D->M_FLUXES[n*D->nofluxes+O->FIR_flux];
+        };
+    D->M_Mean_FIR=D->M_Mean_FIR/(double)N;
+    }
+return 0;
+}
+
+
+//GPP observation operator,
+int DALEC_OBSOPE_GPP(DATA * D, OBSOPE * O){
+
+//GPP timeseries length
+int N=D->ncdf_data.TIME_INDEX.length;
+
+//Time varying GPP 
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.GPP;
+if (TOBS.validobs){int n;
+    for (n=0;n<N;n++){
+        D->M_GPP[n]=D->M_FLUXES[D->nofluxes*n+O->GPP_flux];
+        }
+    };
+
+//Mean GPP 
+SINGLE_OBS_STRUCT SOBS=D->ncdf_data.Mean_GPP;
+if (SOBS.validobs){
+    int n;
+    D->M_Mean_GPP=0;
+    for (n=0;n<N;n++){
+        D->M_Mean_GPP+=D->M_FLUXES[n*D->nofluxes+O->GPP_flux];
+        };
+    D->M_Mean_GPP=D->M_Mean_GPP/(double)N;
+    }
+
+return 0;
+}
+
+//LAI observation operator
+int DALEC_OBSOPE_LAI(DATA * D, OBSOPE * O){
+
+//int folc_pool,double lcma_pars_index
+    
+//Run length
+int N=D->ncdf_data.TIME_INDEX.length;
+
+//Time varying GPP and mean GPP
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.LAI;
+SINGLE_OBS_STRUCT SOBS=D->ncdf_data.Mean_LAI;
+
+
+if ((TOBS.valid_obs_length>0 || SOBS.value!=DEFAULT_DOUBLE_VAL) ){
+    int n;
+    for (n=0;n<N;n++){
+        D->M_LAI[n]=(D->M_POOLS[D->nopools*n+O->LAI_pool]+D->M_POOLS[D->nopools*(n+1)+O->LAI_pool])*0.5;
+        }
+    }
+
+//Mean LAI
+if (SOBS.validobs){
+    int n;D->M_Mean_LAI=0;
+    for (n=0;n<N;n++){
+        D->M_Mean_LAI+=D->M_LAI[n];
+        }
+    D->M_Mean_LAI=D->M_Mean_LAI/(double)N;
+    }
+
+return 0;}
+
+//NBE observation operator
+int DALEC_OBSOPE_NBE(DATA * D, OBSOPE * O){
+ 
+
+int N=D->ncdf_data.TIME_INDEX.length;
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.NBE;
+
+
+if (TOBS.validobs){
+    int n,nn;
+    for (n=0;n<N;n++){
+        D->M_NBE[n]=0;
+        for (nn=0;nn<O->NBE_n_fluxes;nn++){
+            D->M_NBE[n]+=D->M_FLUXES[D->nofluxes*n+O->NBE_fluxes[nn]]*O->NBE_flux_signs[nn];
+        }
+    }
+};
 
 return 0;}
 
 // Runoff operator
-
 int DALEC_OBSOPE_ROFF(DATA * D, OBSOPE * O){
 
 int N=D->ncdf_data.TIME_INDEX.length;
 TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.ROFF;
 
-
 if (TOBS.validobs){
-int n,nn;
-for (n=0;n<N;n++){
-D->M_ROFF[n]=0;
-for (nn=0;nn<O->ROFF_n_fluxes;nn++){
-D->M_ROFF[n]+=D->M_FLUXES[D->nofluxes*n+O->ROFF_fluxes[nn]];}}};
-
+    int n,nn;
+    for (n=0;n<N;n++){
+        D->M_ROFF[n]=0;
+        for (nn=0;nn<O->ROFF_n_fluxes;nn++){
+            D->M_ROFF[n]+=D->M_FLUXES[D->nofluxes*n+O->ROFF_fluxes[nn]];
+            }
+        }
+    };
 
 return 0;}
 
-// Rauto fraction operator
 
+//SCF observation operator
+int DALEC_OBSOPE_SCF(DATA * D, OBSOPE * O){
+//int folc_pool,double lcma_pars_index
+
+//Run length
+int N=D->ncdf_data.TIME_INDEX.length;
+
+//Time varying GPP and mean GPP
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.SCF;
+
+if ((TOBS.valid_obs_length>0) ){int n;
+    for (n=0;n<N;n++){
+        D->M_SCF[n]=(D->M_POOLS[D->nopools*n+O->SCF_pool]+D->M_POOLS[D->nopools*(n+1)+O->SCF_pool])*0.5;
+        }
+    }
+
+return 0;}
+
+// SIF operator is made the same as GPP, be careful with its opt_filter and opt_normalization set up - shuang
+// Mean_SIF is not available since current model does not yet simulate SIF - shuang
+
+int DALEC_OBSOPE_SIF(DATA * D, OBSOPE * O){
+
+//SIF timeseries length, here DATA refer to input obs, OBSOPE refer to model output mapped to mathch data
+int N=D->ncdf_data.TIME_INDEX.length;
+
+//Time varying SIF 
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.SIF;
+if (TOBS.validobs){
+    int n;
+    for (n=0;n<N;n++){
+        D->M_SIF[n]=D->M_FLUXES[D->nofluxes*n+O->GPP_flux];
+        }
+    };
+
+return 0;}
+
+//Parameter and emergent quantity observation operators
+
+// Rauto fraction operator
 int DALEC_OBSOPE_CUEmrg(DATA * D, OBSOPE * O){
 
 int N=D->ncdf_data.TIME_INDEX.length;
@@ -228,12 +455,11 @@ if (SOBS.validobs){
     for (n=0;n<N;n++){
         MGPP+=D->M_FLUXES[n*D->nofluxes+O->GPP_flux];
         MRauto+=D->M_FLUXES[n*D->nofluxes+O->Rauto_flux];
-    };
+        };
     MGPP=MGPP/(double)N;
     MRauto=MRauto/(double)N;
-        D->M_PEQ_CUE=1-(MRauto/MGPP);
-}
-
+    D->M_PEQ_CUE=1-(MRauto/MGPP);
+    }
 
 return 0;}
 
@@ -252,307 +478,89 @@ if (SOBS.validobs){
     for (n=0;n<N;n++){
         MGPP+=D->M_FLUXES[n*D->nofluxes+O->GPP_flux];
         MReco+=(D->M_FLUXES[n*D->nofluxes+O->Rhet_flux]+D->M_FLUXES[n*D->nofluxes+O->Rauto_flux]);
-        Mfire+=D->M_FLUXES[n*D->nofluxes+O->fire_flux];
-    };
+        Mfire+=D->M_FLUXES[n*D->nofluxes+O->FIR_flux];
+        };
     MGPP=MGPP/(double)N;
     MReco=MReco/(double)N;
     Mfire=Mfire/(double)N;
         D->M_PEQ_NBEmrg=(MGPP/(MReco+Mfire));
-}
-
-
-return 0;}
-
-
-
-//GRACE H2O timeseries
-int DALEC_OBSOPE_EWT(DATA * D, OBSOPE * O){
-
-    
-TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.EWT;
-
-
-if (TOBS.validobs){int n,nn;
-
-int N=D->ncdf_data.TIME_INDEX.length;
-int * h2op=O->EWT_h2o_pools;
-
-
-
-for (n=0;n<N;n++){D->M_EWT[n]=0;
-for (nn=0;nn<O->EWT_n_h2o_pools;nn++){
-D->M_EWT[n]+=(D->M_POOLS[D->nopools*n+h2op[nn]] +D->M_POOLS[D->nopools*(n+1)+h2op[nn]])*0.5;}}}
-
+    }
 
 return 0;}
-
-
-
-
-//Mean fire co2 flux
-int DALEC_OBSOPE_FIR(DATA * D, OBSOPE * O){
-
-int N=D->ncdf_data.TIME_INDEX.length;
-
-SINGLE_OBS_STRUCT SOBS=D->ncdf_data.Mean_FIR;
-
-if (SOBS.validobs){int n;D->M_Mean_FIR=0;for (n=0;n<N;n++){D->M_Mean_FIR+=D->M_FLUXES[n*D->nofluxes+O->FIR_flux];};D->M_Mean_FIR=D->M_Mean_FIR/(double)N;}
-
-
-return 0;}
-
-
-
-
-
-int DALEC_OBSOPE_GPP(DATA * D, OBSOPE * O){
-
-//GPP timeseries length
-int N=D->ncdf_data.TIME_INDEX.length;
-
-//Time varying GPP 
-TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.GPP;
-if (TOBS.validobs){int n;for (n=0;n<N;n++){D->M_GPP[n]=D->M_FLUXES[D->nofluxes*n+O->GPP_flux];}};
-
-
-//Mean GPP 
-SINGLE_OBS_STRUCT SOBS=D->ncdf_data.Mean_GPP;
-if (SOBS.validobs){int n;D->M_Mean_GPP=0;for (n=0;n<N;n++){D->M_Mean_GPP+=D->M_FLUXES[n*D->nofluxes+O->GPP_flux];};D->M_Mean_GPP=D->M_Mean_GPP/(double)N;}
-
-return 0;}
-
-
-// SIF operator is made the same as GPP, be careful with its opt_filter and opt_normalization set up - shuang
-// Mean_SIF is not available since current model does not yet simulate SIF - shuang
-
-int DALEC_OBSOPE_SIF(DATA * D, OBSOPE * O){
-
-//SIF timeseries length, here DATA refer to input obs, OBSOPE refer to model output mapped to mathch data
-int N=D->ncdf_data.TIME_INDEX.length;
-
-//Time varying SIF 
-TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.SIF;
-if (TOBS.validobs){int n;for (n=0;n<N;n++){D->M_SIF[n]=D->M_FLUXES[D->nofluxes*n+O->GPP_flux];}};
-
-
-return 0;}
-
-
-
-//NBE observation operator
-// R
-int DALEC_OBSOPE_NBE(DATA * D, OBSOPE * O){
- 
-
-int N=D->ncdf_data.TIME_INDEX.length;
-TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.NBE;
-
-
-if (TOBS.validobs){
-int n,nn;
-for (n=0;n<N;n++){
-D->M_NBE[n]=0;
-for (nn=0;nn<O->NBE_n_fluxes;nn++){
-D->M_NBE[n]+=D->M_FLUXES[D->nofluxes*n+O->NBE_fluxes[nn]]*O->NBE_flux_signs[nn];}}};
-
-
-
-
-return 0;}
-
-
-
-
-//LAI observation operator
-int DALEC_OBSOPE_LAI(DATA * D, OBSOPE * O){
-
-//int folc_pool,double lcma_pars_index
-    
-//Run length
-int N=D->ncdf_data.TIME_INDEX.length;
-
-//Time varying GPP and mean GPP
-TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.LAI;
-SINGLE_OBS_STRUCT SOBS=D->ncdf_data.Mean_LAI;
-
-
-if ((TOBS.valid_obs_length>0 || SOBS.value!=DEFAULT_DOUBLE_VAL) ){int n;
-for (n=0;n<N;n++){
-    D->M_LAI[n]=(D->M_POOLS[D->nopools*n+O->LAI_pool]+D->M_POOLS[D->nopools*(n+1)+O->LAI_pool])*0.5;
-}}
-
-//Mean LAI
-if (SOBS.validobs){int n;D->M_Mean_LAI=0;for (n=0;n<N;n++){D->M_Mean_LAI+=D->M_LAI[n];}D->M_Mean_LAI=D->M_Mean_LAI/(double)N;}
-
-return 0;}
-
-
-
-
-//SCF observation operator
-int DALEC_OBSOPE_SCF(DATA * D, OBSOPE * O){
-//int folc_pool,double lcma_pars_index
-
-    
-//Run length
-int N=D->ncdf_data.TIME_INDEX.length;
-
-//Time varying GPP and mean GPP
-TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.SCF;
-
-
-if ((TOBS.valid_obs_length>0) ){int n;
-for (n=0;n<N;n++){
-
-    D->M_SCF[n]=(D->M_POOLS[D->nopools*n+O->SCF_pool]+D->M_POOLS[D->nopools*(n+1)+O->SCF_pool])*0.5;
-}}
-
-
-return 0;}
-
-
-
-
-
-
-int DALEC_OBSOPE_CWOO(DATA * D, OBSOPE * O){
-
-int N=D->ncdf_data.TIME_INDEX.length;
-TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.CWOO;
-
-
-
-if (TOBS.valid_obs_length>0){
-//declare constanta
-int p,nxp,n,nn;
-//loop through days
-for (n=0;n<N;n++){
-//declarations
-
-//indices
-nxp=D->nopools*(n+1);p=D->nopools*n;
-
-//inialize
-D->M_CWOO[n]=0;
-//loop through pools
-for (nn=0;nn<O->CWOO_n_pools;nn++){
-D->M_CWOO[n]+=(D->M_CWOO[p+O->CWOO_pools[nn]]+D->M_CWOO[nxp+O->CWOO_pools[nn]])*0.5;}
-}}
-
-
-return 0;
-}
-
-
-
-
-
-
-
-int DALEC_OBSOPE_DOM(DATA * D, OBSOPE * O){
-
-int N=D->ncdf_data.TIME_INDEX.length;
-TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.DOM;
-
-
-
-if (TOBS.valid_obs_length>0){
-//declare constanta
-int p,nxp,n,nn;
-//loop through days
-for (n=0;n<N;n++){
-//declarations
-
-//indices
-nxp=D->nopools*(n+1);p=D->nopools*n;
-
-//inialize
-D->M_DOM[n]=0;
-//loop through pools
-for (nn=0;nn<O->DOM_n_pools;nn++){
-D->M_DOM[n]+=(D->M_POOLS[p+O->DOM_pools[nn]]+D->M_POOLS[nxp+O->DOM_pools[nn]])*0.5;}
-}}
-
-
-return 0;
-}
-
-
-
-
-//Parameter and emergent quantity observation operators
 
 int DALEC_OBSOPE_Cefficiency(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_Cefficiency;
-if  (SOBS.validobs){D->M_PEQ_Cefficiency=D->M_PARS[O->Cefficiency_PARAM];}
-return 0;
-
-}
+if  (SOBS.validobs){
+    D->M_PEQ_Cefficiency=D->M_PARS[O->Cefficiency_PARAM];
+    }
+return 0;}
 
 int DALEC_OBSOPE_CUE(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_CUE;
 
-if  (SOBS.validobs){D->M_PEQ_CUE=1-D->M_PARS[O->CUE_PARAM];} // modeled CUE = 1-par(f_auto)
-return 0;
-
-}
-
+if  (SOBS.validobs){
+    D->M_PEQ_CUE=1-D->M_PARS[O->CUE_PARAM];
+    } // modeled CUE = 1-par(f_auto)
+return 0;}
 
 int DALEC_OBSOPE_C3frac(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_C3frac;
-if  (SOBS.validobs){D->M_PEQ_C3frac=D->M_PARS[O->C3frac_PARAM];}
-return 0;
-
-}
+if  (SOBS.validobs){
+    D->M_PEQ_C3frac=D->M_PARS[O->C3frac_PARAM];
+    }
+return 0;}
 
 int DALEC_OBSOPE_Vcmax25(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_Vcmax25;
-if  (SOBS.validobs){D->M_PEQ_Vcmax25=D->M_PARS[O->Vcmax25_PARAM];}
-return 0;
-
-}
+if  (SOBS.validobs){
+    D->M_PEQ_Vcmax25=D->M_PARS[O->Vcmax25_PARAM];
+    }
+return 0;}
 
 int DALEC_OBSOPE_iniSnow(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_iniSnow;
-if  (SOBS.validobs){D->M_PEQ_iniSnow=D->M_PARS[O->iniSnow_PARAM];}
-return 0;
+if  (SOBS.validobs){
+    D->M_PEQ_iniSnow=D->M_PARS[O->iniSnow_PARAM];
+    }
+return 0;}
 
-}
 int DALEC_OBSOPE_iniSOM(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_iniSOM;
-if  (SOBS.validobs){D->M_PEQ_iniSOM=D->M_PARS[O->iniSOM_PARAM];}
-return 0;
-
-}
+if  (SOBS.validobs){
+    D->M_PEQ_iniSOM=D->M_PARS[O->iniSOM_PARAM];
+    }
+return 0;}
 
 int DALEC_OBSOPE_LCMA(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_LCMA;
-if  (SOBS.validobs){D->M_PEQ_LCMA=D->M_PARS[O->LCMA_PARAM];}
-return 0;
-
-}
+if  (SOBS.validobs){
+    D->M_PEQ_LCMA=D->M_PARS[O->LCMA_PARAM];
+    }
+return 0;}
 
 //add PEQ value and unc from previous MCMC *pMCMC*
 int DALEC_OBSOPE_r_ch4(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_r_ch4;
-if  (SOBS.validobs){D->M_PEQ_r_ch4=D->M_PARS[O->r_ch4_PARAM];}
+if  (SOBS.validobs){
+    D->M_PEQ_r_ch4=D->M_PARS[O->r_ch4_PARAM];
+    }
 //D->M_PEQ_r_ch4=D->M_PARS[O->r_ch4_PARAM];
-return 0;
-}
+return 0;}
 
 int DALEC_OBSOPE_S_fv(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_S_fv;
-if  (SOBS.validobs){D->M_PEQ_S_fv=D->M_PARS[O->S_fv_PARAM];}
+if  (SOBS.validobs){
+    D->M_PEQ_S_fv=D->M_PARS[O->S_fv_PARAM];
+    }
 //D->M_PEQ_S_fv=D->M_PARS[O->S_fv_PARAM];
-return 0;
-}
+return 0;}
 
 int DALEC_OBSOPE_rhch4_rhco2(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_rhch4_rhco2;
-
-if  (SOBS.validobs){D->M_PEQ_rhch4_rhco2=1-D->M_PARS[O->rhch4_rhco2_flux];}
-return 0;
-}
+if  (SOBS.validobs){
+    D->M_PEQ_rhch4_rhco2=1-D->M_PARS[O->rhch4_rhco2_flux];
+    }
+return 0;}
 
 ///Full observation operator
 int DALEC_OBSOPE(DATA * D, OBSOPE * O){
@@ -568,14 +576,13 @@ if (O->SUPPORT_LAI_OBS ){DALEC_OBSOPE_LAI(D, O);}
 if (O->SUPPORT_NBE_OBS){DALEC_OBSOPE_NBE(D, O);}
 if (O->SUPPORT_ROFF_OBS){DALEC_OBSOPE_ROFF(D, O);}
 if (O->SUPPORT_SCF_OBS ){DALEC_OBSOPE_SCF(D, O);}
+if (O->SUPPORT_SIF_OBS ){DALEC_OBSOPE_SIF(D, O);}
 
 // Emergent quantities
 if (O->SUPPORT_CUEmrg_OBS){DALEC_OBSOPE_CUEmrg(D, O);}
 if (O->SUPPORT_NBEmrg_OBS){DALEC_OBSOPE_NBEmrg(D, O);}
 
-
 //Parameters
-
 if (O->SUPPORT_Cefficiency_OBS){DALEC_OBSOPE_Cefficiency(D, O);}
 if (O->SUPPORT_CUE_OBS){DALEC_OBSOPE_CUE(D, O);}
 if (O->SUPPORT_C3frac_OBS){DALEC_OBSOPE_C3frac(D, O);}
@@ -588,8 +595,6 @@ if (O->SUPPORT_S_fv_OBS){DALEC_OBSOPE_S_fv(D, O);}
 if (O->SUPPORT_rhch4_rhco2_OBS){DALEC_OBSOPE_rhch4_rhco2(D, O);}
 
 return 0;}  
-
-
 
 
 //

@@ -121,7 +121,7 @@ double Pend;
 /*temporary print switch*/
 int psw=0;
 /*exponential decay tolerance*/
-double etol=0.1;
+double etol=.1;
 
 /*Inlcuding H2O pool*/
 /*EDCs 7-13 - inputs, outputs and exponential tolerance*/
@@ -138,12 +138,17 @@ Pend=POOLS[nopools*N_timesteps+p];
 Rm=Fin/Fout;
 /*Theoretical starting input/output*/
 Rs=Rm*MPOOLSjan/Pstart;
+ /*EB test version*/
+// Rs=MPOOLSjan/Pstart;
 
 /*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[7-1+n]==1))
 & ((fabs(log(Rs))>log(EQF)) || (fabs(Rs-Rm)>etol)))
 {EDC=ipow(0,EDCD->SWITCH[7-1+n]);EDCD->PASSFAIL[7-1+n]=0;}*/
 
  PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
+ /*EB test version*/
+//  PEDC+=-0.5*pow(log(Rm)/log(EQF),2) - 0.5 *pow(log(Rs)/log(1+etol),2);
+
 //         printf("******Pool p = %i *********\n",p);
 // 
 //         printf("p = %i\n",s);

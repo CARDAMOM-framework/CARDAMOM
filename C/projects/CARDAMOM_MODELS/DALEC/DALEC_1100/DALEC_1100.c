@@ -150,11 +150,14 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.dist_woo]=S.C_woo;
 
         // C_lit
+        FIOMATRIX.SINK[F.labyield2lit]=S.C_lit;
         FIOMATRIX.SINK[F.lab2lit]=S.C_lit;
         FIOMATRIX.SINK[F.fx_lab2lit]=S.C_lit;
         FIOMATRIX.SINK[F.ph_fol2lit]=S.C_lit;
+        FIOMATRIX.SINK[F.folyield2lit]=S.C_lit;
         FIOMATRIX.SINK[F.fol2lit]=S.C_lit;
         FIOMATRIX.SINK[F.fx_fol2lit]=S.C_lit;
+        FIOMATRIX.SINK[F.rooyield2lit]=S.C_lit;
         FIOMATRIX.SINK[F.roo2lit]=S.C_lit;
         FIOMATRIX.SINK[F.fx_roo2lit]=S.C_lit;
         FIOMATRIX.SOURCE[F.ae_rh_lit]=S.C_lit;
@@ -164,6 +167,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.fx_lit2som]=S.C_lit;
 
         // C_cwd
+        FIOMATRIX.SINK[F.wooyield2cwd]=S.C_cwd;
         FIOMATRIX.SINK[F.woo2cwd]=S.C_cwd;
         FIOMATRIX.SINK[F.fx_woo2cwd]=S.C_cwd;
         FIOMATRIX.SOURCE[F.ae_rh_cwd]=S.C_cwd;
@@ -530,6 +534,7 @@ LIU_AN_ET_STRUCT LIU;
     //define time-invariant parameters
 LIU.IN.SRAD=SSRD[n]*1e6/DGCM_SEC_DAY;
 LIU.IN.VPD=VPD[n]/10;
+LIU.IN.precip=PREC[n];
 LIU.IN.TEMP=air_temp_k;  
 LIU.IN.vcmax25=pars[P.Vcmax25];
 LIU.IN.co2=CO2[n];
@@ -544,11 +549,10 @@ LIU.IN.C3_frac=1.; // pars[P.C3_frac]
 LIU.IN.clumping=pars[P.clumping];
 LIU.IN.leaf_refl_par=pars[P.leaf_refl_par];
 LIU.IN.leaf_refl_nir=pars[P.leaf_refl_nir];
-LIU.IN.maxPevap=pars[P.maxPevap];
-LIU.IN.precip=PREC[n];
 LIU.IN.q10canopy=pars[P.q10canopy];
 LIU.IN.q10canopyRd=pars[P.rauto_mrd_q10];
 LIU.IN.canopyRdsf=pars[P.canopyRdsf];
+LIU.IN.maxPevap=pars[P.maxPevap];
 LIU.IN.NSC=POOLS[p+S.C_lab];
 LIU.IN.deltat=deltat;
 
@@ -858,8 +862,8 @@ ALLOC_AND_AUTO_RESP_FLUXES(&ARFLUXES);
 FLUXES[f+F.nonleaf_mortality_factor]=NONLEAF_MORTALITY_FACTOR;
 
 
-    /*respiration auto*/
-FLUXES[f+F.resp_auto]=ARFLUXES.OUT.AUTO_RESP_TOTAL;
+    /*respiration auto: note, at some point fix the names*/
+FLUXES[f+F.resp_auto]=ARFLUXES.OUT.AUTO_RESP_TOTAL+LIU.OUT.Rd;
     /*growth respiration*/
 FLUXES[f+F.resp_auto_growth]=ARFLUXES.OUT.AUTO_RESP_GROWTH;
     /*maintenance respiration*/
@@ -973,6 +977,13 @@ FLUXES[f+F.dist_fol] = POOLS[nxp+S.C_fol]*(2*CROPYIELD_factor+DMF)*one_over_delt
 FLUXES[f+F.dist_roo] = POOLS[nxp+S.C_roo]*(2*CROPYIELD_factor+DMF)*one_over_deltat;
 FLUXES[f+F.dist_woo] = POOLS[nxp+S.C_woo]*(2*CROPYIELD_factor+DMF)*one_over_deltat;
 
+//This portion is transfered to dead pools
+FLUXES[f+F.labyield2lit] = POOLS[nxp+S.C_lab]*CROPYIELD_factor*one_over_deltat;
+FLUXES[f+F.folyield2lit] = POOLS[nxp+S.C_fol]*CROPYIELD_factor*one_over_deltat;
+FLUXES[f+F.rooyield2lit] = POOLS[nxp+S.C_roo]*CROPYIELD_factor*one_over_deltat;
+FLUXES[f+F.wooyield2cwd] = POOLS[nxp+S.C_woo]*CROPYIELD_factor*one_over_deltat;
+
+
     /*LIVE CARBON POOL REMOVALS PART 1 of 4: 
         Removing ABGB disturbance from live pools here;
         these are lateral fluxes, and are discarded, not transferred!*/
@@ -1051,8 +1062,20 @@ POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.woo2cwd]*deltat;
 	
     /*DEAD C POOLS TRANSFERS PART 2 of 2: 
         Adding fire decomposition removals here together with additions from live pools*/
-POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]+(FLUXES[f+F.woo2cwd]+FLUXES[f+F.fx_woo2cwd]-FLUXES[f+F.fx_cwd2som])*deltat;
-POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.lab2lit]+FLUXES[f+F.fx_lab2lit]+FLUXES[f+F.fol2lit]+FLUXES[f+F.fx_fol2lit]+FLUXES[f+F.roo2lit]+FLUXES[f+F.fx_roo2lit]-FLUXES[f+F.fx_lit2som])*deltat;
+POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]+(FLUXES[f+F.wooyield2cwd]+
+                                         FLUXES[f+F.woo2cwd]+
+                                         FLUXES[f+F.fx_woo2cwd]-
+                                         FLUXES[f+F.fx_cwd2som])*deltat;
+POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.labyield2lit]+
+                                         FLUXES[f+F.lab2lit]+
+                                         FLUXES[f+F.fx_lab2lit]+
+                                         FLUXES[f+F.folyield2lit]+
+                                         FLUXES[f+F.fol2lit]+
+                                         FLUXES[f+F.fx_fol2lit]+
+                                         FLUXES[f+F.rooyield2lit]+
+                                         FLUXES[f+F.roo2lit]+
+                                         FLUXES[f+F.fx_roo2lit]-
+                                         FLUXES[f+F.fx_lit2som])*deltat;
 POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]+(FLUXES[f+F.fx_cwd2som]+FLUXES[f+F.fx_lit2som])*deltat;
         
 	/*fires - total flux in gC m-2 day-1*/
@@ -1133,7 +1156,7 @@ DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=89;
-DALECmodel->nofluxes=96;
+DALECmodel->nofluxes=100;
 DALECmodel->noedcs=15;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
@@ -1450,7 +1473,6 @@ OBSOPE.GPP_flux=F.gpp;
 OBSOPE.Rauto_flux=F.resp_auto;
 // For constraint on emergent heterotrophic & fire fraction
 OBSOPE.Rhet_flux=F.rh_co2;
-OBSOPE.fire_flux=F.f_total;
 //LAI-specific variables
 OBSOPE.LAI_pool=S.D_LAI;
 //ET variables
