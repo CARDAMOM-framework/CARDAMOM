@@ -98,7 +98,7 @@ fclose(fileout0);
 int ncid = 0;
 int ncRetVal = nc_open(MCOPT->startfile,NC_NOWRITE, &ncid );
 if (ncRetVal != NC_NOERR) {
-    printf("%s at %d NOTE: got error %s when opening the startfile, ignoring it.\n", __FILE__, __LINE__, nc_strerror(ncRetVal));
+    printf("%s at %d NOTE: got error (%s) when opening the startfile, ignoring it.\n", __FILE__, __LINE__, nc_strerror(ncRetVal));
 }else{
     int paramDimID,sampleDimID; //Dim ID number, must be populated each invocation
     int parsVarID; // Variable ID numbers, also must be repopulated each invocation
