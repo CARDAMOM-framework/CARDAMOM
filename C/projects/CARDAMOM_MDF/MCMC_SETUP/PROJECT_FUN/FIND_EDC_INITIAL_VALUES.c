@@ -88,11 +88,7 @@ if (PI->parini[n]!=-9999 & CARDADATA.edc_random_search<1) {PI->parfix[n]=1;}*/}
 
 
 /*done*/
-/*PEDC is the log likelihoods*/
-/*for (m=0;m<M;m++){
-*/
-int m; //TODO: what is this??
-for (m=0;m<1;m++){
+
 double PEDC=log(0);
 int count=0;
 while (PEDC!=0){
@@ -151,7 +147,7 @@ for (n=0;n<PI->npars*MCOPT.nchains;n++){
 	PI->parini[n]=MCOUT.best_pars[n];
 }
 
-}
+
 
 /*Sampling new/more parameters*/
 
