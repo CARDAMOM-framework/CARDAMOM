@@ -192,12 +192,12 @@ wrlocal=wrlocal+1;
 
 	/*regularly write results*/
 	if (MCO.nWRITE>0 && (N.ITER % MCO.nWRITE)==0){
-		WRITE_DEMCMC_RESULTS(PARS,PI,MCO);
+		WRITE_DEMCMC_RESULTS(PARS,PI,MCO, N.ITER);
 		}
 
 	/*******regularly write restart file***********/
 	if (MCO.nWRITE>0 && (N.ITER % 1000)==0){
-		WRITE_DEMCMC_RESTART(PARS,PI,MCO);
+		WRITE_DEMCMC_RESTART(PARS,PI,MCO,N.ITER);
 		}
 
 

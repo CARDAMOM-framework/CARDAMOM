@@ -31,7 +31,7 @@ void str_inplace_replace(char * str, const char * toFind, const char toReplace){
 
 
 
-int WRITE_DEMCMC_RESULTS(double *PARS,PARAMETER_INFO PI,MCMC_OPTIONS MCO){
+int WRITE_DEMCMC_RESULTS(double *PARS,PARAMETER_INFO PI,MCMC_OPTIONS MCO, int ITER){
 
   int ncid = 0; //This is the netcdf id num
   int ncretval = 0; //This is a reused variable for the return value of ncdf methods.
@@ -76,23 +76,30 @@ int WRITE_DEMCMC_RESULTS(double *PARS,PARAMETER_INFO PI,MCMC_OPTIONS MCO){
 	//Except it writes one instance of "PARS" and overwrites previous file
 	//Include also attribute with N.ITER
 	//If possible, include attribute with random seed (this is optional).
-int WRITE_DEMCMC_RESTART(double *PARS,PARAMETER_INFO PI,MCMC_OPTIONS MCO){
+int WRITE_DEMCMC_RESTART(double *PARS,PARAMETER_INFO PI,MCMC_OPTIONS MCO, int ITER){
 
   int ncid = 0; //This is the netcdf id num
   int ncretval = 0; //This is a reused variable for the return value of ncdf methods.
-  int paramDimID; //Dim ID number, must be populated each invocation
+  int paramDimID,sampleDimID; //Dim ID number, must be populated each invocation
 
   int parsVarID; // Variable ID numbers, also must be repopulated each invocation
 
   FAILONERROR(nc_create(MCO.startfile,NC_CLOBBER, &ncid ));
   FAILONERROR(nc_def_dim(ncid,"Parameter",PI.npars,&paramDimID));
-  FAILONERROR(nc_def_var(ncid,"Parameters",NC_DOUBLE,1,(const int[]){paramDimID},&parsVarID));
+  FAILONERROR(nc_def_dim(ncid,"Sample",NC_UNLIMITED,&sampleDimID));
+  FAILONERROR(nc_def_var(ncid,"Parameters",NC_DOUBLE,1,(const int[]){sampleDimID,paramDimID},&parsVarID));
+  //Note: it's a bit odd this is an int, and not a uint or long. Likely does not matter though.
+  FAILONERROR(nc_put_att_int(ncid,parsVarID,"N",NC_INT,sizeof(int),&ITER));
+
+
+//TODO: store N and rng seed ------------------------------------------------------
+
 
   //End NetCDF definition phase, in order to allow for writting
   nc_enddef(ncid);
 
   //Do the write.
-  FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){0}, (const size_t[]){PI.npars},PARS ));
+  FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){0,0}, (const size_t[]){MCO.nchains,PI.npars},PARS ));
 
   FAILONERROR(nc_close(ncid));
 

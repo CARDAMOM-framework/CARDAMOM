@@ -87,30 +87,6 @@ if (PI->parini[n]!=-9999 & CARDADATA.edc_random_search<1) {PI->parfix[n]=1;}*/}
 
 
 
-/*Reading file (if available)*/
-/*if number of parameters x number of chains available are contained in file, then OK*/
-/*Otherwise search for new parameters*/
-
-FILE *fileout0=fopen(MCOPT_CARDAMOM->startfile,"r");
-int filelength;
-if (fileout0!=NULL){
-fseek(fileout0, 0, SEEK_END);filelength = ftell(fileout0)/sizeof(double);fclose(fileout0);}
-else{filelength=0;}
-/*Two choices:
-(1) read parameters from file if these are sufficient
-(2) sample/store parameter vectors from file otherwise*/
-
-
-/*Sampling M=N-N0 chains, where N0 is the number of existing chains in the file*/
-int m,M=MCOPT_CARDAMOM->nchains - filelength/PI->npars;
-printf("Number of starting parameter vectors saved in file: %i\n",filelength/PI->npars);
-printf("Number of required starting parameters vectors: %i\n", MCOPT_CARDAMOM->nchains);
-printf("Number of starting parameter vectors to be sampled here: %i\n", int_max(M,0));
-
-
-
-/*if (PI->npars*MCOPT_CARDAMOM->nchains>filelength){*/
-if (PI->npars>filelength){
 /*done*/
 /*PEDC is the log likelihoods*/
 /*for (m=0;m<M;m++){
@@ -168,21 +144,14 @@ printf("EDC no %i; attempts = %i; passes = %i (%2.2f%%);\n",nnn,CARDADATA.EDC_IN
 
 }
 
-/*Writing parameters to file*/
-FILE *fileout=fopen(MCOPT_CARDAMOM->startfile,"ab");
-for (n=0;n<PI->npars*MCOPT.nchains;n++){fwrite(&MCOUT.best_pars[n],1,sizeof(double),fileout);}
-fclose(fileout);
-oksofar("Starting solution found & written to file");
-printf("filename = %s\n",MCOPT_CARDAMOM->startfile);
-}}
+//Probs would make more sense as a memcpy but I am keeping it like this for now
+for (n=0;n<PI->npars*MCOPT.nchains;n++){
 
+	PI->parini[n]=MCOUT.best_pars[n];
+}
 
+}
 
-printf("Initial parameters already sampled & saved");
-/*Read file values into PARS chains (only as many as needed)*/
-fileout0=fopen(MCOPT_CARDAMOM->startfile,"r");
-fread(PI->parini,sizeof(double),PI->npars*MCOPT_CARDAMOM->nchains,fileout0);
-fclose(fileout0);
 /*Sampling new/more parameters*/
 
 	/*
@@ -193,7 +162,8 @@ fclose(fileout0);
 	/*for (n=0;n<PI->npars;n++){PI->stepsize[n]=0.01;}*/
 	
 	/*SOON-TO-BE-OBSOLETE: resetting fixed pars to zero for main r*/
-	for (n=0;n<PI->npars;n++){PI->parfix[n]=0;}
+	//for (n=0;n<PI->npars;n++){PI->parfix[n]=0;}
+	//THIS WAS MOVED TO MCMC_MODULES!
 
 /*clearing MCOUT fields*/
 free(MCOUT.best_pars);

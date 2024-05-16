@@ -8,6 +8,22 @@
 #include "PROJECT_FUN/FIND_EDC_INITIAL_VALUES.c"
 #include "../../../math_fun/declare_matrix.c"
 #include "../../CARDAMOM_GENERAL/NETCDF_AUXILLIARY_FUNCTIONS.c"
+
+
+////TODO: break this into it's own shared file! See cardamom_run_model.c
+/* Handle netCDF library errors by printing an error message and exiting with a
+ * non-zero status.*/
+#define ERREXITCODE 2
+#define NCDFERR(e) {printf("Error in %s at %d: %s\n", __FILE__, __LINE__, nc_strerror(e));}
+#define FILE_NAME_MAX_LEN 1000
+
+//This is a tiny macro used to do error handeling for netCDF methods with the standard format of returning a result code.
+//It helps make the code look less insane by allowing one-line calls
+//This as a macro because we want the __FILE__ and __LINE__ macros to work
+#define FAILONERROR(ncretval) if (ncretval != NC_NOERR) {NCDFERR(ncretval); exit(ERREXITCODE);}
+//This variant will not die, but will still thow a message at the user about the problem.
+#define WARNONERROR(ncretval) if (ncretval != NC_NOERR) {NCDFERR(ncretval);}
+
 /*DALEC_SYNTHETIC SETUP*/
 
 
@@ -32,13 +48,76 @@ char filename[1000];strcpy(filename,CLA[1]);
 
 printf("MCMC_MODULES.c READ_PARI_DATA(): file read and copied\n");
 
+
+
 /*defining initial values*
- * Need to perform MCMC run to determine this*/
+ * Need to perform MCMC run to determine this, or we need a startfile. Either:
+ * -netcdf start file is present and has right amount of data, use data inside that file
+ * -NO FILE is present at all, just build a new solution and store it
+ */
+
+
+
+
+
+
+
+/*Reading file (if available)*/
+/*if number of parameters x number of chains available are contained in file, then OK*/
+/*Otherwise search for new parameters*/
+/*
+FILE *fileout0=fopen(MCOPT_CARDAMOM->startfile,"r");
+int filelength;
+if (fileout0!=NULL){
+fseek(fileout0, 0, SEEK_END);filelength = ftell(fileout0)/sizeof(double);fclose(fileout0);}
+else{filelength=0;}
+*/
+/*Two choices:
+(1) read parameters from file if these are sufficient
+(2) sample/store parameter vectors from file otherwise*/
+
+
+/*Sampling M=N-N0 chains, where N0 is the number of existing chains in the file*/
+/*
+int m,M=MCOPT_CARDAMOM->nchains - filelength/PI->npars;
+printf("Number of starting parameter vectors saved in file: %i\n",filelength/PI->npars);
+printf("Number of required starting parameters vectors: %i\n", MCOPT_CARDAMOM->nchains);
+printf("Number of starting parameter vectors to be sampled here: %i\n", int_max(M,0));
+
+if (PI->npars>filelength){
+    printf("Initial parameters already sampled & saved");
+/*Read file values into PARS chains (only as many as needed)*/
+/*
+fileout0=fopen(MCOPT_CARDAMOM->startfile,"r");
+fread(PI->parini,sizeof(double),PI->npars*MCOPT_CARDAMOM->nchains,fileout0);
+fclose(fileout0);
+*/
+
+
+int ncid = 0;
+int ncRetVal = nc_open(MCOPT->startfile,NC_NOWRITE, &ncid ));
+if (ncRetVal != NC_NOERR) {
+    printf("%s at %d NOTE: got error %s when opening the startfile, ignoring it.\n", __FILE__, __LINE__, nc_strerror(ncRetVal));
+}else{
+    int paramDimID,sampleDimID; //Dim ID number, must be populated each invocation
+    int parsVarID; // Variable ID numbers, also must be repopulated each invocation
+
+    FAILONERROR(nc_inq_dimid(ncid,"Parameter",&paramDimID));
+    FAILONERROR(nc_inq_dimid(ncid,"Sample", &sampleDimID));
+    FAILONERROR(nc_inq_varid(ncid,"Parameters",&parsVarID));
+
+    FAILONERROR(nc_get_vara_double(ncid,parsVarID,(const size_t[]){0,0}, (const size_t[]){MCOPT->nchains,PI->npars},PI->parini ));
+    FAILONERROR(nc_close(ncid));
+}
+
 FIND_EDC_INITIAL_VALUES(*DATA,PI,MCOPT);
 
 
-/*resetting PI-stepsize (as this has been changed)*/
+/*Originally in FIND_EDC_INITAL_VALUES, had comment that follows. Anthony confirmed this is needed for legacy support.
+SOON-TO-BE-OBSOLETE: resetting fixed pars to zero for main r*/
 int n;
+for (n=0;n<PI->npars;n++){PI->parfix[n]=0;}
+/*resetting PI-stepsize (as this has been changed)*/
 for (n=0;n<PI->npars;n++){PI->stepsize[n]=0.0001;}
 
 printf("CARDAMOM_MDF/MCMC_SETUP/MCMC_MODULES.c: Done with initial parameters");
