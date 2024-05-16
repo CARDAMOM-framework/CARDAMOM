@@ -170,7 +170,7 @@ wrlocal=wrlocal+1;
 
 	/*regularly write results*/
 	if (MCO.nWRITE>0 && (N.ITER % MCO.nWRITE)==0){
-WRITE_DEMCMC_RESULTS(PARS,PI,MCO);}
+WRITE_DEMCMC_RESULTS(PARS,PI,MCO,N.ITER);}
 
 	/*Printing Info to Screen*/
 	if (MCO.nPRINT>0 && N.ITER % MCO.nPRINT==0){

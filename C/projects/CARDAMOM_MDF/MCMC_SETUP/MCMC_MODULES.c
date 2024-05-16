@@ -86,6 +86,7 @@ printf("Number of starting parameter vectors to be sampled here: %i\n", int_max(
 
 if (PI->npars>filelength){
     printf("Initial parameters already sampled & saved");
+ */
 /*Read file values into PARS chains (only as many as needed)*/
 /*
 fileout0=fopen(MCOPT_CARDAMOM->startfile,"r");
@@ -95,7 +96,7 @@ fclose(fileout0);
 
 
 int ncid = 0;
-int ncRetVal = nc_open(MCOPT->startfile,NC_NOWRITE, &ncid ));
+int ncRetVal = nc_open(MCOPT->startfile,NC_NOWRITE, &ncid );
 if (ncRetVal != NC_NOERR) {
     printf("%s at %d NOTE: got error %s when opening the startfile, ignoring it.\n", __FILE__, __LINE__, nc_strerror(ncRetVal));
 }else{
