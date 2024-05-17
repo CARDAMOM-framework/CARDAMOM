@@ -97,8 +97,10 @@ fclose(fileout0);
 
 int ncid = 0;
 int ncRetVal = nc_open(MCOPT->startfile,NC_NOWRITE, &ncid );
+int failedStartfile = 0; //bool, set if the startfile could not be found.
 if (ncRetVal != NC_NOERR) {
     printf("%s at %d NOTE: got error (%s) when opening the startfile, ignoring it.\n", __FILE__, __LINE__, nc_strerror(ncRetVal));
+    failedStartfile=1;
 }else{
     int paramDimID,sampleDimID; //Dim ID number, must be populated each invocation
     int parsVarID; // Variable ID numbers, also must be repopulated each invocation
@@ -107,11 +109,23 @@ if (ncRetVal != NC_NOERR) {
     FAILONERROR(nc_inq_dimid(ncid,"Sample", &sampleDimID));
     FAILONERROR(nc_inq_varid(ncid,"Parameters",&parsVarID));
 
-    FAILONERROR(nc_get_vara_double(ncid,parsVarID,(const size_t[]){0,0}, (const size_t[]){MCOPT->nchains,PI->npars},PI->parini ));
+    //Check dimension sizes to make sure they match our expectations!
+    size_t currentSamples, currentParameters;
+    FAILONERROR(nc_inq_dimlen(ncid,sampleDimID, &currentSamples));
+    FAILONERROR(nc_inq_dimlen(ncid,paramDimID, &currentParameters));
+    if (currentSamples != MCOPT->nchains || currentParameters != PI->npars) {
+        printf("%s at %d NOTE: We selected (%s) as our startfile but the data does not match our model! CHECK YOUR STARTFILE!\nThe model expects %d samples over %d params, and the startfile has %zu samples over %zu params.\n", __FILE__, __LINE__, MCOPT->startfile,MCOPT->nchains,PI->npars,currentSamples,currentParameters);
+        failedStartfile=1;
+    }else{
+    FAILONERROR(nc_get_vara_double(ncid,parsVarID,(const size_t[]){0,0}, (const size_t[]){currentSamples,currentParameters},PI->parini ));
     FAILONERROR(nc_close(ncid));
+    printf("%s at %d NOTE: We selected (%s) as our startfile, with %d samples over %d params.\n", __FILE__, __LINE__, MCOPT->startfile,MCOPT->nchains,PI->npars);
+    }
 }
 
-FIND_EDC_INITIAL_VALUES(*DATA,PI,MCOPT);
+if (failedStartfile){
+    FIND_EDC_INITIAL_VALUES(*DATA,PI,MCOPT);
+}
 
 
 /*Originally in FIND_EDC_INITAL_VALUES, had comment that follows. Anthony confirmed this is needed for legacy support.
