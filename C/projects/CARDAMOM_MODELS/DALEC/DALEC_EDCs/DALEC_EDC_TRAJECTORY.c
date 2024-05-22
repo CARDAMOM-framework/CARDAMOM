@@ -49,57 +49,50 @@ double DALEC_EDC_TRAJECTORY(DATA * DATA, void * EDCstruct){
 int nopools=DALECmodel->nopools;
 int nofluxes=DALECmodel->nofluxes;
 
-  //int nopools=DATA->nopools;
-
-
      //Looping through all pools
-    
-     //Pool inde
 
 /*deriving mean pools here!*/
-      int s,n,m,i,p;
-       PEDC=0;
-
-    for (s=0;s<E.no_pools_to_check;s++){
-
-  double EQF=E.pool_eqf[s];
-
-p = E.pool_indices[s];
-
-double MPOOLSjan=0;
-double MPOOLS=mean_pool(DATA->M_POOLS,p,N_timesteps+1,nopools);
-
+int s,n,m,i,p;
+PEDC=0;
 
 double * FLUXES = DATA->M_FLUXES;
 double * POOLS = DATA->M_POOLS;
+
+double *FT;
+FT=calloc(nofluxes,sizeof(double));
+
+int f=0;
+for (f=0;f<nofluxes;f++){
+  FT[f]=0;
+  for (n=0;n<N_timesteps;n++){
+    FT[f]+=FLUXES[n*nofluxes+f];
+    }
+  }
+
+
+for (s=0;s<E.no_pools_to_check;s++){
+  
+  double EQF=E.pool_eqf[s];
+  p = E.pool_indices[s];
+
+  double MPOOLSjan=0;
+  double MPOOLS=mean_pool(DATA->M_POOLS,p,N_timesteps+1,nopools);
 
 
 /*deriving mean January pools*/
 /*Assuming COMPLETE years*/
 
 /*pool interval*/
-
-
 int dint=(int)floor(N_timesteps/(TIME_INDEX[N_timesteps-1]-TIME_INDEX[0])*365.25);
 /*declaring mean pool array*/
 
 /*deriving mean jan pools*/
 /*based on all jan pools except initial conditions*/
-
     
 
 for (m=0;m<(N_timesteps/dint+1);m++){
-MPOOLSjan=MPOOLSjan+POOLS[nopools*(m*dint)+p]/(N_timesteps/dint+1);}
-
-
-
-
-
-
-double *FT;
-FT=calloc(nofluxes,sizeof(double));
-int f=0;
-for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nofluxes+f];}}
+  MPOOLSjan=MPOOLSjan+POOLS[nopools*(m*dint)+p]/(N_timesteps/dint+1);
+}
 
 
 
@@ -109,8 +102,7 @@ for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nof
 double Fin=0, Fout=0;
     for (i=0;i<DALECmodel->SIOMATRIX[p].N_STATE_INPUT_FLUXES;i++){Fin += FT[DALECmodel->SIOMATRIX[p].STATE_INPUT_FLUXES[i]];}
     for (i=0;i<DALECmodel->SIOMATRIX[p].N_STATE_OUTPUT_FLUXES;i++){Fout += FT[DALECmodel->SIOMATRIX[p].STATE_OUTPUT_FLUXES[i]];}
-    
-free(FT);
+
 
 
 // 
@@ -173,10 +165,9 @@ Rs=Rm*MPOOLSjan/Pstart;
 //             printf("Etol P = %2.2f\n", - 0.5 *pow((Rs-Rm)/etol,2));
 //         printf("PEDC = %2.2f\n",PEDC);
 
-
-
-
      }
+     
+     free(FT);
      // printf("PEDC = %2.2f\n",PEDC);
     return PEDC;
 }
