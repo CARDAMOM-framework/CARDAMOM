@@ -32,114 +32,92 @@ double DALEC_EDC_TRAJECTORY(DATA * DATA, void * EDCstruct){
     
     //Casting struct
     
-     DALEC_EDC_TRAJECTORY_STRUCT  E = *(DALEC_EDC_TRAJECTORY_STRUCT * ) EDCstruct;
+  DALEC_EDC_TRAJECTORY_STRUCT  E = *(DALEC_EDC_TRAJECTORY_STRUCT * ) EDCstruct;
 
       
  double PEDC = 0;
  
-  double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
+double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
   
-  DALEC *DALECmodel=(DALEC *)DATA->MODEL;
+DALEC *DALECmodel=(DALEC *)DATA->MODEL;
   
 
-
-  
-  int N_timesteps=DATA->ncdf_data.TIME_INDEX.length;
+int N_timesteps=DATA->ncdf_data.TIME_INDEX.length;
   
 int nopools=DALECmodel->nopools;
 int nofluxes=DALECmodel->nofluxes;
 
   //int nopools=DATA->nopools;
-
-
-     //Looping through all pools
+//Looping through all pools
     
-     //Pool inde
-
-/*deriving mean pools here!*/
-      int s,n,m,i,p;
-       PEDC=0;
-
-    for (s=0;s<E.no_pools_to_check;s++){
-
-  double EQF=E.pool_eqf[s];
-
-p = E.pool_indices[s];
-
-double MPOOLSjan=0;
-double MPOOLS=mean_pool(DATA->M_POOLS,p,N_timesteps+1,nopools);
-
-
-double * FLUXES = DATA->M_FLUXES;
-double * POOLS = DATA->M_POOLS;
-
-
-/*deriving mean January pools*/
-/*Assuming COMPLETE years*/
-
-/*pool interval*/
-
-
-int dint=(int)floor(N_timesteps/(TIME_INDEX[N_timesteps-1]-TIME_INDEX[0])*365.25);
-/*declaring mean pool array*/
-
-/*deriving mean jan pools*/
-/*based on all jan pools except initial conditions*/
-
-    
-
-for (m=0;m<(N_timesteps/dint+1);m++){
-MPOOLSjan=MPOOLSjan+POOLS[nopools*(m*dint)+p]/(N_timesteps/dint+1);}
-
-
-
-
-
-
 double *FT;
 FT=calloc(nofluxes,sizeof(double));
 int f=0;
 for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nofluxes+f];}}
+/*deriving mean pools here!*/
+int s,n,m,i,p;
+PEDC=0;
 
+double * FLUXES = DATA->M_FLUXES;
+double * POOLS = DATA->M_POOLS;
 
+for (s=0;s<E.no_pools_to_check;s++){
 
-//Next step:
-//Loop through all fluxes
-//For each pool create "Fin" and "Fout", and add these to fluxe
-double Fin=0, Fout=0;
-    for (i=0;i<DALECmodel->SIOMATRIX[p].N_STATE_INPUT_FLUXES;i++){Fin += FT[DALECmodel->SIOMATRIX[p].STATE_INPUT_FLUXES[i]];}
-    for (i=0;i<DALECmodel->SIOMATRIX[p].N_STATE_OUTPUT_FLUXES;i++){Fout += FT[DALECmodel->SIOMATRIX[p].STATE_OUTPUT_FLUXES[i]];}
+  double EQF=E.pool_eqf[s];
+
+  p = E.pool_indices[s];
+
+  double MPOOLSjan=0;
+  double MPOOLS=mean_pool(DATA->M_POOLS,p,N_timesteps+1,nopools);
+  
+  /*deriving mean January pools*/
+  /*Assuming COMPLETE years*/
+  
+  /*pool interval*/
+  int dint=(int)floor(N_timesteps/(TIME_INDEX[N_timesteps-1]-TIME_INDEX[0])*365.25);
+  /*declaring mean pool array*/
+  
+  /*deriving mean jan pools*/
+  /*based on all jan pools except initial conditions*/
+  
     
-free(FT);
+  
+  for (m=0;m<(N_timesteps/dint+1);m++){
+  MPOOLSjan=MPOOLSjan+POOLS[nopools*(m*dint)+p]/(N_timesteps/dint+1);}
 
 
-// 
-// double Fin[10];
-// double Fout[10];
-double Pstart;
-double Pend;
-/*temporary print switch*/
-int psw=0;
-/*exponential decay tolerance*/
-double etol=.1;
+  //Next step:
+  //Loop through all fluxes
+  //For each pool create "Fin" and "Fout", and add these to fluxe
+  double Fin=0, Fout=0;
+  for (i=0;i<DALECmodel->SIOMATRIX[p].N_STATE_INPUT_FLUXES;i++){Fin += FT[DALECmodel->SIOMATRIX[p].STATE_INPUT_FLUXES[i]];}
+  for (i=0;i<DALECmodel->SIOMATRIX[p].N_STATE_OUTPUT_FLUXES;i++){Fout += FT[DALECmodel->SIOMATRIX[p].STATE_OUTPUT_FLUXES[i]];}
 
-/*Inlcuding H2O pool*/
-/*EDCs 7-13 - inputs, outputs and exponential tolerance*/
+  // 
+  // double Fin[10];
+  // double Fout[10];
+  double Pstart;
+  double Pend;
+  /*temporary print switch*/
+  int psw=0;
+  /*exponential decay tolerance*/
+  double etol=.1;
+  
+  /*Inlcuding H2O pool*/
+  /*EDCs 7-13 - inputs, outputs and exponential tolerance*/
+  
+  /*mean input/output ratio and start ratio*/
+  double Rm, Rs;
 
-/*mean input/output ratio and start ratio*/
-double Rm, Rs;
-
-
-
-/*start and end pools*/
-Pstart=POOLS[p];
-Pend=POOLS[nopools*N_timesteps+p];
-/*mean input/output*/
-Rm=Fin/Fout;
-/*Theoretical starting input/output*/
-Rs=Rm*MPOOLSjan/Pstart;
- /*EB test version*/
-// Rs=MPOOLSjan/Pstart;
+  /*start and end pools*/
+  Pstart=POOLS[p];
+  Pend=POOLS[nopools*N_timesteps+p];
+  /*mean input/output*/
+  Rm=Fin/Fout;
+  /*Theoretical starting input/output*/
+  Rs=Rm*MPOOLSjan/Pstart;
+  /*EB test version*/
+  // Rs=MPOOLSjan/Pstart;
 
 /*if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[7-1+n]==1))
 & ((fabs(log(Rs))>log(EQF)) || (fabs(Rs-Rm)>etol)))
@@ -176,7 +154,8 @@ Rs=Rm*MPOOLSjan/Pstart;
 
 
 
-     }
+ }
+free(FT);
      // printf("PEDC = %2.2f\n",PEDC);
     return PEDC;
 }
