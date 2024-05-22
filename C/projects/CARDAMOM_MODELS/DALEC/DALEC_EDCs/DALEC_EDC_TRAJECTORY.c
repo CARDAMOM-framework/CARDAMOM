@@ -50,16 +50,18 @@ int nofluxes=DALECmodel->nofluxes;
   //int nopools=DATA->nopools;
 //Looping through all pools
     
-double *FT;
-FT=calloc(nofluxes,sizeof(double));
-int f=0;
-for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nofluxes+f];}}
+
 /*deriving mean pools here!*/
 int s,n,m,i,p;
 PEDC=0;
 
 double * FLUXES = DATA->M_FLUXES;
 double * POOLS = DATA->M_POOLS;
+
+double *FT;
+FT=calloc(nofluxes,sizeof(double));
+int f=0;
+for (f=0;f<nofluxes;f++){FT[f]=0;for (n=0;n<N_timesteps;n++){FT[f]+=FLUXES[n*nofluxes+f];}}
 
 for (s=0;s<E.no_pools_to_check;s++){
 
