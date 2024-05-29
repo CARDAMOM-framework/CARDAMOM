@@ -1,6 +1,6 @@
 
 
-## CARDAMOM cost function <a name="cardamom-cost-function"/>
+# CARDAMOM cost function <a name="cardamom-cost-function"/>
  
 Observation timeseries summary:
 

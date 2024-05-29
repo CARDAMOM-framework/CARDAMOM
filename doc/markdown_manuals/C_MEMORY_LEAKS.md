@@ -1,9 +1,4 @@
-Diagnose and resolve memory leaks
-
-
-
-
-
+# Diagnose and resolve memory leaks
 
 
 ##FAQ
