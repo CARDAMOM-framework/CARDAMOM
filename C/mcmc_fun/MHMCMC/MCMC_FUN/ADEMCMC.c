@@ -75,7 +75,7 @@ int n=0,nn=0,m=0,withinrange,wrlocal=0;
 
 COUNTERS N;
 N.ACC=0;
-N.ITER=0;
+N.ITER=MCO.nSTART; //Pick up our status from nSTART, as we might be resuming an existing run!
 N.ACCLOC=0;
 N.ACCRATE=0;
 /*New and default parameter vectors*/
@@ -139,7 +139,7 @@ memcpy(BESTP,P,NC*sizeof(double));
 if (isinf(P[nn])==-1){printf("WARNING! P(0)=-inf - MHMCMC may get stuck - if so, please check your initial conditions\n");}}
 
 /*STEP 2 - BEGIN MCMC*/
-for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
+for ( ;N.ITER<MCO.nOUT;N.ITER++){
 	/*Looping through each chain*/
 	/*UPDATE: retaining parameter vector (as done in ter Braak, 2006) and moving on to next chain if metropolis ratio is rejected*/
 

@@ -118,8 +118,11 @@ if (ncRetVal != NC_NOERR) {
         failedStartfile=1;
     }else{
     FAILONERROR(nc_get_vara_double(ncid,parsVarID,(const size_t[]){0,0}, (const size_t[]){currentSamples,currentParameters},PI->parini ));
+    int proposedN = 0;
+    FAILONERROR(nc_get_att_int(ncid,parsVarID,"N",&proposedN));
+    MCOPT->nSTART=proposedN;
     FAILONERROR(nc_close(ncid));
-    printf("%s at %d NOTE: We selected (%s) as our startfile, with %d samples over %d params.\n", __FILE__, __LINE__, MCOPT->startfile,MCOPT->nchains,PI->npars);
+    printf("%s at %d NOTE: We selected (%s) as our startfile (%d iterations already done), with %d samples over %d params.\n", __FILE__, __LINE__, MCOPT->startfile,proposedN,MCOPT->nchains,PI->npars);
     }
 }
 

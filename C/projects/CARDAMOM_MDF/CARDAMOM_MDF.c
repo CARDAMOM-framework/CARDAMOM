@@ -26,6 +26,7 @@ MCOPT->fADAPT=0.5;
 
 
 MCOPT->nOUT=DATA.ncdf_data.MCMCID.nITERATIONS;
+MCOPT->nSTART=0;
 MCOPT->nPRINT=DATA.ncdf_data.MCMCID.nPRINT;
 MCOPT->minstepsize=DATA.ncdf_data.MCMCID.minstepsize;
 MCOPT->mcmcid=DATA.ncdf_data.MCMCID.value;
@@ -47,7 +48,7 @@ MCOPT->nWRITE=MCOPT->nOUT/DATA.ncdf_data.MCMCID.nSAMPLES;
 printf("**********MCMCOPT SUMMARY*******\n");
 
 printf("Number of iterations = %i\n",MCOPT->nOUT);
-printf("Print status every %i iterations \n",MCOPT->nOUT);
+printf("Print status every %i iterations \n",MCOPT->nPRINT);
 printf("Write parameters every %i iterations \n",MCOPT->nWRITE);
 printf("Number of samples requested (including burn-in) = %i\n",DATA.ncdf_data.MCMCID.nSAMPLES);
 printf("Burn in fraction = %2.2f\n",MCOPT->fADAPT);
