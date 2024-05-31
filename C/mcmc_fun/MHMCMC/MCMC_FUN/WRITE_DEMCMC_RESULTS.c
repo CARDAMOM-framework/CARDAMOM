@@ -40,6 +40,7 @@ int WRITE_DEMCMC_RESULTS(double *PARS,PARAMETER_INFO PI,MCMC_OPTIONS MCO, int IT
 
   int parsVarID; // Variable ID numbers, also must be repopulated each invocation
 
+  if (MCO.nSTART>0){inited=1;} //Check if it's a restart
   if (!inited){  
           inited=1;
           FAILONERROR(nc_create(MCO.outfile,NC_CLOBBER, &ncid ));

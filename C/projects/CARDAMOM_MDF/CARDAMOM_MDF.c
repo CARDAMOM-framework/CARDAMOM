@@ -212,6 +212,8 @@ clock_t    start = clock();//Start timer
 READ_PARI_DATA(&PI, &DATA, &MCOUT, &MCOPT,CLA);
 printf("CARDAMOM_MDF.c: READ_PARI_DATA successfully executed\n");
 
+// Check whether this is a restart, and if so, set APPEND to 1
+if (MCOPT.nSTART>0){MCOPT.APPEND=1;}
 
 clock_t   end = clock();//Stop timer
 double         cpu_time_used_search = ((double) (end - start)) / CLOCKS_PER_SEC;
