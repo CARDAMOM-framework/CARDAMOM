@@ -1,5 +1,4 @@
-Adding new netcdf variables and attributes
-
+# Adding new netcdf variables and attributes
 
 Easy steps for either "TIMESERIES_OBS" or "SINGLE_OBS"
 

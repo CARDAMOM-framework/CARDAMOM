@@ -1,6 +1,4 @@
-
-
-MCMC overview
+# MCMC overview
 
 
 FAQ:

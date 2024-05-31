@@ -1,28 +1,14 @@
+# CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/>
 
 
-## Table of Contents
 
-- [CARDAMOM C developer guide](#cardamom-c-developer-guid)
-  * [Intro tips](#Intro-tips)
-  * [Make a new model](#Make-a-new-model)
-  * [Add more parameters to the model](#Add-more-parameters-to-the-model)
-  * [Add more pools to the model](#Add-more-pools-to-the-model)
-  * [Define prior range for parameters and why log transformed prior range is used](#Define-prior-range-for-parameters-and-why-log-transformed-prior-range-is-used)
-  * [Add a new dataset to CARDAMOM DATA structure](#Add-a-new-dataset-to-CARDAMOM-DATA-structure)
-  * [Make a new cost function](#Make-a-new-cost-function)
-  * [Switches for EDCs](#Switches-for-EDCs)
-  
-  
-  
-  ## CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/>
-
-### Intro tips. 
+## Intro tips. 
 Before doing any of the following, start a new branch and used it as your developing branch to avoid potential conflicts. Constantly pull from the main branch (or any branch that your branch is based on) to keep your branch updated.\
 Regularly & frequently compile (e.g. CARDAMOM_COMPILE) when making any changes.\
 If you're comfortable with your changes and want to contribute your changes to the main branch (or any branch that you want to merge to), start a merge request and notify members of the team.
 
 
-### Make a new model. 
+## Make a new model. 
 
 Making a new model ID in CARDAMOM (e.g. ID=830), based on original model (e.g. ID=811). To do this:  
 
@@ -54,7 +40,7 @@ mod.NBE = -CBR.FLUXES(:,:,MD.FLUX_IDs.gpp)+CBR.FLUXES(:,:,MD.FLUX_IDs.resp_auto)
 
 MD.FLUX_IDs.gpp points to a numeric number that points to the exact dimension in the CBR.FLUXES, which is the modeled gpp.   
 
-### Add more parameters to the model. 
+## Add more parameters to the model. 
 ```json
 update this section with instructions for parameter index abstraction
 ```
@@ -71,7 +57,7 @@ MD=CARDAMOM_MODEL_LIBRARY(<newmodelid>,[],1);
 
 (where <newmodelid> is the ID for your new model). This will ensure new model parameter/pool info is registered in matlab. This function can be used later in your analysis, see examples in the sections 'make a new model'.
 
-### Add more pools to the model
+## Add more pools to the model
 
 1. In the folder titled C/projects/CARDAMOM_MODELS/DALEC/DALEC_<newmodelid>, open MODEL_INFO_<newmodelid>.c, and change “DALECmodel.nopools” (e.g. from “8” to “9”)
 
@@ -89,7 +75,16 @@ MD=CARDAMOM_MODEL_LIBRARY(<newmodelid>,[],1);
     * Define prior range for parameters and why log transformed prior range is used 
     * Avoid using zero as either the minimum or maximum parameter values, as log transformation is used for creating the new parameter values so that there is equal chance being selected within the same magnitude. Log transformation is essential for parameters spanning several magnitudes, like Soil Organic Carbon turnover rate, while doesn’t make a big difference for parameters like Q10; 
 
-#### Two examples make it easier to understand:
+## Guidelines on comments and naming conventions
+
+I think we would do well to have a lot more comments in our code describing what the variables are. Maybe some “rule of thumb” that every new variable definition requires a comment that explains exactly what it is? 
+
+Of course, if those comments are incorrect, then they will be more hurtful than helpful, so it is important that any subsequent changes to the code are accounted for in the comments. For example, at one point, AUTO_RESP_MAINTENANCE did contain the total maintenance respiration flux from all pools, and then subsequently changed to exclude foliar. So if we had defined AUTO_RESP_MAINTENANCE with a comment, that comment would have needed to be updated. Forgetting to update the comment would then leave us more vulnerable than we’d have been with no comment to begin with.
+
+I suppose another thing that would help is to be careful with variable names, especially when we change a variable as we did with AUTO_RESP_MAINTENANCE. Maybe another rule of thumb would be that we MUST rename a variable when redefining what it means? That way, some other person who may be unaware of the change won’t falsely think they know what a variable is based on knowing it’s previous definition.
+
+
+### Two examples make it easier to understand:
 + Soil organic C turnover rate (1e-7 to 1e-3 gC yr-1)
 + Temperature sensitivity (Q10, 1.2 to 1.6)
 + For soil organic c turnover rate, we want equal possibilities for values spanning 1e-7 to 1e-6, 1e-6 to 1e-5,1e-5 to 1e-4, and 1e-4 to 1e-3, instead of equal chances for values spanning 10e-7 to 0.1*1e-3, 0.1*1e-3 to 0.2*1e-3, 0.2*1e-3 to 0.3*1e-3, … 0.9*1e-3 to 1* 1e-3.
@@ -97,7 +92,7 @@ MD=CARDAMOM_MODEL_LIBRARY(<newmodelid>,[],1);
 
 Left figures are showing the uniform space distributions; Middle figures are showing the log uniform space distributions, which is used in CARDAMOM MCMC; Right figures are showing the actual uniform space distributions in order to get the middle distribution;
 
-![image1](/images/image1_manual.png)
+![image1](../images/image1_manual.png)
 
 ### Add a new dataset to CARDAMOM DATA structure
 

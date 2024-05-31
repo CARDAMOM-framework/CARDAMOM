@@ -1,3 +1,5 @@
+# Debugging tips
+
 MCMC search for EDC=1 starting solution failing
 
 

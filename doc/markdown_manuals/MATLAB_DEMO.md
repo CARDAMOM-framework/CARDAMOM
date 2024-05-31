@@ -1,3 +1,5 @@
+# MATLAB demo
+
 Follow these steps *once*. Once you’ve successfully made it to step 4, you can then start matlab and you’re ready to use all CARDAMOM routines without any further action.
 Note: PC implementation not supported (but do add notes if you’ve managed to do this!).
 

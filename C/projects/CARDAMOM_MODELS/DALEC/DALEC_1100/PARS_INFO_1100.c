@@ -108,7 +108,7 @@ parmax[P.i_cwd]=100000.0;
 
 /*C litter*/
 parmin[P.i_lit]=1.0;
-parmax[P.i_lit]=4000.0;
+parmax[P.i_lit]=2000.0;
 
 /*C_som*/
 parmin[P.i_som]=1.0;
