@@ -96,27 +96,26 @@ printf("done with reading cbf data!\n");
 
 /*step 2 - read (first time) parameter file here*/
 
-FILE *fd;
-/*opening file*/
-fd=fopen(parfile,"rb");
-/*checking that this has been done successfully*/
-filediag(fd,parfile);
 
-/*identifying number of elements in file*/
-fseek(fd,0,SEEK_END);
+int cbrId = 0; //This is the netcdf id num for the cbfcbr file
+int cbrParsVarID; // Variable ID number
+int cbrParamDimID,cbrSampleDimID; //Dim ID numbers, must be populated each invocation
+FAILONERROR(nc_open(parfile,NC_NOWRITE, &cbrId ));
+FAILONERROR(nc_inq_dimid(cbrId,"Parameter",&cbrParamDimID));
+FAILONERROR(nc_inq_dimid(cbrId,"Sample", &cbrSampleDimID));
+FAILONERROR(nc_inq_varid(cbrId,"Parameters",&cbrParsVarID));
+
 /*number of parameter vectors to run*/
-int N=ftell(fd)/(sizeof(double)*(CARDADATA.nopars));
+size_t N;
+FAILONERROR(nc_inq_dimlen(cbrId,cbrSampleDimID, &N));
+
 
 /*comments for display*/
 int verbal=1;
-if (verbal==1){printf("number of parvecs to run = %d\n",N);}
-
-/*resetting file reader to start*/
-fseek(fd,0,SEEK_SET);
-/*parameter file will be closed later - in the meantime parameters will simply be read N times*/
-
+if (verbal==1){printf("number of parvecs to run = %d\n",(int)N);}
 /*declaring pars file*/
 double *pars=calloc(CARDADATA.nopars,sizeof(double));
+/*parameter file will be closed later - in the meantime parameters will simply be read N times*/
 
 
 
@@ -194,8 +193,9 @@ nc_enddef(ncid);
 /*STEP 4 - RUNNING CARDADATA.MLF N TIMES*/
 for (n=0;n<N;n++){
 
-/*step 4.1 - reading parameter vector from file*/
-fread(pars,sizeof(double),CARDADATA.nopars,fd);
+/*step 4.1 - reading parameter vector from cbr file*/
+//BE ADVISED YE WHO READS THIS CODE: This is from the CBR file represented by cbrId, so a totally seperate file from all the writing
+FAILONERROR(nc_get_vara_double(cbrId,cbrParsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars},pars));
 
 
 /*step 4.2 - running MODEL_LIKELIHOOD_FUNCTION (e.g. DALEC_CDEA_MLF) with parameter vector from file*/
@@ -287,7 +287,7 @@ FAILONERROR(nc_put_vara_double(ncid,likelihoodsVarID,(const size_t[]){n,0}, (con
 
 
 /*STEP 5 - close all files*/
-fclose(fd);
+FAILONERROR(nc_close(cbrId));
 
 FAILONERROR(nc_close(ncid));
 
