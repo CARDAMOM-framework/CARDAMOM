@@ -1,8 +1,9 @@
-Hydrology
-=========
+Hydrology modules
+=================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Hydrology:
 
-Hydrology in DALEC
+   hydrology/soil
+   hydrology/snow

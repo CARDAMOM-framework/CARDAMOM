@@ -4,7 +4,7 @@
 
 (2) Copy original cbf file to make a new cbf file (e.g. perturbed.cbf.nc), and add a perturbation, e.g. on precipitation, (deltaPREC) on the perturbed.cbf.nc met drivers
 
-### ###Warning: ensure "reference_mean" attribute is either (a) the same value, and explicitly defined, in perturbed.cbf.nc and actual.cbf.nc, or (b) is definied in perturbed.cbf.nc as the time averaged values from actual.cbf.nc###
+## ###Warning: ensure "reference_mean" attribute is either (a) the same value, and explicitly defined, in perturbed.cbf.nc and actual.cbf.nc, or (b) is definied in perturbed.cbf.nc as the time averaged values from actual.cbf.nc###
 
 (3) Run two CARDAMOM_RUN_MODEL runs with perturbed.cbf.nc and actual.cbf.nc (both with parameters.cbr)
 

@@ -12,25 +12,43 @@ We hope you enjoy your stay!
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: CARDAMOM Overview:
 
    cardamom_overview/overview
    cardamom_overview/model
-   cardamom_overview/cost_functions
-   cardamom_overview/MCMC
+   cardamom_overview/model_data_fusion
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: DALEC model:
    
    dalec_model/overview
+   dalec_model/modules
+   dalec_model/versions
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Model-data fusion framework:
+   
+   framework/cost_function
+   framework/observation_operators
+   framework/mcmc
 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Old Markdown Manual
+   :caption: Using CARDAMOM:
+
+   usage/file_io
+   usage/compilation
+
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Old Markdown Manual:
    
    markdown_manuals/ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES
    markdown_manuals/C_MEMORY_LEAKS
