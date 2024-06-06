@@ -1,6 +1,6 @@
 
 ## CARDAMOM framework (version 3.0)
-#### *JPL, Stanford & UCSB CARDAMOM framework*
+#### *JPL, Stanford, UCSB and Caltech CARDAMOM framework*
 
 ## General description 
 
