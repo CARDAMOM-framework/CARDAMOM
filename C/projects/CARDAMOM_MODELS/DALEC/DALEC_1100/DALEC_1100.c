@@ -145,6 +145,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         // C_woo
         FIOMATRIX.SINK[F.wood_prod]=S.C_woo;
         FIOMATRIX.SOURCE[F.woo2cwd]=S.C_woo;
+        FIOMATRIX.SOURCE[F.wooyield2cwd]=S.C_woo;
         FIOMATRIX.SOURCE[F.f_woo]=S.C_woo;
         FIOMATRIX.SOURCE[F.fx_woo2cwd]=S.C_woo;
         FIOMATRIX.SOURCE[F.dist_woo]=S.C_woo;
