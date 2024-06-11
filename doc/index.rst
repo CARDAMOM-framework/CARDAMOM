@@ -16,7 +16,7 @@ We hope you enjoy your stay!
    :caption: CARDAMOM Overview:
 
    cardamom_overview/overview
-   cardamom_overview/model
+   cardamom_overview/forward_model
    cardamom_overview/model_data_fusion
 
 
