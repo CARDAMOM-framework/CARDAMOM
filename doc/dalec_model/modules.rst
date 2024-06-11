@@ -7,3 +7,4 @@ DALEC modules
    modules/photosynthesis
    modules/phenology
    modules/hydrology
+   modules/Heterotophicrespiration
