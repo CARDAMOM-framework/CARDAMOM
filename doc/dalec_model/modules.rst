@@ -6,5 +6,7 @@ DALEC modules
 
    modules/photosynthesis
    modules/phenology
+   modules/heterotrophic_respiration
    modules/hydrology
-   modules/Heterotrophic_respiration
+   modules/energy
+
