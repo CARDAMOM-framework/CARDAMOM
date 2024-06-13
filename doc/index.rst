@@ -43,7 +43,7 @@ We hope you enjoy your stay!
 
    usage/file_io
    usage/compilation
-
+   usage/technote
 
 
 .. toctree::
