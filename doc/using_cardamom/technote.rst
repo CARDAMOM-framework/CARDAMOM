@@ -15,7 +15,7 @@ Making edits/modifications locally
 
 1. Install `Sphinx <https://www.sphinx-doc.org/>`_ on your machine. There are `several methods <https://www.sphinx-doc.org/en/master/usage/installation.html>`_ available for doing this. This step only needs to be done once, while the following steps should be done each time you are making any changes.
 
-2. Clone the `GitHub CARDAMOM repository`_ to create a local repository on your machine, if you don't have one already.
+2. Clone the `GitHub CARDAMOM repository`_ to create a local repository on your machine, if you don't have one already. ``git clone https://github.com/CARDAMOM-framework/CARDAMOM.git``
 
 3. Navigate to the ``doc`` directory inside your local repository, and create two new directories inside; one called ``_build`` and the other called ``_static``.
 

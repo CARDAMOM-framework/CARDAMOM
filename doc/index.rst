@@ -41,9 +41,9 @@ The CARDAMOM documentation presented here is written specifically for the `JPL, 
    :maxdepth: 2
    :caption: Using CARDAMOM:
 
-   usage/file_io
-   usage/compilation
-   usage/technote
+   using_cardamom/file_io
+   using_cardamom/compilation
+   using_cardamom/technote
 
 
 .. toctree::
