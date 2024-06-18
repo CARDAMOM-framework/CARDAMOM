@@ -6,7 +6,7 @@
 Welcome to CARDAMOM's documentation!
 ====================================
 
-We hope you enjoy your stay!
+The CARDAMOM documentation presented here is written specifically for the `JPL, Stanford, UCSB and Caltech CARDAMOM framework <https://github.com/CARDAMOM-framework/CARDAMOM>`_ implementation, publicly available under a `GPL-v3 license <https://www.gnu.org/licenses/gpl-3.0.en.html>`_. :ref:`copyright-statement` © 2024, California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged.
 
 [The CARDAMOM tech note is under construction]
 
