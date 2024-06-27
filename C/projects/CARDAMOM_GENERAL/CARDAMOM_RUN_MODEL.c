@@ -170,7 +170,7 @@ FAILONERROR(nc_def_dim(ncid,"EDC Index",CARDADATA.noedcs,&edcIdxDimID ));
 FAILONERROR(nc_def_dim(ncid,"Likelihood Index",CARDADATA.nolikelihoods,&noLikelihoodsDimID ));
 
 
-
+size_t chunkSize = (size_t) Ntimesteps * sizeof(double);
 /*STEP 3.3 - create netCDF variables in preparation for writing them later*/
 int edcsVarID, pVarID, likelihoodsVarID;
 
@@ -192,7 +192,7 @@ for(int i = 0; i < CARDADATA.nofluxes; i++){
 
   }
   FAILONERROR(nc_def_var(	fluxesGrpId,ncVarAbbreviation , NC_DOUBLE, 2, fluxes_dems, &(fluxesVarID[i]) ));
-  FAILONERROR(nc_def_var_chunking(fluxesGrpId,fluxesVarID[i], NC_CHUNKED, NULL));
+  FAILONERROR(nc_def_var_chunking(fluxesGrpId,fluxesVarID[i], NC_CHUNKED,&chunkSize));
   WARNONERROR(nc_put_att_int	(	fluxesGrpId,fluxesVarID[i],"ID",NC_INT,sizeof(int),&i));
   if (fluxInfo.NAME != NULL && fluxInfo.NAME[i] != NULL){
     WARNONERROR(nc_put_att_text	(	fluxesGrpId,fluxesVarID[i],"Name",strlen(fluxInfo.NAME[i]),fluxInfo.NAME[i]));
@@ -222,7 +222,7 @@ for(int i = 0; i < CARDADATA.nopools; i++){
 
   }
   FAILONERROR(nc_def_var(	poolsGrpId,ncVarAbbreviation, NC_DOUBLE, 2, pools_dems, &(poolsVarID[i]) ));
-  FAILONERROR(nc_def_var_chunking(poolsGrpId,poolsVarID[i], NC_CHUNKED, NULL));
+  FAILONERROR(nc_def_var_chunking(poolsGrpId,poolsVarID[i], NC_CHUNKED, &chunkSize));
 
   WARNONERROR(nc_put_att_int	(	poolsGrpId,poolsVarID[i],"ID",NC_INT,sizeof(int),&i));
   if (poolsInfo.NAME != NULL && poolsInfo.NAME[i] != NULL){
@@ -258,7 +258,7 @@ for(int i = 0; i < CARDADATA.nopars; i++){
     printf("ERROR in %s at %d: paramater ID %d has no defined ABBREVIATION in it's PARS_META. Add it to your DALEC_####_NC_INFO.c file! This paramater will be called %s until you do!\n", __FILE__, __LINE__,i,ncVarAbbreviation );
   }
   FAILONERROR(nc_def_var(	parsGrpId, ncVarAbbreviation, NC_DOUBLE, 1, pars_dems, &(parsVarID[i]) ));
-  FAILONERROR(nc_def_var_chunking(parsGrpId,parsVarID[i], NC_CHUNKED, NULL));
+  FAILONERROR(nc_def_var_chunking(parsGrpId,parsVarID[i], NC_CHUNKED, &chunkSize));
   
   WARNONERROR(nc_put_att_int	(	parsGrpId,parsVarID[i],"ID",NC_INT,sizeof(int),&i));
   if (parsInfo.NAME != NULL && parsInfo.NAME[i] != NULL){
