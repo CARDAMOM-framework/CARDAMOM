@@ -4,7 +4,6 @@
 #include "EDC1_1046.c"
 #include "EDC2_1046.c"
 #include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF_DEDC.c"
-#include "../../../COST_FUNCTION/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_MLF2.c"
 #include "../../../DALEC_CODE/EDCs/EDCSETUP.c"
 #include "../../../CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c"
 
@@ -13,7 +12,7 @@ int MODEL_INFO_1046(DATA * DATA){
 /*Step 1. Declare structure*/
 /*"static" ensures that the memory is declared in one instance and visible to all functions (I think)*/
 static DALEC DALECmodel;DALEC_1046_MODCONFIG(&DALECmodel);
-static MLF MLF;DALEC_MLF_DEDC_MODCONFIG(&MLF);
+static MLF MLF;DALEC_MLF_MODCONFIG(&MLF);
 
 
 /*Short-term: copy quantities into DATA structure to reduce dependencies in CARDAMOM_MODEL_LIBRARY.c*/

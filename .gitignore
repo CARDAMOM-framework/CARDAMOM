@@ -15,11 +15,9 @@ MATLAB/CARDAMOM_DISK/*
 __pycache__/
 *.py[cod]
 
-#vscode files
-.vscode/*
-#dSYM debug files
+#vscoe specfic
+.vscode/c_cpp_properties.json
+.vscode/settings.json
 C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.dSYM/Contents/Info.plist
-**/.vscode/
-
-#Sphinx documentation
-_build/
+.vscode/tasks.json
+.vscode/launch.json

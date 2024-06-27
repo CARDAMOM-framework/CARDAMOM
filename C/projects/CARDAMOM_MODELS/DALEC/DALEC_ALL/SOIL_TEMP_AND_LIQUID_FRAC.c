@@ -23,9 +23,9 @@ int SOIL_TEMP_AND_LIQUID_FRAC(SOIL_TEMP_AND_LIQUID_FRAC_STRUCT * S){
 
 //Ui3 = (Cs z + Ws Ci) T3
 // 
-// lil3 Specific latent heat of fusion of water at the triple point 3.34 ï¿½ 105 J kg?1
-// llv3 Specific latent heat of vaporization of water at the triple point 2.5 ï¿½ 10?6 J kg?1
-// liv3 Specific latent heat of sublimation of ice at the triple point li`3 + l`v3 = 2.834 ï¿½ 10?6 J kg?1
+// lil3 Specific latent heat of fusion of water at the triple point 3.34 · 105 J kg?1
+// llv3 Specific latent heat of vaporization of water at the triple point 2.5 · 10?6 J kg?1
+// liv3 Specific latent heat of sublimation of ice at the triple point li`3 + l`v3 = 2.834 · 10?6 J kg?1
 
 double dry_soil_sh=S->IN.dry_soil_vol_heat_capacity * S->IN.depth;
 double UI3 = ( dry_soil_sh + S->IN.soil_water *DGCM_SPECIFIC_HEAT_ICE)*DGCM_T3 ; 

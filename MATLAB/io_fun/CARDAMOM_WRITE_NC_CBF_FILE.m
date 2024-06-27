@@ -20,10 +20,8 @@ for f=1:numel(fieldnames)
     
 
        if numel(CBF.(fieldnames{f}).values)==notimesteps
-
-       %Enforcing "double" type
-       nccreate(fname,fieldnames{f},'Dimensions',{'time_dim',notimesteps},'FillValue',-9999,'Datatype','double' ); 
-
+       
+       nccreate(fname,fieldnames{f},'Dimensions',{'time',notimesteps},'FillValue',-9999); 
        ncwrite(fname,fieldnames{f},CBF.(fieldnames{f}).values);
        
       

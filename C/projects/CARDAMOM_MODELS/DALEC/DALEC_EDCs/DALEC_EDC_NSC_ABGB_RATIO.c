@@ -64,7 +64,7 @@ double M_NSC=mean_pool(DATA->M_POOLS,E.nsc_pool_index,N_timesteps+1,nopools);
 int n;
     for (n=0;n< E.no_other_pool_indices;n++){M_ALL_ELSE+=mean_pool(DATA->M_POOLS,E.other_pool_indices[n],N_timesteps+1,nopools);}
 
-    
+  
     double residual = (M_NSC/(M_NSC+M_ALL_ELSE) - 0.1)/0.05;
 double PEDC=-0.5*residual*residual;
 
