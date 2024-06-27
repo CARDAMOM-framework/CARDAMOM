@@ -131,7 +131,7 @@ double *pars=calloc(CARDADATA.nopars,sizeof(double));
 /*STEP 3.1 - create netCDF output file*/
 int ncid = 0; //This is the netcdf id num
 int ncretval = 0; //This is a reused variable for the return value of ncdf methods.
-ncretval = nc_create(ncdffile,NC_CLOBBER|NC_NETCDF4, &ncid );
+ncretval = nc_create(ncdffile,NC_CLOBBER|NC_64BIT_OFFSET, &ncid );
 if (ncretval != NC_NOERR){
   //If nc_create did anything but return no error, then fail
   ERR(ncretval);
@@ -152,10 +152,15 @@ FAILONERROR(nc_def_dim(ncid,"Sample",N,&sampleDimID));
 
 
 //GROUP CREATION: This is where the pools, fluxes, and pars are bunched into groups
+//REMOVED! Netcdf4-hdf5 does not support large files efficiently. Probably should instigate that further one day.
+//For the moment, just use the same master group id for everything
 int poolsGrpId, fluxesGrpId, parsGrpId;
-FAILONERROR(nc_def_grp(ncid,"Pools", &poolsGrpId ));
-FAILONERROR(nc_def_grp(ncid,"Fluxes", &fluxesGrpId ));
-FAILONERROR(nc_def_grp(ncid,"Parameters", &parsGrpId ));
+poolsGrpId=ncid;
+fluxesGrpId=ncid;
+parsGrpId=ncid;
+//FAILONERROR(nc_def_grp(ncid,"Pools", &poolsGrpId ));
+//FAILONERROR(nc_def_grp(ncid,"Fluxes", &fluxesGrpId ));
+//FAILONERROR(nc_def_grp(ncid,"Parameters", &parsGrpId ));
 
 
 //NOTE: this was going to be the NC_UNLIMITED dimension, however due to concerns with support for netcdf classic, it is now fixed, and split into two
@@ -170,7 +175,7 @@ FAILONERROR(nc_def_dim(ncid,"EDC Index",CARDADATA.noedcs,&edcIdxDimID ));
 FAILONERROR(nc_def_dim(ncid,"Likelihood Index",CARDADATA.nolikelihoods,&noLikelihoodsDimID ));
 
 
-size_t chunkSize = (size_t) Ntimesteps * sizeof(double);
+//size_t chunkSize = (size_t) Ntimesteps * sizeof(double);
 /*STEP 3.3 - create netCDF variables in preparation for writing them later*/
 int edcsVarID, pVarID, likelihoodsVarID;
 
@@ -181,18 +186,18 @@ int fluxes_dems[] = {sampleDimID,timeFluxesDimID};
 //Create each flux variable as its own var
 struct FLUX_META_STRUCT fluxInfo = ((DALEC *)CARDADATA.MODEL)->FLUX_META;
 for(int i = 0; i < CARDADATA.nofluxes; i++){
-  const char* ncVarAbbreviation = NULL;
+  const char* ncVarAbbreviation =(const char *) calloc(sizeof(char), 200 );//WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
+
   if (fluxInfo.ABBREVIATION != NULL && fluxInfo.ABBREVIATION[i] != NULL){
-    ncVarAbbreviation =fluxInfo.ABBREVIATION[i];
+    snprintf( (char *) ncVarAbbreviation,200,"FLUX-%s", fluxInfo.ABBREVIATION[i] );//Write to it once, overriding the const qualifier so it is set
   } else {
     //just make up an abbrev
-    ncVarAbbreviation = (const char *) calloc(sizeof(char), 100 );//WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
-    snprintf( (char *) ncVarAbbreviation,100,"%d_UNKNOWN_FLUX", i);//Write to it once, overriding the const qualifier so it is set
+    snprintf( (char *) ncVarAbbreviation,200,"FLUX-%d", i);//Write to it once, overriding the const qualifier so it is set
     printf("ERROR in %s at %d: Flux ID %d has no defined ABBREVIATION in it's FLUX_META. Add it to your DALEC_####_NC_INFO.c file! This flux will be called %s until you do!\n", __FILE__, __LINE__,i,ncVarAbbreviation);
 
   }
   FAILONERROR(nc_def_var(	fluxesGrpId,ncVarAbbreviation , NC_DOUBLE, 2, fluxes_dems, &(fluxesVarID[i]) ));
-  FAILONERROR(nc_def_var_chunking(fluxesGrpId,fluxesVarID[i], NC_CHUNKED,&chunkSize));
+  //FAILONERROR(nc_def_var_chunking(fluxesGrpId,fluxesVarID[i], NC_CHUNKED,&chunkSize));
   WARNONERROR(nc_put_att_int	(	fluxesGrpId,fluxesVarID[i],"ID",NC_INT,sizeof(int),&i));
   if (fluxInfo.NAME != NULL && fluxInfo.NAME[i] != NULL){
     WARNONERROR(nc_put_att_text	(	fluxesGrpId,fluxesVarID[i],"Name",strlen(fluxInfo.NAME[i]),fluxInfo.NAME[i]));
@@ -211,18 +216,18 @@ int poolsVarID[CARDADATA.nopools];
 struct POOLS_META_STRUCT poolsInfo = ((DALEC *)CARDADATA.MODEL)->POOLS_META;
 int pools_dems[] = {sampleDimID,timePoolsDimID}; //poolsDimId was last in the order
 for(int i = 0; i < CARDADATA.nopools; i++){
-  const char* ncVarAbbreviation = NULL;
+  const char* ncVarAbbreviation =(const char *) calloc(sizeof(char), 200 );//WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
   if (poolsInfo.ABBREVIATION != NULL && poolsInfo.ABBREVIATION[i] != NULL ){
-    ncVarAbbreviation = poolsInfo.ABBREVIATION[i];
+    snprintf( (char *) ncVarAbbreviation,200,"POOL-%s", poolsInfo.ABBREVIATION[i] );//Write to it once, overriding the const qualifier so it is set
   } else {
     //just make up a name
     ncVarAbbreviation = (const char *) calloc(sizeof(char), 100 ); //WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
-    snprintf( (char *) ncVarAbbreviation,100,"%d_UNKNOWN_POOL", i);//Write to it once, overriding the const qualifier so it is set
+    snprintf( (char *) ncVarAbbreviation,200,"POOL-%d", i);//Write to it once, overriding the const qualifier so it is set
     printf("ERROR in %s at %d: pool ID %d has no defined ABBREVIATION in it's POOLS_META. Add it to your DALEC_####_NC_INFO.c file! This pool will be called %s until you do!\n", __FILE__, __LINE__,i,ncVarAbbreviation);
 
   }
   FAILONERROR(nc_def_var(	poolsGrpId,ncVarAbbreviation, NC_DOUBLE, 2, pools_dems, &(poolsVarID[i]) ));
-  FAILONERROR(nc_def_var_chunking(poolsGrpId,poolsVarID[i], NC_CHUNKED, &chunkSize));
+  //FAILONERROR(nc_def_var_chunking(poolsGrpId,poolsVarID[i], NC_CHUNKED, &chunkSize));
 
   WARNONERROR(nc_put_att_int	(	poolsGrpId,poolsVarID[i],"ID",NC_INT,sizeof(int),&i));
   if (poolsInfo.NAME != NULL && poolsInfo.NAME[i] != NULL){
@@ -248,17 +253,17 @@ int parsVarID[CARDADATA.nopars];
 struct PARS_META_STRUCT parsInfo = ((DALEC *)CARDADATA.MODEL)->PARS_META;
 int pars_dems[] = {sampleDimID}; //noParsDimID was last in the order
 for(int i = 0; i < CARDADATA.nopars; i++){
-  const char* ncVarAbbreviation = NULL;
+  const char* ncVarAbbreviation =(const char *) calloc(sizeof(char), 200 );//WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
   if (parsInfo.ABBREVIATION != NULL && parsInfo.ABBREVIATION[i] != NULL){
-    ncVarAbbreviation = parsInfo.ABBREVIATION[i];
+    snprintf( (char *) ncVarAbbreviation,200,"PAR-%s", parsInfo.ABBREVIATION[i] );//Write to it once, overriding the const qualifier so it is set
   } else {
     //just make up a name
     ncVarAbbreviation = (const char *) calloc(sizeof(char), 100 ); //WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
-    snprintf( (char *) ncVarAbbreviation,100,"%d_UNKNOWN_PAR", i); //Write to it once, overriding the const qualifier so it is set
+    snprintf( (char *) ncVarAbbreviation,200,"PAR-%d", i); //Write to it once, overriding the const qualifier so it is set
     printf("ERROR in %s at %d: paramater ID %d has no defined ABBREVIATION in it's PARS_META. Add it to your DALEC_####_NC_INFO.c file! This paramater will be called %s until you do!\n", __FILE__, __LINE__,i,ncVarAbbreviation );
   }
   FAILONERROR(nc_def_var(	parsGrpId, ncVarAbbreviation, NC_DOUBLE, 1, pars_dems, &(parsVarID[i]) ));
-  FAILONERROR(nc_def_var_chunking(parsGrpId,parsVarID[i], NC_CHUNKED, &chunkSize));
+  //FAILONERROR(nc_def_var_chunking(parsGrpId,parsVarID[i], NC_CHUNKED, &chunkSize));
   
   WARNONERROR(nc_put_att_int	(	parsGrpId,parsVarID[i],"ID",NC_INT,sizeof(int),&i));
   if (parsInfo.NAME != NULL && parsInfo.NAME[i] != NULL){
