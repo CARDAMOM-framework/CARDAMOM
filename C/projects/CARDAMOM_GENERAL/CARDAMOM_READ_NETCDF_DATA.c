@@ -94,8 +94,7 @@ int CARDAMOM_READ_NETCDF_DATA(char *filename,NETCDF_DATA *DATA)
 // default_double_value(OBS.opt_min_threshold,log(0));//minus infinity
 // default_double_value(OBS.structural_unc,0);
 
-   
-    
+ 
 
 //Read data
 DATA->ABGB=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ABGB");
@@ -104,14 +103,19 @@ DATA->CWOO=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "CWOO");
 DATA->DOM=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "DOM");
 DATA->ET=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ET");
 DATA->EWT=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "EWT");
+DATA->FIR=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "FIR");
 DATA->GPP=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "GPP");
-DATA->SIF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "SIF");
 DATA->LAI=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "LAI");
 DATA->NBE=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "NBE");
-// printf("Just read NBE...\n");
-// printf("DATA->NBE.values[0] = %2.2f\n",DATA->NBE.values[0]);
 DATA->ROFF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "ROFF");
 DATA->SCF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "SCF");
+DATA->SIF=READ_NETCDF_TIMESERIES_OBS_FIELDS(ncid, "SIF");
+
+
+// printf("Just read NBE...\n");
+// printf("DATA->NBE.values[0] = %2.2f\n",DATA->NBE.values[0]);
+
+
 //Read time-averaged data
 
 DATA->Mean_ABGB=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_ABGB");
@@ -121,6 +125,7 @@ DATA->Mean_FIR=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "Mean_FIR");
 
 
 //Read parameters and single observations
+DATA->PEQ_NBEmrg=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_NBEmrg");
 DATA->PEQ_Cefficiency=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Cefficiency");
 DATA->PEQ_CUE=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_CUE");
 DATA->PEQ_C3frac=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_C3frac");
@@ -143,92 +148,106 @@ DATA->PEQ_rhch4_rhco2=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_rhch4_rhco2");
 
 
 printf("Warning: No longer assigning default uncertainty values. Please double check your driver file contains uncertainties for all observations used.\n");
-printf("Example uncertainty values (used in the past) per variable:\n");
-// Default ABGB options
-printf("ABGB.opt_unc_type=1; ABGB.single_unc=2; ABGB.min_threshold=10 gC/m2;\n");
-default_int_value(&DATA->ABGB.opt_unc_type,1);
-default_double_value(&DATA->ABGB.single_unc,2);
-default_double_value(&DATA->ABGB.min_threshold,10);//gC/m2
+// printf("Example uncertainty values (used in the past) per variable:\n");
+// // Default ABGB options
+// printf("ABGB.opt_unc_type=1; ABGB.single_unc=2; ABGB.min_threshold=10 gC/m2;\n");
+// default_int_value(&DATA->ABGB.opt_unc_type,1);
+// default_double_value(&DATA->ABGB.single_unc,2);
+// default_double_value(&DATA->ABGB.min_threshold,10);//gC/m2
 
-// Default CH4 options
-printf("CH4.opt_unc_type=1; CH4.single_unc=2; CH4.min_threshold=1e-5 mgCH4/m2/d;\n");
-default_int_value(&DATA->CH4.opt_unc_type,1);
-default_double_value(&DATA->CH4.single_unc,2);
-default_double_value(&DATA->CH4.min_threshold,1e-5);//mgCH4/m2/d
+// // Default CH4 options
+// printf("CH4.opt_unc_type=1; CH4.single_unc=2; CH4.min_threshold=1e-5 mgCH4/m2/d;\n");
+// default_int_value(&DATA->CH4.opt_unc_type,1);
+// default_double_value(&DATA->CH4.single_unc,2);
+// default_double_value(&DATA->CH4.min_threshold,1e-5);//mgCH4/m2/d
 
-//Default ET options
-printf("ET.opt_unc_type=1; ET.single_unc=2; ET.min_threshold=0.1 mm/d;\n");
-default_int_value(&DATA->ET.opt_unc_type,1);
-default_double_value(&DATA->ET.single_unc,2);
-default_double_value(&DATA->ET.min_threshold,0.1);
+// //Default ET options
+// printf("ET.opt_unc_type=1; ET.single_unc=2; ET.min_threshold=0.1 mm/d;\n");
+// default_int_value(&DATA->ET.opt_unc_type,1);
+// default_double_value(&DATA->ET.single_unc,2);
+// default_double_value(&DATA->ET.min_threshold,0.1);
 
-//Default ROFF options
-printf("ROFF.opt_unc_type=1; ROFF.single_unc=2; ROFF.min_threshold=0.1 mm/d;\n");
-default_int_value(&DATA->ROFF.opt_unc_type,1);
-default_double_value(&DATA->ROFF.single_unc,2);
-default_double_value(&DATA->ROFF.min_threshold,0.1);
+// //Default ROFF options
+// printf("ROFF.opt_unc_type=1; ROFF.single_unc=2; ROFF.min_threshold=0.1 mm/d;\n");
+// default_int_value(&DATA->ROFF.opt_unc_type,1);
+// default_double_value(&DATA->ROFF.single_unc,2);
+// default_double_value(&DATA->ROFF.min_threshold,0.1);
 
-//Default EWT options;
-printf("EWT.single_unc=2; EWT.opt_normalization=1;\n");
-default_double_value(&DATA->EWT.single_unc,50);//mm
-default_int_value(&DATA->EWT.opt_normalization,1);
+// //Default EWT options;
+// printf("EWT.single_unc=2; EWT.opt_normalization=1;\n");
+// default_double_value(&DATA->EWT.single_unc,50);//mm
+// default_int_value(&DATA->EWT.opt_normalization,1);
 
-//Default GPP options
-printf("GPP.opt_unc_type=1; GPP.single_unc=2; GPP.min_threshold=0.1 gC/m2/d;\n");
-default_int_value(&DATA->GPP.opt_unc_type,1);
-default_double_value(&DATA->GPP.single_unc,2);
-default_double_value(&DATA->GPP.min_threshold,0.1);//gC/m2/d
+// //Default GPP options
+// printf("GPP.opt_unc_type=1; GPP.single_unc=2; GPP.min_threshold=0.1 gC/m2/d;\n");
+// default_int_value(&DATA->GPP.opt_unc_type,1);
+// default_double_value(&DATA->GPP.single_unc,2);
+// default_double_value(&DATA->GPP.min_threshold,0.1);//gC/m2/d
 
-//Default SIF options - shuang added
-printf("SIF.opt_unc_type=1; SIF.single_unc=2; SIF.min_threshold=0.1 gC/m2/d;\n");
-default_int_value(&DATA->SIF.opt_unc_type,1);
-default_double_value(&DATA->SIF.single_unc,2);
-default_double_value(&DATA->SIF.min_threshold,0.1);//gC/m2/d
+// //Default SIF options - shuang added
+// printf("SIF.opt_unc_type=1; SIF.single_unc=2; SIF.min_threshold=0.1 gC/m2/d;\n");
+// default_int_value(&DATA->SIF.opt_unc_type,1);
+// default_double_value(&DATA->SIF.single_unc,2);
+// default_double_value(&DATA->SIF.min_threshold,0.1);//gC/m2/d
 
-//Default LAI options
-printf("LAI.opt_unc_type=1; LAI.single_unc=2; LAI.min_threshold=0.1 m2/m2;\n");
-default_int_value(&DATA->LAI.opt_unc_type,1);
-default_double_value(&DATA->LAI.single_unc,2);
-default_double_value(&DATA->LAI.min_threshold,0.1);//m2/m2
+// //Default LAI options
+// printf("LAI.opt_unc_type=1; LAI.single_unc=2; LAI.min_threshold=0.1 m2/m2;\n");
+// default_int_value(&DATA->LAI.opt_unc_type,1);
+// default_double_value(&DATA->LAI.single_unc,2);
+// default_double_value(&DATA->LAI.min_threshold,0.1);//m2/m2
 
+// // //Default FIR options
+// // printf("FIR.opt_unc_type=0; FIR.single_unc=0.2; FIR.min_threshold=0.001 gC/m2/day;\n");
+// // default_int_value(&DATA->FIR.opt_unc_type,0);
+// // default_double_value(&DATA->FIR.single_unc,0.2);
+// // default_double_value(&DATA->FIR.min_threshold,0.001);//m2/m2
 
-//Default NBE options;
-printf("NBE.single_unc=1 gC/m2/d;\n");
-default_double_value(&DATA->NBE.single_unc,1);//gC/m2/d
+// //Default NBE options;
+// printf("NBE.single_unc=1 gC/m2/d;\n");
+// default_double_value(&DATA->NBE.single_unc,1);//gC/m2/d
 
-//Default DOM options
-printf("DOM.opt_unc_type=1; DOM.single_unc=2; DOM.min_threshold=10 gC/m2;\n");
-default_int_value(&DATA->DOM.opt_unc_type,1);
-default_double_value(&DATA->DOM.single_unc,2);
-default_double_value(&DATA->DOM.min_threshold,10);//gC/m2
-
-
-//Default SCF options
-printf("SCF.opt_unc_type=0; SCF.single_unc=0.1; SCF.min_threshold=0.1 m2/m2;\n");
-default_int_value(&DATA->SCF.opt_unc_type,0);
-default_double_value(&DATA->SCF.single_unc,0.1);
-default_double_value(&DATA->SCF.min_threshold,0.1);//m2/m2
+// //Default DOM options
+// printf("DOM.opt_unc_type=1; DOM.single_unc=2; DOM.min_threshold=10 gC/m2;\n");
+// default_int_value(&DATA->DOM.opt_unc_type,1);
+// default_double_value(&DATA->DOM.single_unc,2);
+// default_double_value(&DATA->DOM.min_threshold,10);//gC/m2
 
 
-
-
+// //Default SCF options
+// printf("SCF.opt_unc_type=0; SCF.single_unc=0.1; SCF.min_threshold=0.1 m2/m2;\n");
+// default_int_value(&DATA->SCF.opt_unc_type,0);
+// default_double_value(&DATA->SCF.single_unc,0.1);
+// default_double_value(&DATA->SCF.min_threshold,0.1);//m2/m2
 
 //pre-process obs to save time
 //Only required for timeseries obs
     //Keep alphabetical order if possible 
+printf("Preprocess ABGB: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ABGB);
+printf("Preprocess CH4: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->CH4);
+printf("Preprocess CWOO: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->CWOO);
+printf("Preprocess DOM: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->DOM);
+printf("Preprocess ET: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ET);
+printf("Preprocess EWT: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->EWT);
+printf("Preprocess GPP: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->GPP);
-TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->SIF);
+printf("Preprocess FIR: ");
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->FIR);
+printf("Preprocess LAI: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->LAI);
+printf("Preprocess NBE: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->NBE);
+printf("Preprocess ROFF: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->ROFF);
+printf("Preprocess SCF: ");
 TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->SCF);
-
+printf("Preprocess SIF: ");
+TIMESERIES_OBS_STRUCT_PREPROCESS(&DATA->SIF);
 
 
 printf("Done preprocess");
@@ -253,8 +272,6 @@ printf("Done reading all other edc ");
 		DATA->DISTURBANCE_FLUX.reference_mean=ncdf_read_double_attr(ncid, "DISTURBANCE_FLUX","reference_mean");
                                 DEFAULT_REFERENCE_MEAN(&DATA->DISTURBANCE_FLUX);
 
-
-        
 	DATA->DOY.values=ncdf_read_double_var(ncid, "DOY", &(DATA->DOY.length));
 		//DATA->DOY.reference_mean=ncdf_read_double_attr(ncid, "DOY","reference_mean");
     
@@ -323,7 +340,7 @@ printf("Done reading all other edc ");
     
 	DATA->EDC_EQF=ncdf_read_single_double_var(ncid, "EDC_EQF");
 
-	    default_double_value(&DATA->EDC_EQF,2);
+	    default_double_value(&DATA->EDC_EQF,2.0);
     printf("EDC_EQF = %2.2f\n",DATA->EDC_EQF);
 
     

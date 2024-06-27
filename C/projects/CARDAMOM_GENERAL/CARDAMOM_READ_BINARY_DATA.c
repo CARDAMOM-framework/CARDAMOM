@@ -71,9 +71,10 @@ DATA->M_EWT=calloc(Ntimesteps,sizeof(double));
 DATA->M_GPP=calloc(Ntimesteps,sizeof(double));
 DATA->M_SIF=calloc(Ntimesteps,sizeof(double));
 DATA->M_LAI=calloc(Ntimesteps,sizeof(double));//Warning, LAI larger than this!
+DATA->M_FIR=calloc(Ntimesteps,sizeof(double));
 DATA->M_NBE=calloc(Ntimesteps,sizeof(double));
 DATA->M_ROFF=calloc(Ntimesteps,sizeof(double));
-DATA->M_SCF=calloc(Ntimesteps,sizeof(double));//Warning, LAI larger than this!
+DATA->M_SCF=calloc(Ntimesteps,sizeof(double));
 
 
 
@@ -200,6 +201,7 @@ free(DATA.M_EWT);
 free(DATA.M_GPP);
 free(DATA.M_SIF);
 free(DATA.M_LAI);
+free(DATA.M_FIR);
 free(DATA.M_NBE);
 
 
