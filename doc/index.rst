@@ -3,8 +3,14 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to CARDAMOM's documentation!
-====================================
+Welcome to the CARDAMOM documentation
+=====================================
+
+**Technical documentation of the CARbon DAta-MOdel fraMework C implemtation (CARDAMOM-C)**
+
+**Authors:** Paul A. Levine, A. Anthony Bloom, Matthew A. Worden, T. Eren Bilir, Gregory R. Quetin
+
+**How to cite:** Levine, Paul A., Bloom, A. Anthony, Worden, Matthew A., Bilir, T. Eren, Quetin, Gregory R., Technical documentation of the CARbon DAta-MOdel fraMework C implemtation (CARDAMOM-C), *in prep.* <https://cardamom-framework.github.io/CARDAMOM/>\_ (last accessed *insert date accessed*)
 
 The CARDAMOM documentation presented here is written specifically for the `JPL, Stanford, UCSB and Caltech CARDAMOM framework <https://github.com/CARDAMOM-framework/CARDAMOM>`_ implementation, publicly available under a `GPL-v3 license <https://www.gnu.org/licenses/gpl-3.0.en.html>`_. :ref:`copyright-statement` © 2024, California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged.
 
