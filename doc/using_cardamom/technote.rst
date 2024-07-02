@@ -1,10 +1,16 @@
-Contributing to this technical manual
-=====================================
+Contributing to this technical documentation
+============================================
 
 .. toctree::
    :maxdepth: 2
 
-**How to contribute to the CARDAMOM technical manual:**
+**How to contribute to the CARDAMOM technical documentation:**
+
+Structure of the DALEC technical documentation
+----------------------------------------------
+
+The DALEC modules should be self-contained, in that all abbreviations (math symbols, acronyms, etc.) should be defined within the page for that module. Each model version will have its own documentation that includes implementation, and should contain tables of all pools, fluxes, and parameters. Consistency between tables and module documentation is recommended, but not required. For example, the hydrology module documentation may contain generic equations describing transfer of water between soil layers that can apply to any abritrary number of soil layers. The implementation of each specific model version will describe, e.g., the number of soil layers; the table will contain the abbreviations foe each soil layer, and those may not be the same as the generic abbreviations used in the module documentation.
+
 
 Making edits/modifications locally
 ----------------------------------
