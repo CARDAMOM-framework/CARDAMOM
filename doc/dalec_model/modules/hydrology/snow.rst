@@ -1,8 +1,8 @@
-Snow and frozen soil
-====================
+Snow hydrology
+==============
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-Snow and frozen soil in DALEC
+Snow hydrology in DALEC
