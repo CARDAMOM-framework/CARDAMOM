@@ -47,5 +47,3 @@ Git revert basically creates a new commit at the head of your current branch tha
 7. All users, whether or not you’ve made changes after the reverted commit, save your changes with ‘git add’, then pull from the master. 
 More useful tips from Alex Patton: ‘If you have made changes to your local repository and are not up to date with the origin master branch, then doing git a git pull will attempt to auto-merge the changes from master into your local version when you run git pull. If git discovers that you have made changes that are incompatible with the changes on origin master branch, then it will alert you to a merge conflict, and you will have to go into your code and sort out the conflicts yourself. Git will let you know which files it can’t merge if that happens. (Note that this paragraph is how git always works with regard to commits, and is not unique to the git revert I did)
 8. As noted in the user instructions, work on your own branch is the best way to avoid dealing with this kind of problems.
-
-9. DEFG
