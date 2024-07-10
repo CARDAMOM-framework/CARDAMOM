@@ -8,7 +8,7 @@ DALEC modules
    modules/phenology
    modules/allocation
    modules/mortality
-   modules/autotropic_respiration
+   modules/autotrophic_respiration
    modules/heterotrophic_respiration
    modules/hydrology
    modules/energy
