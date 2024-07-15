@@ -14,8 +14,6 @@ To model photosynthesis and hence calculate GPP we apply a vairant of the Farquh
 
     APAR = SW \cdot (1 - \rho_\text{leaf}) \cdot (1 - \exp(-K \cdot LAI \cdot \Omega))
 
-	where 
-
 * :math:`SW` is the incident shortwave radiation
 * :math:`\rho_\text{leaf}` is a parameter describing the reflected portion of photosynthetically active radiation due to canopy reflectance
 * :math:`K` is the vegetation extinction coefficient [Campbell:1998]_
@@ -33,12 +31,12 @@ a. Rubisco-limited rate (:math:`a_1`):
            V_\text{cmax} & \text{for C4}
        \end{cases}
 
-	where 
 * :math:`V_\text{cmax}` (mol CO\ :sub:`2` m\ :sup:`-2` s\ :sup:`-1`) is the maximum rate of carboxylation.
 * :math:`c_i` is the intercellular CO\ :sub:`2` concentration
 * :math:`c_p` is the CO\ :sub:`2` compensation point (the CO\ :sub:`2` concentration at which photosynthesis equals respiration)
 * :math:`K_c` is the Michaelis-Menten concentration for CO\ :sub:`2`
 * :math:`K_o` is the Michaelis-Menten concentration for O\ :sub:`2
+
 
 b. Light-limited rate (:math:`a_2`):
 
@@ -49,7 +47,6 @@ b. Light-limited rate (:math:`a_2`):
            J & \text{for C4}
        \end{cases}
 
-   where 
 * :math:`J` is the rate of electron transport.
 
 3. The total net carbon assimilation (:math:`A_n`) is given by the weighted sum of C3 and C4 net carbon assimilation fractions:
@@ -58,7 +55,6 @@ b. Light-limited rate (:math:`a_2`):
 
     A_n =  \min(a_1 \cdot \beta, a_2) - R_d)
 
-	where 
 * :math:`\beta` is the minimum of the moisture stress factor related to the mean soil moisture concentration in the root zone, and the temperature stress factor
 * :math:`R_d` is the leaf dark respiration.
 
