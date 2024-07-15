@@ -5,21 +5,26 @@ Modified Farquhar-von Caemmerer-Berry model
    :maxdepth: 2
    :caption: Contents:
 
-Description and equations for Modified Farquhar-von Caemmerer-Berry model photosynthesis scheme
 
-To model photosynthesis and hence calculate GPP we apply a vairant of the Farquhar-von Caemmerer-Berry model adapted from [Liu:2021vu]_.
+To model photosynthesis and hence calculate GPP we apply a vairant of the Farquhar-von Caemmerer-Berry model adapted from [Liu:2021]_.
 
-The absorbed photosynthetically active radiation (APAR) driving photosynthesis is calculated using the Beer-Lambert law:
+1. The absorbed photosynthetically active radiation (APAR) driving photosynthesis is calculated using the Beer-Lambert law:
 
 .. math::
 
     APAR = SW \cdot (1 - \rho_\text{leaf}) \cdot (1 - \exp(-K \cdot LAI \cdot \Omega))
 
-where :math:`SW` is the incoming shortwave radiation, :math:`\rho_\text{leaf}` is the a paramater describing the PAR canopy reflectance, :math:`K` is the vegetation extinction coefficient [Campbell:1998to]_, :math:`LAI` is the leaf area index, and :math:`\Omega` is the clumping index [Braghiere:2019wu]_.
+where 
 
-Gross Primary Production (GPP) is calculated based on C3 and C4 photosynthesis biochemistry to determine potential leaf-level photosynthesis (unstressed by water availability). This is expressed in terms of two potentially limiting rates:
+* :math:`SW` is the incident shortwave radiation
+* :math:`\rho_\text{leaf}` is a parameter describing the reflected portion of photosynthetically active radiation due to canopy reflectance
+* :math:`K` is the vegetation extinction coefficient [Campbell:1998]_
+* :math:`LAI` is the leaf area index
+* :math:`\Omega` is the clumping index [Braghiere:2019]_
 
-1. Rubisco-limited rate (:math:`a_1`):
+2. Net carbon assimilation is calculated based on C3 and C4 photosynthesis biochemistry to determine potential leaf-level photosynthesis (unstressed by water availability). This is expressed in terms of two potentially limiting rates:
+
+a. Rubisco-limited rate (:math:`a_1`):
 
    .. math::
 
@@ -28,9 +33,10 @@ Gross Primary Production (GPP) is calculated based on C3 and C4 photosynthesis b
            V_\text{cmax} & \text{for C4}
        \end{cases}
 
-   where :math:`V_\text{cmax}` (mol CO\ :sub:`2` m\ :sup:`-2` s\ :sup:`-1`) is the maximum rate of carboxylation.
+   where 
+* :math:`V_\text{cmax}` (mol CO\ :sub:`2` m\ :sup:`-2` s\ :sup:`-1`) is the maximum rate of carboxylation.
 
-2. Light-limited rate (:math:`a_2`):
+b. Light-limited rate (:math:`a_2`):
 
    .. math::
 
@@ -49,12 +55,12 @@ The total net carbon assimilation (:math:`A_n`) is given by the weighted sum of 
 
 where :math:`\beta` is the moisture stress factor related to the mean soil moisture concentration in the root zone, and :math:`R_d` is the leaf dark respiration, calculated as :math:`0.015 \cdot V_\text{cmax} \cdot \beta`.
 
-GPP, representing the total canopy photosynthesis, is calculated by integrating leaf-level photosynthesis over the entire canopy leaf area index:
+3. GPP, representing the total canopy photosynthesis, is calculated by integrating leaf-level photosynthesis over the entire canopy leaf area index:
 
 .. math::
 
     GPP = A_n \cdot \frac{1 - \exp(-K \cdot LAI \cdot \Omega)}{K}
 
-.. [Liu:2021vu] Liu et al., 2021
-.. [Campbell:1998to] Campbell, 1998
-.. [Braghiere:2019wu] Braghiere et al., 2019
+.. [Liu:2021] Liu, Y., Holtzman, N.M. and Konings, A.G., 2021. Global ecosystem-scale plant hydraulic traits retrieved using model–data fusion. Hydrology and Earth System Sciences, 25(5), pp.2399-2417. https://doi.org/10.5194/hess-25-2399-2021
+.. [Campbell:1998] Campbell, G.S. and Norman, J.M., 2000. An introduction to environmental biophysics. Springer Science & Business Media.
+.. [Braghiere:2019] Braghiere, R.K., Quaife, T., Black, E., He, L. and Chen, J.M., 2019. Underestimation of global photosynthesis in Earth system models due to representation of vegetation structure. Global Biogeochemical Cycles, 33(11), pp.1358-1369. https://doi.org/10.1029/2018GB006135
