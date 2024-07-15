@@ -8,13 +8,13 @@ Modified Farquhar-von Caemmerer-Berry model
 
 To model photosynthesis and hence calculate GPP we apply a vairant of the Farquhar-von Caemmerer-Berry model adapted from [Liu:2021]_.
 
-1. The absorbed photosynthetically active radiation (APAR) driving photosynthesis is calculated using the Beer-Lambert law:
+1. The absorbed photosynthetically active radiation (APAR) driving photosynthesis is calculated using the Beer-Lambert law [Campbell:1998]_ :
 
 .. math::
 
     APAR = SW \cdot (1 - \rho_\text{leaf}) \cdot (1 - \exp(-K \cdot LAI \cdot \Omega))
 
-where 
+	where 
 
 * :math:`SW` is the incident shortwave radiation
 * :math:`\rho_\text{leaf}` is a parameter describing the reflected portion of photosynthetically active radiation due to canopy reflectance
@@ -33,8 +33,12 @@ a. Rubisco-limited rate (:math:`a_1`):
            V_\text{cmax} & \text{for C4}
        \end{cases}
 
-   where 
+	where 
 * :math:`V_\text{cmax}` (mol CO\ :sub:`2` m\ :sup:`-2` s\ :sup:`-1`) is the maximum rate of carboxylation.
+* :math:`c_i` is the intercellular CO\ :sub:`2` concentration
+* :math:`c_p` is the CO\ :sub:`2` compensation point (the CO\ :sub:`2` concentration at which photosynthesis equals respiration)
+* :math:`K_c` is the Michaelis-Menten concentration for CO\ :sub:`2`
+* :math:`K_o` is the Michaelis-Menten concentration for O\ :sub:`2
 
 b. Light-limited rate (:math:`a_2`):
 
@@ -45,22 +49,28 @@ b. Light-limited rate (:math:`a_2`):
            J & \text{for C4}
        \end{cases}
 
-   where :math:`J` is the rate of electron transport.
+   where 
+* :math:`J` is the rate of electron transport.
 
-The total net carbon assimilation (:math:`A_n`) is given by the weighted sum of C3 and C4 net carbon assimilation fractions:
+3. The total net carbon assimilation (:math:`A_n`) is given by the weighted sum of C3 and C4 net carbon assimilation fractions:
 
 .. math::
 
-    A_n = \max(0, \min(a_1 \cdot \beta, a_2) - R_d)
+    A_n =  \min(a_1 \cdot \beta, a_2) - R_d)
 
-where :math:`\beta` is the moisture stress factor related to the mean soil moisture concentration in the root zone, and :math:`R_d` is the leaf dark respiration, calculated as :math:`0.015 \cdot V_\text{cmax} \cdot \beta`.
+	where 
+* :math:`\beta` is the minimum of the moisture stress factor related to the mean soil moisture concentration in the root zone, and the temperature stress factor
+* :math:`R_d` is the leaf dark respiration.
 
-3. GPP, representing the total canopy photosynthesis, is calculated by integrating leaf-level photosynthesis over the entire canopy leaf area index:
+4. GPP, representing the total canopy photosynthesis, is calculated by integrating leaf-level photosynthesis over the entire canopy leaf area index:
 
 .. math::
 
     GPP = A_n \cdot \frac{1 - \exp(-K \cdot LAI \cdot \Omega)}{K}
-
-.. [Liu:2021] Liu, Y., Holtzman, N.M. and Konings, A.G., 2021. Global ecosystem-scale plant hydraulic traits retrieved using model–data fusion. Hydrology and Earth System Sciences, 25(5), pp.2399-2417. https://doi.org/10.5194/hess-25-2399-2021
-.. [Campbell:1998] Campbell, G.S. and Norman, J.M., 2000. An introduction to environmental biophysics. Springer Science & Business Media.
+    
 .. [Braghiere:2019] Braghiere, R.K., Quaife, T., Black, E., He, L. and Chen, J.M., 2019. Underestimation of global photosynthesis in Earth system models due to representation of vegetation structure. Global Biogeochemical Cycles, 33(11), pp.1358-1369. https://doi.org/10.1029/2018GB006135
+.. [Campbell:1998] Campbell, G.S. and Norman, J.M., 2000. An introduction to environmental biophysics. Springer Science & Business Media.
+..[Farquhar:1980] Farquhar, G.D., von Caemmerer, S.V. and Berry, J.A., 1980. A biochemical model of photosynthetic CO 2 assimilation in leaves of C 3 species. planta, 149, pp.78-90. https://doi.org/10.1007/BF00386231
+.. [Liu:2021] Liu, Y., Holtzman, N.M. and Konings, A.G., 2021. Global ecosystem-scale plant hydraulic traits retrieved using model–data fusion. Hydrology and Earth System Sciences, 25(5), pp.2399-2417. https://doi.org/10.5194/hess-25-2399-2021
+
+
