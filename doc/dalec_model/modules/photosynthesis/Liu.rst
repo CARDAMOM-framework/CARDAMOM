@@ -68,9 +68,14 @@ b. Light-limited rate (:math:`a_2`):
 
     GPP = A_n \cdot \frac{1 - \exp(-K \cdot LAI \cdot \Omega)}{K}
     
+    
+    
 .. [Braghiere:2019] Braghiere, R.K., Quaife, T., Black, E., He, L. and Chen, J.M., 2019. Underestimation of global photosynthesis in Earth system models due to representation of vegetation structure. Global Biogeochemical Cycles, 33(11), pp.1358-1369. https://doi.org/10.1029/2018GB006135
+
 .. [Campbell:1998] Campbell, G.S. and Norman, J.M., 2000. An introduction to environmental biophysics. Springer Science & Business Media.
-..[Farquhar:1980] Farquhar, G.D., von Caemmerer, S.V. and Berry, J.A., 1980. A biochemical model of photosynthetic CO 2 assimilation in leaves of C 3 species. planta, 149, pp.78-90. https://doi.org/10.1007/BF00386231
+
+.. [Farquhar:1980] Farquhar, G.D., von Caemmerer, S.V. and Berry, J.A., 1980. A biochemical model of photosynthetic CO 2 assimilation in leaves of C 3 species. planta, 149, pp.78-90. https://doi.org/10.1007/BF00386231
+
 .. [Liu:2021] Liu, Y., Holtzman, N.M. and Konings, A.G., 2021. Global ecosystem-scale plant hydraulic traits retrieved using model–data fusion. Hydrology and Earth System Sciences, 25(5), pp.2399-2417. https://doi.org/10.5194/hess-25-2399-2021
 
 
