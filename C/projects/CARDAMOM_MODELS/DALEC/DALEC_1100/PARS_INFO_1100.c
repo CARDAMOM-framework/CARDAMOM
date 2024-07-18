@@ -156,11 +156,11 @@ parmax[P.i_LY3_SM]=1;
 
 /*LY1 porosity*/
 parmin[P.LY1_por]=0.2;
-parmax[P.LY1_por]=0.8;
+parmax[P.LY1_por]=0.98;
 
 /*LY2 porosity*/
 parmin[P.LY2_por]=0.2;
-parmax[P.LY2_por]=0.8;
+parmax[P.LY2_por]=0.98;
 
 /*LY3 porosity*/
 parmin[P.LY3_por]=0.2;
@@ -365,7 +365,7 @@ parmax[P.thermal_cond]=2;
 
 
 /*Surface soil thermal conductivity in W/m/K */
-parmin[P.thermal_cond_surf]=0.03;
+parmin[P.thermal_cond_surf]=0.3;
 parmax[P.thermal_cond_surf]=2;
 
 
