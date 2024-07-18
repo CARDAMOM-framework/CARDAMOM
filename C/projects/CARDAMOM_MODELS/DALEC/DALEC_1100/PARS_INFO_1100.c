@@ -62,7 +62,8 @@ parmax[P.t_lab]=0.01;
 parmin[P.t_root]=0.0001;
 parmax[P.t_root]=0.01;
 
-/*Inverse of leaf longevity at any period i.e. background turnover (days-1)*/
+/*Inverse of undisturbed, non-phenological leaf longevity,
+ i.e. background turnover (days-1)*/ morning
 parmin[P.t_foliar]=0.00068; /*around 4 yrs*/
 parmax[P.t_foliar]=0.0334;
 
@@ -108,7 +109,7 @@ parmax[P.i_cwd]=100000.0;
 
 /*C litter*/
 parmin[P.i_lit]=1.0;
-parmax[P.i_lit]=2000.0;
+parmax[P.i_lit]=4000.0;
 
 /*C_som*/
 parmin[P.i_som]=1.0;
