@@ -1,4 +1,6 @@
-#### Compile code from Github
+# Python demo
+
+## Compile code from Github
 + Use a C compiler to comple the assimilation (CARDAMOM_MDF.exe) and forward run (CARDAMOM_RUN_MODEL.exe) functions. For example:
 
 ```bash
@@ -7,7 +9,7 @@ gcc -std=c99 CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.c -o CARDAM
 
 ```
 
-#### Tutorials
+## Tutorials
 
 
 Summary of tools to interact with CARDAMOM using python. Read and write of binary files. Conversion of outputs (parameters, pools, fluxes) to netcdf. Additional functionality in summarizing point runs into a netcdf map of results.

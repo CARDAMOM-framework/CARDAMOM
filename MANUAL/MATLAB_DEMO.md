@@ -9,7 +9,7 @@ Notes:
     + Please report questions and issues encountered in FAQ & FEI section below
     + Works with Matlab 2017b and later versions. Compatibility with earlier versions is likely straightforward.
     
-#### Run Matlab Demo
+## Run Matlab Demo
 1. Start matlab
 2. Set CARDAMOM environmental variables in matlab
     * To do this:
