@@ -6,6 +6,8 @@
 #include <time.h>
 
 
+//Maximum length of metadata strings that will be allowed when writing to netcdf.
+#define METADATA_MAX_LEN 100 
 
 /* Handle netCDF library errors by printing an error message and exiting with a
  * non-zero status.*/
@@ -163,7 +165,8 @@ FAILONERROR(nc_def_dim(ncid,"EDC Index",CARDADATA.noedcs,&edcIdxDimID ));
 
 FAILONERROR(nc_def_dim(ncid,"Likelihood Index",CARDADATA.nolikelihoods,&noLikelihoodsDimID ));
 int chidDimID; //This is the charicter position dimension. It is used for strings, and fixed to a max of 200 chars
-FAILONERROR(nc_def_dim(ncid,"chid",200,&chidDimID ));
+
+FAILONERROR(nc_def_dim(ncid,"chid",METADATA_MAX_LEN,&chidDimID ));
 
 
 //size_t chunkSize = (size_t) Ntimesteps * sizeof(double);
@@ -181,13 +184,13 @@ FAILONERROR(nc_def_var(	ncid,"FLUXES" , NC_DOUBLE, 3, fluxes_dems, &(fluxesVarID
 //Create each flux's mapping as an attribute
 struct FLUX_META_STRUCT fluxInfo = ((DALEC *)CARDADATA.MODEL)->FLUX_META;
 for(int i = 0; i < CARDADATA.nofluxes; i++){
-  const char* ncVarAbbreviation =(const char *) calloc(sizeof(char), 200 );//WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
+  const char* ncVarAbbreviation =(const char *) calloc(sizeof(char), METADATA_MAX_LEN );//WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
 
   if (fluxInfo.ABBREVIATION != NULL && fluxInfo.ABBREVIATION[i] != NULL){
-    snprintf( (char *) ncVarAbbreviation,200,"FLUX-%s", fluxInfo.ABBREVIATION[i] );//Write to it once, overriding the const qualifier so it is set
+    snprintf( (char *) ncVarAbbreviation,METADATA_MAX_LEN-1,"FLUX-%s", fluxInfo.ABBREVIATION[i] );//Write to it once, overriding the const qualifier so it is set
   } else {
     //just make up an abbrev
-    snprintf( (char *) ncVarAbbreviation,200,"FLUX-%d", i);//Write to it once, overriding the const qualifier so it is set
+    snprintf( (char *) ncVarAbbreviation,METADATA_MAX_LEN-1,"FLUX-%d", i);//Write to it once, overriding the const qualifier so it is set
     printf("ERROR in %s at %d: Flux ID %d has no defined ABBREVIATION in it's FLUX_META. Add it to your DALEC_####_NC_INFO.c file! This flux will be called %s until you do!\n", __FILE__, __LINE__,i,ncVarAbbreviation);
 
   }
@@ -211,13 +214,12 @@ FAILONERROR(nc_def_var(	ncid,"POOLS" , NC_DOUBLE, 3, pools_dems, &(poolsVarID) )
 
 
 for(int i = 0; i < CARDADATA.nopools; i++){
-  const char* ncVarAbbreviation =(const char *) calloc(sizeof(char), 200 );//WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
+  const char* ncVarAbbreviation =(const char *) calloc(sizeof(char), METADATA_MAX_LEN );//WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
   if (poolsInfo.ABBREVIATION != NULL && poolsInfo.ABBREVIATION[i] != NULL ){
-    snprintf( (char *) ncVarAbbreviation,200,"POOL-%s", poolsInfo.ABBREVIATION[i] );//Write to it once, overriding the const qualifier so it is set
+    snprintf( (char *) ncVarAbbreviation,METADATA_MAX_LEN-1,"POOL-%s", poolsInfo.ABBREVIATION[i] );//Write to it once, overriding the const qualifier so it is set
   } else {
     //just make up a name
-    ncVarAbbreviation = (const char *) calloc(sizeof(char), 100 ); //WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
-    snprintf( (char *) ncVarAbbreviation,200,"POOL-%d", i);//Write to it once, overriding the const qualifier so it is set
+    snprintf( (char *) ncVarAbbreviation,METADATA_MAX_LEN-1,"POOL-%d", i);//Write to it once, overriding the const qualifier so it is set
     printf("ERROR in %s at %d: pool ID %d has no defined ABBREVIATION in it's POOLS_META. Add it to your DALEC_####_NC_INFO.c file! This pool will be called %s until you do!\n", __FILE__, __LINE__,i,ncVarAbbreviation);
 
   }
@@ -257,13 +259,12 @@ FAILONERROR(nc_def_var(	ncid, "PARS", NC_DOUBLE, 2, pars_dems, &(parsVarID) ));
 
 
 for(int i = 0; i < CARDADATA.nopars; i++){
-  const char* ncVarAbbreviation =(const char *) calloc(sizeof(char), 200 );//WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
+  const char* ncVarAbbreviation =(const char *) calloc(sizeof(char), METADATA_MAX_LEN );//WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
   if (parsInfo.ABBREVIATION != NULL && parsInfo.ABBREVIATION[i] != NULL){
-    snprintf( (char *) ncVarAbbreviation,200,"PAR-%s", parsInfo.ABBREVIATION[i] );//Write to it once, overriding the const qualifier so it is set
+    snprintf( (char *) ncVarAbbreviation,METADATA_MAX_LEN-1,"PAR-%s", parsInfo.ABBREVIATION[i] );//Write to it once, overriding the const qualifier so it is set
   } else {
     //just make up a name
-    ncVarAbbreviation = (const char *) calloc(sizeof(char), 100 ); //WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
-    snprintf( (char *) ncVarAbbreviation,200,"PAR-%d", i); //Write to it once, overriding the const qualifier so it is set
+    snprintf( (char *) ncVarAbbreviation,METADATA_MAX_LEN-1,"PAR-%d", i); //Write to it once, overriding the const qualifier so it is set
     printf("ERROR in %s at %d: paramater ID %d has no defined ABBREVIATION in it's PARS_META. Add it to your DALEC_####_NC_INFO.c file! This paramater will be called %s until you do!\n", __FILE__, __LINE__,i,ncVarAbbreviation );
   }
   
