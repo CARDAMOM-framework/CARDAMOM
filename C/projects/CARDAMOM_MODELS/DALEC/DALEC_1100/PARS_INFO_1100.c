@@ -63,7 +63,7 @@ parmin[P.t_root]=0.0001;
 parmax[P.t_root]=0.01;
 
 /*Inverse of undisturbed, non-phenological leaf longevity,
- i.e. background turnover (days-1)*/ morning
+ i.e. background turnover (days-1)*/ 
 parmin[P.t_foliar]=0.00068; /*around 4 yrs*/
 parmax[P.t_foliar]=0.0334;
 
