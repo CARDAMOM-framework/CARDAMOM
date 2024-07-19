@@ -75,6 +75,7 @@ DATA->M_FIR=calloc(Ntimesteps,sizeof(double));
 DATA->M_NBE=calloc(Ntimesteps,sizeof(double));
 DATA->M_ROFF=calloc(Ntimesteps,sizeof(double));
 DATA->M_SCF=calloc(Ntimesteps,sizeof(double));
+DATA->M_SWE=calloc(Ntimesteps,sizeof(double));
 
 
 

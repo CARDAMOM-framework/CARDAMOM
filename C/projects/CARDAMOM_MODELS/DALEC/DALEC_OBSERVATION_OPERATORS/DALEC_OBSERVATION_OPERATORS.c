@@ -47,6 +47,8 @@ bool SUPPORT_FIR_OBS;
 int FIR_flux;
 bool SUPPORT_SCF_OBS;
 int SCF_pool;
+bool SUPPORT_SWE_OBS;
+int SWE_pool;
 
 
 //
@@ -113,6 +115,7 @@ OBSOPE->SUPPORT_NBE_OBS=false;
 OBSOPE->SUPPORT_ROFF_OBS=false;
 OBSOPE->SUPPORT_SCF_OBS=false;
 OBSOPE->SUPPORT_SIF_OBS=false;
+OBSOPE->SUPPORT_SWE_OBS=false;
 
 
 OBSOPE->SUPPORT_NBEmrg_OBS=false;
@@ -420,6 +423,24 @@ if ((TOBS.valid_obs_length>0) ){int n;
 
 return 0;}
 
+//SWE observation operator
+int DALEC_OBSOPE_SWE(DATA * D, OBSOPE * O){
+//int folc_pool,double lcma_pars_index
+
+//Run length
+int N=D->ncdf_data.TIME_INDEX.length;
+
+//Time varying GPP and mean GPP
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.SWE;
+
+if ((TOBS.valid_obs_length>0) ){int n;
+    for (n=0;n<N;n++){
+        D->M_SWE[n]=(D->M_POOLS[D->nopools*n+O->SWE_pool]+D->M_POOLS[D->nopools*(n+1)+O->SWE_pool])*0.5;
+        }
+    }
+
+return 0;}
+
 // SIF operator is made the same as GPP, be careful with its opt_filter and opt_normalization set up - shuang
 // Mean_SIF is not available since current model does not yet simulate SIF - shuang
 
@@ -577,6 +598,7 @@ if (O->SUPPORT_NBE_OBS){DALEC_OBSOPE_NBE(D, O);}
 if (O->SUPPORT_ROFF_OBS){DALEC_OBSOPE_ROFF(D, O);}
 if (O->SUPPORT_SCF_OBS ){DALEC_OBSOPE_SCF(D, O);}
 if (O->SUPPORT_SIF_OBS ){DALEC_OBSOPE_SIF(D, O);}
+if (O->SUPPORT_SWE_OBS ){DALEC_OBSOPE_SWE(D, O);}
 
 // Emergent quantities
 if (O->SUPPORT_CUEmrg_OBS){DALEC_OBSOPE_CUEmrg(D, O);}

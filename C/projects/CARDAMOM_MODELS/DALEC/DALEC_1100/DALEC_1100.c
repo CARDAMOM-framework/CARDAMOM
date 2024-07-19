@@ -1446,6 +1446,7 @@ OBSOPE.SUPPORT_FIR_OBS=true;
 OBSOPE.SUPPORT_CH4_OBS=true;
 OBSOPE.SUPPORT_ROFF_OBS=true;
 OBSOPE.SUPPORT_SCF_OBS=true;
+OBSOPE.SUPPORT_SWE_OBS=true;
 
 
 
@@ -1530,6 +1531,8 @@ OBSOPE.FIR_flux=F.f_total;
 //SCF-specific variables
 OBSOPE.SCF_pool=S.D_SCF;
 
+//SWE-specific variables
+OBSOPE.SWE_pool=S.H2O_SWE;
 
 //Vcmax25 parameters
 OBSOPE.Vcmax25_PARAM=P.Vcmax25;

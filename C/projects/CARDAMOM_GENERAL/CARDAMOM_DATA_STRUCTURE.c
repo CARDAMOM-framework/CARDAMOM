@@ -31,6 +31,7 @@ double *M_NBE;
 double *M_ROFF;
 double *M_SCF;
 double *M_SIF;
+double *M_SWE;
 
 //Mean values
 double M_Mean_ABGB;
