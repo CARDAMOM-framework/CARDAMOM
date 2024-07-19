@@ -26,7 +26,6 @@ MCOPT->fADAPT=0.5;
 
 
 MCOPT->nOUT=DATA.ncdf_data.MCMCID.nITERATIONS;
-MCOPT->nSTART=0;
 MCOPT->nPRINT=DATA.ncdf_data.MCMCID.nPRINT;
 MCOPT->minstepsize=DATA.ncdf_data.MCMCID.minstepsize;
 MCOPT->mcmcid=DATA.ncdf_data.MCMCID.value;
@@ -48,7 +47,7 @@ MCOPT->nWRITE=MCOPT->nOUT/DATA.ncdf_data.MCMCID.nSAMPLES;
 printf("**********MCMCOPT SUMMARY*******\n");
 
 printf("Number of iterations = %i\n",MCOPT->nOUT);
-printf("Print status every %i iterations \n",MCOPT->nPRINT);
+printf("Print status every %i iterations \n",MCOPT->nOUT);
 printf("Write parameters every %i iterations \n",MCOPT->nWRITE);
 printf("Number of samples requested (including burn-in) = %i\n",DATA.ncdf_data.MCMCID.nSAMPLES);
 printf("Burn in fraction = %2.2f\n",MCOPT->fADAPT);
@@ -136,7 +135,7 @@ MCMC_OPTIONS MCOPT;
 READ_MCOPT(&MCOPT,DATA, CBRfile);
 
 if (MCOPT.mcmcid==119){MCOPT.nchains=1;}
-if (MCOPT.mcmcid==3){MCOPT.nchains=400;}
+if (MCOPT.mcmcid==3){MCOPT.nchains=200;}
 else if (MCOPT.mcmcid==2){MCOPT.nchains=100;}
 
 
@@ -212,8 +211,6 @@ clock_t    start = clock();//Start timer
 READ_PARI_DATA(&PI, &DATA, &MCOUT, &MCOPT,CLA);
 printf("CARDAMOM_MDF.c: READ_PARI_DATA successfully executed\n");
 
-// Check whether this is a restart, and if so, set APPEND to 1
-if (MCOPT.nSTART>0){MCOPT.APPEND=1;}
 
 clock_t   end = clock();//Stop timer
 double         cpu_time_used_search = ((double) (end - start)) / CLOCKS_PER_SEC;

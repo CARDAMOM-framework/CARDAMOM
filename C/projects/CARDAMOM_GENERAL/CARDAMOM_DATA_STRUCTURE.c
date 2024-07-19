@@ -24,14 +24,12 @@ double *M_CWOO;
 double *M_DOM;
 double *M_ET;
 double *M_EWT;
-double *M_FIR;
 double *M_GPP;
+double *M_SIF;
 double *M_LAI;
 double *M_NBE;
 double *M_ROFF;
 double *M_SCF;
-double *M_SIF;
-
 //Mean values
 double M_Mean_ABGB;
 double M_Mean_FIR;
@@ -40,7 +38,6 @@ double M_Mean_LAI;
 //Miscelaneous
 double M_ABGB_t0;
 //Parameters and emergent quantities
-double M_PEQ_NBEmrg;
 double M_PEQ_Cefficiency;
 double M_PEQ_CUE;
 double M_PEQ_Vcmax25;
@@ -54,7 +51,7 @@ double M_PEQ_S_fv;
 double M_PEQ_rhch4_rhco2; // add '*' if it's timeseries
 
 
-//Full state variables
+//Fyll state variables
 double *M_FLUXES;
 double *M_POOLS;
 /*even though sizes are known, memory needs to be explicitly allocated*/

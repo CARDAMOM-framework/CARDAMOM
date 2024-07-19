@@ -4,7 +4,7 @@
 /*mean matrix from double pointer routine*/
 double mean_pool(double *PA,int p,int nc, int nopools){
 /*declarations*/
-int c;
+int r,c;
 double meanpool=0;
 /*deriving mean of pool p*/
 for (c=0;c<nc;c++){

@@ -3,8 +3,6 @@ typedef struct{
 int nADAPT;
 /*Adapt step size for XX fraction of full run*/
 double fADAPT;
-/*Starting counter value for N when the MCMC runs, for if the MCMC is starting from a restart file*/
-int nSTART;
 /*Number of requested parameter vectors*/
 int nOUT;
 /*Print info every N solutions (set to 0 for silent)*/
