@@ -148,7 +148,7 @@ parmax[P.i_LY3_SM]=1;
 
 /*LY1 porosity*/
 parmin[P.LY1_por]=0.2;
-parmax[P.LY1_por]=0.98;
+parmax[P.LY1_por]=0.98/*0.98*/;
 
 /*LY2 porosity*/
 parmin[P.LY2_por]=0.2;
