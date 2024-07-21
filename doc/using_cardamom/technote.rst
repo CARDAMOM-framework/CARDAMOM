@@ -11,6 +11,10 @@ Structure of the DALEC technical documentation
 
 The DALEC modules should be self-contained, in that all abbreviations (math symbols, acronyms, etc.) should be defined within the page for that module. Each model version will have its own documentation that includes implementation, and should contain tables of all pools, fluxes, and parameters. Consistency between tables and module documentation is recommended, but not required. For example, the hydrology module documentation may contain generic equations describing transfer of water between soil layers that can apply to any abritrary number of soil layers. The implementation of each specific model version will describe, e.g., the number of soil layers; the table will contain the abbreviations foe each soil layer, and those may not be the same as the generic abbreviations used in the module documentation.
 
+Citing publications and other sources
+-------------------------------------
+
+References to publications, webpages, and other sources should be cited using an in-line `citation <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#citations>`_ that references a complete citation at the bottom of the page in the `APA reference format <https://apastyle.apa.org/style-grammar-guidelines/references>`_, including a `digital object identifier (DOI) <https://www.doi.org>`_ when available. Please use the formatting in this example [Author:2024]_.
 
 Making edits/modifications locally
 ----------------------------------
@@ -49,3 +53,6 @@ Interacting with our GitHub repository
 --------------------------------------
 
 * To clone the `GitHub CARDAMOM repository`_, use ``git clone https://github.com/CARDAMOM-framework/CARDAMOM.git`` from the command line, or use a GUI based solution such as `GitHub Desktop <https://desktop.github.com>`_.
+
+.. [Author:2024] Author, A.N., Coauthor, A.C. and More, M., 2024. Title of example journal article. *Name of Example Journal, 100(1)*, 11--21. https://doi.org/example-doi
+
