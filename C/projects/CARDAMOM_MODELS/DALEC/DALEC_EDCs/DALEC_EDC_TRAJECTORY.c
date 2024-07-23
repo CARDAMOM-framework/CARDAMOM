@@ -52,44 +52,11 @@ int nofluxes=DALECmodel->nofluxes;
      //Looping through all pools
 
 /*deriving mean pools here!*/
-      int s,n,m,i,p;
-       PEDC=0;
-
-    for (s=0;s<E.no_pools_to_check;s++){
-
-  double EQF=E.pool_eqf[s];
-
-p = E.pool_indices[s];
-
-double MPOOLSjan=0;
-double MPOOLS=mean_pool(DATA->M_POOLS,p,N_timesteps+1,nopools);
-
+int s,n,m,i,p;
+PEDC=0;
 
 double * FLUXES = DATA->M_FLUXES;
 double * POOLS = DATA->M_POOLS;
-
-
-/*deriving mean January pools*/
-/*Assuming COMPLETE years*/
-
-/*pool interval*/
-
-
-int dint=(int)floor(N_timesteps/(TIME_INDEX[N_timesteps-1]-TIME_INDEX[0])*365.25);
-/*declaring mean pool array*/
-
-/*deriving mean jan pools*/
-/*based on all jan pools except initial conditions*/
-
-    
-
-for (m=0;m<(N_timesteps/dint+1);m++){
-MPOOLSjan=MPOOLSjan+POOLS[nopools*(m*dint)+p]/(N_timesteps/dint+1);}
-
-
-
-
-
 
 double *FT;
 FT=calloc(nofluxes,sizeof(double));
