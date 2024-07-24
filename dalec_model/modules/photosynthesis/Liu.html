@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modified Farquhar-von Caemmerer-Berry model &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" />
+    <link rel="next" title="Phenology modules" href="../phenology.html" />
+    <link rel="prev" title="Aggregated canopy model (ACM)" href="ACM.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC model:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview of DALEC model</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../modules.html">DALEC modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../photosynthesis.html">Photosynthesis modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="ACM.html">Aggregated canopy model (ACM)</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Modified Farquhar-von Caemmerer-Berry model</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../phenology.html">Phenology modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../allocation.html">Allocation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mortality.html">Mortality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autotrophic_respiration.html">Autotrophic Respiration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../heterotrophic_respiration.html">Heterotrophic Respiration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hydrology.html">Hydrology modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../energy.html">LST-driven soil energy balance</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../versions.html">DALEC versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../using_cardamom/file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../using_cardamom/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../using_cardamom/technote.html">Contributing to this technical documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/CARDAMOM_NETCDF_INPUT_FILE.html">CARDAMOM Netcdf input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/COST_FUNCTION.html">CARDAMOM cost function <a name="cardamom-cost-function"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/DEBUGGING_TIPS.html">Debugging tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/GITHUB_BASICS.html">Github basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/MCMC_IN_CARDAMOM_OVERVIEW.html">MCMC overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/OUTPUT_DATA_ANALYSIS.html">Output Data and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/PARALLELIZATION.html">Parallelization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../modules.html">DALEC modules</a></li>
+          <li class="breadcrumb-item"><a href="../photosynthesis.html">Photosynthesis modules</a></li>
+      <li class="breadcrumb-item active">Modified Farquhar-von Caemmerer-Berry model</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/dalec_model/modules/photosynthesis/Liu.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="modified-farquhar-von-caemmerer-berry-model">
+<h1>Modified Farquhar-von Caemmerer-Berry model<a class="headerlink" href="#modified-farquhar-von-caemmerer-berry-model" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>To model photosynthesis and hence calculate GPP we apply a vairant of the Farquhar-von Caemmerer-Berry model adapted from <a class="reference internal" href="#liu-2021" id="id1"><span>[Liu:2021]</span></a>.</p>
+<ol class="arabic simple">
+<li><p>The absorbed photosynthetically active radiation (APAR) driving photosynthesis is calculated using the Beer-Lambert law <a class="reference internal" href="#campbell-1998" id="id2"><span>[Campbell:1998]</span></a> :</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[APAR = SW \cdot (1 - \rho_\text{leaf}) \cdot (1 - \exp(-K \cdot LAI \cdot \Omega))\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(SW\)</span> is the incident shortwave radiation</p></li>
+<li><p><span class="math notranslate nohighlight">\(\rho_\text{leaf}\)</span> is a parameter describing the reflected portion of photosynthetically active radiation due to canopy reflectance</p></li>
+<li><p><span class="math notranslate nohighlight">\(K\)</span> is the vegetation extinction coefficient <a class="reference internal" href="#campbell-1998" id="id3"><span>[Campbell:1998]</span></a></p></li>
+<li><p><span class="math notranslate nohighlight">\(LAI\)</span> is the leaf area index</p></li>
+<li><p><span class="math notranslate nohighlight">\(\Omega\)</span> is the clumping index <a class="reference internal" href="#braghiere-2019" id="id4"><span>[Braghiere:2019]</span></a></p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>Net carbon assimilation is calculated based on C3 and C4 photosynthesis biochemistry to determine potential leaf-level photosynthesis (unstressed by water availability). This is expressed in terms of two potentially limiting rates:</p></li>
+</ol>
+<ol class="loweralpha">
+<li><p>Rubisco-limited rate (<span class="math notranslate nohighlight">\(a_1\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}a_1 = \begin{cases}
+    V_\text{cmax} \cdot \frac{c_i - c_p}{c_i + K_c \cdot (1 + 209/K_o)} &amp; \text{for C3} \\
+    V_\text{cmax} &amp; \text{for C4}
+\end{cases}\end{split}\]</div>
+</li>
+</ol>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(V_\text{cmax}\)</span> (mol CO<sub>2</sub> m<sup>-2</sup> s<sup>-1</sup>) is the maximum rate of carboxylation.</p></li>
+<li><p><span class="math notranslate nohighlight">\(c_i\)</span> is the intercellular CO<sub>2</sub> concentration</p></li>
+<li><p><span class="math notranslate nohighlight">\(c_p\)</span> is the CO<sub>2</sub> compensation point (the CO<sub>2</sub> concentration at which photosynthesis equals respiration)</p></li>
+<li><p><span class="math notranslate nohighlight">\(K_c\)</span> is the Michaelis-Menten concentration for CO<sub>2</sub></p></li>
+<li><p><span class="math notranslate nohighlight">\(K_o\)</span> is the Michaelis-Menten concentration for O:sub:<a href="#id5"><span class="problematic" id="id6">`</span></a>2</p></li>
+</ul>
+<ol class="loweralpha" start="2">
+<li><p>Light-limited rate (<span class="math notranslate nohighlight">\(a_2\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}a_2 = \begin{cases}
+    J \cdot \frac{c_i - c_p}{4(c_i + 2c_p)} &amp; \text{for C3} \\
+    J &amp; \text{for C4}
+\end{cases}\end{split}\]</div>
+</li>
+</ol>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(J\)</span> is the rate of electron transport.</p></li>
+</ul>
+<ol class="arabic simple" start="3">
+<li><p>The total net carbon assimilation (<span class="math notranslate nohighlight">\(A_n\)</span>) is given by the weighted sum of C3 and C4 net carbon assimilation fractions:</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[A_n =  \min(a_1 \cdot \beta, a_2) - R_d)\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\beta\)</span> is the minimum of the moisture stress factor related to the mean soil moisture concentration in the root zone, and the temperature stress factor</p></li>
+<li><p><span class="math notranslate nohighlight">\(R_d\)</span> is the leaf dark respiration.</p></li>
+</ul>
+<ol class="arabic simple" start="4">
+<li><p>GPP, representing the total canopy photosynthesis, is calculated by integrating leaf-level photosynthesis over the entire canopy leaf area index:</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[GPP = A_n \cdot \frac{1 - \exp(-K \cdot LAI \cdot \Omega)}{K}\]</div>
+<div role="list" class="citation-list">
+<div class="citation" id="braghiere-2019" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">Braghiere:2019</a><span class="fn-bracket">]</span></span>
+<p>Braghiere, R.K., Quaife, T., Black, E., He, L. and Chen, J.M., 2019. Underestimation of global photosynthesis in Earth system models due to representation of vegetation structure. Global Biogeochemical Cycles, 33(11), pp.1358-1369. <a class="reference external" href="https://doi.org/10.1029/2018GB006135">https://doi.org/10.1029/2018GB006135</a></p>
+</div>
+<div class="citation" id="campbell-1998" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>Campbell:1998<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>)</span>
+<p>Campbell, G.S. and Norman, J.M., 2000. An introduction to environmental biophysics. Springer Science &amp; Business Media.</p>
+</div>
+<div class="citation" id="farquhar-1980" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>Farquhar:1980<span class="fn-bracket">]</span></span>
+<p>Farquhar, G.D., von Caemmerer, S.V. and Berry, J.A., 1980. A biochemical model of photosynthetic CO 2 assimilation in leaves of C 3 species. planta, 149, pp.78-90. <a class="reference external" href="https://doi.org/10.1007/BF00386231">https://doi.org/10.1007/BF00386231</a></p>
+</div>
+<div class="citation" id="liu-2021" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Liu:2021</a><span class="fn-bracket">]</span></span>
+<p>Liu, Y., Holtzman, N.M. and Konings, A.G., 2021. Global ecosystem-scale plant hydraulic traits retrieved using model–data fusion. Hydrology and Earth System Sciences, 25(5), pp.2399-2417. <a class="reference external" href="https://doi.org/10.5194/hess-25-2399-2021">https://doi.org/10.5194/hess-25-2399-2021</a></p>
+</div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ACM.html" class="btn btn-neutral float-left" title="Aggregated canopy model (ACM)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../phenology.html" class="btn btn-neutral float-right" title="Phenology modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../../copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

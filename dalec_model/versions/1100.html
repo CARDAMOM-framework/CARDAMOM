@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DALEC 1100 &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../copyright.html" />
+    <link rel="next" title="Cost function" href="../../framework/cost_function.html" />
+    <link rel="prev" title="DALEC 1005" href="1005.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC model:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview of DALEC model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">DALEC modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../versions.html">DALEC versions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="1005.html">DALEC 1005</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">DALEC 1100</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../using_cardamom/file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../using_cardamom/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../using_cardamom/technote.html">Contributing to this technical documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../markdown_manuals/ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../markdown_manuals/C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../markdown_manuals/CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../markdown_manuals/CARDAMOM_NETCDF_INPUT_FILE.html">CARDAMOM Netcdf input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../markdown_manuals/COST_FUNCTION.html">CARDAMOM cost function <a name="cardamom-cost-function"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../markdown_manuals/DEBUGGING_TIPS.html">Debugging tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../markdown_manuals/GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../markdown_manuals/GITHUB_BASICS.html">Github basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../markdown_manuals/MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../markdown_manuals/MCMC_IN_CARDAMOM_OVERVIEW.html">MCMC overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../markdown_manuals/MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../markdown_manuals/OUTPUT_DATA_ANALYSIS.html">Output Data and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../markdown_manuals/PARALLELIZATION.html">Parallelization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../markdown_manuals/PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../markdown_manuals/PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../versions.html">DALEC versions</a></li>
+      <li class="breadcrumb-item active">DALEC 1100</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/dalec_model/versions/1100.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dalec-1100">
+<h1>DALEC 1100<a class="headerlink" href="#dalec-1100" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>Description of DALEC 1100</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Prognostic variables (pools)</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Abbreviation</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Units</p></th>
+<th class="head"><p>Fluxes in</p></th>
+<th class="head"><p>Fluxes out</p></th>
+<th class="head"><p>Code string</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>C</strong><sub>lab</sub></p></td>
+<td><p>Labile carbon (non-structural carbohydrate)</p></td>
+<td><p>gC m<sup>-2</sup></p></td>
+<td><p><em>GPP</em></p></td>
+<td><p><em>Ra</em><sub>dark</sub>, <em>Ra</em><sub>maint</sub>, <em>Ra</em><sub>gr</sub>, <em>PRD</em><sub>fol</sub>, <em>PRD</em><sub>roo</sub>, <em>PRD</em><sub>woo</sub>, <em>DEC</em><sub>lab</sub>, <em>DIS</em><sub>lab</sub>, <em>FIR</em><sub>lab</sub>, <em>FIRx</em><sub>lab</sub></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">C_lab</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>C</strong><sub>fol</sub></p></td>
+<td><p>Foliar carbon</p></td>
+<td><p>gC m<sup>-2</sup></p></td>
+<td><p><em>PRD</em><sub>fol</sub></p></td>
+<td><p><em>DEC</em><sub>fol</sub>, <em>DECph</em><sub>fol</sub>, <em>FIR</em><sub>fol</sub>, <em>FIRx</em><sub>fol</sub>, <em>DIS</em><sub>fol</sub></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">C_fol</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>C</strong><sub>woo</sub></p></td>
+<td><p>Wood/ligneous carbon</p></td>
+<td><p>gC m<sup>-2</sup></p></td>
+<td><p><em>PRD</em><sub>woo</sub></p></td>
+<td><p><em>DEC</em><sub>woo</sub>, <em>FIR</em><sub>woo</sub>, <em>FIRx</em><sub>woo</sub>, <em>DIS</em><sub>woo</sub></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">C_woo</span></code></p></td>
+<td><p>Includes woody root biomass</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>C</strong><sub>roo</sub></p></td>
+<td><p>Fine root carbon</p></td>
+<td><p>gC m<sup>-2</sup></p></td>
+<td><p><em>PRD</em><sub>roo</sub></p></td>
+<td><p><em>DEC</em><sub>roo</sub>, <em>FIR</em><sub>roo</sub>, <em>FIRx</em><sub>roo</sub>, <em>DIS</em><sub>roo</sub></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">C_roo</span></code></p></td>
+<td><p>Does not include woody root biomass</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>C</strong><sub>lit</sub></p></td>
+<td><p>Litter carbon</p></td>
+<td><p>gC m<sup>-2</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">add</span> <span class="pre">yield</span></code> <em>DEC</em><sub>lab</sub>, <em>DEC</em><sub>fol</sub>, <em>DECph</em><sub>fol</sub>, <em>DEC</em><sub>roo</sub>, <em>FIRx</em><sub>lab</sub>, <em>FIRx</em><sub>fol</sub>, <em>FIRx</em><sub>roo</sub></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">add</span> <span class="pre">yield</span></code> <em>RhAe</em><sub>lit</sub>, <em>RhAn</em><sub>lit</sub>, <em>DEC</em><sub>lit</sub>, <em>FIR</em><sub>lit</sub>, <em>FIRx</em><sub>lit</sub></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">C_lit</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>C</strong><sub>cwd</sub></p></td>
+<td><p>Coarse woody debris carbon</p></td>
+<td><p>gC m<sup>-2</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">add</span> <span class="pre">yield</span></code> <em>DEC</em><sub>woo</sub>, <em>FIR</em><sub>woo</sub></p></td>
+<td><p><em>RhAe</em><sub>cwd</sub>, <em>RhAn</em><sub>cwd</sub>, <em>DEC</em><sub>cwd</sub>, <em>FIR</em><sub>cwd</sub>, <em>FIRx</em><sub>cwd`*RhAe*:sub:`cwd</sub>, <em>RhAn</em><sub>cwd</sub>, <em>DEC</em><sub>cwd</sub>, <em>FIR</em><sub>cwd</sub>, <em>FIRx</em><sub>cwd</sub></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">C_cwd</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>C</strong><sub>som</sub></p></td>
+<td><p>Soil organic matter carbon</p></td>
+<td><p>gC m<sup>-2</sup></p></td>
+<td><p><em>DEC</em><sub>lit</sub>, <em>FIRx</em><sub>lit</sub>, <em>DEC</em><sub>cwd</sub>, <em>FIRx</em><sub>cwd</sub>,</p></td>
+<td><p><em>RhAe</em><sub>som</sub>, <em>RhAn</em><sub>som</sub>, <em>FIR</em><sub>som</sub></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">C_som</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>W</strong><sub>ly1</sub></p></td>
+<td><p>Layer 1 water</p></td>
+<td><p>mmH<sub>2</sub>O</p></td>
+<td><p><em>Qx</em><sub>inf</sub></p></td>
+<td><p><em>Ev</em>, <em>Tr1</em>, <em>Q</em><sub>ly1</sub>, <em>Qx</em><sub>ly12</sub></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">H2O_LY1</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>W</strong><sub>ly2</sub></p></td>
+<td><p>Layer 2 water</p></td>
+<td><p>mmH<sub>2</sub>O</p></td>
+<td><p><em>Qx</em><sub>ly12</sub></p></td>
+<td><p><em>Tr2</em>, <em>Q</em><sub>ly2</sub>, <em>Qx</em><sub>ly23</sub></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">H2O_LY2</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>W</strong><sub>ly3</sub></p></td>
+<td><p>Layer 3 water</p></td>
+<td><p>mmH<sub>2</sub>O</p></td>
+<td><p><em>Qx</em><sub>ly23</sub></p></td>
+<td><p><em>Q</em><sub>ly3</sub></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">H2O_LY3</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>W</strong><sub>swe</sub></p></td>
+<td><p>Snow water equivalent</p></td>
+<td><p>mmH<sub>2</sub>O</p></td>
+<td><p><em>Snow</em></p></td>
+<td><p><em>Melt</em>, <em>Subl</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">H2O_SWE</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>E</strong><sub>ly1</sub></p></td>
+<td><p>Energy content of <strong>W</strong><sub>ly1</sub></p></td>
+<td><p>J m<sup>-2</sup></p></td>
+<td><p><em>E</em><sub>gh</sub>, <em>EQx</em><sub>inf</sub></p></td>
+<td><p><em>EEv</em>, <em>ETr1</em>, <em>EQ</em><sub>ly1</sub>, <em>EQx</em><sub>ly12</sub>, <em>EQthx</em><sub>ly12</sub></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">E_LY1</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>E</strong><sub>ly2</sub></p></td>
+<td><p>Energy content of <strong>W</strong><sub>ly2</sub></p></td>
+<td><p>J m<sup>-2</sup></p></td>
+<td><p><em>EQx</em><sub>ly12</sub>, <em>EQthx</em><sub>ly12</sub></p></td>
+<td><p><em>ETr2</em>, <em>EQ</em><sub>ly2</sub>, <em>EQx</em><sub>ly23</sub>, <em>EQthx</em><sub>ly23</sub></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">E_LY2</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>E</strong><sub>ly3</sub></p></td>
+<td><p>Energy content of <strong>W</strong><sub>ly3</sub></p></td>
+<td><p>J m<sup>-2</sup></p></td>
+<td><p><em>E</em><sub>geo</sub>, <em>EQx</em><sub>ly23</sub>, <em>EQthx</em><sub>ly23</sub></p></td>
+<td><p><em>EQ</em><sub>ly3</sub></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">E_LY3</span></code></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Diagnostic variables</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Abbreviation</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Units</p></th>
+<th class="head"><p>Code string</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>LAI</p></td>
+<td><p>Leaf area index</p></td>
+<td><p>m<sup>2</sup> m<sup>-2</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D_LAI</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>SCF</p></td>
+<td><p>Snow covered fraction</p></td>
+<td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D_SCF</span></code></p></td>
+<td><p>Fraction of non-vegetation-covered land surface (gap fraction) that is covered by a layer of snow.</p></td>
+</tr>
+<tr class="row-even"><td><p>T<sub>ly1</sub></p></td>
+<td><p><strong>W</strong><sub>ly1</sub> temperature</p></td>
+<td><p>K</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D_TEMP_LY1</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>T<sub>ly2</sub></p></td>
+<td><p><strong>W</strong><sub>ly2</sub> temperature</p></td>
+<td><p>K</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D_TEMP_LY2</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>T<sub>ly3</sub></p></td>
+<td><p><strong>W</strong><sub>ly3</sub> temperature</p></td>
+<td><p>K</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D_TEMP_LY3</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>LF<sub>ly1</sub></p></td>
+<td><p><strong>W</strong><sub>ly1</sub> liquid fraction</p></td>
+<td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D_LF_LY1</span></code></p></td>
+<td><p>Ratio of liquid water to total water in layer 1</p></td>
+</tr>
+<tr class="row-even"><td><p>LF<sub>ly2</sub></p></td>
+<td><p><strong>W</strong><sub>ly2</sub> liquid fraction</p></td>
+<td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D_LF_LY2</span></code></p></td>
+<td><p>Ratio of liquid water to total water in layer 2</p></td>
+</tr>
+<tr class="row-odd"><td><p>LF<sub>ly3</sub></p></td>
+<td><p><strong>W</strong><sub>ly3</sub> liquid fraction</p></td>
+<td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D_LF_LY3</span></code></p></td>
+<td><p>Ratio of liquid water to total water in layer 3</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\({\theta}\)</span><sub>ly1</sub></p></td>
+<td><p><strong>W</strong><sub>ly1</sub> soil moisture</p></td>
+<td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D_SM_LY1</span></code></p></td>
+<td><p>Ratio of total water to pore space in layer 1</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\({\theta}\)</span><sub>ly2</sub></p></td>
+<td><p><strong>W</strong><sub>ly2</sub> soil moisture</p></td>
+<td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D_SM_LY2</span></code></p></td>
+<td><p>Ratio of total water to pore space in layer 2</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\({\theta}\)</span><sub>ly3</sub></p></td>
+<td><p><strong>W</strong><sub>ly3</sub> soil moisture</p></td>
+<td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D_SM_LY3</span></code></p></td>
+<td><p>Ratio of total water to pore space in layer 3</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\({\Psi}\)</span><sub>ly1</sub></p></td>
+<td><p><strong>W</strong><sub>ly1</sub> water potential</p></td>
+<td><p>MPa</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D_PSI_LY1</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\({\Psi}\)</span><sub>ly2</sub></p></td>
+<td><p><strong>W</strong><sub>ly2</sub> water potential</p></td>
+<td><p>MPa</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D_PSI_LY2</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\({\Psi}\)</span><sub>ly3</sub></p></td>
+<td><p><strong>W</strong><sub>ly3</sub> water potential</p></td>
+<td><p>MPa</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D_PSI_LY3</span></code></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default" id="id3">
+<caption><span class="caption-text">Fluxes</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Abbreviation</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Units</p></th>
+<th class="head"><p>Code string</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>GPP</em></p></td>
+<td><p>Gross primary production</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gpp</span></code></p></td>
+<td><p>Gross C assimilation, without leaf maintenance respiration removed</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>GPP</em><sub>net</sub></p></td>
+<td><p>Net gross primary production</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gppnet</span></code></p></td>
+<td><p>Net GPP after removing leaf maintenance respiration, same as labile production</p></td>
+</tr>
+<tr class="row-even"><td><p><em>PRD</em><sub>lab</sub></p></td>
+<td><p>Labile production</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">lab_prod</span></code></p></td>
+<td><p>Same as GPP<sub>net</sub> (flagged for removal)</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>PRD</em><sub>fol</sub></p></td>
+<td><p>Foliar production</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">foliar_prod</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>PRD</em><sub>roo</sub></p></td>
+<td><p>Fine root production</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">root_prod</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>PRD</em><sub>woo</sub></p></td>
+<td><p>Wood and coarse root production</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">wood_prod</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>DEC</em><sub>fol</sub></p></td>
+<td><p>Foliar decomposition</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fol2lit</span></code></p></td>
+<td><p><strong>C</strong><sub>fol</sub> transferred to <strong>C</strong><sub>lit</sub> due to mortality</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>DECph</em><sub>fol</sub></p></td>
+<td><p>Phenological foliar decomposition</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ph_fol2lit</span></code></p></td>
+<td><p><strong>C</strong><sub>fol</sub> transferred to <strong>C</strong><sub>lit</sub> due to phenological senescence</p></td>
+</tr>
+<tr class="row-even"><td><p><em>DEC</em><sub>woo</sub></p></td>
+<td><p>Wood and coarse root decomposition</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">woo2cwd</span></code></p></td>
+<td><p><strong>C</strong><sub>woo</sub> transferred to <strong>C</strong><sub>cwd</sub></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>DEC</em><sub>roo</sub></p></td>
+<td><p>Fine root decomposition</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">roo2lit</span></code></p></td>
+<td><p><strong>C</strong><sub>roo</sub> transferred to <strong>C</strong><sub>lit</sub></p></td>
+</tr>
+<tr class="row-even"><td><p><em>DEC</em><sub>lab</sub></p></td>
+<td><p>Labile decomposition</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">lab2lit</span></code></p></td>
+<td><p><strong>C</strong><sub>lab</sub> transferred to <strong>C</strong><sub>lit</sub></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>DEC</em><sub>cwd</sub></p></td>
+<td><p>Coarse woody debris decomposition</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cwd2som</span></code></p></td>
+<td><p><strong>C</strong><sub>cwd</sub> transferred to <strong>C</strong><sub>som</sub></p></td>
+</tr>
+<tr class="row-even"><td><p><em>DEC</em><sub>lit</sub></p></td>
+<td><p>Litter decomposition</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">lit2som</span></code></p></td>
+<td><p><strong>C</strong><sub>lit</sub> transferred to <strong>C</strong><sub>som</sub></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>DIS</em><sub>lab</sub></p></td>
+<td><p><strong>C</strong><sub>lab</sub> disturbance loss</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dist_lab</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>DIS</em><sub>fol</sub></p></td>
+<td><p><strong>C</strong><sub>fol</sub> disturbance loss</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dist_fol</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>DIS</em><sub>woo</sub></p></td>
+<td><p><strong>C</strong><sub>woo</sub> disturbance loss</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dist_woo</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>DIS</em><sub>roo</sub></p></td>
+<td><p><strong>C</strong><sub>roo</sub> disturbance loss</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dist_roo</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>FIR</em><sub>lab</sub></p></td>
+<td><p><strong>C</strong><sub>lab</sub> fire loss</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">f_lab</span></code></p></td>
+<td><p>Combustion loss to atmosphere</p></td>
+</tr>
+<tr class="row-even"><td><p><em>FIR</em><sub>fol</sub></p></td>
+<td><p><strong>C</strong><sub>fol</sub> fire loss</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">f_fol</span></code></p></td>
+<td><p>Combustion loss to atmosphere</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>FIR</em><sub>woo</sub></p></td>
+<td><p><strong>C</strong><sub>woo</sub> fire loss</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">f_woo</span></code></p></td>
+<td><p>Combustion loss to atmosphere</p></td>
+</tr>
+<tr class="row-even"><td><p><em>FIR</em><sub>roo</sub></p></td>
+<td><p><strong>C</strong><sub>roo</sub> fire loss</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">f_roo</span></code></p></td>
+<td><p>Combustion loss to atmosphere</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>FIR</em><sub>lit</sub></p></td>
+<td><p><strong>C</strong><sub>lit</sub> fire loss</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">f_lit</span></code></p></td>
+<td><p>Combustion loss to atmosphere</p></td>
+</tr>
+<tr class="row-even"><td><p><em>FIR</em><sub>cwd</sub></p></td>
+<td><p><strong>C</strong><sub>cwd</sub> fire loss</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">f_cwd</span></code></p></td>
+<td><p>Combustion loss to atmosphere</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>FIR</em><sub>som</sub></p></td>
+<td><p><strong>C</strong><sub>som</sub> fire loss</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">f_som</span></code></p></td>
+<td><p>Combustion loss to atmosphere</p></td>
+</tr>
+<tr class="row-even"><td><p><em>FIRx</em><sub>lab</sub></p></td>
+<td><p><strong>C</strong><sub>lab</sub> fire mortality</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fx_lab2lit</span></code></p></td>
+<td><p>Transfer of <strong>C</strong><sub>lab</sub> to <strong>C</strong><sub>lit</sub> due to fire</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>FIRx</em><sub>fol</sub></p></td>
+<td><p><strong>C</strong><sub>fol</sub> fire mortality</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fx_fol2lit</span></code></p></td>
+<td><p>Transfer of <strong>C</strong><sub>fol</sub> to <strong>C</strong><sub>lit</sub> due to fire</p></td>
+</tr>
+<tr class="row-even"><td><p><em>FIRx</em><sub>roo</sub></p></td>
+<td><p><strong>C</strong><sub>roo</sub> fire mortality</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fx_roo2lit</span></code></p></td>
+<td><p>Transfer of <strong>C</strong><sub>roo</sub> to <strong>C</strong><sub>lit</sub> due to fire</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>FIRx</em><sub>woo</sub></p></td>
+<td><p><strong>C</strong><sub>woo</sub> fire mortality</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fx_woo2cwd</span></code></p></td>
+<td><p>Transfer of <strong>C</strong><sub>woo</sub> to <strong>C</strong><sub>cwd</sub> due to fire</p></td>
+</tr>
+<tr class="row-even"><td><p><em>FIRx</em><sub>cwd</sub></p></td>
+<td><p><strong>C</strong><sub>cwd</sub> fire mortality</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fx_cwd2som</span></code></p></td>
+<td><p>Transfer of <strong>C</strong><sub>cwd</sub> to <strong>C</strong><sub>som</sub> due to fire</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>FIRx</em><sub>lit</sub></p></td>
+<td><p><strong>C</strong><sub>lit</sub> fire mortality</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fx_lit2som</span></code></p></td>
+<td><p>Transfer of <strong>C</strong><sub>lit</sub> to <strong>C</strong><sub>som</sub> due to fire</p></td>
+</tr>
+<tr class="row-even"><td><p><em>Q</em><sub>surf</sub></p></td>
+<td><p>Surface H<sub>2</sub>O runoff</p></td>
+<td><p>mmH<sub>2</sub>O d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">q_surf</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>Q</em><sub>ly1</sub></p></td>
+<td><p>Runoff from <strong>W</strong><sub>ly1</sub></p></td>
+<td><p>mmH<sub>2</sub>O d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">q_ly1</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>Q</em><sub>ly2</sub></p></td>
+<td><p>Runoff from <strong>W</strong><sub>ly2</sub></p></td>
+<td><p>mmH<sub>2</sub>O d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">q_ly2</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>Q</em><sub>ly3</sub></p></td>
+<td><p>Runoff from <strong>W</strong><sub>ly3</sub></p></td>
+<td><p>mmH<sub>2</sub>O d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">q_ly3</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>Qx</em><sub>inf</sub></p></td>
+<td><p>Surface H<sub>2</sub>O infiltration to <strong>W</strong><sub>ly1</sub></p></td>
+<td><p>mmH<sub>2</sub>O d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">infil</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>Qx</em><sub>ly12</sub></p></td>
+<td><p>Transfer from <strong>W</strong><sub>ly1</sub> to <strong>W</strong><sub>ly2</sub></p></td>
+<td><p>mmH<sub>2</sub>O d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ly1xly2</span></code></p></td>
+<td><p>Positive values indicate downward transfer</p></td>
+</tr>
+<tr class="row-even"><td><p><em>Qx</em><sub>ly23</sub></p></td>
+<td><p>Transfer from <strong>W</strong><sub>ly2</sub> to <strong>W</strong><sub>ly3</sub></p></td>
+<td><p>mmH<sub>2</sub>O d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ly2xly3</span></code></p></td>
+<td><p>Positive values indicate downward transfer</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>EQ</em><sub>ly1</sub></p></td>
+<td><p>Internal energy of <em>Q</em><sub>ly1</sub></p></td>
+<td><p>J m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">q_ly1_e</span></code></p></td>
+<td><p>Based on temperature of <strong>W</strong><sub>ly1</sub></p></td>
+</tr>
+<tr class="row-even"><td><p><em>EQ</em><sub>ly2</sub></p></td>
+<td><p>Internal energy of <em>Q</em><sub>ly2</sub></p></td>
+<td><p>J m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">q_ly2_e</span></code></p></td>
+<td><p>Based on temperature of <strong>W</strong><sub>ly2</sub></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>EQ</em><sub>ly3</sub></p></td>
+<td><p>Internal energy of <em>Q</em><sub>ly3</sub></p></td>
+<td><p>J m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">q_ly2_e</span></code></p></td>
+<td><p>Based on temperature of <strong>W</strong><sub>ly2</sub></p></td>
+</tr>
+<tr class="row-even"><td><p><em>EQx</em><sub>inf</sub></p></td>
+<td><p>Internal energy of <em>Qx</em><sub>inf</sub></p></td>
+<td><p>J m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">infil_e</span></code></p></td>
+<td><p>Based on weighted average temperature of snow melt (273.15K) and rainfall (air temperature)’;</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>EQx</em><sub>ly12</sub></p></td>
+<td><p>Internal energy of <em>Qx</em><sub>ly12</sub></p></td>
+<td><p>J m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ly1xly2_e</span></code></p></td>
+<td><p>Based on temperature of donor pool (W<sub>ly1</sub> when <em>Qx</em><sub>ly12</sub> is positive, <strong>W</strong><sub>ly2</sub> when <em>Qx</em><sub>ly12</sub> is negative)</p></td>
+</tr>
+<tr class="row-even"><td><p><em>EQx</em><sub>ly23</sub></p></td>
+<td><p>Internal energy of <em>Qx</em><sub>ly23</sub></p></td>
+<td><p>J m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ly2xly3_e</span></code></p></td>
+<td><p>Based on temperature of donor pool (W<sub>ly2</sub> when <em>Qx</em><sub>ly23</sub> is positive, <strong>W</strong><sub>ly3</sub> when <em>Qx</em><sub>ly23</sub> is negative)</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>EQthx</em><sub>ly12</sub></p></td>
+<td><p>Thermal condictivity between <strong>E</strong><sub>ly1</sub> and <strong>E</strong><sub>ly2</sub></p></td>
+<td><p>J m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ly1xly2_th_e</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>EQthx</em><sub>ly23</sub></p></td>
+<td><p>Thermal condictivity between <strong>E</strong><sub>ly2</sub> and <strong>E</strong><sub>ly3</sub></p></td>
+<td><p>J m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ly2xly3_th_e</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>E</em><sub>gh</sub></p></td>
+<td><p>Ground heat heat flux</p></td>
+<td><p>J m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gh_in</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>E</em><sub>geo</sub></p></td>
+<td><p>Geological heat flux</p></td>
+<td><p>J m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">geological</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>Snow</em></p></td>
+<td><p>Snowfall</p></td>
+<td><p>mmH<sub>2</sub>O d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">snowfall</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>Melt</em></p></td>
+<td><p>Snowmelt</p></td>
+<td><p>mmH<sub>2</sub>O d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">melt</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>Subl</em></p></td>
+<td><p>Sublimation</p></td>
+<td><p>mmH<sub>2</sub>O d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sublimation</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>Ev</em></p></td>
+<td><p>Evaporation</p></td>
+<td><p>mmH<sub>2</sub>O d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">evap</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>Tr1</em></p></td>
+<td><p>Transpiration from <strong>W</strong><sub>ly1</sub></p></td>
+<td><p>mmH<sub>2</sub>O d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">transp1</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>Tr2</em></p></td>
+<td><p>Transpiration from <strong>W</strong><sub>ly2</sub></p></td>
+<td><p>mmH<sub>2</sub>O d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">transp2</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>EEv</em></p></td>
+<td><p>Internal energy of <em>Ev</em></p></td>
+<td><p>J m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">evap_e</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>ETr1</em></p></td>
+<td><p>Internal energy of <em>Tr1</em></p></td>
+<td><p>J m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">transp1_e</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>ETr2</em></p></td>
+<td><p>Internal energy of <em>Tr2</em></p></td>
+<td><p>J m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">transp2_e</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>RhAe</em><sub>cwd</sub></p></td>
+<td><p>Aerobic heterotrophic respiration from <strong>C</strong><sub>cwd</sub></p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ae_rh_cwd</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>RhAe</em><sub>lit</sub></p></td>
+<td><p>Aerobic heterotrophic respiration from <strong>C</strong><sub>lit</sub></p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ae_rh_lit</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>RhAe</em><sub>som</sub></p></td>
+<td><p>Aerobic heterotrophic respiration from <strong>C</strong><sub>som</sub></p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ae_rh_som</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>RhAn</em><sub>cwd</sub></p></td>
+<td><p>Anaerobic heterotrophic respiration from <strong>C</strong><sub>cwd</sub></p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">an_rh_cwd</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>RhAn</em><sub>lit</sub></p></td>
+<td><p>Anaerobic heterotrophic respiration from <strong>C</strong><sub>lit</sub></p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">an_rh_lit</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>RhAn</em><sub>som</sub></p></td>
+<td><p>Anaerobic heterotrophic respiration from <strong>C</strong><sub>som</sub></p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">an_rh_som</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><em>Ra</em><sub>gr</sub></p></td>
+<td><p>Autotrophic growth respiration</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">resp_auto_growth</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><em>Ra</em><sub>dark</sub></p></td>
+<td><p>Autotrophic maintenance dark respiration</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">resp_auto_maint_dark</span></code></p></td>
+<td><p>Mitochondrial respiration from <strong>C</strong><sub>fol</sub></p></td>
+</tr>
+<tr class="row-even"><td><p><em>Ra</em><sub>maint</sub></p></td>
+<td><p>Autotrophic maintenance respiration</p></td>
+<td><p>gC m<sup>-2</sup> d<sup>-1</sup></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">resp_auto_maint</span></code></p></td>
+<td><p>Includes <em>Ra</em><sub>dark</sub></p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default" id="id4">
+<caption><span class="caption-text">Parameters</span><a class="headerlink" href="#id4" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 16.7%" />
+<col style="width: 16.7%" />
+<col style="width: 16.7%" />
+<col style="width: 16.7%" />
+<col style="width: 16.7%" />
+<col style="width: 16.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Abbreviation</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Units</p></th>
+<th class="head"><p>Code string</p></th>
+<th class="head"><p>Prior range</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Abbreviation</p></td>
+<td><p>Description</p></td>
+<td><p>Units</p></td>
+<td><p>Code string</p></td>
+<td><p>Prior range</p></td>
+<td><p>Notes</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="1005.html" class="btn btn-neutral float-left" title="DALEC 1005" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../framework/cost_function.html" class="btn btn-neutral float-right" title="Cost function" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

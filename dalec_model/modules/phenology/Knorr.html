@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Knorr phenology module &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" />
+    <link rel="next" title="Allocation" href="../allocation.html" />
+    <link rel="prev" title="CDEA phenology module" href="CDEA.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC model:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview of DALEC model</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../modules.html">DALEC modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../photosynthesis.html">Photosynthesis modules</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../phenology.html">Phenology modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="CDEA.html">CDEA phenology module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Knorr phenology module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#leaf-area-index-phenology">Leaf area index phenology</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../allocation.html">Allocation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mortality.html">Mortality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autotrophic_respiration.html">Autotrophic Respiration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../heterotrophic_respiration.html">Heterotrophic Respiration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hydrology.html">Hydrology modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../energy.html">LST-driven soil energy balance</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../versions.html">DALEC versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../using_cardamom/file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../using_cardamom/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../using_cardamom/technote.html">Contributing to this technical documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/CARDAMOM_NETCDF_INPUT_FILE.html">CARDAMOM Netcdf input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/COST_FUNCTION.html">CARDAMOM cost function <a name="cardamom-cost-function"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/DEBUGGING_TIPS.html">Debugging tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/GITHUB_BASICS.html">Github basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/MCMC_IN_CARDAMOM_OVERVIEW.html">MCMC overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/OUTPUT_DATA_ANALYSIS.html">Output Data and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/PARALLELIZATION.html">Parallelization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../markdown_manuals/PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../modules.html">DALEC modules</a></li>
+          <li class="breadcrumb-item"><a href="../phenology.html">Phenology modules</a></li>
+      <li class="breadcrumb-item active">Knorr phenology module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/dalec_model/modules/phenology/Knorr.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="knorr-phenology-module">
+<h1>Knorr phenology module<a class="headerlink" href="#knorr-phenology-module" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>Description and equations for Knorr module</p>
+<section id="leaf-area-index-phenology">
+<h2>Leaf area index phenology<a class="headerlink" href="#leaf-area-index-phenology" title="Link to this heading"></a></h2>
+<p>The leaf area index (LAI) phenology model is based on the scheme developed by Knorr et al. (2010) with updates by Norton et al. (2023). The Knorr et al. (2010) model brings together two concepts. First, the transition of LAI between dormant, active, and senescent states is controlled by three potentially limiting environmental constraints: Temperature, photoperiod, and water availability. Second, spatial variability in growth triggers within a population of plants results in smooth, differentiable functions that describe the transition between dormant, active, and senescent states. This provides a more realistic representation of LAI dynamics, as opposed to unrealistic and impractical step functions. Norton et al. (2023) described the coupling of this LAI phenology model to the carbon and water balance in DALEC and implemented it in CARDAMOM, demonstrating its skill in capturing LAI and carbon cycle dynamics across diverse ecosystem types. We note that in Norton et al. (2023) the LAI phenology sub-model used evapotranspiration as an input to compute the water-limited LAI, considering evaporation and transpiration were not modeled separately. Here, evaporation and transpiration are modeled separately, therefore transpiration is used as the input which is consistent with the original Knorr et al. (2010) formulation and adds realism to this version of CARDAMOM. For a full description of the model, we refer readers to Knorr et al. (2010) and Norton et al. (2023).</p>
+<p>Knorr, W., T. Kaminski, M. Scholze, N. Gobron, B. Pinty, R. Giering, and P.-P. Mathieu (2010), Carbon cycle data assimilation with a generic phenology model, J. Geophys. Res., 115, G04017, doi:10.1029/2009JG001119.</p>
+<p>Norton, A. J., Bloom, A. A., Parazoo, N. C., Levine, P. A., Ma, S., Braghiere, R. K., and Smallman, T. L.: Improved process representation of leaf phenology significantly shifts climate sensitivity of ecosystem carbon balance, Biogeosciences, 20, 2455–2484, <a class="reference external" href="https://doi.org/10.5194/bg-20-2455-2023">https://doi.org/10.5194/bg-20-2455-2023</a>, 2023.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="CDEA.html" class="btn btn-neutral float-left" title="CDEA phenology module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../allocation.html" class="btn btn-neutral float-right" title="Allocation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../../copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

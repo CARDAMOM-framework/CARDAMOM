@@ -1,0 +1,5 @@
+.. _sub:allocation:
+
+Allocation
+==========
+
