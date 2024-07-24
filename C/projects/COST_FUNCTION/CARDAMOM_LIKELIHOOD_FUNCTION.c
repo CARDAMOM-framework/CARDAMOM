@@ -18,6 +18,7 @@ double single_monthly_unc;//Fields to be used only with Filter=2 AND opt_unc_typ
 double single_annual_unc;//Fields to be used only with Filters=2 & 3 (AND opt_unc_type=0 or opt_unc_type=2 for filter = 2);
 double single_mean_unc;//Fields to be used only with Filter = 1;
 double single_decadal_unc;//Field for Filter = 7;
+double trend_unc;//Fields to be used only with Filter = 9 ;
 double single_unc;//Fields to be used only with Filter = 0 ;
 double structural_unc;//this gets added to uncertainty in quadrature.
 //****Auxiliary variables, separate from timeseries variable****
@@ -138,6 +139,7 @@ OBS.single_monthly_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_monthly_unc")
 OBS.single_annual_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_annual_unc");
 OBS.single_decadal_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_decadal_unc");
 OBS.single_mean_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_mean_unc");
+OBS.trend_unc=ncdf_read_double_attr(ncid, OBSNAME,"trend_unc");
 OBS.single_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_unc");
 OBS.structural_unc=ncdf_read_double_attr(ncid, OBSNAME,"structural_unc");
 
@@ -251,6 +253,7 @@ double single_mean_unc=OBS->single_mean_unc;
 double single_monthly_unc=OBS->single_monthly_unc;
 double single_annual_unc=OBS->single_annual_unc;
 double single_decadal_unc=OBS->single_decadal_unc;
+double trend_unc=OBS->trend_unc;
 
 
 double mean_mod=0, mean_obs=0;
@@ -301,6 +304,7 @@ single_mean_unc=log(single_mean_unc);
 single_monthly_unc=log(single_monthly_unc);
 single_annual_unc=log(single_annual_unc);
 single_decadal_unc=log(single_decadal_unc);
+trend_unc=log(trend_unc);
 }
 
 
@@ -569,6 +573,35 @@ else if (OBS->opt_filter==8 ){/* copy of opt filters 1 + 2, i.e. now with mean i
         }      
     }
 }
+else if (OBS->opt_filter==9){//opt_filter 0 plus trend
+    for (n=0;n<N;n++){
+        tot_exp += pow((mod[n] - obs[n])/unc[n],2);
+    }
+    int nmonths, offset;
+    if (N/12 % 2 == 0){
+        nmonths = N/2;
+        offset = 0;
+    } else {
+        nmonths = N/2 - 6;
+        offset = 12;
+    }
+    double mean_obs_first_half, mean_mod_first_half;
+    for (n=0;n<nmonths;n++){
+        mean_mod_first_half += mod[n];
+        mean_obs_first_half += obs[n];
+    }
+    mean_mod_first_half=mean_mod_first_half/(double)nmonths;
+    mean_obs_first_half=mean_obs_first_half/(double)nmonths;
+    double mean_obs_second_half, mean_mod_second_half;
+    for (n=(nmonths+offset);n<N;n++){
+        mean_mod_second_half += mod[n];
+        mean_obs_second_half += obs[n];
+    }
+    mean_mod_second_half=mean_mod_second_half/(double)nmonths;
+    mean_obs_second_half=mean_obs_second_half/(double)nmonths;
+    tot_exp += pow((mean_mod_first_half - mean_mod_second_half - mean_obs_first_half + mean_obs_second_half)/trend_unc,2);
+}
+
 
 free(mod);free(obs);free(unc);
 
