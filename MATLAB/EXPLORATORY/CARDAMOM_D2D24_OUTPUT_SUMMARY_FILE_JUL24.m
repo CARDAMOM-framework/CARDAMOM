@@ -22,18 +22,15 @@ P=MD.POOL_IDs;
                     % fx_roo2lit: 25
                     % fx_woo2cwd: 26
 
-GPP = median(CBR.FLUXES(:,:,F.gpp));
-GPPunc = diff(prctile(CBR.FLUXES(:,:,F.gpp),[25,75]),1);
-Rauto = median(CBR.FLUXES(:,:,F.resp_auto));
-Rautounc = diff(prctile(CBR.FLUXES(:,:,F.resp_auto),[25,75]),1);
-Rhet = median(sum(CBR.FLUXES(:,:,[F.rh_co2,F.rh_ch4]),3));
-Rhetunc = diff(prctile(sum(CBR.FLUXES(:,:,[F.rh_co2,F.rh_ch4]),3),[25,75]),1);
-Fire = median(sum(CBR.FLUXES(:,:,F.f_total),3));
-Fireunc = diff(prctile(sum(CBR.FLUXES(:,:,F.f_total),3),[25,75]),1);
+
+
+GPP =CBR.FLUXES(:,:,F.gpp);
+Rauto = CBR.FLUXES(:,:,F.resp_auto);
+Rhet = sum(CBR.FLUXES(:,:,[F.rh_co2,F.rh_ch4]),3);
+Fire = sum(CBR.FLUXES(:,:,F.f_total),3);
 DefDeg=CBF.DISTURBANCE_FLUX.values;
-DefDegunc=CBF.DISTURBANCE_FLUX.values*0.1;
-MORTALITY=median(sum(CBR.FLUXES(:,:,[F.fx_lab2lit,F.fx_fol2lit,F.fx_roo2lit,F.fx_woo2cwd]),3));
-MORTALITYunc=diff(prctile(sum(CBR.FLUXES(:,:,[F.fx_lab2lit,F.fx_fol2lit,F.fx_roo2lit,F.fx_woo2cwd]),3),[25,75]),1);
+%DefDegunc=CBF.DISTURBANCE_FLUX.values*0.1;
+MORTALITY=sum(CBR.FLUXES(:,:,[F.fx_lab2lit,F.fx_fol2lit,F.fx_roo2lit,F.fx_woo2cwd]),3);
 
 ABGBall=sum(CBR.POOLS(:,1:end-1,[P.C_fol,P.C_lab,P.C_roo,P.C_woo]  )+CBR.POOLS(:,2:end,[P.C_fol,P.C_lab,P.C_roo,P.C_woo] ),3)/2;
 DOMall=sum(CBR.POOLS(:,1:end-1,[P.C_cwd,P.C_lit,P.C_som]  )+CBR.POOLS(:,2:end,[P.C_cwd,P.C_lit,P.C_som] ),3)/2;
@@ -43,6 +40,12 @@ ABGBunc = diff(prctile(ABGBall,[25,75]),1);
 
 DOM = median(DOMall);
 DOMunc = diff(prctile(DOMall,[25,75]),1);
+
+
+
+
+
+
 
 %Step 2.2; check all looks OK
 figure(1);clf
@@ -71,6 +74,9 @@ subplot(3,3,7);plot(V);hold on;plot(V+U,'--');plot(V-U,'--');title('Live Biomass
 
 V=DOM;U=DOMunc;
 subplot(3,3,8);plot(V);hold on;plot(V+U,'--');plot(V-U,'--');title('Dead Organic Matter')
+
+
+
 
 
 % Step 3. Write to netcdf file
