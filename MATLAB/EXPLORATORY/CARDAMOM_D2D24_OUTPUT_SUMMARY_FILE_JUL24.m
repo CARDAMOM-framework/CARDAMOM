@@ -23,24 +23,41 @@ P=MD.POOL_IDs;
                     % fx_woo2cwd: 26
 
 
+                    
+carbon_field_names={'gpp','rau','rhe','fir','ddh','mor','lib','dom'};
+CARBON.gpp=CBR.FLUXES(:,:,F.gpp);
+CARBON.rau = CBR.FLUXES(:,:,F.resp_auto);
+CARBON.rhe = sum(CBR.FLUXES(:,:,[F.rh_co2,F.rh_ch4]),3);
+CARBON.fir = sum(CBR.FLUXES(:,:,F.f_total),3);
+CARBON.ddh=CBF.DISTURBANCE_FLUX.values;
+CARBON.mor=sum(CBR.FLUXES(:,:,[F.fx_lab2lit,F.fx_fol2lit,F.fx_roo2lit,F.fx_woo2cwd]),3);
+CARBON.lib=sum(CBR.POOLS(:,1:end-1,[P.C_fol,P.C_lab,P.C_roo,P.C_woo]  )+CBR.POOLS(:,2:end,[P.C_fol,P.C_lab,P.C_roo,P.C_woo] ),3)/2;
+CARBON.dom=sum(CBR.POOLS(:,1:end-1,[P.C_cwd,P.C_lit,P.C_som]  )+CBR.POOLS(:,2:end,[P.C_cwd,P.C_lit,P.C_som] ),3)/2;
 
-GPP =CBR.FLUXES(:,:,F.gpp);
-Rauto = CBR.FLUXES(:,:,F.resp_auto);
-Rhet = sum(CBR.FLUXES(:,:,[F.rh_co2,F.rh_ch4]),3);
-Fire = sum(CBR.FLUXES(:,:,F.f_total),3);
-DefDeg=CBF.DISTURBANCE_FLUX.values;
+
+filename='CARDAMOM_D2D24_OUTPUT_SUMMARY_FILE_JUL24.nc';
+delete(filename);
+N=size(CBR.FLUXES,2);
+
+nccreate(filename,'time','Dimensions',{'time' N});
+nccreate(filename,'stats','Dimensions',{'stats' 3});
+ncwrite(filename,'time',CBF.time.values);
+ncwriteatt(filename,'time','units', 'days since 2001-01-01');
+ncwriteatt(filename,'stats','details', '25th percentile, 50th percentile, 75th percentile');
+
+
+for n=1:numel(carbon_field_names)
+    %Step 1. derive stats
+    ncfieldname=carbon_field_names{n};
+    NCF=prctile(CARBON.(carbon_field_names{n}),[25,50,75]);
+    nccreate(filename, ncfieldname,"Dimensions",{'stats' 3 'time' N});
+    ncwrite(filename,ncfieldname,NCF)
+end
+
+
+
+
 %DefDegunc=CBF.DISTURBANCE_FLUX.values*0.1;
-MORTALITY=sum(CBR.FLUXES(:,:,[F.fx_lab2lit,F.fx_fol2lit,F.fx_roo2lit,F.fx_woo2cwd]),3);
-
-ABGBall=sum(CBR.POOLS(:,1:end-1,[P.C_fol,P.C_lab,P.C_roo,P.C_woo]  )+CBR.POOLS(:,2:end,[P.C_fol,P.C_lab,P.C_roo,P.C_woo] ),3)/2;
-DOMall=sum(CBR.POOLS(:,1:end-1,[P.C_cwd,P.C_lit,P.C_som]  )+CBR.POOLS(:,2:end,[P.C_cwd,P.C_lit,P.C_som] ),3)/2;
-
-ABGB = median(ABGBall);
-ABGBunc = diff(prctile(ABGBall,[25,75]),1);
-
-DOM = median(DOMall);
-DOMunc = diff(prctile(DOMall,[25,75]),1);
-
 
 
 
