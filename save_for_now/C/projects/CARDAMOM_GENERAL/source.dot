@@ -1,0 +1,18 @@
+digraph "source tree" {
+    overlap=scale;
+    size="8,10";
+    ratio="fill";
+    fontsize="16";
+    fontname="Helvetica";
+	clusterrank="local";
+	"CARDAMOM_READ_BINARY_DATA.c" -> "oksofar.c"
+	"CARDAMOM_READ_BINARY_DATA.c" -> "filediag.c"
+	"CARDAMOM_MODEL_LIBRARY.c" -> "MODEL_INFO_804.c"
+	"CARDAMOM_MODEL_LIBRARY.c" -> "MODEL_INFO_1200.c"
+	"CARDAMOM_RUN_MODEL.c" -> "CARDAMOM_READ_BINARY_DATA.c"
+	"CARDAMOM_READ_BINARY_DATA.c" -> "CARDAMOM_MODEL_LIBRARY.c"
+	"CARDAMOM_MODEL_LIBRARY.c" -> "MODEL_INFO_806.c"
+	"CARDAMOM_RUN_MODEL.c" -> "okcheck.c"
+	"CARDAMOM_MODEL_LIBRARY.c" -> "MODEL_INFO_805.c"
+	"CARDAMOM_MODEL_LIBRARY.c" -> "MODEL_INFO_803.c"
+}
