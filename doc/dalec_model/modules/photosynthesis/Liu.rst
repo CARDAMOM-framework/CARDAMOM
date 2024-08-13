@@ -12,13 +12,19 @@ To model photosynthesis and hence calculate GPP we apply a vairant of the Farquh
 
 .. math::
 
-    APAR = SW \cdot (1 - \rho_\text{leaf}) \cdot (1 - \exp(-K \cdot LAI \cdot \Omega))
+    APAR = PAR \cdot (1 - \rho_\text{leaf}) \cdot (1 - e^{(-K \cdot LAI \cdot \Omega)})
 
-* :math:`SW` is the incident shortwave radiation
-* :math:`\rho_\text{leaf}` is a parameter describing the reflected portion of photosynthetically active radiation due to canopy reflectance
+* :math:`PAR` is the photosythnetically active radiaion
+    :math:`PAR = \frac{SRAD}{2 \cdot E_{photon} \cdot N_A} \cdot 10^6`
+        * :math:`PAR` is the photosynthetically active radiation (μmol photons m⁻² s⁻¹)
+        * :math:`SRAD` is the incident shortwave radiation (W m⁻²)
+        * :math:`E_{photon} = 2.0 \times 10^{-25} / (500.0 \times 10^{-9})` J (Planck constant times speed of light divided by light wavelength)
+        * :math:`N_A = 6.02 \times 10^{23}` mol⁻¹ (Avogadro's constant)
 * :math:`K` is the vegetation extinction coefficient [Campbell:1998]_
 * :math:`LAI` is the leaf area index
 * :math:`\Omega` is the clumping index [Braghiere:2019]_
+* :math:`\rho_\text{leaf}` parameter describing the reflected portion of photosynthetically active radiation due to canopy reflectance
+
 
 2. Net carbon assimilation is calculated based on C3 and C4 photosynthesis biochemistry to determine potential leaf-level photosynthesis (unstressed by water availability). This is expressed in terms of two potentially limiting rates:
 
@@ -32,10 +38,31 @@ a. Rubisco-limited rate (:math:`a_1`):
        \end{cases}
 
 * :math:`V_\text{cmax}` (mol CO\ :sub:`2` m\ :sup:`-2` s\ :sup:`-1`) is the maximum rate of carboxylation.
+    :math:`V_{cmax} = \frac{V_{cmax25} \cdot q_{10}^{0.1(T_C - 25)}}{\left(1 + e^{0.3(T_C - (T_{upp} - T_0))}\right) \left(1 + e^{0.3((T_{down} - T_0) - T_C)}\right)}`
+        * :math:`V_{cmax25}` is the maximum rate of carboxylation at 25°C
+        * :math:`q_{10}` parameter describing temperature sensitivity
+        * :math:`T_C` is the air temperature in °C
+        * :math:`T_{upp}` parameter describing the upper temperature limit for photosynthesis (in K)
+        * :math:`T_{down}` parameter describing the lower temperature limit for photosynthesis (in K)
+        * :math:`T_0` is the freezing point of water in Kelvin (273.15 K)
+
 * :math:`c_i` is the intercellular CO\ :sub:`2` concentration
+    :math:`c_i = c_{a} \cdot \left(1 - \frac{1}{1 + \frac{g_1}{\sqrt{VPD}}}\right)`
+        * :math:`c_{a}` is the atmospheric CO\ :sub:`2` concentration
+        * :math:`g_1` is the stomatal slope parameter
+        * :math:`VPD` is the vapor pressure deficit
+
 * :math:`c_p` is the CO\ :sub:`2` compensation point (the CO\ :sub:`2` concentration at which photosynthesis equals respiration)
+    :math:`c_p = 36.9 + 1.18(T_C - 25) + 0.36(T_C - 25)^2`
+        * :math:`T_C` is the air temperature in °C
+
 * :math:`K_c` is the Michaelis-Menten concentration for CO\ :sub:`2`
-* :math:`K_o` is the Michaelis-Menten concentration for O\ :sub:`2
+    :math:`K_c = 300 \cdot e^{0.074(T_C - 25)}`
+        * :math:`T_C` is the air temperature in °C
+
+* :math:`K_o` is the Michaelis-Menten concentration for O\ :sub:`2`
+    :math:`K_o = 300 \cdot e^{0.015(T_C - 25)}`
+        * :math:`T_C` is the air temperature in °C
 
 
 b. Light-limited rate (:math:`a_2`):
@@ -48,6 +75,10 @@ b. Light-limited rate (:math:`a_2`):
        \end{cases}
 
 * :math:`J` is the rate of electron transport.
+    :math:`J = \frac{0.3 \cdot PAR + V_{cmax} \cdot e - \sqrt{(0.3 \cdot PAR + V_{cmax} \cdot e)^2 - 1.08 \cdot PAR \cdot V_{cmax} \cdot e}}{1.8}`
+        * :math:`PAR` is the photosynthetically active radiation
+        * :math:`V_{cmax}` is the maximum rate of carboxylation
+        * :math:`e` is the mathematical constant (approximately 2.71828)
 
 3. The total net carbon assimilation (:math:`A_n`) is given by the weighted sum of C3 and C4 net carbon assimilation fractions:
 
