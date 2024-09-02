@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include "CARDAMOM_READ_BINARY_DATA.c"
 #include <netcdf.h>
-#include <time.h>
-
 
 
 /* Handle netCDF library errors by printing an error message and exiting with a
@@ -190,7 +188,7 @@ FAILONERROR(nc_def_var(	ncid,"EDCs" , NC_DOUBLE, 2, edcs_dems, &edcsVarID ));
 nc_enddef(ncid);
 
 
-    double         cpu_time_used=0;
+
 /*STEP 4 - RUNNING CARDADATA.MLF N TIMES*/
 for (n=0;n<N;n++){
 
@@ -203,13 +201,8 @@ fread(pars,sizeof(double),CARDADATA.nopars,fd);
 /*Setting EDCDIAG = 1 to ensure full model run*/
 CARDADATA.ncdf_data.EDCDIAG=1;
 
-clock_t    start = clock();//Start timer
 
 CARDADATA.MLF(CARDADATA,pars);
-clock_t    end = clock();//End timer
-
- cpu_time_used += ((double) (end - start)) / CLOCKS_PER_SEC;
-
 
 
 // printf("DATA.M_P[0] = %2.2f\n",CARDADATA.M_P[0]);
@@ -296,9 +289,8 @@ FAILONERROR(nc_close(ncid));
 free(pars);
 FREE_DATA_STRUCT(CARDADATA);
 
-printf("**********\n");
-    printf("Average time used per forward model run = %6.4f milliseconds\n", 1000*cpu_time_used/(double)N);
-printf("**********\n");
+
+
 
 
 return 0;

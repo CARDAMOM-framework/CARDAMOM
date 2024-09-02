@@ -344,7 +344,6 @@ else if (OBS->opt_filter==2 |  OBS->opt_filter==3){//monthly and annual flux
     /*Calculate annual cost function*/
     /*TEST: normalize model likelihood by normal distribution with mean zero and unc = x2 annual unc.*/
     tot_exp+=pow((oam-mam)/single_annual_unc,2);
-      
     }}
 
 

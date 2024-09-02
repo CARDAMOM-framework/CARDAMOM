@@ -12,7 +12,7 @@ int MODEL_INFO_1006(DATA * DATA){
 /*Step 1. Declare structure*/
 /*"static" ensures that the memory is declared in one instance and visible to all functions (I think)*/
 static DALEC DALECmodel;DALEC_1006_MODCONFIG(&DALECmodel);
-static MLF MLF;DALEC_MLF_DEDC_MODCONFIG(&MLF);
+static MLF MLF;DALEC_MLF_MODCONFIG(&MLF);
 
 
 /*Short-term: copy quantities into DATA structure to reduce dependencies in CARDAMOM_MODEL_LIBRARY.c*/

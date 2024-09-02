@@ -148,11 +148,11 @@ parmax[P.i_LY3_SM]=1;
 
 /*LY1 porosity*/
 parmin[P.LY1_por]=0.2;
-parmax[P.LY1_por]=0.98;/*0.98*/;
+parmax[P.LY1_por]=0.8;
 
 /*LY2 porosity*/
 parmin[P.LY2_por]=0.2;
-parmax[P.LY2_por]=0.98;
+parmax[P.LY2_por]=0.8;
 
 /*LY3 porosity*/
 parmin[P.LY3_por]=0.2;
@@ -260,7 +260,7 @@ parmax[P.fwc]=1.0;
 
 /* jc r_ch4   CH4:CO2 conversion ratio*/
 parmin[P.r_ch4]=0.001;
-parmax[P.r_ch4]=0.9;
+parmax[P.r_ch4]=1;//0.9;
 
 /* jc Q10ch4 Q10 for CH4 production  */
 parmin[P.Q10ch4]=1.0;
@@ -346,12 +346,12 @@ parmax[P.phi_WL]=50.;
 
 /*Deep thermal conductivity in W/m/K */
 parmin[P.thermal_cond]=0.3;
-parmax[P.thermal_cond]=3;
+parmax[P.thermal_cond]=2;
 
 
 /*Surface soil thermal conductivity in W/m/K */
-parmin[P.thermal_cond_surf]=0.3;
-parmax[P.thermal_cond_surf]=3;
+parmin[P.thermal_cond_surf]=0.03;
+parmax[P.thermal_cond_surf]=2;
 
 
 /*Surface soil thermal conductivity in W/m/K */

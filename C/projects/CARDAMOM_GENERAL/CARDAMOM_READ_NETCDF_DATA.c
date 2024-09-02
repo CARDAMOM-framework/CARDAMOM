@@ -129,10 +129,20 @@ DATA->PEQ_iniSOM=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSOM");
 DATA->PEQ_iniSnow=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSnow");
 DATA->PEQ_LCMA=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_LCMA");
 
-//add PEQ value and unc from previous MCMC *pMCMC*
+    //add PEQ value and unc from previous MCMC *pMCMC*
 DATA->PEQ_r_ch4=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_r_ch4");
 DATA->PEQ_S_fv=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_S_fv");
 DATA->PEQ_rhch4_rhco2=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_rhch4_rhco2");
+/*DATA->PEQ_thetas_opt=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_thetas_opt");
+DATA->PEQ_fwc=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_fwc");
+DATA->PEQ_Q10ch4=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Q10ch4");
+DATA->PEQ_Q10rhco2=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Q10rhco2");
+DATA->PEQ_retention=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_retention");*/
+/* DATA->PEQ_Med_g1=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Med_g1");
+DATA->PEQ_Vcmax25=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Vcmax25");
+DATA->PEQ_ga=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_ga");
+DATA->PEQ_Tdown=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Tdown"); */
+    // end of pMCMC
 
 //Global defaults: these are set in pre-process if not defined below
 // default_int_value(&OBS->opt_unc_type,0);
@@ -209,6 +219,7 @@ default_int_value(&DATA->SCF.opt_unc_type,0);
 default_double_value(&DATA->SCF.single_unc,0.1);
 default_double_value(&DATA->SCF.min_threshold,0.1);//m2/m2
 
+//No efault YIELD options
 
 
 
@@ -249,9 +260,6 @@ printf("Done reading all other edc ");
 		DATA->CO2.reference_mean=ncdf_read_double_attr(ncid, "CO2","reference_mean");
                                                 DEFAULT_REFERENCE_MEAN(&DATA->CO2);
                                                 
-	DATA->DISTURBANCE_FLUX.values=ncdf_read_double_var(ncid, "DISTURBANCE_FLUX", &(DATA->DISTURBANCE_FLUX.length));
-		DATA->DISTURBANCE_FLUX.reference_mean=ncdf_read_double_attr(ncid, "DISTURBANCE_FLUX","reference_mean");
-                                DEFAULT_REFERENCE_MEAN(&DATA->DISTURBANCE_FLUX);
 
 
         

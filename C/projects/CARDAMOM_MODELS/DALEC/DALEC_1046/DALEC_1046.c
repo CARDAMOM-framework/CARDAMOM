@@ -57,7 +57,6 @@ double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
 double *VPD=DATA.ncdf_data.VPD.values;
 double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
 double *YIELD=DATA.ncdf_data.YIELD.values;
-double *DISTURBANCE_FLUX=DATA.ncdf_data.DISTURBANCE_FLUX.values;
 double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
 
 double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
@@ -210,47 +209,27 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
 	/*note: all fluxes are in gC m-2 day-1*/
 
 
-//Proportional removals for deforestation & degradation
-
-    double frac_lab, frac_fol, frac_roo, frac_woo, tot_abgb;
-    tot_abgb=POOLS[nxp+S.C_lab]+POOLS[nxp+S.C_fol] +POOLS[nxp+S.C_roo] + POOLS[nxp+S.C_woo];
-    frac_lab=POOLS[nxp+S.C_lab]/tot_abgb;
-    frac_fol=POOLS[nxp+S.C_fol]/tot_abgb;
-    frac_roo=POOLS[nxp+S.C_roo]/tot_abgb;
-    frac_woo=POOLS[nxp+S.C_woo]/tot_abgb;
-
-
-//    printf("DISTURBANCE_FLUX[n] = %2.2f\n", DISTURBANCE_FLUX[n]);
 //Direct removals 
-        FLUXES[f+F.a_lab]= (YIELD[n]*0 + DISTURBANCE_FLUX[n]*frac_lab)/deltat;
-        FLUXES[f+F.a_fol]= (YIELD[n]*0 + DISTURBANCE_FLUX[n]*frac_fol)/deltat;
-        FLUXES[f+F.a_roo]= (YIELD[n]*0 + DISTURBANCE_FLUX[n]*frac_roo)/deltat;
-        FLUXES[f+F.a_woo]= (YIELD[n]*1 + DISTURBANCE_FLUX[n]*frac_woo)/deltat;
-
+        FLUXES[f+F.a_lab]= YIELD[n]*0.1;
+        FLUXES[f+F.a_fol]= YIELD[n]*0.05;
+        FLUXES[f+F.a_roo]= YIELD[n]*0.05;
+        FLUXES[f+F.a_woo]= YIELD[n]*0.3;
 //Transfers
-        FLUXES[f+F.ax_lab2lit]= YIELD[n]*0.2/deltat;
-        FLUXES[f+F.ax_fol2lit]= YIELD[n]*0.2/deltat;
-        FLUXES[f+F.ax_roo2lit]= YIELD[n]*0.2/deltat;
-        FLUXES[f+F.ax_woo2som]= YIELD[n]*0.4/deltat;
 
+        FLUXES[f+F.ax_lab2lit]= YIELD[n]*0.1;
+        FLUXES[f+F.ax_fol2lit]= YIELD[n]*0.05;
+        FLUXES[f+F.ax_roo2lit]= YIELD[n]*0.05;
+        FLUXES[f+F.ax_woo2som]= YIELD[n]*0.3;
 
-    //Land-to-atmoshere flux disturbance
-    FLUXES[f+F.f_lab] = (POOLS[nxp+S.C_lab]*BURNED_AREA[n]*CF[S.C_lab] )/deltat;
-    FLUXES[f+F.f_fol] = (POOLS[nxp+S.C_fol]*BURNED_AREA[n]*CF[S.C_fol] )/deltat;
-    FLUXES[f+F.f_roo] = (POOLS[nxp+S.C_roo]*BURNED_AREA[n]*CF[S.C_roo] )/deltat;
-    FLUXES[f+F.f_woo] = (POOLS[nxp+S.C_woo]*BURNED_AREA[n]*CF[S.C_woo] )/deltat;
-    FLUXES[f+F.f_lit] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*CF[S.C_lit]/deltat;
-    FLUXES[f+F.f_som] = POOLS[nxp+S.C_som]*BURNED_AREA[n]*CF[S.C_som]/deltat;
 //Total disturbance
 
-    FLUXES[f+F.d_lab] = FLUXES[f+F.f_lab] + FLUXES[f+F.a_lab];
-    FLUXES[f+F.d_fol] =FLUXES[f+F.f_fol] + FLUXES[f+F.a_fol]; 
-    FLUXES[f+F.d_roo] = FLUXES[f+F.f_roo] + FLUXES[f+F.a_roo];
-    FLUXES[f+F.d_woo] = FLUXES[f+F.f_woo] + FLUXES[f+F.a_woo];
-    FLUXES[f+F.d_lit] = FLUXES[f+F.f_lit];
-    FLUXES[f+F.d_som] = FLUXES[f+F.f_som];
+    FLUXES[f+F.f_lab] = (POOLS[nxp+S.C_lab]*BURNED_AREA[n]*CF[S.C_lab] +    FLUXES[f+F.a_lab])/deltat;
+    FLUXES[f+F.f_fol] = (POOLS[nxp+S.C_fol]*BURNED_AREA[n]*CF[S.C_fol] +  FLUXES[f+F.a_fol])/deltat;
+    FLUXES[f+F.f_roo] = (POOLS[nxp+S.C_roo]*BURNED_AREA[n]*CF[S.C_roo] +  FLUXES[f+F.a_roo])/deltat;
+    FLUXES[f+F.f_woo] = (POOLS[nxp+S.C_woo]*BURNED_AREA[n]*CF[S.C_woo] + FLUXES[f+F.a_woo])/deltat;
+    FLUXES[f+F.f_lit] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*CF[S.C_lit]/deltat;
+    FLUXES[f+F.f_som] = POOLS[nxp+S.C_som]*BURNED_AREA[n]*CF[S.C_som]/deltat;
 
-//Fire transfers
     FLUXES[f+F.fx_lab2lit] = (POOLS[nxp+S.C_lab]*BURNED_AREA[n]*(1-CF[S.C_lab])*(1-pars[P.resilience])+FLUXES[f+F.ax_lab2lit])/deltat;
     FLUXES[f+F.fx_fol2lit] = (POOLS[nxp+S.C_fol]*BURNED_AREA[n]*(1-CF[S.C_fol])*(1-pars[P.resilience])+FLUXES[f+F.ax_fol2lit])/deltat;
     FLUXES[f+F.fx_roo2lit] = (POOLS[nxp+S.C_roo]*BURNED_AREA[n]*(1-CF[S.C_roo])*(1-pars[P.resilience])+FLUXES[f+F.ax_roo2lit])/deltat;
@@ -258,28 +237,33 @@ FLUXES[f+F.lit2som] = POOLS[p+S.C_lit]*(1-pow(1-pars[P.tr_lit2soil]*FLUXES[f+F.t
     FLUXES[f+F.fx_lit2som] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*(1-CF[S.C_lit])*(1-pars[P.resilience])/deltat;
 
 
-    //Total transfers
-    FLUXES[f+F.dx_lab2lit] =     FLUXES[f+F.fx_lab2lit] +     FLUXES[f+F.ax_lab2lit];
-    FLUXES[f+F.dx_fol2lit] = FLUXES[f+F.fx_fol2lit] +     FLUXES[f+F.ax_fol2lit];
-    FLUXES[f+F.dx_roo2lit] = FLUXES[f+F.fx_roo2lit] +     FLUXES[f+F.ax_roo2lit];
-    FLUXES[f+F.dx_woo2som] = FLUXES[f+F.fx_woo2som] +     FLUXES[f+F.ax_woo2som];
-    FLUXES[f+F.dx_lit2som] = FLUXES[f+F.fx_lit2som];
-
 
 	/*Adding all fire pool transfers here*/
 	/*live C pools*/	
-    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-(FLUXES[f+F.d_lab]+FLUXES[f+F.dx_lab2lit]) *deltat;
-    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-(FLUXES[f+F.d_fol]+FLUXES[f+F.dx_fol2lit] )*deltat;
-    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-(FLUXES[f+F.d_roo]+FLUXES[f+F.dx_roo2lit])*deltat;
-    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-(FLUXES[f+F.d_woo]+FLUXES[f+F.dx_woo2som] )*deltat;
+    POOLS[nxp+S.C_lab] = POOLS[nxp+S.C_lab]-(FLUXES[f+F.f_lab]+FLUXES[f+F.fx_lab2lit]) *deltat;
+    POOLS[nxp+S.C_fol] = POOLS[nxp+S.C_fol]-(FLUXES[f+F.f_fol]+FLUXES[f+F.fx_fol2lit] )*deltat;
+    POOLS[nxp+S.C_roo] = POOLS[nxp+S.C_roo]-(FLUXES[f+F.f_roo]+FLUXES[f+F.fx_roo2lit])*deltat;
+    POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-(FLUXES[f+F.f_woo]+FLUXES[f+F.fx_woo2som] )*deltat;
+
+//Removing YIELD; using fixed fracs for pools
+    
+   
+
+
+
+
 	/*dead C pools*/
-	POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.dx_lab2lit]+FLUXES[f+F.dx_fol2lit]+FLUXES[f+F.dx_roo2lit]-FLUXES[f+F.d_lit]-FLUXES[f+F.dx_lit2som])*deltat;
-	POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]+(FLUXES[f+F.dx_woo2som]+FLUXES[f+F.dx_lit2som]-FLUXES[f+F.d_som])*deltat;
+	/*litter*/
+	POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.fx_lab2lit]+FLUXES[f+F.fx_fol2lit]+FLUXES[f+F.fx_roo2lit]-FLUXES[f+F.f_lit]-FLUXES[f+F.fx_lit2som])*deltat;
+	/*som*/
+	POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]+(FLUXES[f+F.fx_woo2som]+FLUXES[f+F.fx_lit2som]-FLUXES[f+F.f_som])*deltat;
 
 
 
 
 	/*fires - total flux in gC m-2 day-1*/
+	/*this term is now (essentially) obsolete*/
+	/*replace in next version of DALEC_FIRES*/
     FLUXES[f+F.f_total] = FLUXES[f+F.f_lab] + FLUXES[f+F.f_fol] + FLUXES[f+F.f_roo] + FLUXES[f+F.f_woo] + FLUXES[f+F.f_lit] + FLUXES[f+F.f_som];
 
 
