@@ -778,6 +778,47 @@ Description of DALEC 1100
      - ``retention``
      - 1.5 -- 10
      - 
+   * - :math:`z_{ly1}`
+     - :math:`W_{ly1}` depth
+     - m
+     - ``LY1_z``
+     - 0.01 -- 1
+     - 
+   * - :math:`z_{ly2}`
+     - :math:`W_{ly2}` depth
+     - m
+     - ``LY2_z``
+     - 0.01 -- 20
+     - 
+   * - :math:`z_{ly3}`
+     - :math:`W_{ly3}` depth
+     - m
+     - ``LY3_z``
+     - 0.01 -- 100
+     - 
+   * - :math:`p_{ly1}`
+     - :math:`W_{ly1}` porosity
+     - m\ :sup:`3` m\ :sup:`-3`
+     - ``LY1_por``
+     - 0.2 -- 0.8
+     - 
+   * - :math:`p_{ly2}`
+     - :math:`W_{ly2}` porosity
+     - m\ :sup:`3` m\ :sup:`-3`
+     - ``LY2_por``
+     - 0.2 -- 0.8
+     - 
+   * - :math:`p_{ly3}`
+     - :math:`W_{ly3}` porosity
+     - m\ :sup:`3` m\ :sup:`-3`
+     - ``LY3_por``
+     - 0.2 -- 0.8
+     - 
+     
+.. /*Field capacity (negative) potential (-Mpa)*/
+.. parmin[P.field_cap]=0.01;
+.. parmax[P.field_cap]=0.1;
+
 
 .. /*Litter decomposition rate*/
 .. parmin[P.tr_lit2som]=0.01;
@@ -901,33 +942,6 @@ Description of DALEC 1100
 .. parmin[P.i_LY3_SM]=0.01;
 .. parmax[P.i_LY3_SM]=1;
 
-.. /*LY1 porosity*/
-.. parmin[P.LY1_por]=0.2;
-.. parmax[P.LY1_por]=0.8;
-
-.. /*LY2 porosity*/
-.. parmin[P.LY2_por]=0.2;
-.. parmax[P.LY2_por]=0.8;
-
-.. /*LY3 porosity*/
-.. parmin[P.LY3_por]=0.2;
-.. parmax[P.LY3_por]=0.8;
-
-.. /*Field capacity (negative) potential (-Mpa)*/
-.. parmin[P.field_cap]=0.01;
-.. parmax[P.field_cap]=0.1;
-    
-.. /*LY1 depth (m)*/
-.. parmin[P.LY1_z]=0.01;
-.. parmax[P.LY1_z]=1;
-
-.. /*LY2 depth (m)*/
-.. parmin[P.LY2_z]=0.01;
-.. parmax[P.LY2_z]=20;
-
-.. /*LY3 depth (m)*/
-.. parmin[P.LY3_z]=0.01;
-.. parmax[P.LY3_z]=100;
 
 .. /*LY1 volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
 .. parmin[P.LY1_vhc]=1.3e6;

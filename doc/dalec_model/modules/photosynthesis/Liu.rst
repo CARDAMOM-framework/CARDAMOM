@@ -6,7 +6,7 @@ Modified Farquhar-von Caemmerer-Berry model
    :caption: Contents:
 
 
-To model photosynthesis and hence calculate GPP we apply a vairant of the Farquhar-von Caemmerer-Berry model adapted from [Liu:2021]_.
+To model photosynthesis and hence calculate GPP we apply a vairant of the Farquhar-von Caemmerer-Berry model ([Farquhar:1980]_) adapted from [Liu:2021]_.
 
 1. The absorbed photosynthetically active radiation (APAR) driving photosynthesis is calculated using the Beer-Lambert law [Campbell:1998]_ :
 
