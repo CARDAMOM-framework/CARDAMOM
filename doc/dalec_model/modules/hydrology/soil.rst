@@ -35,7 +35,7 @@ Interlayer water transfers between layers :math:`n` and : :math:`n+1` (:math:`Qx
 
 where :math:`\rho_l` is the density of liquid water (1000 kg m\ :sup:`-3`), :math:`k_{lyn}` is the hydraulic conductivity of layer :math:`n` in m s\ :sup:`-1` (see below for derivation), :math:`\Psi_{lyn}` is the matric potential of layer :math:`n` in MPa, :math:`g` is the gravitational acceleration on the surface of Earth (9.8 m s\ :sup:`-2`), and :math:`z_{lyn}` is the depth of layer :math:`n` in m.
 
-:math:`k_{lyn}` is derived based on the volumetric soil moisture of layer :math:`n` (:math:`\theta_{lyn}`) as :math:`k_{lyn}(t) = k_0\theta_{lyn}(t)^{2b+3}`, where :math:`k_0` is the saturated hydraulic conductivity parameter (in m s\ :sup:`-1`) and :math:`b` is the retention parameter, while :math:`\theta_{lyn}` is derived as :math:`\theta_{lyn}(t) = W_{lyn}(t)(1000p_{lyn}z_{lyn})^{-1}` where :math:p_{lyn} is the porosity of layer :math:`n`.
+:math:`k_{lyn}` is derived based on the volumetric soil moisture of layer :math:`n` (:math:`\theta_{lyn}`) as :math:`k_{lyn}(t) = k_0\theta_{lyn}(t)^{2b+3}`, where :math:`k_0` is the saturated hydraulic conductivity parameter (in m s\ :sup:`-1`) and :math:`b` is the retention parameter, while :math:`\theta_{lyn}` is derived as :math:`\theta_{lyn}(t) = W_{lyn}(t)(1000p_{lyn}z_{lyn})^{-1}` where :math:`p_{lyn}` is the porosity of layer :math:`n`.
 
 ``Implementation notes?? We actually calculate potential transfer and check that against the available water in the source layer and available space in the destination layer``
 
