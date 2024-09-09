@@ -764,335 +764,466 @@ Description of DALEC 1100
      - Maximum infiltration capacity
      - mmH\ :sub:`2`\ O d\ :sup:`-1`
      - ``max_infil``
-     - 1 -- 100
+     - :math:`[1,100]`
      - 
-   * - :math:`k_0`
+   * - :math:`\kappa_0`
      - Saturated hydraulic conductivity
-     - ms\ :sup:`-1`
+     - m s\ :sup:`-1`
      - ``hydr_cond``
-     - :math:`10^{-9}` -- :math:`10^{-4}`
+     - :math:`[10^{-9},10^{-4}]`
      - 
    * - :math:`b`
      - Retention parameter
      - None
      - ``retention``
-     - 1.5 -- 10
+     - :math:`[1.5,10]`
      - 
    * - :math:`z_{ly1}`
      - :math:`W_{ly1}` depth
      - m
      - ``LY1_z``
-     - 0.01 -- 1
+     - :math:`[0.01,1]`
      - 
    * - :math:`z_{ly2}`
      - :math:`W_{ly2}` depth
      - m
      - ``LY2_z``
-     - 0.01 -- 20
+     - :math:`[0.01,20]`
      - 
    * - :math:`z_{ly3}`
      - :math:`W_{ly3}` depth
      - m
      - ``LY3_z``
-     - 0.01 -- 100
+     - :math:`[0.01,100]`
      - 
    * - :math:`p_{ly1}`
      - :math:`W_{ly1}` porosity
      - m\ :sup:`3` m\ :sup:`-3`
      - ``LY1_por``
-     - 0.2 -- 0.8
+     - :math:`[0.2,0.8]`
      - 
    * - :math:`p_{ly2}`
      - :math:`W_{ly2}` porosity
      - m\ :sup:`3` m\ :sup:`-3`
      - ``LY2_por``
-     - 0.2 -- 0.8
+     - :math:`[0.2,0.8]`
      - 
    * - :math:`p_{ly3}`
      - :math:`W_{ly3}` porosity
      - m\ :sup:`3` m\ :sup:`-3`
      - ``LY3_por``
-     - 0.2 -- 0.8
+     - :math:`[0.2,0.8]`
      - 
-     
-.. /*Field capacity (negative) potential (-Mpa)*/
-.. parmin[P.field_cap]=0.01;
-.. parmax[P.field_cap]=0.1;
+   * - :math:`\psi_{fc}`
+     - Water potential at field capacity
+     - -MPa
+     - ``field_cap``
+     - :math:`[0.01,0.1]`
+     - 
+   * - :math:`DF_{lit}`
+     - Fraction of decomposed :math:`C_{lit}` transferred to :math:`C_{som}`
+     - 1
+     - ``tr_lit2som``
+     - :math:`[0.01,0.99]`
+     - 
+   * - :math:`DF_{cwd}`
+     - Fraction of decomposed :math:`C_{cwd}` transferred to :math:`C_{som}`
+     - 1
+     - ``tr_cwd2som``
+     - :math:`[0.01,0.99]`
+     -  
+   * - :math:`K_{roo}`
+     - Autotrophic maintenance respiration coefficient for roots at 25\ :math:`^{\circ}`\ C 
+     - d\ :sup:`-1`
+     - ``rauto_mr_r``
+     - :math:`[10^{-4},10^{-2}]`
+     - 
+   * - :math:`K_{woo}`
+     - Autotrophic maintenance respiration coefficient for wood at 25\ :math:`^{\circ}`\ C 
+     - d\ :sup:`-1`
+     - ``rauto_mr_w``
+     - :math:`[10^{-6},5 \times 10^{-5}]`
+     - 
+   * - :math:`Q_{10}^{Ra}`
+     - Autotrophic maintenance respiration Q\ :sub:`10` coefficient
+     - 1
+     - ``rauto_mr_q10``
+     - :math:`[1,5]`
+     - 
+   * - :math:`Q_{10}^{dark}`
+     - Dark respiration Q\ :sub:`10` coefficient
+     - 1
+     - ``rauto_mr_q10``
+     - :math:`[1,5]`
+     - 
+   * - :math:`\Gamma`
+     - Growth yield
+     - 1
+     - ``rauto_gr``
+     - :math:`[0.6,0.95]`
+     - gC in new biomass per gC used for growth, see ``Cannell and Thornley 2000``
+   * - :math:`k_{woo}`
+     - Background turnover rate of :math:`C_{woo}`
+     - d\ :sup:`-1`
+     - ``t_wood``
+     - :math:`[2.5\times 10^{-5},10^{-2}]`
+     - 
+   * - :math:`k_{lab}`
+     - Background turnover rate of :math:`C_{lab}`
+     - d\ :sup:`-1`
+     - ``t_lab``
+     - :math:`[10^{-4},10^{-2}]`
+     - 
+   * - :math:`k_{roo}`
+     - Background turnover rate of :math:`C_{roo}`
+     - d\ :sup:`-1`
+     - ``t_roo``
+     - :math:`[10^{-4},10^{-2}]`
+     - 
+   * - :math:`k_{fol}`
+     - Background turnover rate of :math:`C_{fol}`
+     - d\ :sup:`-1`
+     - ``t_fol``
+     - :math:`[6.8\times 10^{-4},3.34\times 10^{-2}]`
+     - 
+   * - :math:`k_{lit}`
+     - Background turnover rate of :math:`C_{lit}`
+     - d\ :sup:`-1`
+     - ``t_lit``
+     - :math:`[10^{-4},10^{-1}]`
+     - ``check units???``
+   * - :math:`k_{cwd}`
+     - Background turnover rate of :math:`C_{cwd}`
+     - d\ :sup:`-1`
+     - ``t_cwd``
+     - :math:`[5\times 10^{-5},5\times 10^{-2}]`
+     - ``check units???``
+   * - :math:`k_{som}`
+     - Background turnover rate of :math:`C_{som}`
+     - d\ :sup:`-1`
+     - ``t_som``
+     - :math:`[10^{-7},10^{-1}]`
+     - ``check units???``
+   * - :math:`Q_{10}^{aer}`
+     - Q\ :sub:`10` coefficient of aerobic heterotrphic respiration
+     - 1
+     - ``Q10rhco2``
+     - :math:`[1,5]`
+     - 
+   * - :math:`Q_{10}^{ana}`
+     - Q\ :sub:`10` coefficient of anaerobic heterotrphic respiration
+     - 1
+     - ``Q10ch4``
+     - :math:`[1,5]`
+     - 
+   * - :math:`f_{CH_{4}}`
+     - CH\ :sub:`4` to CO\ :sub:`2` conversion ratio
+     - 1
+     - ``r_ch4``
+     - :math:`[0.001,0.9]`
+     - 
+   * - :math:`LCMA`
+     - Leaf carbon mass per area
+     - gC m\ :sup:`-2`
+     - ``LCMA``
+     - :math:`[5,200]`
+     - 
+   * - :math:`i_{C_{lab}}`
+     - Initial value of :math:`C_{lab}`
+     - gC m\ :sup:`-2`
+     - ``i_labile``
+     - :math:`[1,10^{5}]`
+     - 
+   * - :math:`i_{C_{fol}}`
+     - Initial value of :math:`C_{fol}`
+     - gC m\ :sup:`-2`
+     - ``i_foliar``
+     - :math:`[1,2\times 10^{3}]`
+     - 
+   * - :math:`i_{C_{roo}}`
+     - Initial value of :math:`C_{roo}`
+     - gC m\ :sup:`-2`
+     - ``i_root``
+     - :math:`[1,2\times 10^{3}]`
+     - 
+   * - :math:`i_{C_{woo}}`
+     - Initial value of :math:`C_{woo}`
+     - gC m\ :sup:`-2`
+     - ``i_wood``
+     - :math:`[1,10^{5}]`
+     - 
+   * - :math:`i_{C_{cwd}}`
+     - Initial value of :math:`C_{cwd}`
+     - gC m\ :sup:`-2`
+     - ``i_cwd``
+     - :math:`[1,10^{5}]`
+     - 
+   * - :math:`i_{C_{lit}}`
+     - Initial value of :math:`C_{lit}`
+     - gC m\ :sup:`-2`
+     - ``i_lit``
+     - :math:`[1,2\times 10^{3}]`
+     - 
+   * - :math:`i_{C_{som}}`
+     - Initial value of :math:`C_{som}`
+     - gC m\ :sup:`-2`
+     - ``i_som``
+     - :math:`[1,2\times 10^{5}]`
+     - 
+   * - :math:`i_{\theta_{ly1}}`
+     - Initial value of :math:`\theta_{ly1}`
+     - 1
+     - ``i_LY1_SM``
+     - :math:`[0.01,1]`
+     - 
+   * - :math:`i_{\theta_{ly2}}`
+     - Initial value of :math:`\theta_{ly2}`
+     - 1
+     - ``i_LY2_SM``
+     - :math:`[0.01,1]`
+     - 
+   * - :math:`i_{\theta_{ly3}}`
+     - Initial value of :math:`\theta_{ly3}`
+     - 1
+     - ``i_LY3_SM``
+     - :math:`[0.01,1]`
+     - 
+   * - :math:`i_{SWE}`
+     - Initial value of :math:`\W_{swe}`
+     - mm H\ :sub:`2`\ O
+     - ``i_SWE``
+     - :math:`[10^{-6},10^{4}]`
+     - 
+   * - :math:`i_{E_{ly1}}`
+     - Initial value of :math:`E_{ly1}`
+     - J mmH\ :sub:`2`\ O\ :sup:`-1`
+     - ``i_LY1_E``
+     - :math:`[4.67\times 10^{5},1.11\times 10^{6}]`
+     - ``Energy in 1mm H2O at -50C to 1mm H2O at +50C ?????``
+   * - :math:`i_{E_{ly2}}`
+     - Initial value of :math:`E_{ly2}`
+     - J mmH\ :sub:`2`\ O\ :sup:`-1`
+     - ``i_LY2_E``
+     - :math:`[4.67\times 10^{5},1.11\times 10^{6}]`
+     - ``Energy in 1mm H2O at -50C to 1mm H2O at +50C ?????``
+   * - :math:`i_{E_{ly3}}`
+     - Initial value of :math:`E_{ly3}`
+     - J mmH\ :sub:`2`\ O\ :sup:`-1`
+     - ``i_LY3_E``
+     - :math:`[4.67\times 10^{5},1.11\times 10^{6}]`
+     - ``Energy in 1mm H2O at -50C to 1mm H2O at +50C ?????``
+   * - :math:`VHC_{E_{ly1}}`
+     - Volumetric heat capacity of :math:`E_{ly1}`
+     - J K m\ :sup:`-3`
+     - ``LY1_vhc``
+     - :math:`[1.3\times 10^{6},3\times 10^{6}]`
+     - 
+   * - :math:`VHC_{E_{ly2}}`
+     - Volumetric heat capacity of :math:`E_{ly2}`
+     - J K m\ :sup:`-3`
+     - ``LY2_vhc``
+     - :math:`[1.3\times 10^{6},3\times 10^{6}]`
+     - 
+   * - :math:`VHC_{E_{ly3}}`
+     - Volumetric heat capacity of :math:`E_{ly3}`
+     - J K m\ :sup:`-3`
+     - ``LY3_vhc``
+     - :math:`[1.3\times 10^{6},3\times 10^{6}]`
+     - 
+   * - :math:`CF_{fol}`
+     - Foliar combustion factor
+     - 1
+     - ``cf_foliar``
+     - :math:`[0.01,1]`
+     - 
+   * - :math:`CF_{lig}`
+     - Ligneous combustion factor
+     - 1
+     - ``cf_ligneous``
+     - :math:`[0.01,1]`
+     - 
+   * - :math:`CF_{som}`
+     - Soil combustion factor
+     - 1
+     - ``cf_DOM``
+     - :math:`[0.01,1]`
+     - 
+   * - :math:`r`
+     - Resilience factor
+     - 1
+     - ``resilience``
+     - :math:`[0.01,1]`
+     - 
+   * - :math:`Q_{ex}`
+     - Excess runoff factor
+     - 1
+     - ``Q_excess``
+     - :math:`[0.01,1]`
+     - 
+   * - :math:`g_{1}`
+     - Medlyn :math:`g_{1}` parameter ``cite paper``
+     - 1
+     - ``Med_g1``
+     - :math:`[1.79,5.79]`
+     - 
+   * - :math:`V_{cmax25}`
+     - Maximum rate of RuBisCO carboxylization at 25\ :math:`^{\circ}`\ C 
+     - :math:`\mu`\ molCO\ :sub:`2` m\ :sup:`-2` s\ :sup:`-1`
+     - ``Vcmax25``
+     - :math:`[1,150]`
+     - 
+   * - :math:`Tmin_{min}`
+     - Minimum cold temperature scaling factor 
+     - K
+     - ``Tminmin``
+     - :math:`[258.15,273.15]`
+     - ``cite Stetz paper``
+   * - :math:`Tmin_{max}`
+     - Maximum cold temperature scaling factor 
+     - K
+     - ``Tminmax``
+     - :math:`[273.15,288.15]`
+     - ``cite Stetz paper``
+   * - :math:`T_{upp}`
+     - Upper temperature limit for photosynthesis 
+     - K
+     - ``Tupp``
+     - :math:`[249.15,318.15]`
+     - 
+   * - :math:`T_{down}`
+     - Lower temperature limit for photosynthesis 
+     - K
+     - ``Tdown``
+     - :math:`[213.15,286.15]`
+     - 
+   * - :math:`g_{a}`
+     - Aerodynamic conductance
+     - m s\ :sup:`-1`
+     - ``ga``
+     - :math:`[10^{-3},10]`
+     - 
+   * - :math:`\Omega`
+     - Leaf clumping index
+     - 1
+     - ``clumping``
+     - :math:`[0.35,1]`
+     -      
+   * - :math:`\rho_{PAR}`
+     - Reflectance for photosynthetically active radiation
+     - 1
+     - ``leaf_refl_par``
+     - :math:`[0.01,0.5]`
+     -      
+   * - :math:`\rho_{NIR}`
+     - Reflectance for near infrared radiation
+     - 1
+     - ``leaf_refl_nir``
+     - :math:`[0.3,0.7]`
+     -      
+   * - :math:`sn_{1}`
+     - Minimum temperature threshold for snow melt
+     - K
+     - ``min_melt``
+     - :math:`[263.15,283.15]`
+     -      
+   * - :math:`sn_{2}`
+     - Snowmelt slope
+     - ``????``
+     - ``melt_slope``
+     - :math:`[10^{-5},1]`
+     -      
+   * - :math:`sn_{3}`
+     - Snow cover fraction scalar
+     - ``????``
+     - ``scf_scalar``
+     - :math:`[10,10^{3}]`
+     -         
+   * - :math:`S_{fv}`
+     - Scalar for aerobic volumetric fraction
+     - ``????``
+     - ``S_fv``
+     - :math:`[1,100]`
+     -      
+   * - :math:`\theta_{opt}`
+     - Optimum soil moisture for water scalar in heterotrophic respiration
+     - 1
+     - ``thetas_opt``
+     - :math:`[0.2,1]`
+     -      
+   * - :math:`F_{wc}`
+     - water scaler fW value at the end point C
+     - ``????``
+     - ``fwc``
+     - :math:`[0.01,1]`
+     -      
+   * - :math:`Ev_{max}`
+     - Maximum pan evaporation
+     - mm d\ :sup:`-1`
+     - ``maxPevap``
+     - :math:`[0.01,100]`
+     -      
+   * - :math:`T_{\phi}`
+     - Maximum temperature at leaf onset
+     - K
+     - ``T_phi``
+     - :math:`[268.15,323.15]`
+     -  
+   * - :math:`T_{range}`
+     - Spatial range of mean temperature at leaf onset
+     - K
+     - ``T_range``
+     - :math:`[0.1,10]`
+     -  
+   * - :math:`\Lambda_{g}`
+     - LAI linear growth constant
+     - Per time-step
+     - ``plgr``
+     - :math:`[0.001,0.5]`
+     -  
+   * - :math:`K_{leaf}`
+     - Inverse of leaf longevity during senescence period
+     - Per time-step
+     - ``k_leaf``
+     - :math:`[0.001,0.5]`
+     -  
+   * - :math:`\Lambda_{max}`
+     - Intrinsic maximum LAI
+     - m\ :sup:`2` m\ :sup:`-2`
+     - ``plgr``
+     - :math:`[0.1,10]`
+     -  
+   * - :math:`\tau_{LAI}`
+     - Target survival time for LAI under water-deficit conditions
+     - d ``????``
+     - ``tau_W``
+     - :math:`[0.1,300]`
+     -  
+   * - :math:`t_{c}`
+     - Mean daylength at leaf shedding
+     - hours of sunlight d\ :sup:`-1`
+     - ``time_c``
+     - :math:`[2,22]`
+     -  
+   * - :math:`t_{r}`
+     - Spatial range of :math:`t_{c}`
+     - hours of sunlight d\ :sup:`-1`
+     - ``time_r``
+     - :math:`[0.1,6]`
+     -  
+   * - :math:`T_{mem}`
+     - Initial value of LAI temperature memory
+     - K
+     - ``init_T_mem``
+     - :math:`[268.14,323.15]`
+     -  
+   * - :math:`\theta_{mem}`
+     - Initial value of LAI water/structural memory
+     - 1
+     - ``init_LAIW_mem``
+     - :math:`[0.1,1]`
+     -  
 
 
-.. /*Litter decomposition rate*/
-.. parmin[P.tr_lit2som]=0.01;
-.. parmax[P.tr_lit2som]=0.99;
-
-.. /*CWD decomposition rate*/
-.. parmin[P.tr_cwd2som]=0.01;
-.. parmax[P.tr_cwd2som]=0.99;
-
-.. /*Autotrophic maintenance respiration coefficient for roots - turnover rate at 25oC (d-1)*/
-.. parmin[P.rauto_mr_r]=0.0001;
-.. parmax[P.rauto_mr_r]=0.01;
-
-.. /*Autotrophic maintenance respiration coefficient for wood - turnover rate at 25oC (d-1)*/
-.. parmin[P.rauto_mr_w]=0.000001;
-.. parmax[P.rauto_mr_w]=0.005;
-
-.. /*Autotrophic maintenance respiration Q10 parameter*/
-.. parmin[P.rauto_mr_q10]=1.0;
-.. parmax[P.rauto_mr_q10]=5.0;
-
-.. /*Dark respiration Q10 parameter*/
-.. parmin[P.rauto_mrd_q10]=1.0;
-.. parmax[P.rauto_mrd_q10]=5.0;
-
-.. /*Growth yield (g C appearing in new biomass per g C used for growth; "growth yield" in Cannell and Thornley 2000)*/
-.. parmin[P.rauto_gr]=0.60;
-.. parmax[P.rauto_gr]=0.95;
-
-.. /*TOR wood* - 1% loss per year value*/
-.. parmin[P.t_wood]=0.000025;
-.. parmax[P.t_wood]=0.01;
-
-.. /*TOR labile C*/ //Setting to be equal to roots as first guess (10.21.23)
-.. parmin[P.t_lab]=0.0001;
-.. parmax[P.t_lab]=0.01;
-
-.. /*TOR roots*/
-.. parmin[P.t_root]=0.0001;
-.. parmax[P.t_root]=0.01;
-
-.. /*Inverse of leaf longevity at any period i.e. background turnover (days-1)*/
-.. parmin[P.t_foliar]=0.00068; /*around 4 yrs*/
-.. parmax[P.t_foliar]=0.0334;
-
-.. /*TOR litter*/
-.. parmin[P.t_lit]=0.0001;
-.. parmax[P.t_lit]=0.1;
-
-.. /*TOR CWD*/
-.. parmin[P.t_cwd]=0.00005;
-.. parmax[P.t_cwd]=0.05;
-
-.. /*TOR SOM*/
-.. parmin[P.t_som]=0.0000001;
-.. parmax[P.t_som]=0.01;
-
-.. /*\Q10 = 1.2-2.0*/
-.. parmin[P.Q10rhco2]=1;
-.. parmax[P.Q10rhco2]=5.0;
-
-.. /*LMCA*; Kattge et al. 2011*;*Kattge et al., provide a range of 10 400 g m-2, i.e. 5 200 gC m-2*/
-.. parmin[P.LCMA]=5;
-.. parmax[P.LCMA]=200;
-
-.. /*C labile*/
-.. parmin[P.i_labile]=1.0;
-.. parmax[P.i_labile]=100000.0;
-
-.. /*C foliar*/
-.. parmin[P.i_foliar]=1.0;
-.. parmax[P.i_foliar]=2000.0;
-
-.. /*C roots*/
-.. parmin[P.i_root]=1.0;
-.. parmax[P.i_root]=2000.0;
-
-.. /*C_wood*/
-.. parmin[P.i_wood]=1.0;
-.. parmax[P.i_wood]=100000.0;
-
-.. /*C CWD*/
-.. parmin[P.i_cwd]=1.0;
-.. parmax[P.i_cwd]=100000.0;
-
-.. /*C litter*/
-.. parmin[P.i_lit]=1.0;
-.. parmax[P.i_lit]=2000.0;
-
-.. /*C_som*/
-.. parmin[P.i_som]=1.0;
-.. parmax[P.i_som]=200000.0;
-
-.
-.. /*"LY1 SM at t0"*/
-.. parmin[P.i_LY1_SM]=0.01;
-.. parmax[P.i_LY1_SM]=1;
-
-.. /*"LY2 SM at t0"*/
-.. parmin[P.i_LY2_SM]=0.01;
-.. parmax[P.i_LY2_SM]=1;
-
-.. /*Foliar biomass CF*/
-.. parmin[P.cf_foliar]=0.01;
-.. parmax[P.cf_foliar]=1;
-
-.. /*"Ligneous" biomass CF".*/
-.. parmin[P.cf_ligneous]=0.01;
-.. parmax[P.cf_ligneous]=1;
-
-.. /*DOM CF".*/
-.. parmin[P.cf_DOM]=0.01;
-.. parmax[P.cf_DOM]=1;
-
-.. /*Resilience factor (since transfer to litter is represented as (1-pars[30])) ".*/
-.. parmin[P.resilience]=0.01;
-.. parmax[P.resilience]=1;
-
-
-.. /*LY3 SM at t=0*/
-.. parmin[P.i_LY3_SM]=0.01;
-.. parmax[P.i_LY3_SM]=1;
-
-
-.. /*LY1 volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
-.. parmin[P.LY1_vhc]=1.3e6;
-.. parmax[P.LY1_vhc]=3e6;
-
-.. /*LY2 volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
-.. parmin[P.LY2_vhc]=1.3e6;
-.. parmax[P.LY2_vhc]=3e6;
-
-.. /*LY3 volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
-.. parmin[P.LY3_vhc]=1.3e6;
-.. parmax[P.LY3_vhc]=3e6;
-
-.. /*Runoff excess*/
-.. parmin[P.Q_excess]=0.01;
-.. parmax[P.Q_excess]=1;
-
-.. /*Medlyn g1*/
-.. parmin[P.Med_g1]=1.79;
-.. parmax[P.Med_g1]=5.79;
-
-.. /*Vcmax25*/
-.. parmin[P.Vcmax25]=1;
-.. parmax[P.Vcmax25]=150;
-
-.. /*Tminmin scaling factor*/
-.. parmin[P.Tminmin]=258.15;
-.. parmax[P.Tminmin]=273.15;
-
-.. /*Tminmax scaling factor*/
-.. parmin[P.Tminmax]=273.15;
-.. parmax[P.Tminmax]=288.15;
-
-.. /*aerodynamic conductance (m/s)*/
-.. parmin[P.ga]=0.001;
-.. parmax[P.ga]=10.0;
-
-.. /*Tupp*/
-.. parmin[P.Tupp]=249.15; // 299.15-50
-.. parmax[P.Tupp]=318.15;
-
-.. /*Tdown*/
-.. parmin[P.Tdown]=213.15; // 263.15-50
-.. parmax[P.Tdown]=286.15;
-
-.. /*Clumping index*/
-.. parmin[P.clumping]=0.35;
-.. parmax[P.clumping]=1.0;
-
-.. /*PAR reflectance*/
-.. parmin[P.leaf_refl_par]=0.05;
-.. parmax[P.leaf_refl_par]=0.5;
-
-.. /*NIR reflectance*/
-.. parmin[P.leaf_refl_nir]=0.3;
-.. parmax[P.leaf_refl_nir]=0.7;
-
-.. /*iSWE: initial for state variable SWE snow water equivalent*/
-.. parmin[P.i_SWE]=0.000001;
-.. parmax[P.i_SWE]=10000;
-
-.. /*sn1: min threshold for melt*/
-.. parmin[P.min_melt]=263.15;
-.. parmax[P.min_melt]=283.15;
-
-.. /*sn2: slope*/
-.. parmin[P.melt_slope]=0.00001;
-.. parmax[P.melt_slope]=1;
-
-.. /*sn3: snow cover fraction scalar; SCF = SWE/(SWE +SWEcritical_par) */
-.. parmin[P.scf_scalar]=10;
-.. parmax[P.scf_scalar]=1000.0;
-
-.. /* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (LY1/LY1_fs)\n jc new name for this par is S_fv, scalar for aerobic volumetric fraction */
-.. parmin[P.S_fv]=1;
-.. parmax[P.S_fv]=100.0;
-
-.. /* jc thetas_opt optimum thetas for water scaler fW*/
-.. parmin[P.thetas_opt]=0.2;
-.. parmax[P.thetas_opt]=1.0;
-
-.. /* jc fwc the water scaler fW value at the end point C  */
-.. parmin[P.fwc]=0.01;
-.. parmax[P.fwc]=1.0;
-
-.. /* jc r_ch4   CH4:CO2 conversion ratio*/
-.. parmin[P.r_ch4]=0.001;
-.. parmax[P.r_ch4]=0.9;
-
-.. /* jc Q10ch4 Q10 for CH4 production  */
-.. parmin[P.Q10ch4]=1.0;
-.. parmax[P.Q10ch4]=5.0;
-
-.. /* maxPevap in mm/day*/
-.. parmin[P.maxPevap]=0.01;
-.. parmax[P.maxPevap]=100;
-
-.. /*Mean temperature at leaf onset (T_phi) (degrees kelvin)*/
-.. parmin[P.T_phi]=268.15;
-.. parmax[P.T_phi]=323.15;
-
-.. /*Spatial range of mean temperature at leaf onset (T_r) (degrees C or degrees kelvin)*/
-.. parmin[P.T_range]=0.1;
-.. parmax[P.T_range]=10.0;
-
-.. /*LAI linear growth constant (inverse of model time units; e.g. days-1 or months-1)*/
-.. parmin[P.plgr]=0.001;
-.. parmax[P.plgr]=0.5;
-
-.. /*Inverse of leaf longevity during senescence period (inverse of model time units; e.g. days-1 or months-1)*/
-.. parmin[P.k_leaf]=0.001;
-.. parmax[P.k_leaf]=0.5;
-
-.. /*Intrinsic maximum LAI (m^2 m^-2)*/
-.. parmin[P.lambda_max]=0.1;
-.. parmax[P.lambda_max]=10.0;
-
-.. /*Target survival time for LAI under water-deficit conditions (days; or same unit as ET and LY1)*/
-.. parmin[P.tau_W]=0.1;
-.. parmax[P.tau_W]=300;
-
-.. /*Mean daylength at leaf shedding (t_c; in units of hours sunlight per day)*/
-.. parmin[P.time_c]=2;
-.. parmax[P.time_c]=22;
-
-.. /*Spatial range of mean daylength at leaf shedding (t_r)*/
-.. parmin[P.time_r]=0.1;
-.. parmax[P.time_r]=6.0;
-
-.. /*initialization of temperature memory at t=0 (in absolute temperature units)*/
-.. parmin[P.init_T_mem]=268.14;
-.. parmax[P.init_T_mem]=323.15;
-
-.. /*initialization of water/structural memory (fractional value of intrinsic maximum LAI)*/
-.. parmin[P.init_LAIW_mem]=0.01;
-.. parmax[P.init_LAIW_mem]=1;
-
-
-
-
-.. /*LY1 energy per mm H2O (~ Energy in 1mm H2O @ -50C to 1mm H2O@ +50C)*/
-.. parmin[P.i_LY1_E]=4.67e+05;
-.. parmax[P.i_LY1_E]=1.11e+06;
-
-.. /*LY2 energy per mm H2O(~ Energy in 1mm H2O @ -50C to 1mm H2O@ +50C)*/
-.. parmin[P.i_LY2_E]=4.67e+05;
-.. parmax[P.i_LY2_E]=1.11e+06;
-
-.. /*LY3 energy per mm H2O (~ Energy in 1mm H2O @ -50C to 1mm H2O@ +50C)*/
-.. parmin[P.i_LY3_E]=4.67e+05;
-.. parmax[P.i_LY3_E]=1.11e+06;
 
 .. /*PSI 50: water potential when soil-plant continuum is at 50% hydraulic conductivity (-MPa) due to stomatal closure*/
 .. parmin[P.psi_50]=0.1;

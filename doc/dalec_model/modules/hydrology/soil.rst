@@ -24,14 +24,14 @@ Each of the :math:`n` soil water layers (:math:`W_{lyn}`) consists of a prognist
 .. math::
    \theta_{lyn}(t) = W_{lyn}(t)(10^3p_{lyn}z_{lyn})^{-1}
 
-where :math:`z_{lyn}` is the depth of layer :math:`n` in m, and :math:`p_{lyn}` is the porosity of layer :math:`n` in m\ :sup:`3` m\ :sup:`-3`.
+where :math:`z_{lyn}` is the depth parameter of layer :math:`n` in m, and :math:`p_{lyn}` is the porosity parameter of layer :math:`n` in m\ :sup:`3` m\ :sup:`-3`.
 
 Each layer has a diagnostic matric water potential (:math:`\Psi_{lyn}`, in MPa) that is derived as 
 
 .. math::
    \psi_{lyn}(t) = \psi_{p}\theta_{lyn}(t)^{-b}
 
-where :math:`\psi_{p}` is set to -1.17 x 10\ :sup:`-3` MPa (see [Massoud:2022]_ ``although we don't use the exact same value``) and :math:`b` is a unitless retention curve parameter.
+where :math:`\psi_{p}` is set to -1.17 x 10\ :sup:`-3` MPa (see :ref:`Massoud et al. 2022 <Massoud2022>`  ``although we don't use the exact same value``) and :math:`b` is a unitless retention curve parameter.
 
 Each layer also has a diagnostic temperature (:math:`T_{lyn}`, in K) and liquid fraction (:math:`T_{lyn}`, in kg kg\ :sup:`-1`), the derivation of which is described in section ``reference energy balance section``.
 
@@ -57,14 +57,14 @@ Inter-layer water transfers
 Interlayer water transfers between layers :math:`n` and : :math:`n+1` (:math:`Qx_{lyn,n+1}`) are derived based on the difference in soil water potential (:math:`\Psi_{lyn}` and :math:`\Psi_{lyn+1}`). The equation used to derive the exchange in mm d:sup:`-1` at each time step :math:`t` is:
 
 .. math::
-   Qx_{lyn,n+1}(t) = \rho_l \sqrt{k_{lyn}(t)k_{lyn+1}(t)} \left[\frac{10^{-6}(\Psi_{lyn}(t) - \Psi_{lyn+1}(t))}{\rho_l g 0.5(z_{lyn}+z_{lyn+1})} + 1 \right]
+   Qx_{lyn,n+1}(t) = \rho_l \sqrt{\kappa_{lyn}(t)\kappa_{lyn+1}(t)} \left[\frac{10^{-6}(\Psi_{lyn}(t) - \Psi_{lyn+1}(t))}{\rho_l g 0.5(z_{lyn}+z_{lyn+1})} + 1 \right]
 
-where :math:`\rho_l` is the density of liquid water (1000 kg m\ :sup:`-3`), :math:`g` is the gravitational acceleration on the surface of Earth (9.8 m s\ :sup:`-2`), and  :math:`k_{lyn}` is the hydraulic conductivity of layer :math:`n` in m s\ :sup:`-1` and is derived as
+where :math:`\rho_l` is the density of liquid water (1000 kg m\ :sup:`-3`), :math:`g` is the gravitational acceleration on the surface of Earth (9.8 m s\ :sup:`-2`), and  :math:`\kappa_{lyn}` is the hydraulic conductivity of layer :math:`n` in m s\ :sup:`-1` and is derived as
 
 .. math::
-   k_{lyn}(t) = k_0\theta_{lyn}(t)^{2b+3}
+   \kappa_{lyn}(t) = \kappa_0\theta_{lyn}(t)^{2b+3}
 
-where :math:`k_0` is the saturated hydraulic conductivity parameter (in m s\ :sup:`-1`).
+where :math:`\kappa_0` is the saturated hydraulic conductivity parameter (in m s\ :sup:`-1`).
 
 ``Implementation notes?? We actually calculate potential transfer and check that against the available water in the source layer and available space in the destination layer``
 
@@ -79,5 +79,8 @@ Subsurface runoff of layer :math:`n` (:math:`Q_{lyn}`, in mm d\ :sup:`-1`) is de
 .. \textbf{Evapotranspiration losses:}
 .. Soil evaporation and transpiration fluxes are calculated as part of the soil-plant-atmosphere biophysics module (see section 3.3). Evaporation is only removed from LY1. Transpiration is removed from LY1 and LY2; we assume  an exponential root density profile to represent relative transpiratory losses from LY1 and LY2 (see eq. XX in supplement); the \Prootfrac parameter effectively defines the relative weight of transpiration dependence on LY1 and LY2 states; in brief, parameter \Prootfrac = 1 represents a depth-wise homogeneous root density profile, and \Prootfrac << 1 represents a rapidly exponentially decaying root profile with effectively zero influence of LY2 soil moisture on transpiration. The relationship between soil moisture, soil water potential and transpiration losses from LY1 and LY2 is further described in section \ref{subsub:water_stress}
 
+.. rubric:: References
 
-.. [Massoud:2022] Massoud, E. C., Bloom, A. A., Longo, M., Reager, J. T., Levine, P. A., and Worden, J. R., 2022. Information content of soil hydrology in a west Amazon watershed as informed by GRACE. Hydrology and Earth System Sciences, 26(5), pp.1407–1423. https://doi.org/10.5194/hess-26-1407-2022
+.. _Massoud2022:
+
+Massoud, E. C., Bloom, A. A., Longo, M., Reager, J. T., Levine, P. A., and Worden, J. R., 2022. Information content of soil hydrology in a west Amazon watershed as informed by GRACE. Hydrology and Earth System Sciences, 26(5), pp.1407–1423. https://doi.org/10.5194/hess-26-1407-2022
