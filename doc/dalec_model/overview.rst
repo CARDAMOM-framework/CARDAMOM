@@ -46,6 +46,25 @@ All right-hand-side terms, and all associated subcomponents and process formulat
 
 **Forcing data**
 
+The DALEC ID=1100 model forcing data consists of 
+- Meteorological forcing
+      - Total downward radiation (W/m2)
+      - Total precipitation (mm/day)
+      - Snowfall (mm/day)
+      - Vapor Pressure Deficit (VPD) (hPa)
+      - 2m air temperature (deg C)
+      - Land-surface (skin) temperature (deg C)
+- Disturbance forcing
+      - Burned area (m2/m2)
+      - C removals from non-fire deforestation (gC/m2/day)
+      - C removals from non-fire degradation (gC/m2/day)
+- Atmospheric CO2 concentration (ppm CO2).
+
+
+
+
+
+
 
 
 
