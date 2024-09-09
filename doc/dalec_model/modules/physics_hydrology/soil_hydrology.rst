@@ -22,6 +22,8 @@ Prognostic and diagnostic water states
 Each of the :math:`n` soil water layers (:math:`W_{lyn}`) consists of a prognistic water mass in units of kgH\ :sub:`2`\ O m\ :sup:`-2`, which is assumed to have a density of 1000 kg m\ :sup:`-3` and therefore simplified as being in units of mmH\ :sub:`2`\ O. At each time step :math:`t`, a diagnostic soil moisture state (:math:`\theta_{lyn}`, in units of m\ :sup:`3` m\ :sup:`-3`) can be derived as 
 
 .. math::
+   :label: eq_ewt_to_theta
+
    \theta_{lyn}(t) = W_{lyn}(t)(10^3p_{lyn}z_{lyn})^{-1}
 
 where :math:`z_{lyn}` is the depth parameter of layer :math:`n` in m, and :math:`p_{lyn}` is the porosity parameter of layer :math:`n` in m\ :sup:`3` m\ :sup:`-3`.
@@ -29,7 +31,10 @@ where :math:`z_{lyn}` is the depth parameter of layer :math:`n` in m, and :math:
 Each layer has a diagnostic matric water potential (:math:`\Psi_{lyn}`, in MPa) that is derived as 
 
 .. math::
+   :label: eq_theta_to_psi
+
    \psi_{lyn}(t) = \psi_{p}\theta_{lyn}(t)^{-b}
+.. \psi_{lyn}(t) = \psi_{p}\frac{1}{\theta_{lyn}(t)}^{b}
 
 where :math:`\psi_{p}` is set to -1.17 x 10\ :sup:`-3` MPa (see :ref:`Massoud et al. 2022 <Massoud2022>`  ``although we don't use the exact same value``) and :math:`b` is a unitless retention curve parameter.
 
@@ -47,7 +52,9 @@ Infiltration into surface
 Infiltration of liquid precipitation and snowmelt into the topmost soil layer (:math:`Qx_{inf}`, in mm d\ :sup:`-1`) is calculated for each timestep :math:`t` as
 
 .. math::
-   Qx_{inf}(t) = I_{max}(1 - \exp(-\frac{P_{rain}(t) + Melt(t)}{I_{max}}))
+   :label: eq_infil
+
+   Qx_{inf}(t) = I_{max}\left(1 - \exp\left(-\frac{P_{rain}(t) + Melt(t)}{I_{max}}\right)\right)
 
 where :math:`I_{max}` is the maximum infiltration parameter, :math:`P_{rain}` is the liquid precipitation (:math:`P_{tot} - P_{snow}`), and :math:`Melt` is snowmelt (defined in equation ``reference snowmelt equation``), all in mm d\ :sup:`-1`. This formulation ensures :math:`\approx 100\%` infiltration when :math:`P_{rain} + Melt << I_{max}`, and inflitration is :math:`\approx I_{max}` :math:`P_{rain} + Melt >> I_{max}`. Non-infilrated surface water (i.e., :math:`P_{rain} + Melt - Qx_{inf}`) is removed as surface runoff (:math:`Q_{surf}`).
 
@@ -57,11 +64,15 @@ Inter-layer water transfers
 Interlayer water transfers between layers :math:`n` and : :math:`n+1` (:math:`Qx_{lyn,n+1}`) are derived based on the difference in soil water potential (:math:`\Psi_{lyn}` and :math:`\Psi_{lyn+1}`). The equation used to derive the exchange in mm d:sup:`-1` at each time step :math:`t` is:
 
 .. math::
-   Qx_{lyn,n+1}(t) = \rho_l \sqrt{\kappa_{lyn}(t)\kappa_{lyn+1}(t)} \left[\frac{10^{-6}(\Psi_{lyn}(t) - \Psi_{lyn+1}(t))}{\rho_l g 0.5(z_{lyn}+z_{lyn+1})} + 1 \right]
+   :label: eq_water_transfer
+
+   Qx_{lyn,n+1}(t) = \rho_l \sqrt{\kappa_{lyn}(t)\kappa_{lyn+1}(t)} \left(\frac{10^{-6}(\Psi_{lyn}(t) - \Psi_{lyn+1}(t))}{\rho_l g 0.5(z_{lyn}+z_{lyn+1})} + 1 \right)
 
 where :math:`\rho_l` is the density of liquid water (1000 kg m\ :sup:`-3`), :math:`g` is the gravitational acceleration on the surface of Earth (9.8 m s\ :sup:`-2`), and  :math:`\kappa_{lyn}` is the hydraulic conductivity of layer :math:`n` in m s\ :sup:`-1` and is derived as
 
 .. math::
+   :label: eq_hydraulic_conductivity
+
    \kappa_{lyn}(t) = \kappa_0\theta_{lyn}(t)^{2b+3}
 
 where :math:`\kappa_0` is the saturated hydraulic conductivity parameter (in m s\ :sup:`-1`).
@@ -71,9 +82,28 @@ where :math:`\kappa_0` is the saturated hydraulic conductivity parameter (in m s
 Subsurface runoff
 ------------------
 
-Subsurface runoff of layer :math:`n` (:math:`Q_{lyn}`, in mm d\ :sup:`-1`) is derived using 
+Subsurface runoff of layer :math:`n` (:math:`Q_{lyn}`, in mm d\ :sup:`-1`) is derived based on the difference between the actual soil moisture (:math:`\theta_{lyn}`) and the soil moisture at field capacity (:math:`\theta_{fc}`), which is derived using the inverse of :eq:`eq_theta_to_psi` as 
 
-.. \textbf{Subsurface runoff:} subsurface runoff is modelled using the formulation described in \citet{Massoud:2021vz}.  We pick an arbitrarily small value to represent $\Psi_{porosity}$ (-1.17 x 10$^{-3}$ MPa), to avoid the degenerate model behavior for $\Psi_{porosity} = 0$. Excess moisture between \Pfieldcap and $\Psi_{porosity}$ is removed as described in \citet{Massoud:2021vz}.
+.. math::
+   :label: eq_psi_to_theta
+
+   \theta_{fc} = \left(\frac{\psi_{p}}{-\psi_{fc}}\right)^{\frac{1}{b}}
+.. \theta_{fc} = \left(\frac{-\psi_{fc}}{\psi_{p}}\right)^{-\frac{1}{b}}
+   
+where :math:`\psi_{fc}` is the parameter describing the water potential at field capacity (in -MPa, with the negative sign because CARDAMOM parameters must be positive numbers). The soil moisture difference (:math:`\Delta\theta_{lyn}`) is calculated for each time step as
+
+.. math:: 
+   :label: eq_delta_theta
+
+   \Delta\theta_{lyn}(t) = \max(0,\theta_{lyn}(t) - \theta_{fc})
+
+``implementation notes: we first make sure :math:`Q_{lyn}` does not exceed 1, and if it does, add any excess to the drainage`` :math:`Q_{lyn}` is then calculated for each time step as
+
+.. math:: 
+   :label: eq_runoff
+
+   Q_{lyn}(t) = \Delta\theta_{lyn}(t) Q_{ex}\left(1 - \frac{\psi_p - \min(\max(\psi_{lyn}(t),-\psi_{fc}),\psi_p))}{\psi_p + \psi_{fc}} \right)
+
 
 
 .. \textbf{Evapotranspiration losses:}
