@@ -10,6 +10,5 @@ DALEC modules
    modules/mortality
    modules/autotrophic_respiration
    modules/heterotrophic_respiration
-   modules/hydrology
-   modules/energy
+   modules/physics_hydrology
 

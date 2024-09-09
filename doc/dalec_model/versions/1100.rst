@@ -1222,57 +1222,75 @@ Description of DALEC 1100
      - ``init_LAIW_mem``
      - :math:`[0.1,1]`
      -  
-
-
-
-.. /*PSI 50: water potential when soil-plant continuum is at 50% hydraulic conductivity (-MPa) due to stomatal closure*/
-.. parmin[P.psi_50]=0.1;
-.. parmax[P.psi_50]=30;
-
-.. /*PSI 50 HMF: water potential triggering 50% biomass mortality due to cavitation(-MPa)*/
-.. parmin[P.psi_50HMF]=0.1;
-.. parmax[P.psi_50HMF]=30;
-
-.. /*Beta function normalized logistic growth rate */
-.. parmin[P.beta_lgr]=4.1;
-.. parmax[P.beta_lgr]=50;
-
-.. /*HMFBeta function normalized logistic growth rate */
-.. parmin[P.beta_lgrHMF]=4.1;
-.. parmax[P.beta_lgrHMF]=50;
- 
-.. /*Ratio of carbon allocation to root per target foliar pool size (gC/gC)*/
-.. parmin[P.phi_RL]=0.0001;
-.. parmax[P.phi_RL]=5.;
-
-
-.. /*Ratio of carbon allocation to wood per target foliar pool size (gC/gC)*/
-.. parmin[P.phi_WL]=0.0001;
-.. parmax[P.phi_WL]=50.;
-  
-
-.. /*Deep thermal conductivity in W/m/K */
-.. parmin[P.thermal_cond]=0.3;
-.. parmax[P.thermal_cond]=2;
-
-
-.. /*Surface soil thermal conductivity in W/m/K */
-.. parmin[P.thermal_cond_surf]=0.03;
-.. parmax[P.thermal_cond_surf]=2;
-
-
-.. /*Surface soil thermal conductivity in W/m/K */
-.. parmin[P.q10canopy]=1;
-.. parmax[P.q10canopy]=5;
-
-..     /*Surface soil thermal conductivity in W/m/K */
-.. parmin[P.canopyRdsf]=0.005;
-.. parmax[P.canopyRdsf]=0.025;
-
-..         /*Sublimation rate: mm/day/SCF/kPha/(MJ/m2/d) Biggest = 1/0.5/2/2; Smallest = 1/1/10/10/*/
-.. parmin[P.sublimation_rate]=0.001;
-.. parmax[P.sublimation_rate]=10;
-
-.. /*Fraction of LY2 to LY1 root biomass*/
-.. parmin[P.root_frac]=0.001;
-.. parmax[P.root_frac]=1;
+   * - :math:`\psi_{50}`
+     - 50% stomatal closure water potential
+     - -MPa
+     - ``psi_50``
+     - :math:`[0.1,30]`
+     - Water potential when soil-plant continuum is at 50% hydraulic conductivity due to stomatal closure
+   * - :math:`\psi_{hmf}`
+     - 50% mortality water potential
+     - -MPa
+     - ``psi_50``
+     - :math:`[0.1,30]`
+     - Water potential triggering 50% biomass mortality due to cavitation
+   * - :math:`\Beta_{plgr}`
+     - Photosynthetic water stress logistic growth rate
+     - None
+     - ``beta_lgr``
+     - :math:`[4.1,50]`
+     - 
+   * - :math:`\Beta_{mlgr}`
+     - Mortality water stress logistic growth rate
+     - None
+     - ``beta_lgrHMF``
+     - :math:`[4.1,50]`
+     - 
+   * - :math:`\phi_{rl}`
+     - Root-to-leaf allocation ratio
+     - 1
+     - ``phi_RL``
+     - :math:`[10^{-4},5]`
+     - Ratio of carbon allocation to root per target foliar pool size
+   * - :math:`\phi_{wl}`
+     - Wood-to-leaf allocation ratio
+     - 1
+     - ``phi_WL``
+     - :math:`[10^{-4},5]`
+     - Ratio of carbon allocation to wood per target foliar pool size
+   * - :math:`\kappa_{deep}`
+     - Deep soil thermal conductivity
+     - W m\ :sup:`-1` K\ :sup:`-1`
+     - ``thermal_cond``
+     - :math:`[0.3,2]`
+     - 
+   * - :math:`\kappa_{surf}`
+     - Surface soil thermal conductivity
+     - W m\ :sup:`-1` K\ :sup:`-1`
+     - ``thermal_cond_surf``
+     - :math:`[0.03,2]`
+     - 
+   * - :math:`Q_{10}^{gpp}`
+     - Q\ :sub:`10` coefficient for :math:`GPP`
+     - 1
+     - ``q10canopy``
+     - :math:`[1,5]`
+     - 
+   * - :math:`RDSF`
+     - ``Something about dark respiration??``
+     - ``???``
+     - ``canopyRdsf``
+     - :math:`[0.005,0.025]`
+     - 
+   * - :math:`Es`
+     - Sublimation rate
+     - ``mm/day/SCF/kPha/(MJ/m2/d) ???``
+     - ``sublimation_rate``
+     - :math:`[0.001,10]`
+     - 
+   * - :math:`f_{root}`
+     - Root fraction of :math:`W_{ly2}` to :math:`W_{ly1}`
+     - ``mm/day/SCF/kPha/(MJ/m2/d) ???``
+     - ``sublimation_rate``
+     - :math:`[0.001,1]`
+     - 
