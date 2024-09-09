@@ -4,12 +4,15 @@ Overview of DALEC model
 .. toctree::
    :maxdepth: 2
 
-Overview of DALEC model
+**Overview of DALEC model**
 
 
+The DALEC model (Williams et al., 2005) is an intermediate complexity terrestrial land surface and biosphere model designed primarily for observation integration within model-data integration frameworks; DALEC models have been augmented since Williams et al., (2005) to include a number of processes, such as water storage (Spadavecchia et al., 2011; Bloom et al., 2020), aerobic and anaerobic respiration processes (Ma et al., 2023), climate-sensitive phenology (Norton et al., 2023), amongst other innovations. 
+
+**Overview of DALEC 1100 model**
 
 
-The DALEC model (Williams et al., 2005) is an intermediate complexity terrestrial land surface and biosphere model designed primarily for observation integration within model-data integration frameworks; DALEC models have been augmented since Williams et al., (2005) to include a number of processes, such as water storage (Spadavecchia et al., 2011; Bloom et al., 2020), aerobic and anaerobic respiration processes (Ma et al., 2023), climate-sensitive phenology (Norton et al., 2023), amongst other innovations. The DALEC ID=1100 model cosnists of 14 prognostic states, with the following abbreviated differential equations
+The DALEC ID=1100 model cosnists of 14 prognostic states, with the following abbreviated differential equations
 
 ***Live C states***
 
