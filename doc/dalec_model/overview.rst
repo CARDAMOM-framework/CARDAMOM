@@ -16,7 +16,7 @@ The DALEC ID=1100 model cosnists of 14 prognostic states, with the following abb
 
 ***Live C states***
 
-dNSC/dt = GPP - Rauto - Alloc_total
+dNSC/dt = GPP - Rauto -  - Mortality_nsc- Alloc_total
 
 dFol/dt = Alloc_fol - Mortality_fol - Disturbance_fol
 
