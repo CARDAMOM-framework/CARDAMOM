@@ -15,18 +15,27 @@ The leaf area index (LAI) phenology model is based on the scheme developed by :r
 Background
 ----------
 
-The LAI phenology model was originally developed by describing a generic differential equation in time for the LAI of individual plants, which is then integrated in space to represent LAI dynamics of a population of plants. The time evolution of LAI for an individual plants is commonly described using triggers for growth and senescence (e.g. a growing degree day threshold), which are represented by conditional (step) functions. The :ref:`Knorr et al (2010) <Knorr2010>` model makes the useful development by assuming the triggers for a population of plants can be represented by a Gaussian probability distribution function which enables the time evolution of LAI for the population to be smooth and differentiable. 
+The LAI phenology model was originally developed by describing a generic differential equation in time for the LAI of individual plants, which is then integrated in space to represent LAI dynamics of a population of plants. The time evolution of LAI for an individual plants is commonly described using triggers for growth and senescence (e.g. a growing degree day threshold), which are represented by conditional (step) functions. The :ref:`Knorr et al (2010) <Knorr2010>` model makes the useful development by assuming the triggers for a population of plants can be represented by a Gaussian probability density function which enables the time evolution of LAI for the population to be smooth and differentiable. 
 
-In the original formulation, which is also implemented into DALEC, there are two triggers considered: temperature and day length. For an individual plant, the rate of change in LAI over time can be represented by:
+In the original formulation, which is also implemented into DALEC, there are two triggers considered: temperature (:math:`T`) and day length (:math:`t_d`). For an individual plant, the rate of change in LAI over time can be represented by:
 
 .. math::
    :label: eq_dLAIdt_individual
 
-   \frac{dLAI}{t} = 
+   \frac{d\tilde{LAI}(t)}{dt} = 
    \begin{cases}
-   f_1 & \text{if } T \geq \tilde{T_{\phi}} \text{ and } t_d \geq \tilde{T_c}, \\
-   f_2 & \text{else.}
+   f_1, & \text{if } T \geq \tilde{T_{\phi}} \text{ and } t_d \geq \tilde{t_c}, \\
+   f_2, & \text{else}
    \end{cases}
+
+Where :math:`f_1` and :math:`f_2` represent some abritrary functions to describe the LAI under those respective conditions, :math:`\tilde{T_{\phi}}` is the threshold for temperature and :math:`\tilde{t_c}` is the threshold for day length. For a population of plants, the rate of change in LAI over time can be represented by:
+
+.. math::
+   :label: eq_dLAIdt_pop
+   \frac{dLAI(t)}{dt} = f_1 \[ \int_{-\inf}^{T} \int_{-\inf}^{t_d}  p(\tilde{T_{\phi}}) q(\tilde{t_c} \,d\tilde{T_{\phi}} d\tilde{t_c} \] + f_2 (1 - \[ \int_{-\inf}^{T} \int_{-\inf}^{t_d}  p(\tilde{T_{\phi}}) q(\tilde{t_c} \,d\tilde{T_{\phi}} d\tilde{t_c} \])
+
+Where :math:`p` and :math:`q` are the spatial probability density functions for the two threshold variables, :math:`\tilde{T_{\phi}}` and :math:`\tilde{t_c}`, respectively. Th
+
 
 .. rubric:: References
 
