@@ -32,6 +32,7 @@ Where :math:`f_1` represents an arbitrary function to describe LAI when the thre
 
 .. math::
    :label: eq_dLAIdt_pop
+
    \frac{dLAI(t)}{dt} = f_1 \int_{-\infty}^{T} \int_{-\infty}^{t_d}  p(\tilde{T_{\phi}}) q(\tilde{t_c}) \, d\tilde{T_{\phi}} \, d\tilde{t_c} + f_2 \left( 1 - \int_{-\infty}^{T} \int_{-\infty}^{t_d}  p(\tilde{T_{\phi}}) q(\tilde{t_c}) \, d\tilde{T_{\phi}} \, d\tilde{t_c} \right)
 
 Where :math:`p` and :math:`q` are the spatial probability density functions for the two threshold variables, :math:`\tilde{T_{\phi}}` and :math:`\tilde{t_c}`, respectively. The probability density functions for the threshold variables are described by their respective means, :math:`T_{\phi}` and :math:`t_c`, and standard deviations,  :math:`T_r` and :math:`t_r`. Thus, :math:`T_r` and :math:`t_r` represent the variability of the threshold variables temperature and day length within the population. 
@@ -40,12 +41,14 @@ The above equation can be simplified by representing each integral with a cumula
 
 .. math::
    :label: eq_f_cdf
+
    f = \int_{-\infty}^{T} p(\tilde{T_{\phi}}) \, d\tilde{T_{\phi}} \, \int_{-\infty}^{t_d} q(\tilde{t_c}) \, d\tilde{t_c} = \Phi \left( \frac{T - T_{\phi}}{T_r} \right) \Phi \left( \frac{t_d - t_c}{t_r} \right)
 
-In this way, $f$ represents the fraction of plants within the population that are actively growing or maintaining leaves. Thus, equation :eq:`eq_dLAIdt_pop` simplifies to:
+In this way, :math:`f` represents the fraction of plants within the population that are actively growing or maintaining leaves. Thus, equation :eq:`eq_dLAIdt_pop` simplifies to:
 
 .. math::
    :label: eq_dLAIdt_pop2
+
    \frac{dLAI(t)}{dt} = f_1 f + f_2 (1 - f)
 
 Growth and Senescence
@@ -55,9 +58,30 @@ The LAI growth function, :math:`f_1`, and the LAI senescence function, :math:`f_
 
 .. math::
    :label: eq_f1
-   f_1 = \plgr (LAI_{max}(t) - LAI(t))
 
-Where :math:`\plgr` is the linear growth rate constant. Note that :math:`LAI_{max}` is also a function of time as it evolves as a function of water availability (described below). 
+   f_1 = \zeta (LAI_{max}(t) - LAI(t))
+
+Where :math:`\zeta` is the linear growth rate constant. Note that :math:`LAI_{max}` is also a function of time as it evolves as a function of water availability (described below). Following :ref:`Knorr et al (2010) <Knorr2010>`, senescence is described by a function of leaf longevity:
+
+.. math::
+   :label: eq_f2
+
+   f_2 = LAI(t)/\tau_L
+
+Where :math:`\tau_L` is the mean leaf longevity of the population. 
+
+Water Limitation
+----------------
+
+To incorporate water availability constraints on LAI dynamics, a water-limited LAI is defined as follows:
+
+.. math::
+   :label: eq_LAI_W
+
+   LAI_W(t) = \frac{W \cdot LAI(t)}{E \cdot \tau_W}
+
+
+
 
 .. rubric:: References
 
