@@ -15,7 +15,7 @@ The leaf area index (LAI) phenology model is based on the scheme developed by :r
 Background
 ----------
 
-The LAI phenology model was originally developed by describing a generic differential equation in time for the LAI of individual plants, which is then integrated in space to represent LAI dynamics of a population of plants. The time evolution of LAI for an individual plants is commonly described using triggers for growth and senescence (e.g. a growing degree day threshold), which are represented by conditional (step) functions. The :ref:`Knorr et al (2010) <Knorr2010>` model makes the useful development by assuming the triggers for a population of plants can be represented by a Gaussian probability density function which enables the time evolution of LAI for the population to be smooth and differentiable. 
+The LAI phenology model was originally developed by describing a generic differential equation in time for the LAI of individual plants, which is then integrated in space to represent LAI dynamics of a population of plants. The time evolution of LAI for an individual plants is commonly described using triggers for growth and senescence (e.g. a growing degree day threshold), which are represented by conditional (step) functions. The :ref:`Knorr et al (2010) <Knorr2010>` model makes the useful development by assuming the triggers for a population of plants can be represented by a Gaussian probability density function. As described below, this enables the time evolution of LAI for the population to be smooth and differentiable. 
 
 In the original formulation, which is also implemented into DALEC, there are two triggers considered: temperature (:math:`T`) and day length (:math:`t_d`). For an individual plant, the rate of change in LAI over time can be represented by:
 
@@ -28,14 +28,36 @@ In the original formulation, which is also implemented into DALEC, there are two
    f_2, & \text{else}
    \end{cases}
 
-Where :math:`f_1` and :math:`f_2` represent some abritrary functions to describe the LAI under those respective conditions, :math:`\tilde{T_{\phi}}` is the threshold for temperature and :math:`\tilde{t_c}` is the threshold for day length. For a population of plants, the rate of change in LAI over time can be represented by:
+Where :math:`f_1` represents an arbitrary function to describe LAI when the thresholds are exceeded (during the growing season) and :math:`f_2` represents an abritrary function to describe LAI when the thresholds have not been exceeded (during senescence), :math:`\tilde{T_{\phi}}` is the threshold for temperature and :math:`\tilde{t_c}` is the threshold for day length. For a population of plants, the rate of change in LAI over time can be represented by:
 
 .. math::
    :label: eq_dLAIdt_pop
-   \frac{dLAI(t)}{dt} = f_1 \int_{-\inf}^{T} \int_{-\inf}^{t_d}  p(\tilde{T_{\phi}}) q(\tilde{t_c}) \,d\tilde{T_{\phi}} d\tilde{t_c} + f_2 \left( 1 - \int_{-\inf}^{T} \int_{-\inf}^{t_d}  p(\tilde{T_{\phi}}) q(\tilde{t_c}) \,d\tilde{T_{\phi}} d\tilde{t_c} \right)
+   \frac{dLAI(t)}{dt} = f_1 \int_{-\infty}^{T} \int_{-\infty}^{t_d}  p(\tilde{T_{\phi}}) q(\tilde{t_c}) \, d\tilde{T_{\phi}} \, d\tilde{t_c} + f_2 \left( 1 - \int_{-\infty}^{T} \int_{-\infty}^{t_d}  p(\tilde{T_{\phi}}) q(\tilde{t_c}) \, d\tilde{T_{\phi}} \, d\tilde{t_c} \right)
 
-Where :math:`p` and :math:`q` are the spatial probability density functions for the two threshold variables, :math:`\tilde{T_{\phi}}` and :math:`\tilde{t_c}`, respectively. Th
+Where :math:`p` and :math:`q` are the spatial probability density functions for the two threshold variables, :math:`\tilde{T_{\phi}}` and :math:`\tilde{t_c}`, respectively. The probability density functions for the threshold variables are described by their respective means, :math:`T_{\phi}` and :math:`t_c`, and standard deviations,  :math:`T_r` and :math:`t_r`. Thus, :math:`T_r` and :math:`t_r` represent the variability of the threshold variables temperature and day length within the population. 
 
+The above equation can be simplified by representing each integral with a cumulative normal distribution as follows:
+
+.. math::
+   :label: eq_f_cdf
+   f = \int_{-\infty}^{T} p(\tilde{T_{\phi}}) \, d\tilde{T_{\phi}} \, \int_{-\infty}^{t_d} q(\tilde{t_c}) \, d\tilde{t_c} = \Phi \left( \frac{T - T_{\phi}}{T_r} \right) \Phi \left( \frac{t_d - t_c}{t_r} \right)
+
+In this way, $f$ represents the fraction of plants within the population that are actively growing or maintaining leaves. Thus, equation :eq:`eq_dLAIdt_pop` simplifies to:
+
+.. math::
+   :label: eq_dLAIdt_pop2
+   \frac{dLAI(t)}{dt} = f_1 f + f_2 (1 - f)
+
+Growth and Senescence
+---------------------
+
+The LAI growth function, :math:`f_1`, and the LAI senescence function, :math:`f_2` must be defined. Following :ref:`Knorr et al (2010) <Knorr2010>`, growth is described by a function that LAI grows linearly as a function of the difference between the current LAI and a maximum potential LAI:
+
+.. math::
+   :label: eq_f1
+   f_1 = \plgr (LAI_{max}(t) - LAI(t))
+
+Where :math:`\plgr` is the linear growth rate constant. Note that :math:`LAI_{max}` is also a function of time as it evolves as a function of water availability (described below). 
 
 .. rubric:: References
 
