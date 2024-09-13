@@ -97,7 +97,7 @@ In practice, the minimum is calculated using a quadratically smoothed minimum fu
 .. math::
    :label: eq_LAI_max_weighted
 
-   LAI_{max}(t) = \frac{\int_{\infty}{0} \tilde{LAI_{max}}(t + \tilde{t}) e^{\tilde{t}/\tau_s} \, d\tilde{t}}{\frac{\int_{\infty}{0} e^{\tilde{t}/\tau_s} \, d\tilde{t}} = \frac{1}{\tau_s} \int_{\infty}{0} \tilde{LAI_{max}}(t + \tilde{t}) e^{\tilde{t}/\tau_s} \, d\tilde{t} = \frac{1}{\tau_s} e^{-t/\tau_s} \int_{\infty}{t} \tilde{LAI_{max}}(t\prime) e^{t\prime / \tau_s} \, dt\prime
+   LAI_{max}(t) = \frac{\int_{-\infty}^{0} \tilde{LAI_{max}}(t + \tilde{t}) e^{\tilde{t}/\tau_s} \, d\tilde{t}}{\int_{-\infty}^{0} e^{\tilde{t}/\tau_s} \, d\tilde{t}} = \frac{1}{\tau_s} \int_{-\infty}^{0} \tilde{LAI_{max}}(t + \tilde{t}) e^{\tilde{t}/\tau_s} \, d\tilde{t} = \frac{1}{\tau_s} e^{-t/\tau_s} \int_{-\infty}^{t} \tilde{LAI_{max}}(t\prime) e^{t\prime / \tau_s} \, dt\prime
 
 Where :math:`\tau_s` is the averaging period for :math:`\LAI_{max}`. Larger values of :math:`\tau_s` mean the weighting of :math:`\LAI_{max}` goes further back into past, while smaller values of :math:`\tau_s` mean more recent :math:`\LAI_{max}` values are used. 
 
