@@ -35,7 +35,7 @@ Where :math:`f_1` represents an arbitrary function to describe LAI when the thre
 
    \frac{dLAI(t)}{dt} = f_1 \int_{-\infty}^{T} \int_{-\infty}^{t_d}  p(\tilde{T_{\phi}}) q(\tilde{t_c}) \, d\tilde{T_{\phi}} \, d\tilde{t_c} + f_2 \left( 1 - \int_{-\infty}^{T} \int_{-\infty}^{t_d}  p(\tilde{T_{\phi}}) q(\tilde{t_c}) \, d\tilde{T_{\phi}} \, d\tilde{t_c} \right)
 
-Where :math:`p` and :math:`q` are the spatial probability density functions for the two threshold variables, :math:`\tilde{T_{\phi}}` and :math:`\tilde{t_c}`, respectively. The probability density functions for the threshold variables are described by their respective means, :math:`T_{\phi}` and :math:`t_c`, and standard deviations,  :math:`T_r` and :math:`t_r`. Thus, :math:`T_r` and :math:`t_r` represent the variability of the threshold variables temperature and day length within the population. 
+Where :math:`p` and :math:`q` are the spatial probability density functions for the two threshold variables, :math:`\tilde{T_{\phi}}` and :math:`\tilde{t_c}`, respectively. The probability density functions for the threshold variables are described by their respective means, :math:`T_{\phi}` and :math:`t_c`, and standard deviations,  :math:`T_r` and :math:`t_r`. Thus, :math:`T_r` and :math:`t_r` represent the variability of the threshold variables temperature and day length within the population. Because the warmest period of the year is almost always after the period of maximum day length, the dual condition above typically results in leaf onset being triggered by temperature and leaf senescence by day length (ignoring water and carbon-supply limitations). 
 
 The above equation can be simplified by representing each integral with a cumulative normal distribution, :math:`\Phi`, as follows:
 
@@ -44,7 +44,7 @@ The above equation can be simplified by representing each integral with a cumula
 
    f = \int_{-\infty}^{T} p(\tilde{T_{\phi}}) \, d\tilde{T_{\phi}} \, \int_{-\infty}^{t_d} q(\tilde{t_c}) \, d\tilde{t_c} = \Phi \left( \frac{T - T_{\phi}}{T_r} \right) \Phi \left( \frac{t_d - t_c}{t_r} \right)
 
-In this way, :math:`f` represents the fraction of plants within the population that are actively growing or maintaining leaves. Thus, equation :eq:`eq_dLAIdt_pop` simplifies to:
+Where :math:`T` is a phenology-determining temperature, described below. With the above equation, :math:`f` represents the fraction of plants within the population that are actively growing or maintaining leaves. Thus, equation :eq:`eq_dLAIdt_pop` simplifies to:
 
 .. math::
    :label: eq_dLAIdt_pop2
@@ -73,14 +73,14 @@ Where :math:`\tau_L` is the mean leaf longevity of the population.
 Water Limitation 
 ----------------
 
-To incorporate water availability constraints on LAI dynamics, a water-limited LAI is defined as follows:
+To incorporate water availability constraints on LAI dynamics, a water-limited LAI is defined using the balance of water availability (soil moisture) and water demand (loss via evaporation/transpiration) as follows:
 
 .. math::
    :label: eq_LAI_W
 
    LAI_W(t) = \frac{W \cdot LAI(t)}{E \cdot \tau_W}
 
-Where :math:`W` is the plant-available water pool (NOTE: Paul to confirm which hydrology pool this is defined as), :math:`E` is the evapotranspiration rate (NOTE: Paul to confirm whether 1100 uses ET or just T), and :math:`tau_W` is a parameter describing the expected length of water deficit periods that are tolerated before leaf shedding :ref:`Knorr et al (2010) <Knorr2010>`. 
+Where :math:`W` is the plant-available water pool (NOTE: Paul to confirm which hydrology pool this is defined as), :math:`E` is the leaf-area specific evapotranspiration rate (NOTE: Paul to confirm whether 1100 uses ET or just T), and :math:`tau_W` is a parameter describing the expected length of water deficit periods that are tolerated before leaf shedding :ref:`Knorr et al (2010) <Knorr2010>`. 
 
 Maximum Potential Leaf Area Index
 ---------------------------------
@@ -90,7 +90,7 @@ The :math:`LAI_{max}` defines the maximum potential LAI and is calculated as the
 .. math::
    :label: eq_LAI_max
 
-   \tilde{LAI}_{max}(t) = min(\hat{\Lambda}, \LAI_W)
+   \tilde{LAI}_{max}(t) = min(\hat{\Lambda}, LAI_W)
 
 In practice, the minimum is calculated using a quadratically smoothed minimum function. Additionally, in order for water limitation to respond not only to instantaneous changes in :math:`W` and :math:`E`, the actual :math:`LAI_{max}` is calculated as a weighted time integration with exponentially declining weights going into the past. In continuous form this is given by:
 
@@ -99,7 +99,29 @@ In practice, the minimum is calculated using a quadratically smoothed minimum fu
 
    LAI_{max}(t) = \frac{\int_{-\infty}^{0} \tilde{LAI_{max}}(t + \tilde{t}) e^{\tilde{t}/\tau_s} \, d\tilde{t}}{\int_{-\infty}^{0} e^{\tilde{t}/\tau_s} \, d\tilde{t}} = \frac{1}{\tau_s} \int_{-\infty}^{0} \tilde{LAI_{max}}(t + \tilde{t}) e^{\tilde{t}/\tau_s} \, d\tilde{t} = \frac{1}{\tau_s} e^{-t/\tau_s} \int_{-\infty}^{t} \tilde{LAI_{max}}(t') e^{t' / \tau_s} \, dt'
 
-Where :math:`\tau_s` is the averaging period for :math:`\LAI_{max}`. Larger values of :math:`\tau_s` mean the weighting of :math:`\LAI_{max}` goes further back into past, while smaller values of :math:`\tau_s` mean more recent :math:`\LAI_{max}` values are used. 
+Where :math:`\tau_s` is the averaging period for :math:`\tilde{LAI}_{max}`, typically assumed constant to avoid correlations with the parameter :math:`\tau_W`. Larger values of :math:`\tau_s` mean the more historical :math:`LAI_{max}` values are used, while smaller values emphasize more recent :math:`\tilde{LAI}_{max}` values.  Note: In the above, :math:`\tilde{t}` represents a relative time shift (essentially, how far back in time). The variable :math:`t+\tilde{t}` means "past times relative to t" (i.e., :math:`\tilde{t} \lt 0` gives past times, and :math:`\tilde{t}`=0 refers to the present). In addition, :math:`t'` represents absolute time rather than relative time. For the discrete form of equation :ref:`eq_LAI_max_weighted`, see equation 27 in :ref:`Knorr et al (2010) <Knorr2010>`. 
+
+Phenology-Determining Temperature
+---------------------------------
+
+Typically, the phenology-determining temperature follows the growing-degree days concept. However, for reasons outlines in :ref:`Knorr et al (2010) <Knorr2010>`, the phenology-determining temperature, :math:`T`, that used in equation :ref:`eq_f_cdf` is described with a different approach to be consistent with the LAI model here. As with the weighted time integration of :math:`LAI_{max}` above, the phenology-determining temperature is calculated as the normalized integral of air temperature with exponentially declining weights going into the past:
+
+.. math::
+   :label: eq_T_weighted
+
+   T(t) = \frac{\int_{-\infty}^{0} T_{air}(t + \tilde{t}) e^{\tilde{t}/\tau_m} \, d\tilde{t}}{\int_{-\infty}^{0} e^{\tilde{t}/\tau_m} \, d\tilde{t}} = \frac{1}{\tau_m} \int_{-\infty}^{0} T_{air}(t + \tilde{t}) e^{\tilde{t}/\tau_m} \, d\tilde{t} = \frac{1}{\tau_m} e^{-t/\tau_m} \int_{-\infty}^{t} T_{air}(t') e^{t' / \tau_m} \, dt'
+
+Where :math:`\tau_m` is the averaging period for :math:`T_{air}`. For the discrete form of equation :ref:`eq_T_weighted`, see equation 19 in :ref:`Knorr et al (2010) <Knorr2010>`. 
+
+Coupling to the Carbon Balance
+------------------------------
+
+The equations described above govern how environmental conditions directly constrain the LAI dynamics over time, including temperature, day length and water availability. This must be coupled to carbon balance, whereby a third potentially limiting factor can control LAI dynamics: plant carbon supply. 
+
+**Note:** I think this section may actually be better placed into the carbon allocation and autotrophic respiration section. Makes more sense to me. 
+
+
+
 
 
 .. rubric:: References
