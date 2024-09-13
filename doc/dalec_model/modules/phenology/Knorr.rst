@@ -104,14 +104,14 @@ Where :math:`\tau_s` is the averaging period for :math:`\tilde{LAI}_{max}`, typi
 Phenology-Determining Temperature
 ---------------------------------
 
-Typically, the phenology-determining temperature follows the growing-degree days concept. However, for reasons outlines in :ref:`Knorr et al (2010) <Knorr2010>`, the phenology-determining temperature, :math:`T`, that used in equation :ref:`eq_f_cdf` is described with a different approach to be consistent with the LAI model here. As with the weighted time integration of :math:`LAI_{max}` above, the phenology-determining temperature is calculated as the normalized integral of air temperature with exponentially declining weights going into the past:
+Typically, the phenology-determining temperature follows the growing-degree days concept. However, for reasons outlined in :ref:`Knorr et al (2010) <Knorr2010>`, the phenology-determining temperature, :math:`T`, that used in equation :eq:`eq_f_cdf` is described with a different approach to be consistent with the LAI model here. As with the weighted time integration of :math:`LAI_{max}` above, the phenology-determining temperature is calculated as the normalized integral of air temperature with exponentially declining weights going into the past:
 
 .. math::
    :label: eq_T_weighted
 
    T(t) = \frac{\int_{-\infty}^{0} T_{air}(t + \tilde{t}) e^{\tilde{t}/\tau_m} \, d\tilde{t}}{\int_{-\infty}^{0} e^{\tilde{t}/\tau_m} \, d\tilde{t}} = \frac{1}{\tau_m} \int_{-\infty}^{0} T_{air}(t + \tilde{t}) e^{\tilde{t}/\tau_m} \, d\tilde{t} = \frac{1}{\tau_m} e^{-t/\tau_m} \int_{-\infty}^{t} T_{air}(t') e^{t' / \tau_m} \, dt'
 
-Where :math:`\tau_m` is the averaging period for :math:`T_{air}`. Note that :math:`T` is a state variable. For the discrete form of equation :ref:`eq_T_weighted`, see equation 19 in :ref:`Knorr et al (2010) <Knorr2010>`. 
+Where :math:`\tau_m` is the averaging period for :math:`T_{air}`. Note that :math:`T` is a state variable. For the discrete form of equation :eq:`eq_T_weighted`, see equation 19 in :ref:`Knorr et al (2010) <Knorr2010>`. 
 
 Coupling to the Carbon Balance
 ------------------------------
