@@ -7,12 +7,26 @@ Knorr phenology module
 
 Description and equations for Knorr module
 
-Overview Test again
--------------------
+Overview
+--------
 
 The leaf area index (LAI) phenology model is based on the scheme developed by :ref:`Knorr et al (2010) <Knorr2010>` with updates by :ref:`Norton et al (2023) <Norton2023>`. The :ref:`Knorr et al (2010) <Knorr2010>` model brings together two concepts. First, the transition of LAI between dormant, active, and senescent states is controlled by three potentially limiting environmental constraints: Temperature, photoperiod, and water availability. Second, spatial variability in growth triggers within a population of plants results in smooth, differentiable functions that describe the transition between dormant, active, and senescent states. This provides a more realistic representation of LAI dynamics, as opposed to unrealistic and impractical step functions. :ref:`Norton et al (2023) <Norton2023>` described the coupling of this LAI phenology model to the carbon and water balance in DALEC and implemented it in CARDAMOM, demonstrating its skill in capturing LAI and carbon cycle dynamics across diverse ecosystem types. We note that in :ref:`Norton et al (2023) <Norton2023>` the LAI phenology sub-model used evapotranspiration as an input to compute the water-limited LAI, considering evaporation and transpiration were not modeled separately. Here, evaporation and transpiration are modeled separately, therefore transpiration is used as the input which is consistent with the original :ref:`Knorr et al (2010) <Knorr2010>` formulation and adds realism to this version of CARDAMOM. 
 
+Background
+----------
 
+The LAI phenology model was originally developed by describing a generic differential equation in time for the LAI of individual plants, which is then integrated in space to represent LAI dynamics of a population of plants. The time evolution of LAI for an individual plants is commonly described using triggers for growth and senescence (e.g. a growing degree day threshold), which are represented by conditional (step) functions. The :ref:`Knorr et al (2010) <Knorr2010>` model makes the useful development by assuming the triggers for a population of plants can be represented by a Gaussian probability distribution function which enables the time evolution of LAI for the population to be smooth and differentiable. 
+
+In the original formulation, which is also implemented into DALEC, there are two triggers considered: temperature and day length. For an individual plant, the rate of change in LAI over time can be represented by:
+
+.. math::
+   :label: eq_dLAIdt_individual
+
+   \frac{dLAI}{t} = 
+   \begin{cases}
+   f_1 & \text{if } T \geq \tilde{T_{\phi}} \text{ and } t_d \geq \tilde{T_c}, \\
+   f_2 & \text{else.}
+   \end{cases}
 
 .. rubric:: References
 
