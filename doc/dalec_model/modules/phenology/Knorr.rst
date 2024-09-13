@@ -17,7 +17,7 @@ Background
 
 The LAI phenology model was originally developed by describing a generic differential equation in time for the LAI of individual plants, which is then integrated in space to represent LAI dynamics of a population of plants. The time evolution of LAI for an individual plants is commonly described using triggers for growth and senescence (e.g. a growing degree day threshold), which are represented by conditional (step) functions. The :ref:`Knorr et al (2010) <Knorr2010>` model makes the useful development by assuming the triggers for a population of plants can be represented by a Gaussian probability density function. As described below, this enables the time evolution of LAI for the population to be smooth and differentiable. 
 
-In the original formulation, which is also implemented into DALEC, there are two triggers considered: temperature (:math:`T`) and day length (:math:`t_d`). For an individual plant, the rate of change in LAI over time can be represented by:
+In the original formulation, which is also implemented into DALEC, there are two triggers considered: temperature (:math:`T`) and day length (:math:`t_d`). For an individual plant (represented by the tilde), the rate of change in LAI over time can be represented by:
 
 .. math::
    :label: eq_dLAIdt_individual
@@ -37,7 +37,7 @@ Where :math:`f_1` represents an arbitrary function to describe LAI when the thre
 
 Where :math:`p` and :math:`q` are the spatial probability density functions for the two threshold variables, :math:`\tilde{T_{\phi}}` and :math:`\tilde{t_c}`, respectively. The probability density functions for the threshold variables are described by their respective means, :math:`T_{\phi}` and :math:`t_c`, and standard deviations,  :math:`T_r` and :math:`t_r`. Thus, :math:`T_r` and :math:`t_r` represent the variability of the threshold variables temperature and day length within the population. 
 
-The above equation can be simplified by representing each integral with a cumulative normal distribution as follows:
+The above equation can be simplified by representing each integral with a cumulative normal distribution, :math:`\Phi`, as follows:
 
 .. math::
    :label: eq_f_cdf
@@ -54,7 +54,7 @@ In this way, :math:`f` represents the fraction of plants within the population t
 Growth and Senescence
 ---------------------
 
-The LAI growth function, :math:`f_1`, and the LAI senescence function, :math:`f_2` must be defined. Following :ref:`Knorr et al (2010) <Knorr2010>`, growth is described by a function that LAI grows linearly as a function of the difference between the current LAI and a maximum potential LAI:
+The LAI growth function, :math:`f_1`, and the LAI senescence function, :math:`f_2` must be defined. Following :ref:`Knorr et al (2010) <Knorr2010>`, LAI growth is described linearly as a function of the difference between the current LAI and a maximum potential LAI:
 
 .. math::
    :label: eq_f1
@@ -70,7 +70,7 @@ Where :math:`\zeta` is the linear growth rate constant. Note that :math:`LAI_{ma
 
 Where :math:`\tau_L` is the mean leaf longevity of the population. 
 
-Water Limitation
+Water Limitation 
 ----------------
 
 To incorporate water availability constraints on LAI dynamics, a water-limited LAI is defined as follows:
@@ -80,7 +80,26 @@ To incorporate water availability constraints on LAI dynamics, a water-limited L
 
    LAI_W(t) = \frac{W \cdot LAI(t)}{E \cdot \tau_W}
 
+Where :math:`W` is the plant-available water pool (NOTE: Paul to confirm which hydrology pool this is defined as), :math:`E` is the evapotranspiration rate (NOTE: Paul to confirm whether 1100 uses ET or just T), and :math:`tau_W` is a parameter describing the expected length of water deficit periods that are tolerated before leaf shedding :ref:`Knorr et al (2010) <Knorr2010>`. 
 
+Maximum Potential Leaf Area Index
+---------------------------------
+
+The :math:`LAI_{max}` defines the maximum potential LAI and is calculated as the minimum of :math:`LAI_W` and a parameter that defines the structural maximum LAI, :math:`\hat{\Lambda}`:
+
+.. math::
+   :label: eq_LAI_max
+
+   \tilde{LAI}_{max}(t) = min(\hat{\Lambda}, \LAI_W)
+
+In practice, the minimum is calculated using a quadratically smoothed minimum function. Additionally, in order for water limitation to respond not only to instantaneous changes in :math:`W` and :math:`E`, the actual :math:`LAI_{max}` is calculated as a weighted time integration with exponentially declining weights going into the past. In continuous form this is given by:
+
+.. math::
+   :label: eq_LAI_max_weighted
+
+   LAI_{max}(t) = \frac{\int_{\infty}{0} \tilde{LAI_{max}}(t + \tilde{t}) e^{\tilde{t}/\tau_s} \, d\tilde{t}}{\frac{\int_{\infty}{0} e^{\tilde{t}/\tau_s} \, d\tilde{t}} = \frac{1}{\tau_s} \int_{\infty}{0} \tilde{LAI_{max}}(t + \tilde{t}) e^{\tilde{t}/\tau_s} \, d\tilde{t} = \frac{1}{\tau_s} e^{-t/\tau_s} \int_{\infty}{t} \tilde{LAI_{max}}(t\prime) e^{t\prime / \tau_s} \, dt\prime
+
+Where :math:`\tau_s` is the averaging period for :math:`\LAI_{max}`. Larger values of :math:`\tau_s` mean the weighting of :math:`\LAI_{max}` goes further back into past, while smaller values of :math:`\tau_s` mean more recent :math:`\LAI_{max}` values are used. 
 
 
 .. rubric:: References
