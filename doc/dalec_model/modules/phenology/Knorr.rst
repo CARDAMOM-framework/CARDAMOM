@@ -90,7 +90,7 @@ The :math:`LAI_{max}` defines the maximum potential LAI and is calculated as the
 .. math::
    :label: eq_LAI_max
 
-   \tilde{LAI}_{max}(t) = min(\hat{\Lambda_{max}}, LAI_W)
+   \tilde{LAI}_{max}(t) = min(\hat{\Lambda}_{max}, LAI_W)
 
 In practice, the minimum is calculated using a quadratically smoothed minimum function. Additionally, in order for water limitation to account for changes in water availability in the recent past and not just instantaneous changes in :math:`W` and :math:`E`, the actual :math:`LAI_{max}` is calculated as a weighted time integration with exponentially declining weights going into the past. In continuous form this is given by:
 
