@@ -32,7 +32,7 @@ Where :math:`f_1` and :math:`f_2` represent some abritrary functions to describe
 
 .. math::
    :label: eq_dLAIdt_pop
-   \frac{dLAI(t)}{dt} = f_1 \[ \int_{-\inf}^{T} \int_{-\inf}^{t_d}  p(\tilde{T_{\phi}}) q(\tilde{t_c} \,d\tilde{T_{\phi}} d\tilde{t_c} \] + f_2 (1 - \[ \int_{-\inf}^{T} \int_{-\inf}^{t_d}  p(\tilde{T_{\phi}}) q(\tilde{t_c} \,d\tilde{T_{\phi}} d\tilde{t_c} \])
+   \frac{dLAI(t)}{dt} = f_1 \int_{-\inf}^{T} \int_{-\inf}^{t_d}  p(\tilde{T_{\phi}}) q(\tilde{t_c}) \,d\tilde{T_{\phi}} d\tilde{t_c} + f_2 \left( 1 - \int_{-\inf}^{T} \int_{-\inf}^{t_d}  p(\tilde{T_{\phi}}) q(\tilde{t_c}) \,d\tilde{T_{\phi}} d\tilde{t_c} \right)
 
 Where :math:`p` and :math:`q` are the spatial probability density functions for the two threshold variables, :math:`\tilde{T_{\phi}}` and :math:`\tilde{t_c}`, respectively. Th
 
