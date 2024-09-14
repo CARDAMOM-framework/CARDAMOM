@@ -8,11 +8,11 @@ Welcome to the CARDAMOM documentation
 
 **Technical documentation of the CARbon DAta-MOdel fraMework C implemtation (CARDAMOM-C)**
 
-**Authors:** Paul A. Levine, A. Anthony Bloom, Matthew A. Worden, T. Eren Bilir, Gregory R. Quetin, Shuang Ma
+**Authors:** Paul A. Levine, A. Anthony Bloom, Matthew A. Worden, T. Eren Bilir, Gregory R. Quetin, Shuang Ma, Alexander J. Norton
 
 This technical documentation is under construction. In due course, incremental versions will be designated with a digital object identifier (DOI). In the meantime, to make reference to this documentation, please use the following:
 
-**How to cite:** Levine, Paul A., Bloom, A. Anthony, Worden, Matthew A., Bilir, T. Eren, Quetin, Gregory R., Ma, Shuang, **Technical documentation of the CARbon DAta-MOdel fraMework C implemtation (CARDAMOM-C)**, *in prep.* https://cardamom-framework.github.io/CARDAMOM (last accessed *insert date accessed*)
+**How to cite:** Levine, Paul A., Bloom, A. Anthony, Worden, Matthew A., Bilir, T. Eren, Quetin, Gregory R., Ma, Shuang, Norton, Alexander J., **Technical documentation of the CARbon DAta-MOdel fraMework C implemtation (CARDAMOM-C)**, *in prep.* https://cardamom-framework.github.io/CARDAMOM (last accessed *insert date accessed*)
 
 The CARDAMOM documentation presented here is written specifically for the `JPL, Stanford, UCSB and Caltech CARDAMOM framework <https://github.com/CARDAMOM-framework/CARDAMOM>`_ implementation, publicly available under a `GPL-v3 license <https://www.gnu.org/licenses/gpl-3.0.en.html>`_. :ref:`copyright-statement` © 2024, California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged.
 
