@@ -78,9 +78,9 @@ To incorporate water availability constraints on LAI dynamics, a water-limited L
 .. math::
    :label: eq_LAI_W
 
-   LAI_W(t) = \frac{W \cdot LAI(t)}{E \cdot \tau_{LAI}}
+   LAI_W(t) = \frac{(W_{ly1} + W_{ly2}) \cdot LAI(t)}{(Tr_{ly1} + Tr_{ly2}) \cdot \tau_{LAI}}
 
-Where :math:`W` is the plant-available water pool (NOTE: Paul to confirm which hydrology pool this is defined as), :math:`E` is the leaf-area specific evapotranspiration rate (NOTE: Paul to confirm whether 1100 uses ET or just T), and :math:`\tau_{LAI}` is a parameter describing the expected length of water deficit periods that are tolerated before leaf shedding :ref:`Knorr et al (2010) <Knorr2010>`. 
+Where :math:`W_{ly1} + W_{ly2}` are the water pools available for transpiration, :math:`Tr_{ly1} + Tr_{ly2}` is the total transpiration rate, and :math:`\tau_{LAI}` is a parameter describing the expected length of water deficit periods that are tolerated before leaf shedding :ref:`Knorr et al (2010) <Knorr2010>`. 
 
 Maximum Potential Leaf Area Index
 ---------------------------------
