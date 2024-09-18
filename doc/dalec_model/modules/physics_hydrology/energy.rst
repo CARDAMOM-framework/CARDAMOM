@@ -6,7 +6,7 @@ LST-driven soil energy balance
 The LST-driven soil energy balance module namely involves (1) closure of the total soil energy input and outputs, (2) intra-soil energy exchanges mediated by thermal gradients and water fluxes, (3) an LST-forced surface-to-suburface energy heat flux submodule, and (4) diagnostic derivations of soil temperature and liquid H2O fraction, in coordination with the soil H2O balance module. 
 
 
-.. image:: ../../../images/CARDAMOM_TECHNOTE_ENERGY_BALANCE_SEP24.png
+.. image:: ../../../../images/CARDAMOM_TECHNOTE_ENERGY_BALANCE_SEP24.png
 
 
 1. Closure of the soil energy inputs and outputs
