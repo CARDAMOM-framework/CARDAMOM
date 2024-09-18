@@ -16,9 +16,9 @@ The soil energy balance is summarized as
 
 .. math::
 
-   \frac{dE}{dt} = E_{surface_in} +  E_{geology_in} - E_{H2O_out}
+   \frac{dE}{dt} = E_{surface_in} +  E_{geology_in} - E_{H2O_in_out}
 
-where \frac{dE}{dt} is the time-varying soil energy content
+where \frac{dE}{dt} is the time-varying soil energy content, E_{surface_in} is the surface-to-subsurface gradient mediated thermal heat flux, E_{geology_in} is the upward thermal heat flux at the bottom boundary of the DALEC soil column, and E_{H2O_in_out} is the sum of all water-mediated input and output fluxes
 
 
 2. intra-soil energy exchanges mediated by thermal gradients and water fluxes
