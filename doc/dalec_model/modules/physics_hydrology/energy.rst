@@ -18,6 +18,8 @@ The soil energy balance is summarized as
 
    \frac{dE}{dt} = E_{surface_in} +  E_{geology_in} - E_{H2O_out}
 
+where \frac{dE}{dt} is the time-varying soil energy content
+
 
 2. intra-soil energy exchanges mediated by thermal gradients and water fluxes
 -----------------------------------------------------------------------------
