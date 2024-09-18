@@ -75,7 +75,7 @@ To write a new observation operator for a time series observation:
    
    #. add to the likelihood function (e.g., ``if (O->SUPPORT_GPP_OBS){ML[LI.GPP]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.GPP, D.M_GPP);};``)
 
-#. in DALEC_1100.c, 
+#. in ``DALEC_1100.c``, 
    
    a. create and assign the model quantities that are needed to evaluate the obsop, matching variable names declared in step b of modifying ``DALEC_OBSERVATION_OPERATORS.c``  (e.g., ``OBSOPE.GPP_flux=F.gpp;``) and 
    

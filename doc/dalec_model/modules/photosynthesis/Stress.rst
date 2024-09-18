@@ -5,7 +5,7 @@ GPP Stress (Beta Functions)
    :caption: Contents:
 
 Plant Water Potential GPP limitations
------------------------------
+-------------------------------------
 
 We represent water stress constraints on gross primary productivity and stomatal conductance based on water potential along the soil-plant continuum. For simplicity of representation, we assume water potential is consistent between soil and leaf, as opposed to quantifying a distinct leaf water potential. We compute the water stress factor using a sigmoid function across each soil layer accessible to the plant, subsequently normalized by the depth and rooting fraction of the two soil layers:
 
