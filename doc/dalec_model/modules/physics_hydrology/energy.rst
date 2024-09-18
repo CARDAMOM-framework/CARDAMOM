@@ -28,14 +28,11 @@ The three DALEC 1100 layers are specifically defined as
 
 .. math::
 
-   \frac{dE2}{dt} = E_{LY1_2_LY2} - E_{h2o_Q}  - E_{H2O_transp2}  - E_{LY2_2_LY3};
+   \frac{dE2}{dt} = E_{LY1_2_LY2} +E_{H2O_LY1_2_LY2} - E_{H2O_Q2}  - E_{H2O_transp2}  - E_{LY2_2_LY3} - E_{LY2_2_LY3} - E_{H2O_LY2_2_LY3};
 
 .. math::
 
-   \frac{dE2}{dt} = E_{surface_in} + E_{h2o_infil}  - E_{h2o_Q} - E_{h2o_evap} - E_{h2o_transp} - E_{LY1_2_LY2};
-
-
-
+   \frac{dE2}{dt} = E_{geology_in} +  E_{LY2_2_LY3} + E_{H2O_LY2_2_LY3} - E_{h2o_Q3};
 
 
 
