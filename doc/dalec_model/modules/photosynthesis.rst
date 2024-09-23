@@ -8,3 +8,4 @@ Photosynthesis modules
    photosynthesis/ACM
    photosynthesis/Liu
    photosynthesis/Stress
+   photosynthesis/Transpiration
