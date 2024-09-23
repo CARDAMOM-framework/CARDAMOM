@@ -1,10 +1,10 @@
-DALEC 1100
-==========
+Variable tables
+===============
 
 .. toctree::
    :maxdepth: 2
 
-Description of DALEC 1100
+Variables used in DALEC model
 
 .. list-table:: Input variables
    :widths: 1 1 1 1 1

@@ -1,7 +1,0 @@
-DALEC 1005
-==========
-
-.. toctree::
-   :maxdepth: 2
-
-Description of DALEC 1005

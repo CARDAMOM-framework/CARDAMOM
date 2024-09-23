@@ -31,7 +31,7 @@ The CARDAMOM documentation presented here is written specifically for the `JPL, 
    
    dalec_model/overview
    dalec_model/modules
-   dalec_model/versions
+   dalec_model/table
 
 .. toctree::
    :maxdepth: 2

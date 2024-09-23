@@ -5,6 +5,8 @@ DALEC modules
    :maxdepth: 3
 
    modules/photosynthesis
+   modules/Stress
+   modules/Transpiration
    modules/phenology
    modules/allocation
    modules/mortality
