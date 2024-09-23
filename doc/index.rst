@@ -27,11 +27,66 @@ The CARDAMOM documentation presented here is written specifically for the `JPL, 
 
 .. toctree::
    :maxdepth: 3
-   :caption: DALEC model:
+   :hidden:
+   :caption: DALEC 1100:
    
-   dalec_model/overview
-   dalec_model/modules
-   dalec_model/table
+   dalec_model/1100/overview
+   dalec_model/1100/modules
+   dalec_model/1100/table
+
+.. toctree::
+   :maxdepth: 3
+   :hidden:
+   :caption: DALEC 1101:
+   
+   dalec_model/1101/overview
+   dalec_model/1101/modules
+   dalec_model/1101/table
+
+.. raw:: html
+
+   <!-- Dropdown to select between DALEC model1 and DALEC model2 -->
+   <select id="toctree-selector" onchange="switchToctree()">
+       <option value="dalec_1100">DALEC 1100</option>
+       <option value="dalec_1101">DALEC 1101</option>
+   </select>
+
+   <!-- DALEC model1 content -->
+   <div id="dalec_1100" class="toctree-content">
+       <ul>
+           <li><a href="dalec_model/1100/overview.html">Overview</a></li>
+           <li><a href="dalec_model/1100/modules.html">Modules</a></li>
+           <li><a href="dalec_model/1100/table.html">Variables</a></li>
+       </ul>
+   </div>
+
+   <!-- DALEC model2 content (initially hidden) -->
+   <div id="dalec_1101" class="toctree-content" style="display:none;">
+       <ul>
+           <li><a href="dalec_model/1101/overview.html">Overview</a></li>
+           <li><a href="dalec_model/1101/modules.html">Modules</a></li>
+           <li><a href="dalec_model/1101/table.html">Variables</a></li>
+       </ul>
+   </div>
+
+.. raw:: html
+
+   <script type="text/javascript">
+       function switchToctree() {
+           var selector = document.getElementById('toctree-selector');
+           var selectedValue = selector.value;
+
+           // Hide all toctree content sections
+           var sections = document.getElementsByClassName('toctree-content');
+           for (var i = 0; i < sections.length; i++) {
+               sections[i].style.display = 'none';
+           }
+
+           // Show the selected toctree content
+           document.getElementById(selectedValue).style.display = 'block';
+       }
+   </script>
+
 
 .. toctree::
    :maxdepth: 2
