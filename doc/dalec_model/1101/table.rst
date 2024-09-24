@@ -1,5 +1,5 @@
-Variable tables
-===============
+Variables in DALEC 1101
+=======================
 
 .. toctree::
    :maxdepth: 2

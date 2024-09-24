@@ -27,6 +27,7 @@ The CARDAMOM documentation presented here is written specifically for the `JPL, 
 DALEC Model
 -----------
 
+
 .. toctree::
    :maxdepth: 3
    :hidden:
@@ -56,18 +57,18 @@ DALEC Model
    <!-- DALEC 1100 content (initially hidden, controlled by JavaScript) -->
    <div id="dalec_1100" class="toctree-content">
        <ul>
-           <li><a href="dalec_model/1100/overview.html">Overview</a></li>
-           <li><a href="dalec_model/1100/modules.html">Modules</a></li>
-           <li><a href="dalec_model/1100/table.html">Variables</a></li>
+           <li><a href="dalec_model/1100/overview.html">Overview of DALEC 1100</a></li>
+           <li><a href="dalec_model/1100/modules.html">Modules used by DALEC 1100</a></li>
+           <li><a href="dalec_model/1100/table.html">Variables in DALEC 1100</a></li>
        </ul>
    </div>
 
    <!-- DALEC 1101 content (initially hidden) -->
    <div id="dalec_1101" class="toctree-content" style="display:none;">
        <ul>
-           <li><a href="dalec_model/1101/overview.html">Overview</a></li>
-           <li><a href="dalec_model/1101/modules.html">Modules</a></li>
-           <li><a href="dalec_model/1101/table.html">Variables</a></li>
+           <li><a href="dalec_model/1101/overview.html">Overview of DALEC 1101</a></li>
+           <li><a href="dalec_model/1101/modules.html">Modules used by DALEC 1101</a></li>
+           <li><a href="dalec_model/1101/table.html">Variables in DALEC 1101</a></li>
        </ul>
    </div>
 

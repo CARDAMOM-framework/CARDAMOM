@@ -1,5 +1,5 @@
-Overview of DALEC model
-=======================
+Overview of DALEC 1100
+======================
 
 .. toctree::
    :maxdepth: 2
