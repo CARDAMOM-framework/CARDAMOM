@@ -1,5 +1,5 @@
-DALEC modules
-=============
+Modules used by DALEC 1100
+==========================
 
 .. toctree::
    :maxdepth: 3
