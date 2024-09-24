@@ -24,83 +24,11 @@ The CARDAMOM documentation presented here is written specifically for the `JPL, 
    cardamom_overview/forward_model
    cardamom_overview/model_data_fusion
 
-DALEC Model
------------
-
 .. toctree::
-   :maxdepth: 3
-   :hidden:
-   :caption: DALEC 1100:
+   :maxdepth: 2
+   :caption: DALEC Model:
 
-   dalec_model/1100/overview
-   dalec_model/1100/modules
-   dalec_model/1100/table
-
-.. toctree::
-   :maxdepth: 3
-   :hidden:
-   :caption: DALEC 1101:
-
-   dalec_model/1101/overview
-   dalec_model/1101/modules
-   dalec_model/1101/table
-
-.. raw:: html
-
-   <!-- Dropdown to select between DALEC 1100 and DALEC 1101 -->
-   <select id="toctree-selector" onchange="switchToctree()">
-       <option value="dalec_1100">DALEC 1100</option>
-       <option value="dalec_1101">DALEC 1101</option>
-   </select>
-
-   <!-- DALEC 1100 content (initially hidden, controlled by JavaScript) -->
-   <div id="dalec_1100" class="toctree-content">
-       <ul>
-           <li><a href="dalec_model/1100/overview.html">Overview</a></li>
-           <li><a href="dalec_model/1100/modules.html">Modules</a></li>
-           <li><a href="dalec_model/1100/table.html">Variables</a></li>
-       </ul>
-   </div>
-
-   <!-- DALEC 1101 content (initially hidden) -->
-   <div id="dalec_1101" class="toctree-content" style="display:none;">
-       <ul>
-           <li><a href="dalec_model/1101/overview.html">Overview</a></li>
-           <li><a href="dalec_model/1101/modules.html">Modules</a></li>
-           <li><a href="dalec_model/1101/table.html">Variables</a></li>
-       </ul>
-   </div>
-
-.. raw:: html
-
-   <script type="text/javascript">
-       function switchToctree() {
-           // Get the selected value from the dropdown
-           var selector = document.getElementById('toctree-selector');
-           var selectedValue = selector.value;
-
-           // Hide all the div sections corresponding to different models
-           var sections = document.getElementsByClassName('toctree-content');
-           for (var i = 0; i < sections.length; i++) {
-               sections[i].style.display = 'none';
-           }
-
-           // Display the selected model
-           document.getElementById(selectedValue).style.display = 'block';
-
-           // // Dynamically adjust the sidebar based on the selected model
-           // var sidebarSections = document.querySelectorAll('.toctree-wrapper li');
-           // for (var i = 0; i < sidebarSections.length; i++) {
-           //     sidebarSections[i].style.display = 'none';  // Hide all sidebar entries
-           // }
-
-           // // Show the sidebar entries for the selected model
-           // var selectedSidebar = document.querySelectorAll('.toctree-wrapper li.' + selectedValue);
-           // for (var i = 0; i < selectedSidebar.length; i++) {
-           //     selectedSidebar[i].style.display = 'block';  // Show the selected model entries
-           // }
-       }
-   </script>
+   dalec_versions
 
 .. toctree::
    :maxdepth: 2
