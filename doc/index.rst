@@ -31,8 +31,8 @@ The CARDAMOM documentation presented here is written specifically for the `JPL, 
 
    dalec_versions
 
-DALEC Model
-===========
+DALEC Model:
+------------
 
 .. raw:: html
 
