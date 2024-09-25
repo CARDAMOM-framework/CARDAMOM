@@ -59,6 +59,7 @@ DALEC Model
                <li><a href="dalec_model/1100/modules.html">Modules used by DALEC 1100</a></li>
                <li><a href="dalec_model/1100/table.html">Variables in DALEC 1100</a></li>
            </div>
+
        </ul>
    </div>
 
@@ -71,6 +72,7 @@ DALEC Model
                <li><a href="dalec_model/1101/modules.html">Modules used by DALEC 1101</a></li>
                <li><a href="dalec_model/1101/table.html">Variables in DALEC 1101</a></li>
            </div>
+
        </ul>
    </div>
 
