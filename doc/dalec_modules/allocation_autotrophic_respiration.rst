@@ -1,12 +1,7 @@
-.. _sub:allocation_1100:
+.. _sub:allocation_autotrophic_respiration:
 
-Allocation
-==========
-
-.. _subsub_alloc_ar_scheme:
-
-Plant carbon allocation and autotrophic respiration
----------------------------------------------------
+Allocation and autotrophic respiration
+======================================
 
 We develop a model for plant growth, allocation, and autotrophic respiration that is generic and globally applicable. This scheme is designed to better represent the hierarchy of controls that govern these processes than previous DALEC model versions. We first describe the principles of this new scheme and its assumptions, then present the equations and their coupling to other components of DALEC.
 
