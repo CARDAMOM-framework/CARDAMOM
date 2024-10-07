@@ -90,14 +90,14 @@ If ``NSC_a`` is not sufficient to fully maintain the existing tissues, we assume
       1 & \text{else}
    \end{cases}       
 
-where ``M_f`` is later multiplied by each of the live biomass pools as an additional transfer flux to the litter and coarse woody debris pools. If all of ``NSC_a`` is consumed by ``Ra_{maint}``, then both ``G`` and ``R_{a,g}`` are zero, meaning this formulation assumes that the maintenance of existing plant tissues is prioritized before the growth of new tissue. This provides the pathway for plant carbon starvation to occur (:ref:`McDowell et al. 2008 <McDowell2008>`).
+where ``M_f`` is later multiplied by each of the live biomass pools as an additional transfer flux to the litter and coarse woody debris pools. If all of ``NSC_a`` is consumed by ``Ra_{maint}``, then both ``G`` and ``R_{gr}`` are zero, meaning this formulation assumes that the maintenance of existing plant tissues is prioritized before the growth of new tissue. This provides the pathway for plant carbon starvation to occur (:ref:`McDowell et al. 2008 <McDowell2008>`).
 
-Growth respiration, ``R_{a,g}``, is related to ``G`` via the growth yield parameter (``Y_g``), which represents the units of C appearing in new biomass per unit of glucose C used for growth, or the amount of structural biomass formed per unit of photosynthates. The parameter ``Y_g`` typically has a value between 0.7-0.85, equivalent to 1.2-1.4 g glucose (g dry matter)−1 (:ref:`Cannell et al. 2000 <Cannell2000>`):
+Growth respiration, ``R_{gr}``, is related to ``G`` via the growth yield parameter (``Y_g``), which represents the units of C appearing in new biomass per unit of glucose C used for growth, or the amount of structural biomass formed per unit of photosynthates. The parameter ``Y_g`` typically has a value between 0.7-0.85, equivalent to 1.2-1.4 g glucose (g dry matter)−1 (:ref:`Cannell et al. 2000 <Cannell2000>`):
 
 .. math::
-   :label: Ra_{growth}
+   :label: Ra_{gr}
 
-   R_{a,g}(t) = \frac{(1 - Y_g)}{Y_g} \cdot G(t)
+   R_{gr}(t) = \frac{(1 - Y_g)}{Y_g} \cdot G(t)
 
 where ``(1-Y_g)/Y_g`` is the growth coefficient, which represents the units of C respired per C unit of new biomass synthesized from a glucose substrate, with a range of approximately 0.2 to 0.4 g C (g C dry matter)−1.
 
