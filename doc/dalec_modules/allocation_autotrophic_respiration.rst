@@ -18,7 +18,7 @@ The rate of change in total plant carbon (:math:`C_{plant} = C_{fol} + C_{roo} +
 
    \frac{dC_{plant}(t)}{dt} = GPP(t) - Ra_{maint}(t) - Ra_{gr}(t) - S(t)
 
-where :math:`Ra_{maint}` is the plant maintenance respiration flux, :math:`Ra_{gr}` is the plant growth respiration flux, and :math:`S` (*Comment from Alex: maybe we should change this symbol to something like :math:`F_{sinks}`, as it conflicts with :math:`S` meaning a state*) is an integrated sink term that includes turnover and senescence processes that transfer carbon from the foliar, root, and woody pools to the litter and coarse woody debris pools (*Why aren't we naming these fluxes specifically, e.g., :math:`F_{fol_to_litter}`?* We could name them specifically, either in the equation, or in the text description, e.g., :math:`S = DEC_{fol} + DECph_{fol} + DEC_{woo} + DEC_{lab} + DEC_{lab} + DIS_{fol} + DIS_{woo} + DIS_{lab} + DIS_{lab} + FIR_{fol} + FIR_{woo} + FIR_{lab} + FIR_{lab} + FIRx_{fol} + FIRx_{woo} + FIRx_{lab} + FIRx_{lab}`).
+where :math:`Ra_{maint}` is the plant maintenance respiration flux (:eq:`Ra_{maint}`), :math:`Ra_{gr}` is the plant growth respiration flux  (:eq:`Ra_{gr}`), and :math:`S` (*Comment from Alex: maybe we should change this symbol to something like :math:`F_{sinks}`, as it conflicts with :math:`S` meaning a state*) is an integrated sink term that includes turnover and senescence processes that transfer carbon from the foliar, root, and woody pools to the litter and coarse woody debris pools (*Why aren't we naming these fluxes specifically, e.g., :math:`F_{fol_to_litter}`?* We could name them specifically, either in the equation, or in the text description, e.g., :math:`S = DEC_{fol} + DECph_{fol} + DEC_{woo} + DEC_{lab} + DEC_{lab} + DIS_{fol} + DIS_{woo} + DIS_{lab} + DIS_{lab} + FIR_{fol} + FIR_{woo} + FIR_{lab} + FIR_{lab} + FIRx_{fol} + FIRx_{woo} + FIRx_{lab} + FIRx_{lab}`).
 
 The rate of change in the NSC pool is represented by
 
@@ -29,52 +29,54 @@ The rate of change in the NSC pool is represented by
 
 where :math:`G` is the growth rate of structural biomass (foliar, root, wood); in other words, :math:`G` is the sum of the allocation fluxes to the foliar, root, and wood pools (:math:`PRD_{fol} + PRD_{roo} + PRD_{woo}`). Thus, :math:`GPP` provides the carbon input to the NSC pool (:math:`C_{lab}`), and :math:`C_{lab}` provides the source of carbon for all autotrophic respiration losses and growth. This structure allows for the representation of the widely observed temporal decoupling of :math:`GPP` from :math:`G` and :math:`R_a` (:ref:`Fatichi et al. 2014 <Fatichi2014>`).
 
-Maintenance respiration is tissue-dependent and temperature-sensitive. We assume there is no maintenance respiration cost for :math:`C_{lab}`. Foliar maintenance respiration is linked to the temperature-corrected leaf mitochondrial respiration rate (dark respiration), computed in the photosynthesis scheme and integrated over canopy leaf area index as follows:
+Maintenance respiration is tissue-dependent and temperature-sensitive. We assume there is no maintenance respiration cost for :math:`C_{lab}`. Foliar maintenance respiration is linked to the temperature-corrected leaf mitochondrial respiration rate (dark respiration, :math:`Ra_{dark}`), computed in the photosynthesis scheme and integrated over canopy leaf area index as follows:
 
 .. math::
-   :label: R_{a,m}^{fol}
+   :label: Ra_{dark}
 
-   R_{a,m}^{fol}(t) = f_T(t) \cdot R_d(t) (1 - \exp(-K(t) \cdot LAI(t) \cdot P_{clumping}))/K
+   Ra_{dark}(t) = f_T_{dark}(t) \cdot R_d(t) (1 - \exp(-K(t) \cdot LAI(t) \cdot \Omega))/K
 
-and ``LAI(t) = C_{fol}(t)/P_{LCMA}``, and ``f_T(t)`` is a ``Q_{10}`` temperature scaling function with a reference temperature of 25 degrees Celsius (see Equations :eq:`f_t_eq` and :eq:`f_t_eq_dark`). The wood maintenance respiration rate is calculated as
-
-.. math::
-   :label: R_{a,m}^{wood}
-
-   R_{a,m}^{wood}(t) = f_T(t) \cdot m_{R,w} \cdot C_{woo}
-  
-and root respiration rate is calculated as
-
-.. math::
-   :label: R_{a,m}^{root}
-
-   R_{a,m}^{root}(t) = f_T(t) \cdot m_{R,r} \cdot C_{roo}
-
-where ``m_{R,w}`` and ``m_{R,r}`` are the maintenance respiration coefficients for the wood carbon pool (``C_{woo}``) and for the root carbon pool (``C_{roo}``), respectively. The ``Q_{10}`` temperature scaling functions are calculated as
-
-.. math::
-   :label: f_t_eq
-
-   f_T(t)_{maintresp} = P_{q10}^{\left( \frac{T_{max}(t)-25}{10} \right)}
-
+and :math:`LAI(t) = C_{fol}(t)/LCMA`, and `f_T(t)_{dark}` is a `Q_{10}` temperature scaling function with a reference temperature of 25 degrees Celsius, defined as
 
 .. math::
    :label: f_t_eq_dark
 
-   f_T(t)_{darkresp} = P_{q10, dark}^{\left( \frac{T_{max}(t)-25}{10} \right)}
+   f_T(t)_{dark} = Q_{10}^{dark}^{\left( \frac{T_{mean}(t)-25}{10} \right)}
 
+where :math:`Q_{10}^{dark}` is the `Q_{10}` parameter for dark respiration, and :math:`T_{mean}` is the mean air temperature (:math:`0.5(T_{max} + T_{min})`). 
 
-*Comment from Alex: I believe ``T_{max}`` should be ``T_{mean}`` in the above equations, as the code takes mean air temperature as the input. Can you double check this?* ``T_{max}`` is air temperature in degrees Celsius, ``P_{q10}`` is the shared ``Q_{10}`` parameter for root and wood maintenance respiration, and ``P_{q10, dark}`` is the ``Q_{10}`` parameter for leaf dark respiration rate.
-
-Maintenance respiration can only occur when there is an adequate supply of labile carbon. The available labile carbon (``NSC_a``) is given by the current NSCs plus ``GPP`` minus ``R_{a,m}^{fol}``. This assumes the net export of labile carbon from the canopy equals ``GPP`` minus ``R_{a,m}^{fol}`` and that foliar maintenance is prioritized before the maintenance of wood or root. Total maintenance respiration, ``R_{a,m}``, is therefore described by
+The wood maintenance respiration rate is calculated as
 
 .. math::
-   :label: R_{a,m}
+   :label: Ra_{maint}^{woo}
 
-   R_{a,m} =
+   Ra_{maint}^{woo}(t) = f_T(t)_{maint} \cdot K_{woo} \cdot C_{woo}
+  
+and root respiration rate is calculated as
+
+.. math::
+   :label: Ra_{maint}^{roo}
+
+   Ra_{maint}^{roo}(t) = f_T(t)_{maint} \cdot K_{roo} \cdot C_{roo}
+
+where `K_{woo}` and `K_{roo}` are the maintenance respiration coefficients for the wood carbon pool (``C_{woo}``) and for the root carbon pool (``C_{roo}``), respectively, and `f_T(t)_{maint}` is a `Q_{10}` temperature scaling function with a reference temperature of 25 degrees Celsius, defined as
+
+.. math::
+   :label: f_t_eq
+
+   f_T(t)_{maint} = Q_{10}^{Ra}^{\left( \frac{T_{mean}(t)-25}{10} \right)}
+
+where `Q_{10}^{Ra}` is the shared `Q_{10}` parameter for root and wood maintenance respiration.
+
+Maintenance respiration can only occur when there is an adequate supply of labile carbon. The available labile carbon (``NSC_a``) is given by the current NSCs plus ``GPP`` minus ``Ra_{maint}^{fol}``. This assumes the net export of labile carbon from the canopy equals ``GPP`` minus ``Ra_{maint}^{fol}`` and that foliar maintenance is prioritized before the maintenance of wood or root. Total maintenance respiration, ``Ra_{maint}``, is therefore described by
+
+.. math::
+   :label: Ra_{maint}
+
+   Ra_{maint} =
    \begin{cases}
-      NSC_a & \text{if } (R_{a,m}^{wood} + R_{a,m}^{root}) \geq NSC_a \\
-      R_{a,m}^{fol} + R_{a,m}^{wood} + R_{a,m}^{root} & \text{else}
+      NSC_a & \text{if } (Ra_{maint}^{woo} + Ra_{maint}^{roo}) \geq NSC_a \\
+      Ra_{maint}^{fol} + Ra_{maint}^{woo} + Ra_{maint}^{roo} & \text{else}
    \end{cases}       
 
 If ``NSC_a`` is not sufficient to fully maintain the existing tissues, we assume there is a fractional loss of live biomass that is proportional to the deficiency in ``NSC_a`` via a mortality factor, ``M_f``, as follows:
@@ -84,16 +86,16 @@ If ``NSC_a`` is not sufficient to fully maintain the existing tissues, we assume
 
    M_f =
    \begin{cases}
-      1 - \frac{NSC_a}{R_{a,m}} & \text{if } R_{a,m} \geq NSC_a \\
+      1 - \frac{NSC_a}{Ra_{maint}} & \text{if } Ra_{maint} \geq NSC_a \\
       1 & \text{else}
    \end{cases}       
 
-where ``M_f`` is later multiplied by each of the live biomass pools as an additional transfer flux to the litter and coarse woody debris pools. If all of ``NSC_a`` is consumed by ``R_{a,m}``, then both ``G`` and ``R_{a,g}`` are zero, meaning this formulation assumes that the maintenance of existing plant tissues is prioritized before the growth of new tissue. This provides the pathway for plant carbon starvation to occur (:ref:`McDowell et al. 2008 <McDowell2008>`).
+where ``M_f`` is later multiplied by each of the live biomass pools as an additional transfer flux to the litter and coarse woody debris pools. If all of ``NSC_a`` is consumed by ``Ra_{maint}``, then both ``G`` and ``R_{a,g}`` are zero, meaning this formulation assumes that the maintenance of existing plant tissues is prioritized before the growth of new tissue. This provides the pathway for plant carbon starvation to occur (:ref:`McDowell et al. 2008 <McDowell2008>`).
 
 Growth respiration, ``R_{a,g}``, is related to ``G`` via the growth yield parameter (``Y_g``), which represents the units of C appearing in new biomass per unit of glucose C used for growth, or the amount of structural biomass formed per unit of photosynthates. The parameter ``Y_g`` typically has a value between 0.7-0.85, equivalent to 1.2-1.4 g glucose (g dry matter)−1 (:ref:`Cannell et al. 2000 <Cannell2000>`):
 
 .. math::
-   :label: R_{a,g}
+   :label: Ra_{growth}
 
    R_{a,g}(t) = \frac{(1 - Y_g)}{Y_g} \cdot G(t)
 
@@ -101,12 +103,12 @@ where ``(1-Y_g)/Y_g`` is the growth coefficient, which represents the units of C
 
 The question then becomes how one should model ``G``. A wide range of approaches have been developed for terrestrial biosphere models (:ref:`Franklin et al. 2012 <Franklin2012>`, :ref:`Merganicova et al. 2019 <Merganicova2019>`). Here, we implement an empirical, source-sink approach to model ``G`` and its component fluxes, i.e., allocation to foliar, root, and wood pools (:ref:`Merganicova et al. 2019 <Merganicova2019>`), where ``G`` depends on both labile substrate and potential growth rate functions.
 
-First, the potential carbon supply for ``G`` (``G_{supply}``) is computed by multiplying the growth yield by the available NSCs minus ``R_{a,m}`` (*The equation below is problematic. It is the same as the model code, but it double counts the foliar maintenance respiration as ``R_{a,m}^{fol}`` appears in both the ``NSC_a`` and ``R_{a,m}`` terms*):
+First, the potential carbon supply for ``G`` (``G_{supply}``) is computed by multiplying the growth yield by the available NSCs minus ``Ra_{maint}`` (*The equation below is problematic. It is the same as the model code, but it double counts the foliar maintenance respiration as ``Ra_{maint}^{fol}`` appears in both the ``NSC_a`` and ``Ra_{maint}`` terms*):
 
 .. math::
    :label: G_{supply}
 
-   G_{supply} = Y_g \cdot (NSC_a - R_{a,m})
+   G_{supply} = Y_g \cdot (NSC_a - Ra_{maint})
 
 Then, we compute the demand for carbon by the potential growth rate of foliar, root, and wood as follows:
 

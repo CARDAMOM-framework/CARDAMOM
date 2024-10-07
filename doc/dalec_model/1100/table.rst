@@ -343,27 +343,27 @@ Variables used in DALEC model
      - ``ae_rh_cwd``
      - 
    * - :math:`DEC_{fol}`
-     - Foliar decomposition
+     - Background foliar mortality
      - gC m\ :sup:`-2` d\ :sup:`-1`
      - ``fol2lit``
      - :math:`C_{fol}` transferred to :math:`C_{lit}` due to mortality
    * - :math:`DECph_{fol}`
-     - Phenological foliar decomposition
+     - Phenological foliar mortality
      - gC m\ :sup:`-2` d\ :sup:`-1`
      - ``ph_fol2lit``
      - :math:`C_{fol}` transferred to :math:`C_{lit}` due to phenological senescence
    * - :math:`DEC_{woo}`
-     - Wood and coarse root decomposition
+     - Wood and coarse root mortality
      - gC m\ :sup:`-2` d\ :sup:`-1`
      - ``woo2cwd``
      - :math:`C_{woo}` transferred to :math:`C_{cwd}`
    * - :math:`DEC_{roo}`
-     - Fine root decomposition
+     - Fine root mortality
      - gC m\ :sup:`-2` d\ :sup:`-1`
      - ``roo2lit``
      - :math:`C_{roo}` transferred to :math:`C_{lit}`
    * - :math:`DEC_{lab}`
-     - Labile decomposition
+     - Labile mortality
      - gC m\ :sup:`-2` d\ :sup:`-1`
      - ``lab2lit``
      - :math:`C_{lab}` transferred to :math:`C_{lit}`
@@ -853,7 +853,7 @@ Variables used in DALEC model
    * - :math:`Q_{10}^{dark}`
      - Dark respiration Q\ :sub:`10` coefficient
      - 1
-     - ``rauto_mr_q10``
+     - ``rauto_mrd_q10``
      - :math:`[1,5]`
      - 
    * - :math:`\Gamma`
