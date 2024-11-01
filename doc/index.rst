@@ -8,11 +8,11 @@ Welcome to the CARDAMOM documentation
 
 **Technical documentation of the CARbon DAta-MOdel fraMework C implemtation (CARDAMOM-C)**
 
-**Authors:** Paul A. Levine, A. Anthony Bloom, Matthew A. Worden, T. Eren Bilir, Gregory R. Quetin, Shuang Ma
+**Authors:** Paul A. Levine, A. Anthony Bloom, Matthew A. Worden, T. Eren Bilir, Gregory R. Quetin, Shuang Ma, Alexander J. Norton
 
 This technical documentation is under construction. In due course, incremental versions will be designated with a digital object identifier (DOI). In the meantime, to make reference to this documentation, please use the following:
 
-**How to cite:** Levine, Paul A., Bloom, A. Anthony, Worden, Matthew A., Bilir, T. Eren, Quetin, Gregory R., Ma, Shuang, **Technical documentation of the CARbon DAta-MOdel fraMework C implemtation (CARDAMOM-C)**, *in prep.* https://cardamom-framework.github.io/CARDAMOM (last accessed *insert date accessed*)
+**How to cite:** Levine, Paul A., Bloom, A. Anthony, Worden, Matthew A., Bilir, T. Eren, Quetin, Gregory R., Ma, Shuang, Norton, Alexander J., **Technical documentation of the CARbon DAta-MOdel fraMework C implemtation (CARDAMOM-C)**, *in prep.* https://cardamom-framework.github.io/CARDAMOM (last accessed *insert date accessed*)
 
 The CARDAMOM documentation presented here is written specifically for the `JPL, Stanford, UCSB and Caltech CARDAMOM framework <https://github.com/CARDAMOM-framework/CARDAMOM>`_ implementation, publicly available under a `GPL-v3 license <https://www.gnu.org/licenses/gpl-3.0.en.html>`_. :ref:`copyright-statement` © 2024, California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged.
 
@@ -24,14 +24,79 @@ The CARDAMOM documentation presented here is written specifically for the `JPL, 
    cardamom_overview/forward_model
    cardamom_overview/model_data_fusion
 
-
 .. toctree::
-   :maxdepth: 3
-   :caption: DALEC model:
-   
-   dalec_model/overview
-   dalec_model/modules
-   dalec_model/versions
+   :maxdepth: 2
+   :hidden:
+   :caption: DALEC Model:
+
+   dalec_versions
+
+DALEC Model:
+------------
+
+.. raw:: html
+
+   <!-- Dropdown to select DALEC version -->
+   <select id="toctree-selector" onchange="switchToctree()">
+      <option value="select_version">Select DALEC version</option>
+      <option value="dalec_1100">DALEC 1100</option>
+      <option value="dalec_1101">DALEC 1101</option>
+   </select>
+
+   <!-- DALEC 1100 content (initially hidden, controlled by JavaScript) -->
+   <div id="select_version" class="toctree-content">
+      <ul>
+         <br> <!-- Line of whitespace above the first list item -->
+         <li><a href="dalec_versions.html">Show all DALEC versions</a></li>
+      </ul>
+   </div>
+
+   <!-- DALEC 1100 content (initially hidden, controlled by JavaScript) -->
+   <div id="dalec_1100" class="toctree-content" style="display:none;">
+      <ul>
+         <br> <!-- Line of whitespace above the first list item -->
+         <li><a href="dalec_model/1100.html">DALEC 1100</a></li>
+         <div style="padding-left: 20px;"> <!-- Wrapper for indented items -->
+            <li><a href="dalec_model/1100/overview.html">Overview of DALEC 1100</a></li>
+            <li><a href="dalec_model/1100/modules.html">Modules used by DALEC 1100</a></li>
+            <li><a href="dalec_model/1100/table.html">Variables in DALEC 1100</a></li>
+         </div>
+
+      </ul>
+   </div>
+
+   <!-- DALEC 1101 content (initially hidden) -->
+   <div id="dalec_1101" class="toctree-content" style="display:none;">
+      <ul>
+         <br> <!-- Line of whitespace above the first list item -->
+         <li><a href="dalec_model/1101.html">DALEC 1101</a></li>
+         <div style="padding-left: 20px;"> <!-- Wrapper for indented items -->
+            <li><a href="dalec_model/1101/overview.html">Overview of DALEC 1101</a></li>
+            <li><a href="dalec_model/1101/modules.html">Modules used by DALEC 1101</a></li>
+            <li><a href="dalec_model/1101/table.html">Variables in DALEC 1101</a></li>
+         </div>
+
+      </ul>
+   </div>
+
+.. raw:: html
+
+   <script type="text/javascript">
+      function switchToctree() {
+         // Get the selected value from the dropdown
+         var selector = document.getElementById('toctree-selector');
+         var selectedValue = selector.value;
+
+         // Hide all the div sections corresponding to different models
+         var sections = document.getElementsByClassName('toctree-content');
+         for (var i = 0; i < sections.length; i++) {
+             sections[i].style.display = 'none';
+         }
+
+         // Display the selected model
+         document.getElementById(selectedValue).style.display = 'block';
+       }
+   </script>
 
 .. toctree::
    :maxdepth: 2

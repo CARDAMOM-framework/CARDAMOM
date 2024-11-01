@@ -4,5 +4,5 @@ DALEC versions
 .. toctree::
    :maxdepth: 2
 
-   versions/1005
-   versions/1100
+   dalec_model/dalec_1100
+   dalec_model/dalec_1101

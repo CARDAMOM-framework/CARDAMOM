@@ -131,7 +131,7 @@ end
 
 if OPT.STORE==0
 fluxfile=sprintf('%s/tempcardafluxfile%s.cbr.nc',Dpath,channel);
-parfile=sprintf('%s/tempcardaparfile%s.bin',Dpath,channel);
+parfile=sprintf('%s/tempcardaparfile%s.nc',Dpath,channel);
 
 else
     %unique identifier based on name,location and creation date of file
@@ -158,9 +158,12 @@ if (iscell(PARS) | ischar(PARS)) & (OPT.STORE==0  | nostorefiles==1)
     if  ischar(PARS) & strcmp('START',PARS(end-4:end));OPT.MODEL.MA.latterhalf=0;end
     if  ischar(PARS) & OPT.filelatterhalf==0;OPT.MODEL.MA.latterhalf=0;end
 
-    [PARS,ANCILLARY]=CARDAMOM_READ_BINARY_FILEFORMAT(PARS,OPT.MODEL.MA);
+    %[PARS,ANCILLARY]=CARDAMOM_READ_BINARY_FILEFORMAT(PARS,OPT.MODEL.MA);
+    PARS=ncread( PARS,'Parameters')';
+    %Latter half only
+    PARS=PARS(end/2+1:end,:);
 elseif OPT.STORE==1
-    PARS=readbinarymat(parfile,[0,OPT.MODEL.MA.nopars])';
+    PARS=ncread( PARS,'Parameters')';
 end
 
 
@@ -177,9 +180,11 @@ end
 command_str=[];
 if OPT.STORE==0 | nostorefiles==1
     %CONTINUE
-    fd=fopen(parfile,'w');
-fwrite(fd,PARS','real*8');
-fclose(fd);
+%     fd=fopen(parfile,'w');
+% fwrite(fd,PARS','real*8');
+% fclose(fd);
+nccreate(parfile,'Parameters','Dimensions',{'Parameter' size(PARS,2) 'Sample' size(PARS,1)});
+ncwrite(parfile,'Parameters',PARS');
 
 
 
