@@ -54,6 +54,10 @@ parmax[P.rauto_gr]=0.95;
 parmin[P.t_wood]=0.000025;
 parmax[P.t_wood]=0.01;
 
+/*TOR labile C*/ //Setting to be equal to roots as first guess (10.21.23)
+parmin[P.t_lab]=0.0001;
+parmax[P.t_lab]=0.01;
+
 /*TOR roots*/
 parmin[P.t_root]=0.0001;
 parmax[P.t_root]=0.01;
@@ -254,7 +258,7 @@ parmax[P.scf_scalar]=1000.0;
 parmin[P.S_fv]=1;
 parmax[P.S_fv]=100.0;
 
-/* jc thetas_opt   optimum thetas for water scaler fW*/
+/* jc thetas_opt optimum thetas for water scaler fW*/
 parmin[P.thetas_opt]=0.2;
 parmax[P.thetas_opt]=1.0;
 
@@ -314,9 +318,8 @@ parmax[P.init_T_mem]=323.15;
 parmin[P.init_LAIW_mem]=0.01;
 parmax[P.init_LAIW_mem]=1;
 
-/*Inverse of leaf longevity at any period i.e. background turnover (days-1)*/
-parmin[P.t_foliar]=0.001;
-parmax[P.t_foliar]=0.1;
+
+
 
 /*LY1 energy per mm H2O (~ Energy in 1mm H2O @ -50C to 1mm H2O@ +50C)*/
 parmin[P.i_LY1_E]=4.67e+05;
@@ -330,13 +333,21 @@ parmax[P.i_LY2_E]=1.11e+06;
 parmin[P.i_LY3_E]=4.67e+05;
 parmax[P.i_LY3_E]=1.11e+06;
 
-/*PSI 50: water potential when soil-plant continum is at 50% hydraulic conductivity (-MPa)*/
+/*PSI 50: water potential when soil-plant continuum is at 50% hydraulic conductivity (-MPa) due to stomatal closure*/
 parmin[P.psi_50]=0.1;
 parmax[P.psi_50]=30;
+
+/*PSI 50 HMF: water potential triggering 50% biomass mortality due to cavitation(-MPa)*/
+parmin[P.psi_50HMF]=0.1;
+parmax[P.psi_50HMF]=30;
 
 /*Beta function normalized logistic growth rate */
 parmin[P.beta_lgr]=4.1;
 parmax[P.beta_lgr]=50;
+
+/*HMFBeta function normalized logistic growth rate */
+parmin[P.beta_lgrHMF]=4.1;
+parmax[P.beta_lgrHMF]=50;
  
 /*Ratio of carbon allocation to root per target foliar pool size (gC/gC)*/
 parmin[P.phi_RL]=0.0001;
@@ -377,5 +388,3 @@ parmax[P.root_frac]=1;
 return 0;
 
 }
-
-

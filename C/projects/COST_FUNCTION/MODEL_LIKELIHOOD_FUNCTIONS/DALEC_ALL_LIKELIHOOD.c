@@ -30,12 +30,14 @@ struct LIKELIHOOD_INDICES{
         int NBE;
         int ROFF;
         int SCF;
+        int FIR;
         int Mean_ABGB;      
         int Mean_FIR;
         int Mean_GPP;
         int Mean_LAI;
         int PEQ_Cefficiency;       
         int PEQ_CUE;
+        int PEQ_NBEmrg;
         int PEQ_iniSnow;
         int PEQ_iniSOM;
         int PEQ_C3frac;
@@ -47,12 +49,12 @@ struct LIKELIHOOD_INDICES{
         } LIKELIHOOD_INDICES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
-    20,21,22,23,24}; /*pMCMC*/
+    20,21,22,23,24,25,26}; /*pMCMC*/
     
   
     
     int DALEC_ALL_LIKELIHOOD_MODCONFIG(LIKELIHOODinfo * LI){
-        LI->nolikelihoods=25;
+        LI->nolikelihoods=27;
         return 0;}
             
             
@@ -117,24 +119,25 @@ if (O->SUPPORT_FIR_OBS){        ML[LI.FIR]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D
 //Mean OBS
 
 
-if (O->SUPPORT_ABGB_OBS){   ML[LI.Mean_ABGB]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_ABGB, D.M_Mean_ABGB);};
-if (O->SUPPORT_FIR_OBS){   ML[LI.Mean_FIR]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_FIR, D.M_Mean_FIR);};
-if (O->SUPPORT_GPP_OBS){   ML[LI.Mean_GPP]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_GPP, D.M_Mean_GPP);};
-if (O->SUPPORT_LAI_OBS){   ML[LI.Mean_LAI]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_LAI, D.M_Mean_LAI);};
+if (O->SUPPORT_ABGB_OBS){       ML[LI.Mean_ABGB]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_ABGB, D.M_Mean_ABGB);};
+if (O->SUPPORT_FIR_OBS){        ML[LI.Mean_FIR]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_FIR, D.M_Mean_FIR);};
+if (O->SUPPORT_GPP_OBS){        ML[LI.Mean_GPP]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_GPP, D.M_Mean_GPP);};
+if (O->SUPPORT_LAI_OBS){        ML[LI.Mean_LAI]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.Mean_LAI, D.M_Mean_LAI);};
 
 //Parameters and emergent quantities
-if (O->SUPPORT_Cefficiency_OBS){   ML[LI.PEQ_Cefficiency]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_Cefficiency, D.M_PEQ_Cefficiency);};
-if (O->SUPPORT_CUE_OBS){   ML[LI.PEQ_CUE]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_CUE, D.M_PEQ_CUE);};
-if (O->SUPPORT_iniSnow_OBS){   ML[LI.PEQ_iniSnow]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_iniSnow, D.M_PEQ_iniSnow);};
-if (O->SUPPORT_iniSOM_OBS){   ML[LI.PEQ_iniSOM]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_iniSOM, D.M_PEQ_iniSOM);};
-if (O->SUPPORT_Vcmax25_OBS){   ML[LI.PEQ_Vcmax25]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_Vcmax25, D.M_PEQ_Vcmax25);};
-if (O->SUPPORT_C3frac_OBS){   ML[LI.PEQ_C3frac]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_C3frac, D.M_PEQ_C3frac);};
-if (O->SUPPORT_CUEmrg_OBS){   ML[LI.PEQ_CUE]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_CUE, D.M_PEQ_CUE);};
-if (O->SUPPORT_LCMA_OBS){   ML[LI.PEQ_LCMA]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_LCMA, D.M_PEQ_LCMA);};
+if (O->SUPPORT_NBEmrg_OBS){     ML[LI.PEQ_NBEmrg]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_NBEmrg, D.M_PEQ_NBEmrg);};
+if (O->SUPPORT_Cefficiency_OBS){ML[LI.PEQ_Cefficiency]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_Cefficiency, D.M_PEQ_Cefficiency);};
+if (O->SUPPORT_CUE_OBS){        ML[LI.PEQ_CUE]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_CUE, D.M_PEQ_CUE);};
+if (O->SUPPORT_iniSnow_OBS){    ML[LI.PEQ_iniSnow]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_iniSnow, D.M_PEQ_iniSnow);};
+if (O->SUPPORT_iniSOM_OBS){     ML[LI.PEQ_iniSOM]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_iniSOM, D.M_PEQ_iniSOM);};
+if (O->SUPPORT_Vcmax25_OBS){    ML[LI.PEQ_Vcmax25]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_Vcmax25, D.M_PEQ_Vcmax25);};
+if (O->SUPPORT_C3frac_OBS){     ML[LI.PEQ_C3frac]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_C3frac, D.M_PEQ_C3frac);};
+if (O->SUPPORT_CUEmrg_OBS){     ML[LI.PEQ_CUE]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_CUE, D.M_PEQ_CUE);};
+if (O->SUPPORT_LCMA_OBS){       ML[LI.PEQ_LCMA]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_LCMA, D.M_PEQ_LCMA);};
 
 //add PEQ value and unc from previous MCMC *pMCMC*
-if (O->SUPPORT_r_ch4_OBS){ML[LI.PEQ_r_ch4]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_r_ch4, D.M_PEQ_r_ch4);};
-if (O->SUPPORT_S_fv_OBS){ML[LI.PEQ_S_fv]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_S_fv, D.M_PEQ_S_fv);};
+if (O->SUPPORT_r_ch4_OBS){      ML[LI.PEQ_r_ch4]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_r_ch4, D.M_PEQ_r_ch4);};
+if (O->SUPPORT_S_fv_OBS){       ML[LI.PEQ_S_fv]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_S_fv, D.M_PEQ_S_fv);};
 if (O->SUPPORT_rhch4_rhco2_OBS){ML[LI.PEQ_rhch4_rhco2]=CARDAMOM_SINGLE_OBS_LIKELIHOOD(&D.ncdf_data.PEQ_rhch4_rhco2, D.M_PEQ_rhch4_rhco2);};
 
 //Calculate sum here;

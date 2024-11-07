@@ -1,7 +1,5 @@
-.. _copyright-statement:
-
-Copyright
-=========
+Copyright statement
+===================
 
 Copyright  (c) 2020 California  Institute  of Technology (“Caltech”) and University of Washington. U.S. Government  sponsorship acknowledged.
 
