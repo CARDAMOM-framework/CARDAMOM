@@ -5,6 +5,10 @@
 #include <netcdf.h>
 #include <time.h>
 
+#include <stdlib.h>
+#include <unistd.h>
+
+#include <search.h>
 
 //Maximum length of metadata strings that will be allowed when writing to netcdf.
 #define METADATA_MAX_LEN 100 
@@ -39,24 +43,77 @@ void str_inplace_replace(char * str, const char * toFind, const char toReplace){
 
 }
 
+//Function that uses strtok to return a correctly sized array of pointers of all the tokens. The array is itself allocated dynamically by this method.
+char** break_string_dynamically(char* inString, const char* delimiters, int* count){
+  char* inStrCopy = calloc(strlen(inString), sizeof(char));
+  strcpy(inStrCopy, inString);
+  *count = 0;
+  //Run the method on the copy to pre-check the length of the ending array
+  char* saveptr = NULL;
+  char* tok = strtok_r (inStrCopy,delimiters, &saveptr);
+  while (tok != NULL)
+  {
+    (*count)++;
+    char* tok = strtok_r (NULL,delimiters, &saveptr);
+  }
+  free(inStrCopy);
+
+  //Now we can get the real output tokens!
+  char** outTokens = calloc(*count, sizeof(char*));
+  saveptr = NULL;
+  tok = strtok_r (inString,delimiters, &saveptr);
+  int idx = 0;
+  while (tok != NULL)
+  {
+    outTokens[idx] = tok;
+    idx++;
+    char* tok = strtok_r (NULL,delimiters, &saveptr);
+  }
+  return outTokens;
+
+}
 
 
 /*syntax CARDAMOM_READ_BINARY_CARDADATA(char *filename,CARDADATA *CARDADATA)*/
 
 /* the gateway function */
 /*NOTE: this function can be used with any valid model ID (stored in CARDADATA.ID)*/
-int main(int argc, char *files[])
+int main(int argc, char *argv[])
 {
-    printf("In 'main'\n");
+  printf("In 'main'\n");
 
-/*declaring loop variable n*/
-int n, nn;
+
+  char metfile[FILE_NAME_MAX_LEN];
+  char parfile[FILE_NAME_MAX_LEN];
+  char ncdffile[FILE_NAME_MAX_LEN];
+
+  int opt;
+  int fluxListCount = 0;
+  char** fluxListToOutput;
+  int poolListCount = 0;
+  char** poolListToOutput;
+  int parListCount = 0;
+  char** parListToOutput;
+  const char* delimiters = " ,";
+
+  while ((opt = getopt(argc, argv, "f:p:a:")) != -1) {
+      switch (opt) {
+      case 'f': fluxListToOutput=break_string_dynamically(optarg, delimiters, &fluxListCount); break;
+      case 'p': poolListToOutput=break_string_dynamically(optarg, delimiters, &poolListCount); break;
+      case 'a': parListToOutput=break_string_dynamically(optarg, delimiters, &parListCount); break;
+      default:
+          fprintf(stderr, "Usage: %s [-f fluxes] [-p pools] [-a pars] [metfile] [parfile] [ncdffile]\n", argv[0]);
+          exit(EXIT_FAILURE);
+      }
+  }
+  // Now optind (declared extern int by <unistd.h>) is the index of the first non-option argument.
+  // If it is >= argc, there were no non-option arguments.
 
 /*storing command line inputs as 2 files*/
-char metfile[FILE_NAME_MAX_LEN];strncpy(metfile,files[1],FILE_NAME_MAX_LEN-1);
-char parfile[FILE_NAME_MAX_LEN];strncpy(parfile,files[2],FILE_NAME_MAX_LEN-1);
-char ncdffile[FILE_NAME_MAX_LEN];
-if (argc-1>2){strncpy(ncdffile,files[3],FILE_NAME_MAX_LEN-1);}
+strncpy(metfile,argv[optind],FILE_NAME_MAX_LEN-1);
+strncpy(parfile,argv[optind+1],FILE_NAME_MAX_LEN-1);
+
+if (argc-optind>2){strncpy(ncdffile,argv[optind+2],FILE_NAME_MAX_LEN-1);}
 else{
   int ncFilenameLen=strlen(parfile)-4;
   if (ncFilenameLen > FILE_NAME_MAX_LEN-8){
@@ -298,7 +355,9 @@ FAILONERROR(nc_def_var(	ncid,"EDCs" , NC_DOUBLE, 2, edcs_dems, &edcsVarID ));
 nc_enddef(ncid);
 
 
-    double         cpu_time_used=0;
+double         cpu_time_used=0;
+/*declaring loop variable n*/
+int n, nn;
 /*STEP 4 - RUNNING CARDADATA.MLF N TIMES*/
 for (n=0;n<N;n++){
 
