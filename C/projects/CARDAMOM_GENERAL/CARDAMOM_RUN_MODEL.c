@@ -43,6 +43,12 @@ void str_inplace_replace(char * str, const char * toFind, const char toReplace){
 
 }
 
+//string based comparison function, for searching and sorting arrays of strings. 
+int comp (const void * elem1, const void * elem2) 
+{
+  return strcmp(*(const char**)elem1,*(const char**)elem2);
+}
+
 //Function that uses strtok to return a correctly sized array of pointers of all the tokens. The array is itself allocated dynamically by this method.
 char** break_string_dynamically(char* inString, const char* delimiters, int* count){
   char* inStrCopy = calloc(strlen(inString), sizeof(char));
@@ -54,7 +60,7 @@ char** break_string_dynamically(char* inString, const char* delimiters, int* cou
   while (tok != NULL)
   {
     (*count)++;
-    char* tok = strtok_r (NULL,delimiters, &saveptr);
+    tok = strtok_r (NULL,delimiters, &saveptr);
   }
   free(inStrCopy);
 
@@ -67,7 +73,7 @@ char** break_string_dynamically(char* inString, const char* delimiters, int* cou
   {
     outTokens[idx] = tok;
     idx++;
-    char* tok = strtok_r (NULL,delimiters, &saveptr);
+    tok = strtok_r (NULL,delimiters, &saveptr);
   }
   return outTokens;
 
@@ -87,7 +93,6 @@ int main(int argc, char *argv[])
   char parfile[FILE_NAME_MAX_LEN];
   char ncdffile[FILE_NAME_MAX_LEN];
 
-  int opt;
   int fluxListCount = 0;
   char** fluxListToOutput;
   int poolListCount = 0;
@@ -95,7 +100,8 @@ int main(int argc, char *argv[])
   int parListCount = 0;
   char** parListToOutput;
   const char* delimiters = " ,";
-
+  
+  int opt;
   while ((opt = getopt(argc, argv, "f:p:a:")) != -1) {
       switch (opt) {
       case 'f': fluxListToOutput=break_string_dynamically(optarg, delimiters, &fluxListCount); break;
@@ -108,6 +114,20 @@ int main(int argc, char *argv[])
   }
   // Now optind (declared extern int by <unistd.h>) is the index of the first non-option argument.
   // If it is >= argc, there were no non-option arguments.
+
+  //Sort our output lists for faster access later
+  qsort(fluxListToOutput,fluxListCount, sizeof(*fluxListToOutput), comp);
+  qsort(poolListToOutput,poolListCount, sizeof(*poolListToOutput), comp);
+  qsort(parListToOutput,parListCount, sizeof(*parListToOutput), comp);
+
+
+//TODO: remove me!
+printf("Parsing fluxes: ");
+for (int i = 0; i<fluxListCount; i++){
+printf("%s;", fluxListToOutput[i] );
+}
+printf("\n");
+
 
 /*storing command line inputs as 2 files*/
 strncpy(metfile,argv[optind],FILE_NAME_MAX_LEN-1);
@@ -126,12 +146,11 @@ else{
   str_inplace_replace(ncdffile, ":", '-'); //Remove colons
 }
 
-//Add manditory null terminators just in case we used every char
+
+//Add mandatory null terminators just in case we used every char
 metfile[FILE_NAME_MAX_LEN-1]=0;
 parfile[FILE_NAME_MAX_LEN-1]=0;
 ncdffile[FILE_NAME_MAX_LEN-1]=0;
-
-
 
 /*declaring data structure*/
 DATA CARDADATA;
