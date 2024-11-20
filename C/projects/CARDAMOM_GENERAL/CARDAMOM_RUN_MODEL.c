@@ -49,8 +49,17 @@ int comp (const void * elem1, const void * elem2)
   return strcmp(*(const char**)elem1,*(const char**)elem2);
 }
 
+//checks if the sorted list of strings list with length listLen contains the string str
+int sortedListContains(char** list,size_t listLen,  const char* str){
+  char* result = bsearch(str, list, listLen, sizeof(char*), comp);
+  if (result!= NULL){
+    return 1;
+  }
+  return 0;
+}
+
 //Function that uses strtok to return a correctly sized array of pointers of all the tokens. The array is itself allocated dynamically by this method.
-char** break_string_dynamically(char* inString, const char* delimiters, int* count){
+char** break_string_dynamically(char* inString, const char* delimiters, size_t* count){
   char* inStrCopy = calloc(strlen(inString), sizeof(char));
   strcpy(inStrCopy, inString);
   *count = 0;
@@ -93,12 +102,15 @@ int main(int argc, char *argv[])
   char parfile[FILE_NAME_MAX_LEN];
   char ncdffile[FILE_NAME_MAX_LEN];
 
-  int fluxListCount = 0;
+//These are the lists of fluxes, pools, and pars that we are wanting to output. 
+//if the count var for the list is 0, then ALL variables will be output (this happens later)
+  size_t fluxListCount = 0;
   char** fluxListToOutput;
-  int poolListCount = 0;
+  size_t poolListCount = 0;
   char** poolListToOutput;
-  int parListCount = 0;
+  size_t parListCount = 0;
   char** parListToOutput;
+  //this string is a list of legal delimiters between variables, to be passed into strtok. See strtok docs for more info 
   const char* delimiters = " ,";
   
   int opt;
@@ -116,6 +128,7 @@ int main(int argc, char *argv[])
   // If it is >= argc, there were no non-option arguments.
 
   //Sort our output lists for faster access later
+  //This is important! future string searching functions rely upon a sorted list
   qsort(fluxListToOutput,fluxListCount, sizeof(*fluxListToOutput), comp);
   qsort(poolListToOutput,poolListCount, sizeof(*poolListToOutput), comp);
   qsort(parListToOutput,parListCount, sizeof(*parListToOutput), comp);
