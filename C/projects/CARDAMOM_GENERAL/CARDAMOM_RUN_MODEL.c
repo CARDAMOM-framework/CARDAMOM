@@ -226,7 +226,7 @@ double *pars=calloc(CARDADATA.nopars,sizeof(double));
 /*STEP 3.1 - create netCDF output file*/
 int ncid = 0; //This is the netcdf id num
 int ncretval = 0; //This is a reused variable for the return value of ncdf methods.
-ncretval = nc_create(ncdffile,NC_CLOBBER|NC_NETCDF4, &ncid );
+ncretval = nc_create(ncdffile,NC_CLOBBER|NC_64BIT_OFFSET, &ncid );
 if (ncretval != NC_NOERR){
   //If nc_create did anything but return no error, then fail
   ERR(ncretval);
@@ -273,7 +273,6 @@ int fluxes_dems[] = {sampleDimID,timeFluxesDimID,fluxDimID};
 int fluxes_meta_dems[] = {fluxDimID, chidDimID};
 
 FAILONERROR(nc_def_var(	ncid,"FLUXES" , NC_DOUBLE, 3, fluxes_dems, &(fluxesVarID) ));
-FAILONERROR(nc_def_var_chunking(ncid,fluxesVarID, NC_CHUNKED, NULL));
 
 //Create each flux's mapping as an attribute
 struct FLUX_META_STRUCT fluxInfo = ((DALEC *)CARDADATA.MODEL)->FLUX_META;
