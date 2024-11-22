@@ -51,8 +51,12 @@ int comp (const void * elem1, const void * elem2)
 
 //checks if the sorted list of strings list with length listLen contains the string str
 int sortedListContains(char** list,size_t listLen,  const char* str){
-  char* result = bsearch(str, list, listLen, sizeof(char*), comp);
-  if (result!= NULL){
+  if (str == NULL){
+    //nope, null string will always fail
+    return 0;
+  }
+  char** result = bsearch(&str, list, listLen, sizeof(char*), comp);
+  if (result != NULL){
     return 1;
   }
   return 0;
@@ -222,7 +226,7 @@ double *pars=calloc(CARDADATA.nopars,sizeof(double));
 /*STEP 3.1 - create netCDF output file*/
 int ncid = 0; //This is the netcdf id num
 int ncretval = 0; //This is a reused variable for the return value of ncdf methods.
-ncretval = nc_create(ncdffile,NC_CLOBBER|NC_64BIT_OFFSET, &ncid );
+ncretval = nc_create(ncdffile,NC_CLOBBER|NC_NETCDF4, &ncid );
 if (ncretval != NC_NOERR){
   //If nc_create did anything but return no error, then fail
   ERR(ncretval);
@@ -269,6 +273,7 @@ int fluxes_dems[] = {sampleDimID,timeFluxesDimID,fluxDimID};
 int fluxes_meta_dems[] = {fluxDimID, chidDimID};
 
 FAILONERROR(nc_def_var(	ncid,"FLUXES" , NC_DOUBLE, 3, fluxes_dems, &(fluxesVarID) ));
+FAILONERROR(nc_def_var_chunking(ncid,fluxesVarID, NC_CHUNKED, NULL));
 
 //Create each flux's mapping as an attribute
 struct FLUX_META_STRUCT fluxInfo = ((DALEC *)CARDADATA.MODEL)->FLUX_META;
@@ -386,8 +391,62 @@ FAILONERROR(nc_def_var(	ncid,"EDCs" , NC_DOUBLE, 2, edcs_dems, &edcsVarID ));
 //End NetCDF definition phase, in order to allow for writting
 nc_enddef(ncid);
 
+//Insert Fluxes metadata, which is stored as vars due to storage efficiency issues
+for(int i = 0; i < CARDADATA.nofluxes; i++){
+  if (fluxInfo.NAME != NULL && fluxInfo.NAME[i] != NULL){
+    //"Name"
+    WARNONERROR(nc_put_vara_text	(	ncid,fluxesNameVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.NAME[i]))},(const char *)fluxInfo.NAME[i]));
+  }
+  if (fluxInfo.DESCRIPTION != NULL && fluxInfo.DESCRIPTION[i] != NULL){
+    //"Description"
+    WARNONERROR(nc_put_vara_text	(	ncid,fluxesDescriptionVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.DESCRIPTION[i]))},(const char *)fluxInfo.DESCRIPTION[i]));
+  }
+  if (fluxInfo.UNITS != NULL && fluxInfo.UNITS[i] != NULL){
+    //"Units"
+    WARNONERROR(nc_put_vara_text	(	ncid,fluxesUnitVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.UNITS[i]))},(const char *)fluxInfo.UNITS[i]));
+  }
+}
 
-double         cpu_time_used=0;
+//Insert Pools metadata
+for(int i = 0; i < CARDADATA.nopools; i++){
+  if (poolsInfo.NAME != NULL && poolsInfo.NAME[i] != NULL){
+    //"Name"
+    WARNONERROR(nc_put_vara_text	(	ncid,poolsNameVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.NAME[i]))},(const char *)poolsInfo.NAME[i]));
+  }
+  if (poolsInfo.DESCRIPTION != NULL && poolsInfo.DESCRIPTION[i] != NULL){
+    //"Description"
+    WARNONERROR(nc_put_vara_text	(	ncid,poolsDescriptionVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.DESCRIPTION[i]))},(const char *)poolsInfo.DESCRIPTION[i]));
+  }
+  if (poolsInfo.UNITS != NULL && poolsInfo.UNITS[i] != NULL){
+    //"Units"
+    WARNONERROR(nc_put_vara_text	(	ncid,poolsUnitVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.UNITS[i]))},(const char *)poolsInfo.UNITS[i]));
+  }
+}
+
+//Insert Pars metadata
+for(int i = 0; i < CARDADATA.nopars; i++){
+  if (parsInfo.NAME != NULL && parsInfo.NAME[i] != NULL){
+    //"Name"
+    WARNONERROR(nc_put_vara_text	(	ncid,parsNameVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(parsInfo.NAME[i]))},(const char *)parsInfo.NAME[i]));
+  }
+  if (parsInfo.DESCRIPTION != NULL && parsInfo.DESCRIPTION[i] != NULL){
+    //"Description"
+    WARNONERROR(nc_put_vara_text	(	ncid,parsDescriptionVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(parsInfo.DESCRIPTION[i]))},(const char *)parsInfo.DESCRIPTION[i]));
+  }
+  if (parsInfo.UNITS != NULL && parsInfo.UNITS[i] != NULL){
+    //"Units"
+    WARNONERROR(nc_put_vara_text	(	ncid,parsUnitVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(parsInfo.UNITS[i]))},(const char *)parsInfo.UNITS[i]));
+  }
+}
+
+
+
+
+
+
+double         cpu_time_used_mlf=0.0;
+double         cpu_time_used_io=0.0;
+double         cpu_time_used_netcdf_final=0.0;
 /*declaring loop variable n*/
 int n, nn;
 /*STEP 4 - RUNNING CARDADATA.MLF N TIMES*/
@@ -403,12 +462,12 @@ FAILONERROR(nc_get_vara_double(cbrId,cbrParsVarID,(const size_t[]){n,0}, (const 
 /*Setting EDCDIAG = 1 to ensure full model run*/
 CARDADATA.ncdf_data.EDCDIAG=1;
 
-clock_t    start = clock();//Start timer
+clock_t    startMLF = clock();//Start timer
 
 CARDADATA.MLF(CARDADATA,pars);
-clock_t    end = clock();//End timer
+clock_t    endMLF = clock();//End timer
 
- cpu_time_used += ((double) (end - start)) / CLOCKS_PER_SEC;
+ cpu_time_used_mlf += ((double) (endMLF - startMLF)) / CLOCKS_PER_SEC;
 
 
 
@@ -459,58 +518,24 @@ clock_t    end = clock();//End timer
 /*step 4.4 - writing DALEC fluxes and pools to netCDF file*/
 //(with N (Number of samples) being another dimension, applied to all vars)
 
-
+clock_t    startIO = clock();//timer checkpoint for netcdf IO operations
+//*
+struct FLUX_META_STRUCT fluxInfo = ((DALEC *)CARDADATA.MODEL)->FLUX_META;
+if (fluxListCount != 0){
+for (int i = 0; i<CARDADATA.nofluxes; i++){
+  if ( fluxInfo.ABBREVIATION != NULL && fluxInfo.ABBREVIATION[i] != NULL && sortedListContains(fluxListToOutput,fluxListCount,fluxInfo.ABBREVIATION[i])){
+  FAILONERROR(nc_put_varm_double(ncid,fluxesVarID,(const size_t []){n,0,i}, (const size_t[]){1,Ntimesteps,1}, NULL, (const ptrdiff_t[]){1,CARDADATA.nofluxes,1}, CARDADATA.M_FLUXES+i));
+  }
+}}else{
 FAILONERROR(nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps,CARDADATA.nofluxes}, CARDADATA.M_FLUXES));
+}
+//*/
+
+              //{sampleDimID,timeFluxesDimID,fluxDimID};
+
 FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps+1,CARDADATA.nopools}, CARDADATA.M_POOLS));
 FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars));
 
-//Insert Fluxes metadata
-for(int i = 0; i < CARDADATA.nofluxes; i++){
-  if (fluxInfo.NAME != NULL && fluxInfo.NAME[i] != NULL){
-    //"Name"
-    WARNONERROR(nc_put_vara_text	(	ncid,fluxesNameVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.NAME[i]))},(const char *)fluxInfo.NAME[i]));
-  }
-  if (fluxInfo.DESCRIPTION != NULL && fluxInfo.DESCRIPTION[i] != NULL){
-    //"Description"
-    WARNONERROR(nc_put_vara_text	(	ncid,fluxesDescriptionVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.DESCRIPTION[i]))},(const char *)fluxInfo.DESCRIPTION[i]));
-  }
-  if (fluxInfo.UNITS != NULL && fluxInfo.UNITS[i] != NULL){
-    //"Units"
-    WARNONERROR(nc_put_vara_text	(	ncid,fluxesUnitVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.UNITS[i]))},(const char *)fluxInfo.UNITS[i]));
-  }
-}
-
-//Insert Pools metadata
-for(int i = 0; i < CARDADATA.nopools; i++){
-  if (poolsInfo.NAME != NULL && poolsInfo.NAME[i] != NULL){
-    //"Name"
-    WARNONERROR(nc_put_vara_text	(	ncid,poolsNameVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.NAME[i]))},(const char *)poolsInfo.NAME[i]));
-  }
-  if (poolsInfo.DESCRIPTION != NULL && poolsInfo.DESCRIPTION[i] != NULL){
-    //"Description"
-    WARNONERROR(nc_put_vara_text	(	ncid,poolsDescriptionVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.DESCRIPTION[i]))},(const char *)poolsInfo.DESCRIPTION[i]));
-  }
-  if (poolsInfo.UNITS != NULL && poolsInfo.UNITS[i] != NULL){
-    //"Units"
-    WARNONERROR(nc_put_vara_text	(	ncid,poolsUnitVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.UNITS[i]))},(const char *)poolsInfo.UNITS[i]));
-  }
-}
-
-//Insert Pars metadata
-for(int i = 0; i < CARDADATA.nopars; i++){
-  if (parsInfo.NAME != NULL && parsInfo.NAME[i] != NULL){
-    //"Name"
-    WARNONERROR(nc_put_vara_text	(	ncid,parsNameVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(parsInfo.NAME[i]))},(const char *)parsInfo.NAME[i]));
-  }
-  if (parsInfo.DESCRIPTION != NULL && parsInfo.DESCRIPTION[i] != NULL){
-    //"Description"
-    WARNONERROR(nc_put_vara_text	(	ncid,parsDescriptionVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(parsInfo.DESCRIPTION[i]))},(const char *)parsInfo.DESCRIPTION[i]));
-  }
-  if (parsInfo.UNITS != NULL && parsInfo.UNITS[i] != NULL){
-    //"Units"
-    WARNONERROR(nc_put_vara_text	(	ncid,parsUnitVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(parsInfo.UNITS[i]))},(const char *)parsInfo.UNITS[i]));
-  }
-}
 
 
 
@@ -531,21 +556,26 @@ FAILONERROR(nc_put_vara_double(ncid,likelihoodsVarID,(const size_t[]){n,0}, (con
 
 
 /*STEP 4 completed*/
+clock_t    endIO = clock();//End netcdf IO section
+cpu_time_used_io += ((double) (endIO - startIO)) / CLOCKS_PER_SEC;
+
 }
 
-
+clock_t    startClose = clock();//End netcdf IO section
 /*STEP 5 - close all files*/
 FAILONERROR(nc_close(cbrId));
-
 FAILONERROR(nc_close(ncid));
-
+clock_t    endClose = clock();//End netcdf IO section
+cpu_time_used_netcdf_final += ((double) (endClose - startClose)) / CLOCKS_PER_SEC;
 /*Step 6: Free memory*/
 /*exhaustive list of all malloc/calloc used fields*/
 free(pars);
 FREE_DATA_STRUCT(CARDADATA);
 
 printf("**********\n");
-    printf("Average time used per forward model run = %6.4f milliseconds\n", 1000*cpu_time_used/(double)N);
+    printf("Average time used for single MLF forward model run = %6.4f milliseconds\n", 1000*cpu_time_used_mlf/(double)N);
+    printf("Average time used for a single iteration's IO = %6.4f milliseconds\n", 1000*cpu_time_used_io/(double)N);
+    printf("Time used for final closing of netcdf files = %6.4f milliseconds\n", 1000*cpu_time_used_netcdf_final);
 printf("**********\n");
 
 
