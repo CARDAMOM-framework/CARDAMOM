@@ -298,6 +298,58 @@ FAILONERROR(nc_def_var(	ncid,"EDCs" , NC_DOUBLE, 2, edcs_dems, &edcsVarID ));
 nc_enddef(ncid);
 
 
+//Insert Fluxes metadata
+for(int i = 0; i < CARDADATA.nofluxes; i++){
+  if (fluxInfo.NAME != NULL && fluxInfo.NAME[i] != NULL){
+    //"Name"
+    WARNONERROR(nc_put_vara_text	(	ncid,fluxesNameVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.NAME[i]))},(const char *)fluxInfo.NAME[i]));
+  }
+  if (fluxInfo.DESCRIPTION != NULL && fluxInfo.DESCRIPTION[i] != NULL){
+    //"Description"
+    WARNONERROR(nc_put_vara_text	(	ncid,fluxesDescriptionVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.DESCRIPTION[i]))},(const char *)fluxInfo.DESCRIPTION[i]));
+  }
+  if (fluxInfo.UNITS != NULL && fluxInfo.UNITS[i] != NULL){
+    //"Units"
+    WARNONERROR(nc_put_vara_text	(	ncid,fluxesUnitVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.UNITS[i]))},(const char *)fluxInfo.UNITS[i]));
+  }
+}
+
+//Insert Pools metadata
+for(int i = 0; i < CARDADATA.nopools; i++){
+  if (poolsInfo.NAME != NULL && poolsInfo.NAME[i] != NULL){
+    //"Name"
+    WARNONERROR(nc_put_vara_text	(	ncid,poolsNameVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.NAME[i]))},(const char *)poolsInfo.NAME[i]));
+  }
+  if (poolsInfo.DESCRIPTION != NULL && poolsInfo.DESCRIPTION[i] != NULL){
+    //"Description"
+    WARNONERROR(nc_put_vara_text	(	ncid,poolsDescriptionVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.DESCRIPTION[i]))},(const char *)poolsInfo.DESCRIPTION[i]));
+  }
+  if (poolsInfo.UNITS != NULL && poolsInfo.UNITS[i] != NULL){
+    //"Units"
+    WARNONERROR(nc_put_vara_text	(	ncid,poolsUnitVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.UNITS[i]))},(const char *)poolsInfo.UNITS[i]));
+  }
+}
+
+//Insert Pars metadata
+for(int i = 0; i < CARDADATA.nopars; i++){
+  if (parsInfo.NAME != NULL && parsInfo.NAME[i] != NULL){
+    //"Name"
+    WARNONERROR(nc_put_vara_text	(	ncid,parsNameVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(parsInfo.NAME[i]))},(const char *)parsInfo.NAME[i]));
+  }
+  if (parsInfo.DESCRIPTION != NULL && parsInfo.DESCRIPTION[i] != NULL){
+    //"Description"
+    WARNONERROR(nc_put_vara_text	(	ncid,parsDescriptionVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(parsInfo.DESCRIPTION[i]))},(const char *)parsInfo.DESCRIPTION[i]));
+  }
+  if (parsInfo.UNITS != NULL && parsInfo.UNITS[i] != NULL){
+    //"Units"
+    WARNONERROR(nc_put_vara_text	(	ncid,parsUnitVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(parsInfo.UNITS[i]))},(const char *)parsInfo.UNITS[i]));
+  }
+}
+
+
+
+
+
     double         cpu_time_used=0;
 /*STEP 4 - RUNNING CARDADATA.MLF N TIMES*/
 for (n=0;n<N;n++){
@@ -372,54 +424,6 @@ clock_t    end = clock();//End timer
 FAILONERROR(nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps,CARDADATA.nofluxes}, CARDADATA.M_FLUXES));
 FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps+1,CARDADATA.nopools}, CARDADATA.M_POOLS));
 FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars));
-
-//Insert Fluxes metadata
-for(int i = 0; i < CARDADATA.nofluxes; i++){
-  if (fluxInfo.NAME != NULL && fluxInfo.NAME[i] != NULL){
-    //"Name"
-    WARNONERROR(nc_put_vara_text	(	ncid,fluxesNameVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.NAME[i]))},(const char *)fluxInfo.NAME[i]));
-  }
-  if (fluxInfo.DESCRIPTION != NULL && fluxInfo.DESCRIPTION[i] != NULL){
-    //"Description"
-    WARNONERROR(nc_put_vara_text	(	ncid,fluxesDescriptionVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.DESCRIPTION[i]))},(const char *)fluxInfo.DESCRIPTION[i]));
-  }
-  if (fluxInfo.UNITS != NULL && fluxInfo.UNITS[i] != NULL){
-    //"Units"
-    WARNONERROR(nc_put_vara_text	(	ncid,fluxesUnitVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.UNITS[i]))},(const char *)fluxInfo.UNITS[i]));
-  }
-}
-
-//Insert Pools metadata
-for(int i = 0; i < CARDADATA.nopools; i++){
-  if (poolsInfo.NAME != NULL && poolsInfo.NAME[i] != NULL){
-    //"Name"
-    WARNONERROR(nc_put_vara_text	(	ncid,poolsNameVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.NAME[i]))},(const char *)poolsInfo.NAME[i]));
-  }
-  if (poolsInfo.DESCRIPTION != NULL && poolsInfo.DESCRIPTION[i] != NULL){
-    //"Description"
-    WARNONERROR(nc_put_vara_text	(	ncid,poolsDescriptionVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.DESCRIPTION[i]))},(const char *)poolsInfo.DESCRIPTION[i]));
-  }
-  if (poolsInfo.UNITS != NULL && poolsInfo.UNITS[i] != NULL){
-    //"Units"
-    WARNONERROR(nc_put_vara_text	(	ncid,poolsUnitVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.UNITS[i]))},(const char *)poolsInfo.UNITS[i]));
-  }
-}
-
-//Insert Pars metadata
-for(int i = 0; i < CARDADATA.nopars; i++){
-  if (parsInfo.NAME != NULL && parsInfo.NAME[i] != NULL){
-    //"Name"
-    WARNONERROR(nc_put_vara_text	(	ncid,parsNameVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(parsInfo.NAME[i]))},(const char *)parsInfo.NAME[i]));
-  }
-  if (parsInfo.DESCRIPTION != NULL && parsInfo.DESCRIPTION[i] != NULL){
-    //"Description"
-    WARNONERROR(nc_put_vara_text	(	ncid,parsDescriptionVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(parsInfo.DESCRIPTION[i]))},(const char *)parsInfo.DESCRIPTION[i]));
-  }
-  if (parsInfo.UNITS != NULL && parsInfo.UNITS[i] != NULL){
-    //"Units"
-    WARNONERROR(nc_put_vara_text	(	ncid,parsUnitVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(parsInfo.UNITS[i]))},(const char *)parsInfo.UNITS[i]));
-  }
-}
 
 
 
