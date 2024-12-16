@@ -14,7 +14,7 @@ This technical documentation is under construction. In due course, incremental v
 
 **How to cite:** Levine, Paul A., Bloom, A. Anthony, Worden, Matthew A., Bilir, T. Eren, Quetin, Gregory R., Ma, Shuang, Norton, Alexander J., **Technical documentation of the CARbon DAta-MOdel fraMework C implemtation (CARDAMOM-C)**, *in prep.* https://cardamom-framework.github.io/CARDAMOM (last accessed *insert date accessed*)
 
-The CARDAMOM documentation presented here is written specifically for the `JPL, Stanford, UCSB and Caltech CARDAMOM framework <https://github.com/CARDAMOM-framework/CARDAMOM>`_ implementation, publicly available under a `GPL-v3 license <https://www.gnu.org/licenses/gpl-3.0.en.html>`_. :ref:`copyright-statement` © 2024, California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged.
+The CARDAMOM documentation presented here is written specifically for the `JPL, Stanford, UCSB and Caltech CARDAMOM framework <https://github.com/CARDAMOM-framework/CARDAMOM>`_ implementation, publicly available under an `Apache License v2.0 <http://www.apache.org/licenses/>`_. :ref:`copyright-statement` © 2024, California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged.
 
 .. toctree::
    :maxdepth: 3
@@ -113,7 +113,9 @@ DALEC Model:
 
    using_cardamom/file_io
    using_cardamom/compilation
+   using_cardamom/analyst_checklist
    using_cardamom/technote
+   using_cardamom/governance
 
 
 .. toctree::
