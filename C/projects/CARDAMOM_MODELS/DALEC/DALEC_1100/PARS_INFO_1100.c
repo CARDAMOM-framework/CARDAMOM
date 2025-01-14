@@ -115,6 +115,10 @@ parmax[P.i_lit]=4000.0;
 parmin[P.i_som]=1.0;
 parmax[P.i_som]=200000.0;
 
+/*C_sol*/
+parmin[P.i_som]=1.0;
+parmax[P.i_som]=200000.0;
+
 /*Retention parameter (b)*/
 parmin[P.retention]=1.5;
 parmax[P.retention]=10;

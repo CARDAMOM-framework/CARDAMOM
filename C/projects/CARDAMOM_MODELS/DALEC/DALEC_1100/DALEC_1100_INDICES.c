@@ -32,6 +32,7 @@ int i_wood;
 int i_cwd;
 int i_lit;
 int i_som;
+int i_solC;
 int retention;
 int i_LY1_SM;
 int i_LY2_SM;
@@ -109,7 +110,7 @@ int maxPevap;
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
     70,71,72,73,74,75,76,77,78,79,
-    80,81,82,83,84,85,86,87,88
+    80,81,82,83,84,85,86,87,88,89
 };
 
 struct DALEC_1100_FLUXES{
@@ -241,6 +242,7 @@ int C_woo; /*Wood C*/
 int C_cwd; /*Coarse woody debris C*/
 int C_lit; /*Litter C*/
 int C_som; /*Soil C*/
+int C_sol; /*Soluble soil C*/
 int H2O_LY1; /*Layer 1 H2O*/
 int H2O_LY2; /*Layer 2 H2O*/
 int H2O_LY3; /*Layer 3 H2O*/
@@ -267,7 +269,7 @@ int M_LAI_TEMP;//KNORR LAI module temp memory
 } DALEC_1100_POOLS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
-    20,21,22,23,24,25,26,27,28,29
+    20,21,22,23,24,25,26,27,28,29,30
 };
 
 struct DALEC_1100_EDCs{
