@@ -231,6 +231,10 @@ parmax[P.Tdown]=286.15;
 parmin[P.clumping]=0.35;
 parmax[P.clumping]=1.0;
 
+/*Leaf Angle Distribution parameter (G-function coefficient of projection)*/
+parmin[P.LAD]=0.3;
+parmax[P.LAD]=0.8; //source = Eren's imagination; update range with literature source
+
 /*PAR reflectance*/
 parmin[P.leaf_refl_par]=0.05;
 parmax[P.leaf_refl_par]=0.5;

@@ -30,14 +30,7 @@ int PREDERIVE_DALEC_1100_DATA(DALEC * DALECmodel, DATA * DATA){
 static DALEC_1100_DATA_STRUCT DALEC_1100_DATA;
 //Step 2. Populate with any datasets that will be used repeatedly.
 
-
     //******VegK calculcation********
-
-
-
-
-
-    //
 
     double * DOY=DATA->ncdf_data.DOY.values;
     double LAT = DATA->ncdf_data.LAT;
@@ -47,7 +40,6 @@ static DALEC_1100_DATA_STRUCT DALEC_1100_DATA;
 //Declare VegK
     double * VegK = calloc(N_timesteps, sizeof(double));
     
-
 int n;
 
 for (n=0; n < N_timesteps; n++){
@@ -69,16 +61,10 @@ double zenith_angle = 90-alpha;
 
 double LAD = 0.5; //leaf angle distribution// optimize leaf angle distribution. 
 
-    
     VegK[n] = LAD/cos(zenith_angle/180*pi);
-    
-    
-
 
 }
 
-  
-    
 //Store data in  DALEC_1100_DATA
     DALEC_1100_DATA.VegK=VegK;
 
@@ -1156,7 +1142,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=89;
+DALECmodel->nopars=90;
 DALECmodel->nofluxes=100;
 DALECmodel->noedcs=15;
 
@@ -1459,6 +1445,8 @@ OBSOPE.SUPPORT_iniSOM_OBS=true;
 OBSOPE.SUPPORT_NBEmrg_OBS=true;
 OBSOPE.SUPPORT_CUEmrg_OBS=true;
 OBSOPE.SUPPORT_LCMA_OBS=true;
+OBSOPE.SUPPORT_clumping_OBS=true;
+OBSOPE.SUPPORT_LAD_OBS=true;
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
@@ -1543,6 +1531,8 @@ OBSOPE.iniSnow_PARAM=P.i_SWE;
 //Initial SOM parameter
 OBSOPE.iniSOM_PARAM=P.i_som;
 OBSOPE.LCMA_PARAM=P.LCMA;
+OBSOPE.clumping_PARAM=P.clumping;
+OBSOPE.LAD_PARAM=P.LAD;
 
 //CH4-specific variables 
 OBSOPE.CH4_flux = F.rh_ch4;
