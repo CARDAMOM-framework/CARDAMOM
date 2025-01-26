@@ -1142,7 +1142,7 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 DALECmodel->dalec=DALEC_1100;
 DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=90;
+DALECmodel->nopars=89;
 DALECmodel->nofluxes=100;
 DALECmodel->noedcs=15;
 
@@ -1446,7 +1446,7 @@ OBSOPE.SUPPORT_NBEmrg_OBS=true;
 OBSOPE.SUPPORT_CUEmrg_OBS=true;
 OBSOPE.SUPPORT_LCMA_OBS=true;
 OBSOPE.SUPPORT_clumping_OBS=true;
-OBSOPE.SUPPORT_LAD_OBS=true;
+// OBSOPE.SUPPORT_LAD_OBS=true;
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
@@ -1532,7 +1532,7 @@ OBSOPE.iniSnow_PARAM=P.i_SWE;
 OBSOPE.iniSOM_PARAM=P.i_som;
 OBSOPE.LCMA_PARAM=P.LCMA;
 OBSOPE.clumping_PARAM=P.clumping;
-OBSOPE.LAD_PARAM=P.LAD;
+//OBSOPE.LAD_PARAM=P.LAD;
 
 //CH4-specific variables 
 OBSOPE.CH4_flux = F.rh_ch4;
