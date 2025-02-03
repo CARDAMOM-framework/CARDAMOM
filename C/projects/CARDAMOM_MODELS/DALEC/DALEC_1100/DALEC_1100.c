@@ -109,6 +109,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.resp_auto_growth]=S.C_lab;
         FIOMATRIX.SOURCE[F.f_lab]=S.C_lab;  
         FIOMATRIX.SOURCE[F.lab2lit]=S.C_lab;
+        FIOMATRIX.SOURCE[F.labyield2lit]=S.C_lab;
         FIOMATRIX.SOURCE[F.fx_lab2lit]=S.C_lab;
         FIOMATRIX.SOURCE[F.dist_lab]=S.C_lab;
 
@@ -117,6 +118,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SINK[F.foliar_prod]=S.C_fol;
         FIOMATRIX.SOURCE[F.fol2lit]=S.C_fol;
         FIOMATRIX.SOURCE[F.ph_fol2lit]=S.C_fol;
+        FIOMATRIX.SOURCE[F.folyield2lit]=S.C_fol;
         FIOMATRIX.SOURCE[F.f_fol]=S.C_fol;
         FIOMATRIX.SOURCE[F.fx_fol2lit]=S.C_fol;
         FIOMATRIX.SOURCE[F.dist_fol]=S.C_fol;
@@ -124,6 +126,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         // C_roo
         FIOMATRIX.SINK[F.root_prod]=S.C_roo;
         FIOMATRIX.SOURCE[F.roo2lit]=S.C_roo;
+        FIOMATRIX.SOURCE[F.rooyield2lit]=S.C_roo;
         FIOMATRIX.SOURCE[F.f_roo]=S.C_roo;
         FIOMATRIX.SOURCE[F.fx_roo2lit]=S.C_roo;
         FIOMATRIX.SOURCE[F.dist_roo]=S.C_roo;
