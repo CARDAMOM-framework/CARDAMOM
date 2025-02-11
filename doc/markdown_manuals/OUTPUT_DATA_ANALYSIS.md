@@ -8,7 +8,7 @@ Example location
 
 The content of this section will include:
 
-- [Intro to reading output data](#-getting-started)
+- [Intro to reading output data]
     * [Output data format for parameters]
     * [Output data format for states and fluxes]
     * [Reading data]
@@ -104,9 +104,9 @@ Dilemma. Two pixels, one with mean GPP = 0.2 gC/m2/d (desert), and another with 
 
 
 
-#### List of Ouputs (Model ID: 811, 821)
+### List of Ouputs (Model ID: 811, 821)
 
-##### Pools (gC/m2, kgH2O/m2, instantaneous)
+#### Pools (gC/m2, kgH2O/m2, instantaneous)
 |CARDAMOM Pools|Longname|
 |:--------|:-------------|
 |'c_labile'|
@@ -117,7 +117,7 @@ Dilemma. Two pixels, one with mean GPP = 0.2 gC/m2/d (desert), and another with 
 |'c_som'|
 |'h2o_forplant'|
 
-##### Fluxes (gC/m2/day, kgH2O/m2/day, mean)
+#### Fluxes (gC/m2/day, kgH2O/m2/day, mean)
 |CARDAMOM Fluxes|Longname|
 |:--------|:-------------|
 |'gppflux'|
@@ -151,7 +151,7 @@ Dilemma. Two pixels, one with mean GPP = 0.2 gC/m2/d (desert), and another with 
 |'et'|
 |'runoff'|
 
-##### Example List of Parameters Optimized in CARDAMOM
+#### Example List of Parameters Optimized in CARDAMOM
 
 | Shortname | Codename                                                                       | Units | Range |
 |-----------|--------------------------------------------------------------------------------|-------|-------|

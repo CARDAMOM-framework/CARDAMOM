@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'CARDAMOM'
-copyright = '2024, CARDAMOM Team'
+copyright = '(c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged.'
 author = 'CARDAMOM Team'
 
 # -- General configuration ---------------------------------------------------
@@ -30,3 +30,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+
+html_css_files = [
+    'custom.css',
+]
