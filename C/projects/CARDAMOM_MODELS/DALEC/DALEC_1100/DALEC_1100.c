@@ -2,6 +2,8 @@
 //Note: DALEC_OBSERVATION_OPERATORS.c included in DALEC_MODULE.
 #include "DALEC_1100_INDICES.c"
 #include "PARS_INFO_1100.c"
+#include "DALEC_1100_NC_INFO.c"
+
 #include "../DALEC_ALL/DALEC_MODULE.c"//Includes all calls to DALEC-compatible EDC functions
 #include "../DALEC_ALL/HYDROLOGY_MODULES/DRAINAGE.c"
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_EWT2MOI.c"
@@ -30,14 +32,7 @@ int PREDERIVE_DALEC_1100_DATA(DALEC * DALECmodel, DATA * DATA){
 static DALEC_1100_DATA_STRUCT DALEC_1100_DATA;
 //Step 2. Populate with any datasets that will be used repeatedly.
 
-
     //******VegK calculcation********
-
-
-
-
-
-    //
 
     double * DOY=DATA->ncdf_data.DOY.values;
     double LAT = DATA->ncdf_data.LAT;
@@ -47,7 +42,6 @@ static DALEC_1100_DATA_STRUCT DALEC_1100_DATA;
 //Declare VegK
     double * VegK = calloc(N_timesteps, sizeof(double));
     
-
 int n;
 
 for (n=0; n < N_timesteps; n++){
@@ -69,16 +63,10 @@ double zenith_angle = 90-alpha;
 
 double LAD = 0.5; //leaf angle distribution// optimize leaf angle distribution. 
 
-    
     VegK[n] = LAD/cos(zenith_angle/180*pi);
-    
-    
-
 
 }
 
-  
-    
 //Store data in  DALEC_1100_DATA
     DALEC_1100_DATA.VegK=VegK;
 
@@ -123,6 +111,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.resp_auto_growth]=S.C_lab;
         FIOMATRIX.SOURCE[F.f_lab]=S.C_lab;  
         FIOMATRIX.SOURCE[F.lab2lit]=S.C_lab;
+        FIOMATRIX.SOURCE[F.labyield2lit]=S.C_lab;
         FIOMATRIX.SOURCE[F.fx_lab2lit]=S.C_lab;
         FIOMATRIX.SOURCE[F.dist_lab]=S.C_lab;
 
@@ -131,6 +120,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SINK[F.foliar_prod]=S.C_fol;
         FIOMATRIX.SOURCE[F.fol2lit]=S.C_fol;
         FIOMATRIX.SOURCE[F.ph_fol2lit]=S.C_fol;
+        FIOMATRIX.SOURCE[F.folyield2lit]=S.C_fol;
         FIOMATRIX.SOURCE[F.f_fol]=S.C_fol;
         FIOMATRIX.SOURCE[F.fx_fol2lit]=S.C_fol;
         FIOMATRIX.SOURCE[F.dist_fol]=S.C_fol;
@@ -138,6 +128,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         // C_roo
         FIOMATRIX.SINK[F.root_prod]=S.C_roo;
         FIOMATRIX.SOURCE[F.roo2lit]=S.C_roo;
+        FIOMATRIX.SOURCE[F.rooyield2lit]=S.C_roo;
         FIOMATRIX.SOURCE[F.f_roo]=S.C_roo;
         FIOMATRIX.SOURCE[F.fx_roo2lit]=S.C_roo;
         FIOMATRIX.SOURCE[F.dist_roo]=S.C_roo;
@@ -166,6 +157,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.f_lit]=S.C_lit;
         FIOMATRIX.SOURCE[F.lit2som]=S.C_lit;
         FIOMATRIX.SOURCE[F.fx_lit2som]=S.C_lit;
+        FIOMATRIX.SOURCE[F.lit2sol]=S.C_lit;
 
         // C_cwd
         FIOMATRIX.SINK[F.wooyield2cwd]=S.C_cwd;
@@ -176,6 +168,7 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.f_cwd]=S.C_cwd;
         FIOMATRIX.SOURCE[F.cwd2som]=S.C_cwd;
         FIOMATRIX.SOURCE[F.fx_cwd2som]=S.C_cwd;
+        FIOMATRIX.SOURCE[F.cwd2sol]=S.C_cwd;
 
         // C_som
         FIOMATRIX.SINK[F.cwd2som]=S.C_som;
@@ -185,6 +178,16 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.ae_rh_som]=S.C_som;
         FIOMATRIX.SOURCE[F.an_rh_som]=S.C_som;
         FIOMATRIX.SOURCE[F.f_som]=S.C_som;
+        FIOMATRIX.SOURCE[F.som2sol]=S.C_som;
+
+        // C_sol
+        FIOMATRIX.SINK[F.lit2sol]=S.C_sol;
+        FIOMATRIX.SINK[F.cwd2sol]=S.C_sol;  
+        FIOMATRIX.SINK[F.som2sol]=S.C_sol;
+        FIOMATRIX.SOURCE[F.ae_rh_sol]=S.C_sol;
+        FIOMATRIX.SOURCE[F.an_rh_sol]=S.C_sol;
+        FIOMATRIX.SOURCE[F.f_sol]=S.C_sol;
+        FIOMATRIX.SOURCE[F.sol2DOC]=S.C_sol;
 
         // H2O_SWE
         FIOMATRIX.SOURCE[F.melt]=S.H2O_SWE;
@@ -282,8 +285,6 @@ double *YIELD=DATA.ncdf_data.YIELD.values;
 /*C-pools, fluxes, meteorology indices*/
 int p=0,f,m,nxp, i;
 int n=0,nn=0;
-//double pi=3.1415927;
-double pi=DGCM_PI;
 
 //PREDERIVED TERMS 
 
@@ -315,6 +316,7 @@ POOLS[S.C_woo]=pars[P.i_wood];
 POOLS[S.C_cwd]=pars[P.i_cwd];
 POOLS[S.C_lit]=pars[P.i_lit];
 POOLS[S.C_som]=pars[P.i_som];
+POOLS[S.C_sol]=pars[P.i_solC];
     /*water pools*/
 POOLS[S.H2O_LY1]=HYDROFUN_MOI2EWT(pars[P.i_LY1_SM],pars[P.LY1_por],pars[P.LY1_z]);
 POOLS[S.H2O_LY2]=HYDROFUN_MOI2EWT(pars[P.i_LY2_SM],pars[P.LY2_por],pars[P.LY2_z]);
@@ -918,6 +920,9 @@ FLUXES[f+F.ae_rh_cwd] = ae_loss_cwd*(1-pars[P.tr_cwd2som]);
 double ae_loss_lit = POOLS[p+S.C_lit]*HRJCR.OUT.aerobic_tr*pars[P.t_lit];
     /* aerobic Rh from litter*/
 FLUXES[f+F.ae_rh_lit] = ae_loss_lit*(1-pars[P.tr_lit2som]);
+double ae_loss_sol = POOLS[p+S.C_sol]*HRJCR.OUT.aerobic_tr*pars[P.t_lit]; //same rate as litter
+    /* aerobic Rh from the soluble C pool (same rates as litter)*/
+FLUXES[f+F.ae_rh_sol] = ae_loss_sol*(1-pars[P.tr_lit2som]);//same rate as litter
     /* aerobic Rh from SOM*/
 FLUXES[f+F.ae_rh_som] = POOLS[p+S.C_som]*HRJCR.OUT.aerobic_tr*pars[P.t_som];
 
@@ -928,17 +933,24 @@ FLUXES[f+F.an_rh_cwd] = an_loss_cwd*(1-pars[P.tr_cwd2som]);
     /* anaerobic Rh from litter*/
 double an_loss_lit = POOLS[p+S.C_lit]*HRJCR.OUT.anaerobic_tr*pars[P.t_lit];
 FLUXES[f+F.an_rh_lit] = an_loss_lit*(1-pars[P.tr_lit2som]);
-    /* anaerobic Rh from SOM*/
+    /* anaerobic Rh from soluble C pool*/
+double an_loss_sol = POOLS[p+S.C_sol]*HRJCR.OUT.anaerobic_tr*pars[P.t_lit];//same rate as litter
+FLUXES[f+F.an_rh_sol] = an_loss_sol*(1-pars[P.tr_lit2som]);//same rate as litter
+/*anaerobic Rh from SOM*/
 FLUXES[f+F.an_rh_som] = POOLS[p+S.C_som]*HRJCR.OUT.anaerobic_tr*pars[P.t_som];
     /*CWD to SOM*/
 FLUXES[f+F.cwd2som] = (an_loss_cwd + ae_loss_cwd)*pars[P.tr_cwd2som];
     /*litter to SOM*/
 FLUXES[f+F.lit2som] = (an_loss_lit + ae_loss_lit)*pars[P.tr_lit2som];
     /* Rh_CO2*/
-FLUXES[f+F.rh_co2] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*HRJCR.OUT.anaerobic_co2_c_ratio + (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.ae_rh_som]);
+FLUXES[f+F.rh_co2] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_sol]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*HRJCR.OUT.anaerobic_co2_c_ratio + (FLUXES[f+F.ae_rh_lit]+FLUXES[f+F.ae_rh_sol]+FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.ae_rh_som]);
     /* Rh_CH4*/
-FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*HRJCR.OUT.anaerobic_ch4_c_ratio;
+FLUXES[f+F.rh_ch4] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_sol]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_som])*HRJCR.OUT.anaerobic_ch4_c_ratio;
 
+ /*generate soluble C*/
+FLUXES[f+F.lit2sol] = (FLUXES[f+F.an_rh_lit]+FLUXES[f+F.an_rh_lit])*pars[P.lit2sol_rhfrac];
+FLUXES[f+F.cwd2sol] = (FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.an_rh_cwd])*pars[P.cwd2sol_rhfrac];
+FLUXES[f+F.som2sol] = (FLUXES[f+F.an_rh_som]+FLUXES[f+F.an_rh_som])*pars[P.som2sol_rhfrac];
 /*----------------------  end of JCR  --------------------------------------------*/
 
 /*----------------------  Begin carbon pool transfers  --------------------------------------------*/
@@ -950,9 +962,10 @@ POOLS[nxp+S.C_fol] = POOLS[p+S.C_fol] + (FLUXES[f+F.foliar_prod]-FLUXES[f+F.ph_f
 POOLS[nxp+S.C_roo] = POOLS[p+S.C_roo] + FLUXES[f+F.root_prod]*deltat;
 POOLS[nxp+S.C_woo] = POOLS[p+S.C_woo] + FLUXES[f+F.wood_prod]*deltat;
     /*DEAD POOLS*/
-POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] - (FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.cwd2som])*deltat;
-POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.ph_fol2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som])*deltat;
-POOLS[nxp+S.C_som] = POOLS[p+S.C_som] + (FLUXES[f+F.lit2som] - FLUXES[f+F.ae_rh_som] - FLUXES[f+F.an_rh_som] + FLUXES[f+F.cwd2som])*deltat;
+POOLS[nxp+S.C_cwd] = POOLS[p+S.C_cwd] - (FLUXES[f+F.ae_rh_cwd]+FLUXES[f+F.an_rh_cwd]+FLUXES[f+F.cwd2som]+FLUXES[f+F.cwd2sol])*deltat;
+POOLS[nxp+S.C_lit] = POOLS[p+S.C_lit] + (FLUXES[f+F.ph_fol2lit] - FLUXES[f+F.ae_rh_lit] - FLUXES[f+F.an_rh_lit] - FLUXES[f+F.lit2som] - FLUXES[f+F.lit2sol])*deltat;
+POOLS[nxp+S.C_som] = POOLS[p+S.C_som] + (FLUXES[f+F.lit2som] + FLUXES[f+F.cwd2som] - FLUXES[f+F.ae_rh_som] - FLUXES[f+F.an_rh_som] - FLUXES[f+F.som2sol])*deltat;
+POOLS[nxp+S.C_sol] = POOLS[p+S.C_sol] + (FLUXES[f+F.lit2sol] + FLUXES[f+F.cwd2sol] + FLUXES[f+F.som2sol] - FLUXES[f+F.ae_rh_sol] - FLUXES[f+F.an_rh_sol])*deltat;
 
 /*CARBON POOL MORTALITY REDUCTRIONS - 
     WITH FIRES, 
@@ -1002,7 +1015,9 @@ FLUXES[f+F.f_roo] = POOLS[nxp+S.C_roo]*BURNED_AREA[n]*CF[S.C_roo]*one_over_delta
 FLUXES[f+F.f_woo] = POOLS[nxp+S.C_woo]*BURNED_AREA[n]*CF[S.C_woo]*one_over_deltat;
 FLUXES[f+F.f_cwd] = POOLS[nxp+S.C_cwd]*BURNED_AREA[n]*CF[S.C_cwd]*one_over_deltat;
 FLUXES[f+F.f_lit] = POOLS[nxp+S.C_lit]*BURNED_AREA[n]*CF[S.C_lit]*one_over_deltat;
-FLUXES[f+F.f_som] = POOLS[nxp+S.C_som]*BURNED_AREA[n]*CF[S.C_som]*one_over_deltat;  
+FLUXES[f+F.f_som] = POOLS[nxp+S.C_som]*BURNED_AREA[n]*CF[S.C_som]*one_over_deltat; 
+FLUXES[f+F.f_sol] = POOLS[nxp+S.C_sol]*BURNED_AREA[n]*CF[S.C_lit]*one_over_deltat;//same as litter
+
 
     /*LIVE CARBON POOL REMOVALS PART 2 of 4: 
         Removing fire combustion fluxes from live pools here*/
@@ -1015,6 +1030,7 @@ POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.f_woo]*deltat;
 POOLS[nxp+S.C_cwd] = POOLS[nxp+S.C_cwd]-FLUXES[f+F.f_cwd]*deltat;
 POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]-FLUXES[f+F.f_lit]*deltat;
 POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]-FLUXES[f+F.f_som]*deltat; 
+POOLS[nxp+S.C_sol] = POOLS[nxp+S.C_sol]-FLUXES[f+F.f_sol]*deltat; 
 
 /****Aggregate Mortality Factor*****/
     /* Compute aggregate mortality factor by pool from competing environmental stress: 
@@ -1046,7 +1062,7 @@ POOLS[nxp+S.C_woo] = POOLS[nxp+S.C_woo]-FLUXES[f+F.fx_woo2cwd]*deltat;
 FLUXES[f+F.woo2cwd] = POOLS[nxp+S.C_woo]*pars[P.t_wood];
 FLUXES[f+F.roo2lit] = POOLS[nxp+S.C_roo]*pars[P.t_root];
 FLUXES[f+F.lab2lit] = POOLS[nxp+S.C_lab]*pars[P.t_lab];
-FLUXES[f+F.fol2lit]=POOLS[nxp+S.C_fol]*pars[P.t_foliar];
+FLUXES[f+F.fol2lit] = POOLS[nxp+S.C_fol]*pars[P.t_foliar];
 // if (FLUXES[f+F.dlambda_dt] > 0){
 //   FLUXES[f+F.fol2lit]=POOLS[nxp+S.C_fol]*(1-pow(1-pars[P.t_foliar],deltat))*one_over_deltat;
 // }
@@ -1078,16 +1094,28 @@ POOLS[nxp+S.C_lit] = POOLS[nxp+S.C_lit]+(FLUXES[f+F.labyield2lit]+
                                          FLUXES[f+F.fx_roo2lit]-
                                          FLUXES[f+F.fx_lit2som])*deltat;
 POOLS[nxp+S.C_som] = POOLS[nxp+S.C_som]+(FLUXES[f+F.fx_cwd2som]+FLUXES[f+F.fx_lit2som])*deltat;
-        
+
+
+
 	/*fires - total flux in gC m-2 day-1*/
 FLUXES[f+F.f_total] = FLUXES[f+F.f_lab] + FLUXES[f+F.f_fol] + FLUXES[f+F.f_roo] + FLUXES[f+F.f_woo] + FLUXES[f+F.f_cwd] + FLUXES[f+F.f_lit] + FLUXES[f+F.f_som];
 
-    /*Fraction of C-foliar lost due to fires*/
-FLUXES[f+F.foliar_fire_frac] = BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
-    /*Calculate LAI (lambda) lost due to fire
-      - we lose the same fraction of LAI as we do C-foliar 
-      - FE_\Lambda^{(t+1)} = \Lambda^{(t+1)'} * BA ( k_{factor(i)} + (1 - k_{factor(i)}) r )*/
-FLUXES[f+F.lai_fire] = (POOLS[p+S.C_fol]/pars[P.LCMA])*BURNED_AREA[n]*(CF[S.C_lab] + (1-CF[S.C_lab])*(1-pars[P.resilience]));
+    /*C in runoff*/ 
+double potential_solCloss;
+double solC_lossfactor;
+double maxRivCconc=0.160; //units gC/L, ref to 159mg/L from https://doi.org/10.1016/j.scitotenv.2021.151828 
+potential_solCloss=maxRivCconc*(
+    FLUXES[f+F.q_surf]+FLUXES[f+F.q_ly1]+FLUXES[f+F.q_ly2]+FLUXES[f+F.q_ly3])*deltat;
+
+if (potential_solCloss==0){
+    solC_lossfactor=0; //to avoid dividing by zero in 'else'
+} else {
+    solC_lossfactor=(1/(exp(POOLS[nxp+S.C_sol]/(potential_solCloss*deltat))));
+}
+
+FLUXES[f+F.sol2DOC]=potential_solCloss*(1 - solC_lossfactor);
+
+POOLS[nxp+S.C_sol]=POOLS[nxp+S.C_sol]-FLUXES[f+F.sol2DOC]*deltat;
 
 /****************************RECORD t+1 DIAGNOSTIC STATES*************************/
 POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
@@ -1154,16 +1182,17 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
  //DALECmodel->data=DALEC_1100_DATA;
 DALECmodel->dalec=DALEC_1100;
-DALECmodel->nopools=30;
+DALECmodel->nopools=31;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=89;
-DALECmodel->nofluxes=100;
+DALECmodel->nopars=93;
+DALECmodel->nofluxes=107;
 DALECmodel->noedcs=15;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
 //Define PARS_INFO here (ranges, and eventually names, etc)
 PARS_INFO_1100(DALECmodel);
+POPULATE_INFO_STRUCTS(DALECmodel);
 
 //EDC operator
 //Make sure has same number as number of EDCs
@@ -1459,6 +1488,8 @@ OBSOPE.SUPPORT_iniSOM_OBS=true;
 OBSOPE.SUPPORT_NBEmrg_OBS=true;
 OBSOPE.SUPPORT_CUEmrg_OBS=true;
 OBSOPE.SUPPORT_LCMA_OBS=true;
+OBSOPE.SUPPORT_clumping_OBS=true;
+// OBSOPE.SUPPORT_LAD_OBS=true;
 //Provide values required by each OBS operator
 //Note: each OBS operator requirements are unique, see individual observation operator functions to see what's required 
 //Note: no values required for any SUPPORT_*_OBS quantity set to false.
@@ -1543,6 +1574,8 @@ OBSOPE.iniSnow_PARAM=P.i_SWE;
 //Initial SOM parameter
 OBSOPE.iniSOM_PARAM=P.i_som;
 OBSOPE.LCMA_PARAM=P.LCMA;
+OBSOPE.clumping_PARAM=P.clumping;
+//OBSOPE.LAD_PARAM=P.LAD;
 
 //CH4-specific variables 
 OBSOPE.CH4_flux = F.rh_ch4;

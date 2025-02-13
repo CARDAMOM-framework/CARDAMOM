@@ -1,8 +1,8 @@
-MCMC
-====
+Snow hydrology
+==============
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-Overview of MCMC
+Snow hydrology in DALEC

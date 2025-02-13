@@ -116,8 +116,8 @@ parmin[P.i_som]=1.0;
 parmax[P.i_som]=200000.0;
 
 /*C_sol*/
-parmin[P.i_som]=1.0;
-parmax[P.i_som]=200000.0;
+parmin[P.i_solC]=1.0;
+parmax[P.i_solC]=50.0;
 
 /*Retention parameter (b)*/
 parmin[P.retention]=1.5;
@@ -323,9 +323,6 @@ parmax[P.init_T_mem]=323.15;
 parmin[P.init_LAIW_mem]=0.01;
 parmax[P.init_LAIW_mem]=1;
 
-
-
-
 /*LY1 energy per mm H2O (~ Energy in 1mm H2O @ -50C to 1mm H2O@ +50C)*/
 parmin[P.i_LY1_E]=4.67e+05;
 parmax[P.i_LY1_E]=1.11e+06;
@@ -390,6 +387,17 @@ parmax[P.sublimation_rate]=10;
 parmin[P.root_frac]=0.001;
 parmax[P.root_frac]=1;
   
+/*Fraction of soluble C generated as a microbial metabolic by-product of heterotrophic respiration in litter*/
+parmin[P.lit2sol_rhfrac]=0.001;
+parmax[P.lit2sol_rhfrac]=0.1;
+
+/*Fraction of soluble C generated as a microbial metabolic by-product of heterotrophic respiration in coarse woody debris*/
+parmin[P.cwd2sol_rhfrac]=0.001;
+parmax[P.cwd2sol_rhfrac]=0.1;
+
+/*Fraction of soluble C generated as a microbial metabolic by-product of heterotrophic respiration in soil organic matter*/
+parmin[P.som2sol_rhfrac]=0.001;
+parmax[P.som2sol_rhfrac]=0.1;
 return 0;
 
 }

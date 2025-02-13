@@ -49,6 +49,7 @@ double M_PEQ_C3frac;
 double M_PEQ_iniSnow;
 double M_PEQ_iniSOM;
 double M_PEQ_LCMA;
+double M_PEQ_clumping;
 //add PEQ value and unc from previous MCMC *pMCMC*
 double M_PEQ_r_ch4;
 double M_PEQ_S_fv;

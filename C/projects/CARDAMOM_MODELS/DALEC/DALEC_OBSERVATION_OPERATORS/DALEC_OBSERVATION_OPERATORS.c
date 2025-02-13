@@ -83,6 +83,10 @@ bool SUPPORT_LCMA_OBS;
 int LCMA_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
 
+bool SUPPORT_clumping_OBS;
+int clumping_PARAM;
+
+
 bool SUPPORT_CUEmrg_OBS; //Emergent CUE (Rauto/GPP)
 int Rauto_flux; //Requires GPP_flux to be set in SUPPORT_GPP_OBS
 
@@ -127,6 +131,7 @@ OBSOPE->SUPPORT_Vcmax25_OBS=false;
 OBSOPE->SUPPORT_iniSnow_OBS=false;
 OBSOPE->SUPPORT_iniSOM_OBS=false;
 OBSOPE->SUPPORT_LCMA_OBS=false;
+OBSOPE->SUPPORT_clumping_OBS=false;
 //In-built observation operators
 
 //add PEQ value and unc from previous MCMC *pMCMC*
@@ -559,6 +564,13 @@ if  (SOBS.validobs){
     }
 return 0;}
 
+int DALEC_OBSOPE_clumping(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_clumping;
+if  (SOBS.validobs){
+    D->M_PEQ_clumping=D->M_PARS[O->clumping_PARAM];
+    }
+return 0;}
+
 //add PEQ value and unc from previous MCMC *pMCMC*
 int DALEC_OBSOPE_r_ch4(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_r_ch4;
@@ -612,6 +624,7 @@ if (O->SUPPORT_Vcmax25_OBS){DALEC_OBSOPE_Vcmax25(D, O);}
 if (O->SUPPORT_iniSnow_OBS){DALEC_OBSOPE_iniSnow(D, O);}
 if (O->SUPPORT_iniSOM_OBS){DALEC_OBSOPE_iniSOM(D, O);}
 if (O->SUPPORT_LCMA_OBS){DALEC_OBSOPE_LCMA(D, O);}
+if (O->SUPPORT_clumping_OBS){DALEC_OBSOPE_clumping(D, O);}
 if (O->SUPPORT_r_ch4_OBS){DALEC_OBSOPE_r_ch4(D, O);} /*pMCMC*/
 if (O->SUPPORT_S_fv_OBS){DALEC_OBSOPE_S_fv(D, O);}
 if (O->SUPPORT_rhch4_rhco2_OBS){DALEC_OBSOPE_rhch4_rhco2(D, O);}
