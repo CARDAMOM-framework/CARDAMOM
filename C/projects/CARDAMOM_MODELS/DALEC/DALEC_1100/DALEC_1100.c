@@ -455,7 +455,6 @@ int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
 
     /*repeating loop for each timestep*/
 for (n=0; n < N_timesteps; n++){
- 
     /*pool index*/
 p=nopools*n;
     /*next pool index*/
@@ -676,6 +675,8 @@ FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-liquid_in/pars[P.max_infil]));
     // Surface runoff (mm/day)
 FLUXES[f+F.q_surf] = liquid_in - FLUXES[f+F.infil];
 
+
+
     // Calculate drainage
 double drain_LY1 = POOLS[p+S.D_LF_LY1]*DRAINAGE(POOLS[p+S.D_SM_LY1],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
 double drain_LY2 = POOLS[p+S.D_LF_LY2]*DRAINAGE(POOLS[p+S.D_SM_LY2],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
@@ -685,6 +686,9 @@ double drain_LY3 = POOLS[p+S.D_LF_LY3]*DRAINAGE(POOLS[p+S.D_SM_LY3],pars[P.Q_exc
 FLUXES[f+F.q_ly1] = HYDROFUN_MOI2EWT(drain_LY1,pars[P.LY1_por],pars[P.LY1_z])*one_over_deltat;
 FLUXES[f+F.q_ly2] = HYDROFUN_MOI2EWT(drain_LY2,pars[P.LY2_por],pars[P.LY2_z])*one_over_deltat;
 FLUXES[f+F.q_ly3] = HYDROFUN_MOI2EWT(drain_LY3,pars[P.LY3_por],pars[P.LY3_z])*one_over_deltat;
+
+/*printf("q_surf = %2.2f, q_ly1 = %2.2f, q_ly2 = %2.2f, q_ly3 = %2.2f\n", 
+FLUXES[f+F.q_surf],FLUXES[f+F.q_ly1],FLUXES[f+F.q_ly2],FLUXES[f+F.q_ly3]);*/
 
     // Convert to conductivity
 double k_LY1 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY1],pars[P.hydr_cond],pars[P.retention]);
@@ -772,6 +776,9 @@ POOLS[nxp+S.H2O_LY2]=LY2max;}
 if (POOLS[nxp+S.H2O_LY3]>LY3max){//Dump excess into LY3 Q
 FLUXES[f+F.q_ly3] +=(POOLS[nxp+S.H2O_LY3]-LY3max)*one_over_deltat;
 POOLS[nxp+S.H2O_LY3]=LY3max;}
+
+/*printf("q_surf2 = %2.2f, q_ly12 = %2.2f, q_ly22 = %2.2f, q_ly32 = %2.2f\n", 
+FLUXES[f+F.q_surf],FLUXES[f+F.q_ly1],FLUXES[f+F.q_ly2],FLUXES[f+F.q_ly3]);*/
 
 
 //**********INTERNAL ENERGY FLUXES FOR ALL H2O FLUXES***************
@@ -1082,6 +1089,8 @@ FLUXES[f+F.lai_fire] = (POOLS[p+S.C_fol]/pars[P.LCMA])*BURNED_AREA[n]*(CF[S.C_la
 POOLS[nxp+S.D_LAI]=POOLS[nxp+S.C_fol]/pars[P.LCMA]; //LAI
 POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]); //snow cover fraction
     
+/*printf("H2Oly1 = %2.2f, H2Oly2 = %2.2f, H2Oly3 = %2.2f\n", 
+POOLS[nxp+S.H2O_LY1],POOLS[nxp+S.H2O_LY2],POOLS[nxp+S.H2O_LY3]);*/
      
     //Update time-varying inputs
 LY1SOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_LY1];//mm (or kg/m2)
@@ -1476,6 +1485,7 @@ ROFF_fluxes[0]=F.q_ly1;
 ROFF_fluxes[1]=F.q_ly2;
 ROFF_fluxes[2]=F.q_ly3;
 ROFF_fluxes[3]=F.q_surf;
+
 OBSOPE.ROFF_fluxes=ROFF_fluxes;
 static double ROFF_flux_signs[]={1.,1.,1.,1.};
 OBSOPE.ROFF_flux_signs=ROFF_flux_signs;
