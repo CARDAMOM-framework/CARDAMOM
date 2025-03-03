@@ -144,6 +144,7 @@ else if (MCOPT.mcmcid==2){MCOPT.nchains=100;}
 printf("MDF options structure read successfully");
 
 
+
 printf("CARDAMOM_MDF.c: CARDAMOM MODEL ID = %i\n",DATA.ncdf_data.ID);
 printf("CARDAMOM_MDF.c: MCMC ID = %i\n",MCOPT.mcmcid);
 
@@ -160,6 +161,7 @@ printf("*******RANDOM NUMBER SEED**********\n");
 printf("Read in from DATA.ncdf_data.MCMCID.seed_number\n");
 printf("(Default value = 0)\n");
 printf("*******Seed = %i**********\n",DATA.ncdf_data.MCMCID.seed_number);
+printf("Starting iteration = %i\n",MCOPT.nSTART);
 printf("*******DONE WITH RANDOM NUMBER SEED**********\n");
 
 
@@ -212,7 +214,7 @@ clock_t    start = clock();//Start timer
     DATA.edcsearch=1;
 READ_PARI_DATA(&PI, &DATA, &MCOUT, &MCOPT,CLA);
 printf("CARDAMOM_MDF.c: READ_PARI_DATA successfully executed\n");
-
+printf("Starting iteration = %i\n",MCOPT.nSTART);
 // Check whether this is a restart, and if so, set APPEND to 1
 if (MCOPT.nSTART>0){MCOPT.APPEND=1;}
 

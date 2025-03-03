@@ -136,7 +136,12 @@ memcpy(BESTP,P,NC*sizeof(double));
 
 //printf("starting likelihood for chain %i = %e\n",nn,P[nn]);
 
-if (isinf(P[nn])==-1){printf("WARNING! P(0)=-inf - MHMCMC may get stuck - if so, please check your initial conditions\n");}}
+if (isinf(P[nn])==-1){
+	printf("WARNING! P(0)=-inf - MHMCMC may get stuck - if so, please check your initial conditions\n");
+	printf("%d out of %d iterations)\n",N.ITER,MCO.nOUT);
+	printf("NC=%d, N.ACC=%d",NC,N.ACC);
+	printf("PI.stepsize = %5.5f\n",PI.stepsize[0]);
+	}}
 
 /*STEP 2 - BEGIN MCMC*/
 for ( ;N.ITER<MCO.nOUT;N.ITER++){

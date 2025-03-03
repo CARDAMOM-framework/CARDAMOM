@@ -40,6 +40,7 @@ MCOPT.fADAPT=0.5;
 MCOPT.nOUT=1000;/*was 2000*/
 MCOPT.nPRINT=100;/*was*/
 MCOPT.nWRITE=0;
+MCOPT.nSTART=0;
 /*randparini = 0*/
 /*this means all PI.parini values must either be given values or entered as -9999*/
 MCOPT.randparini=1;
@@ -93,6 +94,7 @@ double PEDC=log(0);
 int count=0;
 while (PEDC!=0){
 	printf("EDC Attempt no %d\n",count);oksofar("---");
+	printf("MCOPT.nSTART= %d\n",MCOPT.nSTART);
 
 	for (n=0;n<PI->npars;n++){PI->stepsize[n]=0.0005;}
 	/*insert prior value option here!*/
