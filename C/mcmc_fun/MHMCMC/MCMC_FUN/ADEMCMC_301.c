@@ -101,7 +101,7 @@ for (n=0;n<PI.npars;n++){
 
 if (MCO.randparini==1 && PI.parfix[n]!=1){
 /*random parameter if PI.parini = -9999*/
-PARS[n+nn*PI.npars]=nor2par((double)random()/RAND_MAX,PI.parmin[n],PI.parmax[n]);}
+PARS[n+nn*PI.npars]=nor2par((double)random()/(double)RAND_MAX,PI.parmin[n],PI.parmax[n]);}
 else{par=PI.parini[n+nn*PI.npars];
 PARS[n+nn*PI.npars]=par;
 if (par>PI.parmax[n] | par<PI.parmin[n]){printf("Warning, prescribed initial parameters are out of range");}
@@ -158,7 +158,7 @@ for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
 	//Standard DEMCMC
 	else {
 	/*Step size is 1 wigth 10% prob iterations*/
-        PI.stepsize[0]=1 - (1-2.38/sqrt(2*PI.npars)/10)*(double)((double)(random()/RAND_MAX)<0.9);
+        PI.stepsize[0]=1 - (1-2.38/sqrt(2*PI.npars)/10)*(double)((double)(random()/(double)RAND_MAX)<0.9);
 	/*take a step (DE-MCMC style)*/
 	PI.stepsize[0]=PI.stepsize[0];
 	withinrange=STEP_DEMCMC(PARS0,pars_new,PI,nn,NC);
@@ -166,7 +166,7 @@ for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
 	}
 
 	
-	lr=log((double)random()/RAND_MAX);
+	lr=log((double)random()/(double)RAND_MAX);
 	/*p(x) = 0 if parameters outside bounds*/
 	if (withinrange==1 & -P[nn]+gratio>lr){
 wrlocal=wrlocal+1;

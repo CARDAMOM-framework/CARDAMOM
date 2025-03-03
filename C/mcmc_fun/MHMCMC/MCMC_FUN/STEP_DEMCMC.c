@@ -28,8 +28,8 @@ int withinlim=1;
 	/*first: pick c1 and c2, make sure that (a) they are between 1 and NC, and (b) they are not C*/
 	c1=C;c2=C;
 	while (c1==C | c2==C | c1==c2){
-	c1=ceil((double)random()*NC/(RAND_MAX))-1;
-	c2=ceil((double)random()*NC/(RAND_MAX))-1;}
+	c1=ceil((double)random()*NC/((double)RAND_MAX))-1;
+	c2=ceil((double)random()*NC/((double)RAND_MAX))-1;}
 mstep=0;
 	/*SAMPLING PARAMETERS*/
 	for (n=0;n<PI.npars;n++){

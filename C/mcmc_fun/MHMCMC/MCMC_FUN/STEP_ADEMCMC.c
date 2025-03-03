@@ -15,7 +15,7 @@ double rn;
 /*STep 1. Find random sample other than current chain*/
 
 C1=C;
-while (C1==C){C1=ceil((double)random()*NC/(RAND_MAX))-1;};
+while (C1==C){C1=ceil((double)random()*NC/((double)RAND_MAX))-1;};
 
 /*Step 2. FInd current chain, reference chain, and step between them*/
 /*allocating memory for three normalized parameter vectors*/

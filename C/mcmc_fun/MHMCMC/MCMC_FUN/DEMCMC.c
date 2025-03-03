@@ -97,7 +97,7 @@ for (n=0;n<PI.npars;n++){
 
 if (MCO.randparini==1 && PI.parfix[n]!=1){
 /*random parameter if PI.parini = -9999*/
-PARS[n+nn*PI.npars]=nor2par((double)random()/RAND_MAX,PI.parmin[n],PI.parmax[n]);}
+PARS[n + nn * PI.npars] = nor2par((double)random() / (double)RAND_MAX, PI.parmin[n], PI.parmax[n]);}
 else
 
 /*{PARS[n+nn*PI.npars]=PI.parini[n+nn*PI.npars];}}}
@@ -140,7 +140,8 @@ for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
 	for (nn=0;nn<NC;nn++){
 
 	/*Step size is 1 wigth 10% prob iterations*/
-        PI.stepsize[0]=1 - (1-2.38/sqrt(2*PI.npars)*0.1)*(double)((double)(random()/RAND_MAX)<0.9);
+        PI.stepsize[0] = 1 - (1 - 2.38 / sqrt(2 * PI.npars) * 0.1) * 
+                 (double)(( (double)random() / (double)RAND_MAX ) < 0.9);
 	/*take a step (DE-MCMC style)*/
 	//PI.stepsize[0]=PI.stepsize[0]/10;
 	withinrange=STEP_DEMCMC(PARS,pars_new,PI,nn,NC);
@@ -156,7 +157,7 @@ wrlocal=wrlocal+1;
 	*/
 	/*treating nans as -inf*/
 	if (isnan(P_new)){P_new=log(0);}
-	if (P_new-P[nn]>log((double)random()/RAND_MAX)){N.ACC=N.ACC+1;
+	if (P_new - P[nn] > log((double)random() / (double)RAND_MAX)) { N.ACC = N.ACC + 1;
 	if (isinf(P_new)==0 && isinf(P[nn])){printf("pnew = %2.1f, p = %2.1f, (P_new-P[nn]) = %2.1f\n",P_new,P[nn],P_new-P[nn]);}
 
 

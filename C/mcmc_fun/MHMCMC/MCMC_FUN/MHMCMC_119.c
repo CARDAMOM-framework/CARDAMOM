@@ -104,7 +104,7 @@ if (MCO.fixedpars!=1){PI.parfix[n]=0;}
 /*BUG IS HERE!!!4-9-2013*/
 if (MCO.randparini==1 && PI.parfix[n]!=1){
 /*random parameter if PI.parini = -9999*/
-PI.parini[n]=nor2par((double)random()/RAND_MAX,PI.parmin[n],PI.parmax[n]);}
+PI.parini[n]=nor2par((double)random()/(double)RAND_MAX,PI.parmin[n],PI.parmax[n]);}
 /*printing parameter values*/
 printf("log10(p%d)=%2.4f ",n+1,log10(PI.parini[n]));
 if ((n+1) % 3==0){printf("\n");}
@@ -153,7 +153,7 @@ while (N.ITER < MCO.nOUT){
 	if (isnan(P)){printf("Warning: MLF generated NaN... treating as -Inf\n");P=log(0);break;}
 
 
-	if (P-P0>log((double)random()/RAND_MAX)){
+	if (P-P0>log((double)random()/(double)RAND_MAX)){
 		/*storing accepted solution*/
 		for (n=0;n<PI.npars;n++){
 		PARS0[n]=PARS[n];

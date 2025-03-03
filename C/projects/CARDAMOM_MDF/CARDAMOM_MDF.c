@@ -47,6 +47,7 @@ MCOPT->nWRITE=MCOPT->nOUT/DATA.ncdf_data.MCMCID.nSAMPLES;
 
 printf("**********MCMCOPT SUMMARY*******\n");
 
+printf("Starting iteration = %i\n",MCOPT->nSTART);
 printf("Number of iterations = %i\n",MCOPT->nOUT);
 printf("Print status every %i iterations \n",MCOPT->nPRINT);
 printf("Write parameters every %i iterations \n",MCOPT->nWRITE);
