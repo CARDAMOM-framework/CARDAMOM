@@ -94,7 +94,6 @@ double PEDC=log(0);
 int count=0;
 while (PEDC!=0){
 	printf("EDC Attempt no %d\n",count);oksofar("---");
-	printf("MCOPT.nSTART= %d\n",MCOPT.nSTART);
 
 	for (n=0;n<PI->npars;n++){PI->stepsize[n]=0.0005;}
 	/*insert prior value option here!*/

@@ -58,11 +58,14 @@ int charseed_filename(const char *charinput){
 
 int seedrandomnumber(const char *charinput){
 
+    long seed1=(long)charseed(charinput);
+    
+    // unsigned int seed1 = (unsigned int)charseed(charinput);
+    // unsigned int seed2 = (unsigned int)time(NULL);
+    // unsigned int seed3 = (unsigned int)(uintptr_t)&charinput;
 
-    unsigned int seed1 = (unsigned int)charseed(charinput);
-    unsigned int seed2 = (unsigned int)time(NULL);
-    unsigned int seed3 = (unsigned int)(uintptr_t)&charinput;
+    // srand(seed1 + seed2 + seed3);
 
-    srand(seed1 + seed2 + seed3);
+    srandom(seed1);
 
 return 0;}
