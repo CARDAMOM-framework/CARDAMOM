@@ -131,6 +131,7 @@ Then, the proportion of respiration demand that is not met (nonleaf_mortality_fa
 .. math::
 \text{nonleaf_mortality_factor}[n] = e^{- \frac{\text{NSC}_{int}[n]}{\text{pot_resp}_{nonleaf}[n]}}.
 
+<<<<<<< HEAD
 Stem Cavitation Implementation
 
 Stem cavitation is implemented as a sigmoidal (beta) function of soil moisture availability. This approximation, which does not consider atmospheric demand as a driver of cavitation, is designed for a coarse timestep, e.g., monthly. A single logistic growth rate (β_{HMF}) and response threshold (Ψ_{50HMF}) are used to derive a hydraulic mortality fraction (HMF_total) across two soil layers:
@@ -162,3 +163,5 @@ Background mortality (BGM_{C*}, where * denotes all living C pools) is computed 
 This flux represents the C turnover rate in the pool in the absence of all other mortality.
 
 Bibliography
+=======
+>>>>>>> main
