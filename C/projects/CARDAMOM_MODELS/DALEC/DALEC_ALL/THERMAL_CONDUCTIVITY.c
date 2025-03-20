@@ -1,19 +1,10 @@
 #pragma once
-//***IN-OUT form structure***
-typedef struct {    
-struct{
-    double       porosity;//J/m3/K
-    double       soil_water;//mm (or kg/m2)
-    double        soil_liquid_fraction;
-    double       soil_temp;;} IN;//Joules
- struct {
-     double TEMP;// Temperature in K
-     double LF;} OUT;// Liquid fraction
-}SOIL_TEMP_AND_LIQUID_FRAC_STRUCT;
+
 
 //***Main function***
-int SOIL_TEMP_AND_LIQUID_FRAC(SOIL_TEMP_AND_LIQUID_FRAC_STRUCT * S){
-    
+double THERMAL_CONDUCTIVITY(double       porosity,double       soil_water, double       soil_liquid_fraction, double       soil_temp, double soil_thermal_conductivity){
+
+    double THERMAL_COND;
 double dry_soil_sh=S->IN.dry_soil_vol_heat_capacity * S->IN.depth;
 double UI3 = ( dry_soil_sh + S->IN.soil_water *DGCM_SPECIFIC_HEAT_ICE)*DGCM_T3 ; 
 double UL3 = UI3 + S->IN.soil_water*DGCM_LATENT_HEAT_FUSION_3; 
@@ -27,6 +18,6 @@ else {
     S->OUT.TEMP = DGCM_TK0C;  
      S->OUT.LF =(S->IN.internal_energy - UI3) /(S->IN.soil_water*DGCM_LATENT_HEAT_FUSION_3);  
 }
-return 0;
+return THERMAL_COND;
 }
     
