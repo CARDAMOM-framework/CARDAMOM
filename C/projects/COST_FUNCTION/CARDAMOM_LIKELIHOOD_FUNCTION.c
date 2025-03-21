@@ -570,6 +570,38 @@ else if (OBS->opt_filter==8 ){/* copy of opt filters 1 + 2, i.e. now with mean i
     }
 }
 
+        
+
+        else if (OBS->opt_filter==9){//opt_filter 0 plus trend
+    for (n=0;n<N;n++){
+        tot_exp += pow((mod[n] - obs[n])/unc[n],2);
+    }
+    int nmonths, offset;
+    if (N/12 % 2 == 0){
+        nmonths = N/2;
+        offset = 0;
+    } else {
+        nmonths = N/2 - 6;
+        offset = 12;
+    }
+    double mean_obs_first_half, mean_mod_first_half;
+    for (n=0;n<nmonths;n++){
+        mean_mod_first_half += mod[n];
+        mean_obs_first_half += obs[n];
+    }
+    mean_mod_first_half=mean_mod_first_half/(double)nmonths;
+    mean_obs_first_half=mean_obs_first_half/(double)nmonths;
+    double mean_obs_second_half, mean_mod_second_half;
+    for (n=(nmonths+offset);n<N;n++){
+        mean_mod_second_half += mod[n];
+        mean_obs_second_half += obs[n];
+    }
+    mean_mod_second_half=mean_mod_second_half/(double)nmonths;
+    mean_obs_second_half=mean_obs_second_half/(double)nmonths;
+    tot_exp += pow((mean_mod_first_half - mean_mod_second_half - mean_obs_first_half + mean_obs_second_half)/trend_unc,2);
+}
+
+
 free(mod);free(obs);free(unc);
 
 
