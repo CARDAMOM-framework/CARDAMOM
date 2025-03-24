@@ -253,6 +253,7 @@ double single_mean_unc=OBS->single_mean_unc;
 double single_monthly_unc=OBS->single_monthly_unc;
 double single_annual_unc=OBS->single_annual_unc;
 double single_decadal_unc=OBS->single_decadal_unc;
+double trend_unc=OBS->trend_unc;
 
 
 double mean_mod=0, mean_obs=0;
