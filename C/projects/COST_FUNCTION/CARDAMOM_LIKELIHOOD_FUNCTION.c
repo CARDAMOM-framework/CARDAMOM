@@ -18,6 +18,7 @@ double single_monthly_unc;//Fields to be used only with Filter=2 AND opt_unc_typ
 double single_annual_unc;//Fields to be used only with Filters=2 & 3 (AND opt_unc_type=0 or opt_unc_type=2 for filter = 2);
 double single_mean_unc;//Fields to be used only with Filter = 1;
 double single_decadal_unc;//Field for Filter = 7;
+double trend_unc;//Fields to be used only with Filter = 9 ;
 double single_unc;//Fields to be used only with Filter = 0 ;
 double structural_unc;//this gets added to uncertainty in quadrature.
 //****Auxiliary variables, separate from timeseries variable****
@@ -584,14 +585,14 @@ else if (OBS->opt_filter==8 ){/* copy of opt filters 1 + 2, i.e. now with mean i
         nmonths = N/2 - 6;
         offset = 12;
     }
-    double mean_obs_first_half, mean_mod_first_half;
+    double mean_obs_first_half=0, mean_mod_first_half=0;
     for (n=0;n<nmonths;n++){
         mean_mod_first_half += mod[n];
         mean_obs_first_half += obs[n];
     }
     mean_mod_first_half=mean_mod_first_half/(double)nmonths;
     mean_obs_first_half=mean_obs_first_half/(double)nmonths;
-    double mean_obs_second_half, mean_mod_second_half;
+    double mean_obs_second_half=0, mean_mod_second_half=0;
     for (n=(nmonths+offset);n<N;n++){
         mean_mod_second_half += mod[n];
         mean_obs_second_half += obs[n];
