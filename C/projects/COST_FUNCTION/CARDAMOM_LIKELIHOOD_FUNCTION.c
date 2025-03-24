@@ -139,6 +139,7 @@ OBS.single_monthly_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_monthly_unc")
 OBS.single_annual_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_annual_unc");
 OBS.single_decadal_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_decadal_unc");
 OBS.single_mean_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_mean_unc");
+OBS.trend_unc=ncdf_read_double_attr(ncid, OBSNAME,"trend_unc");
 OBS.single_unc=ncdf_read_double_attr(ncid, OBSNAME,"single_unc");
 OBS.structural_unc=ncdf_read_double_attr(ncid, OBSNAME,"structural_unc");
 
