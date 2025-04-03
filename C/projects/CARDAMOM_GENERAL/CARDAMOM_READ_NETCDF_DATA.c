@@ -353,9 +353,14 @@ printf("Done reading all other edc ");
     
     //Pre-processing
     //Ntimesteps
+	//The deltat and DATA->Ntimesteps calculations are highly implicit and code prone to bugs. Need to replace with more explicit definitions of time and deltat
     DATA->Ntimesteps=DATA->TIME_INDEX.length;
     //Delta T
-    DATA->deltat=DATA->TIME_INDEX.values[1]-DATA->TIME_INDEX.values[0];
+	if (    DATA->Ntimesteps>1){
+    DATA->deltat=DATA->TIME_INDEX.values[1]-DATA->TIME_INDEX.values[0];}
+	else {
+	DATA->deltat=DATA->TIME_INDEX.values[0];}
+	
     //Mean temp
     DATA->meantemp=DATA->T2M_MIN.reference_mean*0.5 + DATA->T2M_MAX.reference_mean*0.5;
     //Solar Zenith Angle
