@@ -269,6 +269,8 @@ double *SKT=DATA.ncdf_data.SKT.values;
 double *STRD=DATA.ncdf_data.STRD.values;
 double *DIST=DATA.ncdf_data.DISTURBANCE_FLUX.values;
 double *YIELD=DATA.ncdf_data.YIELD.values;
+double *ET_REF=DATA.ncdf_data.ET_REF.values;
+
 
 /*C-pools, fluxes, meteorology indices*/
 int p=0,f,m,nxp, i;
@@ -671,7 +673,8 @@ FLUXES[f+F.gh_in] =FLUXES[f+F.ground_heat] *DGCM_SEC_DAY;
 FLUXES[f+F.sensible_heat] = Rn - FLUXES[f+F.ground_heat] - FLUXES[f+F.latent_heat];
 
     // Infiltration (mm/day)
-double liquid_in = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]);
+    double et_recycled=(FLUXES[f+F.ets]-ET_REF[n])*0.25;
+double liquid_in = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]+et_recycled);
 FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-liquid_in/pars[P.max_infil]));
 
     // Surface runoff (mm/day)

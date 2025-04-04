@@ -325,6 +325,10 @@ printf("Done reading all other edc ");
                                 DEFAULT_REFERENCE_MEAN(&DATA->YIELD);
 
         
+
+	DATA->ET_REF.values=ncdf_read_double_var(ncid, "ET_REF", &(DATA->ET_REF.length));
+		DATA->ET_REF.reference_mean=ncdf_read_double_attr(ncid, "ET_REF","reference_mean");
+                                DEFAULT_REFERENCE_MEAN(&DATA->ET_REF);
         
         
         //Summary & derived variables
