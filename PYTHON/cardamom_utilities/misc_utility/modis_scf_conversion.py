@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 """\
-This script converts monthly 0.05-degree (CMG) MOD10 HDF files into
-annual 0.5-degree NetCDF files compatible with the CARDAMOM-MAPS conventions
+This script converts monthly 0.05-degree (CMG) MOD10 HDF files 
+downloaded from https://nsidc.org/data/mod10cm/versions/61
+into annual 0.5-degree NetCDF files compatible with the CARDAMOM-MAPS conventions
 
 Written by Paul Levine https://github.com/alkalifly
 
 Usage: run modis_scf_conversion.py without any arguments 
-after setting input_dir and output_dir paths on lines 18 and 19
+after setting input_dir and output_dir paths on lines 19 and 20
 """
 
 import glob
