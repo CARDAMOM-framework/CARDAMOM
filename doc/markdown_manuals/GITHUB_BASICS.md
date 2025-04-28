@@ -1,4 +1,21 @@
-# Github basics
+# Using CARDAMOM's github repository
+
+
+## Issues and labels
+
+We encourage labeling all issues with one or more of the following categories:
+
+- Framework
+- MCMC
+- Science Issue
+  - No technical issue, but there's something wrong, suspicious or room for improvement with science algorith
+- Forward model code:
+  - Includes DALEC models, modules, EDCs, and Observation Operators, refactoring
+- Cost function:
+  - THis 
+- 
+
+## Github basics and tips
 
 Issue "There is no tracking information for the current branch", when you try to "git push" for first time
 
