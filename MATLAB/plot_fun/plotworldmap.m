@@ -10,7 +10,7 @@ defval( 'opt',1)
 defval('rivers',0)
 switch opt
 case 2
-    %Loading image SATMAP
+    %Loading image SATMAPh
     %
     %Map obtained from: http://www.ham-radio-deluxe.com/Downloads/BetaKits/tabid/99/Default.aspx
     satmap=imread('phdmatlab/imag_dat/earth-living-1600-800.jpg');
