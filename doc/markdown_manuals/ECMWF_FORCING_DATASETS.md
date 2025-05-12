@@ -21,7 +21,9 @@ you can test this locally:
 The outcome is a netcdf file in your local path with a global January 2001 monthly average 2m air temperature map
 
 
-##Step 3. Format of python files needed to acquire data
+##Step 3. Format or source all python files needed to acquire data
+
+[CONTINUE FROM HERE]
 
 
 
