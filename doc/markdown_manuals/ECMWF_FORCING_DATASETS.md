@@ -23,12 +23,25 @@ The outcome is a netcdf file in your local path with a global January 2001 month
 
 ##Step 3. Format or source all python files needed to acquire data
 
+The list of drivers needed for CARDAMOM:
+- Total downward radiation
+- Total precip
+- Total snow cover fraction
+- 2m Dewpoint temperature min max
+- Surface Skin Temperature
+- 2m temperayure min max
+
+
 [CONTINUE FROM HERE]
 
 
 
 
 Markdown test for tech note
+
+##Additional resources
+ERA5 interpolation and grid definitions here:
+https://confluence.ecmwf.int/display/CKB/ERA5%3A+What+is+the+spatial+reference
 
 
 
