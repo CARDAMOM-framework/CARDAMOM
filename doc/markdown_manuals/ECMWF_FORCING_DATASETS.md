@@ -9,6 +9,24 @@ Meteorological forcing datasets a re needed to run CARDAMOM. This page currently
 https://confluence.ecmwf.int/display/CKB/How+to+download+ERA5
 
 
-##Step 2. Format of puythin fules needed to acquire data
+##Step 2. Test to make sure you can download test file
+
+Example file is here:
+https://github.com/CARDAMOM-framework/CARDAMOM/blob/main/PYTHON/ECMWF/ERA5_TEST_DOWNLOAD_API.py
+
+you can test this locally:
+
+>> python3 /local/path/to/CARDAMOM/PYTHON/ECMWF/ERA5_TEST_DOWNLOAD_API.py
+
+The outcome is a netcdf file in your local path with a global January 2001 monthly average 2m air temperature map
+
+
+##Step 3. Format of python files needed to acquire data
+
+
+
 
 Markdown test for tech note
+
+
+
