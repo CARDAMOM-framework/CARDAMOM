@@ -8,9 +8,10 @@ request = {
     "month": ["01"],
     "time": ["00:00"],
     "data_format": "netcdf",
+    "grid": "0.25/0.25",
     "download_format": "unarchived",
     "area": [90, -180, -90, 180]
 }
-
+file = "TEST_ECMWF_OUTPUT_FILE.nc"
 client = cdsapi.Client()
-client.retrieve(dataset, request).download()
+client.retrieve(dataset, request).download(file)
