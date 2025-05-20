@@ -35,13 +35,20 @@ The list of drivers needed for CARDAMOM:
 [CONTINUE FROM HERE]
 
 
-
-
-Markdown test for tech note
+##General notes for using ECMWF for CARDAMOM:
+- Min & Max values are derived from monthly means averaged by hour product, named "Monthly averaged reanalysis by hour of day"
+- Rest of values derived derived from monthly means product, named "Monthly averaged reanalysis"
+- 
 
 ##Additional resources
+
+ERA5 1940-present online GUI for selecting and downloading data
+https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels-monthly-means?tab=download
+
 ERA5 interpolation and grid definitions here:
 https://confluence.ecmwf.int/display/CKB/ERA5%3A+What+is+the+spatial+reference
+
+
 
 
 
