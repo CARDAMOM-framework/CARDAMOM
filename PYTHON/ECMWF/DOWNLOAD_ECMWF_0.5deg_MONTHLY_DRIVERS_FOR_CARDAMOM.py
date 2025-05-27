@@ -8,7 +8,7 @@ def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr)
 
   #Step 1. Download all monthly averages by hour
 
-  quantities=["2m_temperature","2m_dewpoint_temperature"];
+  quantities=["total_precipitation","skin_temperature","surface_solar_radiation_downwards","snowfall"];
 
   for q in quantities:
         dataset = "reanalysis-era5-single-levels-monthly-means"
