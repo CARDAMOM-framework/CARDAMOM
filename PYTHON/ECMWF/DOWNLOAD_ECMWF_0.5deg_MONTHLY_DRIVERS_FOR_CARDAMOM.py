@@ -8,7 +8,7 @@ def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr)
 
   #Step 1. Download all monthly averages by hour
 
-  quantities=["total_precipitation","skin_temperature","surface_solar_radiation_downwards","snowfall"];
+  quantities=["2m_temperature","2m_dewpoint_temperature"];
 
   for q in quantities:
         dataset = "reanalysis-era5-single-levels-monthly-means"
@@ -17,22 +17,30 @@ def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr)
         "variable": q,
         "year": yr,
         "month": m,
-        "time": ["00:00","01:00"],
+         "time": [
+        "00:00", "01:00", "02:00",
+        "03:00", "04:00", "05:00",
+        "06:00", "07:00", "08:00",
+        "09:00", "10:00", "11:00",
+        "12:00", "13:00", "14:00",
+        "15:00", "16:00", "17:00",
+        "18:00", "19:00", "20:00",
+        "21:00", "22:00", "23:00"
+    ],
         "data_format": data_format,
         "grid": global_grid_definition,
         "download_format": download_format,
         "area": global_area_definition
         }
 
-        file="ECMWF_TEST_DOWNLOAD_MAX_FILE"+q+m+yr+".nc"
+        file="ECMWF_CARDAMOM_DRIVER_"+q+m+yr+".nc"
         client = cdsapi.Client()
         client.retrieve(dataset, request).download(file)
 
 
     #Step 1. Download all monthly averages 
 
-
-  quantities=["2m_temperature","2m_dewpoint_temperature"];
+  quantities=["total_precipitation","skin_temperature","surface_solar_radiation_downwards","snowfall"];
 
   
   for q in quantities:
@@ -49,7 +57,7 @@ def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr)
         "area": global_area_definition
         }
 
-        file="ECMWF_TEST_DOWNLOAD_MAX_FILE"+q+m+yr+".nc"
+        file="ECMWF_CARDAMOM_DRIVER_"+q+m+yr+".nc"
         client = cdsapi.Client()
         client.retrieve(dataset, request).download(file)
 
