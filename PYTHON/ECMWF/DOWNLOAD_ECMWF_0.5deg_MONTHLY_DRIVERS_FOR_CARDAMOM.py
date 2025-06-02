@@ -67,7 +67,25 @@ def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr);
 
 
 #Main code
+#Example for dowloading months & years of data
 
-DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(1, 2001);
+years=[2001,2002];
+months=[1,2,3];
+
+for m in months:
+  for yr in years:
+    DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr);
+
+
+
+
+
+
+
+
+
+
+
+
 
 
