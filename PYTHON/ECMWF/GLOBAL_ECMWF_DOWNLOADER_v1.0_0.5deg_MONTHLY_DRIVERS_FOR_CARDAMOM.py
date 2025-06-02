@@ -4,13 +4,14 @@ global_area_definition=[-89.75, -179.75, 89.75, 179.75];
 global_grid_definition=["0.5/0.5"];
 data_format="netcdf";
 download_format="unarchived";
+hourly_quantities=["2m_temperature","2m_dewpoint_temperature"];
+monthly_quantities=["total_precipitation","skin_temperature","surface_solar_radiation_downwards","snowfall"];
 
 
 def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr);
 
   #Step 1. Download all monthly averages by hour
 
-  hourly_quantities=["2m_temperature","2m_dewpoint_temperature"];
 
   for q in hourly_quantities:
         dataset = "reanalysis-era5-single-levels-monthly-means"
@@ -42,7 +43,6 @@ def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr);
 
     #Step 1. Download all monthly averages 
 
-  monthly_quantities=["total_precipitation","skin_temperature","surface_solar_radiation_downwards","snowfall"];
 
   
   for q in  monthly_quantities:
@@ -69,11 +69,9 @@ def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr);
 #Main code
 #Example for dowloading months & years of data
 
-years=[2001,2002];
-months=[1,2,3];
 
-for m in months:
-  for yr in years:
+for m in list(range(1, 12)):
+  for yr in list(range(2001, 2024)):
     DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr);
 
 
