@@ -1,10 +1,12 @@
+import cdsapi
+
 global_area_definition=[-89.75, -179.75, 89.75, 179.75];
 global_grid_definition=["0.5/0.5"];
 data_format="netcdf";
 download_format="unarchived";
 
 
-def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr);
+def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr):
 
   #Step 1. Download all monthly averages by hour
 
@@ -66,6 +68,6 @@ def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr);
 
 #Main code
 
-DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(1, 2001);
+DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM("01", "2001");
 
 
