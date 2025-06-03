@@ -55,9 +55,7 @@ def DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM(m, yr):
     client.retrieve(dataset, request).download(file)
 
 
+#Main code
 
-
-for m in list(range(1, 1)):
-  for yr in list(range(2001, 2001)):
-    DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM(m, yr);
+DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM("01", "2001");
 
