@@ -57,5 +57,5 @@ def DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM(m, yr):
 
 for m in list(range(1, 12)):
   for yr in list(range(2001, 2024)):
-    DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr);
+    DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM(m, yr);
 
