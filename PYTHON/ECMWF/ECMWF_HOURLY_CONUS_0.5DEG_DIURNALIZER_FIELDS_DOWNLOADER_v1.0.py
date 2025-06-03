@@ -1,6 +1,6 @@
 import cdsapi;
 
-global_area_definition=[-89.75, -179.75, 89.75, 179.75];
+global_area_definition=[60, -130, 20, -50];
 global_grid_definition=["0.5/0.5"];
 data_format="netcdf";
 download_format="unarchived";
@@ -44,9 +44,10 @@ def DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM(m, yr):
         "18:00", "19:00", "20:00",
         "21:00", "22:00", "23:00"
     ],
-    "data_format": "netcdf",
-    "download_format": "unarchived",
-    "area": [60, -130, 20, -50]
+           "data_format": data_format,
+        "grid": global_grid_definition,
+        "download_format": download_format,
+        "area": global_area_definition
     }
 
     file="ECMWF_CARDAMOM_HOURLY_DRIVER_TEMP_RAD"+m+yr+".nc"
