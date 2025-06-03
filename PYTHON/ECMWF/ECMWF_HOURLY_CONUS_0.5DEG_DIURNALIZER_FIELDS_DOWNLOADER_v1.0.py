@@ -49,13 +49,14 @@ def DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM(m, yr):
     "area": [60, -130, 20, -50]
     }
 
+    file="ECMWF_CARDAMOM_HOURLY_DRIVER_TEMP_RAD"+m+yr+".nc"
     client = cdsapi.Client()
-    client.retrieve(dataset, request).download()
+    client.retrieve(dataset, request).download(file)
 
 
 
 
-for m in list(range(1, 12)):
-  for yr in list(range(2001, 2024)):
+for m in list(range(1, 1)):
+  for yr in list(range(2001, 2001)):
     DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM(m, yr);
 
