@@ -16,7 +16,7 @@ def DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM(m, yr):
     request = {
     "product_type": ["reanalysis"],
     "variable": [
-        ""skin_temperature",
+        ""skin_temperature"
         "surface_solar_radiation_downwards"
     ],
     "year": yr,
