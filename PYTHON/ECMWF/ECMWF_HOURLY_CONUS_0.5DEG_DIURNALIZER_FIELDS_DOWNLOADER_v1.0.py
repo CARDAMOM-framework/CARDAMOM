@@ -8,7 +8,7 @@ hourly_quantities=["2m_temperature","2m_dewpoint_temperature"];
 monthly_quantities=["total_precipitation","skin_temperature","surface_solar_radiation_downwards","snowfall"];
 
 
-def DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM(m, yr);
+def DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM(m, yr):
 
   #Step 1. Download all monthly averages by hour
 
