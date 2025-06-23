@@ -72,43 +72,64 @@ end
 function augment_h2o_problem_with_temp_energy
 
 %INCOMPLETE: DO WITH DEGREES C FOR NOW
-
+Asingle=forward_model;
 %Need to set up a "Truth" here as well
 
 
 %uncertainty 
+%Qext H2O is "flow" here
 x_prior_flow=[10,20,30,40,50]';
+x_prior_flow_truth=x_prior_flow;%[8,22,35,38,49]';
 x_prior_flow_unc=[5,10,15,20,25]';
 
 %Degrees C
 x_prior_temp=[2,4,6,8,10]';
+x_prior_temp_truth=x_prior_temp;%[2.5,3.5,6.2,7.5,10.7]';
 %Temp to energy uncertainty
 Uunc=3;%1 deg C
 x_prior_temp_unc=[1,1,1,1,1]'*Uunc;
 
 x_prior_e=x_prior_temp.*x_prior_flow;
+x_prior_e_truth=x_prior_temp_truth.*x_prior_flow_truth;
+%Qext = {Qext H2O, Qext Energy}
 x_prior=[x_prior_flow;x_prior_e];
-
-
-x_prior_energy_unc=x_prior_flow.*x_prior_temp_unc;
+x_prior_truth=[x_prior_flow_truth;x_prior_e_truth];
+x_prior_e_unc=sqrt((x_prior_flow_unc./x_prior_flow).^2 + (x_prior_temp_unc./x_prior_temp).^2).*x_prior_e;
+%x_prior_e_unc=x_prior_flow.*x_prior_temp_unc;
+x_prior_unc=[x_prior_flow_unc;x_prior_e_unc];
 
 
 %Make covariance matrix here:
-C_x_prior=diag([x_prior_flow_unc;x_prior_energy_unc]');
+%[NEXT: weave in covariance here]
+%Variance(diagonal)
+C_x_prior=diag([x_prior_unc.^2]');
 
+
+%Properties
+%cov(a,a*b) = mean(b)*var(a) if x and y are 
+%cov(flow, flow*temp) = mean(temp)*var(flow);
+for n=1:5
+C_x_prior(n,n+5)=x_prior_temp(n).*x_prior_flow_unc(n)^2;
+C_x_prior(n+5,n)=C_x_prior(n,n+5);
+end
+% C_y_obs(1,3)=y_obs_temp(1).*y_obs_flow_unc(1);
+% C_y_obs(3,1)=C_y_obs(1,3);
+% C_y_obs(2,4)=y_obs_temp(2).*y_obs_flow_unc(2);
+% C_y_obs(4,2)=C_y_obs(2,4);
 
 
 %Translating to "energy"-weighed temps
 %Bring in values here
 
-Asingle=forward_model;
-
 A=Asingle;
 
-A(end+1:end*2,end+1:end*2)=A;
+A(end+1:end*2,end+1:end*2)=Asingle;
 %Characterize uncertainty
 
-observables=A*x_prior;
+%q_obs (observables)
+observables=A*x_prior_truth;
+
+
 normalizeobs=ones(size(observables));
 normalizeobs(end/2+1:end)=observables(1:end/2);
 obs_with_energy=observables./normalizeobs;
@@ -120,23 +141,35 @@ obs_with_energy=observables./normalizeobs;
 
 
 %Uncertaingty of flow and temperature 
-Obs_temp_unc=[10,10];
-y_obs_flow=[50; 160];
-y_obs_energy=[5;7].*y_obs_flow;
-y_obs_energy_unc=y_obs_flow'.*Obs_temp_unc;
-y_obs_unc_diag=[5,5,y_obs_energy_unc];
+%Temp uncertaintty in deg C (+/-)
+Obs_temp_unc=[0.5,0.5]';
+y_obs=observables;
 
-y_obs=[y_obs_flow;y_obs_energy];
+y_obs_flow=[observables(1:2)];
+%river gauge uncertainty M3/day (+/-)
+y_obs_flow_unc=[5,5]';
+y_obs_energy=observables(3:4);
+y_obs_temp=y_obs_energy./y_obs_flow;
+%Uncertainty propagation 
+%Observable = sig_flow/flow^2 + sig_
+y_obs_energy_unc=y_obs_energy.*sqrt([y_obs_flow_unc./y_obs_flow].^2 + [Obs_temp_unc./y_obs_temp].^2);
+%y_obs_energy_unc=y_obs_flow.*Obs_temp_unc;
+y_obs_unc_diag=[y_obs_flow_unc;y_obs_energy_unc];
+
+
+
 
 
 %Make covariances happen only 
 %Here we have to calculae thye covariance as Obs_temp_unc*flow 
 CRM=eye(4);
 C_y_obs=diag(y_obs_unc_diag)*CRM*diag(y_obs_unc_diag);
-
-C_y_obs(1,3)=y_obs_flow(1).*Obs_temp_unc(1);
+%Properties
+%cov(a,a*b) = mean(b)*var(a)
+%cov(flow, flow*temp) = mean(temp)*var(flow)
+C_y_obs(1,3)=y_obs_temp(1).*y_obs_flow_unc(1)^2;
 C_y_obs(3,1)=C_y_obs(1,3);
-C_y_obs(2,4)=y_obs_flow(2).*Obs_temp_unc(2);
+C_y_obs(2,4)=y_obs_temp(2).*y_obs_flow_unc(2)^2;
 C_y_obs(4,2)=C_y_obs(2,4);
 
 %Next step: Now we can calculate Hessian
@@ -145,13 +178,20 @@ C_x_posterior=inv(A'*inv(C_y_obs)*A + inv(C_x_prior));
 
 %Next step: Calculate posterior flow and temperature
 x_posterior=x_prior + C_x_posterior*A'*(C_y_obs^-1)* (y_obs - A*x_prior);
-
+x_posterior_unc=sqrt(diag(C_x_posterior));
 %Now calculate temperature in x_posrerior
 
 x_posterior_temp=x_posterior(end/2+1:end)./x_posterior(1:end/2);
-cxpd=diag(C_x_posterior);
-x_posterior_temp_unc=cxpd(end/2+1:end)./x_posterior(1:end/2);
 
+
+% f= A/B;
+
+% sigma_f ^2 = mean(f)^2 [(sigma_A/A)^2 + (sigma_B/B)^2 - 2* cov(A,B)/AB])
+
+for n=1:5
+CAB=C_x_posterior(n,n+5);
+x_posterior_temp_unc(n)=sqrt(  x_posterior_temp(n)^2* (  (x_posterior_unc(n)/x_posterior(n))^2 + (x_posterior_unc(n+5)/x_posterior(n+5))^2 - 2*CAB/(x_posterior(n)*x_posterior(n+5))));
+end
 
 end
 
