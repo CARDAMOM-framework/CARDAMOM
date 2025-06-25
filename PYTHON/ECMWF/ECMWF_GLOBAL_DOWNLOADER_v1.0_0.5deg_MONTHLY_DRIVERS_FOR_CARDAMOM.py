@@ -1,4 +1,5 @@
 import cdsapi
+#Add STRD to list for next iteration (version 1.1)
 
 global_area_definition=[-89.75, -179.75, 89.75, 179.75];
 global_grid_definition=["0.5/0.5"];
