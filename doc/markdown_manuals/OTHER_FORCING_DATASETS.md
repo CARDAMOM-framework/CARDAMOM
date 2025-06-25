@@ -1,4 +1,4 @@
-
+All notes on non-ECMWF forcing datas4ts needed to run CARDAMOM are here
 
 CO2 dfata is downloaded from here:
 
