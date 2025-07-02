@@ -26,3 +26,11 @@ VPSAT=6.11*10.^(7.5*T./(237.3+T))./10 ;
 
 
 end
+
+
+function VPSAT=SCIFUN_H2O_SATURATION_PRESSURE(T)
+
+
+VPSAT=6.11*10.^(7.5*T./(237.3+T))./10 ;
+
+end
