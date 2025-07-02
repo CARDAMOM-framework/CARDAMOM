@@ -1,12 +1,14 @@
 import cdsapi
+#cdsapi instructions available here: https://confluence.ecmwf.int/display/CKB/How+to+install+and+use+CDS+API+on+macOS 
 
+# variable names are available here and at related links: https://confluence.ecmwf.int/pages/viewpage.action?pageId=536218894 
 global_area_definition=[-89.75, -179.75, 89.75, 179.75];
 global_grid_definition=["0.5/0.5"];
 data_format="netcdf";
 download_format="unarchived";
 hourly_quantities=["2m_temperature","2m_dewpoint_temperature"];
 monthly_quantities=["total_precipitation","skin_temperature","surface_solar_radiation_downwards","snowfall"];
-
+#Add STRD to list for next iteration (version 1.1)
 
 def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr):
 
@@ -36,7 +38,7 @@ def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr):
         "area": global_area_definition
         }
 
-        file="ECMWF_CARDAMOM_DRIVER_"+q+m+yr+".nc"
+        file = f"ECMWF_CARDAMOM_DRIVER_{q}_{str(m).zfill(2)}{yr}.nc" #formats file title
         client = cdsapi.Client()
         client.retrieve(dataset, request).download(file)
 
@@ -59,7 +61,7 @@ def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr):
         "area": global_area_definition
         }
 
-        file="ECMWF_CARDAMOM_DRIVER_"+q+m+yr+".nc"
+        file = f"ECMWF_CARDAMOM_DRIVER_{q}_{str(m).zfill(2)}{yr}.nc" #formats file title
         client = cdsapi.Client()
         client.retrieve(dataset, request).download(file)
 
@@ -67,15 +69,10 @@ def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr):
 
 
 #Main code
-<<<<<<< HEAD:PYTHON/ECMWF/DOWNLOAD_ECMWF_0.5deg_MONTHLY_DRIVERS_FOR_CARDAMOM.py
-
-DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM("01", "2001");
-=======
 #Example for dowloading months & years of data
 
-
-for m in list(range(1, 12)):
-  for yr in list(range(2001, 2024)):
+for m in list(range(1, 13)):  #downloads months 1-12
+  for yr in list(range(2001, 2025)): #downloads years 2001-2024
     DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr);
 
 
@@ -89,6 +86,5 @@ for m in list(range(1, 12)):
 
 
 
->>>>>>> ba0724a71e7a466aa6de9d4cb9854db52536e711:PYTHON/ECMWF/ECMWF_GLOBAL_DOWNLOADER_v1.0_0.5deg_MONTHLY_DRIVERS_FOR_CARDAMOM.py
 
 
