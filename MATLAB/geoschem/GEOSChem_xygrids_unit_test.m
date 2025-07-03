@@ -24,12 +24,17 @@ ncwrite(fname,'DATAGC',DATAGC);
 ncwrite(fname,'AreaGC',AreaGC);
 
 %Step 5. reread
+fname="Random_field_regridding_test.nc";
 DATA05x05=ncread(fname,'DATA05x05');
 Area05x05=ncread(fname,'Area05x05');
 DATAGC=ncread(fname,'DATAGC');
 AreaGC=ncread(fname,'AreaGC');
 
-%Step 6. Check totals
+%Step 6. Rederived
+DATAGCnew=GEOSChem_regular_grid_to_GC4x5(DATA05x05);
+
+%Step 7. Check totals
 fprintf('Total data @ 05deg = %2.2f\n',total(Area05.*DATA05x05 ))
 fprintf('Total data @ GC grid = %2.2f\n',total(AreaGC.*DATAGC))
+fprintf('Total data @ GC grid = %2.2f\n',total(AreaGC.*DATAGCnew))
 

@@ -11,9 +11,9 @@ function FOUT=GEOSChem_regular_grid_to_GC4x5(FIN)
 
 
 
-%if total(isfinite(FIN)==0)==0  & total(FIN<0)==0; sf=1;else sf=0;end
+if total(isfinite(FIN)==0)==0  & total(FIN<0)==0; sf=1;else sf=0;end
 
-if strcmp(gcres,'4x5');FOUT=regrid_4x5(FIN,sf);
+FOUT=regrid_4x5(FIN,sf);
 
 if total(FIN<0)>0; disp('Note: not rescaling field since input is not positive definite');end
 
