@@ -3,6 +3,7 @@
 %Step 1. Random field
 rng(0);
 DATA05x05=10+rand(360,720);
+DATA05x05([1:10,351:360],:)=0;
 AreaGC=getfield(GEOSChem_xygrids,'area');
 [~,~,Area05x05]=loadworldmesh(0.5);
 
