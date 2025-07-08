@@ -15,3 +15,4 @@ double psi=psi_porosity*(pow((1/moi),b));
  
 return psi;
 }
+
