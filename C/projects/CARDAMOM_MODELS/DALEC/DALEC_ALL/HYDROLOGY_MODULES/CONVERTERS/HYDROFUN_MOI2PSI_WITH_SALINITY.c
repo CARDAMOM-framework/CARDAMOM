@@ -14,8 +14,8 @@ temp - soil water temperature (units: K)
  
 double psi=psi_porosity*(pow((1/moi),b));
 /*UCR team: you can propose code in line below; I'm setting this to zero for now  to get the ball rolling*/
-/*Also defining some constants which you can populate
-double salinity = 0.0;/*use this notation to define all your variables
+/*Also defining some constants which you can populate*/
+double salinity = 0.0;/*use this notation to define all your variables*/
 double psi_pi = - 0.0;
 
 /*summing two psi terms*/
