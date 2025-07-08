@@ -16,7 +16,7 @@ double psi=psi_porosity*(pow((1/moi),b));
 /*UCR team: you can propose code in line below; I'm setting this to zero for now  to get the ball rolling*/
 double psi_pi = - 0.0;
 
-/*summing two psi terms
+/*summing two psi terms*/
 double psi_total = psi + psi_pi;
 
 return psi;
