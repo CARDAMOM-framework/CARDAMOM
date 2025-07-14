@@ -17,6 +17,16 @@ end
     GG.x=x;
     GG.y=y;
     GG.area=111111.111^2*(resx*resy)*cos(GG.y*pi/180);
+
+
+    % Calculates the area of each grid cell on a sphere.
+    % Formula: R^2 * (lon2 - lon1) * (sin(lat2) - sin(lat1))
+    % Lat/Lon edges should be in degrees. Output area in m^2.
+    %GC.area accurate
+    EARTH_RADIUS_METERS = 6.371e6;
+    ydiff=y*0+2;
+    ydiff([1,end],:)=1;
+    GG.area_accurate=EARTH_RADIUS_METERS.^2 *(5*pi/180)*(sin((y+ydiff)*pi/180) - sin((y-ydiff)*pi/180));
     
     
 end

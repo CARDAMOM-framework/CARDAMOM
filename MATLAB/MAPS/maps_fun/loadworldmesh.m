@@ -1,4 +1,4 @@
-function [x,y,A]=loadworldmesh(res,xylims)
+function [x,y,A,A_accurate]=loadworldmesh(res,xylims)
 
 defval('xylims',[-180,180,-90,90]);
 %Note that GC does not support xylims at this point
@@ -27,6 +27,14 @@ hafresy=res(2)/2;
 
 %Area
 A=111111.111^2*(res(1)*res(2))*cos(y*pi/180);
+
+%Arrea accurate
+ydiff=y*0+hafresy;
+    EARTH_RADIUS_METERS = 6.371e6;
+
+   A_accurate=EARTH_RADIUS_METERS.^2 *(res(1)*pi/180)*(sin((y+ydiff)*pi/180) - sin((y-ydiff)*pi/180));
+
+
 
 end
 
