@@ -84,7 +84,9 @@ end
         SF=nantotal(FIN(:,:,n,nn).*A)/nantotal(fch4_gc.*Ag);
         else
             SF=1;
+           
         end
+        SF=1;
 
         FOUT(:,:,n,nn)=fch4_gc*SF;
     end
