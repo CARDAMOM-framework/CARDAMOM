@@ -17,6 +17,7 @@
 #include "../DALEC_ALL/INITIALIZE_INTERNAL_SOIL_ENERGY.c"
 #include "../DALEC_ALL/INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS.c"
 #include "../DALEC_ALL/ALLOC_AND_AUTO_RESP_FLUXES.c"
+#include "../DALEC_ALL/THERMAL_CONDUCTIVITY.c"
 
 
 
@@ -663,8 +664,30 @@ double moles_per_m3 = Psurf/(Rgas*air_temp_k);
 // FLUXES[f+F.ground_heat] = G; // W m-2
 // FLUXES[f+F.gh_in] = G*DGCM_SEC_DAY; // J m-2 d-1
 
+//******************Declare THERM STRUCT*********************
+Thermal_struct THERM;
+
+    //define time-invariant parameters
+THERM.IN.surf_por=pars[P.LY1_por];
+THERM.IN.mid_por=0.5*(pars[P.LY2_por]+pars[P.LY1_por]); 
+THERM.IN.deep_por=0.5*(pars[P.LY3_por]+pars[P.LY2_por]); 
+THERM.IN.soil_VWC_surf=POOLS[p+S.D_SM_LY1];
+THERM.IN.soil_VWC_mid=0.5*(POOLS[p+S.D_SM_LY1]+POOLS[p+S.D_SM_LY2]);
+THERM.IN.soil_VWC_deep=0.5*(POOLS[p+S.D_SM_LY2]+POOLS[p+S.D_SM_LY3]);
+THERM.IN.LF_surf=POOLS[p+S.D_LF_LY1];
+THERM.IN.LF_mid=0.5*(POOLS[p+S.D_LF_LY1]+POOLS[p+S.D_LF_LY2]);
+THERM.IN.LF_deep=0.5*(POOLS[p+S.D_LF_LY2]+POOLS[p+S.D_LF_LY3]);
+THERM.IN.soil_thermal_conductivity_surf=pars[P.thermal_cond_surf];
+THERM.IN.soil_thermal_conductivity_middeep=pars[P.thermal_cond];
+
+    //Call function: uses THERM->IN to update THERM->OUT
+THERMAL_COND(&THERM);
+double therm_cond_surf=THERM.OUT.THERMAL_COND_SURF;
+double therm_cond_mid=THERM.OUT.THERMAL_COND_MID;
+double therm_cond_deep=THERM.OUT.THERMAL_COND_DEEP;
+
 //Gh_in approach 2 based on soil and LST
-FLUXES[f+F.ground_heat] =(pars[P.thermal_cond_surf]* (tskin_k - POOLS[p+S.D_TEMP_LY1])/(pars[P.LY1_z]*0.5))*(1. - POOLS[p+S.D_SCF]);
+FLUXES[f+F.ground_heat] =(therm_cond_surf* (tskin_k - POOLS[p+S.D_TEMP_LY1])/(pars[P.LY1_z]*0.5))*(1. - POOLS[p+S.D_SCF]);
 FLUXES[f+F.gh_in] =FLUXES[f+F.ground_heat] *DGCM_SEC_DAY;        
 //Using G, Rn and LE to derive H
 // H = Rn - G  - LE
@@ -799,8 +822,8 @@ FLUXES[f+F.q_ly1_e] = FLUXES[f+F.q_ly1]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS
 FLUXES[f+F.q_ly2_e] = FLUXES[f+F.q_ly2]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_LY2]);
 FLUXES[f+F.q_ly3_e] =  FLUXES[f+F.q_ly3]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_LY3]);
     //Thermal conductivity = k*dT/dz, units are W/m2, converting to J/m2/d
-FLUXES[f+F.ly1xly2_th_e] = 2*pars[P.thermal_cond]* (POOLS[p+S.D_TEMP_LY1] - POOLS[p+S.D_TEMP_LY2])/(pars[P.LY1_z] + pars[P.LY2_z])*DGCM_SEC_DAY;
-FLUXES[f+F.ly2xly3_th_e] = 2*pars[P.thermal_cond]* (POOLS[p+S.D_TEMP_LY2] - POOLS[p+S.D_TEMP_LY3])/(pars[P.LY2_z] + pars[P.LY3_z])*DGCM_SEC_DAY;
+FLUXES[f+F.ly1xly2_th_e] = 2*therm_cond_mid* (POOLS[p+S.D_TEMP_LY1] - POOLS[p+S.D_TEMP_LY2])/(pars[P.LY1_z] + pars[P.LY2_z])*DGCM_SEC_DAY;
+FLUXES[f+F.ly2xly3_th_e] = 2*therm_cond_deep* (POOLS[p+S.D_TEMP_LY2] - POOLS[p+S.D_TEMP_LY3])/(pars[P.LY2_z] + pars[P.LY3_z])*DGCM_SEC_DAY;
 
 
 FLUXES[f+F.geological]=PREDERIVED_GEO_FLUX;//In J/m2/d //105mW/m2
