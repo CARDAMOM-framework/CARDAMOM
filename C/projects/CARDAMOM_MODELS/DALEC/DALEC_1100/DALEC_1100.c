@@ -279,7 +279,7 @@ double pi=DGCM_PI;
 
 //PREDERIVED TERMS 
 
-    double PREDERIVED_GEO_FLUX=0.105*3600*24;
+    double PREDERIVED_GEO_FLUX=0.065*3600*24; /*try values from https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/93rg01249*/
 
 
 double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.values[0];
