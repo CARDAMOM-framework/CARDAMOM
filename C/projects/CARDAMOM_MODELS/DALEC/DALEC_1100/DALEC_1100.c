@@ -10,6 +10,7 @@
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2EWT.c"
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2CON.c"
 #include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI.c"
+#include "../DALEC_ALL/HYDROLOGY_MODULES/CONVERTERS/HYDROFUN_MOI2PSI_WITH_SALINITY.c"
 #include "../DALEC_ALL/LIU_AN_ET_REFACTOR.c"
 #include "../DALEC_ALL/CH4_MODULES/HET_RESP_RATES_JCR.c"
 #include "../DALEC_ALL/KNORR_ALLOCATION.c"
@@ -341,9 +342,10 @@ POOLS[S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z
     // Convert to potential
         //Min psi ensures large negative psis not resolved by model needlessly
 	        double minpsi=-30;
-POOLS[S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY1],psi_porosity,pars[P.retention]),minpsi);
-POOLS[S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY2],psi_porosity,pars[P.retention]),minpsi);
-POOLS[S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY3],psi_porosity,pars[P.retention]),minpsi);
+POOLS[S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI_WITH_SALINITY(POOLS[S.D_SM_LY1],psi_porosity,pars[P.retention],
+                                                       POOLS[S.D_TEMP_LY1],2.0,pars[P.LY1_por]),minpsi);
+POOLS[S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY2],psi_porosity,pars[P.retention]),minpsi);
+POOLS[S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY3],psi_porosity,pars[P.retention]),minpsi);
 
 
 //******************Declare SOIL_TEMP_AND_LIQUID_FRAC STRUCT*********************       
@@ -1120,7 +1122,8 @@ POOLS[nxp+S.D_SM_LY1]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY1],pars[P.LY1_por],pars
 POOLS[nxp+S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY2],pars[P.LY2_por],pars[P.LY2_z]);//soil moisture LY2
 POOLS[nxp+S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3
 
-POOLS[nxp+S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY1],psi_porosity,pars[P.retention]),minpsi);
+POOLS[nxp+S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI_WITH_SALINITY(POOLS[nxp+S.D_SM_LY1],psi_porosity,pars[P.retention],
+                                                           POOLS[nxp+S.D_TEMP_LY1],2.0,pars[P.LY1_por]),minpsi);
 POOLS[nxp+S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY2],psi_porosity,pars[P.retention]),minpsi);
 POOLS[nxp+S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention]),minpsi);
 
