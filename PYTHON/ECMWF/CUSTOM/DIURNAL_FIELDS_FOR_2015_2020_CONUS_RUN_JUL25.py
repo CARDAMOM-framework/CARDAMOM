@@ -57,4 +57,8 @@ def DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM(m, yr):
 
 #Main code
 
-DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM("01", "2001");
+for year in range(2015, 2021):
+    for month in range(1, 13):
+        year_str = str(year)
+        month_str = str(month).zfill(2) # zfill(2) pads with a leading zero if needed
+        DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM(month_str, year_str)
