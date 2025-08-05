@@ -38,6 +38,5 @@ double psi_pi = fmax(psi_pi_interm, -30.12);
 /*summing two psi terms*/
 double psi_total = psi + psi_pi;
 
-return psi;
 return psi_total;
 }
