@@ -1,6 +1,9 @@
 import cdsapi
 import os
-
+#General notes
+#***WARNING***
+#When trying to download two or more variables in one go, the API was downloading nc files that were effectively unreadable
+#Test before implementation with modifications!
 global_area_definition=[60, -130, 20, -50]
 global_grid_definition=["0.5/0.5"]
 data_format="netcdf"
