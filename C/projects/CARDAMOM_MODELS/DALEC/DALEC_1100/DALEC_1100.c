@@ -716,9 +716,15 @@ FLUXES[f+F.q_ly3] = HYDROFUN_MOI2EWT(drain_LY3,pars[P.LY3_por],pars[P.LY3_z])*on
 FLUXES[f+F.q_surf],FLUXES[f+F.q_ly1],FLUXES[f+F.q_ly2],FLUXES[f+F.q_ly3]);*/
 
     // Convert to conductivity
-double k_LY1 = HYDROFUN_MOI2CON((POOLS[p+S.D_SM_LY1]*POOLS[p+S.D_LF_LY1]),pars[P.hydr_cond],pars[P.retention]);
-double k_LY2 = HYDROFUN_MOI2CON((POOLS[p+S.D_SM_LY2]*POOLS[p+S.D_LF_LY2]),pars[P.hydr_cond],pars[P.retention]);
-double k_LY3 = HYDROFUN_MOI2CON((POOLS[p+S.D_SM_LY3]*POOLS[p+S.D_LF_LY3]),pars[P.hydr_cond],pars[P.retention]);
+double k_LY1 = HYDROFUN_MOI2CON((POOLS[p+S.D_SM_LY1]*POOLS[p+S.D_LF_LY1])/ //water fraction
+        (1-POOLS[p+S.D_SM_LY1]+(POOLS[p+S.D_SM_LY1]*POOLS[p+S.D_LF_LY1])), //water + air fraction
+        pars[P.hydr_cond],pars[P.retention]);
+double k_LY2 = HYDROFUN_MOI2CON((POOLS[p+S.D_SM_LY2]*POOLS[p+S.D_LF_LY2])/
+        (1-POOLS[p+S.D_SM_LY2]+(POOLS[p+S.D_SM_LY2]*POOLS[p+S.D_LF_LY2])),
+        pars[P.hydr_cond],pars[P.retention]);
+double k_LY3 = HYDROFUN_MOI2CON((POOLS[p+S.D_SM_LY3]*POOLS[p+S.D_LF_LY3])/
+        (1-POOLS[p+S.D_SM_LY3]+(POOLS[p+S.D_SM_LY3]*POOLS[p+S.D_LF_LY3])),
+        pars[P.hydr_cond],pars[P.retention]);
 
     // Calculate inter-pool transfer in m/s (positive is LY1 to LY2)
 double pot_xfer = 1000 * sqrt(k_LY1*k_LY2) * (1e-9*(POOLS[p+S.D_PSI_LY1]-POOLS[p+S.D_PSI_LY2])/(9.8*0.5*(pars[P.LY1_z]+pars[P.LY2_z])) + 1);
