@@ -458,6 +458,7 @@ int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
 
 
     /*repeating loop for each timestep*/
+
 for (n=0; n < N_timesteps; n++){
     /*pool index*/
 p=nopools*n;
@@ -673,7 +674,7 @@ FLUXES[f+F.gh_in] =FLUXES[f+F.ground_heat] *DGCM_SEC_DAY;
 FLUXES[f+F.sensible_heat] = Rn - FLUXES[f+F.ground_heat] - FLUXES[f+F.latent_heat];
 
     // Infiltration (mm/day)
-    double et_recycled=(FLUXES[f+F.ets]-ET_REF[n])*0.25;
+double et_recycled=(FLUXES[f+F.ets]-ET_REF[n])*0;
 double liquid_in = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]+et_recycled);
 FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-liquid_in/pars[P.max_infil]));
 
@@ -1134,6 +1135,7 @@ POOLS[nxp+S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosit
     if (isfinitecheck==0){break;};
 
 }
+
 
 
 
