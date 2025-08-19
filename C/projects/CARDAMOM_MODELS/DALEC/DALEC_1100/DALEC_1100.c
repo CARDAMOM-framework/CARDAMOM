@@ -674,7 +674,7 @@ FLUXES[f+F.gh_in] =FLUXES[f+F.ground_heat] *DGCM_SEC_DAY;
 FLUXES[f+F.sensible_heat] = Rn - FLUXES[f+F.ground_heat] - FLUXES[f+F.latent_heat];
 
     // Infiltration (mm/day)
-double et_recycled=(FLUXES[f+F.ets]-ET_REF[n])*0.25;
+double et_recycled=(FLUXES[f+F.ets]-ET_REF[n])*0.5;
 /*printf ET_rec*/
 printf("et_recycled = %2.2f\n",et_recycled);
 double liquid_in = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]+et_recycled);
