@@ -675,6 +675,8 @@ FLUXES[f+F.sensible_heat] = Rn - FLUXES[f+F.ground_heat] - FLUXES[f+F.latent_hea
 
     // Infiltration (mm/day)
 double et_recycled=(FLUXES[f+F.ets]-ET_REF[n])*0.25;
+/*printf ET_rec*/
+printf("et_recycled = %2.2f\n",et_recycled);
 double liquid_in = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]+et_recycled);
 FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-liquid_in/pars[P.max_infil]));
 
