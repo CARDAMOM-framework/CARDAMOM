@@ -115,6 +115,7 @@ TIMESERIES_DRIVER_STRUCT TOTAL_PREC;
 TIMESERIES_DRIVER_STRUCT VPD;
 TIMESERIES_DRIVER_STRUCT YIELD;
 TIMESERIES_DRIVER_STRUCT ET_REF;//For precip-recycling experiments only
+TWO_DIM_VAR_STRUCT ET_REF2;//For precip-recycling experiments only
 
 
 //Summary variables
