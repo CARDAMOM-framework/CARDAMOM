@@ -330,14 +330,32 @@ printf("Done reading all other edc ");
 		DATA->ET_REF.reference_mean=ncdf_read_double_attr(ncid, "ET_REF","reference_mean");
                                 DEFAULT_REFERENCE_MEAN(&DATA->ET_REF);
         
-       
+      printf("Made it here 1\n");
      DATA->ET_REF2.values=ncdf_read_double_2D(ncid, "ET_REF2", DATA->ET_REF2.dimensions);
                // DATA->ET_REF2.reference_mean=ncdf_read_double_attr(ncid, "ET_REF2","reference_mean");
                                 //DEFAULT_REFERENCE_MEAN(&DATA->ET_REF2);
+      printf("Made it here 2\n");
 
-//                    printf("%9.4f\t", DATA->ET_REF2.values[0][1]);
-  //                  printf("%9.4f\t", DATA->ET_REF2.values[0][2]);
-    //                printf("%9.4f\t", DATA->ET_REF2.values[2][2]);
+                   printf("%9.4f\t", DATA->ET_REF.values[0]);
+
+
+      printf("Made it here 3\n");
+                   
+		   printf("%9i\n", DATA->ET_REF2.dimensions[0]);
+		   printf("%9i\n", DATA->ET_REF2.dimensions[1]);
+
+		   printf("%9.4f\t", DATA->ET_REF2.values[0][0]);
+                   printf("%9.4f\t", DATA->ET_REF2.values[1][0]);
+                   printf("%9.4f\t", DATA->ET_REF2.values[1][1]);
+                   printf("%9.4f\t", DATA->ET_REF2.values[1][2]);
+                   printf("%9.4f\t", DATA->ET_REF2.values[2][2]);
+                   printf("%9.4f\t", DATA->ET_REF2.values[2][0]);
+                 
+      printf("Made it here 4\n");
+
+
+//   printf("%9.4f\t", DATA->ET_REF2.values[0][2]);
+                   // printf("%9.4f\t", DATA->ET_REF2.values[2][2]);
 
 
 
