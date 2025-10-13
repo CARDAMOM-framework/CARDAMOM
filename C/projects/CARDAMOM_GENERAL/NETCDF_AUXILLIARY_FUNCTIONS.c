@@ -287,13 +287,12 @@ double ** ncdf_read_double_2D(int ncid, const char * varName, size_t * dimLen ){
 	for(int idx=0; idx<dimLen[0]; idx++){
 		//Allocate and populate the child arrays that hold the data
 		resultArray[idx] = (double*)calloc(dimLen[1], sizeof(double));
-		
+
        // *** THE FIX IS HERE ***
         // Update the starting index for the first dimension (the row).
         // On the next loop, it will read from {1,0}, then {2,0}, and so on.
+  // THIS IS THE FIX: Update which row you are about to read
         startIndexes[0] = idx;
-
-
 
 		if ((retval = nc_get_vara(ncid, varID, startIndexes, readCount, resultArray[idx] ))){
 			ERR_VAR(retval, varName);
