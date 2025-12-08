@@ -140,7 +140,7 @@ end
 
 end
 
-function checks
+function output_checks_cms_monthly_diurnal
 
 m=9;
 yr=2015;
@@ -177,18 +177,42 @@ subplot(2,3,4);plot(squeeze(FIR(c,r,:)));
 subplot(2,3,5);plot(squeeze(NBE(c,r,:)));
 
 
-%
+%Now show all monthlky fluxes and check these are reasonable
+
+figure(1);clf
+for m=1:12
+     nbe_monthly_file=sprintf('DUMPFILES/CARDAMOM_CONUS_DIURNAL_FLUXES_JUL25_EXP1/MONTHLY/NBE/CARDAMOM/2015/%02i.nc',m);
+    %NBE=ncread(nbe_monthly_file,'CO2_flux');
+    NBEUNC=ncread(nbe_monthly_file,'Uncertainty');
+    lon=ncread(nbe_monthly_file,'longitude');
+    lat=ncread(nbe_monthly_file,'latitude');
+
+    subplot(3,4,m);
+
+    plotglobal(NBEUNC',lon,lat);
+    colorbar
+
+end
+
+
+
 
 
 
 k=1;
 for d=1:30
-       gfile=sprintf('DUMPFILES/CARDAMOM_CONUS_DIURNAL_FLUXES_JUL25_EXP1/DIURNAL/NBE/CARDAMOM/2015/05/%02i.nc',d);
+       gfile=sprintf('DUMPFILES/CARDAMOM_CONUS_DIURNAL_FLUXES_JUL25_EXP1/DIURNAL/NBE/CARDAMOM/2015/09/%02i.nc',d);
        NBE0(:,:,(d-1)*24+[1:24])=ncread(gfile,'CO2_Flux');
-      gfile=sprintf('DUMPFILES/CARDAMOM_CONUS_DIURNAL_FLUXES_JUL25/DIURNAL/NBE/CARDAMOM/2015/05/%02i.nc',d);
+      gfile=sprintf('DUMPFILES/CARDAMOM_CONUS_DIURNAL_FLUXES_JUL25/DIURNAL/NBE/CARDAMOM/2015/09/%02i.nc',d);
        NBE(:,:,(d-1)*24+[1:24])=ncread(gfile,'CO2_Flux');
 end
 
+
+
+%Check monthly values to make sure those are OK too
+%CONTINUE FROM HERE
+
+%Read monthly fluxes and double0
 
 
 
