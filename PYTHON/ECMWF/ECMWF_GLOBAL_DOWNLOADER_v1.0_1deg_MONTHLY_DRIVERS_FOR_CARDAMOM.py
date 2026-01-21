@@ -2,12 +2,12 @@ import cdsapi
 #cdsapi instructions available here: https://confluence.ecmwf.int/display/CKB/How+to+install+and+use+CDS+API+on+macOS 
 
 # variable names are available here and at related links: https://confluence.ecmwf.int/pages/viewpage.action?pageId=536218894 
-global_area_definition=[-89.75, -179.75, 89.75, 179.75];
-global_grid_definition=["0.5/0.5"];
+global_area_definition=[-89.5, -179.5, 89.5, 179.5];
+global_grid_definition=["1.0/1.0"];
 data_format="netcdf";
 download_format="unarchived";
 hourly_quantities=["2m_temperature","2m_dewpoint_temperature"];
-monthly_quantities=["total_precipitation","skin_temperature","surface_solar_radiation_downwards","snowfall"];
+monthly_quantities=["total_precipitation","skin_temperature","surface_solar_radiation_downwards","surface_thermal_radiation_downwards","snowfall"];
 #Add STRD to list for next iteration (version 1.1)
 
 def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr):
