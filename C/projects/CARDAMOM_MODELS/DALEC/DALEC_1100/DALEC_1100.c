@@ -650,10 +650,6 @@ double LE = (lambda_liquid*From_Liquid + lambda_solid *From_Solid)/DGCM_SEC_DAY;
 
 FLUXES[f+F.latent_heat] = LE; // W m-2
 
-
-    //Latent heat (W.m-2)
-double LE = lambda*(FLUXES[f+F.evap]+FLUXES[f+F.transp1]+FLUXES[f+F.transp2])/DGCM_SEC_DAY; // W m-2
-FLUXES[f+F.latent_heat] = LE; // W m-2
     //specific heat capacity of dry air is 1.00464 KJ kg -1 K -1
         // Consider surface pressure as forcing for more accurate conversion from mol to m3
         // Consider explicitly calculating cp based on humidity (derived from VPD and pressure)
