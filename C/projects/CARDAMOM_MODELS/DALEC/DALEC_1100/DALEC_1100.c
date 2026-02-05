@@ -1452,6 +1452,7 @@ OBSOPE.SUPPORT_GPP_OBS=true;
 OBSOPE.SUPPORT_SIF_OBS=true;
 OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
+OBSOPE.SUPPORT_LE_OBS=true;
 OBSOPE.SUPPORT_NBE_OBS=true;
 OBSOPE.SUPPORT_ABGB_OBS=true;
 OBSOPE.SUPPORT_DOM_OBS=true;
@@ -1495,6 +1496,8 @@ OBSOPE.Rhet_flux=F.rh_co2;
 OBSOPE.LAI_pool=S.D_LAI;
 //ET variables
 OBSOPE.ET_flux=F.ets;
+//LE variables
+OBSOPE.LE_flux=F.latent_heat;
 //Runoff variables
 static int ROFF_fluxes[4];
 ROFF_fluxes[0]=F.q_ly1;
