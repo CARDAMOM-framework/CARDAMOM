@@ -635,10 +635,21 @@ FLUXES[f+F.SWin]=SWin;//flag for redundancy and deletion
 FLUXES[f+F.LWin]=LWin;//flag for redundancy and deletion
 FLUXES[f+F.SWout]=SWout;
 FLUXES[f+F.LWout]=LWout;
-        
-    //Latent heat of Vaporization J kg-1 
-double lambda = DGCM_LATENT_HEAT_VAPORIZATION; //2.501*1e6 J kg-1 
-double lambda_fusion = DGCM_LATENT_HEAT_FUSION; //2.501*1e6 J kg-1 
+
+	//Flag for submodule maybe eventually
+//latent heat exchanges
+double lambda_liquid = DGCM_LATENT_HEAT_VAPORIZATION;// 
+double lambda_solid = DGCM_LATENT_HEAT_FUSION_3 + DGCM_LATENT_HEAT_VAPORIZATION;//
+
+//Total liquid-vapor and solid-vapor h2o fluxes
+double From_Liquid=FLUXES[f+F.evap]+FLUXES[f+F.transp1]+FLUXES[f+F.transp2];
+double From_Solid=FLUXES[f+F.sublimation];
+
+//Calculating total latent heat in W/2
+double LE = (lambda_liquid*From_Liquid + lambda_solid *From_Solid)/DGCM_SEC_DAY;
+
+FLUXES[f+F.latent_heat] = LE; // W m-2
+
 
     //Latent heat (W.m-2)
 double LE = lambda*(FLUXES[f+F.evap]+FLUXES[f+F.transp1]+FLUXES[f+F.transp2])/DGCM_SEC_DAY; // W m-2
