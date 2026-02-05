@@ -67,6 +67,7 @@ DATA->M_CH4=calloc(Ntimesteps,sizeof(double));
 DATA->M_CWOO=calloc(Ntimesteps,sizeof(double));
 DATA->M_DOM=calloc(Ntimesteps,sizeof(double));
 DATA->M_ET=calloc(Ntimesteps,sizeof(double));
+DATA->M_LE=calloc(Ntimesteps,sizeof(double));
 DATA->M_EWT=calloc(Ntimesteps,sizeof(double));
 DATA->M_GPP=calloc(Ntimesteps,sizeof(double));
 DATA->M_SIF=calloc(Ntimesteps,sizeof(double));
