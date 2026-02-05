@@ -638,6 +638,8 @@ FLUXES[f+F.LWout]=LWout;
         
     //Latent heat of Vaporization J kg-1 
 double lambda = DGCM_LATENT_HEAT_VAPORIZATION; //2.501*1e6 J kg-1 
+double lambda_fusion = DGCM_LATENT_HEAT_FUSION; //2.501*1e6 J kg-1 
+
     //Latent heat (W.m-2)
 double LE = lambda*(FLUXES[f+F.evap]+FLUXES[f+F.transp1]+FLUXES[f+F.transp2])/DGCM_SEC_DAY; // W m-2
 FLUXES[f+F.latent_heat] = LE; // W m-2
