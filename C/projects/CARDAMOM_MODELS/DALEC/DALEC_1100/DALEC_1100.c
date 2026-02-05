@@ -635,12 +635,21 @@ FLUXES[f+F.SWin]=SWin;//flag for redundancy and deletion
 FLUXES[f+F.LWin]=LWin;//flag for redundancy and deletion
 FLUXES[f+F.SWout]=SWout;
 FLUXES[f+F.LWout]=LWout;
-        
-    //Latent heat of Vaporization J kg-1 
-double lambda = DGCM_LATENT_HEAT_VAPORIZATION; //2.501*1e6 J kg-1 
-    //Latent heat (W.m-2)
-double LE = lambda*(FLUXES[f+F.evap]+FLUXES[f+F.transp1]+FLUXES[f+F.transp2])/DGCM_SEC_DAY; // W m-2
+
+	//Flag for submodule maybe eventually
+//latent heat exchanges
+double lambda_liquid = DGCM_LATENT_HEAT_VAPORIZATION;// 
+double lambda_solid = DGCM_LATENT_HEAT_FUSION_3 + DGCM_LATENT_HEAT_VAPORIZATION;//
+
+//Total liquid-vapor and solid-vapor h2o fluxes
+double From_Liquid=FLUXES[f+F.evap]+FLUXES[f+F.transp1]+FLUXES[f+F.transp2];
+double From_Solid=FLUXES[f+F.sublimation];
+
+//Calculating total latent heat in W/2
+double LE = (lambda_liquid*From_Liquid + lambda_solid *From_Solid)/DGCM_SEC_DAY;
+
 FLUXES[f+F.latent_heat] = LE; // W m-2
+
     //specific heat capacity of dry air is 1.00464 KJ kg -1 K -1
         // Consider surface pressure as forcing for more accurate conversion from mol to m3
         // Consider explicitly calculating cp based on humidity (derived from VPD and pressure)
@@ -1439,6 +1448,7 @@ OBSOPE.SUPPORT_GPP_OBS=true;
 OBSOPE.SUPPORT_SIF_OBS=true;
 OBSOPE.SUPPORT_LAI_OBS=true;
 OBSOPE.SUPPORT_ET_OBS=true;
+OBSOPE.SUPPORT_LE_OBS=true;
 OBSOPE.SUPPORT_NBE_OBS=true;
 OBSOPE.SUPPORT_ABGB_OBS=true;
 OBSOPE.SUPPORT_DOM_OBS=true;
@@ -1482,6 +1492,8 @@ OBSOPE.Rhet_flux=F.rh_co2;
 OBSOPE.LAI_pool=S.D_LAI;
 //ET variables
 OBSOPE.ET_flux=F.ets;
+//LE variables
+OBSOPE.LE_flux=F.latent_heat;
 //Runoff variables
 static int ROFF_fluxes[4];
 ROFF_fluxes[0]=F.q_ly1;
