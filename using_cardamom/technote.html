@@ -1,0 +1,210 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contributing to this technical documentation &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3ce236e8" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="CARDAMOM.c governance structure" href="governance.html" />
+    <link rel="prev" title="Analyst checklist" href="analyst_checklist.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC Model:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dalec_versions.html">DALEC versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyst_checklist.html">Analyst checklist</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to this technical documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#structure-of-the-dalec-technical-documentation">Structure of the DALEC technical documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#citing-publications-and-other-sources">Citing publications and other sources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#making-edits-modifications-locally">Making edits/modifications locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#making-edits-modifications-on-the-github-web-interface">Making edits/modifications on the GitHub web interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#interacting-with-our-github-repository">Interacting with our GitHub repository</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="governance.html">CARDAMOM.c governance structure</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/CARDAMOM_NETCDF_INPUT_FILE.html">CARDAMOM Netcdf input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/COST_FUNCTION.html">CARDAMOM cost function <a name="cardamom-cost-function"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/DEBUGGING_TIPS.html">Debugging tips and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/GITHUB_BASICS.html">Using CARDAMOM’s github repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MCMC_IN_CARDAMOM_OVERVIEW.html">MCMC overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/OUTPUT_DATA_ANALYSIS.html">Output Data and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PARALLELIZATION.html">Parallelization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Contributing to this technical documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/using_cardamom/technote.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="contributing-to-this-technical-documentation">
+<h1>Contributing to this technical documentation<a class="headerlink" href="#contributing-to-this-technical-documentation" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p><strong>How to contribute to the CARDAMOM technical documentation:</strong></p>
+<section id="structure-of-the-dalec-technical-documentation">
+<h2>Structure of the DALEC technical documentation<a class="headerlink" href="#structure-of-the-dalec-technical-documentation" title="Link to this heading"></a></h2>
+<p>The DALEC modules should be self-contained, in that all abbreviations (math symbols, acronyms, etc.) should be defined within the page for that module. Each model version will have its own documentation that includes implementation, and should contain tables of all pools, fluxes, and parameters. Consistency between tables and module documentation is recommended, but not required. For example, the hydrology module documentation may contain generic equations describing transfer of water between soil layers that can apply to any abritrary number of soil layers. The implementation of each specific model version will describe, e.g., the number of soil layers; the table will contain the abbreviations foe each soil layer, and those may not be the same as the generic abbreviations used in the module documentation.</p>
+</section>
+<section id="citing-publications-and-other-sources">
+<h2>Citing publications and other sources<a class="headerlink" href="#citing-publications-and-other-sources" title="Link to this heading"></a></h2>
+<p>References to publications, webpages, and other sources should be cited using an in-line <a class="reference external" href="https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#citations">citation</a> that references a complete citation at the bottom of the page in the <a class="reference external" href="https://apastyle.apa.org/style-grammar-guidelines/references">APA reference format</a>, including a <a class="reference external" href="https://www.doi.org">digital object identifier (DOI)</a> when available. Please use the formatting in this example <a class="reference internal" href="#author-2024" id="id1"><span>[Author:2024]</span></a>.</p>
+</section>
+<section id="making-edits-modifications-locally">
+<h2>Making edits/modifications locally<a class="headerlink" href="#making-edits-modifications-locally" title="Link to this heading"></a></h2>
+<p><em>Note: This is the preferred method for any additions or modifications that involve more than one document, as it insures that all commits on the repository will build without errors.</em></p>
+<ul class="simple">
+<li><p>Steps 1–4 only need to be done once on your local machine.</p></li>
+</ul>
+<ol class="arabic simple">
+<li><p>Install <a class="reference external" href="https://www.sphinx-doc.org/">Sphinx</a> on your machine. There are <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/installation.html">several methods</a> available for doing this.</p></li>
+<li><p>Install the <a class="reference external" href="https://myst-parser.readthedocs.io/en/latest/intro.html">myst-parser</a> and the <a class="reference external" href="https://sphinx-rtd-theme.readthedocs.io/en/stable/installing.html">sphinx_rtd_theme</a>. These are both python libraries, so should be installed using <a class="reference external" href="https://pypi.org/project/pip/">pip</a> or <a class="reference external" href="https://conda.io/projects/conda/en/latest/user-guide/getting-started.html">conda</a>.</p></li>
+<li><p>Clone the <a class="reference external" href="https://github.com/CARDAMOM-framework/CARDAMOM">GitHub CARDAMOM repository</a> to create a local repository on your machine, if you don’t have one already. See <a class="reference internal" href="#interacting-with-our-github-repository">Interacting with our GitHub repository</a> for details on how to clone the repository.</p></li>
+<li><p>Navigate to the <code class="docutils literal notranslate"><span class="pre">doc</span></code> directory inside your local repository, and create two new directories inside; one called <code class="docutils literal notranslate"><span class="pre">_build</span></code> and the other called <code class="docutils literal notranslate"><span class="pre">_static</span></code>.</p></li>
+</ol>
+<ul class="simple">
+<li><p>Steps 5–9 need to be done each time you want to make and additions or changes.</p></li>
+</ul>
+<ol class="arabic simple" start="5">
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span></code> the latest commit from the <a class="reference external" href="https://github.com/CARDAMOM-framework/CARDAMOM">GitHub CARDAMOM repository</a> to make sure your local repository is up to date. See <a class="reference internal" href="#interacting-with-our-github-repository">Interacting with our GitHub repository</a> for details on how to pull changes from GitHub.</p></li>
+<li><p>Make any additions or changes to your local repository. The preferred format for new files is the <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html">reStructuredText (reST)</a> format, but it is also possible to use the <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/markdown.html">Markdown</a> format.</p></li>
+<li><p>Run the command <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> from within the <a class="reference external" href="https://github.com/CARDAMOM-framework/CARDAMOM/tree/main/doc">doc</a> directory of your local repository. If there are any errors, fix them and repeat this step until there are none.</p></li>
+<li><p>The above step will create a local version of the html documentation, which can be viewed by opening <code class="docutils literal notranslate"><span class="pre">doc/_build/html/index.html</span></code>.</p></li>
+<li><p>If the build process completes without errors and the html content looks the way you want it to, <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">add</span></code> any new and modified files, <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">commit</span></code> your changes, and <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">push</span></code> to the <a class="reference external" href="https://github.com/CARDAMOM-framework/CARDAMOM">GitHub CARDAMOM repository</a>. This will automatically trigger the build process to take place on GitHub. Progress can be observed on the <a class="reference external" href="https://github.com/CARDAMOM-framework/CARDAMOM/actions">actions</a> page. See <a class="reference internal" href="#interacting-with-our-github-repository">Interacting with our GitHub repository</a> for details on how to commit and push changes to GitHub.</p></li>
+</ol>
+</section>
+<section id="making-edits-modifications-on-the-github-web-interface">
+<h2>Making edits/modifications on the GitHub web interface<a class="headerlink" href="#making-edits-modifications-on-the-github-web-interface" title="Link to this heading"></a></h2>
+<p><em>Note: this method is fine for making modifications to a single file at a time, but it will create a new commit every time a single file is modified. Therefore, if more than one file needs to be modified (i.e., creating a new file that must be added to a higher-level index), this method is not preferred, as it creates commits that do not represent complete builds.</em></p>
+</section>
+<section id="interacting-with-our-github-repository">
+<h2>Interacting with our GitHub repository<a class="headerlink" href="#interacting-with-our-github-repository" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>To clone the <a class="reference external" href="https://github.com/CARDAMOM-framework/CARDAMOM">GitHub CARDAMOM repository</a>, use <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/CARDAMOM-framework/CARDAMOM.git</span></code> from the command line, or use a GUI based solution such as <a class="reference external" href="https://desktop.github.com">GitHub Desktop</a>.</p></li>
+</ul>
+<div role="list" class="citation-list">
+<div class="citation" id="author-2024" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Author:2024</a><span class="fn-bracket">]</span></span>
+<p>Author, A.N., Coauthor, A.C. and More, M., 2024. Title of example journal article. <em>Name of Example Journal, 100(1)</em>, 11–21. <a class="reference external" href="https://doi.org/example-doi">https://doi.org/example-doi</a></p>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="analyst_checklist.html" class="btn btn-neutral float-left" title="Analyst checklist" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="governance.html" class="btn btn-neutral float-right" title="CARDAMOM.c governance structure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

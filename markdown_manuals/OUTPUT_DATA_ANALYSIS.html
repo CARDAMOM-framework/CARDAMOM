@@ -1,0 +1,586 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Output Data and Analysis &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3ce236e8" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="Parallelization" href="PARALLELIZATION.html" />
+    <link rel="prev" title="DALEC model IDs" href="MODEL_IDs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC Model:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dalec_versions.html">DALEC versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/analyst_checklist.html">Analyst checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/technote.html">Contributing to this technical documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/governance.html">CARDAMOM.c governance structure</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="CARDAMOM_NETCDF_INPUT_FILE.html">CARDAMOM Netcdf input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="COST_FUNCTION.html">CARDAMOM cost function <a name="cardamom-cost-function"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEBUGGING_TIPS.html">Debugging tips and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="GITHUB_BASICS.html">Using CARDAMOM’s github repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MCMC_IN_CARDAMOM_OVERVIEW.html">MCMC overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Output Data and Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cardamom-state-and-flux-conventions">CARDAMOM state and flux conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#helper-scripts">Helper Scripts <a name="-helper-scripts"/></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#aggregation-and-uncertainty-propagatation">Aggregation and uncertainty propagatation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#list-of-ouputs-model-id-811-821">List of Ouputs (Model ID: 811, 821)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pools-gc-m2-kgh2o-m2-instantaneous">Pools (gC/m2, kgH2O/m2, instantaneous)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fluxes-gc-m2-day-kgh2o-m2-day-mean">Fluxes (gC/m2/day, kgH2O/m2/day, mean)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-list-of-parameters-optimized-in-cardamom">Example List of Parameters Optimized in CARDAMOM</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="PARALLELIZATION.html">Parallelization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Output Data and Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/markdown_manuals/OUTPUT_DATA_ANALYSIS.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="output-data-and-analysis">
+<h1>Output Data and Analysis<a class="headerlink" href="#output-data-and-analysis" title="Link to this heading"></a></h1>
+<p>This manual section will cover what outputs occur with running CARDAMOM and common forms of analysis. We will cover both the outputs from assimilation runs (the parameter set) and the outputs from forward runs after assimilation (fluxes and states of the ecosystem). For reference, some of the outputs common to many models are included here as tables (Table 1: Pools, Table 2: Fluxes, and Table 3: Parameters). For a specific models names parameters, pools and fluxes check the following scripts in the specific model:</p>
+<p>‘’’
+Example location
+‘’’</p>
+<p>The content of this section will include:</p>
+<ul class="simple">
+<li><p>[Intro to reading output data]</p>
+<ul>
+<li><p>[Output data format for parameters]</p></li>
+<li><p>[Output data format for states and fluxes]</p></li>
+<li><p>[Reading data]</p></li>
+</ul>
+</li>
+<li><p>[Intro to analyzing data]</p>
+<ul>
+<li><p>[CARDAMOM Ensemble and Summary Statistics]</p></li>
+<li><p>[Basic data plots]</p></li>
+<li><p>[Aggregating CARDAMOM output]</p></li>
+</ul>
+</li>
+<li><p>[Appendix: Output Tables]</p>
+<ul>
+<li><p>[Parameters]</p></li>
+<li><p>[States]</p></li>
+<li><p>[Fluxes]</p></li>
+<li><p>[Cost Function]</p></li>
+</ul>
+</li>
+</ul>
+<section id="cardamom-state-and-flux-conventions">
+<h2>CARDAMOM state and flux conventions<a class="headerlink" href="#cardamom-state-and-flux-conventions" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Initial conditions correspond to pools (states) at first timestep t = 0</p></li>
+<li><p>Model Meteorological forcing at timestep t is centered between pools (states) t and t+1</p></li>
+<li><p>Model fluxes at timestep t also centered between states t and t +1</p></li>
+</ul>
+<img width="830" alt="image" src="https://user-images.githubusercontent.com/23563444/117489093-086c5b80-af22-11eb-8006-693c716d142f.png">
+<p><em>In CARDAMOM C code</em>
+See conventions above</p>
+<p><em>For Matlab users</em>
+CARDAMOM_RUN_MODEL.m throws out first one, but only because it’s repeat of initial conditions (which are contained in parameter vector).</p>
+<section id="helper-scripts">
+<h3>Helper Scripts <a name="-helper-scripts"/><a class="headerlink" href="#helper-scripts" title="Link to this heading"></a></h3>
+<p>Helper scripts (running and analysing CARDAMOM) are primarily written in Matlab and Python.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Filepath</p></th>
+<th class="head text-left"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>script1</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>script1</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>script1</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="aggregation-and-uncertainty-propagatation">
+<h2>Aggregation and uncertainty propagatation<a class="headerlink" href="#aggregation-and-uncertainty-propagatation" title="Link to this heading"></a></h2>
+<p>Description: general rules and guidelines for estimating and propagating uncertainty</p>
+<p>“rule no 1.” (some funny movie reference)
+“Rule no 2.”: perform operation on data before calculating uncertainty (on states and fluxes?)</p>
+<ul class="simple">
+<li><p>example: detrending state and flux data.</p>
+<ul>
+<li><p>Step 1. Detrend every CARDAMOM sample</p></li>
+<li><p>Step 2. Calculate percentile/statistics based on detrended dataset.</p></li>
+</ul>
+</li>
+</ul>
+<p>Other examples:</p>
+<ul class="simple">
+<li><p>annually average time series (action = average annually for each samples first, then</p></li>
+<li><p>monthly anomalies</p></li>
+<li><p>normalizing data (GRACE</p></li>
+<li><p>For comparison against observation, perform “observation operator” first, then aggregate.</p></li>
+</ul>
+<p>Exception (sort of) to rule = “statistics on statistics”.</p>
+<p>For example: what is the range of IAV (e.g. as sigma value) among CARDAMOM samples?
+Step 1. Calculate IAV per sample.
+Step 2. Summarize mean, median, standard deviation, percentiles of IAV among samples.</p>
+<p>Two contrasting examples:
+“ensemble mean” = mean of N CARDAMOM samples.</p>
+<p>(1) What is the IAV of ensemble mean GPP?
+Answer: (1) calculate ensemble mean GPP, and (2) calculate its IAV. Effectively no uncertainty estimate here, possible never need to do this for a single pixel (however: this order may be required for multi pixel uncertainty propagation).</p>
+<p>(2) What is the IAV of all GPP ensemble members?
+Answer: (1) calculate IAV for each sample, and (2) calculate any useful/relevant statistics on IAV differences among samples (e.g. medians, percentiles).</p>
+<p>Note on above examples: mean GPP IAV is <strong>not</strong> equal to mean of GPP IAV values corresponding to individual ensemble members (e.g. if distribution is skewed). iav(mean(GPP)) =/= mean(iav(GPP)).</p>
+<img width="1113" alt="image" src="https://user-images.githubusercontent.com/23563444/110368127-74534600-7ffd-11eb-9d81-479a39618fe0.png">
+<p><em><strong>How to aggregate statistics between pixels</strong></em>
+General issue: no information on correlation between samples between pixels. However, some uncertainty estimation generally required</p>
+<p>Dilemma. Two pixels, one with mean GPP = 0.2 gC/m2/d (desert), and another with GPP = 10 gC/m2/d (rainforest). How to you aggregate IAVs (if at all)?</p>
+<p><em><strong>end of actual “rules”</strong></em></p>
+<section id="list-of-ouputs-model-id-811-821">
+<h3>List of Ouputs (Model ID: 811, 821)<a class="headerlink" href="#list-of-ouputs-model-id-811-821" title="Link to this heading"></a></h3>
+<section id="pools-gc-m2-kgh2o-m2-instantaneous">
+<h4>Pools (gC/m2, kgH2O/m2, instantaneous)<a class="headerlink" href="#pools-gc-m2-kgh2o-m2-instantaneous" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>CARDAMOM Pools</p></th>
+<th class="head text-left"><p>Longname</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>‘c_labile’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘c_foliar’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘c_root’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘c_wood’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘c_finelitter’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘c_som’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘h2o_forplant’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="fluxes-gc-m2-day-kgh2o-m2-day-mean">
+<h4>Fluxes (gC/m2/day, kgH2O/m2/day, mean)<a class="headerlink" href="#fluxes-gc-m2-day-kgh2o-m2-day-mean" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>CARDAMOM Fluxes</p></th>
+<th class="head text-left"><p>Longname</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>‘gppflux’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘decf_tempr’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘gpp_to_autoresp’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘gpp_to_leaf’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘gpp_to_labile’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘gpp_to_root’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘gpp_to_wood’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘labile_to_foliar’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘leaf_fall’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘leaf_to_litter’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘wood_to_soilc’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘root_to_litter’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘hetresp_litter’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘hetresp_som’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘litter_to_som’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘leaf_onset’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘fire_em_total’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘fire_em_labile’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘fire_em_foliar’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘fire_em_root’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘fire_em_wood’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘fire_em_litter’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘fire_em_som’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘fire1_to_littersom’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘fire2_to_littersom’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘fire3_to_littersom’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘fire4_to_littersom’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘fire5_to_littersom’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘et’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘runoff’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="example-list-of-parameters-optimized-in-cardamom">
+<h4>Example List of Parameters Optimized in CARDAMOM<a class="headerlink" href="#example-list-of-parameters-optimized-in-cardamom" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Shortname</p></th>
+<th class="head"><p>Codename</p></th>
+<th class="head"><p>Units</p></th>
+<th class="head"><p>Range</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p></p></td>
+<td><p>Decomposition rate</p></td>
+<td><p></p></td>
+<td><p>0.00001 - 0.01</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Fraction of GPP respired</p></td>
+<td><p></p></td>
+<td><p>0.2 - 0.8</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Fraction of (1-fgpp) to foliage</p></td>
+<td><p></p></td>
+<td><p>0.01 - 0.5</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Fraction of (1-fgpp) to roots</p></td>
+<td><p></p></td>
+<td><p>0.01 - 1.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Leaf Lifespan</p></td>
+<td><p></p></td>
+<td><p>1.001 - 8.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>TOR wood* - 1% loss per year value</p></td>
+<td><p></p></td>
+<td><p>0.000025 - 0.001</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>TOR roots</p></td>
+<td><p></p></td>
+<td><p>0.0001 - 0.01</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>TOR litter</p></td>
+<td><p></p></td>
+<td><p>0.0001 - 0.01</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>TOR SOM</p></td>
+<td><p></p></td>
+<td><p>0.0000001 - 0.001</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Temp factor* = Q10 = 1.2-1.6</p></td>
+<td><p></p></td>
+<td><p>0.018 - 0.08</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Canopy Efficiency</p></td>
+<td><p></p></td>
+<td><p>5.0 - 50.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Bday</p></td>
+<td><p>day of year</p></td>
+<td><p>365.25 - 4x365.25</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Fraction to Clab</p></td>
+<td><p></p></td>
+<td><p>0.01 - 0.5</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Clab Release period</p></td>
+<td><p>days</p></td>
+<td><p>365.25/12 - 100</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Fday</p></td>
+<td><p>day of year</p></td>
+<td><p>365.25 - 4x365.25</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Leaf fall period</p></td>
+<td><p>days</p></td>
+<td><p>365.25/12 - 150</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>LMCA</p></td>
+<td><p>g C/m2</p></td>
+<td><p>5.0 - 200.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>C labile</p></td>
+<td><p>g C/m2</p></td>
+<td><p>1.0 - 2000.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>C foliar</p></td>
+<td><p>g C/m2</p></td>
+<td><p>1.0 - 2000.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>C roots</p></td>
+<td><p>g C/m2</p></td>
+<td><p>1.0 - 2000.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>C_wood</p></td>
+<td><p>g C/m2</p></td>
+<td><p>1.0 - 100000.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>C litter</p></td>
+<td><p>g C/m2</p></td>
+<td><p>1.0 - 2000.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>C_som</p></td>
+<td><p>g C/m2</p></td>
+<td><p>1.0 - 200000.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>IWUE: GPPxVPD/ET: gC/kgH2o -hPa</p></td>
+<td><p>hPa gC/kgH2O</p></td>
+<td><p>10.0 - 50.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Runoff focal point (~maximum soil storage capacity x 4)</p></td>
+<td><p></p></td>
+<td><p>1.0 - 100000.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>“Wilting point”</p></td>
+<td><p>kgH2O/m2</p></td>
+<td><p>1.0 - 10000.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>“Bucket at t0”</p></td>
+<td><p>kgH2O/m2</p></td>
+<td><p>1.0 - 10000.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Foliar biomass CF</p></td>
+<td><p></p></td>
+<td><p>0.01 - 1.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>“Ligneous” biomass CF”.</p></td>
+<td><p></p></td>
+<td><p>0.01 - 1.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>DOM CF”.</p></td>
+<td><p></p></td>
+<td><p>0.01 - 1</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Resilience factor (since transfer to litter is represented as (1-pars[30])) “.</p></td>
+<td><p></p></td>
+<td><p>0.01 - 1</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Lab pool lifespan</p></td>
+<td><p></p></td>
+<td><p>1.001 - 8.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Moisture factor</p></td>
+<td><p></p></td>
+<td><p>0.01 - 1.0</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="MODEL_IDs.html" class="btn btn-neutral float-left" title="DALEC model IDs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="PARALLELIZATION.html" class="btn btn-neutral float-right" title="Parallelization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
