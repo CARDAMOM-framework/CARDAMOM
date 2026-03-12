@@ -660,7 +660,6 @@ double Rgas = 8.31; // Universal gas constant (J mol-1 K-1)
 double moles_per_m3 = Psurf/(Rgas*air_temp_k);
 //Sensible heat 
 // double H = cp*(tskin_k - air_temp_k)*pars[P.ga]*moles_per_m3; // ga in m s-1, 
-// FLUXES[f+F.sensible_heat] = H; // W m-2
 //Ground heat flux ONLY for energy in&out of vegetation-soil continuum
 //Rn is scaled by snow free area, because we exclude snow energy balance from energy ODEs
 //H is scaled by snow free area, because we exclude snow energy balance from energy ODEs
@@ -677,6 +676,7 @@ FLUXES[f+F.ground_heat] =(pars[P.thermal_cond_surf]* (tskin_k - POOLS[p+S.D_TEMP
 FLUXES[f+F.gh_in] =FLUXES[f+F.ground_heat] *DGCM_SEC_DAY;        
 //Using G, Rn and LE to derive H
 // H = Rn - G  - LE
+// FLUXES[f+F.sensible_heat] = H; // W m-2
 FLUXES[f+F.sensible_heat] = Rn - FLUXES[f+F.ground_heat] - FLUXES[f+F.latent_heat];
 
     // Infiltration (mm/day)
