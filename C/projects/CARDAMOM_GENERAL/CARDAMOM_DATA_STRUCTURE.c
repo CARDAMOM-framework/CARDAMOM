@@ -24,6 +24,7 @@ double *M_CWOO;
 double *M_DOM;
 double *M_ET;
 double *M_LE;
+double *M_H;
 double *M_EWT;
 double *M_FIR;
 double *M_GPP;

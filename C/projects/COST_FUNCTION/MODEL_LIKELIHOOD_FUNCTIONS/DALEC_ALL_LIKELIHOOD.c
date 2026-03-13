@@ -24,6 +24,7 @@ struct LIKELIHOOD_INDICES{
         int DOM;
         int ET;
         int LE;
+        int H;
         int EWT;
         int GPP;
         int SIF;
@@ -52,7 +53,8 @@ struct LIKELIHOOD_INDICES{
         } LIKELIHOOD_INDICES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
-    20,21,22,23,24,25,26,27,28,29}; /*pMCMC*/
+    20,21,22,23,24,25,26,27,28,29,
+    30}; /*pMCMC*/
     
   
     
@@ -111,6 +113,7 @@ if (O->SUPPORT_CH4_OBS){        ML[LI.CH4]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D
 if (O->SUPPORT_DOM_OBS){        ML[LI.DOM]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.DOM, D.M_DOM);};
 if (O->SUPPORT_ET_OBS){         ML[LI.ET]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.ET, D.M_ET);};
 if (O->SUPPORT_LE_OBS){         ML[LI.LE]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.LE, D.M_LE);};
+if (O->SUPPORT_H_OBS){          ML[LI.H]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.H, D.M_H);};
 if (O->SUPPORT_EWT_OBS){        ML[LI.EWT]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.EWT, D.M_EWT);};
 if (O->SUPPORT_GPP_OBS){        ML[LI.GPP]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.GPP, D.M_GPP);};
 if (O->SUPPORT_SIF_OBS){        ML[LI.SIF]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.SIF, D.M_SIF);}; // shuang

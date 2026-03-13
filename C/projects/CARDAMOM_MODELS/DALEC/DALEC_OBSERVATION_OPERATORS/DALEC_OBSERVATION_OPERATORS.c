@@ -24,6 +24,8 @@ bool SUPPORT_ET_OBS;
 int ET_flux;
 bool SUPPORT_LE_OBS;
 int LE_flux;
+bool SUPPORT_H_OBS;
+int H_flux;
 bool SUPPORT_ROFF_OBS;
 int * ROFF_fluxes;
 double *ROFF_flux_signs;
@@ -114,6 +116,7 @@ OBSOPE->SUPPORT_CWOO_OBS=false;
 OBSOPE->SUPPORT_DOM_OBS=false;
 OBSOPE->SUPPORT_ET_OBS=false;
 OBSOPE->SUPPORT_LE_OBS=false;
+OBSOPE->SUPPORT_H_OBS=false;
 OBSOPE->SUPPORT_EWT_OBS=false;
 OBSOPE->SUPPORT_FIR_OBS=false;
 OBSOPE->SUPPORT_GPP_OBS=false;
@@ -271,6 +274,21 @@ if (TOBS.validobs){
     int n;
     for (n=0;n<N;n++){
         D->M_LE[n]=D->M_FLUXES[D->nofluxes*n+O->LE_flux];
+        }
+    };
+
+return 0;}
+
+//H observation operator, assuming one flux
+int DALEC_OBSOPE_H(DATA * D, OBSOPE * O){
+
+int N=D->ncdf_data.TIME_INDEX.length;
+TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.H;
+
+if (TOBS.validobs){
+    int n;
+    for (n=0;n<N;n++){
+        D->M_H[n]=D->M_FLUXES[D->nofluxes*n+O->H_flux];
         }
     };
 
@@ -621,6 +639,7 @@ if (O->SUPPORT_CH4_OBS){DALEC_OBSOPE_CH4(D, O);}
 if (O->SUPPORT_CWOO_OBS){DALEC_OBSOPE_CWOO(D, O);}
 if (O->SUPPORT_ET_OBS){DALEC_OBSOPE_ET(D, O);}
 if (O->SUPPORT_LE_OBS){DALEC_OBSOPE_LE(D, O);}
+if (O->SUPPORT_H_OBS){DALEC_OBSOPE_H(D, O);}
 if (O->SUPPORT_EWT_OBS){DALEC_OBSOPE_EWT(D, O);}
 if (O->SUPPORT_FIR_OBS){DALEC_OBSOPE_FIR(D, O);}
 if (O->SUPPORT_GPP_OBS){DALEC_OBSOPE_GPP(D, O);}
