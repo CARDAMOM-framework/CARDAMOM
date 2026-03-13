@@ -198,6 +198,7 @@ free(DATA.M_ABGB);
 free(DATA.M_CH4);
 free(DATA.M_DOM);
 free(DATA.M_ET);
+free(DATA.M_LE);
 free(DATA.M_ROFF);
 free(DATA.M_EWT);
 free(DATA.M_GPP);
