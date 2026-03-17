@@ -122,7 +122,7 @@ T_C = TEMP - DGCM_TK0C;  // Convert temperature to degrees C
 
 Kc = 300.*exp(0.074*(T_C - 25.));
 Ko = 300.*exp(0.015*(T_C - 25.));
-cp = 36.9 + 1.18*(T_C - 25.) + 0.36*pow((T_C - 25.), 2.);
+cp = 36.9 + 1.18*(T_C - 25.) + 0.036*pow((T_C - 25.), 2.);
 
 
 //Vcmax = vcmax25*exp(50.*(TEMP - 298.)/(298.*R*TEMP));
