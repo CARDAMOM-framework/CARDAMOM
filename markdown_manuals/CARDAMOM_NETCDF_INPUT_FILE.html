@@ -1,0 +1,342 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CARDAMOM Netcdf input file &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3ce236e8" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="CARDAMOM cost function" href="COST_FUNCTION.html" />
+    <link rel="prev" title="CARDAMOM C developer guide" href="CARDAMOM_C_developer_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC Model:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dalec_versions.html">DALEC versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/analyst_checklist.html">Analyst checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/technote.html">Contributing to this technical documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/governance.html">CARDAMOM.c governance structure</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CARDAMOM Netcdf input file</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#variable-names-definitions-and-conventions">Variable names, definitions and conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#faq">FAQ</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#q-if-im-not-assimilating-an-observation-can-i-just-delete-the-corresponding-obs-field-my-cbf-nc-file-or-do-i-have-to-keep-it-and-put-nan-in-the-corresponding-subsets">Q: If I’m not assimilating an observation, can I just delete the corresponding OBS field my cbf.nc file, or do I have to keep it and put NaN in the corresponding subsets?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="COST_FUNCTION.html">CARDAMOM cost function <a name="cardamom-cost-function"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEBUGGING_TIPS.html">Debugging tips and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="GITHUB_BASICS.html">Using CARDAMOM’s github repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MCMC_IN_CARDAMOM_OVERVIEW.html">MCMC overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OUTPUT_DATA_ANALYSIS.html">Output Data and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PARALLELIZATION.html">Parallelization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">CARDAMOM Netcdf input file</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/markdown_manuals/CARDAMOM_NETCDF_INPUT_FILE.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cardamom-netcdf-input-file">
+<h1>CARDAMOM Netcdf input file<a class="headerlink" href="#cardamom-netcdf-input-file" title="Link to this heading"></a></h1>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>The CARDAMOM netcdf input file is a “one-stop shop” for all inputs required to configure CARDAMOM including:</p>
+<ul class="simple">
+<li><p>Model structure choice (Model ID [add link here])</p></li>
+<li><p>Forcing data required by model structure (meteorlogical drivers, latitude)</p></li>
+<li><p>Observations (datasets, time varying uncertainties, and other cost function options)</p></li>
+<li><p>MCMC options</p></li>
+<li><p>Minimal ancillary non-functional data (these are optional: includes longitude, notes, etc.)</p></li>
+</ul>
+</section>
+<section id="variable-names-definitions-and-conventions">
+<h2>Variable names, definitions and conventions<a class="headerlink" href="#variable-names-definitions-and-conventions" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>DALEC Meteorological Driver</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Units</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>BURNED_AREA</p></td>
+<td><p>Burned area</p></td>
+<td><p>m<sup>2</sup>/m<sup>2 </sup>(meters squared per meters squared)</p></td>
+</tr>
+<tr class="row-odd"><td><p>CO2</p></td>
+<td><p>Atmospheric carbon dioxide concentration</p></td>
+<td><p>ppm (parts per million)</p></td>
+</tr>
+<tr class="row-even"><td><p>DOY</p></td>
+<td><p>Day of year</p></td>
+<td><p>Days</p></td>
+</tr>
+<tr class="row-odd"><td><p>Total_Prec</p></td>
+<td><p>Total precipitation</p></td>
+<td><p>mm/day (millimeters per day)</p></td>
+</tr>
+<tr class="row-even"><td><p>SNOWFALL</p></td>
+<td><p>Total snowfall</p></td>
+<td><p>mm/day (millimeters per day)</p></td>
+</tr>
+<tr class="row-odd"><td><p>SSRD</p></td>
+<td><p>Surface shortwave radiation downwards (Solar irradiance or radiation from sun reaching surface)</p></td>
+<td><p>MJ/m<sup>2</sup>/day (Mega Joules per meters squared per day)</p></td>
+</tr>
+<tr class="row-even"><td><p>T2M_MIN</p></td>
+<td><p>Minimum 2-meter air temperature</p></td>
+<td><p><sup>o</sup>C (degrees Celsius)</p></td>
+</tr>
+<tr class="row-odd"><td><p>T2M_MAX</p></td>
+<td><p>Maximum 2-meter air temperature</p></td>
+<td><p><sup>o</sup>C (degrees Celsius)</p></td>
+</tr>
+<tr class="row-even"><td><p>time</p></td>
+<td><p>Time since January 01/01/2000 00:00</p></td>
+<td><p>Days</p></td>
+</tr>
+<tr class="row-odd"><td><p>VPD</p></td>
+<td><p>Vapor pressure deficit</p></td>
+<td><p>hPA (hectopascal)</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Time Varying Observations</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Units</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ABGB</p></td>
+<td><p>Above and belowground biomass</p></td>
+<td><p>g C/m<sup>2</sup>/day (grams of carbon per meters squared)</p></td>
+</tr>
+<tr class="row-odd"><td><p>CH4</p></td>
+<td><p>Methane</p></td>
+<td><p>g CH4/m<sup>2</sup>/day (grams of methane per meters squared per day)</p></td>
+</tr>
+<tr class="row-even"><td><p>ET</p></td>
+<td><p>Evapotranspiration</p></td>
+<td><p>mm/day (millimeters per day) equivalent to kg H2O/m<sup>2</sup>/day (kilograms water per meters squared per day)</p></td>
+</tr>
+<tr class="row-odd"><td><p>EWT</p></td>
+<td><p>Equivalent Water Thickness</p></td>
+<td><p>cm (centimeters)</p></td>
+</tr>
+<tr class="row-even"><td><p>GPP</p></td>
+<td><p>Gross primary productivity or Solar induced fluorescence</p></td>
+<td><p>g CO2/m<sup>2</sup>/day (grams of carbon dioxide per meters squared per day) or</p></td>
+</tr>
+<tr class="row-odd"><td><p>LAI</p></td>
+<td><p>Leaf area index</p></td>
+<td><p>m<sup>2</sup>/m<sup>2</sup>(meters squared per meters squared)</p></td>
+</tr>
+<tr class="row-even"><td><p>NBE</p></td>
+<td><p>Net Biosphere Exchange</p></td>
+<td><p>g CO2/m<sup>2</sup>/day (grams of carbon dioxide per meters squared per day)</p></td>
+</tr>
+<tr class="row-odd"><td><p>SCF</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>SOM</p></td>
+<td><p>Soil Organic Matter</p></td>
+<td><p>g C/m<sup>2</sup>(grams of carbon per meters)</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Time Invariant Observations</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Units</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Mean_Biomass</p></td>
+<td><p>Mean above and belowground biomass</p></td>
+<td><p>m<sup>2</sup>/m<sup>2</sup></p></td>
+</tr>
+<tr class="row-odd"><td><p>Mean_Fire</p></td>
+<td><p>Mean fire emissions</p></td>
+<td><p>g CO2/m<sup>2</sup>/day (grams of carbon dioxide per meters squared per day)</p></td>
+</tr>
+<tr class="row-even"><td><p>Mean_GPP</p></td>
+<td><p>Mean gross primary productivity</p></td>
+<td><p>g CO2/m<sup>2</sup>/day (grams of carbon dioxide per meters squared per day)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mean_LAI</p></td>
+<td><p>Mean leaf area index</p></td>
+<td><p>m<sup>2</sup>/m<sup>2</sup>(meters squared per meters squared)</p></td>
+</tr>
+<tr class="row-even"><td><p>PEQ_Cefficiency</p></td>
+<td><p>Canopy efficiency – If in tropics assign value as 17.5</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>PEQ_CUE</p></td>
+<td><p>Autotrophic fraction – If NBE and GPP are used do not assign this otherwise assign value of 0.5</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>PEQ_iniSOM</p></td>
+<td><p>Initial soil organic matter</p></td>
+<td><p>g C/m<sup>2</sup>(grams of carbon per meters squared per day)</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Important NETCDF Variables</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Units</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>MCMCID</p></td>
+<td><p>Monte Carlo Markov chain algorithm</p></td>
+<td><p>unitless</p></td>
+</tr>
+<tr class="row-odd"><td><p>ID</p></td>
+<td><p>DALEC Model ID</p></td>
+<td><p>unitless</p></td>
+</tr>
+<tr class="row-even"><td><p>EDC</p></td>
+<td><p>Environmental dependent constraints</p></td>
+<td><p>unitless</p></td>
+</tr>
+<tr class="row-odd"><td><p>LAT</p></td>
+<td><p>Latitude</p></td>
+<td><p><sup>o</sup>degrees</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="faq">
+<h2>FAQ<a class="headerlink" href="#faq" title="Link to this heading"></a></h2>
+<section id="q-if-im-not-assimilating-an-observation-can-i-just-delete-the-corresponding-obs-field-my-cbf-nc-file-or-do-i-have-to-keep-it-and-put-nan-in-the-corresponding-subsets">
+<h3>Q: If I’m not assimilating an observation, can I just delete the corresponding OBS field my cbf.nc file, or do I have to keep it and put NaN in the corresponding subsets?<a class="headerlink" href="#q-if-im-not-assimilating-an-observation-can-i-just-delete-the-corresponding-obs-field-my-cbf-nc-file-or-do-i-have-to-keep-it-and-put-nan-in-the-corresponding-subsets" title="Link to this heading"></a></h3>
+<p>Answer: you can delete it</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="CARDAMOM_C_developer_guide.html" class="btn btn-neutral float-left" title="CARDAMOM C developer guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="COST_FUNCTION.html" class="btn btn-neutral float-right" title="CARDAMOM cost function" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
