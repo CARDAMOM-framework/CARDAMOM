@@ -53,7 +53,7 @@ def DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM(m, yr):
 
 #Main code
 
-for year in range(2015, 2021):
+for year in range(2015, 2025):
     for month in range(1, 13):
         year_str = str(year)
         month_str = str(month).zfill(2)
