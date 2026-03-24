@@ -220,7 +220,7 @@ SRADg = (1. - 0.5*(leaf_refl_par+leaf_refl_nir))*SRAD*exp(-VegK*LAI*clumping);
 
 SRAD = (1. - 0.5*(leaf_refl_par+leaf_refl_nir))*SRAD;
 
-petVnum = (sV*(SRAD-SRADg)+1.225*1000*VPD_kPa*ga)/lambda0*60*60;
+petVnum = (sV*(SRAD-SRADg)+1.225*1005*VPD_kPa*ga)/lambda0*60*60;
 petVnumB = 1.26*(sV*SRADg)/(sV+gammaV)/lambda0*60*60; //from mm.hr-1 
 if(beta_factor > 0 && SRAD >0){
 
@@ -230,7 +230,7 @@ gs = fmax(0,1.6*An/(co2-ci)*LAI*0.02405);
     
 
 //transp = petVnum/(sV+gammaV*(1+ga*(1/ga+1/gs)));
-transp = petVnum/(sV+gammaV*(1+ga*(1/ga+1/gs)));
+transp = petVnum/(sV+gammaV*(ga*(1/ga+1/gs)));
 
 
 
