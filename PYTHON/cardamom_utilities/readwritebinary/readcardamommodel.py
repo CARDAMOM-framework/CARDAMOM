@@ -14,7 +14,7 @@ Take function from analycbr
 import numpy as np
 import os
 import sys
-import imp
+import importlib
 
 #imac: '/Users/gregoryquetin'
 #sherlock: '/home/users/gquetin'
@@ -23,7 +23,7 @@ sys.path.append(MACHDIR + '/repos/scripts/Python/Projects/J5')
 
 
 import library_cbr as lcbr
-imp.reload(lcbr)
+importlib.reload(lcbr)
 
 def cbflabels():
     
