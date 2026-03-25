@@ -107,15 +107,17 @@ double Rd;
 PAR = SRAD/(2*Ephoton*NA)*1e6;
 
 
-double canopy_scale = (1. - exp(-VegK*LAI*clumping))/(VegK*clumping); 
+double canopy_scale = (1. - exp(-VegK*LAI*clumping))/(VegK); /*equivalent to Lsun in Li et al 2023 eq. 3 
+https://onlinelibrary.wiley.com/doi/10.1111/gcb.16503, with clumping)*/ 
 
 //printf(" \n Initial LAI %f \n ", LAI);
 
 //absorbed PAR assuming black canopy. 
 //PAR = PAR*(1. - exp(-LAI*VegK));
-
-double APAR = PAR*(1. - leaf_refl_par)*(1. - exp(-VegK*LAI*clumping)); //absorbed PAR for non-black canopy 
-double PAR_leaf = PAR * (1. - leaf_refl_par) * VegK * clumping; //absorbed PAR per unit of leaf at top of canopy (therefore we don't need exponential extinction of light)
+ 
+double PAR_leaf = PAR * (1. - leaf_refl_par) * VegK; /*absorbed PAR per unit of leaf at top of canopy, derived from de Pury and Farquhar 1997 Eq 20b (no clumping) 
+(https://biocycle.atmos.colostate.edu/Documents/SiB/De_Pury_1997_Plant_Cell_%26_Environment.pdf) and Li et al 2023 eq. 2 & 3 
+https://onlinelibrary.wiley.com/doi/10.1111/gcb.16503, with clumping)*/ 
 
 T_C = TEMP - DGCM_TK0C;  // Convert temperature to degrees C
 
@@ -226,7 +228,7 @@ if(beta_factor > 0 && SRAD >0){
 
 //Option 1. gs = 1.6*Ag/(co2-ci)*LAI*0.02405; 
     //Option 1. gs = 1.6*An/(co2-ci)*LAI*0.02405; 
-gs = fmax(0,1.6*An_leaf/(co2-ci)*LAI*0.02405); 
+gs = fmax(0,1.6*An_leaf/(co2-ci)*canopy_scale*0.02405); 
     
 
 //transp = petVnum/(sV+gammaV*(1+ga*(1/ga+1/gs)));
