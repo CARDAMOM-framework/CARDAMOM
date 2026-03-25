@@ -107,22 +107,22 @@ double Rd;
 PAR = SRAD/(2*Ephoton*NA)*1e6;
 
 
-double canopy_scale = (1. - exp(-VegK*LAI*clumping))/(VegK); 
+double canopy_scale = (1. - exp(-VegK*LAI*clumping))/(VegK*clumping); 
 
 //printf(" \n Initial LAI %f \n ", LAI);
 
 //absorbed PAR assuming black canopy. 
 //PAR = PAR*(1. - exp(-LAI*VegK));
 
-PAR *= (1. - leaf_refl_par)*(1. - exp(-VegK*LAI*clumping));
-
+double APAR = PAR*(1. - leaf_refl_par)*(1. - exp(-VegK*LAI*clumping)); //absorbed PAR for non-black canopy 
+double PAR_leaf = PAR * (1. - leaf_refl_par) * VegK * clumping; //absorbed PAR per unit of leaf at top of canopy (therefore we don't need exponential extinction of light)
 
 T_C = TEMP - DGCM_TK0C;  // Convert temperature to degrees C
 
 
 Kc = 300.*exp(0.074*(T_C - 25.));
 Ko = 300.*exp(0.015*(T_C - 25.));
-cp = 36.9 + 1.18*(T_C - 25.) + 0.36*pow((T_C - 25.), 2.);
+cp = 36.9 + 1.18*(T_C - 25.) + 0.036*pow((T_C - 25.), 2.);
 
 
 //Vcmax = vcmax25*exp(50.*(TEMP - 298.)/(298.*R*TEMP));
@@ -136,7 +136,7 @@ Vcmax = vcmax25*pow(q_10,0.1*(T_C-25.))/((1 + exp(0.3*(T_C-(Tupp-DGCM_TK0C))))*(
 
 Jmax = Vcmax*exp(1.);
 
-J = (0.3*PAR + Jmax - sqrt(pow(0.3*PAR + Jmax,2) - 4.*0.9*0.3*PAR*Jmax))/2./0.9;
+J = (0.3*PAR_leaf + Jmax - sqrt(pow(0.3*PAR_leaf + Jmax,2) - 4.*0.9*0.3*PAR_leaf*Jmax))/2./0.9;
 
 
 medlyn_term = 1. + g1/sqrt(VPD);
@@ -168,11 +168,11 @@ Rd_C4 =A->IN.canopyRdsf*vcmax25*fT;
 
 //Total photosynthesis 
 
-Ag = C3_frac*(Ag_C3) + (1. - C3_frac)*(Ag_C4);
-Rd = C3_frac*(Rd_C3) + (1. - C3_frac)*(Rd_C4);
+double Ag_leaf = C3_frac*(Ag_C3) + (1. - C3_frac)*(Ag_C4);
+double Rd_leaf = C3_frac*(Rd_C3) + (1. - C3_frac)*(Rd_C4);
 
     //Potential Rd
-double Rd_daily_potential = Rd*canopy_scale*(12.e-6)*(24.*60.*60.);
+double Rd_daily_potential = Rd_leaf*canopy_scale*(12.e-6)*(24.*60.*60.);
 
 //Ensures NSCs available
 //A->OUT.LEAF_MORTALITY_FACTOR=fmax( 1- A->IN.NSC/(Rd_daily_potential * A->IN.deltat)  ,0);
@@ -183,14 +183,14 @@ A->OUT.LEAF_MORTALITY_FACTOR=(1/(exp(A->IN.NSC/(Rd_daily_potential * A->IN.delta
 }
 // printf(" \n Rd_pot and NSC:  %f %f \n ", Rd_daily_potential * A->IN.deltat, A->IN.NSC);
 //Actual daily Rd
-A->OUT.Rd =Rd_daily_potential*(1 - A->OUT.LEAF_MORTALITY_FACTOR);
+A->OUT.Rd =Rd_daily_potential*(1 - A->OUT.LEAF_MORTALITY_FACTOR); //Rd is canopy scaled
 
 //Scaling Rd to available NSCs
-    Rd = Rd *(1 - A->OUT.LEAF_MORTALITY_FACTOR);
+double Rd_leaf_lim = Rd_leaf *(1 - A->OUT.LEAF_MORTALITY_FACTOR);
 
 
     //Net A
-An = Ag - Rd;
+double An_leaf = Ag_leaf - Rd_leaf_lim;
 
 
 
@@ -198,8 +198,8 @@ An = Ag - Rd;
 //double canopy_scale = 1.;
 
 //r[0] = An*canopy_scale*(12.e-6)*(24.*60.*60.); //from umolCO2m-2s-1 to gCm-2day-1
-A->OUT.Ag = Ag*canopy_scale*(12.e-6)*(24.*60.*60.);
-A->OUT.An = An*canopy_scale*(12.e-6)*(24.*60.*60.);
+A->OUT.Ag = Ag_leaf*canopy_scale*(12.e-6)*(24.*60.*60.);
+A->OUT.An = An_leaf*canopy_scale*(12.e-6)*(24.*60.*60.);
 
 //##################Transpiration#################
 
@@ -220,17 +220,17 @@ SRADg = (1. - 0.5*(leaf_refl_par+leaf_refl_nir))*SRAD*exp(-VegK*LAI*clumping);
 
 SRAD = (1. - 0.5*(leaf_refl_par+leaf_refl_nir))*SRAD;
 
-petVnum = (sV*(SRAD-SRADg)+1.225*1000*VPD_kPa*ga)/lambda0*60*60;
+petVnum = (sV*(SRAD-SRADg)+1.225*1005*VPD_kPa*ga)/lambda0*60*60;
 petVnumB = 1.26*(sV*SRADg)/(sV+gammaV)/lambda0*60*60; //from mm.hr-1 
 if(beta_factor > 0 && SRAD >0){
 
 //Option 1. gs = 1.6*Ag/(co2-ci)*LAI*0.02405; 
     //Option 1. gs = 1.6*An/(co2-ci)*LAI*0.02405; 
-gs = fmax(0,1.6*An/(co2-ci)*LAI*0.02405); 
+gs = fmax(0,1.6*An_leaf/(co2-ci)*LAI*0.02405); 
     
 
 //transp = petVnum/(sV+gammaV*(1+ga*(1/ga+1/gs)));
-transp = petVnum/(sV+gammaV*(1+ga*(1/ga+1/gs)));
+transp = petVnum/(sV+gammaV*(ga*(1/ga+1/gs)));
 
 
 
