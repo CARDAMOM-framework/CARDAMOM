@@ -7,13 +7,18 @@
 #include "../../../../math_fun/ipow.c"
 #include "stdlib.h"
 #include "stdio.h"
+#include "math.h"  
 
 //***************General inequality EDC******************
 //***************DALEC_EDC_PARS_INEQUALITY*********
 
 
-  
-  
+static int traj_attempt_count[100] = {0};
+static int traj_pass_count[100] = {0};
+static int fin_zero_count[100] = {0};
+static int fin_neg_count[100] = {0};
+static int fout_zero_count[100] = {0};
+static int fout_neg_count[100] = {0};  
   
 
 //Doing all pools
@@ -72,6 +77,7 @@ for (s=0;s<E.no_pools_to_check;s++){
   
   double EQF=E.pool_eqf[s];
   p = E.pool_indices[s];
+  traj_attempt_count[p] += 1;
 
   double MPOOLSjan=0;
   double MPOOLS=mean_pool(DATA->M_POOLS,p,N_timesteps+1,nopools);
@@ -131,34 +137,48 @@ for (s=0;s<E.no_pools_to_check;s++){
 
 // PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
  /*EB test version*/
- PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow(log(Rs/Rm)/log(1+etol),2);
+        // 1. Calculate this pool's penalty
+        double pool_pedc = -0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow(log(Rs/Rm)/log(1+etol),2);
+        
+        // 2. Add it to the total parameter set penalty
+        PEDC += pool_pedc;
 
-//         printf("******Pool p = %i *********\n",p);
-// 
-//         printf("p = %i\n",s);
-//         printf("-0.5*pow(log(Rs)/log(EQF),2) = %2.2f\n",-0.5*pow(log(Rs)/log(EQF),2));
-//         printf("- 0.5 *pow((Rs-Rm)/etol,2) = %2.2f\n",- 0.5 *pow((Rs-Rm)/etol,2));
-// // 
-// 
-//                         printf("Rs = %2.2f\n",Rs);
-//                         printf("Rm = %2.2f\n",Rm);
-// 
-//                 printf("log(Rs) = %2.2f\n",log(Rs));
-// 
-//         printf("-0.5*pow(log(Rs)/log(EQF),2) = %2.2f\n",-0.5*pow(log(Rs)/log(EQF),2));
-//                 printf("Fin = %2.2f\n", Fin);
-//                 printf("dint = %i\n", dint);
-//             printf("Fout = %2.2f\n", Fout);
-//                         printf("Pstart = %2.2f\n", Pstart);
-//             printf("Pend = %2.2f\n", Pend);
-//             printf("MPOOLSjan= %2.2f\n", MPOOLSjan);
-// 
-//         printf("EQF P = %2.2f\n", -0.5*pow(log(Rs)/log(EQF),2));
-//             printf("Etol P = %2.2f\n", - 0.5 *pow((Rs-Rm)/etol,2));
-//         printf("PEDC = %2.2f\n",PEDC);
+        // 3. Check if the math survived (no division by zero or log of negatives)
+        // 3. Check if the math survived
+        if (isfinite(pool_pedc)) {
+            traj_pass_count[p] += 1;
+        } else {
+            // Aggregate the exact reason for the failure
+            if (Fin == 0.0) fin_zero_count[p] += 1;
+            else if (Fin < 0.0) fin_neg_count[p] += 1;
 
-     }
-     free(FT);
+            if (Fout == 0.0) fout_zero_count[p] += 1;
+            else if (Fout < 0.0) fout_neg_count[p] += 1;
+        }
+    }
+
+    free(FT);
+    
+    // 4. Print the stats! 
+    // Added a static counter so your terminal doesn't crash from printing millions of lines
+  static int traj_print_throttle = 0;
+    traj_print_throttle++;
+    
+    // Set to print every 100 passes for testing (adjust as needed)
+    if (traj_print_throttle % 50 == 0) { 
+        printf("\n--- Trajectory (EDC 8) Stats at %i attempts ---\n", traj_print_throttle);
+        for (int j = 0; j < DATA->nopools; j++) {
+            if (traj_attempt_count[j] > 0) {
+                double percent = (100.0 * (double)traj_pass_count[j] / (double)traj_attempt_count[j]);
+                int total_fails = traj_attempt_count[j] - traj_pass_count[j];
+                
+                printf("pool %2i; Att = %6i, Pass = %6i (%5.2f%%) | Fails: %6i [Fin=0: %6i, Fin<0: %6i | Fout=0: %6i, Fout<0: %6i]\n", 
+                        j, traj_attempt_count[j], traj_pass_count[j], percent, 
+                        total_fails, fin_zero_count[j], fin_neg_count[j], fout_zero_count[j], fout_neg_count[j]);
+            }
+        }
+        fflush(stdout);
+    }
      // printf("PEDC = %2.2f\n",PEDC);
     return PEDC;
 }
