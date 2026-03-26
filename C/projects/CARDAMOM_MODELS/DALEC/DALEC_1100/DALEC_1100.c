@@ -19,8 +19,6 @@
 #include "../DALEC_ALL/ALLOC_AND_AUTO_RESP_FLUXES.c"
 #include "../DALEC_ALL/THERMAL_CONDUCTIVITY.c"
 
-static int mcmc_iteration = 0;
-
 typedef struct DALEC_1100_DATA_STRUCT{
 double * VegK;
 double example_const;
@@ -458,8 +456,6 @@ int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
 
     /*repeating loop for each timestep*/
 for (n=0; n < N_timesteps; n++){
-
-if (n == 0) { mcmc_iteration++; }
     /*pool index*/
 p=nopools*n;
     /*next pool index*/
@@ -698,25 +694,6 @@ FLUXES[f+F.sensible_heat] = Rn - FLUXES[f+F.ground_heat] - FLUXES[f+F.latent_hea
     // Infiltration (mm/day)
 double liquid_in = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]);
 FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-liquid_in/pars[P.max_infil]));
-
-  // --- START DIAGNOSTIC BLOCK ---
- //(DOY between 182 and 213 is roughly July)
-    if (mcmc_iteration % 10000 == 0 && DOY[n] > 190 && DOY[n] < 200) {
-        double current_rain = PREC[n] - SNOWFALL[n];
-        double current_melt = FLUXES[f+F.melt];
-        double total_liquid = current_rain + current_melt;
-        
-        printf("\n[MCMC ITER %d] Summer Physics (DOY %g, Timestep %d)\n", mcmc_iteration, DOY[n], n);
-        printf("  Forcing:  PREC=%g | SNOWFALL=%g | (P-S)=%g\n", PREC[n], SNOWFALL[n], current_rain);
-        printf("  Melt:     SKT=%gC | Thresh=%gC | MELT_FLUX=%g\n", SKT[n], pars[P.min_melt]-DGCM_TK0C, current_melt);
-        printf("  Infil:    MAX_INFIL=%g | LIQUID_IN=%g | RESULT=%g\n", pars[P.max_infil], total_liquid, FLUXES[f+F.infil]);
-        
-        if (total_liquid <= 0) {
-            printf("  !! ALERT: Zero water available for infiltration in summer !!\n");
-        }
-        fflush(stdout);
-    }
-    // --- END DIAGNOSTIC BLOCK ---
 
 
     // Surface runoff (mm/day)
