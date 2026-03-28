@@ -55,7 +55,7 @@ LST=0.5*24*60;
 double AST = LST+ET1;
 double h = (AST-12*60)/4; //hour angle
 double alpha = asin((sin(pi/180*LAT)*sin(pi/180*DA)+cos(pi/180*LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
-double zenith_angle = 90-alpha;
+double zenith_angle = fmin(89,90-alpha);
 
 //printf("SZA local = %2.2f, SZA global = %2.2f, SZA diff = %2.2f\n", zenith_angle,DATA.ncdf_data.SZA.values,DATA.ncdf_data.SZA.values - zenith_angle);
 //double LAD = 1.0; //leaf angle distribution
