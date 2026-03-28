@@ -228,7 +228,7 @@ if(beta_factor > 0 && SRAD >0){
 
 //Option 1. gs = 1.6*Ag/(co2-ci)*LAI*0.02405; 
     //Option 1. gs = 1.6*An/(co2-ci)*LAI*0.02405; 
-gs = fmax(0,1.6*An_leaf/(co2-ci)*canopy_scale*0.02405); 
+gs = fmax(0,1.6*An_leaf/(co2-ci)*LAI*0.02405); 
     
 
 //transp = petVnum/(sV+gammaV*(1+ga*(1/ga+1/gs)));
