@@ -4,7 +4,8 @@ import os
 #***WARNING***
 #When trying to download two or more variables in one go, the API was downloading nc files that were effectively unreadable
 #Test before implementation with modifications!
-global_area_definition=[60, -130, 20, -50]
+global_area_definition=[60.25, -124.75, 24.75, -65.25]
+
 global_grid_definition=["0.5/0.5"]
 data_format="netcdf"
 download_format="unarchived"
@@ -52,7 +53,7 @@ def DOWNLOAD_ECMWF_HOURLY_DRIVERS_FOR_CARDAMOM(m, yr):
 
 #Main code
 
-for year in range(2015, 2021):
+for year in range(2015, 2025):
     for month in range(1, 13):
         year_str = str(year)
         month_str = str(month).zfill(2)

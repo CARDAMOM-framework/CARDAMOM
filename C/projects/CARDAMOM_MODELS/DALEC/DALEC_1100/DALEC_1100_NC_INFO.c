@@ -399,7 +399,7 @@ void POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
     DALECmodel->FLUX_META.NAME[F.latent_heat]="Latent heat flux";
     DALECmodel->FLUX_META.ABBREVIATION[F.latent_heat]="latent_heat";
     DALECmodel->FLUX_META.UNITS[F.latent_heat]="W/m2";
-    DALECmodel->FLUX_META.DESCRIPTION[F.latent_heat]="Latent heat flux";
+    DALECmodel->FLUX_META.DESCRIPTION[F.latent_heat]="Latent heat flux, including sublimation";
 
     DALECmodel->FLUX_META.NAME[F.sensible_heat]="Sensible heat flux";
     DALECmodel->FLUX_META.ABBREVIATION[F.sensible_heat]="sensible_heat";

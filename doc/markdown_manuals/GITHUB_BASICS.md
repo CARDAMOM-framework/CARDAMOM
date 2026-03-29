@@ -36,6 +36,13 @@ Issue "There is no tracking information for the current branch", when you try to
   
 
 
+## Pull request recommendations
+
+Any of these options are fine, best choice is circumstantial:
+Option 1: Branch
+Option 2: Fork then submit pull request
+
+
 
 
 https://stackoverflow.com/questions/32056324/there-is-no-tracking-information-for-the-current-branch
