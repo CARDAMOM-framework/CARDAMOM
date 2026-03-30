@@ -14,7 +14,7 @@
 #include "DALEC_EDC_FLUX_RATIO.c"
 #include "DALEC_EDC_MEAN_PAW_TEMP.c"
 #include "DALEC_EDC_PARAMETER_ZEROONE.c"
-
+#include "DALEC_EDC_STATE_PROXIMITY.c"
 
 
 

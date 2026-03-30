@@ -1189,7 +1189,7 @@ DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=89;
 DALECmodel->nofluxes=100;
-DALECmodel->noedcs=15;
+DALECmodel->noedcs=16;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
@@ -1447,7 +1447,25 @@ static DALEC_EDC_MEAN_TEMP_STRUCT EDC_mean_ly1_temp, EDC_mean_ly2_temp, EDC_mean
     EDCs[E.mean_ly3_temp].function=&DALEC_EDC_MEAN_TEMP;
     EDCs[E.mean_ly3_temp].prerun=false;
 
+//*************** Set up State Proximity EDC ***************
+static DALEC_EDC_STATE_PROXIMITY_STRUCT EDC_prox;
+static int prox_pool_indices[3]; // We are checking 3 layers
 
+EDC_prox.pool_indices = prox_pool_indices;
+EDC_prox.no_pools_to_check = 3;
+
+// Assign the diagnostic temperature pools
+EDC_prox.pool_indices[0] = S.D_TEMP_LY1;
+EDC_prox.pool_indices[1] = S.D_TEMP_LY2;
+EDC_prox.pool_indices[2] = S.D_TEMP_LY3;
+
+// Set your penalty thresholds
+EDC_prox.max_allowed_diff = 2.0; // Max allowed difference in degrees K (or C)
+EDC_prox.penalty_scale = 1.5;    // Steepness of the penalty curve (smaller is more strict)
+
+EDCs[E.state_proximity].data = &EDC_prox;
+EDCs[E.state_proximity].function = &DALEC_EDC_STATE_PROXIMITY;
+EDCs[E.state_proximity].prerun = false;
 
 //ecological
 //EDCOPE.SUPPORT_LITCWDSOM_trpar_EDC=true;
