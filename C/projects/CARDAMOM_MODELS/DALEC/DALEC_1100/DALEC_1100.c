@@ -306,9 +306,9 @@ POOLS[S.C_cwd]=pars[P.i_cwd];
 POOLS[S.C_lit]=pars[P.i_lit];
 POOLS[S.C_som]=pars[P.i_som];
     /*water pools*/
-POOLS[S.H2O_LY1]=HYDROFUN_MOI2EWT(pars[P.i_LY1_SM],pars[P.LY1_por],pars[P.LY1_z]);
-POOLS[S.H2O_LY2]=HYDROFUN_MOI2EWT(pars[P.i_LY2_SM],pars[P.LY2_por],pars[P.LY2_z]);
-POOLS[S.H2O_LY3]=HYDROFUN_MOI2EWT(pars[P.i_LY3_SM],pars[P.LY3_por],pars[P.LY3_z]);
+POOLS[S.H2O_LY1]=HYDROFUN_MOI2EWT(pars[P.i_LY1_SM],pars[P.LY1_por],pars[P.LY1_z]); //liquid + frozen state
+POOLS[S.H2O_LY2]=HYDROFUN_MOI2EWT(pars[P.i_LY2_SM],pars[P.LY2_por],pars[P.LY2_z]); //liquid + frozen state
+POOLS[S.H2O_LY3]=HYDROFUN_MOI2EWT(pars[P.i_LY3_SM],pars[P.LY3_por],pars[P.LY3_z]); //liquid + frozen state
 POOLS[S.H2O_SWE]=pars[P.i_SWE];
     /*Energy pools*/
 POOLS[S.E_LY1]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY1_E],   POOLS[S.H2O_LY1], pars[P.LY1_vhc], pars[P.LY1_z] );
@@ -334,16 +334,9 @@ double LY2max=pars[P.LY2_por]*pars[P.LY2_z]*1000;
         //LY3 capacity in mm
 double LY3max=pars[P.LY3_por]*pars[P.LY3_z]*1000; 
     //INITIALIZING soil moisture
-POOLS[S.D_SM_LY1]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY1],pars[P.LY1_por],pars[P.LY1_z]); //soil moisture LY1
-POOLS[S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY2],pars[P.LY2_por],pars[P.LY2_z]);//soil moisture LY3
-POOLS[S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3
-    // Convert to potential
-        //Min psi ensures large negative psis not resolved by model needlessly
-	        double minpsi=-30;
-POOLS[S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY1],psi_porosity,pars[P.retention]),minpsi);
-POOLS[S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY2],psi_porosity,pars[P.retention]),minpsi);
-POOLS[S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY3],psi_porosity,pars[P.retention]),minpsi);
-
+POOLS[S.D_SM_LY1]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY1],pars[P.LY1_por],pars[P.LY1_z]); //soil moisture LY1: liquid and frozen state
+POOLS[S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY2],pars[P.LY2_por],pars[P.LY2_z]);//soil moisture LY3: liquid and frozen state
+POOLS[S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3: liquid and frozen state
 
 //******************Declare SOIL_TEMP_AND_LIQUID_FRAC STRUCT*********************       
 SOIL_TEMP_AND_LIQUID_FRAC_STRUCT LY1SOILTEMP, LY2SOILTEMP, LY3SOILTEMP;
@@ -360,6 +353,7 @@ SOIL_TEMP_AND_LIQUID_FRAC(&LY1SOILTEMP);  //Outputs are in K
     //Store outputs 
 POOLS[S.D_TEMP_LY1]=LY1SOILTEMP.OUT.TEMP;  //In K  
 POOLS[S.D_LF_LY1]=LY1SOILTEMP.OUT.LF;
+
 
         //LY2
     LY2SOILTEMP.IN.dry_soil_vol_heat_capacity =pars[P.LY2_vhc]; ;//J/m3/K
@@ -383,6 +377,14 @@ SOIL_TEMP_AND_LIQUID_FRAC(&LY3SOILTEMP);//Outputs are in K
     //Store outputs 
 POOLS[S.D_TEMP_LY3]=LY3SOILTEMP.OUT.TEMP;    //In K
 POOLS[S.D_LF_LY3]=LY3SOILTEMP.OUT.LF;
+
+   // Convert to water potential, respecting liquid state only; correcting porosity for ice-filled volume. 
+   //Effectively this corrects MOI to (water frac)/(water + air frac)
+        //Min psi ensures large negative psis not resolved by model needlessly
+	        double minpsi=-30;
+POOLS[S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY1],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY1]),minpsi); //psi reflects liquid state only 
+POOLS[S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY2],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY2]),minpsi); //psi reflects liquid state only 
+POOLS[S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY3],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY3]),minpsi); //psi reflects liquid state only 
 
     
 //******************Declare KNORR STRUCT*********************
@@ -710,10 +712,10 @@ FLUXES[f+F.q_surf] = liquid_in - FLUXES[f+F.infil];
 
 
 
-    // Calculate drainage
-double drain_LY1 = POOLS[p+S.D_LF_LY1]*DRAINAGE(POOLS[p+S.D_SM_LY1],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
-double drain_LY2 = POOLS[p+S.D_LF_LY2]*DRAINAGE(POOLS[p+S.D_SM_LY2],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
-double drain_LY3 = POOLS[p+S.D_LF_LY3]*DRAINAGE(POOLS[p+S.D_SM_LY3],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
+    // Calculate drainage: correcting psi for presence of ice occurs within DRAINAGE function
+double drain_LY1 = DRAINAGE(POOLS[p+S.D_SM_LY1],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention],POOLS[p+S.D_LF_LY1]);
+double drain_LY2 = DRAINAGE(POOLS[p+S.D_SM_LY2],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention],POOLS[p+S.D_LF_LY2]);
+double drain_LY3 = DRAINAGE(POOLS[p+S.D_SM_LY3],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention],POOLS[p+S.D_LF_LY3]);
 
     // Drainage becomes runoff from pools
 FLUXES[f+F.q_ly1] = HYDROFUN_MOI2EWT(drain_LY1,pars[P.LY1_por],pars[P.LY1_z])*one_over_deltat;
@@ -723,16 +725,10 @@ FLUXES[f+F.q_ly3] = HYDROFUN_MOI2EWT(drain_LY3,pars[P.LY3_por],pars[P.LY3_z])*on
 /*printf("q_surf = %2.2f, q_ly1 = %2.2f, q_ly2 = %2.2f, q_ly3 = %2.2f\n", 
 FLUXES[f+F.q_surf],FLUXES[f+F.q_ly1],FLUXES[f+F.q_ly2],FLUXES[f+F.q_ly3]);*/
 
-    // Convert to conductivity
-double k_LY1 = HYDROFUN_MOI2CON((POOLS[p+S.D_SM_LY1]*POOLS[p+S.D_LF_LY1])/ //water fraction
-        (1-POOLS[p+S.D_SM_LY1]+(POOLS[p+S.D_SM_LY1]*POOLS[p+S.D_LF_LY1])), //water + air fraction
-        pars[P.hydr_cond],pars[P.retention]);
-double k_LY2 = HYDROFUN_MOI2CON((POOLS[p+S.D_SM_LY2]*POOLS[p+S.D_LF_LY2])/
-        (1-POOLS[p+S.D_SM_LY2]+(POOLS[p+S.D_SM_LY2]*POOLS[p+S.D_LF_LY2])),
-        pars[P.hydr_cond],pars[P.retention]);
-double k_LY3 = HYDROFUN_MOI2CON((POOLS[p+S.D_SM_LY3]*POOLS[p+S.D_LF_LY3])/
-        (1-POOLS[p+S.D_SM_LY3]+(POOLS[p+S.D_SM_LY3]*POOLS[p+S.D_LF_LY3])),
-        pars[P.hydr_cond],pars[P.retention]);
+    // Convert to conductivity: correcting for presence of ice occurs within MOI2CON function
+double k_LY1 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY1],pars[P.hydr_cond],pars[P.retention],POOLS[p+S.D_LF_LY1]);
+double k_LY2 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY2],pars[P.hydr_cond],pars[P.retention],POOLS[p+S.D_LF_LY2]);
+double k_LY3 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY3],pars[P.hydr_cond],pars[P.retention],POOLS[p+S.D_LF_LY3]);
 
     // Calculate inter-pool transfer in m/s (positive is LY1 to LY2)
 double pot_xfer = 1000 * sqrt(k_LY1*k_LY2) * (1e-9*(POOLS[p+S.D_PSI_LY1]-POOLS[p+S.D_PSI_LY2])/(9.8*0.5*(pars[P.LY1_z]+pars[P.LY2_z])) + 1);
@@ -743,7 +739,7 @@ SPACEavail=fmax(pars[P.LY2_z]*pars[P.LY2_por]*1e3 - POOLS[p+S.H2O_LY2] + (FLUXES
     // Available water in LY1 (after runoff, et, and infiltration)
 H2Oavail=fmax(POOLS[p+S.D_LF_LY1]*POOLS[p+S.H2O_LY1] + (FLUXES[f+F.infil] - FLUXES[f+F.q_ly1] - FLUXES[f+F.evap] - FLUXES[f+F.transp1])*deltat,0);
     // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
-Max_H2O_xfer= POOLS[p+S.D_LF_LY1]*pot_xfer*DGCM_SEC_DAY*deltat;
+Max_H2O_xfer= pot_xfer*DGCM_SEC_DAY*deltat; //liquid fraction accounted for in PSI calculation directly; no need to correct for it here
     //Minimum of three terms for LY1->LY2
         //1. Max_H2O_xfer
         //2. Available space in LY2 (after runoff)
@@ -757,16 +753,14 @@ SPACEavail=fmax(pars[P.LY1_z]*pars[P.LY1_por]*1e3 - POOLS[p+S.H2O_LY1] - (FLUXES
     // Available water in LY2 after runoff
 H2Oavail= fmax(POOLS[p+S.D_LF_LY2]*POOLS[p+S.H2O_LY2] - (FLUXES[f+F.q_ly2] + FLUXES[f+F.transp2])*deltat,0);
     // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
-Max_H2O_xfer= POOLS[p+S.D_LF_LY2]*pot_xfer*DGCM_SEC_DAY*deltat;
+Max_H2O_xfer= pot_xfer*DGCM_SEC_DAY*deltat; //liquid fraction accounted for in PSI calculation directly; no need to correct for it here
     // Reverse sign of previous case
 FLUXES[f+F.ly1xly2] = -fmin(-Max_H2O_xfer , fmin(SPACEavail, H2Oavail))*one_over_deltat;
 TEMPxfer_1to2= POOLS[p+S.D_TEMP_LY2];//In K
 }
 
-  
 
-
-    // Calculate inter-pool transfer in m/s (positive is LY1 to LY3)
+    // Calculate inter-pool transfer in m/s (positive is LY2 to LY3)
 pot_xfer = 1000 * sqrt(k_LY2*k_LY3) * (1e-9*(POOLS[p+S.D_PSI_LY2]-POOLS[p+S.D_PSI_LY3])/(9.8*0.5*(pars[P.LY2_z]+pars[P.LY3_z])) + 1);
 double TEMPxfer_2to3;
 if (pot_xfer>0) {//Water is going LY2->LY3 (down)
@@ -775,7 +769,7 @@ SPACEavail=fmax(pars[P.LY3_z]*pars[P.LY3_por]*1e3 - POOLS[p+S.H2O_LY3] + FLUXES[
     // Available water in LY2 (after runoff, et, and infiltration)
 H2Oavail=fmax(POOLS[p+S.D_LF_LY2]*POOLS[p+S.H2O_LY2] - (FLUXES[f+F.q_ly2] + FLUXES[f+F.transp2])*deltat,0);
     // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
-Max_H2O_xfer= POOLS[p+S.D_LF_LY2]*pot_xfer*DGCM_SEC_DAY*deltat;
+Max_H2O_xfer= pot_xfer*DGCM_SEC_DAY*deltat; //liquid fraction accounted for in PSI calculation directly; no need to correct for it here
     //Minimum of three terms for LY2->LY3
         //1. Max_H2O_xfer
         //2. Available space in LY3 (after runoff)
@@ -789,7 +783,7 @@ SPACEavail=fmax(pars[P.LY2_z]*pars[P.LY2_por]*1e3 - POOLS[p+S.H2O_LY2] + (FLUXES
     // Available water in LY3 after runoff
 H2Oavail= fmax(POOLS[p+S.D_LF_LY3]*POOLS[p+S.H2O_LY3] - FLUXES[f+F.q_ly3]*deltat,0);
     // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
-Max_H2O_xfer= POOLS[p+S.D_LF_LY3]*pot_xfer*DGCM_SEC_DAY*deltat;
+Max_H2O_xfer= pot_xfer*DGCM_SEC_DAY*deltat; //liquid fraction accounted for in PSI calculation directly; no need to correct for it here
     // Reverse sign of previous case
 FLUXES[f+F.ly2xly3] = -fmin(-Max_H2O_xfer , fmin(SPACEavail, H2Oavail))*one_over_deltat;
 TEMPxfer_2to3= POOLS[p+S.D_TEMP_LY3];//In K
@@ -1156,10 +1150,10 @@ POOLS[nxp+S.D_LF_LY3]=LY3SOILTEMP.OUT.LF;
 POOLS[nxp+S.D_SM_LY1]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY1],pars[P.LY1_por],pars[P.LY1_z]); //soil moisture LY1
 POOLS[nxp+S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY2],pars[P.LY2_por],pars[P.LY2_z]);//soil moisture LY2
 POOLS[nxp+S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3
-
-POOLS[nxp+S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY1],psi_porosity,pars[P.retention]),minpsi);
-POOLS[nxp+S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY2],psi_porosity,pars[P.retention]),minpsi);
-POOLS[nxp+S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention]),minpsi);
+//Correcting PSI for presence of ice occurs within MOI2PSI function 
+POOLS[nxp+S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY1],psi_porosity,pars[P.retention], POOLS[nxp+S.D_LF_LY1]),minpsi);
+POOLS[nxp+S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY2],psi_porosity,pars[P.retention], POOLS[nxp+S.D_LF_LY2]),minpsi);
+POOLS[nxp+S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention], POOLS[nxp+S.D_LF_LY3]),minpsi);
 
 
 //Isfinite check for 14 progronstic pools only
