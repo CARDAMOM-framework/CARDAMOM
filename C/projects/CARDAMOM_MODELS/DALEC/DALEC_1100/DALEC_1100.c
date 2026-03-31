@@ -180,6 +180,8 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SINK[F.snowfall]=S.H2O_SWE;
         FIOMATRIX.SOURCE[F.melt]=S.H2O_SWE;
         FIOMATRIX.SOURCE[F.sublimation]=S.H2O_SWE;
+
+        // H2O_GLAC: Note, this is a mass correction and thus will not be subject to state ranges or trajectories
         
         // H2O_LY1
         FIOMATRIX.SINK[F.infil]=S.H2O_LY1;
@@ -268,6 +270,8 @@ double *SKT=DATA.ncdf_data.SKT.values;
 double *STRD=DATA.ncdf_data.STRD.values;
 double *DIST=DATA.ncdf_data.DISTURBANCE_FLUX.values;
 double *YIELD=DATA.ncdf_data.YIELD.values;
+double *GLAC_MELT=DATA.ncdf_data.GLAC_MELT.values;
+double *GLAC_MASS_ANOM=DATA.ncdf_data.GLAC_MASS_ANOM.values;
 
 /*C-pools, fluxes, meteorology indices*/
 int p=0,f,m,nxp, i;
@@ -310,6 +314,7 @@ POOLS[S.H2O_LY1]=HYDROFUN_MOI2EWT(pars[P.i_LY1_SM],pars[P.LY1_por],pars[P.LY1_z]
 POOLS[S.H2O_LY2]=HYDROFUN_MOI2EWT(pars[P.i_LY2_SM],pars[P.LY2_por],pars[P.LY2_z]); //liquid + frozen state
 POOLS[S.H2O_LY3]=HYDROFUN_MOI2EWT(pars[P.i_LY3_SM],pars[P.LY3_por],pars[P.LY3_z]); //liquid + frozen state
 POOLS[S.H2O_SWE]=pars[P.i_SWE];
+POOLS[S.H2O_GLAC] = pars[P.i_glac];
     /*Energy pools*/
 POOLS[S.E_LY1]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY1_E],   POOLS[S.H2O_LY1], pars[P.LY1_vhc], pars[P.LY1_z] );
 POOLS[S.E_LY2]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY2_E],   POOLS[S.H2O_LY2], pars[P.LY2_vhc], pars[P.LY2_z] );
@@ -597,6 +602,8 @@ double slf=(SNOWMELT + SUBLIMATION)*deltat/POOLS[nxp+S.H2O_SWE];
     /*second step: remove snowmelt from SWE*/
         /*Ensure SWE does not go negative due to machine error*/
 POOLS[nxp+S.H2O_SWE]=fmax(POOLS[nxp+S.H2O_SWE]-(FLUXES[f+F.melt] + FLUXES[f+F.sublimation])*deltat,0);
+         /*Update Glacier mass*/
+POOLS[nxp+S.H2O_GLAC] = POOLS[p+S.H2O_GLAC] + GLAC_MASS_ANOM[n];
     //Store total land-to-atmosphere water flux
 FLUXES[f+F.ets]=FLUXES[f+F.evap] + FLUXES[f+F.transp1] + FLUXES[f+F.transp2] + FLUXES[f+F.sublimation];
 
@@ -721,6 +728,7 @@ double drain_LY3 = DRAINAGE(POOLS[p+S.D_SM_LY3],pars[P.Q_excess],-pars[P.field_c
 FLUXES[f+F.q_ly1] = HYDROFUN_MOI2EWT(drain_LY1,pars[P.LY1_por],pars[P.LY1_z])*one_over_deltat;
 FLUXES[f+F.q_ly2] = HYDROFUN_MOI2EWT(drain_LY2,pars[P.LY2_por],pars[P.LY2_z])*one_over_deltat;
 FLUXES[f+F.q_ly3] = HYDROFUN_MOI2EWT(drain_LY3,pars[P.LY3_por],pars[P.LY3_z])*one_over_deltat;
+FLUXES[f+F.q_glac] = GLAC_MELT[n];
 
 /*printf("q_surf = %2.2f, q_ly1 = %2.2f, q_ly2 = %2.2f, q_ly3 = %2.2f\n", 
 FLUXES[f+F.q_surf],FLUXES[f+F.q_ly1],FLUXES[f+F.q_ly2],FLUXES[f+F.q_ly3]);*/
@@ -1185,10 +1193,10 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
  //DALECmodel->data=DALEC_1100_DATA;
 DALECmodel->dalec=DALEC_1100;
-DALECmodel->nopools=30;
-DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=89;
-DALECmodel->nofluxes=100;
+DALECmodel->nopools=31;
+DALECmodel->nomet=12;/*This should be compatible with CBF file, if not then disp error*/
+DALECmodel->nopars=90;
+DALECmodel->nofluxes=101;
 DALECmodel->noedcs=16;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
@@ -1538,16 +1546,18 @@ OBSOPE.LE_flux=F.latent_heat;
 //H variables
 OBSOPE.H_flux=F.sensible_heat;
 //Runoff variables
-static int ROFF_fluxes[4];
+static int ROFF_fluxes[5];
 ROFF_fluxes[0]=F.q_ly1;
 ROFF_fluxes[1]=F.q_ly2;
 ROFF_fluxes[2]=F.q_ly3;
 ROFF_fluxes[3]=F.q_surf;
+ROFF_fluxes[4] = F.q_glac;
 
 OBSOPE.ROFF_fluxes=ROFF_fluxes;
-static double ROFF_flux_signs[]={1.,1.,1.,1.};
+static double ROFF_flux_signs[]={1.,1.,1.,1.,1.};
 OBSOPE.ROFF_flux_signs=ROFF_flux_signs;
-OBSOPE.ROFF_n_fluxes=4;
+OBSOPE.ROFF_n_fluxes=5;
+
 //NBE-specific variables
 static int NBE_fluxes[4];
 NBE_fluxes[0]=F.gpp;
@@ -1577,13 +1587,14 @@ DOM_pools[2]=S.C_som;
 OBSOPE.DOM_pools=DOM_pools;
 OBSOPE.DOM_n_pools=3;
 //H2O-specific variables
-static int EWT_h2o_pools[4];
+static int EWT_h2o_pools[5];
 EWT_h2o_pools[0]=S.H2O_LY1;
 EWT_h2o_pools[1]=S.H2O_LY2;
 EWT_h2o_pools[2]=S.H2O_LY3;
 EWT_h2o_pools[3]=S.H2O_SWE;
+EWT_h2o_pools[4] = S.H2O_GLAC;
 OBSOPE.EWT_h2o_pools=EWT_h2o_pools;
-OBSOPE.EWT_n_h2o_pools=4;
+OBSOPE.EWT_n_h2o_pools=5;
 //Fire-specific variables
 OBSOPE.FIR_flux=F.f_total;
 

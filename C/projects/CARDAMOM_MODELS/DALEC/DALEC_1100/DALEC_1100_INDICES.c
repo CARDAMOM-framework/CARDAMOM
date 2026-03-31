@@ -32,26 +32,27 @@ int i_wood;
 int i_cwd;
 int i_lit;
 int i_som;
-int retention;
-int i_LY1_SM;
-int i_LY2_SM;
 int cf_foliar;
 int cf_ligneous;
 int cf_DOM;
 int resilience;
-int hydr_cond;
-int max_infil;
+int i_LY1_SM;
+int i_LY2_SM;
 int i_LY3_SM;
+int i_glac;
 int LY1_por;
 int LY2_por;
 int LY3_por;
-int field_cap;
 int LY1_z;//LY1 depth
 int LY2_z;//LY2 depth
 int LY3_z;//LY3 depth
 int LY1_vhc;//LY1 volumetric heat capacity
 int LY2_vhc;//LY2 volumetric heat capacity
 int LY3_vhc;//LY3 volumetric heat capacity
+int retention;
+int hydr_cond;
+int max_infil;
+int field_cap;
 int Q_excess;
 int Med_g1;
 int Vcmax25;
@@ -109,7 +110,7 @@ int maxPevap;
     50,51,52,53,54,55,56,57,58,59,
     60,61,62,63,64,65,66,67,68,69,
     70,71,72,73,74,75,76,77,78,79,
-    80,81,82,83,84,85,86,87,88,
+    80,81,82,83,84,85,86,87,88,89
 };
 
 struct DALEC_1100_FLUXES{
@@ -148,6 +149,7 @@ int ly1xly2;   /*LY1->LY2 transfer*/
 int ly2xly3;   /*LY2->LY3 transfer*/
 int q_ly3;   /*LY3 runoff*/
 int q_surf;   /*Surface runoff*/
+int q_glac; /*Runoff sourced from glacier melt*/
 int infil;   /*INFILTRATION*/
 int infil_e;   /*INFILTRATION IE: temp = weight average of snow melt (0C) + liquid precip (@air temp)*/
 int q_ly1_e;   /*Q LY1 IE: temp = LY1 temp*/
@@ -224,7 +226,7 @@ int wooyield2cwd;
     60,61,62,63,64,65,66,67,68,69,
     70,71,72,73,74,75,76,77,78,79,
     80,81,82,83,84,85,86,87,88,89,
-    90,91,92,93,94,95,96,97,98,99,
+    90,91,92,93,94,95,96,97,98,99,100
 };
 
 
@@ -245,6 +247,7 @@ int H2O_LY1; /*Layer 1 H2O*/
 int H2O_LY2; /*Layer 2 H2O*/
 int H2O_LY3; /*Layer 3 H2O*/
 int H2O_SWE; /*Snow water equivalent*/
+int H2O_GLAC; /*Glacier H2O*/
 int E_LY1; /*LY1 thermal energy state*/
 int E_LY2; /*LY2 thermal energy state*/
 int E_LY3; /*LY3 thermal energy state*/
@@ -267,7 +270,7 @@ int M_LAI_TEMP;//KNORR LAI module temp memory
 } DALEC_1100_POOLS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
-    20,21,22,23,24,25,26,27,28,29
+    20,21,22,23,24,25,26,27,28,29,30
 };
 
 struct DALEC_1100_EDCs{

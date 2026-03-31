@@ -330,6 +330,14 @@ printf("Done reading all other edc ");
 		DATA->YIELD.reference_mean=ncdf_read_double_attr(ncid, "YIELD","reference_mean");
                                 DEFAULT_REFERENCE_MEAN(&DATA->YIELD);
 
+	DATA->GLAC_MELT.values=ncdf_read_double_var(ncid, "GLAC_MELT", &(DATA->GLAC_MELT.length));
+		DATA->GLAC_MELT.reference_mean=ncdf_read_double_attr(ncid, "GLAC_MELT","reference_mean");
+                                DEFAULT_REFERENCE_MEAN(&DATA->GLAC_MELT);
+
+	DATA->GLAC_MASS_ANOM.values=ncdf_read_double_var(ncid, "GLAC_MASS_ANOM", &(DATA->GLAC_MASS_ANOM.length));
+		DATA->GLAC_MASS_ANOM.reference_mean=ncdf_read_double_attr(ncid, "GLAC_MASS_ANOM","reference_mean");
+                                DEFAULT_REFERENCE_MEAN(&DATA->GLAC_MASS_ANOM);
+
         
         
         
