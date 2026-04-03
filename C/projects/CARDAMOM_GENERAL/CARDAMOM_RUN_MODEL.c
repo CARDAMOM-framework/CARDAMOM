@@ -359,6 +359,20 @@ for (n=0;n<N;n++){
 FAILONERROR(nc_get_vara_double(cbrId,cbrParsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars},pars));
 
 
+//Aditional step: get ref ET for recycling
+CARDADATA.ncdf_data.ET_REF.values=CARDADATA.ncdf_data.ET_REF2.values[n]; 
+printf("CARDADATA.ncdf_data.ET_REF.values[0]=%2.2f\n",CARDADATA.ncdf_data.ET_REF.values[0]);
+printf("CARDADATA.ncdf_data.ET_REF.values[1]=%2.2f\n",CARDADATA.ncdf_data.ET_REF.values[1]);
+printf("CARDADATA.ncdf_data.ET_REF.values[2]=%2.2f\n",CARDADATA.ncdf_data.ET_REF.values[2]);
+
+printf("CARDADATA.ncdf_data.ET_REF2.values[n][0]=%2.2f\n",CARDADATA.ncdf_data.ET_REF2.values[n][0]);
+printf("CARDADATA.ncdf_data.ET_REF2.values[n][1]=%2.2f\n",CARDADATA.ncdf_data.ET_REF2.values[n][1]);
+printf("CARDADATA.ncdf_data.ET_REF2.values[n][2]=%2.2f\n",CARDADATA.ncdf_data.ET_REF2.values[n][2]);
+
+
+
+printf("Made it here, n = %i\n",n);
+
 /*step 4.2 - running MODEL_LIKELIHOOD_FUNCTION (e.g. DALEC_CDEA_MLF) with parameter vector from file*/
 /*This is stored in CARDADATA.MLF*/
 /*Setting EDCDIAG = 1 to ensure full model run*/
