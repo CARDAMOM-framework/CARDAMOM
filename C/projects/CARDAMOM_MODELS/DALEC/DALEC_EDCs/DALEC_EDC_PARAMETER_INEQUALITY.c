@@ -19,7 +19,7 @@ double DALEC_EDC_PARAMETER_INEQUALITY(DATA * DATA, void * EDCstruct){
     //Checking inequality
 
     double bigp=DATA->M_PARS[E.big_par_index];
-    double smallp=DATA->M_PARS[E.small_par_index]];
+    double smallp=DATA->M_PARS[E.small_par_index];
     double r = bigp/smallp;
     //assumes parameters are the same sign
     if (r<tolerance){
