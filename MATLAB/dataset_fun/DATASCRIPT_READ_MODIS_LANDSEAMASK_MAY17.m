@@ -18,11 +18,11 @@ if isstr(res)==0;resstr=num2str(res);else; resstr=res;end
  
 %making list of files here
 
-modisdatapath='DATA/MODIS/MOD44W/';
+modisdatapath='../DATA/MODIS/MOD44W/';
 %listing all dates and looping through those
 
 
-    LSMfilename=sprintf('DATA/MODIS/MOD44W/PROCESSED/MOD44W_RES=%s.mat',resstr);
+    LSMfilename=sprintf('../DATA/MODIS/MOD44W/PROCESSED/MOD44W_RES=%s.mat',resstr);
     %here cycling through the whole grid
     LM=x*0;
     SM=x*0;

@@ -24,12 +24,10 @@ double DALEC_EDC_PARAMETER_INEQUALITY(DATA * DATA, void * EDCstruct){
     //assumes parameters are the same sign
     if (r<tolerance){
         
-        PEDC = -1e6*(tolerance-r);
-    
+        PEDC = -1e6*(tolerance-r)/(tolerance-1);
     } ;
     
 
-    
     return PEDC;
     
 

@@ -22,9 +22,14 @@ typedef struct {
 double DALEC_EDC_START_TEMP(DATA * DATA, void * EDCstruct){
 
 
+    
+
+
 
        DALEC_EDC_START_TEMP_STRUCT  E = *(DALEC_EDC_START_TEMP_STRUCT * ) EDCstruct;
-
+    //tolerance 
+    double max_temp_tol=E.max_temp - 0.001;
+    double min_temp_tol=E.min_temp + 0.001;
     //Declare stryct
     SOIL_TEMP_AND_LIQUID_FRAC_STRUCT SOILTEMP;
   //Populate with run-specific constrants
@@ -41,8 +46,12 @@ double DALEC_EDC_START_TEMP(DATA * DATA, void * EDCstruct){
 
     double PEDC=0;
     
-         if (SOILTEMP.OUT.TEMP<E.min_temp | SOILTEMP.OUT.TEMP>E.max_temp){PEDC = -INFINITY;}
-          
+         //if (SOILTEMP.OUT.TEMP<E.min_temp | SOILTEMP.OUT.TEMP>E.max_temp){PEDC = -INFINITY;}
+        //if (SOILTEMP.OUT.TEMP<min_temp_tol){PEDC = -1e6*(min_temp_tol-SOILTEMP.OUT.TEMP)/(min_temp_tol-E.min_temp);}
+    //simplifies to multiplying by 1e9
+    if (SOILTEMP.OUT.TEMP<min_temp_tol){PEDC = -1e9*(min_temp_tol-SOILTEMP.OUT.TEMP);}
+              if (SOILTEMP.OUT.TEMP>max_temp_tol){PEDC = -1e9*(SOILTEMP.OUT.TEMP-max_temp_tol);}
+
 
 
 
