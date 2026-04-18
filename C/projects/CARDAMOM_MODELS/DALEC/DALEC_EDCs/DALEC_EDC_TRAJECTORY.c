@@ -95,17 +95,11 @@ for (s=0;s<E.no_pools_to_check;s++){
   //Next step:
   //Loop through all fluxes
   //For each pool create "Fin" and "Fout", and add these to fluxe
-  double Fin=0, Fout=0, Ftemp=0; 
+    double Fin=0, Fout=0, Ftemp=0; 
   for (i=0;i<DALECmodel->SIOMATRIX[p].N_STATE_INPUT_FLUXES;i++){
     double Ftemp = FT[DALECmodel->SIOMATRIX[p].STATE_INPUT_FLUXES[i]];
     if (Ftemp<0){Fout +=Ftemp;} 
     else {Fin += Ftemp;}}
-
-  for (i=0;i<DALECmodel->SIOMATRIX[p].N_STATE_OUTPUT_FLUXES;i++){
-    double Ftemp= FT[DALECmodel->SIOMATRIX[p].STATE_OUTPUT_FLUXES[i]];
-    if (Ftemp<0){Fin +=Ftemp;} 
-    else {Fout += Ftemp;}}
-
   // 
   // double Fin[10];
   // double Fout[10];
