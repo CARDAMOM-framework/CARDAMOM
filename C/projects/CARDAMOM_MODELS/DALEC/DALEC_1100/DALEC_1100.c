@@ -704,7 +704,9 @@ FLUXES[f+F.sensible_heat] = Rn - FLUXES[f+F.ground_heat] - FLUXES[f+F.latent_hea
 
     // Infiltration (mm/day)
 double liquid_in = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]);
-FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-liquid_in/pars[P.max_infil]));
+double ice_sat_tv_surface = POOLS[p+S.D_SM_LY1] * (1.0 - POOLS[p+S.D_LF_LY1]); // volume of total pore space occupied by ice
+double dynamic_max_infil = pars[P.max_infil] * pow(10.0, -6.0 * ice_sat_tv_surface); // impedance of infiltration due to ice blockage
+FLUXES[f+F.infil] = dynamic_max_infil*(1 - exp(-liquid_in/dynamic_max_infil));
 
 
     // Surface runoff (mm/day)
@@ -1155,11 +1157,11 @@ POOLS[nxp+S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY2],pars[P.LY2_por],pars
 POOLS[nxp+S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3
 //Correcting PSI for presence of ice occurs within MOI2PSI function 
 POOLS[nxp+S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY1],psi_porosity,pars[P.retention], 
-POOLS[nxp+S.D_LF_LY1],POOLS[S.D_TEMP_LY1]),minpsi);
+POOLS[nxp+S.D_LF_LY1],POOLS[nxp+S.D_TEMP_LY1]),minpsi);
 POOLS[nxp+S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY2],psi_porosity,pars[P.retention], 
-POOLS[nxp+S.D_LF_LY2],POOLS[S.D_TEMP_LY2]),minpsi);
+POOLS[nxp+S.D_LF_LY2],POOLS[nxp+S.D_TEMP_LY2]),minpsi);
 POOLS[nxp+S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention], 
-POOLS[nxp+S.D_LF_LY3],POOLS[S.D_TEMP_LY3]),minpsi);
+POOLS[nxp+S.D_LF_LY3],POOLS[nxp+S.D_TEMP_LY3]),minpsi);
 
 
 //Isfinite check for 14 progronstic pools only

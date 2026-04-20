@@ -25,7 +25,7 @@ if (lf<=1e-4){
 
     // 3. Calculate unsaturated hydraulic conductivity based on available liquid space
     double con_max = k0 * pow(moi_eff, 2.0 * b + 3.0);
-    double impedance = pow(10, ice_sat_tv*6.0); // from Swenson et al., 2012 https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2012MS000165 
+    double impedance = pow(10, -ice_sat_tv*6.0); // from Swenson et al., 2012 https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2012MS000165 
 
     double con = con_max * impedance;
  
