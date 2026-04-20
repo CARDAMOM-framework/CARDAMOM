@@ -12,7 +12,6 @@ typedef struct {
 double DALEC_EDC_PARAMETER_INEQUALITY(DATA * DATA, void * EDCstruct){
    
     double PEDC = 0;
-    double tolerance=1.001;
 
     //Reading by casting void pointer to "DALEC_EDC_PARS_INEQUALITY_STRUCT" format
    DALEC_EDC_PARAMETER_INEQUALITY_STRUCT  E = *(DALEC_EDC_PARAMETER_INEQUALITY_STRUCT * ) EDCstruct;
@@ -20,11 +19,12 @@ double DALEC_EDC_PARAMETER_INEQUALITY(DATA * DATA, void * EDCstruct){
 
     double bigp=DATA->M_PARS[E.big_par_index];
     double smallp=DATA->M_PARS[E.small_par_index];
-    double r = bigp/smallp;
+    //ratio should be <1
+    double rr = smallp/bigp;
     //assumes parameters are the same sign
-    if (r<tolerance){
-        
-        PEDC = -1e6*(tolerance-r)/(tolerance-1);
+    if (rr>1){
+        //%Steep dropoff mitigates return
+        PEDC = -1e6 - 1e6*rr;
     } ;
     
 

@@ -1310,14 +1310,14 @@ EDCs[E.vcmax_lcma].prerun=true;
     EDC_sr.min_val[S.D_LF_LY3]=0;
     EDC_sr.max_val[S.D_LF_LY3]=1;
     
-  // EDC_sr.min_val[S.D_SM_LY1]=0;
-   // EDC_sr.max_val[S.D_SM_LY1]=1;
+   EDC_sr.min_val[S.D_SM_LY1]=0;
+    EDC_sr.max_val[S.D_SM_LY1]=1;
     
-   // EDC_sr.min_val[S.D_SM_LY2]=0;
-    //EDC_sr.max_val[S.D_SM_LY2]=1;
+    EDC_sr.min_val[S.D_SM_LY2]=0;
+    EDC_sr.max_val[S.D_SM_LY2]=1;
      
-   // EDC_sr.min_val[S.D_SM_LY3]=0;
-   // EDC_sr.max_val[S.D_SM_LY3]=1;
+    EDC_sr.min_val[S.D_SM_LY3]=0;
+    EDC_sr.max_val[S.D_SM_LY3]=1;
     
 //    EDC_sr.min_val[S.M_LAI_MAX]=-INFINITY; // get a better value from Alex N.
 //    EDC_sr.max_val[S.M_LAI_MAX]=INFINITY; // get a better value from Alex N.

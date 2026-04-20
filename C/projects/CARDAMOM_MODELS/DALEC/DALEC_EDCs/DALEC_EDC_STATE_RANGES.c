@@ -5,6 +5,7 @@
 typedef struct {
        double  * min_val;
     double * max_val; 
+
 }DALEC_EDC_STATE_RANGES_STRUCT;
 
   
@@ -28,11 +29,11 @@ double DALEC_EDC_STATE_RANGES(DATA * DATA, void * EDCstruct){
 
 
         //Defining pool-specific tolerance
-       double diff=E.max_val[p] -  E.min_val[p];
-        double min_pool_tol=E.min_val[p]+fmax(E.min_val[p]*1e-3,0.001);
-        double max_pool_tol=E.max_val[p]-E.max_val[p]*0.001;
-        double dmin=min_pool_tol-E.min_val[p];
-        double dmax=E.max_val[p]-max_pool_tol;
+       double diffr=1/(E.max_val[p] -  E.min_val[p]);
+        //double min_pool_=E.min_val[p]+fmax(E.min_val[p]*1e-3,0.001);
+        //double max_pool_tol=E.max_val[p]-E.max_val[p]*0.001;
+        //double dmin=min_pool_tol-E.min_val[p];
+        //double dmax=E.max_val[p]-max_pool_tol;
 
 //while (PEDC==0 & n<DATA->ncdf_data.TIME_INDEX.length  & k==0){
     for (n=0;n<DATA->ncdf_data.TIME_INDEX.length; n++){
@@ -44,8 +45,8 @@ double DALEC_EDC_STATE_RANGES(DATA * DATA, void * EDCstruct){
 
        //  if (DATA->M_POOLS[p+n*DATA->nopools]<E.min_val[p] || DATA->M_POOLS[p+n*DATA->nopools]>E.max_val[p]){PEDC = -INFINITY;k=-1;}
 double P=DATA->M_POOLS[p+n*DATA->nopools];
-            if (P<min_pool_tol){PEDC += -1e6*(min_pool_tol-P)/dmin;}
-            if (P>max_pool_tol){PEDC += -1e6*(P-max_pool_tol)/dmax;}
+            if (P<E.min_val[p]){PEDC += -1e6 +1e3*(E.min_val[p]-P)*diffr;}
+            if (P>E.max_val[p]){PEDC += -1e6 +1e3*(P-E.max_val[p])*diffr;}
 
 
        //if (p == 18){printf("E.max_val[p] = %2.2f, E.min_val[p] = %2.2f, SM = %2.2f\n",E.max_val[p], E.min_val[p],DATA->M_POOLS[p+n*DATA->nopools]);}

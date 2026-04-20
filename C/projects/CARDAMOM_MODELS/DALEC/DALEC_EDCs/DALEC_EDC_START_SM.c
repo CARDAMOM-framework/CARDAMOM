@@ -17,7 +17,7 @@ typedef struct {
 double DALEC_EDC_START_SM(DATA * DATA, void * EDCstruct){
 
 //This is tolerated range without penalty 
-double tolerance=1-1e3;
+//double tolerance=1-1e3;
 
 
 
@@ -36,10 +36,11 @@ double SM=HYDROFUN_EWT2MOI(DATA->M_PARS[E.i_H2O_idx],DATA->M_PARS[E.por_idx],DAT
     
          //if (SM>1){PEDC = -INFINITY;}
          
-
+        //commented out code obsolete
         //      if (SM>tolerance){PEDC = -1e6*(SM-tolerance)/(1-tolerance);}
         //same as 1e9*(SM-tolerance), hard coding for speed
-        if (SM>tolerance){PEDC = -1e9*(SM-tolerance);}
+        //-1e6 initial penalty
+        if (SM>1){PEDC = -1e6 -1e6*SM;}
           
 
   
