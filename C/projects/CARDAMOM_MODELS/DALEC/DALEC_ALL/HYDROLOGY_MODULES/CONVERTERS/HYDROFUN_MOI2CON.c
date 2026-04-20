@@ -16,15 +16,18 @@ if (lf<=1e-4){
 }
 
     // 1. Calculate effective pore volume (fraction of pore volume not occupied by ice)
-    double ice_sat_tv = moi * (1.0 - lf);
-    double effective_porosity = 1.0 - ice_sat_tv; 
+    double ice_sat_tv = moi * (1.0 - lf); //fraction of pore volume occupied by ice
+    double effective_porosity = 1.0 - ice_sat_tv; //fraction of pore volume NOT occupied by ice
 
     // 2. Calculate effective liquid saturation
-    double liq_sat_tv = moi * lf; 
-    double moi_eff = liq_sat_tv / effective_porosity; 
+    double liq_sat_tv = moi * lf; //fraction of pore volume occupied by liquid water
+    double moi_eff = liq_sat_tv / effective_porosity; //fraction of <pore volume NOT occupied by ice> occupied by liquid water
 
     // 3. Calculate unsaturated hydraulic conductivity based on available liquid space
-    double con = k0 * pow(moi_eff, 2.0 * b + 3.0);
+    double con_max = k0 * pow(moi_eff, 2.0 * b + 3.0);
+    double impedance = pow(10, ice_sat_tv*6.0); // from Swenson et al., 2012 https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2012MS000165 
+
+    double con = con_max * impedance;
  
 return con;
 }

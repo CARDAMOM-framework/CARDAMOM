@@ -15,7 +15,7 @@ b - retention parameter
 lf - liquid fraction of H2O content 
 */
 
-double DRAINAGE(double sm, double Qexcess, double psi_field, double psi_porosity, double b, double lf){
+double DRAINAGE(double sm, double Qexcess, double psi_field, double psi_porosity, double b, double lf, double soil_temp){
 
   // 1. check for excessive soil moisture: drain out sm>1 so that all sm values are <=1, and won't break psi_eff. 
  // (note that sm>1 only occurs transiently in between time steps and must be in a liquid/drainable state)
@@ -25,7 +25,7 @@ double DRAINAGE(double sm, double Qexcess, double psi_field, double psi_porosity
         sm = 1.0;}
 
   // 2. Calculate current effective potential of the liquid-saturated state
-    double psi_eff = HYDROFUN_MOI2PSI(sm, psi_porosity, b, lf);
+    double psi_eff = HYDROFUN_MOI2PSI(sm, psi_porosity, b, lf, soil_temp);
 
   // 3. Check for excessive soil moisture: 
   if (psi_eff <= psi_field) {
