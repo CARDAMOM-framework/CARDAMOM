@@ -387,9 +387,9 @@ POOLS[S.D_LF_LY3]=LY3SOILTEMP.OUT.LF;
    //Effectively this corrects MOI to (water frac)/(water + air frac)
         //Min psi ensures large negative psis not resolved by model needlessly
 	        double minpsi=-30;
-POOLS[S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY1],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY1]),minpsi); //psi reflects liquid state only 
-POOLS[S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY2],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY2]),minpsi); //psi reflects liquid state only 
-POOLS[S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY3],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY3]),minpsi); //psi reflects liquid state only 
+POOLS[S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY1],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY1],POOLS[S.D_TEMP_LY1]),minpsi); //psi reflects ice-adjusted capillary tension + cryosuction 
+POOLS[S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY2],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY2],POOLS[S.D_TEMP_LY2]),minpsi); //psi reflects ice-adjusted capillary tension + cryosuction
+POOLS[S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY3],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY3],POOLS[S.D_TEMP_LY3]),minpsi); //psi reflects ice-adjusted capillary tension + cryosuction
 
     
 //******************Declare KNORR STRUCT*********************
@@ -497,14 +497,14 @@ else {
 
     //stomatal closure factor
 
-double beta1 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50] - 1)))*POOLS[p+S.D_LF_LY1];
-double beta2 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50] - 1)))*POOLS[p+S.D_LF_LY2];
+double beta1 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50] - 1)));
+double beta2 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50] - 1)));
 double beta = (beta1*pars[P.LY1_z] + beta2*pars[P.LY2_z]*pars[P.root_frac])/(pars[P.LY1_z]+pars[P.LY2_z]*pars[P.root_frac]);
 
     //biomass mortality factor
 
-double betaHMF_1 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50HMF] - 1)))*POOLS[p+S.D_LF_LY1]; 
-double betaHMF_2 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50HMF] - 1)))*POOLS[p+S.D_LF_LY2];
+double betaHMF_1 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50HMF] - 1))); 
+double betaHMF_2 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50HMF] - 1)));
 double betaHMF = (betaHMF_1*pars[P.LY1_z] + betaHMF_2*pars[P.LY2_z]*pars[P.root_frac])/(pars[P.LY1_z] +pars[P.LY2_z]*pars[P.root_frac]);
 
 double HMF; // Hydraulic mortality factor
@@ -711,7 +711,9 @@ FLUXES[f+F.sensible_heat] = Rn - FLUXES[f+F.ground_heat] - FLUXES[f+F.latent_hea
 
     // Infiltration (mm/day)
 double liquid_in = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]);
-FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-liquid_in/pars[P.max_infil]));
+double ice_sat_tv_surface = POOLS[p+S.D_SM_LY1] * (1.0 - POOLS[p+S.D_LF_LY1]); // volume of total pore space occupied by ice
+double dynamic_max_infil = fmax(pars[P.max_infil] * pow(10.0, -6.0 * ice_sat_tv_surface), 1e-4); // impedance of infiltration due to ice blockage
+FLUXES[f+F.infil] = dynamic_max_infil*(1 - exp(-liquid_in/dynamic_max_infil));
 
 
     // Surface runoff (mm/day)
@@ -720,9 +722,12 @@ FLUXES[f+F.q_surf] = liquid_in - FLUXES[f+F.infil];
 
 
     // Calculate drainage: correcting psi for presence of ice occurs within DRAINAGE function
-double drain_LY1 = DRAINAGE(POOLS[p+S.D_SM_LY1],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention],POOLS[p+S.D_LF_LY1]);
-double drain_LY2 = DRAINAGE(POOLS[p+S.D_SM_LY2],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention],POOLS[p+S.D_LF_LY2]);
-double drain_LY3 = DRAINAGE(POOLS[p+S.D_SM_LY3],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention],POOLS[p+S.D_LF_LY3]);
+double drain_LY1 = DRAINAGE(POOLS[p+S.D_SM_LY1],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,
+pars[P.retention],POOLS[p+S.D_LF_LY1],POOLS[p+S.D_TEMP_LY1]);
+double drain_LY2 = DRAINAGE(POOLS[p+S.D_SM_LY2],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,
+pars[P.retention],POOLS[p+S.D_LF_LY2],POOLS[p+S.D_TEMP_LY2]);
+double drain_LY3 = DRAINAGE(POOLS[p+S.D_SM_LY3],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,
+pars[P.retention],POOLS[p+S.D_LF_LY3],POOLS[p+S.D_TEMP_LY3]);
 
     // Drainage becomes runoff from pools
 FLUXES[f+F.q_ly1] = HYDROFUN_MOI2EWT(drain_LY1,pars[P.LY1_por],pars[P.LY1_z])*one_over_deltat;
@@ -1159,9 +1164,12 @@ POOLS[nxp+S.D_SM_LY1]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY1],pars[P.LY1_por],pars
 POOLS[nxp+S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY2],pars[P.LY2_por],pars[P.LY2_z]);//soil moisture LY2
 POOLS[nxp+S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3
 //Correcting PSI for presence of ice occurs within MOI2PSI function 
-POOLS[nxp+S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY1],psi_porosity,pars[P.retention], POOLS[nxp+S.D_LF_LY1]),minpsi);
-POOLS[nxp+S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY2],psi_porosity,pars[P.retention], POOLS[nxp+S.D_LF_LY2]),minpsi);
-POOLS[nxp+S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention], POOLS[nxp+S.D_LF_LY3]),minpsi);
+POOLS[nxp+S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY1],psi_porosity,pars[P.retention], 
+POOLS[nxp+S.D_LF_LY1],POOLS[nxp+S.D_TEMP_LY1]),minpsi);
+POOLS[nxp+S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY2],psi_porosity,pars[P.retention], 
+POOLS[nxp+S.D_LF_LY2],POOLS[nxp+S.D_TEMP_LY2]),minpsi);
+POOLS[nxp+S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention], 
+POOLS[nxp+S.D_LF_LY3],POOLS[nxp+S.D_TEMP_LY3]),minpsi);
 
 
 //Isfinite check for 14 progronstic pools only
