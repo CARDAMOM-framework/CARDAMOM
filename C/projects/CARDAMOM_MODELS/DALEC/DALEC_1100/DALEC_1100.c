@@ -1380,9 +1380,9 @@ EDC_st.pool_indices[7]=S.H2O_LY1;
 EDC_st.pool_indices[8]=S.H2O_LY2;
 EDC_st.pool_indices[9]=S.H2O_LY3;
 EDC_st.pool_indices[10]=S.H2O_SWE;
-// EDC_st.pool_indices[11]=S.E_LY1;
-// EDC_st.pool_indices[12]=S.E_LY2;
-// EDC_st.pool_indices[13]=S.E_LY3;
+EDC_st.pool_indices[11]=S.E_LY1;
+EDC_st.pool_indices[12]=S.E_LY2;
+EDC_st.pool_indices[13]=S.E_LY3;
 //EDC_st.pool_indices[12]=S.M_LAI_MAX;```
 //EDC_st.pool_indices[13]=S.M_LAI_TEMP;
 
