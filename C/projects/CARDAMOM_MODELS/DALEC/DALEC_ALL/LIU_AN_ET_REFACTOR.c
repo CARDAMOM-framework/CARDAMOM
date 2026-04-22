@@ -20,7 +20,7 @@ typedef struct {
         double leaf_refl_par;
         double leaf_refl_nir;
         double maxPevap;
-        double precip; 
+        double liq_precip; 
         double q10canopy;
         double q10canopyRd;
         double canopyRdsf;
@@ -62,7 +62,7 @@ double clumping=A->IN.clumping;
 double leaf_refl_par=A->IN.leaf_refl_par;
 double leaf_refl_nir=A->IN.leaf_refl_nir;
 double maxPevap=A->IN.maxPevap;
-double precip=A->IN.precip;
+double liq_precip=A->IN.liq_precip;
 
 /* --- Physical and thermodynamic constants --- */
 double Ephoton = 2.0e-25/500.0e-9; // Energy per photon at 500 nm: h*c/lambda (J); h=6.626e-34 J.s, c=3e8 m/s
@@ -271,8 +271,8 @@ if(beta_factor > 0 && SRAD > 0){
 
 A->OUT.transp = transp*24.; // mm hr-1 -> mm day-1
 
-/* Ground evaporation: scale by precipitation availability (evap <= precip/maxPevap) */
-evap_scale_factpr = fmin(precip/maxPevap, 1.);
+/* Ground evaporation: scale by liquid precipitation availability (evap <= liq_precip/maxPevap) */
+evap_scale_factpr = fmin(liq_precip/maxPevap, 1.);
 evap = petVnumB*evap_scale_factpr;
 
 A->OUT.evap = evap*24.; // mm hr-1 -> mm day-1

@@ -526,7 +526,7 @@ LIU_AN_ET_STRUCT LIU;
     //define time-invariant parameters
 LIU.IN.SRAD=SSRD[n]*1e6/DGCM_SEC_DAY;
 LIU.IN.VPD=VPD[n]/10;
-LIU.IN.precip=PREC[n];
+LIU.IN.liq_precip=PREC[n]-SNOWFALL[n];
 LIU.IN.TEMP=air_temp_k;  
 LIU.IN.vcmax25=pars[P.Vcmax25];
 LIU.IN.co2=CO2[n];
