@@ -34,6 +34,7 @@ double *M_ROFF;
 double *M_SCF;
 double *M_SIF;
 double *M_SWE;
+double *M_NISAR_WOOD; // modeled total woody C fire structural loss (gC m-2 per timestep)
 
 //Mean values
 double M_Mean_ABGB;
