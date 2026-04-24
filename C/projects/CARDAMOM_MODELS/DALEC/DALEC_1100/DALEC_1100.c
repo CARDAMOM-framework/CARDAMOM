@@ -18,6 +18,7 @@
 #include "../DALEC_ALL/INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS.c"
 #include "../DALEC_ALL/ALLOC_AND_AUTO_RESP_FLUXES.c"
 #include "../DALEC_ALL/THERMAL_CONDUCTIVITY.c"
+#include "../DALEC_ALL/SWE_SNOW_DENSITY.c"
 
 typedef struct DALEC_1100_DATA_STRUCT{
 double * VegK;
@@ -310,6 +311,7 @@ POOLS[S.H2O_LY1]=HYDROFUN_MOI2EWT(pars[P.i_LY1_SM],pars[P.LY1_por],pars[P.LY1_z]
 POOLS[S.H2O_LY2]=HYDROFUN_MOI2EWT(pars[P.i_LY2_SM],pars[P.LY2_por],pars[P.LY2_z]); //liquid + frozen state
 POOLS[S.H2O_LY3]=HYDROFUN_MOI2EWT(pars[P.i_LY3_SM],pars[P.LY3_por],pars[P.LY3_z]); //liquid + frozen state
 POOLS[S.H2O_SWE]=pars[P.i_SWE];
+POOLS[S.D_RHO_SNOW]=pars[P.i_rho_snow];
     /*Energy pools*/
 POOLS[S.E_LY1]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY1_E],   POOLS[S.H2O_LY1], pars[P.LY1_vhc], pars[P.LY1_z] );
 POOLS[S.E_LY2]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY2_E],   POOLS[S.H2O_LY2], pars[P.LY2_vhc], pars[P.LY2_z] );
@@ -386,7 +388,6 @@ POOLS[S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY1],psi_porosity,pars[P.r
 POOLS[S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY2],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY2],POOLS[S.D_TEMP_LY2]),minpsi); //psi reflects ice-adjusted capillary tension + cryosuction
 POOLS[S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY3],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY3],POOLS[S.D_TEMP_LY3]),minpsi); //psi reflects ice-adjusted capillary tension + cryosuction
 
-    
 //******************Declare KNORR STRUCT*********************
 KNORR_ALLOCATION_STRUCT KNORR;
 //define time-invariant parameters
@@ -473,6 +474,7 @@ DALEC * DALECmodel=(DALEC *)DATA.MODEL;
 DALEC_1100_DATA_STRUCT * DALEC_1100_DATA=(DALEC_1100_DATA_STRUCT *)DALECmodel->MODEL_DATA;
     
 double VegK=DALEC_1100_DATA->VegK[n];
+double tskin_k = SKT[n]+DGCM_TK0C;
 
 //******************Cold temperature stress factor*********************
 double g;
@@ -579,7 +581,24 @@ FLUXES[f+F.evap] = LIU.OUT.evap;
 
     /*Snow water equivalent*/
 FLUXES[f+F.snowfall] = SNOWFALL[n];
-POOLS[nxp+S.H2O_SWE]=POOLS[p+S.H2O_SWE]+FLUXES[f+F.snowfall]*deltat; /*first step snowfall to SWE*/
+
+// 1. Declare the struct
+SWE_SNOW_DENSITY_STRUCT snow_struct;
+
+// 2. Pack the Inputs
+snow_struct.IN.snowfall_rate = FLUXES[f+F.snowfall];
+snow_struct.IN.deltat        = deltat;
+snow_struct.IN.tskin_k       = tskin_k;
+snow_struct.IN.swe_old       = POOLS[p+S.H2O_SWE];
+snow_struct.IN.rho_old       = POOLS[p+S.D_RHO_SNOW]; //Snow density
+
+// 3. Call the Subroutine
+SWE_SNOW_DENSITY(&snow_struct);
+
+// 4. Update the DALEC Pools with the Outputs
+POOLS[nxp+S.H2O_SWE]    = snow_struct.OUT.swe_new;
+POOLS[nxp+S.D_RHO_SNOW] = snow_struct.OUT.rho_new;
+
     //transient_SCF
 double SCFtemp = POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]);
     //Snow melt, based on new SWE
@@ -619,7 +638,6 @@ double sigma = 5.67*1e-8;
     //double LWin = sigma*pow(air_temp_k,4.);
 double LWin = STRD[n]*1e6/DGCM_SEC_DAY; // W m-2
     //Outgoing LW radiation
-double tskin_k = SKT[n]+DGCM_TK0C;
 double LWout = sigma*(tskin_k*tskin_k)*(tskin_k*tskin_k); // W m-2
 
     //Net radiation at the top of the canopy-soil continuum
@@ -1193,9 +1211,9 @@ struct DALEC_1100_EDCs E=DALEC_1100_EDCs;
 
  //DALECmodel->data=DALEC_1100_DATA;
 DALECmodel->dalec=DALEC_1100;
-DALECmodel->nopools=30;
+DALECmodel->nopools=31;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
-DALECmodel->nopars=89;
+DALECmodel->nopars=90;
 DALECmodel->nofluxes=100;
 DALECmodel->noedcs=16;
 

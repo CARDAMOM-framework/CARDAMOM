@@ -385,6 +385,11 @@ parmax[P.sublimation_rate]=10;
 /*Fraction of LY2 to LY1 root biomass*/
 parmin[P.root_frac]=0.001;
 parmax[P.root_frac]=1;
+
+/** Minimum density of fresh powder: 100.0 kg m-3
+Maximum density of ripe seasonal snow:  300.0 kg m-3, Verseghy et al. 1991 (CLASS) */
+parmin[P.i_rho_snow]=100; 
+parmax[P.i_rho_snow]=300; 
   
 return 0;
 
