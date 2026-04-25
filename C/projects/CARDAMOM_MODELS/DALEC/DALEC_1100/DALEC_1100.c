@@ -736,7 +736,7 @@ double k_LY2 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY2],pars[P.hydr_cond],pars[P.ret
 double k_LY3 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY3],pars[P.hydr_cond],pars[P.retention],POOLS[p+S.D_LF_LY3]);
 
     // Calculate inter-pool transfer in m/s (positive is LY1 to LY2)
-double pot_xfer = 1000 * sqrt(k_LY1*k_LY2) * (1e-9*(POOLS[p+S.D_PSI_LY1]-POOLS[p+S.D_PSI_LY2])/(9.8*0.5*(pars[P.LY1_z]+pars[P.LY2_z])) + 1);
+double pot_xfer = 1000 * sqrt(k_LY1*k_LY2) * (1000*(POOLS[p+S.D_PSI_LY1]-POOLS[p+S.D_PSI_LY2])/(9.8*0.5*(pars[P.LY1_z]+pars[P.LY2_z])) + 1);
 double SPACEavail, H2Oavail, Max_H2O_xfer, TEMPxfer_1to2;
 if (pot_xfer>0) {//Water is going LY1->LY2 (down)
     // Available space in LY2 (after runoff)
