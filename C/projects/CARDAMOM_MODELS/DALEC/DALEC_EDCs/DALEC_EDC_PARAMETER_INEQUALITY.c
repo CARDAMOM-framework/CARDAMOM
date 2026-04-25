@@ -4,7 +4,8 @@
 //***************DALEC_EDC_PARS_INEQUALITY*********
 typedef struct {
     int big_par_index;
-    int small_par_index;}DALEC_EDC_PARAMETER_INEQUALITY_STRUCT;
+    int small_par_index;
+    }DALEC_EDC_PARAMETER_INEQUALITY_STRUCT;
 
 
 //General inequality function
@@ -16,11 +17,17 @@ double DALEC_EDC_PARAMETER_INEQUALITY(DATA * DATA, void * EDCstruct){
    DALEC_EDC_PARAMETER_INEQUALITY_STRUCT  E = *(DALEC_EDC_PARAMETER_INEQUALITY_STRUCT * ) EDCstruct;
     //Checking inequality
 
-   
-    if (DATA->M_PARS[E.big_par_index]<DATA->M_PARS[E.small_par_index]){PEDC = -INFINITY;} ;
+    double bigp=DATA->M_PARS[E.big_par_index];
+    double smallp=DATA->M_PARS[E.small_par_index];
+    //ratio should be <1
+    double rr = smallp/bigp;
+    //assumes parameters are the same sign
+    if (rr>1){
+        //%Steep dropoff mitigates return
+        PEDC = -1e6 - 1e6*rr;
+    } ;
     
 
-    
     return PEDC;
     
 

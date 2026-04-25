@@ -402,7 +402,58 @@ S = [0,0,1,0,0;...
 A= S*(eye(5)-N)^-1;
 
 
+
 end
+
+
+function A=forward_model_with_decay
+alpha=0.1;
+%Step 1. Set up problem, use example
+%Networking matrix
+N = [0,0,0,0,0;...
+       0,0,0,0,0;...
+       1,1,0,0,0;...
+       0,0,0,0,0;...
+       0,0,1,1,0];
+
+
+S = [0,0,1,0,0;...
+       0,0,0,0,1];
+
+
+
+%Forward operator, such that 
+% x: runoff
+% y: discharge obs
+% y = Ax
+
+Afull=(eye(size(N,1))-N)^-1;
+%Ainst= S*Afull;
+
+%now decaying each term in A w.r.t how many reaches are crossed 
+
+TM=tril(ones(size(Afull)));
+
+
+%e(-alpha*d) = (1-a)^d
+%-a*d = d log(1-a)
+% - alpha = log(1-a)
+% e(-alpha*d)=exp(- d* log(1-a))
+%(1-a)^d
+
+
+
+G=(1 - alpha).^(TM*Afull);
+
+A=S*(Afull.*G);
+
+
+
+
+
+end
+
+
 
 
 function OE_SETUP

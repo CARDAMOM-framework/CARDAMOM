@@ -27,6 +27,7 @@ for a=AIDX;
 
 rapidfname{a}=sprintf('DATA/RAPID_MAY24/m3_riv_pfaf_ii_GLDAS_COR_M_1980-01_2009-12_utc/m3_riv_pfaf_%02i_GLDAS_COR_M_1980-01_2009-12_utc.nc4',a);
 rapidfname_prior{a}=sprintf('DATA/RAPID_MAY24/m3_riv_pfaf_ii_GLDAS_ENS_M_1980-01_2009-12_utc/m3_riv_pfaf_%02i_GLDAS_ENS_M_1980-01_2009-12_utc.nc4',a);
+disp('PATHS CHANGED: cat files now moved to RAPID general')
 shapefilename{a}=sprintf('DATA/RAPID_MAY24/catchments/cat_pfaf_%02i_MERIT_Hydro_v07_Basins_v01.shp',a);
 
 
