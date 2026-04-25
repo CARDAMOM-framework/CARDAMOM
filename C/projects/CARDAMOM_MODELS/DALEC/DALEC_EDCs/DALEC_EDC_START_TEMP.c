@@ -52,8 +52,8 @@ double DALEC_EDC_START_TEMP(DATA * DATA, void * EDCstruct){
     //if (SOILTEMP.OUT.TEMP<min_temp_tol){PEDC = -1e9*(min_temp_tol-SOILTEMP.OUT.TEMP);}
       //        if (SOILTEMP.OUT.TEMP>max_temp_tol){PEDC = -1e9*(SOILTEMP.OUT.TEMP-max_temp_tol);}
 
-  if (SOILTEMP.OUT.TEMP<min_temp_tol){PEDC = -1e6 -1e3*(E.min_temp-SOILTEMP.OUT.TEMP);}
-              if (SOILTEMP.OUT.TEMP>max_temp_tol){PEDC = -1e6 -1e3*(SOILTEMP.OUT.TEMP-E.max_temp);}
+  if (SOILTEMP.OUT.TEMP<E.min_temp){PEDC = -1e6 -1e3*(E.min_temp-SOILTEMP.OUT.TEMP);}
+              if (SOILTEMP.OUT.TEMP>E.max_temp){PEDC = -1e6 -1e3*(SOILTEMP.OUT.TEMP-E.max_temp);}
 
 
 
