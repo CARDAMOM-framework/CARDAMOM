@@ -45,8 +45,8 @@ double DALEC_EDC_STATE_RANGES(DATA * DATA, void * EDCstruct){
 
        //  if (DATA->M_POOLS[p+n*DATA->nopools]<E.min_val[p] || DATA->M_POOLS[p+n*DATA->nopools]>E.max_val[p]){PEDC = -INFINITY;k=-1;}
 double P=DATA->M_POOLS[p+n*DATA->nopools];
-            if (P<E.min_val[p]){PEDC += -1e6 +1e3*(E.min_val[p]-P)*diffr;}
-            if (P>E.max_val[p]){PEDC += -1e6 +1e3*(P-E.max_val[p])*diffr;}
+            if (P<E.min_val[p]){PEDC += -1e6 -1e3*(E.min_val[p]-P)*diffr;}
+            if (P>E.max_val[p]){PEDC += -1e6 -1e3*(P-E.max_val[p])*diffr;}
 
 
        //if (p == 18){printf("E.max_val[p] = %2.2f, E.min_val[p] = %2.2f, SM = %2.2f\n",E.max_val[p], E.min_val[p],DATA->M_POOLS[p+n*DATA->nopools]);}
