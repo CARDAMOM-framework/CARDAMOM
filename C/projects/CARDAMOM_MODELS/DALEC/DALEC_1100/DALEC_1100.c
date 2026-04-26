@@ -704,9 +704,10 @@ FLUXES[f+F.sensible_heat] = Rn - FLUXES[f+F.ground_heat] - FLUXES[f+F.latent_hea
 
     // Infiltration (mm/day)
 double liquid_in = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]);
-double ice_sat_tv_surface = POOLS[p+S.D_SM_LY1] * (1.0 - POOLS[p+S.D_LF_LY1]); // volume of total pore space occupied by ice
-double dynamic_max_infil = fmax(pars[P.max_infil] * pow(10.0, -6.0 * ice_sat_tv_surface), 1e-4); // impedance of infiltration due to ice blockage
-FLUXES[f+F.infil] = dynamic_max_infil*(1 - exp(-liquid_in/dynamic_max_infil));
+// double ice_sat_tv_surface = POOLS[p+S.D_SM_LY1] * (1.0 - POOLS[p+S.D_LF_LY1]); // volume of total pore space occupied by ice
+// double dynamic_max_infil = fmax(pars[P.max_infil] * pow(10.0, -6.0 * ice_sat_tv_surface), 1e-4); // impedance of infiltration due to ice blockage
+// FLUXES[f+F.infil] = dynamic_max_infil*(1 - exp(-liquid_in/dynamic_max_infil));
+FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-liquid_in/pars[P.max_infil]));
 
 
     // Surface runoff (mm/day)
