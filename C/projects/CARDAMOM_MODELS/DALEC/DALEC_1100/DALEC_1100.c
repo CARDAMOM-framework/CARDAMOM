@@ -17,8 +17,7 @@
 #include "../DALEC_ALL/INITIALIZE_INTERNAL_SOIL_ENERGY.c"
 #include "../DALEC_ALL/INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS.c"
 #include "../DALEC_ALL/ALLOC_AND_AUTO_RESP_FLUXES.c"
-
-
+#include "../DALEC_ALL/THERMAL_CONDUCTIVITY.c"
 
 typedef struct DALEC_1100_DATA_STRUCT{
 double * VegK;
@@ -63,7 +62,7 @@ double zenith_angle = fmin(89,90-alpha);
 
 double LAD = 0.5; //leaf angle distribution// optimize leaf angle distribution. 
 
-    VegK[n] = LAD/cos(zenith_angle/180*pi);
+    VegK[n] = LAD / cos(zenith_angle/180*pi);
 
 }
 
@@ -178,10 +177,10 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.f_som]=S.C_som;
 
         // H2O_SWE
+        FIOMATRIX.SINK[F.snowfall]=S.H2O_SWE;
         FIOMATRIX.SOURCE[F.melt]=S.H2O_SWE;
         FIOMATRIX.SOURCE[F.sublimation]=S.H2O_SWE;
-        FIOMATRIX.SINK[F.snowfall]=S.H2O_SWE;
-
+        
         // H2O_LY1
         FIOMATRIX.SINK[F.infil]=S.H2O_LY1;
         FIOMATRIX.SOURCE[F.evap]=S.H2O_LY1;
@@ -195,10 +194,10 @@ int DALEC_1100_FLUX_SOURCES_SINKS(DALEC * DALECmodel){
         FIOMATRIX.SOURCE[F.ly2xly3]=S.H2O_LY2;
         FIOMATRIX.SOURCE[F.q_ly2]=S.H2O_LY2;
 
-        // H2O_LY3        
+        // H2O_LY3     
+        FIOMATRIX.SINK[F.ly2xly3]=S.H2O_LY3;   
         FIOMATRIX.SOURCE[F.q_ly3]=S.H2O_LY3;
-        FIOMATRIX.SINK[F.ly2xly3]=S.H2O_LY3;
-
+        
         // E_LY1
         FIOMATRIX.SINK[F.gh_in]=S.E_LY1;
         FIOMATRIX.SINK[F.infil_e]=S.E_LY1;
@@ -278,7 +277,7 @@ double pi=DGCM_PI;
 
 //PREDERIVED TERMS 
 
-    double PREDERIVED_GEO_FLUX=0.105*3600*24;
+    double PREDERIVED_GEO_FLUX=0.065*3600*24; /*try values from https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/93rg01249*/
 
 
 double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.values[0];
@@ -307,9 +306,9 @@ POOLS[S.C_cwd]=pars[P.i_cwd];
 POOLS[S.C_lit]=pars[P.i_lit];
 POOLS[S.C_som]=pars[P.i_som];
     /*water pools*/
-POOLS[S.H2O_LY1]=HYDROFUN_MOI2EWT(pars[P.i_LY1_SM],pars[P.LY1_por],pars[P.LY1_z]);
-POOLS[S.H2O_LY2]=HYDROFUN_MOI2EWT(pars[P.i_LY2_SM],pars[P.LY2_por],pars[P.LY2_z]);
-POOLS[S.H2O_LY3]=HYDROFUN_MOI2EWT(pars[P.i_LY3_SM],pars[P.LY3_por],pars[P.LY3_z]);
+POOLS[S.H2O_LY1]=HYDROFUN_MOI2EWT(pars[P.i_LY1_SM],pars[P.LY1_por],pars[P.LY1_z]); //liquid + frozen state
+POOLS[S.H2O_LY2]=HYDROFUN_MOI2EWT(pars[P.i_LY2_SM],pars[P.LY2_por],pars[P.LY2_z]); //liquid + frozen state
+POOLS[S.H2O_LY3]=HYDROFUN_MOI2EWT(pars[P.i_LY3_SM],pars[P.LY3_por],pars[P.LY3_z]); //liquid + frozen state
 POOLS[S.H2O_SWE]=pars[P.i_SWE];
     /*Energy pools*/
 POOLS[S.E_LY1]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY1_E],   POOLS[S.H2O_LY1], pars[P.LY1_vhc], pars[P.LY1_z] );
@@ -335,16 +334,9 @@ double LY2max=pars[P.LY2_por]*pars[P.LY2_z]*1000;
         //LY3 capacity in mm
 double LY3max=pars[P.LY3_por]*pars[P.LY3_z]*1000; 
     //INITIALIZING soil moisture
-POOLS[S.D_SM_LY1]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY1],pars[P.LY1_por],pars[P.LY1_z]); //soil moisture LY1
-POOLS[S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY2],pars[P.LY2_por],pars[P.LY2_z]);//soil moisture LY3
-POOLS[S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3
-    // Convert to potential
-        //Min psi ensures large negative psis not resolved by model needlessly
-	        double minpsi=-30;
-POOLS[S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY1],psi_porosity,pars[P.retention]),minpsi);
-POOLS[S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY2],psi_porosity,pars[P.retention]),minpsi);
-POOLS[S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[S.D_SM_LY3],psi_porosity,pars[P.retention]),minpsi);
-
+POOLS[S.D_SM_LY1]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY1],pars[P.LY1_por],pars[P.LY1_z]); //soil moisture LY1: liquid and frozen state
+POOLS[S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY2],pars[P.LY2_por],pars[P.LY2_z]);//soil moisture LY3: liquid and frozen state
+POOLS[S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3: liquid and frozen state
 
 //******************Declare SOIL_TEMP_AND_LIQUID_FRAC STRUCT*********************       
 SOIL_TEMP_AND_LIQUID_FRAC_STRUCT LY1SOILTEMP, LY2SOILTEMP, LY3SOILTEMP;
@@ -361,6 +353,7 @@ SOIL_TEMP_AND_LIQUID_FRAC(&LY1SOILTEMP);  //Outputs are in K
     //Store outputs 
 POOLS[S.D_TEMP_LY1]=LY1SOILTEMP.OUT.TEMP;  //In K  
 POOLS[S.D_LF_LY1]=LY1SOILTEMP.OUT.LF;
+
 
         //LY2
     LY2SOILTEMP.IN.dry_soil_vol_heat_capacity =pars[P.LY2_vhc]; ;//J/m3/K
@@ -384,6 +377,14 @@ SOIL_TEMP_AND_LIQUID_FRAC(&LY3SOILTEMP);//Outputs are in K
     //Store outputs 
 POOLS[S.D_TEMP_LY3]=LY3SOILTEMP.OUT.TEMP;    //In K
 POOLS[S.D_LF_LY3]=LY3SOILTEMP.OUT.LF;
+
+   // Convert to water potential, respecting liquid state only; correcting porosity for ice-filled volume. 
+   //Effectively this corrects MOI to (water frac)/(water + air frac)
+        //Min psi ensures large negative psis not resolved by model needlessly
+	        double minpsi=-30;
+POOLS[S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY1],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY1],POOLS[S.D_TEMP_LY1]),minpsi); //psi reflects ice-adjusted capillary tension + cryosuction 
+POOLS[S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY2],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY2],POOLS[S.D_TEMP_LY2]),minpsi); //psi reflects ice-adjusted capillary tension + cryosuction
+POOLS[S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY3],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY3],POOLS[S.D_TEMP_LY3]),minpsi); //psi reflects ice-adjusted capillary tension + cryosuction
 
     
 //******************Declare KNORR STRUCT*********************
@@ -491,14 +492,14 @@ else {
 
     //stomatal closure factor
 
-double beta1 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50] - 1)))*POOLS[p+S.D_LF_LY1];
-double beta2 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50] - 1)))*POOLS[p+S.D_LF_LY2];
+double beta1 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50] - 1)));
+double beta2 = 1/(1 + exp(pars[P.beta_lgr]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50] - 1)));
 double beta = (beta1*pars[P.LY1_z] + beta2*pars[P.LY2_z]*pars[P.root_frac])/(pars[P.LY1_z]+pars[P.LY2_z]*pars[P.root_frac]);
 
     //biomass mortality factor
 
-double betaHMF_1 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50HMF] - 1)))*POOLS[p+S.D_LF_LY1]; 
-double betaHMF_2 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50HMF] - 1)))*POOLS[p+S.D_LF_LY2];
+double betaHMF_1 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY1]/pars[P.psi_50HMF] - 1))); 
+double betaHMF_2 = 1/(1 + exp(pars[P.beta_lgrHMF]*(-1*POOLS[p+S.D_PSI_LY2]/pars[P.psi_50HMF] - 1)));
 double betaHMF = (betaHMF_1*pars[P.LY1_z] + betaHMF_2*pars[P.LY2_z]*pars[P.root_frac])/(pars[P.LY1_z] +pars[P.LY2_z]*pars[P.root_frac]);
 
 double HMF; // Hydraulic mortality factor
@@ -672,8 +673,30 @@ double moles_per_m3 = Psurf/(Rgas*air_temp_k);
 // FLUXES[f+F.ground_heat] = G; // W m-2
 // FLUXES[f+F.gh_in] = G*DGCM_SEC_DAY; // J m-2 d-1
 
+//******************Declare THERM STRUCT*********************
+Thermal_struct THERM;
+
+    //define time-invariant parameters
+THERM.IN.surf_por=pars[P.LY1_por];
+THERM.IN.mid_por=0.5*(pars[P.LY2_por]+pars[P.LY1_por]); 
+THERM.IN.deep_por=0.5*(pars[P.LY3_por]+pars[P.LY2_por]); 
+THERM.IN.soil_VWC_surf=POOLS[p+S.D_SM_LY1];
+THERM.IN.soil_VWC_mid=0.5*(POOLS[p+S.D_SM_LY1]+POOLS[p+S.D_SM_LY2]);
+THERM.IN.soil_VWC_deep=0.5*(POOLS[p+S.D_SM_LY2]+POOLS[p+S.D_SM_LY3]);
+THERM.IN.LF_surf=POOLS[p+S.D_LF_LY1];
+THERM.IN.LF_mid=0.5*(POOLS[p+S.D_LF_LY1]+POOLS[p+S.D_LF_LY2]);
+THERM.IN.LF_deep=0.5*(POOLS[p+S.D_LF_LY2]+POOLS[p+S.D_LF_LY3]);
+THERM.IN.soil_thermal_conductivity_surf=pars[P.thermal_cond_surf];
+THERM.IN.soil_thermal_conductivity_middeep=pars[P.thermal_cond];
+
+    //Call function: uses THERM->IN to update THERM->OUT
+THERMAL_COND(&THERM);
+double therm_cond_surf=THERM.OUT.THERMAL_COND_SURF;
+double therm_cond_mid=THERM.OUT.THERMAL_COND_MID;
+double therm_cond_deep=THERM.OUT.THERMAL_COND_DEEP;
+
 //Gh_in approach 2 based on soil and LST
-FLUXES[f+F.ground_heat] =(pars[P.thermal_cond_surf]* (tskin_k - POOLS[p+S.D_TEMP_LY1])/(pars[P.LY1_z]*0.5))*(1. - POOLS[p+S.D_SCF]);
+FLUXES[f+F.ground_heat] =(therm_cond_surf* (tskin_k - POOLS[p+S.D_TEMP_LY1])/(pars[P.LY1_z]*0.5))*(1. - POOLS[p+S.D_SCF]);
 FLUXES[f+F.gh_in] =FLUXES[f+F.ground_heat] *DGCM_SEC_DAY;        
 //Using G, Rn and LE to derive H
 // H = Rn - G  - LE
@@ -681,17 +704,24 @@ FLUXES[f+F.sensible_heat] = Rn - FLUXES[f+F.ground_heat] - FLUXES[f+F.latent_hea
 
     // Infiltration (mm/day)
 double liquid_in = (PREC[n] - SNOWFALL[n] + FLUXES[f+F.melt]);
+// double ice_sat_tv_surface = POOLS[p+S.D_SM_LY1] * (1.0 - POOLS[p+S.D_LF_LY1]); // volume of total pore space occupied by ice
+// double dynamic_max_infil = fmax(pars[P.max_infil] * pow(10.0, -6.0 * ice_sat_tv_surface), 1e-4); // impedance of infiltration due to ice blockage
+// FLUXES[f+F.infil] = dynamic_max_infil*(1 - exp(-liquid_in/dynamic_max_infil));
 FLUXES[f+F.infil] = pars[P.max_infil]*(1 - exp(-liquid_in/pars[P.max_infil]));
+
 
     // Surface runoff (mm/day)
 FLUXES[f+F.q_surf] = liquid_in - FLUXES[f+F.infil];
 
 
 
-    // Calculate drainage
-double drain_LY1 = POOLS[p+S.D_LF_LY1]*DRAINAGE(POOLS[p+S.D_SM_LY1],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
-double drain_LY2 = POOLS[p+S.D_LF_LY2]*DRAINAGE(POOLS[p+S.D_SM_LY2],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
-double drain_LY3 = POOLS[p+S.D_LF_LY3]*DRAINAGE(POOLS[p+S.D_SM_LY3],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,pars[P.retention]);
+    // Calculate drainage: correcting psi for presence of ice occurs within DRAINAGE function
+double drain_LY1 = DRAINAGE(POOLS[p+S.D_SM_LY1],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,
+pars[P.retention],POOLS[p+S.D_LF_LY1],POOLS[p+S.D_TEMP_LY1]);
+double drain_LY2 = DRAINAGE(POOLS[p+S.D_SM_LY2],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,
+pars[P.retention],POOLS[p+S.D_LF_LY2],POOLS[p+S.D_TEMP_LY2]);
+double drain_LY3 = DRAINAGE(POOLS[p+S.D_SM_LY3],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,
+pars[P.retention],POOLS[p+S.D_LF_LY3],POOLS[p+S.D_TEMP_LY3]);
 
     // Drainage becomes runoff from pools
 FLUXES[f+F.q_ly1] = HYDROFUN_MOI2EWT(drain_LY1,pars[P.LY1_por],pars[P.LY1_z])*one_over_deltat;
@@ -701,13 +731,13 @@ FLUXES[f+F.q_ly3] = HYDROFUN_MOI2EWT(drain_LY3,pars[P.LY3_por],pars[P.LY3_z])*on
 /*printf("q_surf = %2.2f, q_ly1 = %2.2f, q_ly2 = %2.2f, q_ly3 = %2.2f\n", 
 FLUXES[f+F.q_surf],FLUXES[f+F.q_ly1],FLUXES[f+F.q_ly2],FLUXES[f+F.q_ly3]);*/
 
-    // Convert to conductivity
-double k_LY1 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY1],pars[P.hydr_cond],pars[P.retention]);
-double k_LY2 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY2],pars[P.hydr_cond],pars[P.retention]);
-double k_LY3 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY3],pars[P.hydr_cond],pars[P.retention]);
+    // Convert to conductivity: correcting for presence of ice occurs within MOI2CON function
+double k_LY1 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY1],pars[P.hydr_cond],pars[P.retention],POOLS[p+S.D_LF_LY1]);
+double k_LY2 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY2],pars[P.hydr_cond],pars[P.retention],POOLS[p+S.D_LF_LY2]);
+double k_LY3 = HYDROFUN_MOI2CON(POOLS[p+S.D_SM_LY3],pars[P.hydr_cond],pars[P.retention],POOLS[p+S.D_LF_LY3]);
 
     // Calculate inter-pool transfer in m/s (positive is LY1 to LY2)
-double pot_xfer = 1000 * sqrt(k_LY1*k_LY2) * (1e-9*(POOLS[p+S.D_PSI_LY1]-POOLS[p+S.D_PSI_LY2])/(9.8*0.5*(pars[P.LY1_z]+pars[P.LY2_z])) + 1);
+double pot_xfer = 1000 * sqrt(k_LY1*k_LY2) * (1000*(POOLS[p+S.D_PSI_LY1]-POOLS[p+S.D_PSI_LY2])/(9.8*0.5*(pars[P.LY1_z]+pars[P.LY2_z])) + 1);
 double SPACEavail, H2Oavail, Max_H2O_xfer, TEMPxfer_1to2;
 if (pot_xfer>0) {//Water is going LY1->LY2 (down)
     // Available space in LY2 (after runoff)
@@ -715,7 +745,7 @@ SPACEavail=fmax(pars[P.LY2_z]*pars[P.LY2_por]*1e3 - POOLS[p+S.H2O_LY2] + (FLUXES
     // Available water in LY1 (after runoff, et, and infiltration)
 H2Oavail=fmax(POOLS[p+S.D_LF_LY1]*POOLS[p+S.H2O_LY1] + (FLUXES[f+F.infil] - FLUXES[f+F.q_ly1] - FLUXES[f+F.evap] - FLUXES[f+F.transp1])*deltat,0);
     // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
-Max_H2O_xfer= POOLS[p+S.D_LF_LY1]*pot_xfer*DGCM_SEC_DAY*deltat;
+Max_H2O_xfer= pot_xfer*DGCM_SEC_DAY*deltat; //liquid fraction accounted for in PSI calculation directly; no need to correct for it here
     //Minimum of three terms for LY1->LY2
         //1. Max_H2O_xfer
         //2. Available space in LY2 (after runoff)
@@ -729,16 +759,14 @@ SPACEavail=fmax(pars[P.LY1_z]*pars[P.LY1_por]*1e3 - POOLS[p+S.H2O_LY1] - (FLUXES
     // Available water in LY2 after runoff
 H2Oavail= fmax(POOLS[p+S.D_LF_LY2]*POOLS[p+S.H2O_LY2] - (FLUXES[f+F.q_ly2] + FLUXES[f+F.transp2])*deltat,0);
     // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
-Max_H2O_xfer= POOLS[p+S.D_LF_LY2]*pot_xfer*DGCM_SEC_DAY*deltat;
+Max_H2O_xfer= pot_xfer*DGCM_SEC_DAY*deltat; //liquid fraction accounted for in PSI calculation directly; no need to correct for it here
     // Reverse sign of previous case
 FLUXES[f+F.ly1xly2] = -fmin(-Max_H2O_xfer , fmin(SPACEavail, H2Oavail))*one_over_deltat;
 TEMPxfer_1to2= POOLS[p+S.D_TEMP_LY2];//In K
 }
 
-  
 
-
-    // Calculate inter-pool transfer in m/s (positive is LY1 to LY3)
+    // Calculate inter-pool transfer in m/s (positive is LY2 to LY3)
 pot_xfer = 1000 * sqrt(k_LY2*k_LY3) * (1e-9*(POOLS[p+S.D_PSI_LY2]-POOLS[p+S.D_PSI_LY3])/(9.8*0.5*(pars[P.LY2_z]+pars[P.LY3_z])) + 1);
 double TEMPxfer_2to3;
 if (pot_xfer>0) {//Water is going LY2->LY3 (down)
@@ -747,7 +775,7 @@ SPACEavail=fmax(pars[P.LY3_z]*pars[P.LY3_por]*1e3 - POOLS[p+S.H2O_LY3] + FLUXES[
     // Available water in LY2 (after runoff, et, and infiltration)
 H2Oavail=fmax(POOLS[p+S.D_LF_LY2]*POOLS[p+S.H2O_LY2] - (FLUXES[f+F.q_ly2] + FLUXES[f+F.transp2])*deltat,0);
     // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
-Max_H2O_xfer= POOLS[p+S.D_LF_LY2]*pot_xfer*DGCM_SEC_DAY*deltat;
+Max_H2O_xfer= pot_xfer*DGCM_SEC_DAY*deltat; //liquid fraction accounted for in PSI calculation directly; no need to correct for it here
     //Minimum of three terms for LY2->LY3
         //1. Max_H2O_xfer
         //2. Available space in LY3 (after runoff)
@@ -761,7 +789,7 @@ SPACEavail=fmax(pars[P.LY2_z]*pars[P.LY2_por]*1e3 - POOLS[p+S.H2O_LY2] + (FLUXES
     // Available water in LY3 after runoff
 H2Oavail= fmax(POOLS[p+S.D_LF_LY3]*POOLS[p+S.H2O_LY3] - FLUXES[f+F.q_ly3]*deltat,0);
     // Maximum transfer flux in mm (actual transfer may be less due to water or space availability)
-Max_H2O_xfer= POOLS[p+S.D_LF_LY3]*pot_xfer*DGCM_SEC_DAY*deltat;
+Max_H2O_xfer= pot_xfer*DGCM_SEC_DAY*deltat; //liquid fraction accounted for in PSI calculation directly; no need to correct for it here
     // Reverse sign of previous case
 FLUXES[f+F.ly2xly3] = -fmin(-Max_H2O_xfer , fmin(SPACEavail, H2Oavail))*one_over_deltat;
 TEMPxfer_2to3= POOLS[p+S.D_TEMP_LY3];//In K
@@ -808,8 +836,8 @@ FLUXES[f+F.q_ly1_e] = FLUXES[f+F.q_ly1]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS
 FLUXES[f+F.q_ly2_e] = FLUXES[f+F.q_ly2]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_LY2]);
 FLUXES[f+F.q_ly3_e] =  FLUXES[f+F.q_ly3]*INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(POOLS[p+S.D_TEMP_LY3]);
     //Thermal conductivity = k*dT/dz, units are W/m2, converting to J/m2/d
-FLUXES[f+F.ly1xly2_th_e] = 2*pars[P.thermal_cond]* (POOLS[p+S.D_TEMP_LY1] - POOLS[p+S.D_TEMP_LY2])/(pars[P.LY1_z] + pars[P.LY2_z])*DGCM_SEC_DAY;
-FLUXES[f+F.ly2xly3_th_e] = 2*pars[P.thermal_cond]* (POOLS[p+S.D_TEMP_LY2] - POOLS[p+S.D_TEMP_LY3])/(pars[P.LY2_z] + pars[P.LY3_z])*DGCM_SEC_DAY;
+FLUXES[f+F.ly1xly2_th_e] = 2*therm_cond_mid* (POOLS[p+S.D_TEMP_LY1] - POOLS[p+S.D_TEMP_LY2])/(pars[P.LY1_z] + pars[P.LY2_z])*DGCM_SEC_DAY;
+FLUXES[f+F.ly2xly3_th_e] = 2*therm_cond_deep* (POOLS[p+S.D_TEMP_LY2] - POOLS[p+S.D_TEMP_LY3])/(pars[P.LY2_z] + pars[P.LY3_z])*DGCM_SEC_DAY;
 
 
 FLUXES[f+F.geological]=PREDERIVED_GEO_FLUX;//In J/m2/d //105mW/m2
@@ -1128,10 +1156,13 @@ POOLS[nxp+S.D_LF_LY3]=LY3SOILTEMP.OUT.LF;
 POOLS[nxp+S.D_SM_LY1]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY1],pars[P.LY1_por],pars[P.LY1_z]); //soil moisture LY1
 POOLS[nxp+S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY2],pars[P.LY2_por],pars[P.LY2_z]);//soil moisture LY2
 POOLS[nxp+S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3
-
-POOLS[nxp+S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY1],psi_porosity,pars[P.retention]),minpsi);
-POOLS[nxp+S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY2],psi_porosity,pars[P.retention]),minpsi);
-POOLS[nxp+S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention]),minpsi);
+//Correcting PSI for presence of ice occurs within MOI2PSI function 
+POOLS[nxp+S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY1],psi_porosity,pars[P.retention], 
+POOLS[nxp+S.D_LF_LY1],POOLS[nxp+S.D_TEMP_LY1]),minpsi);
+POOLS[nxp+S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY2],psi_porosity,pars[P.retention], 
+POOLS[nxp+S.D_LF_LY2],POOLS[nxp+S.D_TEMP_LY2]),minpsi);
+POOLS[nxp+S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention], 
+POOLS[nxp+S.D_LF_LY3],POOLS[nxp+S.D_TEMP_LY3]),minpsi);
 
 
 //Isfinite check for 14 progronstic pools only
@@ -1167,7 +1198,7 @@ DALECmodel->nopools=30;
 DALECmodel->nomet=10;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=89;
 DALECmodel->nofluxes=100;
-DALECmodel->noedcs=15;
+DALECmodel->noedcs=16;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
@@ -1425,7 +1456,25 @@ static DALEC_EDC_MEAN_TEMP_STRUCT EDC_mean_ly1_temp, EDC_mean_ly2_temp, EDC_mean
     EDCs[E.mean_ly3_temp].function=&DALEC_EDC_MEAN_TEMP;
     EDCs[E.mean_ly3_temp].prerun=false;
 
+//*************** Set up State Proximity EDC ***************
+static DALEC_EDC_STATE_PROXIMITY_STRUCT EDC_prox;
+static int prox_pool_indices[3]; // We are checking 3 layers
 
+EDC_prox.pool_indices = prox_pool_indices;
+EDC_prox.no_pools_to_check = 3;
+
+// Assign the diagnostic temperature pools
+EDC_prox.pool_indices[0] = S.D_TEMP_LY1;
+EDC_prox.pool_indices[1] = S.D_TEMP_LY2;
+EDC_prox.pool_indices[2] = S.D_TEMP_LY3;
+
+// Set your penalty thresholds
+EDC_prox.max_allowed_diff = 2.0; // Max allowed difference in degrees K (or C)
+EDC_prox.penalty_scale = 1.5;    // Steepness of the penalty curve (smaller is more strict)
+
+EDCs[E.state_proximity].data = &EDC_prox;
+EDCs[E.state_proximity].function = &DALEC_EDC_STATE_PROXIMITY;
+EDCs[E.state_proximity].prerun = false;
 
 //ecological
 //EDCOPE.SUPPORT_LITCWDSOM_trpar_EDC=true;
