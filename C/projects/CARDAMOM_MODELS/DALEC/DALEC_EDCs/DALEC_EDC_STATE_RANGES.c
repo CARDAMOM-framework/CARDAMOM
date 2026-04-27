@@ -1,65 +1,73 @@
 static int attempt_count[100];
 static int pass_count[100];
-// Add a counter to track total MCMC proposals/function calls
 static int total_calls = 0; 
 
 typedef struct {
-    double  * min_val;
+    double * min_val;
     double * max_val; 
 } DALEC_EDC_STATE_RANGES_STRUCT;
 
-//General inequality function
 double DALEC_EDC_STATE_RANGES(DATA * DATA, void * EDCstruct){
 
     double PEDC = 0;
-    
-    // Increment the global iteration tracker
     total_calls += 1;
-
-    //Reading by casting void pointer to "DALEC_EDC_STATE_RANGES_STRUCT" format
-    DALEC_EDC_STATE_RANGES_STRUCT  E = *(DALEC_EDC_STATE_RANGES_STRUCT * ) EDCstruct;
+    DALEC_EDC_STATE_RANGES_STRUCT E = *(DALEC_EDC_STATE_RANGES_STRUCT * ) EDCstruct;
     
-    //Checking range
-    //loop through all pools
     int p = 0, k = 0;
   
     while (PEDC == 0 && p < DATA->nopools && k == 0) {
-        //looping through timesteps
         int n = 0;
         attempt_count[p] += 1;
 
         while (PEDC == 0 && n < DATA->ncdf_data.TIME_INDEX.length && k == 0) {
+            // Check current value
+            double current_val = DATA->M_POOLS[p + n * DATA->nopools];
 
-            if (DATA->M_POOLS[p+n*DATA->nopools] < E.min_val[p] || DATA->M_POOLS[p+n*DATA->nopools] > E.max_val[p]) {
+            if (current_val < E.min_val[p] || current_val > E.max_val[p]) {
                 PEDC = -INFINITY;
                 k = -1;
             }
-
-            //if (p == 18){printf("E.max_val[p] = %2.2f, E.min_val[p] = %2.2f, SM = %2.2f\n",E.max_val[p], E.min_val[p],DATA->M_POOLS[p+n*DATA->nopools]);}
-
             n += 1;
         }
         
         if(k == 0){
             pass_count[p] += 1;
         }
-
         p += 1;
     }
 
-    // Print every 10,000th call to this function, REGARDLESS of pass or fail (k)
-    if (total_calls % 10000 == 0) {
+    // Print every 2000th call
+    if (total_calls % 2000 == 0) {
         printf("\n--- Diagnostic at iteration %i ---\n", total_calls);
         for (p = 0; p < DATA->nopools; p++){   
             if (attempt_count[p] > 0) {
                 printf("pool %i; Attempt = %i, Pass = %i, Percent = %2.2f%%\n",
                        p, attempt_count[p], pass_count[p], 
                        100.0 * (double)pass_count[p] / (double)attempt_count[p]);
-            } else {
-                printf("pool %i; Attempt = 0 (Never reached due to earlier pool failures)\n", p);
             }
         }
-        printf("------------------------------------\n");
+
+        // --- START NEW SCROLLING CSV BLOCK ---
+        // We look at Pool 16 (L1 Temp) and Pool 17 (L2 Temp) specifically
+        int log_pools[] = {16}; 
+        for (int i = 0; i < 2; i++) {
+            int target_p = log_pools[i];
+            printf("\nPool %i CSV: ", target_p);
+            for (int t = 0; t < DATA->ncdf_data.TIME_INDEX.length; t++) {
+                double val = DATA->M_POOLS[target_p + t * DATA->nopools];
+                
+                // Stop printing if we hit a NaN or an obvious explosion to keep screen clean
+                // but still print enough to see the failure.
+                printf("%2.1f%s", val, (t == DATA->ncdf_data.TIME_INDEX.length - 1) ? "" : ",");
+                
+                if (!isfinite(val) || val > 1000.0 || val < -200.0) {
+                    printf(" [EXPLODED at t=%i]", t);
+                    break; 
+                }
+            }
+        }
+        printf("\n------------------------------------\n");
+        // --- END NEW SCROLLING CSV BLOCK ---
     }
   
     return PEDC;
