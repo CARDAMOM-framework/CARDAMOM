@@ -733,7 +733,7 @@ pars[P.retention],POOLS[p+S.D_LF_LY3],POOLS[p+S.D_TEMP_LY3]);
 FLUXES[f+F.q_ly1] = HYDROFUN_MOI2EWT(drain_LY1,pars[P.LY1_por],pars[P.LY1_z])*one_over_deltat;
 FLUXES[f+F.q_ly2] = HYDROFUN_MOI2EWT(drain_LY2,pars[P.LY2_por],pars[P.LY2_z])*one_over_deltat;
 FLUXES[f+F.q_ly3] = HYDROFUN_MOI2EWT(drain_LY3,pars[P.LY3_por],pars[P.LY3_z])*one_over_deltat;
-FLUXES[f+F.q_glac] = GLAC_MELT[n];
+FLUXES[f+F.q_glac] = GLAC_MELT[n]*one_over_deltat; 
 
 /*printf("q_surf = %2.2f, q_ly1 = %2.2f, q_ly2 = %2.2f, q_ly3 = %2.2f\n", 
 FLUXES[f+F.q_surf],FLUXES[f+F.q_ly1],FLUXES[f+F.q_ly2],FLUXES[f+F.q_ly3]);*/
@@ -1205,7 +1205,7 @@ DALECmodel->nopools=31;
 DALECmodel->nomet=12;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=90;
 DALECmodel->nofluxes=101;
-DALECmodel->noedcs=16;
+DALECmodel->noedcs=17;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
@@ -1264,6 +1264,33 @@ EDC_relativepsi50.small_par_index=P.psi_50;
 EDCs[E.relativepsi50].data=&EDC_relativepsi50;
 EDCs[E.relativepsi50].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.relativepsi50].prerun=true;
+
+// Forcing-aware inequalities: 
+// 1. Glacier initial mass >= total mass loss over run
+static DALEC_EDC_PARAMETER_INEQUALITY_STRUCT EDC_init_GLAC; 
+
+    double sum_glac_mass_anom = 0.0;
+    int N_timesteps = DATA->ncdf_data.TIME_INDEX.length; 
+        // Loop through the forcing array to derive total mass anomaly
+    for (int i = 0; i < N_timesteps; i++) {
+        sum_glac_mass_anom += DATA->ncdf_data.GLAC_MASS_ANOM.values[i];}
+    
+    // Trigger mass min limit only if glacier loses mass; else 0
+    double required_initial_mass = 0.0;
+    if (sum_glac_mass_anom < 0) {
+        required_initial_mass = -sum_glac_mass_anom;}
+
+// Big parameter is P.i_glac, respecting a minimum value
+EDC_init_GLAC.big_par_index = P.i_glac; 
+EDC_init_GLAC.big_par_value = 0.0; // Ignored since index >= 0
+
+// Small parameter is a fixed number (index = -1)
+EDC_init_GLAC.small_par_index = -1; 
+EDC_init_GLAC.small_par_value = required_initial_mass;
+
+EDCs[E.init_GLAC].data=&EDC_init_GLAC;
+EDCs[E.init_GLAC].function=&DALEC_EDC_PARAMETER_INEQUALITY;
+EDCs[E.init_GLAC].prerun=true;
 
 static DALEC_EDC_PARAMETER_LOG_RATIO_STRUCT EDC_vcmax_lcma;
     //EDC: ratio of Vcmax25 to LCMA
