@@ -247,7 +247,6 @@ int H2O_LY1; /*Layer 1 H2O*/
 int H2O_LY2; /*Layer 2 H2O*/
 int H2O_LY3; /*Layer 3 H2O*/
 int H2O_SWE; /*Snow water equivalent*/
-int H2O_GLAC; /*Glacier H2O*/
 int E_LY1; /*LY1 thermal energy state*/
 int E_LY2; /*LY2 thermal energy state*/
 int E_LY3; /*LY3 thermal energy state*/
@@ -267,6 +266,7 @@ int D_PSI_LY2;//LY2 soil moisture
 int D_PSI_LY3;//LY3 soil moisture
 int M_LAI_MAX;//KNORR LAI module max LAI memory
 int M_LAI_TEMP;//KNORR LAI module temp memory
+int H2O_GLAC; /*Glacier H2O*/
 } DALEC_1100_POOLS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,

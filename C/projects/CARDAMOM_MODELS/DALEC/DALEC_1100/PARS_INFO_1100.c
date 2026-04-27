@@ -320,7 +320,7 @@ parmin[P.init_LAIW_mem]=0.01;
 parmax[P.init_LAIW_mem]=1;
 
 /*Maximum glacier water volume in mm H2O m-2: e.g. Taku glacier ~1.5km thick*/
-parmin[P.i_glac]=0;
+parmin[P.i_glac]=0.0001;
 parmax[P.i_glac]=2.0e+06;
 
 /*LY1 energy per mm H2O (~ Energy in 1mm H2O @ -50C to 1mm H2O@ +50C)*/
