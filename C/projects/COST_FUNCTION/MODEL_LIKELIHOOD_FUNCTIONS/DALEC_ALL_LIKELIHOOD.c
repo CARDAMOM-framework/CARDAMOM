@@ -49,17 +49,18 @@ struct LIKELIHOOD_INDICES{
         int PEQ_clumping;
         int PEQ_r_ch4;
         int PEQ_S_fv;
-        int PEQ_rhch4_rhco2;  
+        int PEQ_rhch4_rhco2;
+        int NISAR_WOOD;   // NISAR L-band woody fire structural loss
         } LIKELIHOOD_INDICES={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
     20,21,22,23,24,25,26,27,28,29,
-    30}; /*pMCMC*/
+    30,31}; /*pMCMC*/
     
   
     
     int DALEC_ALL_LIKELIHOOD_MODCONFIG(LIKELIHOODinfo * LI){
-        LI->nolikelihoods=31;
+        LI->nolikelihoods=32;
         return 0;}
             
             
@@ -123,6 +124,7 @@ if (O->SUPPORT_ROFF_OBS){       ML[LI.ROFF]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&
 if (O->SUPPORT_SCF_OBS){        ML[LI.SCF]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.SCF, D.M_SCF);};
 if (O->SUPPORT_FIR_OBS){        ML[LI.FIR]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.FIR, D.M_FIR);};
 if (O->SUPPORT_SWE_OBS){        ML[LI.SWE]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.SWE, D.M_SWE);};
+if (O->SUPPORT_NISAR_WOOD_OBS){ ML[LI.NISAR_WOOD]=CARDAMOM_TIMESERIES_OBS_LIKELIHOOD(&D.ncdf_data.NISAR_WOOD, D.M_NISAR_WOOD);};
 
 //Mean OBS
 
