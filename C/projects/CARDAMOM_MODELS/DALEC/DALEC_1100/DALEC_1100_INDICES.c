@@ -282,6 +282,9 @@ int rootwoodtor;
 int fol2lig_cf;
 int relativepsi50;
 int init_GLAC;
+int cfl_ly1;
+int cfl_ly2;
+int cfl_ly3;
 int state_ranges;
 int state_trajectories;
 int nsc_ratio;
@@ -294,5 +297,5 @@ int state_proximity;
 } DALEC_1100_EDCs={
     0, 1, 2, 3, 4, 5, 6, 
     7, 8, 9,10,11,12,13,
-    14, 15, 16
+    14, 15, 16, 17, 18, 19
 };

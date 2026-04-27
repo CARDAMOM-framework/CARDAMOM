@@ -1210,7 +1210,7 @@ DALECmodel->nopools=31;
 DALECmodel->nomet=12;/*This should be compatible with CBF file, if not then disp error*/
 DALECmodel->nopars=90;
 DALECmodel->nofluxes=101;
-DALECmodel->noedcs=17;
+DALECmodel->noedcs=20;
 
 DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
@@ -1296,6 +1296,40 @@ EDC_init_GLAC.small_par_value = required_initial_mass;
 EDCs[E.init_GLAC].data=&EDC_init_GLAC;
 EDCs[E.init_GLAC].function=&DALEC_EDC_PARAMETER_INEQUALITY;
 EDCs[E.init_GLAC].prerun=true;
+
+// CFL EDC
+static DALEC_EDC_CFL_STABILITY_STRUCT EDC_cfl_ly1;
+EDC_cfl_ly1.depth_index = P.LY1_z;
+EDC_cfl_ly1.vhc_index = P.LY1_vhc;
+EDC_cfl_ly1.cond_index = P.thermal_cond_surf;
+EDC_cfl_ly1.porosity_index = P.LY1_por;
+EDC_cfl_ly1.timestep_days = 31.0;
+
+EDCs[E.cfl_ly1].data = &EDC_cfl_ly1;
+EDCs[E.cfl_ly1].function = &DALEC_EDC_CFL_STABILITY;
+EDCs[E.cfl_ly1].prerun = true;
+
+static DALEC_EDC_CFL_STABILITY_STRUCT EDC_cfl_ly2;
+EDC_cfl_ly2.depth_index = P.LY2_z;
+EDC_cfl_ly2.vhc_index = P.LY2_vhc;
+EDC_cfl_ly2.cond_index = P.thermal_cond; // Mid/Deep conductivity parameter
+EDC_cfl_ly2.porosity_index = P.LY2_por;
+EDC_cfl_ly2.timestep_days = 31.0;
+
+EDCs[E.cfl_ly2].data = &EDC_cfl_ly2;
+EDCs[E.cfl_ly2].function = &DALEC_EDC_CFL_STABILITY;
+EDCs[E.cfl_ly2].prerun = true;
+
+static DALEC_EDC_CFL_STABILITY_STRUCT EDC_cfl_ly3;
+EDC_cfl_ly3.depth_index = P.LY3_z;
+EDC_cfl_ly3.vhc_index = P.LY3_vhc;
+EDC_cfl_ly3.cond_index = P.thermal_cond; // Mid/Deep conductivity parameter
+EDC_cfl_ly3.porosity_index = P.LY3_por;
+EDC_cfl_ly3.timestep_days = 31.0;
+
+EDCs[E.cfl_ly3].data = &EDC_cfl_ly3;
+EDCs[E.cfl_ly3].function = &DALEC_EDC_CFL_STABILITY;
+EDCs[E.cfl_ly3].prerun = true;
 
 static DALEC_EDC_PARAMETER_LOG_RATIO_STRUCT EDC_vcmax_lcma;
     //EDC: ratio of Vcmax25 to LCMA
