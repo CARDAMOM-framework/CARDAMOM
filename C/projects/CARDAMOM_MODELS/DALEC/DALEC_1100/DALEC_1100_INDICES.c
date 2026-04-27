@@ -247,10 +247,9 @@ int H2O_LY1; /*Layer 1 H2O 7*/
 int H2O_LY2; /*Layer 2 H2O 8*/
 int H2O_LY3; /*Layer 3 H2O 9*/
 int H2O_SWE; /*Snow water equivalent 10*/
-int H2O_GLAC; /*Glacier H2O 11*/
-int E_LY1; /*LY1 thermal energy state 12*/
-int E_LY2; /*LY2 thermal energy state 13*/
-int E_LY3; /*LY3 thermal energy state 14*/
+int E_LY1; /*LY1 thermal energy state 11*/
+int E_LY2; /*LY2 thermal energy state 12*/
+int E_LY3; /*LY3 thermal energy state 13*/
 int D_LAI;//leaf area index 15
 int D_SCF;//snow-covered fraction 16
 int D_TEMP_LY1;//LY1 temp in K 17
@@ -267,6 +266,7 @@ int D_PSI_LY2;//LY2 soil moisture 26
 int D_PSI_LY3;//LY3 soil moisture 28
 int M_LAI_MAX;//KNORR LAI module max LAI memory 29
 int M_LAI_TEMP;//KNORR LAI module temp memory 30
+int H2O_GLAC; /*Glacier H2O 11*/
 } DALEC_1100_POOLS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,
@@ -274,18 +274,18 @@ int M_LAI_TEMP;//KNORR LAI module temp memory 30
 };
 
 struct DALEC_1100_EDCs{
-int vcmax_lcma;
-int litcwdtor;
-int cwdsomtor;
-int mr_rates;
-int rootwoodtor;
-int fol2lig_cf;
-int relativepsi50;
-int init_GLAC;
-int cfl_ly1;
-int cfl_ly2;
-int cfl_ly3;
-int state_ranges;
+int vcmax_lcma; //0
+int litcwdtor; //1
+int cwdsomtor; //2
+int mr_rates; //3
+int rootwoodtor; //4
+int fol2lig_cf; //5
+int relativepsi50; //6
+int init_GLAC; //7
+int cfl_ly1; //8
+int cfl_ly2; //9
+int cfl_ly3; //10
+int state_ranges; //11
 int state_trajectories;
 int nsc_ratio;
 int cfcr_ratio;
