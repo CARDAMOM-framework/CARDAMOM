@@ -323,17 +323,17 @@ parmax[P.init_LAIW_mem]=1;
 parmin[P.i_glac]=0;
 parmax[P.i_glac]=2.0e+06;
 
-/*LY1 energy per mm H2O (~ Energy in 1mm H2O @ -50C to 1mm H2O@ +50C)*/
-parmin[P.i_LY1_E]=4.67e+05;
-parmax[P.i_LY1_E]=1.11e+06;
+/*LY1 initial temperature in C*/
+parmin[P.i_LY1_Temp]=-50;
+parmax[P.i_LY1_Temp]=50;
 
-/*LY2 energy per mm H2O(~ Energy in 1mm H2O @ -50C to 1mm H2O@ +50C)*/
-parmin[P.i_LY2_E]=4.67e+05;
-parmax[P.i_LY2_E]=1.11e+06;
+/*LY2 initial temperature in C*/
+parmin[P.i_LY2_Temp]=-50;
+parmax[P.i_LY2_Temp]=50;
 
-/*LY3 energy per mm H2O (~ Energy in 1mm H2O @ -50C to 1mm H2O@ +50C)*/
-parmin[P.i_LY3_E]=4.67e+05;
-parmax[P.i_LY3_E]=1.11e+06;
+/*LY3 initial temperature in C*/
+parmin[P.i_LY3_Temp]=-50;
+parmax[P.i_LY3_Temp]=50;
 
 /*PSI 50: water potential when soil-plant continuum is at 50% hydraulic conductivity (-MPa) due to stomatal closure*/
 parmin[P.psi_50]=0.1;

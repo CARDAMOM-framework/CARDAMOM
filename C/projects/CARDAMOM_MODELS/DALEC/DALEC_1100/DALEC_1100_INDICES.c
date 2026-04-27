@@ -84,9 +84,9 @@ int time_r;
 int init_T_mem;
 int init_LAIW_mem;
 int t_foliar;
-int i_LY1_E;
-int i_LY2_E;
-int i_LY3_E;
+int i_LY1_Temp;
+int i_LY2_Temp;
+int i_LY3_Temp;
 int psi_50;
 int beta_lgr;
 int phi_RL;
@@ -236,37 +236,37 @@ int wooyield2cwd;
 
 struct DALEC_1100_POOLS{
 /*DALEC POOLS*/
-int C_lab; /*Labile C*/
-int C_fol; /*Foliar C*/
-int C_roo; /*Root C*/
-int C_woo; /*Wood C*/
-int C_cwd; /*Coarse woody debris C*/
-int C_lit; /*Litter C*/
-int C_som; /*Soil C*/
-int H2O_LY1; /*Layer 1 H2O*/
-int H2O_LY2; /*Layer 2 H2O*/
-int H2O_LY3; /*Layer 3 H2O*/
-int H2O_SWE; /*Snow water equivalent*/
-int H2O_GLAC; /*Glacier H2O*/
-int E_LY1; /*LY1 thermal energy state*/
-int E_LY2; /*LY2 thermal energy state*/
-int E_LY3; /*LY3 thermal energy state*/
-int D_LAI;//leaf area index
-int D_SCF;//snow-covered fraction
-int D_TEMP_LY1;//LY1 temp in K
-int D_TEMP_LY2;//LY2 temp in K
-int D_TEMP_LY3;//LY3 temp in K
-int D_LF_LY1;//LY1 liquid h2o frac
-int D_LF_LY2;//LY2 liquid h2o frac
-int D_LF_LY3;//LY3 liquid h2o frac
-int D_SM_LY1;//LY1 soil moisture
-int D_SM_LY2;//LY2 soil moisture
-int D_SM_LY3;//LY3 soil moisture
-int D_PSI_LY1;//LY1 soil moisture
-int D_PSI_LY2;//LY2 soil moisture
-int D_PSI_LY3;//LY3 soil moisture
-int M_LAI_MAX;//KNORR LAI module max LAI memory
-int M_LAI_TEMP;//KNORR LAI module temp memory
+int C_lab; /*Labile C 0*/
+int C_fol; /*Foliar C 1*/
+int C_roo; /*Root C 2*/
+int C_woo; /*Wood C 3*/
+int C_cwd; /*Coarse woody debris C 4*/
+int C_lit; /*Litter C 5*/
+int C_som; /*Soil C 6*/
+int H2O_LY1; /*Layer 1 H2O 7*/
+int H2O_LY2; /*Layer 2 H2O 8*/
+int H2O_LY3; /*Layer 3 H2O 9*/
+int H2O_SWE; /*Snow water equivalent 10*/
+int H2O_GLAC; /*Glacier H2O 11*/
+int E_LY1; /*LY1 thermal energy state 12*/
+int E_LY2; /*LY2 thermal energy state 13*/
+int E_LY3; /*LY3 thermal energy state 14*/
+int D_LAI;//leaf area index 15
+int D_SCF;//snow-covered fraction 16
+int D_TEMP_LY1;//LY1 temp in K 17
+int D_TEMP_LY2;//LY2 temp in K 18
+int D_TEMP_LY3;//LY3 temp in K 19
+int D_LF_LY1;//LY1 liquid h2o frac 20
+int D_LF_LY2;//LY2 liquid h2o frac 21
+int D_LF_LY3;//LY3 liquid h2o frac 22
+int D_SM_LY1;//LY1 soil moisture 23
+int D_SM_LY2;//LY2 soil moisture 24
+int D_SM_LY3;//LY3 soil moisture 25
+int D_PSI_LY1;//LY1 soil moisture 26
+int D_PSI_LY2;//LY2 soil moisture 26
+int D_PSI_LY3;//LY3 soil moisture 28
+int M_LAI_MAX;//KNORR LAI module max LAI memory 29
+int M_LAI_TEMP;//KNORR LAI module temp memory 30
 } DALEC_1100_POOLS={
      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10,11,12,13,14,15,16,17,18,19,

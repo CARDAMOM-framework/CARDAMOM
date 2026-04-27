@@ -315,10 +315,40 @@ POOLS[S.H2O_LY2]=HYDROFUN_MOI2EWT(pars[P.i_LY2_SM],pars[P.LY2_por],pars[P.LY2_z]
 POOLS[S.H2O_LY3]=HYDROFUN_MOI2EWT(pars[P.i_LY3_SM],pars[P.LY3_por],pars[P.LY3_z]); //liquid + frozen state
 POOLS[S.H2O_SWE]=pars[P.i_SWE];
 POOLS[S.H2O_GLAC] = pars[P.i_glac];
-    /*Energy pools*/
-POOLS[S.E_LY1]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY1_E],   POOLS[S.H2O_LY1], pars[P.LY1_vhc], pars[P.LY1_z] );
-POOLS[S.E_LY2]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY2_E],   POOLS[S.H2O_LY2], pars[P.LY2_vhc], pars[P.LY2_z] );
-POOLS[S.E_LY3]=INITIALIZE_INTERNAL_SOIL_ENERGY(pars[P.i_LY3_E],   POOLS[S.H2O_LY3], pars[P.LY3_vhc], pars[P.LY3_z] );
+
+/*Energy, Temperature, and Liquid Fraction initialization from Temperature*/
+double T_init_K_1 = pars[P.i_LY1_Temp] + DGCM_TK0C;
+double dry_sh_1 = pars[P.LY1_vhc] * pars[P.LY1_z];
+if (pars[P.i_LY1_Temp] < 0) {
+    POOLS[S.D_LF_LY1] = 0.0;
+    POOLS[S.E_LY1] = (dry_sh_1 + POOLS[S.H2O_LY1] * DGCM_SPECIFIC_HEAT_ICE) * T_init_K_1;
+} else {
+    POOLS[S.D_LF_LY1] = 1.0;
+    POOLS[S.E_LY1] = ((dry_sh_1 + POOLS[S.H2O_LY1] * DGCM_SPECIFIC_HEAT_WATER) * T_init_K_1) + (POOLS[S.H2O_LY1] * DGCM_LATENT_HEAT_FUSION_3);
+}
+POOLS[S.D_TEMP_LY1] = T_init_K_1;
+
+double T_init_K_2 = pars[P.i_LY2_Temp] + DGCM_TK0C;
+double dry_sh_2 = pars[P.LY2_vhc] * pars[P.LY2_z];
+if (pars[P.i_LY2_Temp] < 0) {
+    POOLS[S.D_LF_LY2] = 0.0;
+    POOLS[S.E_LY2] = (dry_sh_2 + POOLS[S.H2O_LY2] * DGCM_SPECIFIC_HEAT_ICE) * T_init_K_2;
+} else {
+    POOLS[S.D_LF_LY2] = 1.0;
+    POOLS[S.E_LY2] = ((dry_sh_2 + POOLS[S.H2O_LY2] * DGCM_SPECIFIC_HEAT_WATER) * T_init_K_2) + (POOLS[S.H2O_LY2] * DGCM_LATENT_HEAT_FUSION_3);
+}
+POOLS[S.D_TEMP_LY2] = T_init_K_2;
+
+double T_init_K_3 = pars[P.i_LY3_Temp] + DGCM_TK0C;
+double dry_sh_3 = pars[P.LY3_vhc] * pars[P.LY3_z];
+if (pars[P.i_LY3_Temp] < 0) {
+    POOLS[S.D_LF_LY3] = 0.0;
+    POOLS[S.E_LY3] = (dry_sh_3 + POOLS[S.H2O_LY3] * DGCM_SPECIFIC_HEAT_ICE) * T_init_K_3;
+} else {
+    POOLS[S.D_LF_LY3] = 1.0;
+    POOLS[S.E_LY3] = ((dry_sh_3 + POOLS[S.H2O_LY3] * DGCM_SPECIFIC_HEAT_WATER) * T_init_K_3) + (POOLS[S.H2O_LY3] * DGCM_LATENT_HEAT_FUSION_3);
+}
+POOLS[S.D_TEMP_LY3] = T_init_K_3;
   
   
 //******************INITIALIZING DIAGNOSTIC STATES******************
@@ -342,46 +372,6 @@ double LY3max=pars[P.LY3_por]*pars[P.LY3_z]*1000;
 POOLS[S.D_SM_LY1]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY1],pars[P.LY1_por],pars[P.LY1_z]); //soil moisture LY1: liquid and frozen state
 POOLS[S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY2],pars[P.LY2_por],pars[P.LY2_z]);//soil moisture LY3: liquid and frozen state
 POOLS[S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3: liquid and frozen state
-
-//******************Declare SOIL_TEMP_AND_LIQUID_FRAC STRUCT*********************       
-SOIL_TEMP_AND_LIQUID_FRAC_STRUCT LY1SOILTEMP, LY2SOILTEMP, LY3SOILTEMP;
-    //Populate with run-specific constrants
-        //LY1
-    LY1SOILTEMP.IN.dry_soil_vol_heat_capacity =pars[P.LY1_vhc]; ;//J/m3/K
-    LY1SOILTEMP.IN.depth = pars[P.LY1_z];//m 
-    LY1SOILTEMP.IN.soil_water = POOLS[S.H2O_LY1];//mm (or kg/m2)
-    LY1SOILTEMP.IN.internal_energy = POOLS[S.E_LY1];//Joules
-    
-    //Pass pointer to function 
-SOIL_TEMP_AND_LIQUID_FRAC(&LY1SOILTEMP);  //Outputs are in K
-    
-    //Store outputs 
-POOLS[S.D_TEMP_LY1]=LY1SOILTEMP.OUT.TEMP;  //In K  
-POOLS[S.D_LF_LY1]=LY1SOILTEMP.OUT.LF;
-
-
-        //LY2
-    LY2SOILTEMP.IN.dry_soil_vol_heat_capacity =pars[P.LY2_vhc]; ;//J/m3/K
-    LY2SOILTEMP.IN.depth = pars[P.LY2_z];//m 
-    LY2SOILTEMP.IN.soil_water = POOLS[S.H2O_LY2];//mm (or kg/m2)
-    LY2SOILTEMP.IN.internal_energy = POOLS[S.E_LY2];//Joules
-    //Pass pointer to function 
-SOIL_TEMP_AND_LIQUID_FRAC(&LY2SOILTEMP);  //Outputs are in K
-    
-    //Store outputs 
-POOLS[S.D_TEMP_LY2]=LY2SOILTEMP.OUT.TEMP;  //In K  
-POOLS[S.D_LF_LY2]=LY2SOILTEMP.OUT.LF;
-
-        //LY3
-    LY3SOILTEMP.IN.dry_soil_vol_heat_capacity =pars[P.LY3_vhc]; ;//J/m3/K
-    LY3SOILTEMP.IN.depth = pars[P.LY3_z];//m 
-    LY3SOILTEMP.IN.soil_water = POOLS[S.H2O_LY3];//mm (or kg/m2)
-    LY3SOILTEMP.IN.internal_energy = POOLS[S.E_LY3];//Joules
-    //Pass pointer to function 
-SOIL_TEMP_AND_LIQUID_FRAC(&LY3SOILTEMP);//Outputs are in K
-    //Store outputs 
-POOLS[S.D_TEMP_LY3]=LY3SOILTEMP.OUT.TEMP;    //In K
-POOLS[S.D_LF_LY3]=LY3SOILTEMP.OUT.LF;
 
    // Convert to water potential, respecting liquid state only; correcting porosity for ice-filled volume. 
    //Effectively this corrects MOI to (water frac)/(water + air frac)
@@ -1137,7 +1127,22 @@ POOLS[nxp+S.D_SCF]=POOLS[nxp+S.H2O_SWE]/(POOLS[nxp+S.H2O_SWE]+pars[P.scf_scalar]
     
 /*printf("H2Oly1 = %2.2f, H2Oly2 = %2.2f, H2Oly3 = %2.2f\n", 
 POOLS[nxp+S.H2O_LY1],POOLS[nxp+S.H2O_LY2],POOLS[nxp+S.H2O_LY3]);*/
-     
+
+//******************Declare SOIL_TEMP_AND_LIQUID_FRAC STRUCT for main loop********************* 
+SOIL_TEMP_AND_LIQUID_FRAC_STRUCT LY1SOILTEMP, LY2SOILTEMP, LY3SOILTEMP;
+
+    //Populate with run-specific constant parameters (these don't change over time)
+    //LY1
+    LY1SOILTEMP.IN.dry_soil_vol_heat_capacity = pars[P.LY1_vhc]; //J/m3/K
+    LY1SOILTEMP.IN.depth = pars[P.LY1_z]; //m 
+
+    //LY2
+    LY2SOILTEMP.IN.dry_soil_vol_heat_capacity = pars[P.LY2_vhc]; //J/m3/K
+    LY2SOILTEMP.IN.depth = pars[P.LY2_z]; //m 
+
+    //LY3
+    LY3SOILTEMP.IN.dry_soil_vol_heat_capacity = pars[P.LY3_vhc]; //J/m3/K
+    LY3SOILTEMP.IN.depth = pars[P.LY3_z]; //m
     //Update time-varying inputs
 LY1SOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_LY1];//mm (or kg/m2)
 LY2SOILTEMP.IN.soil_water = POOLS[nxp+S.H2O_LY2];//mm (or kg/m2)
