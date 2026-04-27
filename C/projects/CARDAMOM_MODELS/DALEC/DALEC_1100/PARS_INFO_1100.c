@@ -172,15 +172,15 @@ parmin[P.field_cap]=0.01;
 parmax[P.field_cap]=0.1;
     
 /*LY1 depth (m)*/
-parmin[P.LY1_z]=0.01;
+parmin[P.LY1_z]=0.1;
 parmax[P.LY1_z]=1;
 
 /*LY2 depth (m)*/
-parmin[P.LY2_z]=0.01;
+parmin[P.LY2_z]=0.1;
 parmax[P.LY2_z]=20;
 
 /*LY3 depth (m)*/
-parmin[P.LY3_z]=0.01;
+parmin[P.LY3_z]=0.1;
 parmax[P.LY3_z]=100;
 
 /*LY1 volumetric heat capacity (https://www.sciencedirect.com/topics/engineering/volumetric-heat-capacity)*/
