@@ -3,8 +3,8 @@ import cdsapi
 # --- USER CONFIGURATION ---
 # Define single user-defined point (Latitude, Longitude)
 # Setting all values to the same coordinate snaps the download to that single point.
-TARGET_LAT = 45.0  # Replace with your desired latitude
-TARGET_LON = -90.0 # Replace with your desired longitude
+TARGET_LAT =  	55.4859  # Replace with your desired latitude
+TARGET_LON = 11.6446 # Replace with your desired longitude
 point_area_definition = [TARGET_LAT, TARGET_LON, TARGET_LAT, TARGET_LON]
 
 data_format = "netcdf"
