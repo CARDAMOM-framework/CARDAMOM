@@ -1,26 +1,12 @@
 import cdsapi
-import xarray as xr
-import os
-import glob
 
 # --- USER CONFIGURATION ---
-TARGET_LAT = 55.4859  
-TARGET_LON = 11.6446 
-
-# 1. PAD THE BOUNDING BOX 
-# ERA5 native resolution is ~0.25 degrees. We pad the box to ensure 
-# the MARS server finds data and doesn't throw an "empty crop" error.
-pad = 0.25
-point_area_definition = [
-    TARGET_LAT + pad, # North
-    TARGET_LON - pad, # West
-    TARGET_LAT - pad, # South
-    TARGET_LON + pad  # East
-]
+TARGET_LAT = 55.4859
+TARGET_LON = 11.6446
 
 data_format = "netcdf"
 
-# All quantities for the CARDAMOM driver
+# All quantities consolidated into one list for hourly extraction
 all_quantities = [
     "2m_temperature",
     "2m_dewpoint_temperature",
@@ -28,66 +14,43 @@ all_quantities = [
     "skin_temperature",
     "surface_solar_radiation_downwards",
     "snowfall",
-    "surface_thermal_radiation_downwards"
+    "surface_thermal_radiation_downwards" # STRD added
 ]
 
-months_of_year = [str(m).zfill(2) for m in range(1, 13)]
-days_of_month = [str(d).zfill(2) for d in range(1, 32)]
-hours_of_day = [f"{str(h).zfill(2)}:00" for h in range(24)]
-
-def DOWNLOAD_ECMWF_YEARLY_CHUNK(yr):
-    """Downloads a full year of hourly data for a small bounding box."""
-    dataset = "reanalysis-era5-single-levels"
+def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr):
+    # Using the specialized timeseries dataset to avoid MARS area errors
+    dataset = "reanalysis-era5-single-levels-timeseries"
     
-    request = {
-        "product_type": ["reanalysis"],
-        "variable": all_quantities,
-        "year": str(yr),
-        "month": months_of_year,
-        "day": days_of_month,       
-        "time": hours_of_day,       
-        "data_format": data_format,
-        "area": point_area_definition 
-    }
+    for q in all_quantities:
+        request = {
+            "variable": [q],
+            "year": [str(yr)],
+            "month": [str(m).zfill(2)],
+            "day": [str(d).zfill(2) for d in range(1, 32)],
+            "time": [
+                "00:00", "01:00", "02:00", "03:00", "04:00", "05:00",
+                "06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
+                "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
+                "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
+            ],
+            "data_format": data_format,
+            # 'location' replaces 'area' for this specific dataset to get exactly 1 point
+            "location": {
+                "latitude": TARGET_LAT,
+                "longitude": TARGET_LON
+            }
+        }
 
-    temp_file_name = f"TEMP_DRIVER_{yr}.nc" 
-    
-    print(f"Downloading hourly data for {yr} around [{TARGET_LAT}, {TARGET_LON}]...")
-    client = cdsapi.Client()
-    client.retrieve(dataset, request, temp_file_name)
-    return temp_file_name
-
-# --- MAIN EXECUTION ---
-if __name__ == "__main__":
-    start_year = 2001
-    end_year = 2025
-    master_file_name = f"ECMWF_CARDAMOM_DRIVER_MASTER_{start_year}_{end_year}.nc"
-
-    # Step 1: Download yearly chunks
-    for yr in range(start_year, end_year + 1): 
-        if not os.path.exists(f"TEMP_DRIVER_{yr}.nc"):
-            DOWNLOAD_ECMWF_YEARLY_CHUNK(yr)
-        else:
-            print(f"TEMP_DRIVER_{yr}.nc already exists. Skipping download.")
-
-    # Step 2: Merge the chunks and SNAP to the exact point
-    print("\nAll downloads complete. Merging and extracting nearest point...")
-    
-    temp_files = sorted(glob.glob("TEMP_DRIVER_*.nc"))
-    
-    with xr.open_mfdataset(temp_files, combine='by_coords') as ds:
-        # 2. SNAP LOCALLY
-        # This isolates the single closest grid node to your exact coordinates
-        ds_point = ds.sel(latitude=TARGET_LAT, longitude=TARGET_LON, method='nearest')
+        file = f"ECMWF_CARDAMOM_DRIVER_{q}_{str(m).zfill(2)}{yr}.nc" # formats file title
+        print(f"Downloading {file}...")
         
-        # Save the isolated point data to the master file
-        ds_point.to_netcdf(master_file_name)
+        client = cdsapi.Client()
+        client.retrieve(dataset, request).download(file)
 
-    print(f"Master file saved as: {master_file_name}")
 
-    # Step 3: Clean up temporary files
-    print("Cleaning up temporary yearly files...")
-    for file in temp_files:
-        os.remove(file)
-        
-    print("Done! You now have a single, continuous hourly driver file for your exact point.")
+#Main code
+#Example for downloading months & years of data
+
+for m in list(range(1, 13)):  #downloads months 1-12
+    for yr in list(range(2001, 2025)): #downloads years 2001-2024
+        DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr)
