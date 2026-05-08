@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photosynthesis &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3ce236e8" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="GPP Stress (Beta Functions)" href="Stress.html" />
+    <link rel="prev" title="Modules used by DALEC 1100" href="../dalec_model/1100/modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC Model:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../dalec_versions.html">DALEC versions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../dalec_model/dalec_1100.html">DALEC 1100</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../dalec_model/dalec_1101.html">DALEC 1101</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../dalec_model/1101/overview.html">Overview of DALEC 1101</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../dalec_model/1101/modules.html">Modules used by DALEC 1101</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Photosynthesis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Stress.html">GPP Stress (Beta Functions)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Transpiration.html">Evapotranspiration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="phenology.html">Phenology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="allocation_dynfrac.html">Allocation (dynamic fraction)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mortality.html">Mortality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mortality.html#bibliography">Bibliography</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotrophic_respiration.html">Autotrophic Respiration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="heterotrophic_respiration.html">Heterotrophic Respiration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="physics_hydrology.html">Soil physics and hydrology modules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../dalec_model/1101/table.html">Variables in DALEC 1101</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/analyst_checklist.html">Analyst checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/technote.html">Contributing to this technical documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/governance.html">CARDAMOM.c governance structure</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/CARDAMOM_NETCDF_INPUT_FILE.html">CARDAMOM Netcdf input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/COST_FUNCTION.html">CARDAMOM cost function <a name="cardamom-cost-function"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/DEBUGGING_TIPS.html">Debugging tips and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/GITHUB_BASICS.html">Using CARDAMOM’s github repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MCMC_IN_CARDAMOM_OVERVIEW.html">MCMC overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/OUTPUT_DATA_ANALYSIS.html">Output Data and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PARALLELIZATION.html">Parallelization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../dalec_versions.html">DALEC versions</a></li>
+          <li class="breadcrumb-item"><a href="../dalec_model/dalec_1100.html">DALEC 1100</a></li>
+          <li class="breadcrumb-item"><a href="../dalec_model/1100/modules.html">Modules used by DALEC 1100</a></li>
+      <li class="breadcrumb-item active">Photosynthesis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/dalec_modules/photosynthesis.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="photosynthesis">
+<h1>Photosynthesis<a class="headerlink" href="#photosynthesis" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>To model photosynthesis and hence calculate GPP we apply a vairant of the Farquhar-von Caemmerer-Berry model (<a class="reference internal" href="#farquhar-1980" id="id1"><span>[Farquhar:1980]</span></a>) adapted from <a class="reference internal" href="#liu-2021" id="id2"><span>[Liu:2021]</span></a>.</p>
+<ol class="arabic simple">
+<li><p>The absorbed photosynthetically active radiation (APAR) driving photosynthesis is calculated using the Beer-Lambert law <a class="reference internal" href="#campbell-1998" id="id3"><span>[Campbell:1998]</span></a> :</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[APAR = PAR \cdot (1 - \rho_\text{leaf}) \cdot (1 - e^{(-K \cdot LAI \cdot \Omega)})\]</div>
+<ul class="simple">
+<li><dl class="simple">
+<dt><span class="math notranslate nohighlight">\(PAR\)</span> is the photosythnetically active radiaion</dt><dd><dl class="simple">
+<dt><span class="math notranslate nohighlight">\(PAR = \frac{SRAD}{2 \cdot E_{photon} \cdot N_A} \cdot 10^6\)</span></dt><dd><ul>
+<li><p><span class="math notranslate nohighlight">\(PAR\)</span> is the photosynthetically active radiation (μmol photons m⁻² s⁻¹)</p></li>
+<li><p><span class="math notranslate nohighlight">\(SRAD\)</span> is the incident shortwave radiation (W m⁻²)</p></li>
+<li><p><span class="math notranslate nohighlight">\(E_{photon} = 2.0 \times 10^{-25} / (500.0 \times 10^{-9})\)</span> J (Planck constant times speed of light divided by light wavelength)</p></li>
+<li><p><span class="math notranslate nohighlight">\(N_A = 6.02 \times 10^{23}\)</span> mol⁻¹ (Avogadro’s constant)</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</li>
+<li><p><span class="math notranslate nohighlight">\(K\)</span> is the vegetation extinction coefficient <a class="reference internal" href="#campbell-1998" id="id4"><span>[Campbell:1998]</span></a></p></li>
+<li><p><span class="math notranslate nohighlight">\(LAI\)</span> is the leaf area index</p></li>
+<li><p><span class="math notranslate nohighlight">\(\Omega\)</span> is the clumping index <a class="reference internal" href="#braghiere-2019" id="id5"><span>[Braghiere:2019]</span></a></p></li>
+<li><p><span class="math notranslate nohighlight">\(\rho_\text{leaf}\)</span> parameter describing the reflected portion of photosynthetically active radiation due to canopy reflectance</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>Net carbon assimilation is calculated based on C3 photosynthesis biochemistry to determine potential leaf-level photosynthesis (unstressed by water availability). This is expressed in terms of two potentially limiting rates:</p></li>
+</ol>
+<ol class="loweralpha">
+<li><p>Rubisco-limited rate (<span class="math notranslate nohighlight">\(a_1\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[a_1 = V_\text{cmax} \cdot \frac{c_i - c_p}{c_i + K_c \cdot (1 + 209/K_o)}\]</div>
+</li>
+</ol>
+<ul class="simple">
+<li><dl class="simple">
+<dt><span class="math notranslate nohighlight">\(V_\text{cmax}\)</span> (mol CO<sub>2</sub> m<sup>-2</sup> s<sup>-1</sup>) is the maximum rate of carboxylation.</dt><dd><dl class="simple">
+<dt><span class="math notranslate nohighlight">\(V_{cmax} = \frac{V_{cmax25} \cdot q_{10}^{0.1(T_C - 25)}}{\left(1 + e^{0.3(T_C - (T_{upp} - T_0))}\right) \left(1 + e^{0.3((T_{down} - T_0) - T_C)}\right)}\)</span></dt><dd><ul>
+<li><p><span class="math notranslate nohighlight">\(V_{cmax25}\)</span> is the maximum rate of carboxylation at 25°C</p></li>
+<li><p><span class="math notranslate nohighlight">\(q_{10}\)</span> parameter describing temperature sensitivity</p></li>
+<li><p><span class="math notranslate nohighlight">\(T_C\)</span> is the air temperature in °C</p></li>
+<li><p><span class="math notranslate nohighlight">\(T_{upp}\)</span> parameter describing the upper temperature limit for photosynthesis (in K)</p></li>
+<li><p><span class="math notranslate nohighlight">\(T_{down}\)</span> parameter describing the lower temperature limit for photosynthesis (in K)</p></li>
+<li><p><span class="math notranslate nohighlight">\(T_0\)</span> is the freezing point of water in Kelvin (273.15 K)</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><span class="math notranslate nohighlight">\(c_i\)</span> is the intercellular CO<sub>2</sub> concentration</dt><dd><dl class="simple">
+<dt><span class="math notranslate nohighlight">\(c_i = c_{a} \cdot \left(1 - \frac{1}{1 + \frac{g_1}{\sqrt{VPD}}}\right)\)</span></dt><dd><ul>
+<li><p><span class="math notranslate nohighlight">\(c_{a}\)</span> is the atmospheric CO<sub>2</sub> concentration</p></li>
+<li><p><span class="math notranslate nohighlight">\(g_1\)</span> is the stomatal slope parameter</p></li>
+<li><p><span class="math notranslate nohighlight">\(VPD\)</span> is the vapor pressure deficit</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><span class="math notranslate nohighlight">\(c_p\)</span> is the CO<sub>2</sub> compensation point (the CO<sub>2</sub> concentration at which photosynthesis equals respiration)</dt><dd><dl class="simple">
+<dt><span class="math notranslate nohighlight">\(c_p = 36.9 + 1.18(T_C - 25) + 0.36(T_C - 25)^2\)</span></dt><dd><ul>
+<li><p><span class="math notranslate nohighlight">\(T_C\)</span> is the air temperature in °C</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><span class="math notranslate nohighlight">\(K_c\)</span> is the Michaelis-Menten concentration for CO<sub>2</sub></dt><dd><dl class="simple">
+<dt><span class="math notranslate nohighlight">\(K_c = 300 \cdot e^{0.074(T_C - 25)}\)</span></dt><dd><ul>
+<li><p><span class="math notranslate nohighlight">\(T_C\)</span> is the air temperature in °C</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><span class="math notranslate nohighlight">\(K_o\)</span> is the Michaelis-Menten concentration for O<sub>2</sub></dt><dd><dl class="simple">
+<dt><span class="math notranslate nohighlight">\(K_o = 300 \cdot e^{0.015(T_C - 25)}\)</span></dt><dd><ul>
+<li><p><span class="math notranslate nohighlight">\(T_C\)</span> is the air temperature in °C</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</li>
+</ul>
+<ol class="loweralpha" start="2">
+<li><p>Light-limited rate (<span class="math notranslate nohighlight">\(a_2\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[a_2 = J \cdot \frac{c_i - c_p}{4(c_i + 2c_p)}\]</div>
+</li>
+</ol>
+<ul class="simple">
+<li><dl class="simple">
+<dt><span class="math notranslate nohighlight">\(J\)</span> is the rate of electron transport.</dt><dd><dl class="simple">
+<dt><span class="math notranslate nohighlight">\(J = \frac{0.3 \cdot PAR + V_{cmax} \cdot e - \sqrt{(0.3 \cdot PAR + V_{cmax} \cdot e)^2 - 1.08 \cdot PAR \cdot V_{cmax} \cdot e}}{1.8}\)</span></dt><dd><ul>
+<li><p><span class="math notranslate nohighlight">\(PAR\)</span> is the photosynthetically active radiation</p></li>
+<li><p><span class="math notranslate nohighlight">\(V_{cmax}\)</span> is the maximum rate of carboxylation</p></li>
+<li><p><span class="math notranslate nohighlight">\(e\)</span> is the mathematical constant (approximately 2.71828)</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</li>
+</ul>
+<ol class="arabic simple" start="3">
+<li><p>The total net carbon assimilation (<span class="math notranslate nohighlight">\(A_n\)</span>) is</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[A_n =  \min(a_1 \cdot \beta, a_2) - R_d\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\beta\)</span> is the minimum of the moisture stress factor related to the mean soil moisture concentration in the root zone, and the temperature stress factor</p></li>
+<li><p><span class="math notranslate nohighlight">\(R_d\)</span> is the leaf dark respiration.</p></li>
+</ul>
+<ol class="arabic simple" start="4">
+<li><p>GPP, representing the total canopy photosynthesis, is calculated by integrating leaf-level photosynthesis over the entire canopy leaf area index:</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[GPP = A_n \cdot \frac{1 - \exp(-K \cdot LAI \cdot \Omega)}{K}\]</div>
+<div role="list" class="citation-list">
+<div class="citation" id="braghiere-2019" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">Braghiere:2019</a><span class="fn-bracket">]</span></span>
+<p>Braghiere, R.K., Quaife, T., Black, E., He, L. and Chen, J.M., 2019. Underestimation of global photosynthesis in Earth system models due to representation of vegetation structure. Global Biogeochemical Cycles, 33(11), pp.1358-1369. <a class="reference external" href="https://doi.org/10.1029/2018GB006135">https://doi.org/10.1029/2018GB006135</a></p>
+</div>
+<div class="citation" id="campbell-1998" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>Campbell:1998<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id3">1</a>,<a role="doc-backlink" href="#id4">2</a>)</span>
+<p>Campbell, G.S. and Norman, J.M., 2000. An introduction to environmental biophysics. Springer Science &amp; Business Media.</p>
+</div>
+<div class="citation" id="farquhar-1980" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Farquhar:1980</a><span class="fn-bracket">]</span></span>
+<p>Farquhar, G.D., von Caemmerer, S.V. and Berry, J.A., 1980. A biochemical model of photosynthetic CO 2 assimilation in leaves of C 3 species. planta, 149, pp.78-90. <a class="reference external" href="https://doi.org/10.1007/BF00386231">https://doi.org/10.1007/BF00386231</a></p>
+</div>
+<div class="citation" id="liu-2021" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Liu:2021</a><span class="fn-bracket">]</span></span>
+<p>Liu, Y., Holtzman, N.M. and Konings, A.G., 2021. Global ecosystem-scale plant hydraulic traits retrieved using model–data fusion. Hydrology and Earth System Sciences, 25(5), pp.2399-2417. <a class="reference external" href="https://doi.org/10.5194/hess-25-2399-2021">https://doi.org/10.5194/hess-25-2399-2021</a></p>
+</div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../dalec_model/1100/modules.html" class="btn btn-neutral float-left" title="Modules used by DALEC 1100" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Stress.html" class="btn btn-neutral float-right" title="GPP Stress (Beta Functions)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

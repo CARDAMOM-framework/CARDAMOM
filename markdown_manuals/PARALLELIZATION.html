@@ -1,0 +1,190 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parallelization &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3ce236e8" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="Perturbation experiments using CARDAMOM outputs" href="PERTURBATION_EXPERIMENTS.html" />
+    <link rel="prev" title="Output Data and Analysis" href="OUTPUT_DATA_ANALYSIS.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC Model:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dalec_versions.html">DALEC versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/analyst_checklist.html">Analyst checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/technote.html">Contributing to this technical documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/governance.html">CARDAMOM.c governance structure</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="CARDAMOM_NETCDF_INPUT_FILE.html">CARDAMOM Netcdf input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="COST_FUNCTION.html">CARDAMOM cost function <a name="cardamom-cost-function"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEBUGGING_TIPS.html">Debugging tips and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="GITHUB_BASICS.html">Using CARDAMOM’s github repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MCMC_IN_CARDAMOM_OVERVIEW.html">MCMC overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OUTPUT_DATA_ANALYSIS.html">Output Data and Analysis</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Parallelization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#step-1a-personal-computer-check-how-many-cores-you-have">Step 1a (Personal Computer) Check how many cores you have</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-1b-server-check-how-many-cores-you-have-access-to">Step 1b (Server) Check how many cores you have access to</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-and-dirty-method-using-command-line-terminal-for-only-a-few-runs">Quick and Dirty Method using Command Line/Terminal (For only a few runs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#use-the-python-script-tutorial-for-many-runs">Use the python script tutorial (For many runs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bash-script-for-parallelizing">Bash Script for Parallelizing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Parallelization</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/markdown_manuals/PARALLELIZATION.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="parallelization">
+<h1>Parallelization<a class="headerlink" href="#parallelization" title="Link to this heading"></a></h1>
+<p>CARDAMOM is computationally expensive, so you will want to find ways to utlize parallization when you are running your model.</p>
+<section id="step-1a-personal-computer-check-how-many-cores-you-have">
+<h2>Step 1a (Personal Computer) Check how many cores you have<a class="headerlink" href="#step-1a-personal-computer-check-how-many-cores-you-have" title="Link to this heading"></a></h2>
+<p>Mac: https://support.macincloud.com/support/solutions/articles/8000087401-how-can-i-check-the-number-of-cpu-cores-on-a-mac
+Linux: https://www.cyberciti.biz/faq/check-how-many-cpus-are-there-in-linux-system/</p>
+</section>
+<section id="step-1b-server-check-how-many-cores-you-have-access-to">
+<h2>Step 1b (Server) Check how many cores you have access to<a class="headerlink" href="#step-1b-server-check-how-many-cores-you-have-access-to" title="Link to this heading"></a></h2>
+<p>Find out from your IT or google your server specific command line to check cores.
+IMPORTANT: Find out from your IT how many cores you are allowed to use. This may differ from how many cores there actually are.
+Actually, if you are contacting IT, also find out how much data storage you have access to, as you will potentially be generating many large files using CARDAMOM.</p>
+</section>
+<section id="quick-and-dirty-method-using-command-line-terminal-for-only-a-few-runs">
+<h2>Quick and Dirty Method using Command Line/Terminal (For only a few runs)<a class="headerlink" href="#quick-and-dirty-method-using-command-line-terminal-for-only-a-few-runs" title="Link to this heading"></a></h2>
+<p>You can manually open up multiple command lines/terminals up to the maximum number of cores on your personal computer. Run CARDAMOM in each command line.
+You can use the following command lines:</p>
+<p>MDF Run:</p>
+<p>&lt; path to CARDAMOM_MDF.exe &gt; &lt; path to .cbf.nc file &gt; &lt; path to where you want the .cbr file to be created &gt; **do not include &lt;&gt; in the command line</p>
+<p>Forward Run:</p>
+<p>&lt; path to CARDAMOM_RUN_MODEL.exe &gt; &lt; path to .cbf.nc file &gt; &lt; path to created .cbr file &gt; **do not include &lt;&gt; in the command line</p>
+</section>
+<section id="use-the-python-script-tutorial-for-many-runs">
+<h2>Use the python script tutorial (For many runs)<a class="headerlink" href="#use-the-python-script-tutorial-for-many-runs" title="Link to this heading"></a></h2>
+<p>Background Info: Each computer core has multiple threads. For example, if a core has 4 threads, it can run 4 python instances. The python tutorial script shows an example of
+running multiple MDF runs for the same site using as many threads you have available over all of the cores you have (personal computer or server). [LINK TO PYTHON TUTORIAL SCRIPT HERE]</p>
+</section>
+<section id="bash-script-for-parallelizing">
+<h2>Bash Script for Parallelizing<a class="headerlink" href="#bash-script-for-parallelizing" title="Link to this heading"></a></h2>
+<p>[INSERT LINK TO BASH SCRIPT HERE]</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="OUTPUT_DATA_ANALYSIS.html" class="btn btn-neutral float-left" title="Output Data and Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="PERTURBATION_EXPERIMENTS.html" class="btn btn-neutral float-right" title="Perturbation experiments using CARDAMOM outputs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

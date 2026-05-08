@@ -1,0 +1,213 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CARDAMOM cost function &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3ce236e8" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="Debugging tips and FAQs" href="DEBUGGING_TIPS.html" />
+    <link rel="prev" title="CARDAMOM Netcdf input file" href="CARDAMOM_NETCDF_INPUT_FILE.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC Model:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dalec_versions.html">DALEC versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/analyst_checklist.html">Analyst checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/technote.html">Contributing to this technical documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/governance.html">CARDAMOM.c governance structure</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="CARDAMOM_NETCDF_INPUT_FILE.html">CARDAMOM Netcdf input file</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CARDAMOM cost function <a name="cardamom-cost-function"/></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#editing-likelihood-field-in-the-output-file-cbr">Editing LIKELIHOOD field in the output file (cbr)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DEBUGGING_TIPS.html">Debugging tips and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="GITHUB_BASICS.html">Using CARDAMOM’s github repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MCMC_IN_CARDAMOM_OVERVIEW.html">MCMC overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OUTPUT_DATA_ANALYSIS.html">Output Data and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PARALLELIZATION.html">Parallelization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">CARDAMOM cost function <a name="cardamom-cost-function"/></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/markdown_manuals/COST_FUNCTION.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cardamom-cost-function">
+<h1>CARDAMOM cost function <a name="cardamom-cost-function"/><a class="headerlink" href="#cardamom-cost-function" title="Link to this heading"></a></h1>
+<p>Observation timeseries summary:</p>
+<p>“Values”:
+time-resolved observation values for any time-varying CARDAMOM observations;
+nectdf dataset with one dimension = number of model timesteps.
+Attributes described below
+“-9999” or “Nan” values accepted as fill values for missing observations.
+Any other values are assumed to be “valid observations”</p>
+<p>“Unc”:
+time-resolved observation value uncertainty;
+netcdf dataset (with one dimension = number of model timesteps).
+No attributes.
+If no “unc” values are provided, then “single_unc” value used to populate “unc”.
+If “unc” values are missing for any valid observations, “single_unc” value is used.</p>
+<p>“Opt_normalization”
+Option 0: does nothing, same as -9999 (unless default values are hard-coded, see set of default values).
+Option 1: removes mean from both data and model values prior to model-data residual calculation; so far, only used for assimilation of GRACE data, but can be used for anything (e.g. NBE values, if mean NBE is inaccurate, for example). Units of “option 1” transformation are “unitless”, i.e. relative anomalies from the mean values are inter-comparable.</p>
+<p>Option 2: divides both data and model by their respective mean values. Used for “linear assimilation” of SIF data. Units of “option 2” transformation are in native observation units”, i.e. relative anomalies to zero are inter-comparable, or, in other words the units of the model variable and observed data are irrelevant.</p>
+<p>Attributes for “values”.</p>
+<p><em>Opt filter</em>
+Description: provides different options for pre-aggregation of data prior to model-data difference calculation. For each option, only subset of fields are required, others will be ignored</p>
+<p>** Option 0**</p>
+<ul class="simple">
+<li><p>Description: “no filter” no operation on data &amp; model prior to least squares model-data residual calculation.</p></li>
+<li><p>Requires either (a) time-resolved uncertainty (“unc” field), at the temporal resolution or (b) a single uncertainty value (“single_unc” field); see “unc” description for details.</p></li>
+</ul>
+<p><strong>Option 1</strong>
+Description: “mean only” filter calculates mean model and data values at all valid observation timesteps; the mean model and data values are then used in the cost function
+Requires “single_unc”.</p>
+<p>** Option 2**
+Description: constrains annual means and monthly anomalies (Quetin et al., 2020, Bloom et al., 2020)</p>
+<ul class="simple">
+<li><p>Requires “single_monthly_unc” and “single_annual_unc” values</p></li>
+<li><p>“single _unc” and/or “unc” are ignored.</p></li>
+<li><p>Only use with “opt_unc_type = 0”</p></li>
+</ul>
+<p>** opt_unc_type</p>
+<ul class="simple">
+<li><p>Determines uncertainty distribution characteristics, where</p></li>
+<li><p>Opt = 0 assumes gaussian uncertainty distribution in units of variable</p></li>
+<li><p>Opt = 1 assumes log-gaussian uncertainty distribution (a.k.a. “uncertainty factor”)</p></li>
+<li><p>Opt = 2 assumes gaussian uncertainty distribution as fraction of variable value.
+Currently can only be used with “Opt filter” = 0</p></li>
+</ul>
+<p>//(0 = none, 1 = remove mean, 2 = divide by mean)</p>
+ <img width="782" alt="image" src="https://user-images.githubusercontent.com/23563444/160677023-99e0b654-e69d-49ae-96d2-caaa42d95ccc.png">
+ <img width="810" alt="image" src="https://user-images.githubusercontent.com/23563444/170361246-82ad29e5-fb9f-4efb-85a5-959576a64d27.png">
+<section id="editing-likelihood-field-in-the-output-file-cbr">
+<h2>Editing LIKELIHOOD field in the output file (cbr)<a class="headerlink" href="#editing-likelihood-field-in-the-output-file-cbr" title="Link to this heading"></a></h2>
+<p>If you find the existing LIKELIHOOD field is missing a variable (eg. PEQ_iniSOM) that you used to constrain model (prerequisites are 1)there of course need to be a field named PEQ_iniSOM in your input nc file, 2)the cost function has a PEQ_iniSOM operator). Consult the CARDAMOM developer team. You can add it by editing three places in the DALEC_ALL_LIKELIHOOD file:</p>
+<ol class="arabic simple">
+<li><p>add “int PEQ_iniSOM;” after line 21</p></li>
+<li><p>add a number coundting after the last number in line ~40: LIKELIHOOD_INDICES={
+0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+10,11,12,13,14,15,16,17,18(this is the number you added)};</p></li>
+<li><p>change LI-&gt;NOLIELIHOODS=18 to LI-&gt;NOLIELIHOODS=19 (add a number accordingly)</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="CARDAMOM_NETCDF_INPUT_FILE.html" class="btn btn-neutral float-left" title="CARDAMOM Netcdf input file" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="DEBUGGING_TIPS.html" class="btn btn-neutral float-right" title="Debugging tips and FAQs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
