@@ -5,6 +5,7 @@
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
+#include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/AFDEMCMC.c"
 #include "../../../../math_fun/int_max.c"
 
 int FIND_EDC_INITIAL_VALUES(DATA CARDADATA,PARAMETER_INFO *PI, MCMC_OPTIONS *MCOPT_CARDAMOM){
@@ -65,6 +66,20 @@ MCOPT.fADAPT=0;
 MCOUT.best_pars=calloc(MCOPT.nchains*PI->npars,sizeof(double));}
 
 
+if (MCOPT_CARDAMOM->mcmcid==4){
+MCOPT.mcmcid=4;
+default_int_value(&CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ,200000);
+MCOPT.nOUT=CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ;/*Default =  20000*/
+MCOPT.nPRINT=2000;/*1;was 2000*/
+MCOPT.minstepsize=1e-5;
+MCOPT.nchains=400;
+MCOPT.fixedpars=0;
+MCOPT.fADAPT=0;
+//declaring best_pars
+MCOUT.best_pars=calloc(MCOPT.nchains*PI->npars,sizeof(double));}
+
+
+
 int OK=INITIALIZE_MCMC_OUTPUT(*PI,&MCOUT,MCOPT);
 printf("C/projects/CARDAMOM_MDF/MCMC_SETUP/PROJECT_FUN/FIND_EDC_INITIAL_VALUES.c: MCOUT structure initialized\n");
 
@@ -103,6 +118,7 @@ while (PEDC!=0){
 	if (MCOPT.mcmcid==119){MHMCMC_119(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
         if (MCOPT.mcmcid==2){DEMCMC(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
         if (MCOPT.mcmcid==3){ADEMCMC(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
+        if (MCOPT.mcmcid==4){ADEMCMC(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
 
 	/*if (MCOPT.mcmcid==2){DEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
 	*/
@@ -134,7 +150,8 @@ printf("EDC no %i; attempts = %i; passes = %i (%2.2f%%);\n",nnn,CARDADATA.EDC_IN
 	if (MCOPT.mcmcid==2 && PEDCC>MCOPT.nchains){PEDC=0;}
 	//Guarantee that at least half of chains have non-zero starting probabilities
 	if (MCOPT.mcmcid==3){if (PEDCC>nstartchains){PEDC=0;}else{PEDC=-1;}}
-	if (MCOPT.mcmcid==2 || MCOPT.mcmcid==3){MCOPT.randparini=0;}	
+	if (MCOPT.mcmcid==4){if (PEDCC>nstartchains){PEDC=0;}else{PEDC=-1;}}
+	if (MCOPT.mcmcid==2 || MCOPT.mcmcid==3 || MCOPT.mcmcid==4 ){MCOPT.randparini=0;}	
 	/*Hard coding*/
 	
 	/*in case one EDC missing*/
