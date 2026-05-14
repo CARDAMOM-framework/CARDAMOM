@@ -382,9 +382,9 @@ POOLS[S.D_LF_LY3]=LY3SOILTEMP.OUT.LF;
    //Effectively this corrects MOI to (water frac)/(water + air frac)
         //Min psi ensures large negative psis not resolved by model needlessly
 	        double minpsi=-30;
-POOLS[S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY1],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY1],POOLS[S.D_TEMP_LY1]),minpsi); //psi reflects ice-adjusted capillary tension + cryosuction 
-POOLS[S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY2],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY2],POOLS[S.D_TEMP_LY2]),minpsi); //psi reflects ice-adjusted capillary tension + cryosuction
-POOLS[S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY3],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY3],POOLS[S.D_TEMP_LY3]),minpsi); //psi reflects ice-adjusted capillary tension + cryosuction
+POOLS[S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY1],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY1]),minpsi); //psi reflects ice-adjusted capillary tension + cryosuction 
+POOLS[S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY2],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY2]),minpsi); //psi reflects ice-adjusted capillary tension + cryosuction
+POOLS[S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(POOLS[S.D_SM_LY3],psi_porosity,pars[P.retention], POOLS[S.D_LF_LY3]),minpsi); //psi reflects ice-adjusted capillary tension + cryosuction
 
     
 //******************Declare KNORR STRUCT*********************
@@ -1158,11 +1158,11 @@ POOLS[nxp+S.D_SM_LY2]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY2],pars[P.LY2_por],pars
 POOLS[nxp+S.D_SM_LY3]=HYDROFUN_EWT2MOI(POOLS[nxp+S.H2O_LY3],pars[P.LY3_por],pars[P.LY3_z]);//soil moisture LY3
 //Correcting PSI for presence of ice occurs within MOI2PSI function 
 POOLS[nxp+S.D_PSI_LY1]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY1],psi_porosity,pars[P.retention], 
-POOLS[nxp+S.D_LF_LY1],POOLS[nxp+S.D_TEMP_LY1]),minpsi);
+POOLS[nxp+S.D_LF_LY1]),minpsi);
 POOLS[nxp+S.D_PSI_LY2]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY2],psi_porosity,pars[P.retention], 
-POOLS[nxp+S.D_LF_LY2],POOLS[nxp+S.D_TEMP_LY2]),minpsi);
+POOLS[nxp+S.D_LF_LY2]),minpsi);
 POOLS[nxp+S.D_PSI_LY3]=fmax(HYDROFUN_MOI2PSI(  POOLS[nxp+S.D_SM_LY3],psi_porosity,pars[P.retention], 
-POOLS[nxp+S.D_LF_LY3],POOLS[nxp+S.D_TEMP_LY3]),minpsi);
+POOLS[nxp+S.D_LF_LY3]),minpsi);
 
 
 //Isfinite check for 14 progronstic pools only
