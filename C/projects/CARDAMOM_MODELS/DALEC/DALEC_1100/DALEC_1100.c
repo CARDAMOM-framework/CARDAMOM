@@ -717,11 +717,11 @@ FLUXES[f+F.q_surf] = liquid_in - FLUXES[f+F.infil];
 
     // Calculate drainage: correcting psi for presence of ice occurs within DRAINAGE function
 double drain_LY1 = DRAINAGE(POOLS[p+S.D_SM_LY1],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,
-pars[P.retention],POOLS[p+S.D_LF_LY1],POOLS[p+S.D_TEMP_LY1]);
+pars[P.retention],POOLS[p+S.D_LF_LY1]);
 double drain_LY2 = DRAINAGE(POOLS[p+S.D_SM_LY2],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,
-pars[P.retention],POOLS[p+S.D_LF_LY2],POOLS[p+S.D_TEMP_LY2]);
+pars[P.retention],POOLS[p+S.D_LF_LY2]);
 double drain_LY3 = DRAINAGE(POOLS[p+S.D_SM_LY3],pars[P.Q_excess],-pars[P.field_cap],psi_porosity,
-pars[P.retention],POOLS[p+S.D_LF_LY3],POOLS[p+S.D_TEMP_LY3]);
+pars[P.retention],POOLS[p+S.D_LF_LY3]);
 
     // Drainage becomes runoff from pools
 FLUXES[f+F.q_ly1] = HYDROFUN_MOI2EWT(drain_LY1,pars[P.LY1_por],pars[P.LY1_z])*one_over_deltat;
