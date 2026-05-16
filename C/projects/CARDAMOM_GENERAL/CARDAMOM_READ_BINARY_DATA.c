@@ -208,6 +208,7 @@ free(DATA.M_SIF);
 free(DATA.M_LAI);
 free(DATA.M_FIR);
 free(DATA.M_NBE);
+free(DATA.M_SWE);
 
 
 
