@@ -78,6 +78,7 @@ DATA->M_NBE=calloc(Ntimesteps,sizeof(double));
 DATA->M_ROFF=calloc(Ntimesteps,sizeof(double));
 DATA->M_SCF=calloc(Ntimesteps,sizeof(double));
 DATA->M_SWE=calloc(Ntimesteps,sizeof(double));
+DATA->M_NISAR_WOOD=calloc(Ntimesteps,sizeof(double));
 
 
 
@@ -208,6 +209,7 @@ free(DATA.M_SIF);
 free(DATA.M_LAI);
 free(DATA.M_FIR);
 free(DATA.M_NBE);
+free(DATA.M_NISAR_WOOD);
 
 
 

@@ -105,6 +105,12 @@ int S_fv_PARAM;
 bool SUPPORT_rhch4_rhco2_OBS;
 int rhch4_rhco2_flux;
 
+// NISAR L-band woody fire structural loss observation operator
+// Constrains: f_woo2atm + fx_woo2cwd + fx_woo2PyC (total woody C removed per fire event)
+bool SUPPORT_NISAR_WOOD_OBS;
+int *NISAR_WOOD_fluxes;
+int NISAR_WOOD_n_fluxes;
+
 }OBSOPE;
 
 
@@ -144,6 +150,7 @@ OBSOPE->SUPPORT_clumping_OBS=false;
 OBSOPE->SUPPORT_r_ch4_OBS=false;
 OBSOPE->SUPPORT_S_fv_OBS=false;
 OBSOPE->SUPPORT_rhch4_rhco2_OBS=false;
+OBSOPE->SUPPORT_NISAR_WOOD_OBS=false;
 
 return 0;
 }
@@ -631,6 +638,25 @@ if  (SOBS.validobs){
     }
 return 0;}
 
+// NISAR woody fire structural loss observation operator
+// Maps to NISAR L-band ΔAGB (gC m-2 per timestep) at fire pixels
+// The operator sums all flux indices registered in NISAR_WOOD_fluxes[]:
+//   For DALEC_1110: f_woo + fx_woo2cwd
+//   For DALEC_1111: f_woo + fx_woo2cwd + fx_woo2PyC  (PyC split is internal)
+int DALEC_OBSOPE_NISAR_WOOD(DATA * D, OBSOPE * O){
+    int N=D->ncdf_data.TIME_INDEX.length;
+    TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.NISAR_WOOD;
+    if (TOBS.validobs){
+        int n, nn;
+        for (n=0;n<N;n++){
+            D->M_NISAR_WOOD[n]=0;
+            for (nn=0;nn<O->NISAR_WOOD_n_fluxes;nn++){
+                D->M_NISAR_WOOD[n]+=D->M_FLUXES[D->nofluxes*n+O->NISAR_WOOD_fluxes[nn]];
+            }
+        }
+    }
+return 0;}
+
 ///Full observation operator
 int DALEC_OBSOPE(DATA * D, OBSOPE * O){
 
@@ -666,6 +692,7 @@ if (O->SUPPORT_clumping_OBS){DALEC_OBSOPE_clumping(D, O);}
 if (O->SUPPORT_r_ch4_OBS){DALEC_OBSOPE_r_ch4(D, O);} /*pMCMC*/
 if (O->SUPPORT_S_fv_OBS){DALEC_OBSOPE_S_fv(D, O);}
 if (O->SUPPORT_rhch4_rhco2_OBS){DALEC_OBSOPE_rhch4_rhco2(D, O);}
+if (O->SUPPORT_NISAR_WOOD_OBS){DALEC_OBSOPE_NISAR_WOOD(D, O);}
 
 return 0;}  
 
