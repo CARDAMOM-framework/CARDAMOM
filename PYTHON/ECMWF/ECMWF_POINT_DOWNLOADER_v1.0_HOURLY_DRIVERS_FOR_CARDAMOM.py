@@ -51,6 +51,6 @@ def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr):
 
 # --- MAIN EXECUTION ---
 # Example for downloading months & years of data
-for m in range(1, 13):  # downloads months 1-12
-    for yr in range(2001, 2025): # downloads years 2001-2024
+    for yr in range(2001, 2002): # downloads years 2001-2024
+        for m in range(1, 13):  # downloads months 1-12
         DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr)
