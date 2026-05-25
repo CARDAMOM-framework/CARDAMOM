@@ -27,9 +27,9 @@ int withinlim=1;
 
 	/*first: pick c1 and c2, make sure that (a) they are between 1 and NC, and (b) they are not C*/
 	c1=C;c2=C;
-	while (c1==C | c2==C | c1==c2){
-	c1=ceil((double)random()*NC/((double)RAND_MAX))-1;
-	c2=ceil((double)random()*NC/((double)RAND_MAX))-1;}
+	while (c1==C || c2==C || c1==c2){
+	c1=floor((double)random() * NC / ((double)RAND_MAX + 1.0));
+	c2=floor((double)random() * NC / ((double)RAND_MAX + 1.0));}
 mstep=0;
 	/*SAMPLING PARAMETERS*/
 	for (n=0;n<PI.npars;n++){
@@ -42,7 +42,7 @@ mstep=0;
 
 
 	npar[n]=npar[n]+step[n];
-                if (npar[n]<0 | npar[n]>1){withinlim=0;}
+                if (npar[n]<0 || npar[n]>1){withinlim=0;}
 
 }
 

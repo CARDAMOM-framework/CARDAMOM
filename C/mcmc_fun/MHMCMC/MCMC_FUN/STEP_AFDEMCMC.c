@@ -11,7 +11,7 @@ double STEP_AFDEMCMC(double *PARS, double *pars_new, PARAMETER_INFO PI, int C, i
     /* Step 1. Find random sample (reference chain) other than current chain */
     C1=C;
     while (C1==C){
-        C1 = ceil((double)random() * NC / ((double)RAND_MAX)) - 1;
+        C1 = floor((double)random() * NC / ((double)RAND_MAX + 1.0));
     }
 
     // /* Step 2. Allocate memory for normalized parameter vectors */

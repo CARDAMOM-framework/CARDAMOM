@@ -90,7 +90,7 @@ int WRITE_DEMCMC_RESTART(double *PARS,PARAMETER_INFO PI,MCMC_OPTIONS MCO, int IT
   FAILONERROR(nc_def_dim(ncid,"Sample",NC_UNLIMITED,&sampleDimID));
   FAILONERROR(nc_def_var(ncid,"Parameters",NC_DOUBLE,2,(const int[]){sampleDimID,paramDimID},&parsVarID));
   //Note: it's a bit odd this is an int, and not a uint or long. Likely does not matter though.
-  FAILONERROR(nc_put_att_int(ncid,parsVarID,"N",NC_INT,sizeof(int),&ITER));
+  FAILONERROR(nc_put_att_int(ncid,parsVarID,"N",NC_INT,1,&ITER));
 
 
 //TODO: store N and rng seed ------------------------------------------------------
