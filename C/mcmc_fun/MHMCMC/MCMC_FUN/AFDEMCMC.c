@@ -140,6 +140,11 @@ if (isinf(P[nn])==-1){
 	printf("WARNING! P(0)=-inf - MHMCMC may get stuck - if so, please check your initial conditions\n");
 	}}
 
+// Initialize memory
+double *cpar = calloc(PI.npars, sizeof(double));
+double *rpar = calloc(PI.npars, sizeof(double));
+double *npar = calloc(PI.npars, sizeof(double));
+
 /*STEP 2 - BEGIN MCMC*/
 for ( ;N.ITER<MCO.nOUT;N.ITER++){
 	/*Looping through each chain*/
@@ -153,7 +158,7 @@ for ( ;N.ITER<MCO.nOUT;N.ITER++){
 	//AFDEMCMC
         double fadapt=(double)N.ITER/((double)MCO.nOUT*MCO.fADAPT);
 	if (fadapt<1){
-        withinrange=STEP_AFDEMCMC(PARS,pars_new,PI,nn,NC,&gratio);
+        withinrange=STEP_AFDEMCMC(PARS,pars_new,PI,nn,NC,&gratio, cpar, rpar, npar);
 	}
 	//Standard DEMCMC
 	else {
@@ -243,6 +248,9 @@ free(BESTP);
 free(PARS);
 free(pars_new);
 free(P);
+free(cpar); 
+free(rpar); 
+free(npar);
 printf("DEMCMC DONE\n");
 
 

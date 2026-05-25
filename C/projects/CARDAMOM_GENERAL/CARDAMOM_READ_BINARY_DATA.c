@@ -47,6 +47,7 @@ printf("Mean Snow = %f\n",DATA->ncdf_data.SNOWFALL.reference_mean);
 printf("Mean Temp = %f\n",DATA->ncdf_data.T2M_MIN.reference_mean);
 printf("Mean Prec = %f\n",DATA->ncdf_data.TOTAL_PREC.reference_mean);
 printf("Latitude = %f\n",DATA->ncdf_data.LAT);
+printf("Longitude = %f\n",DATA->ncdf_data.LON);
 
 printf("Ecological & Dynamic Constraints options\n");
 printf("EDC likelihood option = %d\n",DATA->ncdf_data.EDC);

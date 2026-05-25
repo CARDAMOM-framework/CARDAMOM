@@ -54,6 +54,7 @@ double EDC_EQF;
 
     //DATA
 double LAT;
+double LON;
 double meantemp;
 int Ntimesteps;
 double deltat;
