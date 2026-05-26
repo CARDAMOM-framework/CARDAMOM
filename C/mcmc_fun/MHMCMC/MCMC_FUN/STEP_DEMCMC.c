@@ -2,7 +2,7 @@
 #include <math.h>
 #include "../../../math_fun/randn.c"
 
-int STEP_DEMCMC(double *PARS, double *pars_new, PARAMETER_INFO PI, int C,int NC){
+int STEP_DEMCMC(double *PARS, double *pars_new, PARAMETER_INFO PI, int C,int NC, double *npar, double *npar1, double *npar2, double *step){
 /*DE_STEP takes a differential evolution style step*/
 
 /*FIXEDPARS*/
@@ -13,10 +13,10 @@ double rn;
 
 
 /*allocating memory for three normalized parameter vectors*/
-double *npar=calloc(PI.npars,sizeof(double));
-double *npar1=calloc(PI.npars,sizeof(double));
-double *npar2=calloc(PI.npars,sizeof(double));
-double *step=calloc(PI.npars,sizeof(double));
+// double *npar=calloc(PI.npars,sizeof(double));
+// double *npar1=calloc(PI.npars,sizeof(double));
+// double *npar2=calloc(PI.npars,sizeof(double));
+// double *step=calloc(PI.npars,sizeof(double));
 /*using "*pars" to store sequential outputs*/
 for (n=0;n<PI.npars;n++){npar[n]=par2nor(PARS[C*PI.npars+n],PI.parmin[n],PI.parmax[n]);}
 
@@ -48,10 +48,10 @@ mstep=0;
 
 for (n=0;n<PI.npars;n++){pars_new[n]=nor2par(npar[n],PI.parmin[n],PI.parmax[n]);}
 
-free(npar);
-free(npar1);
-free(npar2);
-free(step);
+// free(npar);
+// free(npar1);
+// free(npar2);
+// free(step);
 return withinlim;
 
 }
