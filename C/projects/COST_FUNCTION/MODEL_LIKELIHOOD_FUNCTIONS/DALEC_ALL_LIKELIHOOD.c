@@ -60,7 +60,7 @@ struct LIKELIHOOD_INDICES{
   
     
     int DALEC_ALL_LIKELIHOOD_MODCONFIG(LIKELIHOODinfo * LI){
-        LI->nolikelihoods=31;
+        LI->nolikelihoods=32;
         return 0;}
             
             

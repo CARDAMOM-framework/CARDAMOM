@@ -210,17 +210,19 @@ free(DATA.M_LAI);
 free(DATA.M_FIR);
 free(DATA.M_NBE);
 free(DATA.M_SWE);
+free(DATA.M_CWOO);
+free(DATA.M_SCF);
 
 
-
-
-
-
+free(DATA.M_EDCs);
+free(DATA.M_LIKELIHOODS);
 free(DATA.M_PARS);
 free(DATA.M_FLUXES);
 free(DATA.M_POOLS);
 free(DATA.M_P);
 free(DATA.M_EDCD);
+free(DATA.EDC_INSTANCE_COUNTER);
+free(DATA.EDC_PASS_COUNTER);
 
 free(DATA.parmin);
 free(DATA.parmax);
