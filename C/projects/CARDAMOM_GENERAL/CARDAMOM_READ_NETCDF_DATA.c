@@ -357,6 +357,7 @@ printf("Done reading all other edc ");
     
     DATA->ID=ncdf_read_single_double_var(ncid, "ID" );
 	DATA->LAT=ncdf_read_single_double_var(ncid, "LAT" );
+	DATA->LON=ncdf_read_single_double_var(ncid, "LON" );
     
     //Pre-processing
     //Ntimesteps
