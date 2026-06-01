@@ -7,11 +7,18 @@
 #include "../../../../math_fun/ipow.c"
 #include "stdlib.h"
 #include "stdio.h"
+#include <math.h>
+#include <string.h>
 
 //***************General inequality EDC******************
 //***************DALEC_EDC_PARS_INEQUALITY*********
 
-
+// static int traj_attempt_count[100] = {0};
+// static int traj_pass_count[100] = {0};
+// static int fin_zero_count[100] = {0};
+// static int fin_neg_count[100] = {0};
+// static int fout_zero_count[100] = {0};
+// static int fout_neg_count[100] = {0};  
   
   
   
@@ -56,12 +63,18 @@ PEDC=0;
 double * FLUXES = DATA->M_FLUXES;
 double * POOLS = DATA->M_POOLS;
 
-double *FT;
-FT=calloc(nofluxes,sizeof(double));
+// double *FT;
+// FT=calloc(nofluxes,sizeof(double));
+
+// 1. Declare the Variable Length Array
+double FT[nofluxes];
+
+// 2. Zero it out using memset (requires #include <string.h> at the top of your file)
+memset(FT, 0, nofluxes * sizeof(double));
 
 int f=0;
 for (f=0;f<nofluxes;f++){
-  FT[f]=0;
+  // FT[f]=0;
   for (n=0;n<N_timesteps;n++){
     FT[f]+=FLUXES[n*nofluxes+f];
     }
@@ -72,9 +85,10 @@ for (s=0;s<E.no_pools_to_check;s++){
   
   double EQF=E.pool_eqf[s];
   p = E.pool_indices[s];
+  // traj_attempt_count[p] += 1;
 
   double MPOOLSjan=0;
-  double MPOOLS=mean_pool(DATA->M_POOLS,p,N_timesteps+1,nopools);
+  // double MPOOLS=mean_pool(DATA->M_POOLS,p,N_timesteps+1,nopools);
   
   /*deriving mean January pools*/
   /*Assuming COMPLETE years*/
@@ -88,22 +102,23 @@ for (s=0;s<E.no_pools_to_check;s++){
   
     
   
-  for (m=0;m<(N_timesteps/dint+1);m++){
-  MPOOLSjan=MPOOLSjan+POOLS[nopools*(m*dint)+p]/(N_timesteps/dint+1);}
-
+  int jan_count = (N_timesteps/dint+1);
+  for (m=0; m < jan_count; m++){
+      MPOOLSjan += POOLS[nopools*(m*dint)+p] / (double)jan_count;
+  }
 
   //Next step:
   //Loop through all fluxes
   //For each pool create "Fin" and "Fout", and add these to fluxe
     double Fin=0, Fout=0, Ftemp=0; 
   for (i=0;i<DALECmodel->SIOMATRIX[p].N_STATE_INPUT_FLUXES;i++){
-    double Ftemp = FT[DALECmodel->SIOMATRIX[p].STATE_INPUT_FLUXES[i]]; 
-    if (Ftemp<0){Fout +=Ftemp;} //if any N_STATE_INPUT_FLUXES are negative, put them in Fout
+    Ftemp = FT[DALECmodel->SIOMATRIX[p].STATE_INPUT_FLUXES[i]]; 
+    if (Ftemp<0){Fout -=Ftemp;} //if any N_STATE_INPUT_FLUXES are negative, put them in Fout
     else {Fin += Ftemp;}}
 
   for (i=0;i<DALECmodel->SIOMATRIX[p].N_STATE_OUTPUT_FLUXES;i++){
-    double Ftemp= FT[DALECmodel->SIOMATRIX[p].STATE_OUTPUT_FLUXES[i]];
-    if (Ftemp<0){Fin +=Ftemp;} //if any N_STATE_OUTPUT_FLUXES are negative, put them in Fin
+    Ftemp= FT[DALECmodel->SIOMATRIX[p].STATE_OUTPUT_FLUXES[i]];
+    if (Ftemp<0){Fin -=Ftemp;} //if any N_STATE_OUTPUT_FLUXES are negative, put them in Fin
     else {Fout += Ftemp;}}
   // 
   // double Fin[10];
@@ -137,34 +152,42 @@ for (s=0;s<E.no_pools_to_check;s++){
 
 // PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow((Rs-Rm)/etol,2);
  /*EB test version*/
- PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow(log(Rs/Rm)/log(1+etol),2);
+//  PEDC+=-0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow(log(Rs/Rm)/log(1+etol),2);
+double pool_pedc = -0.5*pow(log(Rs)/log(EQF),2) - 0.5 *pow(log(Rs/Rm)/log(1+etol),2);
+PEDC += pool_pedc;
+//  if (isfinite(pool_pedc)) {
+//             traj_pass_count[p] += 1;
+//         } else {
+//             // Aggregate the exact reason for the failure
+//             if (Fin == 0.0) fin_zero_count[p] += 1;
+//             else if (Fin < 0.0) fin_neg_count[p] += 1;
 
-//         printf("******Pool p = %i *********\n",p);
-// 
-//         printf("p = %i\n",s);
-//         printf("-0.5*pow(log(Rs)/log(EQF),2) = %2.2f\n",-0.5*pow(log(Rs)/log(EQF),2));
-//         printf("- 0.5 *pow((Rs-Rm)/etol,2) = %2.2f\n",- 0.5 *pow((Rs-Rm)/etol,2));
-// // 
-// 
-//                         printf("Rs = %2.2f\n",Rs);
-//                         printf("Rm = %2.2f\n",Rm);
-// 
-//                 printf("log(Rs) = %2.2f\n",log(Rs));
-// 
-//         printf("-0.5*pow(log(Rs)/log(EQF),2) = %2.2f\n",-0.5*pow(log(Rs)/log(EQF),2));
-//                 printf("Fin = %2.2f\n", Fin);
-//                 printf("dint = %i\n", dint);
-//             printf("Fout = %2.2f\n", Fout);
-//                         printf("Pstart = %2.2f\n", Pstart);
-//             printf("Pend = %2.2f\n", Pend);
-//             printf("MPOOLSjan= %2.2f\n", MPOOLSjan);
-// 
-//         printf("EQF P = %2.2f\n", -0.5*pow(log(Rs)/log(EQF),2));
-//             printf("Etol P = %2.2f\n", - 0.5 *pow((Rs-Rm)/etol,2));
-//         printf("PEDC = %2.2f\n",PEDC);
+//             if (Fout == 0.0) fout_zero_count[p] += 1;
+//             else if (Fout < 0.0) fout_neg_count[p] += 1;
+//         }
+    
 
      }
-     free(FT);
-     // printf("PEDC = %2.2f\n",PEDC);
+    //  free(FT);
+
+// static int traj_print_throttle = 0;
+//     traj_print_throttle++;
+    
+//     // Set to print every 10 attempts
+//    if (traj_print_throttle % 10 == 0) { 
+//         printf("\n--- Trajectory (EDC 8) Stats at %i attempts ---\n", traj_print_throttle);
+//         for (int j = 0; j < DATA->nopools; j++) {
+//             if (traj_attempt_count[j] > 0) {
+//                 double percent = (100.0 * (double)traj_pass_count[j] / (double)traj_attempt_count[j]);
+//                 int total_fails = traj_attempt_count[j] - traj_pass_count[j];
+                
+//                 printf("pool %2i; Att = %6i, Pass = %6i (%5.2f%%) | Fails: %6i [Fin=0: %6i, Fin<0: %6i | Fout=0: %6i, Fout<0: %6i]\n", 
+//                         j, traj_attempt_count[j], traj_pass_count[j], percent, 
+//                         total_fails, fin_zero_count[j], fin_neg_count[j], fout_zero_count[j], fout_neg_count[j]);
+//             }
+//         }
+//         fflush(stdout); 
+//     }
+    
     return PEDC;
 }

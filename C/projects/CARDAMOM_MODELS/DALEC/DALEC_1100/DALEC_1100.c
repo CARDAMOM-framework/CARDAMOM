@@ -1363,11 +1363,21 @@ EDCs[E.vcmax_lcma].prerun=true;
     EDCs[E.state_ranges].prerun=false;
 
  static DALEC_EDC_TRAJECTORY_STRUCT EDC_st;
- 
+
+// Determine whether to include the snow pool
+ double maxsnow = 0.0;
+    for (int i = 0; i < DATA->ncdf_data.TIME_INDEX.length; i++) {
+        if (DATA->ncdf_data.SNOWFALL.values[i] > maxsnow) {
+            maxsnow = DATA->ncdf_data.SNOWFALL.values[i];
+        }
+    }
+
  static int edc_pool_indices[14];
     static double edc_pool_eqf[14];
 EDC_st.pool_indices=edc_pool_indices;
 EDC_st.pool_eqf=edc_pool_eqf;
+
+if (maxsnow > 0.0) { // include snow pool if there is snow
 EDC_st.no_pools_to_check=14;
 
 EDC_st.pool_indices[0]=S.C_lab;
@@ -1383,12 +1393,32 @@ EDC_st.pool_indices[9]=S.H2O_LY3;
 EDC_st.pool_indices[10]=S.H2O_SWE;
 EDC_st.pool_indices[11]=S.E_LY1;
 EDC_st.pool_indices[12]=S.E_LY2;
-EDC_st.pool_indices[13]=S.E_LY3;
+EDC_st.pool_indices[13]=S.E_LY3;}
+
+else {//otherwise do not
+EDC_st.no_pools_to_check=13;
+
+EDC_st.pool_indices[0]=S.C_lab;
+EDC_st.pool_indices[1]=S.C_fol;
+EDC_st.pool_indices[2]=S.C_roo;
+EDC_st.pool_indices[3]=S.C_woo;
+EDC_st.pool_indices[4]=S.C_cwd;
+EDC_st.pool_indices[5]=S.C_lit;
+EDC_st.pool_indices[6]=S.C_som;
+EDC_st.pool_indices[7]=S.H2O_LY1;
+EDC_st.pool_indices[8]=S.H2O_LY2;
+EDC_st.pool_indices[9]=S.H2O_LY3;
+//EDC_st.pool_indices[10]=S.H2O_SWE;
+EDC_st.pool_indices[10]=S.E_LY1;
+EDC_st.pool_indices[11]=S.E_LY2;
+EDC_st.pool_indices[12]=S.E_LY3;
 //EDC_st.pool_indices[12]=S.M_LAI_MAX;```
 //EDC_st.pool_indices[13]=S.M_LAI_TEMP;
+}
 
-
-for (n=0;n<EDC_st.no_pools_to_check;n++){EDC_st.pool_eqf[n]=DATA->ncdf_data.EDC_EQF;printf("DATA->ncdf_data.EDC_EQF = %2.2f\n",DATA->ncdf_data.EDC_EQF);}
+for (n=0;n<EDC_st.no_pools_to_check;n++){
+    EDC_st.pool_eqf[n]=DATA->ncdf_data.EDC_EQF;
+    printf("DATA->ncdf_data.EDC_EQF = %2.2f\n",DATA->ncdf_data.EDC_EQF);}
 //  EDC_st.pool_eqf[9]=10;
 //     EDC_st.pool_eqf[10]=10;
 
