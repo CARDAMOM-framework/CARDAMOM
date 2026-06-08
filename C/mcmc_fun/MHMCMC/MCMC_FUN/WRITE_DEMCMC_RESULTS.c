@@ -18,13 +18,27 @@
 
 //This scans the string and removes all instances of the string toFind, and replaces them with the single char toReplace.
 void str_inplace_replace(char * str, const char * toFind, const char toReplace){
-  //Yeah this implementation is N^2... but we have a small fixed max N, so don't @ me.
-  char* substring=str;
-  while ((substring = strstr(substring, toFind))){
-    memmove(substring, substring+1,strlen(substring)); //Memmove needed due to overlapping strings. Move the whole string, with null term
-    substring[0]=toReplace; //put in the filler char
-  }
+    // 1. Safety checks for null pointers
+    if (!str || !toFind) return; 
+    
+    size_t findLen = strlen(toFind);
+    
+    // 2. Prevent infinite loops if toFind is an empty string
+    if (findLen == 0) return; 
 
+    char* substring = str;
+    while ((substring = strstr(substring, toFind))){
+        // 3. Move the tail of the string (everything AFTER the found word).
+        // The +1 ensures we copy the null terminator at the end of the string.
+        memmove(substring + 1, substring + findLen, strlen(substring + findLen) + 1); 
+        
+        // 4. Insert the replacement character
+        substring[0] = toReplace; 
+        
+        // 5. Advance the pointer by 1 so we don't accidentally match the 
+        // replacement character if it matches part of toFind
+        substring++; 
+    }
 }
 
 
@@ -90,7 +104,7 @@ int WRITE_DEMCMC_RESTART(double *PARS,PARAMETER_INFO PI,MCMC_OPTIONS MCO, int IT
   FAILONERROR(nc_def_dim(ncid,"Sample",NC_UNLIMITED,&sampleDimID));
   FAILONERROR(nc_def_var(ncid,"Parameters",NC_DOUBLE,2,(const int[]){sampleDimID,paramDimID},&parsVarID));
   //Note: it's a bit odd this is an int, and not a uint or long. Likely does not matter though.
-  FAILONERROR(nc_put_att_int(ncid,parsVarID,"N",NC_INT,sizeof(int),&ITER));
+  FAILONERROR(nc_put_att_int(ncid,parsVarID,"N",NC_INT,1,&ITER));
 
 
 //TODO: store N and rng seed ------------------------------------------------------

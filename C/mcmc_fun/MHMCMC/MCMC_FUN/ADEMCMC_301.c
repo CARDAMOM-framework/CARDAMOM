@@ -85,6 +85,17 @@ pars_new=calloc(PI.npars,sizeof(double));
 BESTPARS=calloc(PI.npars*NC,sizeof(double));
 PARS0=calloc(PI.npars*NC,sizeof(double));
 BESTP=calloc(NC,sizeof(double));
+// Initialize memory for STEP_DEMCMC.c 
+double *npar_de=calloc(PI.npars,sizeof(double));
+double *npar1_de=calloc(PI.npars,sizeof(double));
+double *npar2_de=calloc(PI.npars,sizeof(double));
+double *step_de=calloc(PI.npars,sizeof(double));
+//Intitialize memory for STEP_ADEMCMC.c: 
+double *cpar_ade=calloc(PI.npars,sizeof(double));
+double *rpar_ade=calloc(PI.npars,sizeof(double));
+double *npar_ade=calloc(PI.npars,sizeof(double));
+double *step_ade=calloc(PI.npars,sizeof(double));
+double *gamma_ade=calloc(PI.npars,sizeof(double));
 /*All accepted parameters*/
 /*This is now the last N parameter vectors
  * where N is the adaptation frequency*/
@@ -153,7 +164,7 @@ for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
 
 	//ADEMCMC
 	if ((double)N.ITER<(double)MCO.nOUT*MCO.fADAPT){
-        withinrange=STEP_ADEMCMC(PARS0,pars_new,PI,nn,NC,&gratio);
+        withinrange=STEP_ADEMCMC(PARS0,pars_new,PI,nn,NC,&gratio,cpar_ade,rpar_ade,npar_ade,step_ade,gamma_ade);
 	}
 	//Standard DEMCMC
 	else {
@@ -161,14 +172,14 @@ for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
         PI.stepsize[0]=1 - (1-2.38/sqrt(2*PI.npars)/10)*(double)((double)(random()/(double)RAND_MAX)<0.9);
 	/*take a step (DE-MCMC style)*/
 	PI.stepsize[0]=PI.stepsize[0];
-	withinrange=STEP_DEMCMC(PARS0,pars_new,PI,nn,NC);
+	withinrange=STEP_DEMCMC(PARS0,pars_new,PI,nn,NC,npar_de, npar1_de, npar2_de, step_de);
 	gratio=0;
 	}
 
 	
 	lr=log((double)random()/(double)RAND_MAX);
 	/*p(x) = 0 if parameters outside bounds*/
-	if (withinrange==1 & -P[nn]+gratio>lr){
+	if (withinrange==1 && -P[nn]+gratio>lr){
 wrlocal=wrlocal+1;
 	/*Calculate new likelihood*/
 	P_new=MODEL_LIKELIHOOD(DATA,pars_new);}
@@ -233,6 +244,15 @@ free(PARS);
 free(PARS0);
 free(pars_new);
 free(P);
+free(npar_de);
+free(npar1_de);
+free(npar2_de);
+free(step_de);
+free(cpar_ade);
+free(rpar_ade);
+free(npar_ade);
+free(step_ade);
+free(gamma_ade);
 printf("DEMCMC DONE\n");
 
 

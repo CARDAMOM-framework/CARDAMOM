@@ -2,7 +2,7 @@
 #include <math.h>
 #include "../../../math_fun/randn.c"
 
-double STEP_ADEMCMC(double *PARS, double *pars_new, PARAMETER_INFO PI, int C,int NC, double *gratio){
+double STEP_ADEMCMC(double *PARS, double *pars_new, PARAMETER_INFO PI, int C,int NC, double *gratio, double *cpar, double *rpar, double *npar, double *step, double *gamma){
 /*DE_STEP takes a differential evolution style step*/
 
 /*FIXEDPARS*/
@@ -15,15 +15,15 @@ double rn;
 /*STep 1. Find random sample other than current chain*/
 
 C1=C;
-while (C1==C){C1=ceil((double)random()*NC/((double)RAND_MAX))-1;};
+while (C1==C){C1=floor((double)random() * NC / ((double)RAND_MAX + 1.0));}
 
 /*Step 2. FInd current chain, reference chain, and step between them*/
 /*allocating memory for three normalized parameter vectors*/
-double *cpar=calloc(PI.npars,sizeof(double));
-double *rpar=calloc(PI.npars,sizeof(double));
-double *npar=calloc(PI.npars,sizeof(double));
-double *step=calloc(PI.npars,sizeof(double));
-double *gamma=calloc(PI.npars,sizeof(double));
+// double *cpar=calloc(PI.npars,sizeof(double));
+// double *rpar=calloc(PI.npars,sizeof(double));
+// double *npar=calloc(PI.npars,sizeof(double));
+// double *step=calloc(PI.npars,sizeof(double));
+// double *gamma=calloc(PI.npars,sizeof(double));
 /*using "*pars" to store sequential outputs*/
 for (n=0;n<PI.npars;n++){
 cpar[n]=par2nor(PARS[C*PI.npars+n],PI.parmin[n],PI.parmax[n]);
@@ -74,7 +74,7 @@ int withinlim=1;
 
 for (n=0;n<PI.npars;n++){
 npar[n] = rpar[n] + step[n]*gamma[n];
- if (npar[n]<0 | npar[n]>1){withinlim=0;}
+ if (npar[n]<0 || npar[n]>1){withinlim=0;}
 }
 
 gratio[0]=0;
@@ -138,11 +138,11 @@ printf("gn2c = %4.4f\n",gn2c);
 
 }
 
-free(rpar);
-free(cpar);
-free(npar);
-free(step);
-free(gamma);
+// free(rpar);
+// free(cpar);
+// free(npar);
+// free(step);
+// free(gamma);
 return withinlim;
 
 }

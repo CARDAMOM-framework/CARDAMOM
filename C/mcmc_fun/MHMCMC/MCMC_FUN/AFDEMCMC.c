@@ -140,6 +140,16 @@ if (isinf(P[nn])==-1){
 	printf("WARNING! P(0)=-inf - MHMCMC may get stuck - if so, please check your initial conditions\n");
 	}}
 
+// Initialize memory for STEP_AFDEMCMC.c
+double *cpar = calloc(PI.npars, sizeof(double));
+double *rpar = calloc(PI.npars, sizeof(double));
+double *npar = calloc(PI.npars, sizeof(double));
+// Initialize memory for STEP_DEMCMC.c 
+double *npar_de=calloc(PI.npars,sizeof(double));
+double *npar1_de=calloc(PI.npars,sizeof(double));
+double *npar2_de=calloc(PI.npars,sizeof(double));
+double *step_de=calloc(PI.npars,sizeof(double));
+
 /*STEP 2 - BEGIN MCMC*/
 for ( ;N.ITER<MCO.nOUT;N.ITER++){
 	/*Looping through each chain*/
@@ -153,7 +163,7 @@ for ( ;N.ITER<MCO.nOUT;N.ITER++){
 	//AFDEMCMC
         double fadapt=(double)N.ITER/((double)MCO.nOUT*MCO.fADAPT);
 	if (fadapt<1){
-        withinrange=STEP_AFDEMCMC(PARS,pars_new,PI,nn,NC,&gratio);
+        withinrange=STEP_AFDEMCMC(PARS,pars_new,PI,nn,NC,&gratio, cpar, rpar, npar);
 	}
 	//Standard DEMCMC
 	else {
@@ -162,14 +172,14 @@ for ( ;N.ITER<MCO.nOUT;N.ITER++){
                  (double)(( (double)random() / (double)RAND_MAX ) < 0.9);
 	/*take a step (DE-MCMC style)*/
 	PI.stepsize[0]=PI.stepsize[0];
-	withinrange=STEP_DEMCMC(PARS,pars_new,PI,nn,NC);
+	withinrange=STEP_DEMCMC(PARS,pars_new,PI,nn,NC,npar_de, npar1_de, npar2_de, step_de);
 	gratio=0;
 	}
 
 
 	lr = log((double)random() / (double)RAND_MAX);
 	/*p(x) = 0 if parameters outside bounds*/
-	if (withinrange==1 & -P[nn]+gratio>lr){
+	if (withinrange==1 && -P[nn]+gratio>lr){
 wrlocal=wrlocal+1;
 	/*Calculate new likelihood*/
 	P_new=MODEL_LIKELIHOOD(DATA,pars_new);}
@@ -243,6 +253,13 @@ free(BESTP);
 free(PARS);
 free(pars_new);
 free(P);
+free(cpar); 
+free(rpar); 
+free(npar);
+free(npar_de);
+free(npar1_de);
+free(npar2_de);
+free(step_de);
 printf("DEMCMC DONE\n");
 
 

@@ -292,7 +292,7 @@ printf("Done with EDC>0 search MCMC, time used = %6.2f seconds\n",cpu_time_used_
 printf("Done with main MCMC, time used = %6.2f seconds\n",cpu_time_used_main);
 printf("***********************\n");
 printf("***********************\n");
-
+fflush(stdout);
 /*???????*/
 /*User Defined function needed to clean up memory*/
 MEMORY_CLEANUP(DATA,PI,MCOPT,MCOUT);

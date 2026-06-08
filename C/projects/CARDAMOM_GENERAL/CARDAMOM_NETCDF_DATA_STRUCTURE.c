@@ -54,6 +54,7 @@ double EDC_EQF;
 
     //DATA
 double LAT;
+double LON;
 double meantemp;
 int Ntimesteps;
 double deltat;
@@ -93,6 +94,7 @@ SINGLE_OBS_STRUCT PEQ_Vcmax25;
 SINGLE_OBS_STRUCT PEQ_C3frac;
 SINGLE_OBS_STRUCT PEQ_iniSnow;
 SINGLE_OBS_STRUCT PEQ_iniSOM;
+SINGLE_OBS_STRUCT PEQ_lambdamax;
 SINGLE_OBS_STRUCT PEQ_LCMA;
 SINGLE_OBS_STRUCT PEQ_clumping;
 //add PEQ value and unc from previous MCMC *pMCMC*
