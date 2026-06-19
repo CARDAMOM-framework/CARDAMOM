@@ -19,6 +19,9 @@ fieldnames=fields(CBF);
 for f=1:numel(fieldnames)
     
 
+s1=size(CBF.(fieldnames{f}).values,1);
+s2=size(CBF.(fieldnames{f}).values,2);
+
        if numel(CBF.(fieldnames{f}).values)==notimesteps
 
        %Enforcing "double" type
@@ -32,6 +35,17 @@ for f=1:numel(fieldnames)
            
         nccreate(fname,fieldnames{f}); 
        ncwrite(fname,fieldnames{f},CBF.(fieldnames{f}).values);
+
+
+        elseif s1>1 &  s2>1
+
+      %Enforcing "double" type
+       nccreate(fname,fieldnames{f},'Dimensions',{'dim1',s1,'dim2',s2},'FillValue',-9999,'Datatype','double' ); 
+
+       ncwrite(fname,fieldnames{f},CBF.(fieldnames{f}).values);
+
+       
+    disp('Wrote 2D array')
 
            
        
