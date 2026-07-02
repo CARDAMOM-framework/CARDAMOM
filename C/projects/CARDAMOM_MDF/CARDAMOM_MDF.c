@@ -13,6 +13,7 @@
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/AFDEMCMC.c"
+#include "../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMCZS.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
 #include <time.h>
      
@@ -141,6 +142,7 @@ if (MCOPT.mcmcid==119){MCOPT.nchains=1;}
 if (MCOPT.mcmcid==3){MCOPT.nchains=400;}
 if (MCOPT.mcmcid==4){MCOPT.nchains=400;}
 else if (MCOPT.mcmcid==2){MCOPT.nchains=100;}
+if (MCOPT.mcmcid==5){MCOPT.nchains=3;}
 
 
 printf("MDF options structure read successfully");
@@ -253,6 +255,11 @@ case 4:
 printf("DEBUG: About to call AFDEMCMC...\n"); fflush(stdout);
 AFDEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
 printf("DEBUG: Successfully returned from AFDEMCMC!\n"); fflush(stdout);
+break;
+case 5:
+printf("CARDAMOM_MDF.c: about to start DEMCMCZS\n");
+DEMCMCZS(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+printf("CARDAMOM_MDF.c: completed DEMCMCZS\n");
 break;
 
 /*printf("CARDAMOM_MDF.c: DEMCMC temporarily disconnected, need to de-bug, correct and re-introduce");
