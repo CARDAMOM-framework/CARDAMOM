@@ -100,6 +100,8 @@ for (n=0;n<PI.npars;n++){pars_new[n]=nor2par(npar[n],PI.parmin[n],PI.parmax[n]);
 /*Metropolis-Hastings correction for the snooker geometry (eq. 4)*/
 gratio[0]=((double)PI.npars-1.0)*log(sqrt(xstarnorm2)/dnorm);}
 
-free(npar);free(nz);free(d);
+free(npar);
+free(nz);
+free(d);
 return withinlim;
 }

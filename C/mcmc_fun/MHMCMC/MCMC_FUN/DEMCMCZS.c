@@ -22,7 +22,7 @@
  * which is frozen between appends. This is what allows so few live chains
  * to work well.
  *
- * v1 scope: no restart/append support (MCO.nSTART is not honoured here,
+ * v1 scope: no restart/append support (MCO.nSTART is not honored here,
  * matching DEMCMC.c's current scope).
  * */
 
@@ -35,11 +35,11 @@ if(MCO.APPEND==0 && MCO.nWRITE>0){FILE *fileout=fopen(MCO.outfile,"wb");fclose(f
 
 int NC=MCO.nchains;
 
-/*Algorithm constants (ter Braak & Vrugt 2008 defaults: M0=10*npars, K=10, 10% snooker updates)*/
+/*Algorithm constants, hardcode based on paper sugg. (ter Braak & Vrugt 2008 defaults: M0=10*npars, K=10, 10% snooker updates)*/
 int M0=10*PI.npars;
 if (M0<NC){M0=NC;}
 int K=10;
-double psnooker=0.10;
+double psnooker=0.10; 
 
 /*Z is known to be bounded in size, since nOUT (total generations) is fixed - preallocate rather than realloc*/
 int maxappends=MCO.nOUT/K;
@@ -136,7 +136,7 @@ WRITE_DEMCMC_RESULTS(X,PI,MCO,N.ITER);}
 if (MCO.nWRITE>0 && (N.ITER % 1000)==0){
 WRITE_DEMCMC_RESTART(X,PI,MCO,N.ITER);}
 
-/*Printing Info to Screen*/
+/*Printing Info*/
 if (MCO.nPRINT>0 && N.ITER % MCO.nPRINT==0){
 printf("%d out of %d generations (archive size = %d out of %d)\n",N.ITER,MCO.nOUT,M,maxM);
 printf("within range = %2.2f%%\n",wrlocal/((double)(N.ITER+1)*NC)*100);
@@ -146,7 +146,7 @@ for (nn=0;nn<NC;nn++){printf("%2.1f ",P[nn]);}
 printf("\n");
 }
 
-/*Appending the current chain states to the archive every K generations*/
+/*Appending the current chain states to the archive Z mat. every K generations*/
 if ((N.ITER+1) % K==0 && M+NC<=maxM){
 for (nn=0;nn<NC;nn++){
 for (n=0;n<PI.npars;n++){Z[(M+nn)*PI.npars+n]=X[nn*PI.npars+n];}}
