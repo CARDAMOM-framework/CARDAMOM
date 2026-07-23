@@ -6,6 +6,7 @@
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/AFDEMCMC.c"
+#include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMCZS_WARMUP.c"
 #include "../../../../math_fun/int_max.c"
 
 int FIND_EDC_INITIAL_VALUES(DATA CARDADATA,PARAMETER_INFO *PI, MCMC_OPTIONS *MCOPT_CARDAMOM){
@@ -108,6 +109,26 @@ free(PI->parini);
 PI->parini=calloc(MCOPT.nchains*PI->npars,sizeof(double));}
 
 
+/*mode 6 (hybrid EDC search -> DEMCMCZS warmup -> AFDEMCMC production): the
+ *EDC search itself is identical to modes 3/4 (400-chain AFDEMCMC search), and
+ *production also uses AFDEMCMC with 400 chains (set in CARDAMOM_MDF.c), so
+ *no PI->parini resize is needed here - it's already allocated at npars*400
+ *by the caller. The hybrid step (best 10 of the 400 -> DEMCMCZS warmup ->
+ *merge back into the 400) happens in a dedicated block after the search
+ *while-loop below, once PI->parini has been filled the same way modes 2/3/4
+ *fill it.*/
+if (MCOPT_CARDAMOM->mcmcid==6){
+MCOPT.mcmcid=6;
+default_int_value(&CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ,200000);
+MCOPT.nOUT=CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ;
+MCOPT.nPRINT=2000;
+MCOPT.minstepsize=1e-5;
+MCOPT.nchains=400;
+MCOPT.fixedpars=0;
+MCOPT.fADAPT=0;
+MCOUT.best_pars=calloc(MCOPT.nchains*PI->npars,sizeof(double));}
+
+
 
 int OK=INITIALIZE_MCMC_OUTPUT(*PI,&MCOUT,MCOPT);
 printf("C/projects/CARDAMOM_MDF/MCMC_SETUP/PROJECT_FUN/FIND_EDC_INITIAL_VALUES.c: MCOUT structure initialized\n");
@@ -149,6 +170,7 @@ while (PEDC!=0){
         if (MCOPT.mcmcid==3){ADEMCMC(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
         if (MCOPT.mcmcid==4){ADEMCMC(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
         if (MCOPT.mcmcid==5){AFDEMCMC(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
+        if (MCOPT.mcmcid==6){AFDEMCMC(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
 
 	/*if (MCOPT.mcmcid==2){DEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
 	*/
@@ -185,7 +207,9 @@ printf("EDC no %i; attempts = %i; passes = %i (%2.2f%%);\n",nnn,CARDADATA.EDC_IN
 	//convergence threshold - only a handful need to actually pass; the best
 	//MCOPT_CARDAMOM->nchains of them get selected for production below
 	if (MCOPT.mcmcid==5){if (PEDCC>nstartchains){PEDC=0;}else{PEDC=-1;}}
-	if (MCOPT.mcmcid==2 || MCOPT.mcmcid==3 || MCOPT.mcmcid==4 || MCOPT.mcmcid==5){MCOPT.randparini=0;}
+	//mode 6's search is the same 400-chain AFDEMCMC search as modes 3/4/5
+	if (MCOPT.mcmcid==6){if (PEDCC>nstartchains){PEDC=0;}else{PEDC=-1;}}
+	if (MCOPT.mcmcid==2 || MCOPT.mcmcid==3 || MCOPT.mcmcid==4 || MCOPT.mcmcid==5 || MCOPT.mcmcid==6){MCOPT.randparini=0;}
 	/*Hard coding*/
 	
 	/*in case one EDC missing*/
@@ -230,6 +254,52 @@ for (n=0;n<PI->npars*MCOPT.nchains;n++){
 }
 }
 
+
+/*mode 6: hybrid warmup step. PI->parini now holds all 400 EDC-search-endpoint
+ *chains (filled by the generic "else" branch above, same as modes 2/3/4).
+ *Rank them by real likelihood among EDC-passing chains, take the best 10,
+ *run those 10 through an intermediate DEMCMCZS phase (a hardcoded 350000
+ *iterations), then write the resulting evolved states back into their
+ *original slots - leaving the other 390 EDC-search endpoints untouched.
+ *MCOPT.nchains stays at 400: the full mixed ensemble (390 EDC endpoints +
+ *10 DEMCMCZS-evolved) is what gets handed to AFDEMCMC for production.*/
+if (MCOPT_CARDAMOM->mcmcid==6){
+int nwarm=10;
+int WARMUP_ITERS=350000;
+
+double *chainP=calloc(MCOPT.nchains,sizeof(double));
+int nn2;
+for (nn2=0;nn2<MCOPT.nchains;nn2++){
+double edc_p=CARDADATA.EMLF(CARDADATA, PI->parini + nn2*PI->npars);
+if (edc_p==0){chainP[nn2]=CARDADATA.MLF(CARDADATA, PI->parini + nn2*PI->npars);}
+else{chainP[nn2]=log(0);}
+}
+
+int *warm_idx=calloc(nwarm,sizeof(int));
+int k,nn3;
+for (k=0;k<nwarm;k++){
+int bi=0; double best_val=chainP[0];
+for (nn3=1;nn3<MCOPT.nchains;nn3++){
+if (chainP[nn3]>best_val){best_val=chainP[nn3];bi=nn3;}}
+warm_idx[k]=bi;
+chainP[bi]=log(0);
+}
+free(chainP);
+
+double *parini_warm=calloc(nwarm*PI->npars,sizeof(double));
+for (k=0;k<nwarm;k++){
+for (n=0;n<PI->npars;n++){parini_warm[k*PI->npars+n]=PI->parini[warm_idx[k]*PI->npars+n];}}
+
+oksofar("mode 6: running intermediate DEMCMCZS warmup phase on the best 10 EDC-search chains");
+RUN_DEMCMCZS_WARMUP(CARDADATA.MLF,CARDADATA,*PI,nwarm,WARMUP_ITERS,parini_warm);
+oksofar("mode 6: DEMCMCZS warmup phase complete, merging back into the 400-chain ensemble");
+
+for (k=0;k<nwarm;k++){
+for (n=0;n<PI->npars;n++){PI->parini[warm_idx[k]*PI->npars+n]=parini_warm[k*PI->npars+n];}}
+
+free(parini_warm);
+free(warm_idx);
+}
 
 
 /*Sampling new/more parameters*/

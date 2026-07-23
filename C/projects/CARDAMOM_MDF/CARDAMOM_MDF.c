@@ -142,7 +142,8 @@ if (MCOPT.mcmcid==119){MCOPT.nchains=1;}
 if (MCOPT.mcmcid==3){MCOPT.nchains=400;}
 if (MCOPT.mcmcid==4){MCOPT.nchains=400;}
 else if (MCOPT.mcmcid==2){MCOPT.nchains=100;}
-if (MCOPT.mcmcid==5){MCOPT.nchains=3;}
+if (MCOPT.mcmcid==5){MCOPT.nchains=10;}
+if (MCOPT.mcmcid==6){MCOPT.nchains=400;}
 
 
 printf("MDF options structure read successfully");
@@ -260,6 +261,11 @@ case 5:
 printf("CARDAMOM_MDF.c: about to start DEMCMCZS\n");
 DEMCMCZS(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
 printf("CARDAMOM_MDF.c: completed DEMCMCZS\n");
+break;
+case 6:
+printf("CARDAMOM_MDF.c: about to start AFDEMCMC (mode 6 hybrid production)\n");
+AFDEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+printf("CARDAMOM_MDF.c: completed AFDEMCMC (mode 6)\n");
 break;
 
 /*printf("CARDAMOM_MDF.c: DEMCMC temporarily disconnected, need to de-bug, correct and re-introduce");
