@@ -30,6 +30,7 @@ MCOPT->fADAPT=0.5;
 MCOPT->nOUT=DATA.ncdf_data.MCMCID.nITERATIONS;
 MCOPT->nSTART=0;
 MCOPT->nPRINT=DATA.ncdf_data.MCMCID.nPRINT;
+MCOPT->nWRITE=DATA.ncdf_data.MCMCID.nWRITE;
 MCOPT->minstepsize=DATA.ncdf_data.MCMCID.minstepsize;
 MCOPT->mcmcid=DATA.ncdf_data.MCMCID.value;
 MCOPT->nADAPT=DATA.ncdf_data.MCMCID.nADAPT;
@@ -43,8 +44,8 @@ if (MCOPT->mcmcid==DEFAULT_INT_VAL){MCOPT->mcmcid=119;}
 if (MCOPT->nADAPT==DEFAULT_INT_VAL){MCOPT->nADAPT=100;}
 if (MCOPT->fADAPT==DEFAULT_DOUBLE_VAL){MCOPT->fADAPT=0.05;}
 
-//Derive nWRITE from fields
-MCOPT->nWRITE=MCOPT->nOUT/DATA.ncdf_data.MCMCID.nSAMPLES;
+//Default nWRITE is derived from fields unless the MCMCID nWRITE attribute is set.
+if (MCOPT->nWRITE==DEFAULT_INT_VAL){MCOPT->nWRITE=MCOPT->nOUT/DATA.ncdf_data.MCMCID.nSAMPLES;}
 
 
 printf("**********MCMCOPT SUMMARY*******\n");
