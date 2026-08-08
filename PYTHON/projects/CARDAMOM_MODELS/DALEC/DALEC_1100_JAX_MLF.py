@@ -1,26 +1,32 @@
 import jax
 import jax.numpy as jnp
 
-# Import our translated modules
-from LIU_AN_ET_REFACTOR import LIU_AN_ET
-from HET_RESP_RATES_JCR import HET_RESP_RATES_JCR
-from ALLOC_AND_AUTO_RESP_FLUXES import ALLOC_AND_AUTO_RESP_FLUXES
-from KNORR_ALLOCATION import KNORR_ALLOCATION
-from DALEC_OBSERVATION_OPERATORS import DALEC_OBSERVATION_OPERATORS
+# =====================================================================
+# IMPORTS FROM SUBMODULES
+# =====================================================================
+# Core DALEC_ALL Physics Modules
+from DALEC_ALL.LIU_AN_ET_REFACTOR import LIU_AN_ET
+from DALEC_ALL.HET_RESP_RATES_JCR import HET_RESP_RATES_JCR
+from DALEC_ALL.ALLOC_AND_AUTO_RESP_FLUXES import ALLOC_AND_AUTO_RESP_FLUXES
+from DALEC_ALL.KNORR_ALLOCATION import KNORR_ALLOCATION
+from DALEC_ALL.SOIL_TEMP_AND_LIQUID_FRAC import SOIL_TEMP_AND_LIQUID_FRAC
+from DALEC_ALL.INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS import INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS
 
-# Import Hydrology and Thermal Modules
-from HYDROLOGY_MODULES.DRAINAGE import DRAINAGE
-from HYDROLOGY_MODULES.CONVERTERS.HYDROFUN_MOI2EWT import HYDROFUN_MOI2EWT
-from HYDROLOGY_MODULES.CONVERTERS.HYDROFUN_MOI2CON import HYDROFUN_MOI2CON
-from HYDROLOGY_MODULES.CONVERTERS.HYDROFUN_MOI2PSI import HYDROFUN_MOI2PSI
-from HYDROLOGY_MODULES.CONVERTERS.HYDROFUN_EWT2MOI import HYDROFUN_EWT2MOI
-from SOIL_TEMP_AND_LIQUID_FRAC import SOIL_TEMP_AND_LIQUID_FRAC
-from INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS import INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS
+# Observation Operators
+from DALEC_OBSERVATION_OPERATORS.DALEC_OBSERVATION_OPERATORS import DALEC_OBSERVATION_OPERATORS
+
+# Hydrology Modules
+from DALEC_ALL.HYDROLOGY_MODULES.DRAINAGE import DRAINAGE
+from DALEC_ALL.HYDROLOGY_MODULES.CONVERTERS.HYDROFUN_MOI2EWT import HYDROFUN_MOI2EWT
+from DALEC_ALL.HYDROLOGY_MODULES.CONVERTERS.HYDROFUN_MOI2CON import HYDROFUN_MOI2CON
+from DALEC_ALL.HYDROLOGY_MODULES.CONVERTERS.HYDROFUN_MOI2PSI import HYDROFUN_MOI2PSI
+from DALEC_ALL.HYDROLOGY_MODULES.CONVERTERS.HYDROFUN_EWT2MOI import HYDROFUN_EWT2MOI
+
 
 # =====================================================================
-# 1. INDICES (Map exactly to your C Structs)
+# 1. INDICES (Map exactly to C Structs)
 # =====================================================================
-# States (30)
+# States (30 Pools)
 S_C_lab, S_C_fol, S_C_roo, S_C_woo, S_C_cwd, S_C_lit, S_C_som = 0, 1, 2, 3, 4, 5, 6
 S_H2O_LY1, S_H2O_LY2, S_H2O_LY3, S_H2O_SWE = 7, 8, 9, 10
 S_E_LY1, S_E_LY2, S_E_LY3 = 11, 12, 13
@@ -31,7 +37,7 @@ S_D_SM_LY1, S_D_SM_LY2, S_D_SM_LY3 = 22, 23, 24
 S_D_PSI_LY1, S_D_PSI_LY2, S_D_PSI_LY3 = 25, 26, 27
 S_M_LAI_MAX, S_M_LAI_TEMP = 28, 29
 
-# Fluxes (100) - Define the ones we actively track
+# Fluxes (100 Fluxes)
 F_gpp, F_gppnet, F_resp_auto = 0, 1, 2
 F_ets, F_latent_heat, F_sensible_heat, F_ground_heat, F_gh_in = 73, 62, 63, 64, 65
 F_melt, F_sublimation, F_snowfall = 45, 71, 44
@@ -46,28 +52,29 @@ F_geological = 72
 DGCM_TK0C = 273.15
 DGCM_SEC_DAY = 86400.0
 
+
 # =====================================================================
-# 2. THE MAIN STEP FUNCTION (Replaces the C 'for' loop)
+# 2. THE MAIN STEP FUNCTION (Replaces C 'for' loop)
 # =====================================================================
 def dalec_1100_step(state, step_inputs, pars):
-    # Unpack Forcings (Order must match the forcing matrix passed to scan)
-    # [SSRD, T2M_MIN, T2M_MAX, CO2, PREC, VPD, BURNED_AREA, SNOWFALL, SKT, STRD, DIST, YIELD, DOY, LAT]
+    # Unpack Forcings
+    # Expected order: [SSRD, T2M_MIN, T2M_MAX, CO2, PREC, VPD, BURNED_AREA, SNOWFALL, SKT, STRD, DIST, YIELD, DOY, LAT]
     SSRD, T2M_MIN, T2M_MAX, CO2, PREC, VPD, BURNED_AREA, SNOWFALL, SKT, STRD, DIST, YIELD, DOY, LAT = step_inputs
     deltat = 1.0 
     air_temp_k = DGCM_TK0C + 0.5 * (T2M_MIN + T2M_MAX)
 
-    # Initialize empty arrays for next state and fluxes
-    state_next = jnp.zeros(30)
+    # Initialize state update and flux vectors
+    state_next = state
     fluxes = jnp.zeros(100)
 
     # --- 1. Water & Temp Stress (Beta Factors) ---
     beta1 = 1.0 / (1.0 + jnp.exp(pars[84] * (-1.0 * state[S_D_PSI_LY1] / pars[83] - 1.0))) * state[S_D_LF_LY1]
     beta2 = 1.0 / (1.0 + jnp.exp(pars[84] * (-1.0 * state[S_D_PSI_LY2] / pars[83] - 1.0))) * state[S_D_LF_LY2]
-    beta = (beta1 * pars[35] + beta2 * pars[36] * pars[96]) / (pars[35] + pars[36] * pars[96])
+    beta = (beta1 * pars[35] + beta2 * pars[36] * pars[96]) / (pars[35] + pars[36] * pars[96] + 1e-9)
     
     Tminmin_k = pars[43] - DGCM_TK0C
     Tminmax_k = pars[44] - DGCM_TK0C
-    g = jnp.clip((T2M_MIN - Tminmin_k) / (Tminmax_k - Tminmin_k), 0.0, 1.0)
+    g = jnp.clip((T2M_MIN - Tminmin_k) / (Tminmax_k - Tminmin_k + 1e-9), 0.0, 1.0)
     beta_factor = jnp.minimum(beta, g)
 
     # --- 2. Photosynthesis (LIU_AN_ET) ---
@@ -77,7 +84,7 @@ def dalec_1100_step(state, step_inputs, pars):
         pars[99], PREC, pars[93], pars[94], pars[95], state[S_C_lab], deltat
     )
     
-    # Split transpiration
+    # Split transpiration across layers
     transp_denom = beta1 * pars[35] + beta2 * pars[36] * pars[96] + 1e-9
     transp1 = jnp.where((beta1 > 0) | (beta2 > 0), transp * beta1 * pars[35] / transp_denom, 0.0)
     transp2 = transp - transp1
@@ -85,7 +92,7 @@ def dalec_1100_step(state, step_inputs, pars):
     # --- 3. Snow Dynamics ---
     fluxes = fluxes.at[F_snowfall].set(SNOWFALL)
     H2O_SWE_int = state[S_H2O_SWE] + SNOWFALL * deltat
-    SCFtemp = H2O_SWE_int / (H2O_SWE_int + pars[52])
+    SCFtemp = H2O_SWE_int / (H2O_SWE_int + pars[52] + 1e-9)
     
     snowmelt_pot = jnp.clip((DGCM_TK0C + SKT - pars[50]) * pars[51], 0.0, 1.0) * H2O_SWE_int / deltat
     sublimation_pot = pars[95] * SSRD * SCFtemp
@@ -125,17 +132,15 @@ def dalec_1100_step(state, step_inputs, pars):
     evap_e = evap * INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(state[S_D_TEMP_LY1])
     q_ly1_e = q_ly1 * INTERNAL_ENERGY_PER_LIQUID_H2O_UNIT_MASS(state[S_D_TEMP_LY1])
     
-    geological_flux = 0.105 * 3600 * 24
-    
     state_next = state_next.at[S_E_LY1].set(state[S_E_LY1] + (infil_e - evap_e - q_ly1_e) * deltat)
     
-    # Update Soil Temp and Liquid Fraction Diagnostics
+    # Soil Temp and Liquid Fraction Diagnostics
     temp1, lf1 = SOIL_TEMP_AND_LIQUID_FRAC(pars[38], pars[35], state_next[S_H2O_LY1], state_next[S_E_LY1])
     state_next = state_next.at[S_D_TEMP_LY1].set(temp1)
     state_next = state_next.at[S_D_LF_LY1].set(lf1)
 
     # --- 6. Carbon Submodules ---
-    # Knorr Allocation
+    # Knorr Phenology Allocation
     lambda_next, T_mem, laim, dlambdadt, f_T, f_d, l_tilde, l_W = KNORR_ALLOCATION(
         air_temp_k, deltat, LAT, DOY, state[S_D_LAI], pars[63], pars[59], pars[60], 
         pars[61], pars[62], state[S_H2O_LY1] + state_next[S_H2O_LY1], transp1 + transp2, 
@@ -168,15 +173,13 @@ def dalec_1100_step(state, step_inputs, pars):
     C_roo_next = state[S_C_roo] + alloc_roo * deltat
     C_woo_next = state[S_C_woo] + alloc_woo * deltat
     
-    # [Insert Fire/Mortality/Disturbance removals here using C_lab_next, etc.]
-
     state_next = state_next.at[S_C_lab].set(C_lab_next)
     state_next = state_next.at[S_C_fol].set(C_fol_next)
     state_next = state_next.at[S_C_roo].set(C_roo_next)
     state_next = state_next.at[S_C_woo].set(C_woo_next)
-    state_next = state_next.at[S_D_LAI].set(C_fol_next / pars[13])
+    state_next = state_next.at[S_D_LAI].set(C_fol_next / (pars[13] + 1e-9))
 
-    # Record target fluxes
+    # Record Target Fluxes
     fluxes = fluxes.at[F_gpp].set(Ag)
     fluxes = fluxes.at[F_resp_auto].set(auto_resp + Rd)
     
@@ -217,16 +220,16 @@ def DALEC_1100_JAX_MLF(params, initial_state, forcings, obs_dict, obs_unc, prior
     total_log_lik = 0.0
     
     # Loop over all requested observation targets dynamically
-    # Use jnp.where to mask missing observation data (e.g., -9999)
+    # Use jnp.where to mask missing observation data (-9999)
     for key in obs_dict.keys():
         valid_mask = (obs_dict[key] != -9999.0)
-        sq_error = jnp.where(valid_mask, ((obs_dict[key] - preds[key]) / obs_unc[key]) ** 2, 0.0)
+        sq_error = jnp.where(valid_mask, ((obs_dict[key] - preds[key]) / (obs_unc[key] + 1e-9)) ** 2, 0.0)
         total_log_lik += -0.5 * jnp.sum(sq_error)
         
     # Log Prior
-    log_prior = -0.5 * jnp.sum(((params - prior_mean) / prior_std) ** 2)
+    log_prior = -0.5 * jnp.sum(((params - prior_mean) / (prior_std + 1e-9)) ** 2)
     
-    # MLF is Negative Log Posterior
+    # MLF value is the Negative Log Posterior
     mlf_value = -(total_log_lik + log_prior)
     
     return mlf_value, (states_traj, fluxes_traj)
