@@ -151,12 +151,13 @@ for n=1:MCO.nout;
     %NOTE: probability is zero if parameters are not within prior range
     P=MLF(DATA,pars)+log(double(sum(PARS.min>pars)==0))+log(double(sum(PARS.max<pars)==0));
     %P and P0 checks
-% 
-%     if MCO.graphical==1
-%         %plot 2 dims only
-%         plot3(log10([pars0(1),pars(1)]),log10([pars0(2),pars(2)]),[0,0],'.--','LineWidth',0.5,'Color',ones(1,3)*0.8);
-%         drawnow;
-%     end
+
+    if MCO.graphical==1
+        %plot 2 dims only
+        hold on
+        plot(log10([pars0(1),pars(1)]),log10([pars0(2),pars(2)]),'.--','LineWidth',0.5,'Color',ones(1,3)*0.8);
+        drawnow;
+    end
     
    %Accept-Reject based on probability ratio and random number
    %(see Ziehn et al., 2012)

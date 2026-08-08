@@ -1,3 +1,4 @@
+import os  # Added to check for existing files
 import cdsapi
 
 # --- USER CONFIGURATION ---
@@ -31,7 +32,17 @@ def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr):
     # Reverting to the standard, complete dataset
     dataset = "reanalysis-era5-single-levels"
     
+    # Initialize the client outside the loop to avoid re-creating it 7 times a month
+    client = cdsapi.Client()
+
     for q in all_quantities:
+        file = f"ECMWF_CARDAMOM_DRIVER_{q}_{str(m).zfill(2)}{yr}.nc"
+        
+        # Check if the file already exists locally
+        if os.path.exists(file):
+            print(f"{file} ... already downloaded")
+            continue  # Skip to the next quantity
+
         request = {
             "product_type": ["reanalysis"],
             "variable": [q],
@@ -43,14 +54,14 @@ def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr):
             "area": padded_area 
         }
 
-        file = f"ECMWF_CARDAMOM_DRIVER_{q}_{str(m).zfill(2)}{yr}.nc"
         print(f"Downloading {file}...")
-        
-        client = cdsapi.Client()
-        client.retrieve(dataset, request).download(file)
+        try:
+            client.retrieve(dataset, request).download(file)
+        except Exception as e:
+            print(f"Failed to download {file}: {e}")
 
 # --- MAIN EXECUTION ---
 # Example for downloading months & years of data
-for yr in range(2001, 2002): # downloads years 2001-2024
+for yr in range(2001, 2025): # Changed to 2025 so it actually loops from 2001 to 2024
     for m in range(1, 13):  # downloads months 1-12
         DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr)
