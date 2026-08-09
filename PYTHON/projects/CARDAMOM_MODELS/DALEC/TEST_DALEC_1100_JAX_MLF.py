@@ -1,30 +1,40 @@
 import sys
+from pathlib import Path
 from netCDF4 import Dataset
+import jax.numpy as jnp
+import numpy as np
+import matplotlib.pyplot as plt
 
-# Hardcode the projects path into sys.path
-sys.path.insert(0, "/Users/abloom/CARDAMOM/PYTHON/projects")
+# =====================================================================
+# 1. DYNAMIC RELATIVE PATH RESOLUTION (No absolute paths)
+# =====================================================================
+# Anchor all paths relative to the directory containing this script
+SCRIPT_DIR = Path(__file__).resolve().parent
+
+# Add 'PYTHON/projects' to sys.path relative to SCRIPT_DIR
+# Assuming script is in CARDAMOM/PYTHON/projects/CARDAMOM_MODELS/DALEC/
+PROJECTS_DIR = SCRIPT_DIR.parents[1]
+if str(PROJECTS_DIR) not in sys.path:
+    sys.path.insert(0, str(PROJECTS_DIR))
 
 from CARDAMOM_GENERAL.CARDAMOM_READ_NETCDF_DATA import CARDAMOM_READ_NETCDF_DATA
 from DALEC_1100_JAX_MLF import DALEC_1100_JAX_MLF, S_D_SM_LY1, F_gpp, F_resp_auto
 
+# Define data file paths relative to the main CARDAMOM root directory
+CARDAMOM_ROOT = SCRIPT_DIR.parents[3]
+
+input_file = CARDAMOM_ROOT / "CARDAMOM-DEV" / "DATA" / "CARDAMOM_TEST_DRIVERS_APR26.cbf.nc"
+parameter_file = CARDAMOM_ROOT / "DUMPFILES" / "CARDAMOM_TEST_PARAMETERS_APR26.cbr.nc"
+output_file = CARDAMOM_ROOT / "DUMPFILES" / "CARDAMOM_TEST_OUTPUT_APR26.nc"
+
 # =====================================================================
-# 1. HARDCODED ABSOLUTE FILE PATHS
-# =====================================================================
-input_file = "/Users/abloom/CARDAMOM/CARDAMOM-DEV/DATA/CARDAMOM_TEST_DRIVERS_APR26.cbf.nc"
-parameter_file = "/Users/abloom/CARDAMOM/DUMPFILES/CARDAMOM_TEST_PARAMETERS_APR26.cbr.nc"
-output_file = "/Users/abloom/CARDAMOM/DUMPFILES/CARDAMOM_TEST_OUTPUT_APR26.nc"
-# =====================================================================
-# 2. READ C MODEL OUTPUTS & PARAMETERS (.output.nc)
+# 2. READ C MODEL OUTPUTS & PARAMETERS (.nc)
 # =====================================================================
 print(f"Reading C Benchmark Outputs from {output_file}...")
 with Dataset(output_file, 'r') as nc_out:
     c_fluxes = nc_out.variables['FLUXES'][-1, :, :]  # Shape: (216, 100)
     c_pools = nc_out.variables['POOLS'][-1, :, :]    # Shape: (217, 30)
     c_pars = nc_out.variables['PARS'][-1, :]         # Shape: (89,) or (100,)
-
-import jax.numpy as jnp
-import numpy as np
-import matplotlib.pyplot as plt
 
 params_np = np.zeros(100)
 params_np[:len(c_pars)] = c_pars
@@ -36,7 +46,7 @@ print(f"Extracted parameter vector with {len(c_pars)} parameters.")
 # 3. READ FORCINGS (.cbf.nc)
 # =====================================================================
 print(f"Reading forcing drivers from {input_file}...")
-forcings, lat, obs_dict, obs_unc = CARDAMOM_READ_NETCDF_DATA(input_file)
+forcings, lat, obs_dict, obs_unc = CARDAMOM_READ_NETCDF_DATA(str(input_file))
 n_steps = forcings.shape[0]
 
 # Initial states vector (30 state pools)
@@ -88,5 +98,5 @@ ax3.legend(loc="upper right")
 ax3.grid(True)
 
 plt.tight_layout()
-plt.savefig("C_vs_JAX_Benchmark_Comparison.png")
-print("Saved comparison plot to 'C_vs_JAX_Benchmark_Comparison.png'.")
+plt.savefig(SCRIPT_DIR / "C_vs_JAX_Benchmark_Comparison.png")
+print(f"Saved comparison plot to '{SCRIPT_DIR / 'C_vs_JAX_Benchmark_Comparison.png'}'.")
