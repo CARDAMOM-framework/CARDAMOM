@@ -1,83 +1,91 @@
 import jax.numpy as jnp
 import matplotlib.pyplot as plt
+import numpy as np
 from netCDF4 import Dataset
 
-from DALEC_1100_JAX_MLF import DALEC_1100_JAX_MLF, S_D_SM_LY1, F_gpp
+from DALEC_1100_JAX_MLF import DALEC_1100_JAX_MLF, S_D_SM_LY1, F_gpp, F_resp_auto
 from CARDAMOM_READ_NETCDF_DATA import CARDAMOM_READ_NETCDF_DATA
 
 # =====================================================================
-# 1. FILE PATHS (Matching MATLAB Step 3 & 3b)
+# 1. FILE PATHS
 # =====================================================================
-input_file = "../CARDAMOM-DEV/DATA/CARDAMOM_TEST_DRIVERS_APR26.cbf.nc"
-parameter_file = "../DUMPFILES/CARDAMOM_TEST_PARAMETERS_APR26.cbr.nc"
-output_file = "../DUMPFILES/CARDAMOM_TEST_OUTPUT_APR26.output.nc"
+input_file = "CARDAMOM-DEV/DATA/CARDAMOM_TEST_DRIVERS_APR26.cbf.nc"
+parameter_file = "DUMPFILES/CARDAMOM_TEST_PARAMETERS_APR26.cbr.nc"
+output_file = "DUMPFILES/CARDAMOM_TEST_OUTPUT_APR26.output.nc"
 
 # =====================================================================
-# 2. READ PARAMETER FILE (.cbr.nc) - Equiv to Step 6
+# 2. READ C MODEL OUTPUTS & PARAMETERS (.output.nc)
 # =====================================================================
-print(f"Reading parameters from {parameter_file}...")
-with Dataset(parameter_file, 'r') as nc_par:
-    # If parameters matrix is 2D (samples x parameters), pick the last/best sample
-    raw_pars = nc_par.variables['Parameters'][:]
-    if raw_pars.ndim == 2:
-        pars_vec = raw_pars[-1, :]  # Extract single parameter vector
-    else:
-        pars_vec = raw_pars[:]
+print(f"Reading C Benchmark Outputs from {output_file}...")
+with Dataset(output_file, 'r') as nc_out:
+    # Dimensions: (Sample, Time, Variable)
+    # Pick the last sample index (-1) to match the parameter vector
+    c_fluxes = nc_out.variables['FLUXES'][-1, :, :]  # Shape: (216, 100)
+    c_pools = nc_out.variables['POOLS'][-1, :, :]    # Shape: (217, 30)
+    c_pars = nc_out.variables['PARS'][-1, :]         # Shape: (89,) or (100,)
 
-params = jnp.array(pars_vec)
-n_pars = len(params)
-print(f"Successfully extracted {n_pars} parameters.")
+# Map C Parameter vector to JAX expectations (pad with zeros if 89 length)
+params_np = np.zeros(100)
+params_np[:len(c_pars)] = c_pars
+params = jnp.array(params_np)
+
+print(f"Extracted parameter vector with {len(c_pars)} parameters.")
 
 # =====================================================================
-# 3. READ FORCINGS & OBS (.cbf.nc) - Equiv to Step 3/4b
+# 3. READ FORCINGS (.cbf.nc)
 # =====================================================================
-print(f"Reading forcings and drivers from {input_file}...")
+print(f"Reading forcing drivers from {input_file}...")
 forcings, lat, obs_dict, obs_unc = CARDAMOM_READ_NETCDF_DATA(input_file)
 n_steps = forcings.shape[0]
 
-# Initial states vector (30 state pools)
-# Extracted from initial pool parameters embedded within the parameter vector
-n_states = 30
-initial_state = jnp.zeros(n_states)
-initial_state = initial_state.at[0:7].set(params[14:21])  # Initial carbon pools
-initial_state = initial_state.at[S_D_SM_LY1].set(0.2)     # Initial soil moisture
+# Extract initial states directly from C pools at time t=0
+initial_state = jnp.array(c_pools[0, :])
 
-# Dummy priors for MLF computation
-prior_mean = jnp.zeros(n_pars)
-prior_std = jnp.ones(n_pars) * 1000.0
+# Dummy priors for MLF signature
+prior_mean = jnp.zeros(100)
+prior_std = jnp.ones(100) * 1000.0
 
 # =====================================================================
-# 4. RUN DALEC 1100 JAX FORWARD MODEL - Equiv to Step 4b
+# 4. RUN JAX FORWARD MODEL
 # =====================================================================
-print("Executing DALEC_1100_JAX_MLF forward model...")
-mlf_value, (states, fluxes) = DALEC_1100_JAX_MLF(
+print("Executing JAX DALEC_1100 Forward Model...")
+mlf_value, (jax_states, jax_fluxes) = DALEC_1100_JAX_MLF(
     params, initial_state, forcings, obs_dict, obs_unc, prior_mean, prior_std
 )
 
-print(f"\nExecution Complete!")
-print(f"Negative Log Likelihood / Posterior: {mlf_value:.4f}")
+print(f"JAX Run Complete! Negative Log Posterior: {mlf_value:.4f}")
 
 # =====================================================================
-# 5. PLOT PREDICTIONS
+# 5. OVERLAY PLOTS: C BENCHMARK VS. JAX
 # =====================================================================
-fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6))
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(11, 8), sharex=True)
 
-# Plot JAX Predicted GPP
-ax1.plot(fluxes[:, F_gpp], label="JAX DALEC_1100 GPP", color="green", linewidth=1.5)
+# --- Plot 1: Gross Primary Productivity (GPP) ---
+ax1.plot(c_fluxes[:, 0], 'k-', label="C Model GPP", linewidth=2.0)
+ax1.plot(jax_fluxes[:, F_gpp], 'r--', label="JAX GPP", linewidth=1.5)
 if 'GPP' in obs_dict:
-    ax1.plot(obs_dict['GPP'], 'k.', label="Observed GPP", alpha=0.5)
+    valid_obs = np.where(obs_dict['GPP'] != -9999.0, obs_dict['GPP'], np.nan)
+    ax1.plot(valid_obs, 'g.', label="Observed GPP", alpha=0.6)
 ax1.set_ylabel("GPP (gC/m2/d)")
-ax1.set_title("DALEC 1100 JAX Simulation Output")
-ax1.legend()
+ax1.set_title("CARDAMOM Benchmark: C Implementation vs. JAX Translation")
+ax1.legend(loc="upper right")
 ax1.grid(True)
 
-# Plot JAX Soil Moisture
-ax2.plot(states[:, S_D_SM_LY1], label="JAX Volumetric Soil Moisture (LY1)", color="blue")
+# --- Plot 2: Volumetric Soil Moisture (LY1) ---
+ax2.plot(c_pools[1:, 22], 'k-', label="C Model SM LY1", linewidth=2.0)
+ax2.plot(jax_states[:, S_D_SM_LY1], 'b--', label="JAX SM LY1", linewidth=1.5)
 ax2.set_ylabel("Soil Moisture (m3/m3)")
-ax2.set_xlabel("Timestep (Days)")
-ax2.legend()
+ax2.legend(loc="upper right")
 ax2.grid(True)
 
+# --- Plot 3: Autotrophic Respiration ---
+ax3.plot(c_fluxes[:, 2], 'k-', label="C Model Auto Resp", linewidth=2.0)
+ax3.plot(jax_fluxes[:, F_resp_auto], 'm--', label="JAX Auto Resp", linewidth=1.5)
+ax3.set_ylabel("Resp Auto (gC/m2/d)")
+ax3.set_xlabel("Timestep (Months/Days)")
+ax3.legend(loc="upper right")
+ax3.grid(True)
+
 plt.tight_layout()
-plt.savefig("JAX_DALEC_1100_Benchmark_Run.png")
-print("Saved run diagnostic plot to 'JAX_DALEC_1100_Benchmark_Run.png'.")
+plt.savefig("C_vs_JAX_Benchmark_Comparison.png")
+print("Saved comparison plot to 'C_vs_JAX_Benchmark_Comparison.png'.")
