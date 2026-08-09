@@ -1,33 +1,32 @@
 import sys
-from pathlib import Path
 from netCDF4 import Dataset
 
-# Add 'PYTHON/projects' to Python path dynamically
-projects_dir = Path(__file__).resolve().parents[2]
-if str(projects_dir) not in sys.path:
-    sys.path.insert(0, str(projects_dir))
+# Hardcode the projects path into sys.path
+sys.path.insert(0, "/Users/abloom/CARDAMOM/PYTHON/projects")
 
 from CARDAMOM_GENERAL.CARDAMOM_READ_NETCDF_DATA import CARDAMOM_READ_NETCDF_DATA
+from DALEC_1100_JAX_MLF import DALEC_1100_JAX_MLF, S_D_SM_LY1, F_gpp, F_resp_auto
 
 # =====================================================================
-# 1. FILE PATHS
+# 1. HARDCODED ABSOLUTE FILE PATHS
 # =====================================================================
-input_file = "CARDAMOM-DEV/DATA/CARDAMOM_TEST_DRIVERS_APR26.cbf.nc"
-parameter_file = "DUMPFILES/CARDAMOM_TEST_PARAMETERS_APR26.cbr.nc"
-output_file = "DUMPFILES/CARDAMOM_TEST_OUTPUT_APR26.output.nc"
+input_file = "/Users/abloom/CARDAMOM/CARDAMOM-DEV/DATA/CARDAMOM_TEST_DRIVERS_APR26.cbf.nc"
+parameter_file = "/Users/abloom/CARDAMOM/DUMPFILES/CARDAMOM_TEST_PARAMETERS_APR26.cbr.nc"
+output_file = "/Users/abloom/CARDAMOM/DUMPFILES/CARDAMOM_TEST_OUTPUT_APR26.output.nc"
 
 # =====================================================================
 # 2. READ C MODEL OUTPUTS & PARAMETERS (.output.nc)
 # =====================================================================
 print(f"Reading C Benchmark Outputs from {output_file}...")
 with Dataset(output_file, 'r') as nc_out:
-    # Dimensions: (Sample, Time, Variable)
-    # Pick the last sample index (-1) to match the parameter vector
     c_fluxes = nc_out.variables['FLUXES'][-1, :, :]  # Shape: (216, 100)
     c_pools = nc_out.variables['POOLS'][-1, :, :]    # Shape: (217, 30)
     c_pars = nc_out.variables['PARS'][-1, :]         # Shape: (89,) or (100,)
 
-# Map C Parameter vector to JAX expectations (pad with zeros if 89 length)
+import jax.numpy as jnp
+import numpy as np
+import matplotlib.pyplot as plt
+
 params_np = np.zeros(100)
 params_np[:len(c_pars)] = c_pars
 params = jnp.array(params_np)
@@ -41,7 +40,7 @@ print(f"Reading forcing drivers from {input_file}...")
 forcings, lat, obs_dict, obs_unc = CARDAMOM_READ_NETCDF_DATA(input_file)
 n_steps = forcings.shape[0]
 
-# Extract initial states directly from C pools at time t=0
+# Initial states vector (30 state pools)
 initial_state = jnp.array(c_pools[0, :])
 
 # Dummy priors for MLF signature
