@@ -6,13 +6,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # =====================================================================
-# 1. DYNAMIC RELATIVE PATH RESOLUTION (No absolute paths)
+# 1. DYNAMIC RELATIVE PATH RESOLUTION
 # =====================================================================
-# Anchor all paths relative to the directory containing this script
 SCRIPT_DIR = Path(__file__).resolve().parent
 
-# Add 'PYTHON/projects' to sys.path relative to SCRIPT_DIR
-# Assuming script is in CARDAMOM/PYTHON/projects/CARDAMOM_MODELS/DALEC/
+# Projects directory: PYTHON/projects/
 PROJECTS_DIR = SCRIPT_DIR.parents[1]
 if str(PROJECTS_DIR) not in sys.path:
     sys.path.insert(0, str(PROJECTS_DIR))
@@ -20,15 +18,15 @@ if str(PROJECTS_DIR) not in sys.path:
 from CARDAMOM_GENERAL.CARDAMOM_READ_NETCDF_DATA import CARDAMOM_READ_NETCDF_DATA
 from DALEC_1100_JAX_MLF import DALEC_1100_JAX_MLF, S_D_SM_LY1, F_gpp, F_resp_auto
 
-# Define data file paths relative to the main CARDAMOM root directory
-CARDAMOM_ROOT = SCRIPT_DIR.parents[3]
+# Root folder above CARDAMOM/ (where DUMPFILES and CARDAMOM-DEV reside)
+ROOT_DIR = SCRIPT_DIR.parents[4]
 
-input_file = CARDAMOM_ROOT / "CARDAMOM-DEV" / "DATA" / "CARDAMOM_TEST_DRIVERS_APR26.cbf.nc"
-parameter_file = CARDAMOM_ROOT / "DUMPFILES" / "CARDAMOM_TEST_PARAMETERS_APR26.cbr.nc"
-output_file = CARDAMOM_ROOT / "DUMPFILES" / "CARDAMOM_TEST_OUTPUT_APR26.nc"
+input_file = ROOT_DIR / "CARDAMOM-DEV" / "DATA" / "CARDAMOM_TEST_DRIVERS_APR26.cbf.nc"
+parameter_file = ROOT_DIR / "DUMPFILES" / "CARDAMOM_TEST_PARAMETERS_APR26.cbr.nc"
+output_file = ROOT_DIR / "DUMPFILES" / "CARDAMOM_TEST_OUTPUT_APR26.output.nc"
 
 # =====================================================================
-# 2. READ C MODEL OUTPUTS & PARAMETERS (.nc)
+# 2. READ C MODEL OUTPUTS & PARAMETERS (.output.nc)
 # =====================================================================
 print(f"Reading C Benchmark Outputs from {output_file}...")
 with Dataset(output_file, 'r') as nc_out:
