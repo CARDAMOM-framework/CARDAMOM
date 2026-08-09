@@ -12,8 +12,7 @@ from DALEC_1100_JAX_MLF import DALEC_1100_JAX_MLF, S_D_SM_LY1, F_gpp, F_resp_aut
 # =====================================================================
 input_file = "/Users/abloom/CARDAMOM/CARDAMOM-DEV/DATA/CARDAMOM_TEST_DRIVERS_APR26.cbf.nc"
 parameter_file = "/Users/abloom/CARDAMOM/DUMPFILES/CARDAMOM_TEST_PARAMETERS_APR26.cbr.nc"
-output_file = "/Users/abloom/CARDAMOM/DUMPFILES/CARDAMOM_TEST_OUTPUT_APR26.output.nc"
-
+output_file = "/Users/abloom/CARDAMOM/DUMPFILES/CARDAMOM_TEST_OUTPUT_APR26.nc"
 # =====================================================================
 # 2. READ C MODEL OUTPUTS & PARAMETERS (.output.nc)
 # =====================================================================
