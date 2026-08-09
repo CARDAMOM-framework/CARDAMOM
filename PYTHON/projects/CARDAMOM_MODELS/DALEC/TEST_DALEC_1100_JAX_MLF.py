@@ -1,10 +1,13 @@
-import jax.numpy as jnp
-import matplotlib.pyplot as plt
-import numpy as np
-from netCDF4 import Dataset
+import sys
+from pathlib import Path
 
-from DALEC_1100_JAX_MLF import DALEC_1100_JAX_MLF, S_D_SM_LY1, F_gpp, F_resp_auto
-from CARDAMOM_READ_NETCDF_DATA import CARDAMOM_READ_NETCDF_DATA
+# Add 'PYTHON/projects' to Python path dynamically
+projects_dir = Path(__file__).resolve().parents[2]
+if str(projects_dir) not in sys.path:
+    sys.path.insert(0, str(projects_dir))
+
+# Now Python can find CARDAMOM_GENERAL
+from CARDAMOM_GENERAL.CARDAMOM_READ_NETCDF_DATA import CARDAMOM_READ_NETCDF_DATA
 
 # =====================================================================
 # 1. FILE PATHS
