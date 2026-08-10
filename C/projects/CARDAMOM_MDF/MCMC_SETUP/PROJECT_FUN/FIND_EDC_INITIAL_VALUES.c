@@ -25,7 +25,7 @@ int PEDCC,nn;
  *EDCs before ending the search. Because the check is PEDCC>nstartchains,
  *the default value of 10 requires at least 11 passing chains.*/
 int nstartchains=10;
-int multichain_edc_search=(MCOPT_CARDAMOM->mcmcid==3 || MCOPT_CARDAMOM->mcmcid==4 || MCOPT_CARDAMOM->mcmcid==5 || MCOPT_CARDAMOM->mcmcid==6);
+int multichain_edc_search=(MCOPT_CARDAMOM->mcmcid==3 || MCOPT_CARDAMOM->mcmcid==4 || MCOPT_CARDAMOM->mcmcid==5 || MCOPT_CARDAMOM->mcmcid==6 || MCOPT_CARDAMOM->mcmcid==7);
         
         
 MCOPT.APPEND=0;
@@ -43,7 +43,7 @@ MCOPT.nchains=1;
 MCOPT.minstepsize=1e-2;
 
 
-/*Modes 3, 4, 5, and 6 must enter the exact same EDC search: 400-chain
+/*Modes 3, 4, 5, 6, and 7 must enter the exact same EDC search: 400-chain
  *ADEMCMC search options, identical pass threshold, identical sampler call,
  *and the same 400-chain PI->parini allocation path. Mode-specific handoff
  *only happens after the shared search completes.*/
@@ -57,7 +57,7 @@ MCOPT.nchains=400;
 MCOPT.fixedpars=0;
 MCOPT.fADAPT=0;
 /*Rebuild PI->parini to the search size for every multi-chain mode. This keeps
- *modes 3/4/5/6 identical before the first EDC-search random draw.*/
+ *modes 3/4/5/6/7 identical before the first EDC-search random draw.*/
 free(PI->parini);
 PI->parini=calloc(MCOPT.nchains*PI->npars,sizeof(double));}
 
@@ -160,8 +160,8 @@ PI->parini=parini_small;
 MCOPT.nchains=nprod;
 }else{
 /*For modes other than mode 5, keep the full EDC-search ensemble. Mode 6 needs
- *all 400 chains for the warmup/merge block below; modes 3 and 4 hand the same
- *400 chains directly to their production samplers.*/
+ *all 400 chains for the warmup/merge block below; modes 3, 4, and 7 hand the
+ *same 400 chains directly to their production samplers.*/
 for (n=0;n<PI->npars*MCOPT.nchains;n++){
 
 	PI->parini[n]=MCOUT.best_pars[n];
@@ -179,7 +179,7 @@ for (n=0;n<PI->npars*MCOPT.nchains;n++){
  *10 DEMCMCZS-evolved) is what gets handed to AFDEMCMC for production.*/
 if (MCOPT_CARDAMOM->mcmcid==6){
 int nwarm=10;
-int WARMUP_ITERS=350000;
+int WARMUP_ITERS=0; //change back to 350000 TBD 
 
 double *chainP=calloc(MCOPT.nchains,sizeof(double));
 int nn2;

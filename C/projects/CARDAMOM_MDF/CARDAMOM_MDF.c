@@ -13,6 +13,7 @@
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/AFDEMCMC.c"
+#include "../../mcmc_fun/MHMCMC/MCMC_FUN/AFDEMCMCZS.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMCZS.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
 #include <time.h>
@@ -145,6 +146,7 @@ if (MCOPT.mcmcid==4){MCOPT.nchains=400;}
 else if (MCOPT.mcmcid==2){MCOPT.nchains=100;}
 if (MCOPT.mcmcid==5){MCOPT.nchains=10;}
 if (MCOPT.mcmcid==6){MCOPT.nchains=400;}
+if (MCOPT.mcmcid==7){MCOPT.nchains=400;}
 
 
 printf("MDF options structure read successfully");
@@ -267,6 +269,11 @@ case 6:
 printf("CARDAMOM_MDF.c: about to start AFDEMCMC (mode 6 hybrid production)\n");
 AFDEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
 printf("CARDAMOM_MDF.c: completed AFDEMCMC (mode 6)\n");
+break;
+case 7:
+printf("CARDAMOM_MDF.c: about to start AFDEMCMCZS (mode 7 affine -> DEMCMCZS production)\n");
+AFDEMCMCZS(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+printf("CARDAMOM_MDF.c: completed AFDEMCMCZS (mode 7)\n");
 break;
 
 /*printf("CARDAMOM_MDF.c: DEMCMC temporarily disconnected, need to de-bug, correct and re-introduce");
