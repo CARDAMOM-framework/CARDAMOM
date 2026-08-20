@@ -17,6 +17,7 @@
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMCZS.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/DREAMZS.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/HYBRID_AIDE.c"
+#include "../../mcmc_fun/MHMCMC/MCMC_FUN/HYBRID_AIDE_DEMCMC.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
 #include <time.h>
      
@@ -151,6 +152,7 @@ if (MCOPT.mcmcid==6){MCOPT.nchains=400;}
 if (MCOPT.mcmcid==7){MCOPT.nchains=400;}
 if (MCOPT.mcmcid==8){MCOPT.nchains=400;}
 if (MCOPT.mcmcid==9){MCOPT.nchains=400;}
+if (MCOPT.mcmcid==10){MCOPT.nchains=400;}
 
 
 printf("MDF options structure read successfully");
@@ -288,6 +290,11 @@ case 9:
 printf("CARDAMOM_MDF.c: about to start HYBRID_AIDE (mode 9)\n");
 HYBRID_AIDE(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
 printf("CARDAMOM_MDF.c: completed HYBRID_AIDE (mode 9)\n");
+break;
+case 10:
+printf("CARDAMOM_MDF.c: about to start HYBRID_AIDE_DEMCMC (mode 10 AIDE -> DEMCMC)\n");
+HYBRID_AIDE_DEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+printf("CARDAMOM_MDF.c: completed HYBRID_AIDE_DEMCMC (mode 10)\n");
 break;
 
 /*printf("CARDAMOM_MDF.c: DEMCMC temporarily disconnected, need to de-bug, correct and re-introduce");
