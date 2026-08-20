@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Allocation and autotrophic respiration &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3ce236e8" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="Mortality" href="mortality.html" />
+    <link rel="prev" title="Phenology" href="phenology.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC Model:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../dalec_versions.html">DALEC versions</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../dalec_model/dalec_1100.html">DALEC 1100</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../dalec_model/1100/overview.html">Overview of DALEC 1100</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../dalec_model/1100/modules.html">Modules used by DALEC 1100</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="photosynthesis.html">Photosynthesis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Stress.html">GPP Stress (Beta Functions)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Transpiration.html">Evapotranspiration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="phenology.html">Phenology</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Allocation and autotrophic respiration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mortality.html">Mortality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mortality.html#bibliography">Bibliography</a></li>
+<li class="toctree-l4"><a class="reference internal" href="heterotrophic_respiration.html">Heterotrophic Respiration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="physics_hydrology.html">Soil physics and hydrology modules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../dalec_model/1100/table.html">Variables in DALEC 1100</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../dalec_model/dalec_1101.html">DALEC 1101</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/analyst_checklist.html">Analyst checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/technote.html">Contributing to this technical documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/governance.html">CARDAMOM.c governance structure</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/CARDAMOM_NETCDF_INPUT_FILE.html">CARDAMOM Netcdf input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/COST_FUNCTION.html">CARDAMOM cost function <a name="cardamom-cost-function"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/DEBUGGING_TIPS.html">Debugging tips and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/GITHUB_BASICS.html">Using CARDAMOM’s github repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MCMC_IN_CARDAMOM_OVERVIEW.html">MCMC overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/OUTPUT_DATA_ANALYSIS.html">Output Data and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PARALLELIZATION.html">Parallelization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../dalec_versions.html">DALEC versions</a></li>
+          <li class="breadcrumb-item"><a href="../dalec_model/dalec_1100.html">DALEC 1100</a></li>
+          <li class="breadcrumb-item"><a href="../dalec_model/1100/modules.html">Modules used by DALEC 1100</a></li>
+      <li class="breadcrumb-item active">Allocation and autotrophic respiration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/dalec_modules/allocation_autotrophic_respiration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="allocation-and-autotrophic-respiration">
+<span id="sub-allocation-autotrophic-respiration"></span><h1>Allocation and autotrophic respiration<a class="headerlink" href="#allocation-and-autotrophic-respiration" title="Link to this heading"></a></h1>
+<p>We develop a model for plant growth, allocation, and autotrophic respiration that is generic and globally applicable. This scheme is designed to better represent the hierarchy of controls that govern these processes than previous DALEC model versions. We first describe the principles of this new scheme and its assumptions, then present the equations and their coupling to other components of DALEC.</p>
+<p>Photosynthesis supplies the plant with new carbon substrate. The fate of this assimilated carbon depends on a number of other processes that can be broadly partitioned to autotrophic respiration, growth, and reserves. We do not explicitly consider the formation of secondary metabolites (e.g., for defense or reproduction) or carbon loss processes such as root exudates or emission of volatile organic compounds, generally considered to be minor components of the plant carbon balance.</p>
+<p>Plants store carbon as labile non-structural carbohydrate (NSC) reserves (e.g., soluble sugars, starch) and as structural tissue (e.g., wood, leaf, fine root). Carbon storage as NSCs plays a critical role in buffering against differences in the uptake and demand of carbon (Hartmann and Trumbore, 2016). There are two main forms of NSCs: soluble sugars and starch. Soluble sugars are readily available and metabolically active. Starch is immobile and metabolically inert but can be remobilized for maintenance and growth. We do not explicitly distinguish between these two forms of NSCs, such that our approach assumes that the NSC pool is equivalent to sucrose plus starch and that mortality occurs when the NSC pool goes to zero (discussed further below). Furthermore, NSC pool dynamics are represented as a passive process, governed by the balance between sources and sinks, and we do not currently consider active regulation of NSC storage (<a class="reference internal" href="#dietze2014"><span class="std std-ref">Dietze et al. 2014</span></a>, <a class="reference internal" href="#martinezvilalta2016"><span class="std std-ref">MartinezVilalta et al. 2016</span></a>), given current uncertainties around the governing processes (<a class="reference internal" href="#elomari2022"><span class="std std-ref">El Omari et al. 2022</span></a>).</p>
+<p>To represent autotrophic respiration, we follow the growth and maintenance paradigm (<a class="reference internal" href="#mccree1970"><span class="std std-ref">Mccree et al. 1970</span></a>), which stipulates that all respiratory metabolic processes fall under either the growth or maintenance terms (<a class="reference internal" href="#amthor2000"><span class="std std-ref">Amthor et al. 2000</span></a>). Growth respiration is associated with the growth rate of structural biomass, and maintenance respiration is associated with the mass of live biomass. This differs from many other DALEC versions that assume autotrophic respiration as a fixed fraction of GPP, which follows the hypothesis of a fixed ratio of NPP:GPP or “carbon-use efficiency” (CUE=NPP/GPP), regardless of biomass, age, or environmental conditions (<a class="reference internal" href="#waring1998"><span class="std std-ref">Waring et al. 1998</span></a>,:ref:<cite>Gifford et al. 2003 &lt;Gifford2003&gt;</cite>). The fixed CUE approach is favorable in its simplicity and has been used widely in models (<a class="reference internal" href="#friend2019"><span class="std std-ref">Friend et al. 2019</span></a>, <a class="reference internal" href="#sierra2022"><span class="std std-ref">Sierra et al. 2022</span></a>), but evidence shows that CUE is highly variable (<a class="reference internal" href="#collalti2019"><span class="std std-ref">Collalti et al. 2019</span></a>, <a class="reference internal" href="#collalti2020"><span class="std std-ref">Collalti et al. 2020</span></a>). The fixed CUE approach also incorrectly assumes that autotrophic respiration occurs instantaneously and as a direct consequence of GPP, which is invalid, especially on sub-annual timescales (<a class="reference internal" href="#martinezvilalta2016"><span class="std std-ref">MartinezVilalta et al. 2016</span></a>) and conflicts with observations showing that respired CO2 is a mix of old and newly assimilated carbon (<a class="reference internal" href="#sierra2022"><span class="std std-ref">Sierra et al. 2022</span></a>). The formulation presented here allows for dynamic plant carbon respiration and allocation, the result of which is that CUE is a time-varying diagnostic variable rather than a prescribed parameter.</p>
+<p>The rate of change in total plant carbon (<span class="math notranslate nohighlight">\(C_{plant} = C_{fol} + C_{roo} + C_{woo} + C_{lab}\)</span>) is represented by</p>
+<div class="math notranslate nohighlight" id="equation-dc-plant-dt">
+<span class="eqno">(1)<a class="headerlink" href="#equation-dc-plant-dt" title="Link to this equation"></a></span>\[\frac{dC_{plant}(t)}{dt} = GPP(t) - Ra_{maint}(t) - Ra_{gr}(t) - S(t)\]</div>
+<p>where <span class="math notranslate nohighlight">\(Ra_{maint}\)</span> is the plant maintenance respiration flux (equation <a class="reference internal" href="#equation-ra-maint">(8)</a>), <span class="math notranslate nohighlight">\(Ra_{gr}\)</span> is the plant growth respiration flux  (equation <a class="reference internal" href="#equation-ra-gr">(10)</a>), and <span class="math notranslate nohighlight">\(S\)</span> (<em>Comment from Alex: maybe we should change this symbol to something like :math:`F_{sinks}`, as it conflicts with :math:`S` meaning a state</em>) is an integrated sink term that includes turnover and senescence processes that transfer carbon from the foliar, root, and woody pools to the litter and coarse woody debris pools (<em>Why aren’t we naming these fluxes specifically, e.g., :math:`F_{fol_to_litter}`?</em> We could name them specifically, either in the equation, or in the text description, e.g., <span class="math notranslate nohighlight">\(S = DEC_{fol} + DECph_{fol} + DEC_{woo} + DEC_{lab} + DEC_{lab} + DIS_{fol} + DIS_{woo} + DIS_{lab} + DIS_{lab} + FIR_{fol} + FIR_{woo} + FIR_{lab} + FIR_{lab} + FIRx_{fol} + FIRx_{woo} + FIRx_{lab} + FIRx_{lab}\)</span>).</p>
+<p>The rate of change in the NSC pool is represented by</p>
+<div class="math notranslate nohighlight" id="equation-frac-dc-lab-t-dt">
+<span class="eqno">(2)<a class="headerlink" href="#equation-frac-dc-lab-t-dt" title="Link to this equation"></a></span>\[\frac{dC_{lab}(t)}{dt} = GPP(t) - Ra_{maint}(t) - Ra_{gr}(t) - G(t)\]</div>
+<p>where <span class="math notranslate nohighlight">\(G\)</span> is the growth rate of structural biomass (foliar, root, wood); in other words, <span class="math notranslate nohighlight">\(G\)</span> is the sum of the allocation fluxes to the foliar, root, and wood pools (<span class="math notranslate nohighlight">\(PRD_{fol} + PRD_{roo} + PRD_{woo}\)</span>). Thus, <span class="math notranslate nohighlight">\(GPP\)</span> provides the carbon input to the NSC pool (<span class="math notranslate nohighlight">\(C_{lab}\)</span>), and <span class="math notranslate nohighlight">\(C_{lab}\)</span> provides the source of carbon for all autotrophic respiration losses and growth. This structure allows for the representation of the widely observed temporal decoupling of <span class="math notranslate nohighlight">\(GPP\)</span> from <span class="math notranslate nohighlight">\(G\)</span> and <span class="math notranslate nohighlight">\(R_a\)</span> (<a class="reference internal" href="#fatichi2014"><span class="std std-ref">Fatichi et al. 2014</span></a>).</p>
+<p>Maintenance respiration is tissue-dependent and temperature-sensitive. We assume there is no maintenance respiration cost for <span class="math notranslate nohighlight">\(C_{lab}\)</span>. Foliar maintenance respiration is linked to the temperature-corrected leaf mitochondrial respiration rate (dark respiration, <span class="math notranslate nohighlight">\(Ra_{dark}\)</span>), computed in the photosynthesis scheme and integrated over canopy leaf area index as follows:</p>
+<div class="math notranslate nohighlight" id="equation-ra-dark">
+<span class="eqno">(3)<a class="headerlink" href="#equation-ra-dark" title="Link to this equation"></a></span>\[Ra_{dark}(t) = fT_{dark}(t) \cdot R_d(t) (1 - \exp(-K(t) \cdot LAI(t) \cdot \Omega))/K\]</div>
+<p>where <span class="math notranslate nohighlight">\(LAI(t) = C_{fol}(t)/LCMA\)</span>, and <span class="math notranslate nohighlight">\(fT_{dark}\)</span> is a <span class="math notranslate nohighlight">\(Q_{10}\)</span> temperature scaling function with a reference temperature of 25 degrees Celsius, defined as</p>
+<div class="math notranslate nohighlight" id="equation-ft-dark">
+<span class="eqno">(4)<a class="headerlink" href="#equation-ft-dark" title="Link to this equation"></a></span>\[fT_{dark}(t) = {Q_{10}^{dark}}^{\left( \frac{T_{mean}(t)-25}{10} \right)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(Q_{10}^{dark}\)</span> is the <span class="math notranslate nohighlight">\(Q_{10}\)</span> parameter for dark respiration, and <span class="math notranslate nohighlight">\(T_{mean}\)</span> is the mean air temperature (<span class="math notranslate nohighlight">\(0.5(T_{max} + T_{min})\)</span>).</p>
+<p>The wood maintenance respiration rate is calculated as</p>
+<div class="math notranslate nohighlight" id="equation-ra-maint-woo">
+<span class="eqno">(5)<a class="headerlink" href="#equation-ra-maint-woo" title="Link to this equation"></a></span>\[Ra_{maint}^{woo}(t) = fT_{maint}(t) \cdot K_{woo} \cdot C_{woo}(t)\]</div>
+<p>and root respiration rate is calculated as</p>
+<div class="math notranslate nohighlight" id="equation-ra-maint-roo">
+<span class="eqno">(6)<a class="headerlink" href="#equation-ra-maint-roo" title="Link to this equation"></a></span>\[Ra_{maint}^{roo}(t) = fT_{maint}(t) \cdot K_{roo} \cdot C_{roo}(t)\]</div>
+<p>where <span class="math notranslate nohighlight">\(K_{woo}\)</span> and <span class="math notranslate nohighlight">\(K_{roo}\)</span> are the maintenance respiration coefficients for the wood carbon pool (<span class="math notranslate nohighlight">\(C_{woo}\)</span>) and for the root carbon pool (<span class="math notranslate nohighlight">\(C_{roo}\)</span>), respectively, and <span class="math notranslate nohighlight">\(fT_{maint}\)</span> is a <span class="math notranslate nohighlight">\(Q_{10}\)</span> temperature scaling function with a reference temperature of 25 degrees Celsius, defined as</p>
+<div class="math notranslate nohighlight" id="equation-ft-eq">
+<span class="eqno">(7)<a class="headerlink" href="#equation-ft-eq" title="Link to this equation"></a></span>\[fT_{maint}(t) = {Q_{10}^{Ra}}^{\left( \frac{T_{mean}(t)-25}{10} \right)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(Q_{10}^{Ra}\)</span> is the shared <span class="math notranslate nohighlight">\(Q_{10}\)</span> parameter for root and wood maintenance respiration.</p>
+<p>Maintenance respiration can only occur when there is an adequate supply of labile carbon. The available labile carbon (<span class="math notranslate nohighlight">\(NSC_a\)</span>) is given by the current NSCs plus <span class="math notranslate nohighlight">\(GPP\)</span> minus <span class="math notranslate nohighlight">\(Ra_{maint}^{fol}\)</span>. This assumes the net export of labile carbon from the canopy equals <span class="math notranslate nohighlight">\(GPP\)</span> minus <span class="math notranslate nohighlight">\(Ra_{maint}^{fol}\)</span> and that foliar maintenance is prioritized before the maintenance of wood or root. Total maintenance respiration, <span class="math notranslate nohighlight">\(Ra_{maint}\)</span>, is therefore described by</p>
+<div class="math notranslate nohighlight" id="equation-ra-maint">
+<span class="eqno">(8)<a class="headerlink" href="#equation-ra-maint" title="Link to this equation"></a></span>\[\begin{split}Ra_{maint} =
+\begin{cases}
+   NSC_a &amp; \text{if } (Ra_{maint}^{woo} + Ra_{maint}^{roo}) \geq NSC_a \\
+   Ra_{maint}^{fol} + Ra_{maint}^{woo} + Ra_{maint}^{roo} &amp; \text{else}
+\end{cases}\end{split}\]</div>
+<p>If <span class="math notranslate nohighlight">\(NSC_a\)</span> is not sufficient to fully maintain the existing tissues, we assume there is a fractional loss of live biomass that is proportional to the deficiency in <span class="math notranslate nohighlight">\(NSC_a\)</span> via a mortality factor, <span class="math notranslate nohighlight">\(M_f\)</span>, as follows:</p>
+<div class="math notranslate nohighlight" id="equation-m-f">
+<span class="eqno">(9)<a class="headerlink" href="#equation-m-f" title="Link to this equation"></a></span>\[\begin{split}M_f =
+\begin{cases}
+   1 - \frac{NSC_a}{Ra_{maint}} &amp; \text{if } Ra_{maint} \geq NSC_a \\
+   1 &amp; \text{else}
+\end{cases}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(M_f\)</span> is later multiplied by each of the live biomass pools as an additional transfer flux to the litter and coarse woody debris pools. If all of <span class="math notranslate nohighlight">\(NSC_a\)</span> is consumed by <span class="math notranslate nohighlight">\(Ra_{maint}\)</span>, then both <span class="math notranslate nohighlight">\(G\)</span> and <span class="math notranslate nohighlight">\(R_{gr}\)</span> are zero, meaning this formulation assumes that the maintenance of existing plant tissues is prioritized before the growth of new tissue. This provides the pathway for plant carbon starvation to occur (<a class="reference internal" href="#mcdowell2008"><span class="std std-ref">McDowell et al. 2008</span></a>).</p>
+<p>Growth respiration, <span class="math notranslate nohighlight">\(R_{gr}\)</span>, is related to <span class="math notranslate nohighlight">\(G\)</span> via the growth yield parameter (<span class="math notranslate nohighlight">\(Y_g\)</span>), which represents the units of C appearing in new biomass per unit of glucose C used for growth, or the amount of structural biomass formed per unit of photosynthates. The parameter <span class="math notranslate nohighlight">\(Y_g\)</span> typically has a value between 0.7-0.85, equivalent to 1.2-1.4 g glucose (g dry matter)−1 (<a class="reference internal" href="#cannell2000"><span class="std std-ref">Cannell et al. 2000</span></a>):</p>
+<div class="math notranslate nohighlight" id="equation-ra-gr">
+<span class="eqno">(10)<a class="headerlink" href="#equation-ra-gr" title="Link to this equation"></a></span>\[R_{gr}(t) = \frac{(1 - Y_g)}{Y_g} \cdot G(t)\]</div>
+<p>where <span class="math notranslate nohighlight">\((1-Y_g)/Y_g\)</span> is the growth coefficient, which represents the units of C respired per C unit of new biomass synthesized from a glucose substrate, with a range of approximately 0.2 to 0.4 g C (g C dry matter)−1.</p>
+<p>The question then becomes how one should model <span class="math notranslate nohighlight">\(G\)</span>. A wide range of approaches have been developed for terrestrial biosphere models (<a class="reference internal" href="#franklin2012"><span class="std std-ref">Franklin et al. 2012</span></a>, <a class="reference internal" href="#merganicova2019"><span class="std std-ref">Merganicova et al. 2019</span></a>). Here, we implement an empirical, source-sink approach to model <span class="math notranslate nohighlight">\(G\)</span> and its component fluxes, i.e., allocation to foliar, root, and wood pools (<a class="reference internal" href="#merganicova2019"><span class="std std-ref">Merganicova et al. 2019</span></a>), where <span class="math notranslate nohighlight">\(G\)</span> depends on both labile substrate and potential growth rate functions.</p>
+<p>First, the potential carbon supply for <span class="math notranslate nohighlight">\(G\)</span> (<span class="math notranslate nohighlight">\(G_{supply}\)</span>) is computed by multiplying the growth yield by the available NSCs minus <span class="math notranslate nohighlight">\(Ra_{maint}\)</span> (<em>The equation below is problematic. It is the same as the model code, but it double counts the foliar maintenance respiration as :math:`Ra_{maint}^{fol}` appears in both the :math:`NSC_a` and :math:`Ra_{maint}` terms</em>):</p>
+<div class="math notranslate nohighlight" id="equation-g-supply">
+<span class="eqno">(11)<a class="headerlink" href="#equation-g-supply" title="Link to this equation"></a></span>\[G_{supply} = Y_g \cdot (NSC_a - Ra_{maint})\]</div>
+<p>Then, we compute the demand for carbon by the potential growth rate of foliar, root, and wood as follows:</p>
+<div class="math notranslate nohighlight" id="equation-g-demand">
+<span class="eqno">(12)<a class="headerlink" href="#equation-g-demand" title="Link to this equation"></a></span>\[\begin{split}\begin{split}
+G_{demand,fol} &amp; = max \left( 0, \frac{LAI(t) \cdot P_{LCMA} - C_{fol}(t)}{\delta t} \right) \\
+G_{demand,roo} &amp; = \frac{ \phi_{RL} \cdot (LAI(t) \cdot P_{LCMA})}{\delta t} \\
+G_{demand,woo} &amp; = \frac{\phi_{WL} \cdot (LAI(t) \cdot P_{LCMA})}{\delta t}
+\end{split}\end{split}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(LAI\)</span> equals the target LAI at time <span class="math notranslate nohighlight">\(t\)</span> computed from the leaf phenology model, <span class="math notranslate nohighlight">\(P_{LCMA}\)</span> is the leaf mass of carbon per area, and <span class="math notranslate nohighlight">\(\phi_{RL}\)</span> and <span class="math notranslate nohighlight">\(\phi_{WL}\)</span> are empirical parameters for the potential growth rate of root and wood per unit of target foliar carbon mass. The formulation for foliar growth demand is positive when the canopy is actively growing leaves (e.g., spring onset) and scales with the rate of change in LAI, and zero when the canopy is in senescence. The root and wood growth demands are only dependent on the target LAI, which allows for canopy phenology to mediate root and wood growth. This is an approximation of the pipe model theory, which requires the ratio between conducting sapwood area and the mass of foliage to remain constant over long timescales (<a class="reference internal" href="#shinozaki1964"><span class="std std-ref">Shinozaki et al. 1964</span></a>). This formulation is useful as it allows the model to capture the commonly observed temporal offset between foliar growth and growth of root and wood (<a class="reference internal" href="#klein2015"><span class="std std-ref">Klein et al. 2015</span></a>). The total demand for growth, <span class="math notranslate nohighlight">\(G_{demand}\)</span>, equals the sum of <span class="math notranslate nohighlight">\(G_{demand,fol}\)</span>, <span class="math notranslate nohighlight">\(G_{demand,roo}\)</span>, and <span class="math notranslate nohighlight">\(G_{demand,woo}\)</span>. Alternative hypotheses for the potential growth rate of foliar, root, and wood can be easily implemented in the future by modifying the equations.</p>
+<p>The actual growth flux is then computed as the minimum of the supply and demand:</p>
+<div class="math notranslate nohighlight" id="equation-g-t">
+<span class="eqno">(13)<a class="headerlink" href="#equation-g-t" title="Link to this equation"></a></span>\[G(t) = min \left( G_{supply}, G_{demand} \right)\]</div>
+<p>If <span class="math notranslate nohighlight">\(G_{demand}\)</span> is greater than <span class="math notranslate nohighlight">\(G_{supply}\)</span>, then the growth fluxes are linearly scaled down by an equal proportion to balance actual growth with supply. This assumes that the growth of foliar, root, and wood are prioritized equally.</p>
+<p>Overall, this formulation for plant carbon allocation and respiration makes a substantial advance in DALEC. It provides a relatively simple yet comprehensive structure that is consistent with current understanding of the processes, with limited free parameters, and opens up opportunities for new insights into the temporal complexities of plant carbon dynamics.</p>
+<p class="rubric">References</p>
+<p id="amthor2000">Insert reference info for Amthor2000</p>
+<p id="cannell2000">Insert reference info for Cannell2000</p>
+<p id="collalti2019">Insert reference info for Collalti2019</p>
+<p id="collalti2020">Insert reference info for Collalti2020</p>
+<p id="dietze2014">Insert reference info for Dietze2014, <a class="reference external" href="https://doi.org/10.1146/annurev-arplant-050213-040054">https://doi.org/10.1146/annurev-arplant-050213-040054</a></p>
+<p id="elomari2022">Insert reference info for ElOmari2022</p>
+<p id="fatichi2014">Insert reference info for Fatichi2014</p>
+<p id="franklin2012">Insert reference info for Franklin2012</p>
+<p id="friend2019">Insert reference info for Friend2019, <a class="reference external" href="https://doi.org/10.1007/s13595-019-0819-x">https://doi.org/10.1007/s13595-019-0819-x</a></p>
+<p id="gifford2003">Insert reference info for Gifford2003, <a class="reference external" href="https://doi.org/10.1071/FP02083">https://doi.org/10.1071/FP02083</a></p>
+<p id="klein2015">Insert reference info for Klein2015</p>
+<p id="martinezvilalta2016">Insert reference info for MartinezVilalta2016</p>
+<p id="mccree1970">Insert reference info for Mccree1970</p>
+<p id="mcdowell2008">Insert reference info for McDowell2008</p>
+<p id="merganicova2019">Insert reference info for Merganicova2019</p>
+<p id="shinozaki1964">Insert reference info for Shinozaki1964</p>
+<p id="sierra2022">Insert reference info for Sierra2022</p>
+<p id="waring1998">Insert reference info for Waring1998</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="phenology.html" class="btn btn-neutral float-left" title="Phenology" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mortality.html" class="btn btn-neutral float-right" title="Mortality" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
