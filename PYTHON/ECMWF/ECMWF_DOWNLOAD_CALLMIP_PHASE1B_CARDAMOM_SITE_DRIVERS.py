@@ -1,5 +1,6 @@
 import os
 import cdsapi
+import xarray as xr
 
 # --- USER CONFIGURATION ---
 SITES = [
@@ -39,50 +40,76 @@ all_quantities = [
     "surface_thermal_radiation_downwards"
 ]
 
-# We will request all 12 months in a single API call
-all_months = [str(m).zfill(2) for m in range(1, 13)]
+# Dynamically calculate the bounding box covering ALL sites
+max_lat = max([s["lat"] for s in SITES]) + pad
+min_lat = min([s["lat"] for s in SITES]) - pad
+min_lon = min([s["lon"] for s in SITES]) - pad
+max_lon = max([s["lon"] for s in SITES]) + pad
+
+regional_area = [max_lat, min_lon, min_lat, max_lon] # North, West, South, East
 
 client = cdsapi.Client()
 
-def DOWNLOAD_ECMWF_YEARLY_VAR_DRIVERS(site_name, lat, lon, yr):
+def DOWNLOAD_AND_SLICE_MONTHLY(m, yr):
     dataset = "reanalysis-era5-single-levels"
+    month_str = str(m).zfill(2)
+    bulk_file = f"BULK_REGIONAL_{month_str}_{yr}.nc"
     
-    padded_area = [
-        lat + pad, # North
-        lon - pad, # West
-        lat - pad, # South
-        lon + pad  # East
-    ]
+    # --- 1. DOWNLOAD THE BULK FILE ---
+    request = {
+        "product_type": ["reanalysis"],
+        "variable": all_quantities,
+        "year": [str(yr)],
+        "month": [month_str],
+        "day": [str(d).zfill(2) for d in range(1, 32)],
+        "time": [f"{str(h).zfill(2)}:00" for h in range(24)],
+        "data_format": data_format,
+        "area": regional_area 
+    }
 
-    # Iterate through variables, but batch all 12 months together
-    for q in all_quantities:
-        file = f"{site_name}_ECMWF_CARDAMOM_DRIVER_{q}_{yr}.nc"
+    print(f"\nDownloading bulk file {bulk_file}...")
+    try:
+        if not os.path.exists(bulk_file):
+            client.retrieve(dataset, request).download(bulk_file)
+        else:
+            print(f"{bulk_file} already exists, skipping download.")
+    except Exception as e:
+        print(f"Failed to download {bulk_file}: {e}")
+        return
+
+    # --- 2. SLICE AND SAVE SITES LOCALLY ---
+    print(f"Slicing bulk file for all sites...")
+    try:
+        # Open the bulk dataset
+        ds = xr.open_dataset(bulk_file)
         
-        if os.path.exists(file):
-            print(f"{file} ... already downloaded")
-            continue
+        for site in SITES:
+            site_file = f"{site['name']}_ECMWF_CARDAMOM_DRIVER_ALL_VARS_{month_str}{yr}.nc"
+            
+            if os.path.exists(site_file):
+                continue
+                
+            # Extract the nearest neighbor grid point for the site
+            site_ds = ds.sel(latitude=site["lat"], longitude=site["lon"], method="nearest")
+            
+            # Save to its own file
+            site_ds.to_netcdf(site_file)
+            print(f"  -> Saved {site_file}")
+            
+        # Close the dataset so we can delete the file
+        ds.close()
+        
+    except Exception as e:
+        print(f"Failed to process {bulk_file}: {e}")
+        return
 
-        request = {
-            "product_type": ["reanalysis"],
-            "variable": [q],            # 1 variable
-            "year": [str(yr)],          # 1 year
-            "month": all_months,        # 12 months grouped
-            "day": [str(d).zfill(2) for d in range(1, 32)],
-            "time": [f"{str(h).zfill(2)}:00" for h in range(24)],
-            "data_format": data_format,
-            "area": padded_area 
-        }
+    # --- 3. DISCARD BULK FILE ---
+    print(f"Cleaning up {bulk_file} to save space...")
+    os.remove(bulk_file)
 
-        print(f"Downloading {file}...")
-        try:
-            client.retrieve(dataset, request).download(file)
-        except Exception as e:
-            print(f"Failed to download {file}: {e}")
 
 # --- MAIN EXECUTION ---
-for site in SITES:
-    print(f"\n==============================================")
-    print(f"--- Processing Site: {site['name']} ---")
-    print(f"==============================================")
-    for yr in range(2001, 2025): 
-        DOWNLOAD_ECMWF_YEARLY_VAR_DRIVERS(site["name"], site["lat"], site["lon"], yr)
+print(f"Calculated Bounding Box: {regional_area}")
+for yr in range(2001, 2025): 
+    for m in range(1, 13):
+        DOWNLOAD_AND_SLICE_MONTHLY(m, yr)
