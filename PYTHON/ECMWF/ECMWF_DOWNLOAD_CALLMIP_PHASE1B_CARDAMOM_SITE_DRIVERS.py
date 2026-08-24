@@ -29,7 +29,6 @@ SITES = [
 pad = 0.25
 data_format = "netcdf"
 
-# All variables grouped together
 all_quantities = [
     "2m_temperature",
     "2m_dewpoint_temperature",
@@ -40,12 +39,12 @@ all_quantities = [
     "surface_thermal_radiation_downwards"
 ]
 
-# All months grouped together
+# We will request all 12 months in a single API call
 all_months = [str(m).zfill(2) for m in range(1, 13)]
 
 client = cdsapi.Client()
 
-def DOWNLOAD_ECMWF_YEARLY_DRIVERS(site_name, lat, lon, yr):
+def DOWNLOAD_ECMWF_YEARLY_VAR_DRIVERS(site_name, lat, lon, yr):
     dataset = "reanalysis-era5-single-levels"
     
     padded_area = [
@@ -55,35 +54,35 @@ def DOWNLOAD_ECMWF_YEARLY_DRIVERS(site_name, lat, lon, yr):
         lon + pad  # East
     ]
 
-    # New filename format: One file per year containing all vars and months
-    file = f"{site_name}_ECMWF_CARDAMOM_DRIVER_ALL_VARS_{yr}.nc"
-    
-    if os.path.exists(file):
-        print(f"{file} ... already downloaded")
-        return
+    # Iterate through variables, but batch all 12 months together
+    for q in all_quantities:
+        file = f"{site_name}_ECMWF_CARDAMOM_DRIVER_{q}_{yr}.nc"
+        
+        if os.path.exists(file):
+            print(f"{file} ... already downloaded")
+            continue
 
-    request = {
-        "product_type": ["reanalysis"],
-        "variable": all_quantities, # Request all 7 vars at once
-        "year": [str(yr)],
-        "month": all_months,        # Request all 12 months at once
-        "day": [str(d).zfill(2) for d in range(1, 32)],
-        "time": [f"{str(h).zfill(2)}:00" for h in range(24)],
-        "data_format": data_format,
-        "area": padded_area 
-    }
+        request = {
+            "product_type": ["reanalysis"],
+            "variable": [q],            # 1 variable
+            "year": [str(yr)],          # 1 year
+            "month": all_months,        # 12 months grouped
+            "day": [str(d).zfill(2) for d in range(1, 32)],
+            "time": [f"{str(h).zfill(2)}:00" for h in range(24)],
+            "data_format": data_format,
+            "area": padded_area 
+        }
 
-    print(f"Downloading {file}...")
-    try:
-        client.retrieve(dataset, request).download(file)
-    except Exception as e:
-        print(f"Failed to download {file}: {e}")
+        print(f"Downloading {file}...")
+        try:
+            client.retrieve(dataset, request).download(file)
+        except Exception as e:
+            print(f"Failed to download {file}: {e}")
 
 # --- MAIN EXECUTION ---
-# Loop over sites, then years (Months and Vars are now handled inside the API call)
 for site in SITES:
     print(f"\n==============================================")
     print(f"--- Processing Site: {site['name']} ---")
     print(f"==============================================")
     for yr in range(2001, 2025): 
-        DOWNLOAD_ECMWF_YEARLY_DRIVERS(site["name"], site["lat"], site["lon"], yr)
+        DOWNLOAD_ECMWF_YEARLY_VAR_DRIVERS(site["name"], site["lat"], site["lon"], yr)
