@@ -1,134 +1,83 @@
-import os
 import cdsapi
-import xarray as xr
+#cdsapi instructions available here: https://confluence.ecmwf.int/display/CKB/How+to+install+and+use+CDS+API+on+macOS 
 
-# --- USER CONFIGURATION ---
-SITES = [
-    {"name": "CA-Qfo", "lat": 49.6925, "lon": -74.3421},
-    {"name": "CH-Dav", "lat": 46.8153, "lon": 9.8559},
-    {"name": "DE-Gri", "lat": 50.9495, "lon": 13.5125},
-    {"name": "DE-Hai", "lat": 51.0792, "lon": 10.4530},
-    {"name": "DE-Tha", "lat": 50.9636, "lon": 13.5669},
-    {"name": "DK-Sor", "lat": 55.4859, "lon": 11.6446},
-    {"name": "FI-Hyy", "lat": 61.8475, "lon": 24.2950},
-    {"name": "FR-Pue", "lat": 43.7414, "lon": 3.5958},
-    {"name": "IT-Lav", "lat": 45.9562, "lon": 11.2813},
-    {"name": "IT-MBo", "lat": 46.0147, "lon": 11.0458},
-    {"name": "IT-Noe", "lat": 40.6062, "lon": 8.1512},
-    {"name": "NL-Loo", "lat": 52.1666, "lon": 5.7436},
-    {"name": "RU-Fyo", "lat": 56.4615, "lon": 32.9221},
-    {"name": "US-MMS", "lat": 39.3232, "lon": -86.4131},
-    {"name": "US-NR1", "lat": 40.0329, "lon": -105.5464},
-    {"name": "US-SRG", "lat": 31.7894, "lon": -110.8277},
-    {"name": "US-SRM", "lat": 31.8214, "lon": -110.8660},
-    {"name": "US-Ton", "lat": 38.4316, "lon": -120.9660},
-    {"name": "US-Var", "lat": 38.4133, "lon": -120.9507},
-    {"name": "US-Whs", "lat": 31.7438, "lon": -110.0522},
-    {"name": "US-Wkg", "lat": 31.7365, "lon": -109.9419}
-]
+# variable names are available here and at related links: https://confluence.ecmwf.int/pages/viewpage.action?pageId=536218894 
+global_area_definition=[-89.75, -179.75, 89.75, 179.75];
+global_grid_definition=["0.5/0.5"];
+data_format="netcdf";
+download_format="unarchived";
+hourly_quantities=["2m_temperature","2m_dewpoint_temperature"];
+monthly_quantities=["total_precipitation","skin_temperature","surface_solar_radiation_downwards","snowfall"];
+#Add STRD to list for next iteration (version 1.1)
 
-pad = 0.25
-data_format = "netcdf"
-dataset = "reanalysis-era5-single-levels-monthly-means"
+def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr):
 
-hourly_quantities = [
-    "2m_temperature", 
-    "2m_dewpoint_temperature"
-]
-monthly_quantities = [
-    "total_precipitation", 
-    "skin_temperature", 
-    "surface_solar_radiation_downwards", 
-    "snowfall",
-    "surface_thermal_radiation_downwards"
-]
-# Combine for easier looping
-all_quantities = hourly_quantities + monthly_quantities
+  #Step 1. Download all monthly averages by hour
 
-all_hours = [f"{str(h).zfill(2)}:00" for h in range(24)]
 
-# Dynamically calculate the Continental Box covering ALL sites
-max_lat = max([s["lat"] for s in SITES]) + pad
-min_lat = min([s["lat"] for s in SITES]) - pad
-min_lon = min([s["lon"] for s in SITES]) - pad
-max_lon = max([s["lon"] for s in SITES]) + pad
-regional_area = [max_lat, min_lon, min_lat, max_lon] 
-
-client = cdsapi.Client()
-
-def DOWNLOAD_AND_SLICE_SINGLE_VAR(q, m, yr):
-    month_str = str(m).zfill(2)
-    yr_str = str(yr)
-    
-    # Define API parameters based on whether the variable requires hourly or monthly formatting
-    if q in hourly_quantities:
-        product_type = "monthly_averaged_reanalysis_by_hour_of_day"
-        req_time = all_hours
-    else:
-        product_type = "monthly_averaged_reanalysis"
-        req_time = ["00:00"]
-        
-    bulk_file = f"BULK_{q}_{month_str}{yr_str}.nc"
-    
-    # --- 1. CHECK IF FILES ALREADY EXIST ---
-    # This prevents redownloading if you have to restart the script later
-    all_sites_exist = True
-    for site in SITES:
-        site_file = f"{site['name']}_ECMWF_CARDAMOM_DRIVER_{q}_{month_str}{yr_str}.nc"
-        if not os.path.exists(site_file):
-            all_sites_exist = False
-            break
-            
-    if all_sites_exist:
-        print(f"[{month_str}/{yr_str}] {q} ... already sliced for all sites.")
-        return
-
-    # --- 2. DOWNLOAD BULK FILE ---
-    request = {
-        "product_type": [product_type],
-        "variable": [q],
-        "year": [yr_str],
-        "month": [month_str],
-        "time": req_time,
+  for q in hourly_quantities:
+        dataset = "reanalysis-era5-single-levels-monthly-means"
+        request = {
+        "product_type": ["monthly_averaged_reanalysis_by_hour_of_day"],
+        "variable": q,
+        "year": yr,
+        "month": m,
+         "time": [
+        "00:00", "01:00", "02:00",
+        "03:00", "04:00", "05:00",
+        "06:00", "07:00", "08:00",
+        "09:00", "10:00", "11:00",
+        "12:00", "13:00", "14:00",
+        "15:00", "16:00", "17:00",
+        "18:00", "19:00", "20:00",
+        "21:00", "22:00", "23:00"
+    ],
         "data_format": data_format,
-        "area": regional_area 
-    }
-    
-    print(f"\n[{month_str}/{yr_str}] Downloading {q}...")
-    try:
-        client.retrieve(dataset, request).download(bulk_file)
-    except Exception as e:
-        print(f"Failed to download {bulk_file}: {e}")
-        return
+        "grid": global_grid_definition,
+        "download_format": download_format,
+        "area": global_area_definition
+        }
 
-    # --- 3. SLICE AND SAVE SITES LOCALLY ---
-    print(f"  -> Slicing for individual sites...")
-    try:
-        ds = xr.open_dataset(bulk_file)
-        
-        for site in SITES:
-            site_file = f"{site['name']}_ECMWF_CARDAMOM_DRIVER_{q}_{month_str}{yr_str}.nc"
-            
-            if not os.path.exists(site_file):
-                site_ds = ds.sel(latitude=site["lat"], longitude=site["lon"], method="nearest")
-                site_ds.to_netcdf(site_file)
-                
-        ds.close()
-    except Exception as e:
-        print(f"Failed to slice {bulk_file}: {e}")
-        return
-
-    # --- 4. CLEAN UP BULK FILE ---
-    if os.path.exists(bulk_file):
-        os.remove(bulk_file)
+        file = f"ECMWF_CARDAMOM_DRIVER_{q}_{str(m).zfill(2)}{yr}.nc" #formats file title
+        client = cdsapi.Client()
+        client.retrieve(dataset, request).download(file)
 
 
-# --- MAIN EXECUTION ---
-print(f"Calculated Bounding Box: {regional_area}")
-for yr in range(2001, 2025): 
-    for m in range(1, 13):
-        for q in all_quantities:
-            DOWNLOAD_AND_SLICE_SINGLE_VAR(q, m, yr)
+    #Step 1. Download all monthly averages 
+
+
+  
+  for q in  monthly_quantities:
+        dataset = "reanalysis-era5-single-levels-monthly-means"
+        request = {
+        "product_type": ["monthly_averaged_reanalysis"],
+        "variable": q,
+        "year": yr,
+        "month": m,
+        "time": ["00:00","01:00"],
+        "data_format": data_format,
+        "grid": global_grid_definition,
+        "download_format": download_format,
+        "area": global_area_definition
+        }
+
+        file = f"ECMWF_CARDAMOM_DRIVER_{q}_{str(m).zfill(2)}{yr}.nc" #formats file title
+        client = cdsapi.Client()
+        client.retrieve(dataset, request).download(file)
+
+
+
+
+#Main code
+#Example for dowloading months & years of data
+
+for m in list(range(1, 13)):  #downloads months 1-12
+  for yr in list(range(2001, 2025)): #downloads years 2001-2024
+    DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(m, yr);
+
+
+
+
 
 
 
