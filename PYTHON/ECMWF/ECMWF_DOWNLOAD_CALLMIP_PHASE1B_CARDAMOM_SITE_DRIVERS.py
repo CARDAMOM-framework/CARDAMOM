@@ -99,13 +99,18 @@ def DOWNLOAD_AND_SLICE_SINGLE_VAR(q, m, yr):
         print(f"Failed to download {bulk_file}: {e}")
         return
 
-    # --- 3. SLICE AND SAVE SITES LOCALLY ---
+   # --- 3. SLICE AND SAVE SITES LOCALLY ---
     print(f"  -> Slicing for individual sites...")
     try:
         ds = xr.open_dataset(bulk_file)
         
+        # --- NEW: Ensure the output directory exists before saving ---
+        out_dir = "DATA/CALLMIP/ECMWF_PHASE1b_DRIVERS"
+        os.makedirs(out_dir, exist_ok=True) 
+        
         for site in SITES:
-            site_file = f"{site['name']}_ECMWF_CARDAMOM_DRIVER_{q}_{month_str}{yr_str}.nc"
+            # FIX: Added the folder path here to match Step 1!
+            site_file = f"{out_dir}/{site['name']}_ECMWF_CARDAMOM_DRIVER_{q}_{month_str}{yr_str}.nc"
             
             if not os.path.exists(site_file):
                 site_ds = ds.sel(latitude=site["lat"], longitude=site["lon"], method="nearest")
