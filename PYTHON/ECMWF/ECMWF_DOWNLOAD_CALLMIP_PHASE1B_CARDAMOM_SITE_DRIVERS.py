@@ -29,87 +29,101 @@ SITES = [
 
 pad = 0.25
 data_format = "netcdf"
+dataset = "reanalysis-era5-single-levels-monthly-means"
 
-all_quantities = [
-    "2m_temperature",
-    "2m_dewpoint_temperature",
-    "total_precipitation",
-    "skin_temperature",
-    "surface_solar_radiation_downwards",
+hourly_quantities = [
+    "2m_temperature", 
+    "2m_dewpoint_temperature"
+]
+monthly_quantities = [
+    "total_precipitation", 
+    "skin_temperature", 
+    "surface_solar_radiation_downwards", 
     "snowfall",
     "surface_thermal_radiation_downwards"
 ]
 
-# Dynamically calculate the bounding box covering ALL sites
+all_quantities = hourly_quantities + monthly_quantities
+all_hours = [f"{str(h).zfill(2)}:00" for h in range(24)]
+
+# Dynamically calculate the Continental Box covering ALL sites
 max_lat = max([s["lat"] for s in SITES]) + pad
 min_lat = min([s["lat"] for s in SITES]) - pad
 min_lon = min([s["lon"] for s in SITES]) - pad
 max_lon = max([s["lon"] for s in SITES]) + pad
-
-regional_area = [max_lat, min_lon, min_lat, max_lon] # North, West, South, East
+regional_area = [max_lat, min_lon, min_lat, max_lon] 
 
 client = cdsapi.Client()
 
-def DOWNLOAD_AND_SLICE_MONTHLY(m, yr):
-    dataset = "reanalysis-era5-single-levels"
+def DOWNLOAD_AND_SLICE_SINGLE_VAR(q, m, yr):
     month_str = str(m).zfill(2)
-    bulk_file = f"BULK_REGIONAL_{month_str}_{yr}.nc"
+    yr_str = str(yr)
     
-    # --- 1. DOWNLOAD THE BULK FILE ---
+    # Check if this variable needs hourly diurnal data or a flat monthly mean
+    if q in hourly_quantities:
+        product_type = "monthly_averaged_reanalysis_by_hour_of_day"
+        req_time = all_hours
+    else:
+        product_type = "monthly_averaged_reanalysis"
+        req_time = ["00:00"]
+        
+    bulk_file = f"BULK_{q}_{month_str}{yr_str}.nc"
+    
+    # --- 1. CHECK IF FILES ALREADY EXIST ---
+    all_sites_exist = True
+    for site in SITES:
+        site_file = f"{site['name']}_ECMWF_CARDAMOM_DRIVER_{q}_{month_str}{yr_str}.nc"
+        if not os.path.exists(site_file):
+            all_sites_exist = False
+            break
+            
+    if all_sites_exist:
+        print(f"[{month_str}/{yr_str}] {q} ... already sliced for all sites.")
+        return
+
+    # --- 2. DOWNLOAD BULK FILE ---
     request = {
-        "product_type": ["reanalysis"],
-        "variable": all_quantities,
-        "year": [str(yr)],
+        "product_type": [product_type],
+        "variable": [q],
+        "year": [yr_str],
         "month": [month_str],
-        "day": [str(d).zfill(2) for d in range(1, 32)],
-        "time": [f"{str(h).zfill(2)}:00" for h in range(24)],
+        "time": req_time,
         "data_format": data_format,
         "area": regional_area 
     }
-
-    print(f"\nDownloading bulk file {bulk_file}...")
+    
+    print(f"\n[{month_str}/{yr_str}] Downloading {q}...")
     try:
-        if not os.path.exists(bulk_file):
-            client.retrieve(dataset, request).download(bulk_file)
-        else:
-            print(f"{bulk_file} already exists, skipping download.")
+        client.retrieve(dataset, request).download(bulk_file)
     except Exception as e:
         print(f"Failed to download {bulk_file}: {e}")
         return
 
-    # --- 2. SLICE AND SAVE SITES LOCALLY ---
-    print(f"Slicing bulk file for all sites...")
+    # --- 3. SLICE AND SAVE SITES LOCALLY ---
+    print(f"  -> Slicing for individual sites...")
     try:
-        # Open the bulk dataset
         ds = xr.open_dataset(bulk_file)
         
         for site in SITES:
-            site_file = f"{site['name']}_ECMWF_CARDAMOM_DRIVER_ALL_VARS_{month_str}{yr}.nc"
+            site_file = f"{site['name']}_ECMWF_CARDAMOM_DRIVER_{q}_{month_str}{yr_str}.nc"
             
-            if os.path.exists(site_file):
-                continue
+            if not os.path.exists(site_file):
+                site_ds = ds.sel(latitude=site["lat"], longitude=site["lon"], method="nearest")
+                site_ds.to_netcdf(site_file)
                 
-            # Extract the nearest neighbor grid point for the site
-            site_ds = ds.sel(latitude=site["lat"], longitude=site["lon"], method="nearest")
-            
-            # Save to its own file
-            site_ds.to_netcdf(site_file)
-            print(f"  -> Saved {site_file}")
-            
-        # Close the dataset so we can delete the file
         ds.close()
-        
     except Exception as e:
-        print(f"Failed to process {bulk_file}: {e}")
+        print(f"Failed to slice {bulk_file}: {e}")
         return
 
-    # --- 3. DISCARD BULK FILE ---
-    print(f"Cleaning up {bulk_file} to save space...")
-    os.remove(bulk_file)
+    # --- 4. CLEAN UP BULK FILE ---
+    if os.path.exists(bulk_file):
+        os.remove(bulk_file)
 
 
 # --- MAIN EXECUTION ---
 print(f"Calculated Bounding Box: {regional_area}")
 for yr in range(2001, 2025): 
     for m in range(1, 13):
-        DOWNLOAD_AND_SLICE_MONTHLY(m, yr)
+        for q in all_quantities:
+            DOWNLOAD_AND_SLICE_SINGLE_VAR(q, m, yr)
