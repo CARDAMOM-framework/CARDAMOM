@@ -1,8 +1,7 @@
-import os  # Added to check for existing files
+import os
 import cdsapi
 
 # --- USER CONFIGURATION ---
-# Site list extracted from MATLAB CM.tower struct
 SITES = [
     {"name": "CA-Qfo", "lat": 49.6925, "lon": -74.3421},
     {"name": "CH-Dav", "lat": 46.8153, "lon": 9.8559},
@@ -27,10 +26,10 @@ SITES = [
     {"name": "US-Wkg", "lat": 31.7365, "lon": -109.9419}
 ]
 
-# We use the minimum safe pad (0.25) to prevent the MARS server from crashing.
 pad = 0.25
 data_format = "netcdf"
 
+# All variables grouped together
 all_quantities = [
     "2m_temperature",
     "2m_dewpoint_temperature",
@@ -41,14 +40,14 @@ all_quantities = [
     "surface_thermal_radiation_downwards"
 ]
 
-# Initialize the client outside the loops to avoid re-creating it endlessly
+# All months grouped together
+all_months = [str(m).zfill(2) for m in range(1, 13)]
+
 client = cdsapi.Client()
 
-def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(site_name, lat, lon, m, yr):
-    # Reverting to the standard, complete dataset
+def DOWNLOAD_ECMWF_YEARLY_DRIVERS(site_name, lat, lon, yr):
     dataset = "reanalysis-era5-single-levels"
     
-    # Calculate bounding box dynamically for the passed coordinates
     padded_area = [
         lat + pad, # North
         lon - pad, # West
@@ -56,38 +55,35 @@ def DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(site_name, lat, lon, m, yr):
         lon + pad  # East
     ]
 
-    for q in all_quantities:
-        # Prefix the filename with the site name
-        file = f"{site_name}_ECMWF_CARDAMOM_DRIVER_{q}_{str(m).zfill(2)}{yr}.nc"
-        
-        # Check if the file already exists locally
-        if os.path.exists(file):
-            print(f"{file} ... already downloaded")
-            continue  # Skip to the next quantity
+    # New filename format: One file per year containing all vars and months
+    file = f"{site_name}_ECMWF_CARDAMOM_DRIVER_ALL_VARS_{yr}.nc"
+    
+    if os.path.exists(file):
+        print(f"{file} ... already downloaded")
+        return
 
-        request = {
-            "product_type": ["reanalysis"],
-            "variable": [q],
-            "year": [str(yr)],
-            "month": [str(m).zfill(2)],
-            "day": [str(d).zfill(2) for d in range(1, 32)],
-            "time": [f"{str(h).zfill(2)}:00" for h in range(24)],
-            "data_format": data_format,
-            "area": padded_area 
-        }
+    request = {
+        "product_type": ["reanalysis"],
+        "variable": all_quantities, # Request all 7 vars at once
+        "year": [str(yr)],
+        "month": all_months,        # Request all 12 months at once
+        "day": [str(d).zfill(2) for d in range(1, 32)],
+        "time": [f"{str(h).zfill(2)}:00" for h in range(24)],
+        "data_format": data_format,
+        "area": padded_area 
+    }
 
-        print(f"Downloading {file}...")
-        try:
-            client.retrieve(dataset, request).download(file)
-        except Exception as e:
-            print(f"Failed to download {file}: {e}")
+    print(f"Downloading {file}...")
+    try:
+        client.retrieve(dataset, request).download(file)
+    except Exception as e:
+        print(f"Failed to download {file}: {e}")
 
 # --- MAIN EXECUTION ---
-# Loop over sites, then years, then months
+# Loop over sites, then years (Months and Vars are now handled inside the API call)
 for site in SITES:
     print(f"\n==============================================")
     print(f"--- Processing Site: {site['name']} ---")
     print(f"==============================================")
-    for yr in range(2001, 2025): # loops from 2001 to 2024
-        for m in range(1, 13):   # downloads months 1-12
-            DOWNLOAD_ECMWF_MONTHLY_DRIVERS_FOR_CARDAMOM(site["name"], site["lat"], site["lon"], m, yr)
+    for yr in range(2001, 2025): 
+        DOWNLOAD_ECMWF_YEARLY_DRIVERS(site["name"], site["lat"], site["lon"], yr)
