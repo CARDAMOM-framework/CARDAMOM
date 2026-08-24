@@ -72,7 +72,7 @@ def DOWNLOAD_AND_SLICE_SINGLE_VAR(q, m, yr):
     # --- 1. CHECK IF FILES ALREADY EXIST ---
     all_sites_exist = True
     for site in SITES:
-        site_file = f"{site['name']}_ECMWF_CARDAMOM_DRIVER_{q}_{month_str}{yr_str}.nc"
+        site_file = f"DATA/CALLMIP/ECMWF_PHASE1b_DRIVERS/{site['name']}_ECMWF_CARDAMOM_DRIVER_{q}_{month_str}{yr_str}.nc"
         if not os.path.exists(site_file):
             all_sites_exist = False
             break
