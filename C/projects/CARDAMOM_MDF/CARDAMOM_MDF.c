@@ -13,6 +13,11 @@
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/AFDEMCMC.c"
+#include "../../mcmc_fun/MHMCMC/MCMC_FUN/AFDEMCMCZS.c"
+#include "../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMCZS.c"
+#include "../../mcmc_fun/MHMCMC/MCMC_FUN/DREAMZS.c"
+#include "../../mcmc_fun/MHMCMC/MCMC_FUN/HYBRID_AIDE.c"
+#include "../../mcmc_fun/MHMCMC/MCMC_FUN/HYBRID_AIDE_DEMCMC.c"
 #include "../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
 #include <time.h>
      
@@ -29,6 +34,7 @@ MCOPT->fADAPT=0.5;
 MCOPT->nOUT=DATA.ncdf_data.MCMCID.nITERATIONS;
 MCOPT->nSTART=0;
 MCOPT->nPRINT=DATA.ncdf_data.MCMCID.nPRINT;
+MCOPT->nWRITE=DATA.ncdf_data.MCMCID.nWRITE;
 MCOPT->minstepsize=DATA.ncdf_data.MCMCID.minstepsize;
 MCOPT->mcmcid=DATA.ncdf_data.MCMCID.value;
 MCOPT->nADAPT=DATA.ncdf_data.MCMCID.nADAPT;
@@ -42,8 +48,8 @@ if (MCOPT->mcmcid==DEFAULT_INT_VAL){MCOPT->mcmcid=119;}
 if (MCOPT->nADAPT==DEFAULT_INT_VAL){MCOPT->nADAPT=100;}
 if (MCOPT->fADAPT==DEFAULT_DOUBLE_VAL){MCOPT->fADAPT=0.05;}
 
-//Derive nWRITE from fields
-MCOPT->nWRITE=MCOPT->nOUT/DATA.ncdf_data.MCMCID.nSAMPLES;
+//Default nWRITE is derived from fields unless the MCMCID nWRITE attribute is set.
+if (MCOPT->nWRITE==DEFAULT_INT_VAL){MCOPT->nWRITE=MCOPT->nOUT/DATA.ncdf_data.MCMCID.nSAMPLES;}
 
 
 printf("**********MCMCOPT SUMMARY*******\n");
@@ -141,6 +147,12 @@ if (MCOPT.mcmcid==119){MCOPT.nchains=1;}
 if (MCOPT.mcmcid==3){MCOPT.nchains=400;}
 if (MCOPT.mcmcid==4){MCOPT.nchains=400;}
 else if (MCOPT.mcmcid==2){MCOPT.nchains=100;}
+if (MCOPT.mcmcid==5){MCOPT.nchains=10;}
+if (MCOPT.mcmcid==6){MCOPT.nchains=400;}
+if (MCOPT.mcmcid==7){MCOPT.nchains=400;}
+if (MCOPT.mcmcid==8){MCOPT.nchains=400;}
+if (MCOPT.mcmcid==9){MCOPT.nchains=400;}
+if (MCOPT.mcmcid==10){MCOPT.nchains=400;}
 
 
 printf("MDF options structure read successfully");
@@ -253,6 +265,36 @@ case 4:
 printf("DEBUG: About to call AFDEMCMC...\n"); fflush(stdout);
 AFDEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
 printf("DEBUG: Successfully returned from AFDEMCMC!\n"); fflush(stdout);
+break;
+case 5:
+printf("CARDAMOM_MDF.c: about to start DEMCMCZS\n");
+DEMCMCZS(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+printf("CARDAMOM_MDF.c: completed DEMCMCZS\n");
+break;
+case 6:
+printf("CARDAMOM_MDF.c: about to start AFDEMCMC (mode 6 hybrid production)\n");
+AFDEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+printf("CARDAMOM_MDF.c: completed AFDEMCMC (mode 6)\n");
+break;
+case 7:
+printf("CARDAMOM_MDF.c: about to start AFDEMCMCZS (mode 7 affine -> DEMCMCZS production)\n");
+AFDEMCMCZS(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+printf("CARDAMOM_MDF.c: completed AFDEMCMCZS (mode 7)\n");
+break;
+case 8:
+printf("CARDAMOM_MDF.c: about to start DREAMZS (mode 8)\n");
+DREAMZS(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+printf("CARDAMOM_MDF.c: completed DREAMZS (mode 8)\n");
+break;
+case 9:
+printf("CARDAMOM_MDF.c: about to start HYBRID_AIDE (mode 9)\n");
+HYBRID_AIDE(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+printf("CARDAMOM_MDF.c: completed HYBRID_AIDE (mode 9)\n");
+break;
+case 10:
+printf("CARDAMOM_MDF.c: about to start HYBRID_AIDE_DEMCMC (mode 10 AIDE -> DEMCMC)\n");
+HYBRID_AIDE_DEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+printf("CARDAMOM_MDF.c: completed HYBRID_AIDE_DEMCMC (mode 10)\n");
 break;
 
 /*printf("CARDAMOM_MDF.c: DEMCMC temporarily disconnected, need to de-bug, correct and re-introduce");

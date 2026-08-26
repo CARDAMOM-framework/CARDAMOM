@@ -5,24 +5,15 @@
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/MHMCMC_119.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMC.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
-#include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/AFDEMCMC.c"
-#include "../../../../math_fun/int_max.c"
+#include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMCZS_WARMUP.c"
 
 int FIND_EDC_INITIAL_VALUES(DATA CARDADATA,PARAMETER_INFO *PI, MCMC_OPTIONS *MCOPT_CARDAMOM){
 
-/*First: choosing the correct EDC MODEL LIKELIHOOD FUNCTION (EMLF)*/
-
-
     printf("*********made it to here FIND_EDC_INITIAL_VALUES********\n");
 
-//double (*EMLF)(DATA, double *);
-//double (*MLF)(DATA, double *);
-
-
-//EMLF=EDC_DALEC_MLF;
-//MLF=DALEC_MLF;
-
-/*This MCMC is designed to find the best-fit DALEC parameters ONLY*/
+/*This search finds parameter vectors that pass the EDC likelihood before the
+ *main CARDAMOM MCMC starts. The search uses CARDADATA.EMLF; the main sampler
+ *continues to use CARDADATA.MLF after this function returns.*/
 
 MCMC_OPTIONS MCOPT;
 MCMC_OUTPUT MCOUT;
@@ -30,53 +21,45 @@ MCMC_OUTPUT MCOUT;
 
 int PEDCC,nn;
 
-
-//option for mcmcid = 3
+/*For multi-chain EDC searches, require more than this many chains to pass
+ *EDCs before ending the search. Because the check is PEDCC>nstartchains,
+ *the default value of 10 requires at least 11 passing chains.*/
 int nstartchains=10;
+int multichain_edc_search=(MCOPT_CARDAMOM->mcmcid==3 || MCOPT_CARDAMOM->mcmcid==4 || MCOPT_CARDAMOM->mcmcid==5 || MCOPT_CARDAMOM->mcmcid==6 || MCOPT_CARDAMOM->mcmcid==7 || MCOPT_CARDAMOM->mcmcid==8 || MCOPT_CARDAMOM->mcmcid==9 || MCOPT_CARDAMOM->mcmcid==10);
         
         
 MCOPT.APPEND=0;
-MCOPT.nADAPT=10;/*was 20*/
+MCOPT.nADAPT=10;
 MCOPT.fADAPT=0.5;
-MCOPT.nOUT=1000;/*was 2000*/
-MCOPT.nPRINT=100;/*was*/
+MCOPT.nOUT=1000;
+MCOPT.nPRINT=100;
 MCOPT.nWRITE=0;
 MCOPT.nSTART=0;
-/*randparini = 0*/
-/*this means all PI.parini values must either be given values or entered as -9999*/
 MCOPT.randparini=1;
 MCOPT.returnpars=1;
-/*setting fixedpars option to 1*/
 MCOPT.fixedpars=1;
 MCOPT.mcmcid=119;/*Using metropolis-hastings to find initial parameters*/
 MCOPT.nchains=1;
 MCOPT.minstepsize=1e-2;
 
 
-if (MCOPT_CARDAMOM->mcmcid==3){
+/*Modes 3, 4, 5, 6, 7, 8, 9, and 10 must enter the exact same EDC search: 400-chain
+ *ADEMCMC search options, identical pass threshold, identical sampler call,
+ *and the same 400-chain PI->parini allocation path. Mode-specific handoff
+ *only happens after the shared search completes.*/
+if (multichain_edc_search){
 MCOPT.mcmcid=3;
 default_int_value(&CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ,200000);
-MCOPT.nOUT=CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ;/*Default =  20000*/
-MCOPT.nPRINT=2000;/*1;was 2000*/
+MCOPT.nOUT=CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ;
+MCOPT.nPRINT=2000;
 MCOPT.minstepsize=1e-5;
 MCOPT.nchains=400;
 MCOPT.fixedpars=0;
 MCOPT.fADAPT=0;
-//declaring best_pars
-MCOUT.best_pars=calloc(MCOPT.nchains*PI->npars,sizeof(double));}
-
-
-if (MCOPT_CARDAMOM->mcmcid==4){
-MCOPT.mcmcid=4;
-default_int_value(&CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ,200000);
-MCOPT.nOUT=CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ;/*Default =  20000*/
-MCOPT.nPRINT=2000;/*1;was 2000*/
-MCOPT.minstepsize=1e-5;
-MCOPT.nchains=400;
-MCOPT.fixedpars=0;
-MCOPT.fADAPT=0;
-//declaring best_pars
-MCOUT.best_pars=calloc(MCOPT.nchains*PI->npars,sizeof(double));}
+/*Rebuild PI->parini to the search size for every multi-chain mode. This keeps
+ *modes 3/4/5/6/7/8/9/10 identical before the first EDC-search random draw.*/
+free(PI->parini);
+PI->parini=calloc(MCOPT.nchains*PI->npars,sizeof(double));}
 
 
 
@@ -92,18 +75,11 @@ printf("PI->npars (INSIDE FIND_EDC_INITIAL_VALUES.c)= %d\n",PI->npars);
 
 
 
+for (n=0;n<PI->npars*MCOPT.nchains;n++){PI->parini[n]=DEFAULT_DOUBLE_VAL;}
 for (n=0;n<PI->npars;n++){
 PI->stepsize[n]=0.02;
-/*PI->stepsize[n]=0.00005;*/
-PI->parini[n]=DEFAULT_DOUBLE_VAL;
-PI->parfix[n]=0;
-/*
-if (PI->parini[n]!=-9999 & CARDADATA.edc_random_search<1) {PI->parfix[n]=1;}*/}
+PI->parfix[n]=0;}
 
-
-
-
-/*done*/
 
 double PEDC=log(0);
 int count=0;
@@ -111,17 +87,13 @@ while (PEDC!=0){
 	printf("EDC Attempt no %d\n",count);oksofar("---");
 
 	for (n=0;n<PI->npars;n++){PI->stepsize[n]=0.0005;}
-	/*insert prior value option here!*/
 
 	oksofar("Running short MCMC to find x_{EDC} = 1");
     
 	if (MCOPT.mcmcid==119){MHMCMC_119(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
         if (MCOPT.mcmcid==2){DEMCMC(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
-        if (MCOPT.mcmcid==3){ADEMCMC(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
-        if (MCOPT.mcmcid==4){ADEMCMC(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
+        if (multichain_edc_search){ADEMCMC(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
 
-	/*if (MCOPT.mcmcid==2){DEMCMC(EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
-	*/
 	oksofar("Short MCMC complete");
 	for (n=0;n<PI->npars*MCOPT.nchains;n++){PI->parini[n]=MCOUT.best_pars[n];}
 
@@ -135,7 +107,7 @@ while (PEDC!=0){
 	
 	printf("*******\n");
 	printf("*******\n");
-	printf("%i out of %i chains have non-zero prob\n",PEDCC,MCOPT.nchains);
+	printf("%i out of %i chains pass EDCs\n",PEDCC,MCOPT.nchains);
     printf("EDC stats\n");
     for (nnn=0;nnn<CARDADATA.noedcs;nnn++){
         double prcnt=100*(double)CARDADATA.EDC_PASS_COUNTER[nnn]/(double)CARDADATA.EDC_INSTANCE_COUNTER[nnn];
@@ -147,43 +119,104 @@ printf("EDC no %i; attempts = %i; passes = %i (%2.2f%%);\n",nnn,CARDADATA.EDC_IN
 	
 	count=count+1;
 	
-	if (MCOPT.mcmcid==2 && PEDCC>MCOPT.nchains){PEDC=0;}
-	//Guarantee that at least half of chains have non-zero starting probabilities
-	if (MCOPT.mcmcid==3){if (PEDCC>nstartchains){PEDC=0;}else{PEDC=-1;}}
-	if (MCOPT.mcmcid==4){if (PEDCC>nstartchains){PEDC=0;}else{PEDC=-1;}}
-	if (MCOPT.mcmcid==2 || MCOPT.mcmcid==3 || MCOPT.mcmcid==4 ){MCOPT.randparini=0;}	
-	/*Hard coding*/
+	if (MCOPT.mcmcid==2 && PEDCC>=MCOPT.nchains){PEDC=0;}
+	if (multichain_edc_search){if (PEDCC>nstartchains){PEDC=0;}else{PEDC=-1;}}
+	if (MCOPT.mcmcid==2 || multichain_edc_search){MCOPT.randparini=0;}
 	
-	/*in case one EDC missing*/
+	/*For single-chain MH search, periodically restart from priors if no
+	 *EDC-passing point has been found.*/
 	if (MCOPT.mcmcid==119 && PEDC!=0 && count%3==0){for (n=0;n<PI->npars;n++){PI->parini[n]=CARDADATA.parpriors[n];}}
 
 }
 
-//Probs would make more sense as a memcpy but I am keeping it like this for now
+/*mode 5: pick the best MCOPT_CARDAMOM->nchains (production chain count) chains
+ *out of the 400 searched, ranked by real likelihood among those passing EDCs,
+ *then shrink PI->parini back down to that size - the production DEMCMCZS run
+ *only ever sees this final, small, EDC-satisfying set of starting points.*/
+if (MCOPT_CARDAMOM->mcmcid==5){
+int nprod=MCOPT_CARDAMOM->nchains;
+double *chainP=calloc(MCOPT.nchains,sizeof(double));
+int nn2;
+for (nn2=0;nn2<MCOPT.nchains;nn2++){
+double edc_p=CARDADATA.EMLF(CARDADATA, PI->parini + nn2*PI->npars);
+if (edc_p==0){chainP[nn2]=CARDADATA.MLF(CARDADATA, PI->parini + nn2*PI->npars);}
+else{chainP[nn2]=log(0);}
+}
+
+double *parini_small=calloc(nprod*PI->npars,sizeof(double));
+int k,best_idx;
+for (k=0;k<nprod;k++){
+best_idx=0;
+double best_val=chainP[0];
+for (nn2=1;nn2<MCOPT.nchains;nn2++){
+if (chainP[nn2]>best_val){best_val=chainP[nn2];best_idx=nn2;}}
+for (n=0;n<PI->npars;n++){parini_small[k*PI->npars+n]=PI->parini[best_idx*PI->npars+n];}
+chainP[best_idx]=log(0);
+}
+
+free(chainP);
+free(PI->parini);
+PI->parini=parini_small;
+MCOPT.nchains=nprod;
+}else{
+/*For modes other than mode 5, keep the full EDC-search ensemble. Mode 6 needs
+ *all 400 chains for the warmup/merge block below; modes 3, 4, 7, 8, 9, and 10 hand the
+ *same 400 chains directly to their production samplers.*/
 for (n=0;n<PI->npars*MCOPT.nchains;n++){
 
 	PI->parini[n]=MCOUT.best_pars[n];
 }
+}
 
 
+/*mode 6: hybrid warmup step. PI->parini now holds all 400 EDC-search-endpoint
+ *chains (filled by the generic "else" branch above, same as modes 3/4).
+ *Rank them by real likelihood among EDC-passing chains, take the best 10,
+ *optionally run those 10 through an intermediate DEMCMCZS phase, then write
+ *the resulting evolved states back into their
+ *original slots - leaving the other 390 EDC-search endpoints untouched.
+ *MCOPT.nchains stays at 400: the full mixed ensemble (390 EDC endpoints +
+ *10 DEMCMCZS-evolved) is what gets handed to AFDEMCMC for production.*/
+if (MCOPT_CARDAMOM->mcmcid==6){
+int nwarm=10;
+int WARMUP_ITERS=0; /*0 disables the intermediate DEMCMCZS warmup.*/
 
-/*Sampling new/more parameters*/
+double *chainP=calloc(MCOPT.nchains,sizeof(double));
+int nn2;
+for (nn2=0;nn2<MCOPT.nchains;nn2++){
+double edc_p=CARDADATA.EMLF(CARDADATA, PI->parini + nn2*PI->npars);
+if (edc_p==0){chainP[nn2]=CARDADATA.MLF(CARDADATA, PI->parini + nn2*PI->npars);}
+else{chainP[nn2]=log(0);}
+}
 
-	/*
-	for (n=0;n<PI->npars;n++){printf("%8.6f  ",PI->parini[n]);}printf("\n");
-	printf("EDC Probability of starting parameters = %4.4f\n",EMLF(CARDADATA, PI->parini));
-	printf("Probability of starting parameters = %4.4f\n",CARDADATA.MLF(CARDADATA, PI->parini));
-	*/
-	/*for (n=0;n<PI->npars;n++){PI->stepsize[n]=0.01;}*/
-	
-	/*SOON-TO-BE-OBSOLETE: resetting fixed pars to zero for main r*/
-	//for (n=0;n<PI->npars;n++){PI->parfix[n]=0;}
-	//THIS WAS MOVED TO MCMC_MODULES!
+int *warm_idx=calloc(nwarm,sizeof(int));
+int k,nn3;
+for (k=0;k<nwarm;k++){
+int bi=0; double best_val=chainP[0];
+for (nn3=1;nn3<MCOPT.nchains;nn3++){
+if (chainP[nn3]>best_val){best_val=chainP[nn3];bi=nn3;}}
+warm_idx[k]=bi;
+chainP[bi]=log(0);
+}
+free(chainP);
+
+double *parini_warm=calloc(nwarm*PI->npars,sizeof(double));
+for (k=0;k<nwarm;k++){
+for (n=0;n<PI->npars;n++){parini_warm[k*PI->npars+n]=PI->parini[warm_idx[k]*PI->npars+n];}}
+
+oksofar("mode 6: running intermediate DEMCMCZS warmup phase on the best 10 EDC-search chains");
+RUN_DEMCMCZS_WARMUP(CARDADATA.MLF,CARDADATA,*PI,nwarm,WARMUP_ITERS,parini_warm);
+oksofar("mode 6: DEMCMCZS warmup phase complete, merging back into the 400-chain ensemble");
+
+for (k=0;k<nwarm;k++){
+for (n=0;n<PI->npars;n++){PI->parini[warm_idx[k]*PI->npars+n]=parini_warm[k*PI->npars+n];}}
+
+free(parini_warm);
+free(warm_idx);
+}
+
 
 /*clearing MCOUT fields*/
 free(MCOUT.best_pars);
-/*Done either (a) reading parameters from file, or (b) sampling parameters
-*/
 
 return 0;}
-

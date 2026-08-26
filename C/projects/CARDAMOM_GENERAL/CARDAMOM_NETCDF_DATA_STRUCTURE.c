@@ -33,6 +33,7 @@ typedef struct MCMCID_STRUCT{
 double value;
 int nITERATIONS;
 int nPRINT;
+int nWRITE;
 int nSAMPLES;
 int nADAPT;
 int nSAMPLES_EDC_SEARCH;
