@@ -172,14 +172,14 @@ for (n=0;n<PI->npars*MCOPT.nchains;n++){
 /*mode 6: hybrid warmup step. PI->parini now holds all 400 EDC-search-endpoint
  *chains (filled by the generic "else" branch above, same as modes 3/4).
  *Rank them by real likelihood among EDC-passing chains, take the best 10,
- *run those 10 through an intermediate DEMCMCZS phase (a hardcoded 350000
- *iterations), then write the resulting evolved states back into their
+ *optionally run those 10 through an intermediate DEMCMCZS phase, then write
+ *the resulting evolved states back into their
  *original slots - leaving the other 390 EDC-search endpoints untouched.
  *MCOPT.nchains stays at 400: the full mixed ensemble (390 EDC endpoints +
  *10 DEMCMCZS-evolved) is what gets handed to AFDEMCMC for production.*/
 if (MCOPT_CARDAMOM->mcmcid==6){
 int nwarm=10;
-int WARMUP_ITERS=0; //change back to 350000 TBD 
+int WARMUP_ITERS=0; /*0 disables the intermediate DEMCMCZS warmup.*/
 
 double *chainP=calloc(MCOPT.nchains,sizeof(double));
 int nn2;

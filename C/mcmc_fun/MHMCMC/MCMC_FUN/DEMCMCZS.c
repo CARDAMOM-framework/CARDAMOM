@@ -39,7 +39,7 @@ int NC=MCO.nchains;
 int M0=10*PI.npars;
 if (M0<NC){M0=NC;}
 int K=10;
-double psnooker=0.10; 
+double psnooker=0.10;
 
 /*Z is known to be bounded in size, since nOUT (total generations) is fixed - preallocate rather than realloc*/
 int maxappends=MCO.nOUT/K;
