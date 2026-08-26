@@ -1,4 +1,4 @@
-# MCMC in CARDAMOM overview
+# MCMC in CARDAMOM Overview
 
 CARDAMOM uses the `MCMCID` variable in the CBF NetCDF input file to select the
 MCMC algorithm used during model-data fusion. MCMC options are stored as
@@ -16,22 +16,7 @@ Common `MCMCID` attributes include:
 | `nSAMPLES_EDC_SEARCH` | Number of iterations used in the EDC initial-condition search. |
 | `seed_number` | Random seed for deterministic/reproducible MCMC initialization and runs. |
 
-## MCMC workflow
-
-CARDAMOM MCMC runs follow the same broad workflow:
-
-1. Read the CBF NetCDF file and `MCMCID` settings.
-2. Set the random seed from `seed_number`, using zero if no seed is provided.
-3. Search for parameter vectors that satisfy the EDCs.
-4. Hand the EDC-passing parameter vectors to the selected MCMC mode.
-5. Run production MCMC for `nITERATIONS` iterations.
-6. Write output every `nWRITE` iterations.
-7. Periodically write a `START` file that can be used to resume a run.
-
-The EDC search and production sampler are separate phases. `nWRITE` controls
-production output spacing, not EDC-search output.
-
-## EDC initial-condition search
+## EDC Initial-Condition Search
 
 Before production MCMC, CARDAMOM searches for parameter vectors that satisfy
 EDCs. Modes 3-10 use the same deterministic 400-chain EDC search before
@@ -43,167 +28,245 @@ For multi-chain EDC searches, CARDAMOM currently stops after more than 10 chains
 pass EDCs. Because the code checks `PEDCC > nstartchains` and `nstartchains=10`,
 this means at least 11 chains must pass EDCs before the search ends.
 
-## MCMC modes
+## MCMC Modes
 
-The CARDAMOM MDF executable currently dispatches the following MCMC modes:
+| MCMCID | Production sampler | Chains after EDC handoff | Archive | Main proposal behavior |
+| --- | --- | --- | --- | --- |
+| 2 | `DEMCMC` | 100 | No | Standard live-chain differential evolution MCMC. |
+| 3 | `ADEMCMC` | 400 | No | `fADAPT` controls an initial `STEP_ADEMCMC` phase, then switches to `STEP_DEMCMC`. |
+| 4 | `AFDEMCMC` | 400 | No | `fADAPT` controls an initial affine/stretch phase, then switches to `STEP_DEMCMC`. |
+| 5 | `DEMCMCZS` | Top 10 EDC-passing chains | Yes | Archive-based differential evolution proposals plus snooker updates. |
+| 6 | `AFDEMCMC` | 400 | Warmup only | Keeps all 400 EDC endpoints; can optionally warm up the best 10 with DEMCMCZS before AFDEMCMC production. |
+| 7 | `AFDEMCMCZS` | 400 affine chains, then top 10 DEMCMCZS chains | Yes | `fADAPT` controls affine phase length, then active chains switch to DEMCMCZS using archive history. |
+| 8 | `DREAMZS` | 400 | Yes | DREAMZS-lite archive proposals with crossover/subspace updates plus snooker updates. |
+| 9 | `HYBRID_AIDE` | 400 | No | Each proposal combines CARDAMOM DEMCMC translation with affine/stretch moves. |
+| 10 | `HYBRID_AIDE_DEMCMC` | 400 | No | `fADAPT` controls an initial HYBRID_AIDE phase, then switches to standard CARDAMOM DEMCMC. |
 
-| MCMCID | Status | Production sampler | Chains after EDC handoff | Archive | Main proposal behavior |
-| --- | --- | --- | --- | --- | --- |
-| 119 | Existing/special | `MHMCMC_119` | 1 | No | Single-chain adaptive Metropolis-Hastings sampler. |
-| 2 | Existing | `DEMCMC` | 100 | No | Standard live-chain differential evolution MCMC. |
-| 3 | Existing | `ADEMCMC` | 400 | No | `fADAPT` controls an initial `STEP_ADEMCMC` phase, then switches to `STEP_DEMCMC`. |
-| 4 | Existing | `AFDEMCMC` | 400 | No | `fADAPT` controls an initial affine/stretch phase, then switches to `STEP_DEMCMC`. |
-| 5 | Added/experimental | `DEMCMCZS` | Top 10 EDC-passing chains | Yes | Archive-based differential evolution proposals plus snooker updates. |
-| 6 | Added/experimental | `AFDEMCMC` | 400 | Warmup only | Keeps all 400 EDC endpoints; can optionally warm up the best 10 with DEMCMCZS before AFDEMCMC production. |
-| 7 | Added/experimental | `AFDEMCMCZS` | 400 affine chains, then top 10 DEMCMCZS chains | Yes | `fADAPT` controls affine phase length, then active chains switch to DEMCMCZS using archive history. |
-| 8 | Added/experimental | `DREAMZS` | 400 | Yes | DREAMZS-lite archive proposals with crossover/subspace updates plus snooker updates. |
-| 9 | Added/experimental | `HYBRID_AIDE` | 400 | No | Each proposal combines CARDAMOM DEMCMC translation with affine/stretch moves. |
-| 10 | Added/experimental | `HYBRID_AIDE_DEMCMC` | 400 | No | `fADAPT` controls an initial HYBRID_AIDE phase, then switches to standard CARDAMOM DEMCMC. |
+## Recommended CBF MCMCID Settings for Comparing Methods
 
-## Proposal families
+MCMC settings are stored as NetCDF attributes on the `MCMCID` variable in the CBF file. The most important attributes to set for clean sampler comparisons are:
 
-Most multi-chain CARDAMOM MCMC modes are built from two proposal ideas:
-DEMCMC moves and affine/stretch moves. The different modes mainly change how
-these proposals are combined, when the sampler switches between them, and
-whether previous samples are stored in an archive.
+| Attribute | Recommended use |
+| --- | --- |
+| `MCMCID` | Selects the sampler mode. |
+| `nITERATIONS` | Set to the desired production run length. |
+| `nWRITE` | Set explicitly for comparison runs so output frequency is standardized. |
+| `nPRINT` | Set to a reasonable progress interval. |
+| `fADAPT` | Set for sequential hybrid modes that switch proposal behavior during the run. |
+| `seed_number` | Keep fixed across comparison runs for reproducible initialization. |
 
-Mode 119 is the exception. It is the older single-chain adaptive
-Metropolis-Hastings path rather than a multi-chain ensemble method.
+For clean comparisons, use the same values of `nITERATIONS`, `nWRITE`, `nPRINT`, `fADAPT`, and `seed_number` unless the purpose of the experiment is to test one of those settings directly.
 
-### Single-chain adaptive Metropolis-Hastings
+Example recommended comparison setup:
 
-The mode 119 sampler is the older single-chain adaptive Metropolis-Hastings
-path. It proposes from the current parameter vector, adapts proposal covariance
-during the adaptation portion of the run, and writes one chain.
+```text
+nITERATIONS = 350000
+nWRITE = 500
+nPRINT = 500
+fADAPT = 0.3
+seed_number = fixed across runs
+```
 
-### DEMCMC
+With this setup, each run writes output every 500 production iterations. This makes trace plots and chain-level diagnostics easier to compare across modes.
 
-DEMCMC proposes movement along the difference between two other live chains:
+### Recommended Settings for Routine Runs
+
+For routine science runs, use mode 9 with 350,000 MCMC iterations. Mode 9 has
+shown similar behavior to mode 4 while requiring roughly half the wall time for
+the same number of iterations.
+
+| Setting | Recommended value |
+| --- | --- |
+| `MCMCID` | `9` |
+| `nITERATIONS` | `350000` |
+| `nSAMPLES` | `2000` |
+| `nWRITE` | `175` |
+| `nPRINT` | `1000` |
+| `nSAMPLES_EDC_SEARCH` | `200000` |
+| `seed_number` | Set explicitly for reproducibility. |
+
+Mode 4 remains the conservative fallback option.
+
+| Setting | Recommended value |
+| --- | --- |
+| `MCMCID` | `4` |
+| `nITERATIONS` | `350000` |
+| `nSAMPLES` | `2000` |
+| `nWRITE` | `175` |
+| `nPRINT` | `1000` |
+| `nSAMPLES_EDC_SEARCH` | `200000` |
+| `seed_number` | Set explicitly for reproducibility. |
+
+### Choosing `fADAPT`
+
+For modes with a phase switch, `fADAPT` controls the fraction of production iterations spent in the first proposal phase.
+
+For example, with:
+
+```text
+nITERATIONS = 350000
+fADAPT = 0.3
+```
+
+the first phase lasts:
+
+```text
+0.3 * 350000 = 105000 iterations
+```
+
+Mode-specific interpretation:
+
+```text
+Mode 4: first 105000 iterations use affine/stretch proposals, then DEMCMC
+Mode 7: first 105000 iterations use affine/stretch proposals, then DEMCMCZS
+Mode 10: first 105000 iterations use HYBRID_AIDE, then DEMCMC
+```
+
+## Proposal Building Blocks and Hybrid Modes
+
+Most of the MCMC modes in this branch are built from two main population-based proposal families: affine/stretch proposals and differential-evolution proposals.
+
+### Affine/Stretch Proposals
+
+Affine-style proposals move one chain relative to another live chain in the ensemble:
+
+```text
+new = partner + z * (current - partner)
+```
+
+where `z` is a random stretch factor. This proposal is useful when the posterior has elongated or correlated geometry, because the move is defined using the shape of the current ensemble rather than a fixed coordinate-wise step size.
+
+The affine proposal uses the Hastings correction:
+
+```text
+(npars - 1) * log(z)
+```
+
+### DEMCMC Proposals
+
+DEMCMC proposes movement using the difference between two other live chains:
 
 ```text
 new = current + gamma * (chain_a - chain_b) + noise
 ```
 
-CARDAMOM's standard `DEMCMC` gamma convention is:
+This allows the sampler to use the scale and orientation of the ensemble to generate jumps. CARDAMOM's standard `DEMCMC` gamma convention is:
 
 ```text
 90% of proposals: gamma = 0.1 * 2.38 / sqrt(2 * npars)
 10% of proposals: gamma = 1.0
 ```
 
-This is the core differential-evolution proposal used directly in mode 2 and
-used after the initial phase in modes 3, 4, and 10.
+### Archive-Based DEMCMCZS Proposals
 
-### Affine/stretch
+DEMCMCZS extends DEMCMC by drawing difference vectors from an archive `Z` of previous chain states rather than only from the current live ensemble. This can make proposals cheaper and more diverse, especially when running with fewer active chains. DEMCMCZS also includes occasional snooker proposals.
 
-Affine ensemble proposals move one chain relative to another live chain using a
-stretch factor. This proposal is useful when parameters are correlated because
-the ensemble geometry helps choose directions and scales.
+### DREAMZS-lite Proposals
 
-```text
-new = chain_ref + z * (current - chain_ref)
-```
+DREAMZS-lite uses the DEMCMCZS archive structure but adds crossover/subspace updates. This means each proposal can update only a subset of parameters rather than always moving the full parameter vector.
 
-The affine proposal has a non-symmetric proposal density, so CARDAMOM applies
-the affine Hastings correction:
+### Sequential Hybrid Modes
+
+Sequential hybrid modes use one proposal family during an early phase of the run and then switch to another proposal family later. The switch point is controlled by `fADAPT`.
+
+For example:
 
 ```text
-(npars - 1) * log(z)
+Mode 4: affine/stretch phase -> DEMCMC phase
+Mode 7: affine/stretch phase -> DEMCMCZS phase
+Mode 10: HYBRID_AIDE phase -> DEMCMC phase
 ```
 
-where `z` is the stretch factor. This correction is required so that the
-proposal preserves detailed balance.
+These modes are useful for testing whether one proposal is better for burn-in while another is better for production sampling.
 
-This is the core affine proposal used directly in modes 4, 6, and 7, and used
-as one part of the hybrid AIDE proposal in modes 9 and 10.
+### Mixed-Kernel Hybrid Modes
 
-### Derived modes
+Mixed-kernel modes combine proposal mechanisms inside the production sampler rather than only switching once between phases.
 
-The remaining multi-chain modes are combinations or extensions of DEMCMC and
-affine/stretch proposals:
+For example:
 
-| Method | Derived from | Description |
-| --- | --- | --- |
-| `ADEMCMC` | DEMCMC | Uses an adaptive differential-evolution-style proposal during the first `fADAPT` fraction of mode 3, then switches to DEMCMC. |
-| `AFDEMCMC` | Affine/stretch + DEMCMC | Uses affine/stretch proposals during the first `fADAPT` fraction of mode 4, then switches to DEMCMC. |
-| `DEMCMCZS` | DEMCMC | Uses archive differences from `Z` instead of only the current live ensemble, with occasional snooker proposals. |
-| `AFDEMCMCZS` | Affine/stretch + DEMCMCZS | Starts with affine/stretch proposals, then switches to archive-based DEMCMCZS proposals. |
-| `DREAMZS-lite` | DEMCMCZS | Adds crossover/subspace updates so some proposals update only a subset of parameters. |
-| `HYBRID_AIDE` | Affine/stretch + DEMCMC | Composes a DEMCMC translation with an affine/stretch move in a single proposal. |
-| `HYBRID_AIDE_DEMCMC` | HYBRID_AIDE + DEMCMC | Uses HYBRID_AIDE for the first `fADAPT` fraction, then switches to DEMCMC. |
+```text
+Mode 5: DEMCMCZS archive proposals + snooker proposals
+Mode 8: DREAMZS-lite archive proposals + crossover/subspace updates + snooker proposals
+Mode 9: HYBRID_AIDE, which combines DEMCMC translation with affine/stretch movement in each proposal
+```
 
-The archive-based modes, `DEMCMCZS` and `DREAMZS-lite`, are still DEMCMC-family
-methods. They differ from standard DEMCMC because proposal differences can be
-drawn from previous samples stored in `Z`, not only from the current live
-ensemble.
-
-The AIDE-family modes combine the two core proposal ideas. In `HYBRID_AIDE`,
-each chain independently chooses one of two proposal orderings:
+HYBRID_AIDE is the most direct mixed-kernel proposal. Each proposal composes a DEMCMC translation with an affine stretch move, using one of two possible orderings:
 
 ```text
 DEMCMC translation -> affine stretch
 affine stretch -> DEMCMC translation
 ```
 
-The DEMCMC translation uses CARDAMOM's standard DEMCMC gamma convention. The
-affine part uses the affine Hastings correction:
+## Adding a new MCMC mode
 
-```text
-(npars - 1) * log(z)
-```
+As previously stated, MCMC modes in CARDAMOM are selected through the `MCMCID` value in the CBF
+NetCDF file. Adding a new mode usually requires changes in two places: the MDF
+driver that dispatches the selected sampler, and the MCMC function files that
+implement the proposal logic.
 
-## Suggested settings
+### Main files to update
 
-For standard mode comparisons, change only the settings required to select the
-mode or proposal split. Keep all other settings fixed:
-
-| Setting | Suggested value |
+| File | What to change |
 | --- | --- |
-| `seed_number` | Same value across all compared runs. |
-| `nSAMPLES_EDC_SEARCH` | Same value across all compared runs. |
-| `nITERATIONS` | Same value across all compared runs. |
-| `nWRITE` | Set explicitly, especially for early-chain diagnostics. |
-| `nPRINT` | Same value across all compared runs. |
-| CBF data and priors | Identical except for intentional `MCMCID` settings. |
-| Executable | Same compiled executable. |
-| `START` file | Avoid unintended reuse when testing EDC behavior. |
+| `C/projects/CARDAMOM_MDF/CARDAMOM_MDF.c` | Include the new sampler file, assign the chain count for the new `MCMCID`, and add a `case` in the MCMC dispatcher. |
+| `C/projects/CARDAMOM_MDF/MCMC_SETUP/PROJECT_FUN/FIND_EDC_INITIAL_VALUES.c` | Decide how the new mode should receive EDC-passing initial chains. For fair comparisons, new multi-chain modes should usually use the same deterministic 400-chain EDC search as modes 3-10. |
+| `C/mcmc_fun/MHMCMC/MCMC_FUN/<NEW_MODE>.c` | Implement the production sampler loop. This usually handles chain state, likelihood calls, acceptance, output writing, and restart writing. |
+| `C/mcmc_fun/MHMCMC/MCMC_FUN/STEP_<NEW_MODE>.c` | Optional but preferred if the proposal step is complex. Keeps proposal construction separate from the sampler loop. |
+| `PYTHON/CARDAMOM_WRITE_CBF_NC_FILE.py` | Update only if the new mode needs new CBF attributes or defaults. |
 
-If `nWRITE` is unset, CARDAMOM derives it from:
+### A Brief Implementation checklist
 
-```text
-nITERATIONS / nSAMPLES
-```
+1. Pick an unused `MCMCID`.
 
-This is convenient for standard output, but explicit `nWRITE` is preferred when
-the goal is to compare early chain behavior.
+2. Add the sampler include in `CARDAMOM_MDF.c`.
 
-Suggested comparison settings:
+3. Set the intended number of chains for the new mode in `CARDAMOM_MDF.c`.
 
-| Purpose | `MCMCID` | Key settings |
-| --- | --- | --- |
-| Existing 400-chain affine-only baseline | 4 | `fADAPT=1`; fixed `nITERATIONS`; explicit `nWRITE`. |
-| Existing 400-chain DEMCMC-only baseline | 4 | `fADAPT=0`; fixed `nITERATIONS`; explicit `nWRITE`. |
-| Existing 400-chain affine-to-DEMCMC baseline | 4 | `0 < fADAPT < 1`; fixed `nITERATIONS`; explicit `nWRITE`. |
-| Small ranked DEMCMCZS test | 5 | Same EDC settings; production uses top EDC-passing chains. |
-| Full 400-chain EDC endpoint test | 6 | Same EDC settings; keeps all 400 chains for AFDEMCMC production. |
-| Affine-to-DEMCMCZS test | 7 | `fADAPT` sets affine fraction; DEMCMCZS uses ranked active chains after switch. |
-| DREAMZS comparison | 8 | Same EDC settings; explicit `nWRITE`; compare against modes 3 and 4. |
-| AIDE comparison | 9 | Same EDC settings; explicit `nWRITE`; compare against modes 3 and 4. |
-| AIDE-to-DEMCMC comparison | 10 | `fADAPT` sets AIDE fraction; remaining run uses DEMCMC. |
+4. Add a new `case` in the `switch (MCOPT.mcmcid)` block that calls the new sampler.
 
-For mode 4:
+5. Decide how EDC initialization should work in `FIND_EDC_INITIAL_VALUES.c`.
 
-```text
-fADAPT = 1.0 -> affine-only production
-fADAPT = 0.0 -> DEMCMC-only production
-0 < fADAPT < 1 -> affine phase followed by DEMCMC phase
-```
+6. Make sure the new mode receives `PI.parini` in the expected shape:
+   `nchains * npars`.
 
-For mode 10:
+7. Use the same output-writing convention as the existing samplers:
+   write results every `MCO.nWRITE` iterations.
 
-```text
-fADAPT = 0.3 -> first 30% HYBRID_AIDE, remaining 70% DEMCMC
-```
+8. Write restart files consistently if the sampler supports restart behavior.
+
+9. Recompile CARDAMOM and confirm that the executable timestamp changed. This ensures the run is using the newly compiled code rather than an older executable. 
+
+10. Run short diagnostic tests before launching long production runs.
+
+### Things to watch out for
+
+The EDC search and production sampler are separate phases. If the goal is to
+compare MCMC algorithms, the new mode should not accidentally use a different
+EDC search path, chain count, seed sequence, or EDC stopping rule unless that is
+the intended experiment.
+
+Chain count matters. Some modes keep all 400 EDC endpoints, while others rank
+EDC-passing chains and continue with a smaller active ensemble. This affects
+both the math of the sampler and the shape of the output files.
+
+Archive-based methods need extra care. If the sampler uses an archive `Z`, decide
+what goes into the archive, when archive rows are added, and whether early affine
+or warmup samples should be included.
+
+Proposal symmetry matters. Standard DEMCMC proposals are usually symmetric and
+do not need a Hastings correction. Affine/stretch proposals are not symmetric
+and require the affine Hastings correction. Hybrid proposals need careful
+checking so that the acceptance probability matches the actual proposal
+mechanism.
+
+Restart behavior can differ by mode. If a new sampler does not support restart
+or append behavior, document that clearly and avoid silent reuse of incompatible
+`START` files.
+
+Output size can grow quickly. `nWRITE`, `nITERATIONS`, and `nchains` together
+control how many parameter vectors are written. For early diagnostic runs, set
+`nWRITE` explicitly so the output is interpretable and comparable across modes.
 
 ## FAQ
 
