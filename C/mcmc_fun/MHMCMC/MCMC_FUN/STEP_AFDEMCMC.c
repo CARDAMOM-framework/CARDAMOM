@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "../../../math_fun/randn.c"
 
-double STEP_AFDEMCMC(double *PARS, double *pars_new, PARAMETER_INFO PI, int C, int NC, double *gratio){
+double STEP_AFDEMCMC(double *PARS, double *pars_new, PARAMETER_INFO PI, int C, int NC, double *gratio, double *cpar, double *rpar, double *npar){
     /* AFDEMCMC takes an Affine Invariant ensemble step (Goodman & Weare) */
 
     int n, C1=-1;
@@ -11,14 +11,14 @@ double STEP_AFDEMCMC(double *PARS, double *pars_new, PARAMETER_INFO PI, int C, i
     /* Step 1. Find random sample (reference chain) other than current chain */
     C1=C;
     while (C1==C){
-        C1 = ceil((double)random() * NC / ((double)RAND_MAX)) - 1;
+        C1 = floor((double)random() * NC / ((double)RAND_MAX + 1.0));
     }
 
-    /* Step 2. Allocate memory for normalized parameter vectors */
-    /* (Notice we deleted the heavy step and gamma arrays here!) */
-    double *cpar = calloc(PI.npars, sizeof(double));
-    double *rpar = calloc(PI.npars, sizeof(double));
-    double *npar = calloc(PI.npars, sizeof(double));
+    // /* Step 2. Allocate memory for normalized parameter vectors */
+    // /* (Notice we deleted the heavy step and gamma arrays here!) */
+    // double *cpar = calloc(PI.npars, sizeof(double));
+    // double *rpar = calloc(PI.npars, sizeof(double));
+    // double *npar = calloc(PI.npars, sizeof(double));
 
     /* Normalize parameters into [0,1] space */
     for (n=0; n<PI.npars; n++){
@@ -68,10 +68,10 @@ double STEP_AFDEMCMC(double *PARS, double *pars_new, PARAMETER_INFO PI, int C, i
         gratio[0] = ((double)PI.npars - 1.0) * log(z);
     }
 
-    /* Step 6. Free memory to prevent leaks */
-    free(rpar);
-    free(cpar);
-    free(npar);
+    // /* Step 6. Free memory to prevent leaks */
+    // free(rpar);
+    // free(cpar);
+    // free(npar);
 
     return withinlim;
 }

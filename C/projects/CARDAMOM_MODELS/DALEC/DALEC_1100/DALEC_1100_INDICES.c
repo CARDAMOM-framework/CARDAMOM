@@ -286,8 +286,9 @@ int fffr_ratio;
 int mean_ly1_temp;
 int mean_ly2_temp;
 int mean_ly3_temp;
+int state_proximity;
 } DALEC_1100_EDCs={
     0, 1, 2, 3, 4, 5, 6, 
     7, 8, 9,10,11,12,13,
-    14
+    14, 15
 };

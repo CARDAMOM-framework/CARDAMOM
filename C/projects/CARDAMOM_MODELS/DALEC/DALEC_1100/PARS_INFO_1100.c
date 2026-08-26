@@ -252,7 +252,7 @@ parmin[P.melt_slope]=0.00001;
 parmax[P.melt_slope]=1;
 
 /*sn3: snow cover fraction scalar; SCF = SWE/(SWE +SWEcritical_par) */
-parmin[P.scf_scalar]=10;
+parmin[P.scf_scalar]=1.0;
 parmax[P.scf_scalar]=1000.0;
 
 /* jc S_fv statistically fitting the fV curves (S1,S2,S3 schemes) with total soil moisture (LY1/LY1_fs)\n jc new name for this par is S_fv, scalar for aerobic volumetric fraction */

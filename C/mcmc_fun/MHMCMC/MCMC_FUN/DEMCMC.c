@@ -82,6 +82,10 @@ double *PARS,*pars_new,*BESTPARS;
 PARS=calloc(PI.npars*NC,sizeof(double));
 pars_new=calloc(PI.npars,sizeof(double));
 BESTPARS=calloc(PI.npars*NC,sizeof(double));
+double *npar_de=calloc(PI.npars,sizeof(double));
+double *npar1_de=calloc(PI.npars,sizeof(double));
+double *npar2_de=calloc(PI.npars,sizeof(double));
+double *step_de=calloc(PI.npars,sizeof(double));
 /*All accepted parameters*/
 /*This is now the last N parameter vectors
  * where N is the adaptation frequency*/
@@ -144,7 +148,7 @@ for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
                  (double)(( (double)random() / (double)RAND_MAX ) < 0.9);
 	/*take a step (DE-MCMC style)*/
 	//PI.stepsize[0]=PI.stepsize[0]/10;
-	withinrange=STEP_DEMCMC(PARS,pars_new,PI,nn,NC);
+	withinrange=STEP_DEMCMC(PARS,pars_new,PI,nn,NC,npar_de, npar1_de, npar2_de, step_de);
 	/*p(x) = 0 if parameters outside bounds*/
 	if (withinrange==1){
 wrlocal=wrlocal+1;
@@ -207,6 +211,10 @@ MCOUT->complete=1;
 free(BESTPARS);
 free(PARS);
 free(P);
+free(npar_de);
+free(npar1_de);
+free(npar2_de);
+free(step_de);
 printf("DEMCMC DONE\n");
 
 

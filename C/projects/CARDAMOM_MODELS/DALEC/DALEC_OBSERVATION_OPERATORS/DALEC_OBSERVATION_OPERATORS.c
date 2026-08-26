@@ -83,6 +83,10 @@ bool SUPPORT_iniSOM_OBS;
 int iniSOM_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
 
+bool SUPPORT_lambdamax_OBS;
+int lambdamax_PARAM;//This is assuming it's a single parameter
+//Can add more parameters OR options
+
 bool SUPPORT_LCMA_OBS;
 int LCMA_PARAM;//This is assuming it's a single parameter
 //Can add more parameters OR options
@@ -136,6 +140,7 @@ OBSOPE->SUPPORT_C3frac_OBS=false;
 OBSOPE->SUPPORT_Vcmax25_OBS=false;
 OBSOPE->SUPPORT_iniSnow_OBS=false;
 OBSOPE->SUPPORT_iniSOM_OBS=false;
+OBSOPE->SUPPORT_lambdamax_OBS=false;
 OBSOPE->SUPPORT_LCMA_OBS=false;
 OBSOPE->SUPPORT_clumping_OBS=false;
 //In-built observation operators
@@ -593,6 +598,13 @@ if  (SOBS.validobs){
     }
 return 0;}
 
+int DALEC_OBSOPE_lambdamax(DATA * D, OBSOPE * O){
+    SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_lambdamax;
+if  (SOBS.validobs){
+    D->M_PEQ_lambdamax=D->M_PARS[O->lambdamax_PARAM];
+    }
+return 0;}
+
 int DALEC_OBSOPE_LCMA(DATA * D, OBSOPE * O){
     SINGLE_OBS_STRUCT SOBS=D->ncdf_data.PEQ_LCMA;
 if  (SOBS.validobs){
@@ -661,6 +673,7 @@ if (O->SUPPORT_C3frac_OBS){DALEC_OBSOPE_C3frac(D, O);}
 if (O->SUPPORT_Vcmax25_OBS){DALEC_OBSOPE_Vcmax25(D, O);}
 if (O->SUPPORT_iniSnow_OBS){DALEC_OBSOPE_iniSnow(D, O);}
 if (O->SUPPORT_iniSOM_OBS){DALEC_OBSOPE_iniSOM(D, O);}
+if (O->SUPPORT_lambdamax_OBS){DALEC_OBSOPE_lambdamax(D, O);}
 if (O->SUPPORT_LCMA_OBS){DALEC_OBSOPE_LCMA(D, O);}
 if (O->SUPPORT_clumping_OBS){DALEC_OBSOPE_clumping(D, O);}
 if (O->SUPPORT_r_ch4_OBS){DALEC_OBSOPE_r_ch4(D, O);} /*pMCMC*/

@@ -134,6 +134,7 @@ DATA->PEQ_CUE=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_CUE");
 DATA->PEQ_C3frac=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_C3frac");
 DATA->PEQ_Vcmax25=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_Vcmax25");
 DATA->PEQ_iniSOM=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSOM");
+DATA->PEQ_lambdamax=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_lambdamax");
 DATA->PEQ_iniSnow=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_iniSnow");
 DATA->PEQ_LCMA=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_LCMA");
 DATA->PEQ_clumping=READ_NETCDF_SINGLE_OBS_FIELDS(ncid, "PEQ_clumping");
@@ -356,6 +357,7 @@ printf("Done reading all other edc ");
     
     DATA->ID=ncdf_read_single_double_var(ncid, "ID" );
 	DATA->LAT=ncdf_read_single_double_var(ncid, "LAT" );
+	DATA->LON=ncdf_read_single_double_var(ncid, "LON" );
     
     //Pre-processing
     //Ntimesteps
