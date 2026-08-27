@@ -1,0 +1,571 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MCMC in CARDAMOM Overview &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3ce236e8" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="DALEC model IDs" href="MODEL_IDs.html" />
+    <link rel="prev" title="MATLAB demo" href="MATLAB_DEMO.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC Model:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dalec_versions.html">DALEC versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/analyst_checklist.html">Analyst checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/technote.html">Contributing to this technical documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/governance.html">CARDAMOM.c governance structure</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="CARDAMOM_NETCDF_INPUT_FILE.html">CARDAMOM Netcdf input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="COST_FUNCTION.html">CARDAMOM cost function <a name="cardamom-cost-function"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEBUGGING_TIPS.html">Debugging tips and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="GITHUB_BASICS.html">Using CARDAMOM’s github repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">MCMC in CARDAMOM Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#edc-initial-condition-search">EDC Initial-Condition Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mcmc-modes">MCMC Modes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#recommended-cbf-mcmcid-settings-for-comparing-methods">Recommended CBF MCMCID Settings for Comparing Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#recommended-settings-for-routine-runs">Recommended Settings for Routine Runs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#choosing-fadapt">Choosing <code class="docutils literal notranslate"><span class="pre">fADAPT</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#proposal-building-blocks-and-hybrid-modes">Proposal Building Blocks and Hybrid Modes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#affine-stretch-proposals">Affine/Stretch Proposals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#demcmc-proposals">DEMCMC Proposals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#archive-based-demcmczs-proposals">Archive-Based DEMCMCZS Proposals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dreamzs-lite-proposals">DREAMZS-lite Proposals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sequential-hybrid-modes">Sequential Hybrid Modes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mixed-kernel-hybrid-modes">Mixed-Kernel Hybrid Modes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-a-new-mcmc-mode">Adding a new MCMC mode</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#main-files-to-update">Main files to update</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#a-brief-implementation-checklist">A Brief Implementation checklist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#things-to-watch-out-for">Things to watch out for</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#faq">FAQ</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#q-why-does-the-first-half-of-output-look-systematically-different">Q: Why does the first half of output look systematically different?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OUTPUT_DATA_ANALYSIS.html">Output Data and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PARALLELIZATION.html">Parallelization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">MCMC in CARDAMOM Overview</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/markdown_manuals/MCMC_IN_CARDAMOM_OVERVIEW.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mcmc-in-cardamom-overview">
+<h1>MCMC in CARDAMOM Overview<a class="headerlink" href="#mcmc-in-cardamom-overview" title="Link to this heading"></a></h1>
+<p>CARDAMOM uses the <code class="docutils literal notranslate"><span class="pre">MCMCID</span></code> variable in the CBF NetCDF input file to select the
+MCMC algorithm used during model-data fusion. MCMC options are stored as
+attributes on <code class="docutils literal notranslate"><span class="pre">MCMCID</span></code>.</p>
+<p>Common <code class="docutils literal notranslate"><span class="pre">MCMCID</span></code> attributes include:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Attribute</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nITERATIONS</span></code></p></td>
+<td><p>Number of production MCMC iterations/generations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nSAMPLES</span></code></p></td>
+<td><p>Number of requested output samples. Used to derive <code class="docutils literal notranslate"><span class="pre">nWRITE</span></code> if <code class="docutils literal notranslate"><span class="pre">nWRITE</span></code> is not set.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nWRITE</span></code></p></td>
+<td><p>Write interval for MCMC output. If unset, CARDAMOM uses <code class="docutils literal notranslate"><span class="pre">nITERATIONS</span> <span class="pre">/</span> <span class="pre">nSAMPLES</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nPRINT</span></code></p></td>
+<td><p>Interval for printing progress information.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fADAPT</span></code></p></td>
+<td><p>Fraction of the production run assigned to the first proposal phase for hybrid modes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nSAMPLES_EDC_SEARCH</span></code></p></td>
+<td><p>Number of iterations used in the EDC initial-condition search.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">seed_number</span></code></p></td>
+<td><p>Random seed for deterministic/reproducible MCMC initialization and runs.</p></td>
+</tr>
+</tbody>
+</table>
+<section id="edc-initial-condition-search">
+<h2>EDC Initial-Condition Search<a class="headerlink" href="#edc-initial-condition-search" title="Link to this heading"></a></h2>
+<p>Before production MCMC, CARDAMOM searches for parameter vectors that satisfy
+EDCs. Modes 3-10 use the same deterministic 400-chain EDC search before
+mode-specific handoff. This makes comparisons among these modes more direct,
+because the initial EDC search uses the same chain count, same proposal path,
+same pass threshold, and same seed-controlled random sequence.</p>
+<p>For multi-chain EDC searches, CARDAMOM currently stops after more than 10 chains
+pass EDCs. Because the code checks <code class="docutils literal notranslate"><span class="pre">PEDCC</span> <span class="pre">&gt;</span> <span class="pre">nstartchains</span></code> and <code class="docutils literal notranslate"><span class="pre">nstartchains=10</span></code>,
+this means at least 11 chains must pass EDCs before the search ends.</p>
+</section>
+<section id="mcmc-modes">
+<h2>MCMC Modes<a class="headerlink" href="#mcmc-modes" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>MCMCID</p></th>
+<th class="head"><p>Production sampler</p></th>
+<th class="head"><p>Chains after EDC handoff</p></th>
+<th class="head"><p>Archive</p></th>
+<th class="head"><p>Main proposal behavior</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>2</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DEMCMC</span></code></p></td>
+<td><p>100</p></td>
+<td><p>No</p></td>
+<td><p>Standard live-chain differential evolution MCMC.</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ADEMCMC</span></code></p></td>
+<td><p>400</p></td>
+<td><p>No</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fADAPT</span></code> controls an initial <code class="docutils literal notranslate"><span class="pre">STEP_ADEMCMC</span></code> phase, then switches to <code class="docutils literal notranslate"><span class="pre">STEP_DEMCMC</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">AFDEMCMC</span></code></p></td>
+<td><p>400</p></td>
+<td><p>No</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fADAPT</span></code> controls an initial affine/stretch phase, then switches to <code class="docutils literal notranslate"><span class="pre">STEP_DEMCMC</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DEMCMCZS</span></code></p></td>
+<td><p>Top 10 EDC-passing chains</p></td>
+<td><p>Yes</p></td>
+<td><p>Archive-based differential evolution proposals plus snooker updates.</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">AFDEMCMC</span></code></p></td>
+<td><p>400</p></td>
+<td><p>Warmup only</p></td>
+<td><p>Keeps all 400 EDC endpoints; can optionally warm up the best 10 with DEMCMCZS before AFDEMCMC production.</p></td>
+</tr>
+<tr class="row-odd"><td><p>7</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">AFDEMCMCZS</span></code></p></td>
+<td><p>400 affine chains, then top 10 DEMCMCZS chains</p></td>
+<td><p>Yes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fADAPT</span></code> controls affine phase length, then active chains switch to DEMCMCZS using archive history.</p></td>
+</tr>
+<tr class="row-even"><td><p>8</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DREAMZS</span></code></p></td>
+<td><p>400</p></td>
+<td><p>Yes</p></td>
+<td><p>DREAMZS-lite archive proposals with crossover/subspace updates plus snooker updates.</p></td>
+</tr>
+<tr class="row-odd"><td><p>9</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">HYBRID_AIDE</span></code></p></td>
+<td><p>400</p></td>
+<td><p>No</p></td>
+<td><p>Each proposal combines CARDAMOM DEMCMC translation with affine/stretch moves.</p></td>
+</tr>
+<tr class="row-even"><td><p>10</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">HYBRID_AIDE_DEMCMC</span></code></p></td>
+<td><p>400</p></td>
+<td><p>No</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fADAPT</span></code> controls an initial HYBRID_AIDE phase, then switches to standard CARDAMOM DEMCMC.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="recommended-cbf-mcmcid-settings-for-comparing-methods">
+<h2>Recommended CBF MCMCID Settings for Comparing Methods<a class="headerlink" href="#recommended-cbf-mcmcid-settings-for-comparing-methods" title="Link to this heading"></a></h2>
+<p>MCMC settings are stored as NetCDF attributes on the <code class="docutils literal notranslate"><span class="pre">MCMCID</span></code> variable in the CBF file. The most important attributes to set for clean sampler comparisons are:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Attribute</p></th>
+<th class="head"><p>Recommended use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MCMCID</span></code></p></td>
+<td><p>Selects the sampler mode.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nITERATIONS</span></code></p></td>
+<td><p>Set to the desired production run length.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nWRITE</span></code></p></td>
+<td><p>Set explicitly for comparison runs so output frequency is standardized.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nPRINT</span></code></p></td>
+<td><p>Set to a reasonable progress interval.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fADAPT</span></code></p></td>
+<td><p>Set for sequential hybrid modes that switch proposal behavior during the run.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">seed_number</span></code></p></td>
+<td><p>Keep fixed across comparison runs for reproducible initialization.</p></td>
+</tr>
+</tbody>
+</table>
+<p>For clean comparisons, use the same values of <code class="docutils literal notranslate"><span class="pre">nITERATIONS</span></code>, <code class="docutils literal notranslate"><span class="pre">nWRITE</span></code>, <code class="docutils literal notranslate"><span class="pre">nPRINT</span></code>, <code class="docutils literal notranslate"><span class="pre">fADAPT</span></code>, and <code class="docutils literal notranslate"><span class="pre">seed_number</span></code> unless the purpose of the experiment is to test one of those settings directly.</p>
+<p>Example recommended comparison setup:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>nITERATIONS = 350000
+nWRITE = 500
+nPRINT = 500
+fADAPT = 0.3
+seed_number = fixed across runs
+</pre></div>
+</div>
+<p>With this setup, each run writes output every 500 production iterations. This makes trace plots and chain-level diagnostics easier to compare across modes.</p>
+<section id="recommended-settings-for-routine-runs">
+<h3>Recommended Settings for Routine Runs<a class="headerlink" href="#recommended-settings-for-routine-runs" title="Link to this heading"></a></h3>
+<p>For routine science runs, use mode 9 with 350,000 MCMC iterations. Mode 9 has
+shown similar behavior to mode 4 while requiring roughly half the wall time for
+the same number of iterations.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Setting</p></th>
+<th class="head"><p>Recommended value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MCMCID</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">9</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nITERATIONS</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">350000</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nSAMPLES</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">2000</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nWRITE</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">175</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nPRINT</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">1000</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nSAMPLES_EDC_SEARCH</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">200000</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">seed_number</span></code></p></td>
+<td><p>Set explicitly for reproducibility.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Mode 4 remains the conservative fallback option.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Setting</p></th>
+<th class="head"><p>Recommended value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MCMCID</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">4</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nITERATIONS</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">350000</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nSAMPLES</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">2000</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nWRITE</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">175</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nPRINT</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">1000</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nSAMPLES_EDC_SEARCH</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">200000</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">seed_number</span></code></p></td>
+<td><p>Set explicitly for reproducibility.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="choosing-fadapt">
+<h3>Choosing <code class="docutils literal notranslate"><span class="pre">fADAPT</span></code><a class="headerlink" href="#choosing-fadapt" title="Link to this heading"></a></h3>
+<p>For modes with a phase switch, <code class="docutils literal notranslate"><span class="pre">fADAPT</span></code> controls the fraction of production iterations spent in the first proposal phase.</p>
+<p>For example, with:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>nITERATIONS = 350000
+fADAPT = 0.3
+</pre></div>
+</div>
+<p>the first phase lasts:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>0.3 * 350000 = 105000 iterations
+</pre></div>
+</div>
+<p>Mode-specific interpretation:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Mode 4: first 105000 iterations use affine/stretch proposals, then DEMCMC
+Mode 7: first 105000 iterations use affine/stretch proposals, then DEMCMCZS
+Mode 10: first 105000 iterations use HYBRID_AIDE, then DEMCMC
+</pre></div>
+</div>
+</section>
+</section>
+<section id="proposal-building-blocks-and-hybrid-modes">
+<h2>Proposal Building Blocks and Hybrid Modes<a class="headerlink" href="#proposal-building-blocks-and-hybrid-modes" title="Link to this heading"></a></h2>
+<p>Most of the MCMC modes in this branch are built from two main population-based proposal families: affine/stretch proposals and differential-evolution proposals.</p>
+<section id="affine-stretch-proposals">
+<h3>Affine/Stretch Proposals<a class="headerlink" href="#affine-stretch-proposals" title="Link to this heading"></a></h3>
+<p>Affine-style proposals move one chain relative to another live chain in the ensemble:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>new = partner + z * (current - partner)
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">z</span></code> is a random stretch factor. This proposal is useful when the posterior has elongated or correlated geometry, because the move is defined using the shape of the current ensemble rather than a fixed coordinate-wise step size.</p>
+<p>The affine proposal uses the Hastings correction:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>(npars - 1) * log(z)
+</pre></div>
+</div>
+</section>
+<section id="demcmc-proposals">
+<h3>DEMCMC Proposals<a class="headerlink" href="#demcmc-proposals" title="Link to this heading"></a></h3>
+<p>DEMCMC proposes movement using the difference between two other live chains:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>new = current + gamma * (chain_a - chain_b) + noise
+</pre></div>
+</div>
+<p>This allows the sampler to use the scale and orientation of the ensemble to generate jumps. CARDAMOM’s standard <code class="docutils literal notranslate"><span class="pre">DEMCMC</span></code> gamma convention is:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>90% of proposals: gamma = 0.1 * 2.38 / sqrt(2 * npars)
+10% of proposals: gamma = 1.0
+</pre></div>
+</div>
+</section>
+<section id="archive-based-demcmczs-proposals">
+<h3>Archive-Based DEMCMCZS Proposals<a class="headerlink" href="#archive-based-demcmczs-proposals" title="Link to this heading"></a></h3>
+<p>DEMCMCZS extends DEMCMC by drawing difference vectors from an archive <code class="docutils literal notranslate"><span class="pre">Z</span></code> of previous chain states rather than only from the current live ensemble. This can make proposals cheaper and more diverse, especially when running with fewer active chains. DEMCMCZS also includes occasional snooker proposals.</p>
+</section>
+<section id="dreamzs-lite-proposals">
+<h3>DREAMZS-lite Proposals<a class="headerlink" href="#dreamzs-lite-proposals" title="Link to this heading"></a></h3>
+<p>DREAMZS-lite uses the DEMCMCZS archive structure but adds crossover/subspace updates. This means each proposal can update only a subset of parameters rather than always moving the full parameter vector.</p>
+</section>
+<section id="sequential-hybrid-modes">
+<h3>Sequential Hybrid Modes<a class="headerlink" href="#sequential-hybrid-modes" title="Link to this heading"></a></h3>
+<p>Sequential hybrid modes use one proposal family during an early phase of the run and then switch to another proposal family later. The switch point is controlled by <code class="docutils literal notranslate"><span class="pre">fADAPT</span></code>.</p>
+<p>For example:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Mode 4: affine/stretch phase -&gt; DEMCMC phase
+Mode 7: affine/stretch phase -&gt; DEMCMCZS phase
+Mode 10: HYBRID_AIDE phase -&gt; DEMCMC phase
+</pre></div>
+</div>
+<p>These modes are useful for testing whether one proposal is better for burn-in while another is better for production sampling.</p>
+</section>
+<section id="mixed-kernel-hybrid-modes">
+<h3>Mixed-Kernel Hybrid Modes<a class="headerlink" href="#mixed-kernel-hybrid-modes" title="Link to this heading"></a></h3>
+<p>Mixed-kernel modes combine proposal mechanisms inside the production sampler rather than only switching once between phases.</p>
+<p>For example:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Mode 5: DEMCMCZS archive proposals + snooker proposals
+Mode 8: DREAMZS-lite archive proposals + crossover/subspace updates + snooker proposals
+Mode 9: HYBRID_AIDE, which combines DEMCMC translation with affine/stretch movement in each proposal
+</pre></div>
+</div>
+<p>HYBRID_AIDE is the most direct mixed-kernel proposal. Each proposal composes a DEMCMC translation with an affine stretch move, using one of two possible orderings:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>DEMCMC translation -&gt; affine stretch
+affine stretch -&gt; DEMCMC translation
+</pre></div>
+</div>
+</section>
+</section>
+<section id="adding-a-new-mcmc-mode">
+<h2>Adding a new MCMC mode<a class="headerlink" href="#adding-a-new-mcmc-mode" title="Link to this heading"></a></h2>
+<p>As previously stated, MCMC modes in CARDAMOM are selected through the <code class="docutils literal notranslate"><span class="pre">MCMCID</span></code> value in the CBF
+NetCDF file. Adding a new mode usually requires changes in two places: the MDF
+driver that dispatches the selected sampler, and the MCMC function files that
+implement the proposal logic.</p>
+<section id="main-files-to-update">
+<h3>Main files to update<a class="headerlink" href="#main-files-to-update" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>What to change</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">C/projects/CARDAMOM_MDF/CARDAMOM_MDF.c</span></code></p></td>
+<td><p>Include the new sampler file, assign the chain count for the new <code class="docutils literal notranslate"><span class="pre">MCMCID</span></code>, and add a <code class="docutils literal notranslate"><span class="pre">case</span></code> in the MCMC dispatcher.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">C/projects/CARDAMOM_MDF/MCMC_SETUP/PROJECT_FUN/FIND_EDC_INITIAL_VALUES.c</span></code></p></td>
+<td><p>Decide how the new mode should receive EDC-passing initial chains. For fair comparisons, new multi-chain modes should usually use the same deterministic 400-chain EDC search as modes 3-10.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">C/mcmc_fun/MHMCMC/MCMC_FUN/&lt;NEW_MODE&gt;.c</span></code></p></td>
+<td><p>Implement the production sampler loop. This usually handles chain state, likelihood calls, acceptance, output writing, and restart writing.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">C/mcmc_fun/MHMCMC/MCMC_FUN/STEP_&lt;NEW_MODE&gt;.c</span></code></p></td>
+<td><p>Optional but preferred if the proposal step is complex. Keeps proposal construction separate from the sampler loop.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PYTHON/CARDAMOM_WRITE_CBF_NC_FILE.py</span></code></p></td>
+<td><p>Update only if the new mode needs new CBF attributes or defaults.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="a-brief-implementation-checklist">
+<h3>A Brief Implementation checklist<a class="headerlink" href="#a-brief-implementation-checklist" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Pick an unused <code class="docutils literal notranslate"><span class="pre">MCMCID</span></code>.</p></li>
+<li><p>Add the sampler include in <code class="docutils literal notranslate"><span class="pre">CARDAMOM_MDF.c</span></code>.</p></li>
+<li><p>Set the intended number of chains for the new mode in <code class="docutils literal notranslate"><span class="pre">CARDAMOM_MDF.c</span></code>.</p></li>
+<li><p>Add a new <code class="docutils literal notranslate"><span class="pre">case</span></code> in the <code class="docutils literal notranslate"><span class="pre">switch</span> <span class="pre">(MCOPT.mcmcid)</span></code> block that calls the new sampler.</p></li>
+<li><p>Decide how EDC initialization should work in <code class="docutils literal notranslate"><span class="pre">FIND_EDC_INITIAL_VALUES.c</span></code>.</p></li>
+<li><p>Make sure the new mode receives <code class="docutils literal notranslate"><span class="pre">PI.parini</span></code> in the expected shape:
+<code class="docutils literal notranslate"><span class="pre">nchains</span> <span class="pre">*</span> <span class="pre">npars</span></code>.</p></li>
+<li><p>Use the same output-writing convention as the existing samplers:
+write results every <code class="docutils literal notranslate"><span class="pre">MCO.nWRITE</span></code> iterations.</p></li>
+<li><p>Write restart files consistently if the sampler supports restart behavior.</p></li>
+<li><p>Recompile CARDAMOM and confirm that the executable timestamp changed. This ensures the run is using the newly compiled code rather than an older executable.</p></li>
+<li><p>Run short diagnostic tests before launching long production runs.</p></li>
+</ol>
+</section>
+<section id="things-to-watch-out-for">
+<h3>Things to watch out for<a class="headerlink" href="#things-to-watch-out-for" title="Link to this heading"></a></h3>
+<p>The EDC search and production sampler are separate phases. If the goal is to
+compare MCMC algorithms, the new mode should not accidentally use a different
+EDC search path, chain count, seed sequence, or EDC stopping rule unless that is
+the intended experiment.</p>
+<p>Chain count matters. Some modes keep all 400 EDC endpoints, while others rank
+EDC-passing chains and continue with a smaller active ensemble. This affects
+both the math of the sampler and the shape of the output files.</p>
+<p>Archive-based methods need extra care. If the sampler uses an archive <code class="docutils literal notranslate"><span class="pre">Z</span></code>, decide
+what goes into the archive, when archive rows are added, and whether early affine
+or warmup samples should be included.</p>
+<p>Proposal symmetry matters. Standard DEMCMC proposals are usually symmetric and
+do not need a Hastings correction. Affine/stretch proposals are not symmetric
+and require the affine Hastings correction. Hybrid proposals need careful
+checking so that the acceptance probability matches the actual proposal
+mechanism.</p>
+<p>Restart behavior can differ by mode. If a new sampler does not support restart
+or append behavior, document that clearly and avoid silent reuse of incompatible
+<code class="docutils literal notranslate"><span class="pre">START</span></code> files.</p>
+<p>Output size can grow quickly. <code class="docutils literal notranslate"><span class="pre">nWRITE</span></code>, <code class="docutils literal notranslate"><span class="pre">nITERATIONS</span></code>, and <code class="docutils literal notranslate"><span class="pre">nchains</span></code> together
+control how many parameter vectors are written. For early diagnostic runs, set
+<code class="docutils literal notranslate"><span class="pre">nWRITE</span></code> explicitly so the output is interpretable and comparable across modes.</p>
+</section>
+</section>
+<section id="faq">
+<h2>FAQ<a class="headerlink" href="#faq" title="Link to this heading"></a></h2>
+<section id="q-why-does-the-first-half-of-output-look-systematically-different">
+<h3>Q: Why does the first half of output look systematically different?<a class="headerlink" href="#q-why-does-the-first-half-of-output-look-systematically-different" title="Link to this heading"></a></h3>
+<p>A: MCMC starts from initial parameter combinations and can take time to converge.
+It is common to discard the first portion of MCMC outputs as burn-in. The exact
+burn-in fraction should be chosen based on the sampler, run length, and
+diagnostics for the analysis.</p>
+<img width="356" alt="image" src="https://user-images.githubusercontent.com/23563444/208981078-91bc8c55-c6de-407e-aff4-98e74aad02d7.png">
+<p>Figure 1: Example of full output where early samples differ from later samples.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="MATLAB_DEMO.html" class="btn btn-neutral float-left" title="MATLAB demo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="MODEL_IDs.html" class="btn btn-neutral float-right" title="DALEC model IDs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
