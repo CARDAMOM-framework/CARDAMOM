@@ -27,6 +27,10 @@ SITES = [
     {"name": "US-Wkg", "lat": 31.7365, "lon": -109.9419}
 ]
 
+#
+# Note: CALLMIP already provides most of these drivers. CARDAMOM team only needs surface skin temp 
+#
+#
 pad = 0.25
 data_format = "netcdf"
 dataset = "reanalysis-era5-single-levels-monthly-means"
