@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     TEST_DALEC_1100
+relocations:     []
+...
