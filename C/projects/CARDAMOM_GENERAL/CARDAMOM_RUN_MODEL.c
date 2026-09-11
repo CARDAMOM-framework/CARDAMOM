@@ -482,21 +482,25 @@ clock_t    end = clock();//End timer
 //(with N (Number of samples) being another dimension, applied to all vars)
 
 
-for(int s = 0; s < output_flux_count; s++){
-  int flux_idx = CARDADATA.ncdf_data.FLUXES_SUBSET_INDICES[s];
-  for(int t = 0; t < Ntimesteps; t++){
-    double flux_val = CARDADATA.M_FLUXES[t * CARDADATA.nofluxes + flux_idx];
-    FAILONERROR(nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,t,s}, (const size_t[]){1,1,1}, &flux_val));
+double *flux_subset = calloc(Ntimesteps * output_flux_count, sizeof(double));
+for(int t = 0; t < Ntimesteps; t++){
+  for(int s = 0; s < output_flux_count; s++){
+    int flux_idx = CARDADATA.ncdf_data.FLUXES_SUBSET_INDICES[s];
+    flux_subset[t * output_flux_count + s] = CARDADATA.M_FLUXES[t * CARDADATA.nofluxes + flux_idx];
   }
 }
+FAILONERROR(nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps,output_flux_count}, flux_subset));
+free(flux_subset);
 
-for(int s = 0; s < output_pool_count; s++){
-  int pool_idx = CARDADATA.ncdf_data.POOLS_SUBSET_INDICES[s];
-  for(int t = 0; t < Ntimesteps+1; t++){
-    double pool_val = CARDADATA.M_POOLS[t * CARDADATA.nopools + pool_idx];
-    FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,t,s}, (const size_t[]){1,1,1}, &pool_val));
+double *pool_subset = calloc((Ntimesteps+1) * output_pool_count, sizeof(double));
+for(int t = 0; t < Ntimesteps+1; t++){
+  for(int s = 0; s < output_pool_count; s++){
+    int pool_idx = CARDADATA.ncdf_data.POOLS_SUBSET_INDICES[s];
+    pool_subset[t * output_pool_count + s] = CARDADATA.M_POOLS[t * CARDADATA.nopools + pool_idx];
   }
 }
+FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps+1,output_pool_count}, pool_subset));
+free(pool_subset);
 FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars));
 
 
