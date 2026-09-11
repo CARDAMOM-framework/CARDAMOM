@@ -300,7 +300,7 @@ double ** ncdf_read_double_2D(int ncid, const char * varName, size_t * dimLen ){
 /*
  * Function:  ncdf_read_string_array
  * --------------------
- * Attempts to read a 1 dimensional string array variable from netCDF file
+ * Attempts to read a string array from netCDF (2D char array or 1D var)
  *
  *  ncid: netCDF file ID to pull the data from
  *  varName: This is the name of the variable to read
@@ -312,28 +312,72 @@ double ** ncdf_read_double_2D(int ncid, const char * varName, size_t * dimLen ){
 char **ncdf_read_string_array(int ncid, const char *varName, int *count) {
 	int retval = 0;
 	int varID;
-	size_t len;
+	int numberOfDims;
+	size_t dimLens[2];
 
-	if (!ncfd_get_var_info(ncid, varName, &len, &varID)) {
+	if ((retval = nc_inq_varid(ncid, varName, &varID))) {
+		if (retval == NC_ENOTVAR && ALLOW_DEFAULTS) {
+			*count = 0;
+			return NULL;
+		}
+		ERR_VAR(retval, varName);
+	}
+
+	if ((retval = nc_inq_varndims(ncid, varID, &numberOfDims))) {
+		ERR_VAR(retval, varName);
+	}
+
+	if (numberOfDims == 2) {
+		int dimensionIDs[2];
+		if ((retval = nc_inq_vardimid(ncid, varID, dimensionIDs))) {
+			ERR_VAR(retval, varName);
+		}
+		if ((retval = nc_inq_dimlen(ncid, dimensionIDs[0], &dimLens[0]))) {
+			ERR_VAR(retval, varName);
+		}
+		if ((retval = nc_inq_dimlen(ncid, dimensionIDs[1], &dimLens[1]))) {
+			ERR_VAR(retval, varName);
+		}
+
+		*count = (int)dimLens[0];
+		int str_len = (int)dimLens[1];
+
+		char **strings = calloc(dimLens[0], sizeof(char *));
+		for (size_t i = 0; i < dimLens[0]; i++) {
+			strings[i] = calloc(100, sizeof(char));
+			if ((retval = nc_get_vara_text(ncid, varID, (const size_t[]){i, 0}, (const size_t[]){1, str_len}, strings[i]))) {
+				if (retval != NC_NOERR && ALLOW_DEFAULTS) {
+					strings[i][0] = '\0';
+				}
+			}
+			strings[i][str_len < 100 ? str_len : 99] = '\0';
+		}
+		return strings;
+	} else if (numberOfDims == 1) {
+		size_t len;
+		if (!ncfd_get_var_info(ncid, varName, &len, &varID)) {
+			*count = 0;
+			return NULL;
+		}
+		*count = (int)len;
+		char **strings = calloc(len, sizeof(char *));
+		for (size_t i = 0; i < len; i++) {
+			strings[i] = calloc(100, sizeof(char));
+			size_t start = i;
+			size_t count_read = 1;
+			if ((retval = nc_get_vara_text(ncid, varID, &start, &count_read, strings[i]))) {
+				if (retval != NC_NOERR && ALLOW_DEFAULTS) {
+					strings[i][0] = '\0';
+				}
+			}
+		}
+		return strings;
+	} else {
+		printf("Error in %s at %d: FLUXES_SUBSET/POOLS_SUBSET must be 1D or 2D, got %d dimensions\n",
+		       __FILE__, __LINE__, numberOfDims);
 		*count = 0;
 		return NULL;
 	}
-
-	*count = (int)len;
-	char **strings = calloc(len, sizeof(char *));
-
-	for (size_t i = 0; i < len; i++) {
-		strings[i] = calloc(100, sizeof(char));
-		size_t start = i;
-		size_t count_read = 1;
-		if ((retval = nc_get_vara_text(ncid, varID, &start, &count_read, strings[i]))) {
-			if (retval != NC_NOERR && ALLOW_DEFAULTS) {
-				strings[i][0] = '\0';
-			}
-		}
-	}
-
-	return strings;
 }
 
 
