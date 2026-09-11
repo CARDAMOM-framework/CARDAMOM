@@ -28,6 +28,40 @@
 #define min(a,b) ({ __typeof__ (a) _a = (a);  __typeof__ (b) _b = (b);  _a < _b ? _a : _b; })
 
 
+int *build_subset_indices(char **abbreviations, int nabbrevs,
+                          char **subset_names, int nsubset, int *out_count) {
+    if (subset_names == NULL || nsubset == 0) {
+        *out_count = nabbrevs;
+        int *all_indices = calloc(nabbrevs, sizeof(int));
+        for (int i = 0; i < nabbrevs; i++) {
+            all_indices[i] = i;
+        }
+        return all_indices;
+    }
+
+    int *indices = calloc(nsubset, sizeof(int));
+    int found_count = 0;
+
+    for (int s = 0; s < nsubset; s++) {
+        int found = 0;
+        for (int i = 0; i < nabbrevs; i++) {
+            if (abbreviations[i] != NULL &&
+                strcmp(abbreviations[i], subset_names[s]) == 0) {
+                indices[found_count++] = i;
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            printf("Warning: Subset name '%s' not found in abbreviations\n", subset_names[s]);
+        }
+    }
+
+    *out_count = found_count;
+    return indices;
+}
+
+
 //This scans the string and removes all instances of the string toFind, and replaces them with the single char toReplace.
 void str_inplace_replace(char * str, const char * toFind, const char toReplace){
   //Yeah this implementation is N^2... but we have a small fixed max N, so don't @ me.
@@ -146,10 +180,31 @@ int sampleDimID,  timePoolsDimID,timeFluxesDimID, probIdxDimID,edcIdxDimID, noLi
 FAILONERROR(nc_def_dim(ncid,"Sample",N,&sampleDimID));
 
 
+struct FLUX_META_STRUCT fluxInfo_pre = ((DALEC *)CARDADATA.MODEL)->FLUX_META;
+struct POOLS_META_STRUCT poolsInfo_pre = ((DALEC *)CARDADATA.MODEL)->POOLS_META;
+
+CARDADATA.ncdf_data.FLUXES_SUBSET_INDICES = build_subset_indices(
+    fluxInfo_pre.ABBREVIATION, CARDADATA.nofluxes,
+    CARDADATA.ncdf_data.FLUXES_SUBSET_NAMES,
+    CARDADATA.ncdf_data.FLUXES_SUBSET_COUNT,
+    &CARDADATA.ncdf_data.FLUXES_SUBSET_COUNT);
+
+CARDADATA.ncdf_data.POOLS_SUBSET_INDICES = build_subset_indices(
+    poolsInfo_pre.ABBREVIATION, CARDADATA.nopools,
+    CARDADATA.ncdf_data.POOLS_SUBSET_NAMES,
+    CARDADATA.ncdf_data.POOLS_SUBSET_COUNT,
+    &CARDADATA.ncdf_data.POOLS_SUBSET_COUNT);
+
+int output_flux_count = CARDADATA.ncdf_data.FLUXES_SUBSET_COUNT;
+int output_pool_count = CARDADATA.ncdf_data.POOLS_SUBSET_COUNT;
+
+printf("Output flux count: %d (of %d total)\n", output_flux_count, CARDADATA.nofluxes);
+printf("Output pool count: %d (of %d total)\n", output_pool_count, CARDADATA.nopools);
+
 int poolDimID;
-FAILONERROR(nc_def_dim(ncid,"Pool",CARDADATA.nopools,&poolDimID ));
+FAILONERROR(nc_def_dim(ncid,"Pool",output_pool_count,&poolDimID ));
 int fluxDimID;
-FAILONERROR(nc_def_dim(ncid,"Flux",CARDADATA.nofluxes,&fluxDimID ));
+FAILONERROR(nc_def_dim(ncid,"Flux",output_flux_count,&fluxDimID ));
 int noParsDimID;
 FAILONERROR(nc_def_dim(ncid,"Parameter",CARDADATA.nopars,&noParsDimID ));
 
@@ -183,7 +238,9 @@ FAILONERROR(nc_def_var(	ncid,"FLUXES" , NC_DOUBLE, 3, fluxes_dems, &(fluxesVarID
 
 //Create each flux's mapping as an attribute
 struct FLUX_META_STRUCT fluxInfo = ((DALEC *)CARDADATA.MODEL)->FLUX_META;
-for(int i = 0; i < CARDADATA.nofluxes; i++){
+
+for(int s = 0; s < output_flux_count; s++){
+  int i = CARDADATA.ncdf_data.FLUXES_SUBSET_INDICES[s];
   const char* ncVarAbbreviation =(const char *) calloc(sizeof(char), METADATA_MAX_LEN );//WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
 
   if (fluxInfo.ABBREVIATION != NULL && fluxInfo.ABBREVIATION[i] != NULL){
@@ -195,7 +252,7 @@ for(int i = 0; i < CARDADATA.nofluxes; i++){
 
   }
   //FAILONERROR(nc_def_var(	ncid,ncVarAbbreviation , NC_DOUBLE, 2, fluxes_dems, &(fluxesVarID[i]) ));
-  WARNONERROR(nc_put_att_int	(	ncid,fluxesVarID,ncVarAbbreviation,NC_INT,1,&i));
+  WARNONERROR(nc_put_att_int	(	ncid,fluxesVarID,ncVarAbbreviation,NC_INT,1,&s));
 }
 //metadata vars
 FAILONERROR(nc_def_var(	ncid,"FLUX_NAMES" , NC_CHAR, 2, fluxes_meta_dems, &(fluxesNameVarID) ));
@@ -204,16 +261,18 @@ FAILONERROR(nc_def_var(	ncid,"FLUX_UNITS" , NC_CHAR, 2, fluxes_meta_dems, &(flux
 
 
 //POOLS DEFINITION
-//Create each pool variable as its own var inside 
+//Create each pool variable as its own var inside
 int poolsVarID,poolsNameVarID,poolsDescriptionVarID, poolsUnitVarID;
 struct POOLS_META_STRUCT poolsInfo = ((DALEC *)CARDADATA.MODEL)->POOLS_META;
+
 int pools_dems[] = {sampleDimID,timePoolsDimID, poolDimID}; //poolsDimId was last in the order
 int pools_meta_dems[] = {poolDimID, chidDimID};
 
 FAILONERROR(nc_def_var(	ncid,"POOLS" , NC_DOUBLE, 3, pools_dems, &(poolsVarID) ));
 
 
-for(int i = 0; i < CARDADATA.nopools; i++){
+for(int s = 0; s < output_pool_count; s++){
+  int i = CARDADATA.ncdf_data.POOLS_SUBSET_INDICES[s];
   const char* ncVarAbbreviation =(const char *) calloc(sizeof(char), METADATA_MAX_LEN );//WARNING: DO NOT FREE THIS ARRAY! Netcdf libs require a const char*, so whatever is inside the string should not change or be freed!
   if (poolsInfo.ABBREVIATION != NULL && poolsInfo.ABBREVIATION[i] != NULL ){
     snprintf( (char *) ncVarAbbreviation,METADATA_MAX_LEN-1,"POOL-%s", poolsInfo.ABBREVIATION[i] );//Write to it once, overriding the const qualifier so it is set
@@ -223,7 +282,7 @@ for(int i = 0; i < CARDADATA.nopools; i++){
     printf("ERROR in %s at %d: pool ID %d has no defined ABBREVIATION in it's POOLS_META. Add it to your DALEC_####_NC_INFO.c file! This pool will be called %s until you do!\n", __FILE__, __LINE__,i,ncVarAbbreviation);
 
   }
-  WARNONERROR(nc_put_att_int	(	ncid,poolsVarID,ncVarAbbreviation,NC_INT,1,&i));
+  WARNONERROR(nc_put_att_int	(	ncid,poolsVarID,ncVarAbbreviation,NC_INT,1,&s));
 
 
   /*if (poolsInfo.NAME != NULL && poolsInfo.NAME[i] != NULL){
@@ -299,34 +358,36 @@ nc_enddef(ncid);
 
 
 //Insert Fluxes metadata
-for(int i = 0; i < CARDADATA.nofluxes; i++){
+for(int s = 0; s < output_flux_count; s++){
+  int i = CARDADATA.ncdf_data.FLUXES_SUBSET_INDICES[s];
   if (fluxInfo.NAME != NULL && fluxInfo.NAME[i] != NULL){
     //"Name"
-    WARNONERROR(nc_put_vara_text	(	ncid,fluxesNameVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.NAME[i]))},(const char *)fluxInfo.NAME[i]));
+    WARNONERROR(nc_put_vara_text	(	ncid,fluxesNameVarID,(const size_t[]){s,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.NAME[i]))},(const char *)fluxInfo.NAME[i]));
   }
   if (fluxInfo.DESCRIPTION != NULL && fluxInfo.DESCRIPTION[i] != NULL){
     //"Description"
-    WARNONERROR(nc_put_vara_text	(	ncid,fluxesDescriptionVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.DESCRIPTION[i]))},(const char *)fluxInfo.DESCRIPTION[i]));
+    WARNONERROR(nc_put_vara_text	(	ncid,fluxesDescriptionVarID,(const size_t[]){s,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.DESCRIPTION[i]))},(const char *)fluxInfo.DESCRIPTION[i]));
   }
   if (fluxInfo.UNITS != NULL && fluxInfo.UNITS[i] != NULL){
     //"Units"
-    WARNONERROR(nc_put_vara_text	(	ncid,fluxesUnitVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.UNITS[i]))},(const char *)fluxInfo.UNITS[i]));
+    WARNONERROR(nc_put_vara_text	(	ncid,fluxesUnitVarID,(const size_t[]){s,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(fluxInfo.UNITS[i]))},(const char *)fluxInfo.UNITS[i]));
   }
 }
 
 //Insert Pools metadata
-for(int i = 0; i < CARDADATA.nopools; i++){
+for(int s = 0; s < output_pool_count; s++){
+  int i = CARDADATA.ncdf_data.POOLS_SUBSET_INDICES[s];
   if (poolsInfo.NAME != NULL && poolsInfo.NAME[i] != NULL){
     //"Name"
-    WARNONERROR(nc_put_vara_text	(	ncid,poolsNameVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.NAME[i]))},(const char *)poolsInfo.NAME[i]));
+    WARNONERROR(nc_put_vara_text	(	ncid,poolsNameVarID,(const size_t[]){s,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.NAME[i]))},(const char *)poolsInfo.NAME[i]));
   }
   if (poolsInfo.DESCRIPTION != NULL && poolsInfo.DESCRIPTION[i] != NULL){
     //"Description"
-    WARNONERROR(nc_put_vara_text	(	ncid,poolsDescriptionVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.DESCRIPTION[i]))},(const char *)poolsInfo.DESCRIPTION[i]));
+    WARNONERROR(nc_put_vara_text	(	ncid,poolsDescriptionVarID,(const size_t[]){s,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.DESCRIPTION[i]))},(const char *)poolsInfo.DESCRIPTION[i]));
   }
   if (poolsInfo.UNITS != NULL && poolsInfo.UNITS[i] != NULL){
     //"Units"
-    WARNONERROR(nc_put_vara_text	(	ncid,poolsUnitVarID,(const size_t[]){i,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.UNITS[i]))},(const char *)poolsInfo.UNITS[i]));
+    WARNONERROR(nc_put_vara_text	(	ncid,poolsUnitVarID,(const size_t[]){s,0},(const size_t[]){1,min(METADATA_MAX_LEN-1,strlen(poolsInfo.UNITS[i]))},(const char *)poolsInfo.UNITS[i]));
   }
 }
 
@@ -421,8 +482,21 @@ clock_t    end = clock();//End timer
 //(with N (Number of samples) being another dimension, applied to all vars)
 
 
-FAILONERROR(nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps,CARDADATA.nofluxes}, CARDADATA.M_FLUXES));
-FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,0,0}, (const size_t[]){1,Ntimesteps+1,CARDADATA.nopools}, CARDADATA.M_POOLS));
+for(int s = 0; s < output_flux_count; s++){
+  int flux_idx = CARDADATA.ncdf_data.FLUXES_SUBSET_INDICES[s];
+  for(int t = 0; t < Ntimesteps; t++){
+    double flux_val = CARDADATA.M_FLUXES[t * CARDADATA.nofluxes + flux_idx];
+    FAILONERROR(nc_put_vara_double(ncid,fluxesVarID,(const size_t []){n,t,s}, (const size_t[]){1,1,1}, &flux_val));
+  }
+}
+
+for(int s = 0; s < output_pool_count; s++){
+  int pool_idx = CARDADATA.ncdf_data.POOLS_SUBSET_INDICES[s];
+  for(int t = 0; t < Ntimesteps+1; t++){
+    double pool_val = CARDADATA.M_POOLS[t * CARDADATA.nopools + pool_idx];
+    FAILONERROR(nc_put_vara_double(ncid,poolsVarID,(const size_t []){n,t,s}, (const size_t[]){1,1,1}, &pool_val));
+  }
+}
 FAILONERROR(nc_put_vara_double(ncid,parsVarID,(const size_t[]){n,0}, (const size_t[]){1,CARDADATA.nopars}, pars));
 
 
@@ -454,6 +528,27 @@ FAILONERROR(nc_close(ncid));
 
 /*Step 6: Free memory*/
 /*exhaustive list of all malloc/calloc used fields*/
+
+if (CARDADATA.ncdf_data.FLUXES_SUBSET_NAMES != NULL) {
+    for (int i = 0; i < CARDADATA.ncdf_data.FLUXES_SUBSET_COUNT; i++) {
+        free(CARDADATA.ncdf_data.FLUXES_SUBSET_NAMES[i]);
+    }
+    free(CARDADATA.ncdf_data.FLUXES_SUBSET_NAMES);
+}
+if (CARDADATA.ncdf_data.FLUXES_SUBSET_INDICES != NULL) {
+    free(CARDADATA.ncdf_data.FLUXES_SUBSET_INDICES);
+}
+
+if (CARDADATA.ncdf_data.POOLS_SUBSET_NAMES != NULL) {
+    for (int i = 0; i < CARDADATA.ncdf_data.POOLS_SUBSET_COUNT; i++) {
+        free(CARDADATA.ncdf_data.POOLS_SUBSET_NAMES[i]);
+    }
+    free(CARDADATA.ncdf_data.POOLS_SUBSET_NAMES);
+}
+if (CARDADATA.ncdf_data.POOLS_SUBSET_INDICES != NULL) {
+    free(CARDADATA.ncdf_data.POOLS_SUBSET_INDICES);
+}
+
 free(pars);
 FREE_DATA_STRUCT(CARDADATA);
 

@@ -298,6 +298,43 @@ double ** ncdf_read_double_2D(int ncid, const char * varName, size_t * dimLen ){
 }
 
 
+/*
+ * Function:  ncdf_read_string_array
+ * --------------------
+ * Attempts to read a 1 dimensional string array variable from netCDF file
+ *
+ *  ncid: netCDF file ID to pull the data from
+ *  varName: This is the name of the variable to read
+ *  count: pointer where the number of strings will be written
+ *
+ *  returns: array of string pointers, or NULL if variable doesn't exist
+ *   Each string is allocated with METADATA_MAX_LEN characters
+ */
+char **ncdf_read_string_array(int ncid, const char *varName, int *count) {
+	int retval = 0;
+	int varID;
+	size_t len;
+
+	if (!ncfd_get_var_info(ncid, varName, &len, &varID)) {
+		*count = 0;
+		return NULL;
+	}
+
+	*count = (int)len;
+	char **strings = calloc(len, sizeof(char *));
+
+	for (size_t i = 0; i < len; i++) {
+		strings[i] = calloc(METADATA_MAX_LEN, sizeof(char));
+		size_t start = i;
+		size_t count_read = 1;
+		if ((retval = nc_get_vara_text(ncid, varID, &start, &count_read, strings[i]))) {
+			WARNONERROR(retval);
+			strings[i][0] = '\0';
+		}
+	}
+
+	return strings;
+}
 
 
 

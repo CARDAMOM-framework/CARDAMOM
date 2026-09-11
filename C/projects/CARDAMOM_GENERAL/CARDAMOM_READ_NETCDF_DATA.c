@@ -389,6 +389,13 @@ double alpha = asin((sin(pi/180*DATA->LAT)*sin(pi/180*DA)+cos(pi/180*DATA->LAT)*
 printf("Done reading all data");
 
 
+DATA->FLUXES_SUBSET_NAMES = ncdf_read_string_array(ncid, "FLUXES_SUBSET", &DATA->FLUXES_SUBSET_COUNT);
+DATA->POOLS_SUBSET_NAMES = ncdf_read_string_array(ncid, "POOLS_SUBSET", &DATA->POOLS_SUBSET_COUNT);
+DATA->FLUXES_SUBSET_INDICES = NULL;
+DATA->POOLS_SUBSET_INDICES = NULL;
+
+printf("FLUXES_SUBSET_COUNT = %d\n", DATA->FLUXES_SUBSET_COUNT);
+printf("POOLS_SUBSET_COUNT = %d\n", DATA->POOLS_SUBSET_COUNT);
 
 
 MCMCID_STRUCT MCMCID;
