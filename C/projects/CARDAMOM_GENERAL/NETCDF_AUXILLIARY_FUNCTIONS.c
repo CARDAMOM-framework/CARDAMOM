@@ -6,7 +6,6 @@
 #define DEFAULT_DOUBLE_VAL -9999.0
 #define DEFAULT_INT_VAL -9999
 
-
 //NOTE ABOUT THIS MACRO:
 //If set to 1, netCDF methods will continue to run and return with default values if they fail to find the requested variable or attribute
 //if set to 0, they will instantly die on failing to find any variable or attribute
@@ -308,7 +307,7 @@ double ** ncdf_read_double_2D(int ncid, const char * varName, size_t * dimLen ){
  *  count: pointer where the number of strings will be written
  *
  *  returns: array of string pointers, or NULL if variable doesn't exist
- *   Each string is allocated with METADATA_MAX_LEN characters
+ *   Each string is allocated with 100 characters
  */
 char **ncdf_read_string_array(int ncid, const char *varName, int *count) {
 	int retval = 0;
@@ -324,12 +323,13 @@ char **ncdf_read_string_array(int ncid, const char *varName, int *count) {
 	char **strings = calloc(len, sizeof(char *));
 
 	for (size_t i = 0; i < len; i++) {
-		strings[i] = calloc(METADATA_MAX_LEN, sizeof(char));
+		strings[i] = calloc(100, sizeof(char));
 		size_t start = i;
 		size_t count_read = 1;
 		if ((retval = nc_get_vara_text(ncid, varID, &start, &count_read, strings[i]))) {
-			WARNONERROR(retval);
-			strings[i][0] = '\0';
+			if (retval != NC_NOERR && ALLOW_DEFAULTS) {
+				strings[i][0] = '\0';
+			}
 		}
 	}
 
