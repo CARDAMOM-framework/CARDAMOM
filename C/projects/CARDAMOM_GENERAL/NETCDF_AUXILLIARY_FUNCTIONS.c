@@ -300,84 +300,61 @@ double ** ncdf_read_double_2D(int ncid, const char * varName, size_t * dimLen ){
 /*
  * Function:  ncdf_read_string_array
  * --------------------
- * Attempts to read a string array from netCDF (2D char array or 1D var)
+ * Reads a comma-delimited string attribute from netCDF
  *
  *  ncid: netCDF file ID to pull the data from
- *  varName: This is the name of the variable to read
+ *  attrName: This is the name of the attribute to read
  *  count: pointer where the number of strings will be written
  *
- *  returns: array of string pointers, or NULL if variable doesn't exist
- *   Each string is allocated with 100 characters
+ *  returns: array of string pointers, or NULL if attribute doesn't exist
+ *   Reads a global attribute like "GPP,rh_co2,ets" and splits by commas
  */
-char **ncdf_read_string_array(int ncid, const char *varName, int *count) {
+char **ncdf_read_string_array(int ncid, const char *attrName, int *count) {
 	int retval = 0;
-	int varID;
-	int numberOfDims;
-	size_t dimLens[2];
+	size_t attr_len;
 
-	if ((retval = nc_inq_varid(ncid, varName, &varID))) {
-		if (retval == NC_ENOTVAR && ALLOW_DEFAULTS) {
+	if ((retval = nc_inq_attlen(ncid, NC_GLOBAL, attrName, &attr_len))) {
+		if (retval == NC_ENOTATT && ALLOW_DEFAULTS) {
 			*count = 0;
 			return NULL;
 		}
-		ERR_VAR(retval, varName);
+		ERR_ATTR_AND_CONTEXT(retval, attrName, "/", NC_GLOBAL);
 	}
 
-	if ((retval = nc_inq_varndims(ncid, varID, &numberOfDims))) {
-		ERR_VAR(retval, varName);
+	char *attr_value = calloc(attr_len + 1, sizeof(char));
+	if ((retval = nc_get_att_text(ncid, NC_GLOBAL, attrName, attr_value))) {
+		free(attr_value);
+		ERR_ATTR_AND_CONTEXT(retval, attrName, "/", NC_GLOBAL);
+	}
+	attr_value[attr_len] = '\0';
+
+	int num_strings = 1;
+	for (size_t i = 0; i < attr_len; i++) {
+		if (attr_value[i] == ',') num_strings++;
 	}
 
-	if (numberOfDims == 2) {
-		int dimensionIDs[2];
-		if ((retval = nc_inq_vardimid(ncid, varID, dimensionIDs))) {
-			ERR_VAR(retval, varName);
-		}
-		if ((retval = nc_inq_dimlen(ncid, dimensionIDs[0], &dimLens[0]))) {
-			ERR_VAR(retval, varName);
-		}
-		if ((retval = nc_inq_dimlen(ncid, dimensionIDs[1], &dimLens[1]))) {
-			ERR_VAR(retval, varName);
+	char **strings = calloc(num_strings, sizeof(char *));
+	int string_idx = 0;
+	char *token = strtok(attr_value, ",");
+	while (token != NULL && string_idx < num_strings) {
+		while (*token == ' ') token++;
+
+		strings[string_idx] = calloc(100, sizeof(char));
+		strncpy(strings[string_idx], token, 99);
+		strings[string_idx][99] = '\0';
+
+		size_t len = strlen(strings[string_idx]);
+		while (len > 0 && strings[string_idx][len-1] == ' ') {
+			strings[string_idx][--len] = '\0';
 		}
 
-		*count = (int)dimLens[0];
-		int str_len = (int)dimLens[1];
-
-		char **strings = calloc(dimLens[0], sizeof(char *));
-		for (size_t i = 0; i < dimLens[0]; i++) {
-			strings[i] = calloc(100, sizeof(char));
-			if ((retval = nc_get_vara_text(ncid, varID, (const size_t[]){i, 0}, (const size_t[]){1, str_len}, strings[i]))) {
-				if (retval != NC_NOERR && ALLOW_DEFAULTS) {
-					strings[i][0] = '\0';
-				}
-			}
-			strings[i][str_len < 100 ? str_len : 99] = '\0';
-		}
-		return strings;
-	} else if (numberOfDims == 1) {
-		size_t len;
-		if (!ncfd_get_var_info(ncid, varName, &len, &varID)) {
-			*count = 0;
-			return NULL;
-		}
-		*count = (int)len;
-		char **strings = calloc(len, sizeof(char *));
-		for (size_t i = 0; i < len; i++) {
-			strings[i] = calloc(100, sizeof(char));
-			size_t start = i;
-			size_t count_read = 1;
-			if ((retval = nc_get_vara_text(ncid, varID, &start, &count_read, strings[i]))) {
-				if (retval != NC_NOERR && ALLOW_DEFAULTS) {
-					strings[i][0] = '\0';
-				}
-			}
-		}
-		return strings;
-	} else {
-		printf("Error in %s at %d: FLUXES_SUBSET/POOLS_SUBSET must be 1D or 2D, got %d dimensions\n",
-		       __FILE__, __LINE__, numberOfDims);
-		*count = 0;
-		return NULL;
+		string_idx++;
+		token = strtok(NULL, ",");
 	}
+
+	free(attr_value);
+	*count = string_idx;
+	return strings;
 }
 
 
