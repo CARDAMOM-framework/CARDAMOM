@@ -19,12 +19,12 @@ for (n=0;n<PI.npars;n++){npar[n]=par2nor(xi[n],PI.parmin[n],PI.parmax[n]);}
 
 /*picking two distinct rows of the archive*/
 while (r1==r2){
-r1=ceil((double)random()*M/((double)RAND_MAX))-1;
-r2=ceil((double)random()*M/((double)RAND_MAX))-1;}
+r1=ceil((double)cardarand()*M/((double)CARDAMOM_RAND_MAX))-1;
+r2=ceil((double)cardarand()*M/((double)CARDAMOM_RAND_MAX))-1;}
 
 /*gamma: standard DE-MC scaling, with an occasional large jump (10% of updates)*/
 double gamma_de=2.38/sqrt(2.0*(double)PI.npars);
-if ((double)random()/(double)RAND_MAX<0.1){gamma_de=1;}
+if ((double)cardarand()/(double)CARDAMOM_RAND_MAX<0.1){gamma_de=1;}
 
 int withinlim=1;
 for (n=0;n<PI.npars;n++){
@@ -60,9 +60,9 @@ for (n=0;n<PI.npars;n++){npar[n]=par2nor(xi[n],PI.parmin[n],PI.parmax[n]);}
 
 /*picking three distinct rows: z (the snooker reference line partner) and r1,r2 (for the projection)*/
 while (rz==r1 || rz==r2 || r1==r2){
-rz=ceil((double)random()*M/((double)RAND_MAX))-1;
-r1=ceil((double)random()*M/((double)RAND_MAX))-1;
-r2=ceil((double)random()*M/((double)RAND_MAX))-1;}
+rz=ceil((double)cardarand()*M/((double)CARDAMOM_RAND_MAX))-1;
+r1=ceil((double)cardarand()*M/((double)CARDAMOM_RAND_MAX))-1;
+r2=ceil((double)cardarand()*M/((double)CARDAMOM_RAND_MAX))-1;}
 
 double dnorm2=0;
 for (n=0;n<PI.npars;n++){
@@ -86,7 +86,7 @@ s1=s1+(par2nor(Z[r1*PI.npars+n],PI.parmin[n],PI.parmax[n])-nz[n])*d[n]/dnorm;
 s2=s2+(par2nor(Z[r2*PI.npars+n],PI.parmin[n],PI.parmax[n])-nz[n])*d[n]/dnorm;}
 
 /*gamma_s ~ U[1.2,2.2], the randomised snooker step size ter Braak & Vrugt (2008) use as default*/
-double gammas=1.2+((double)random()/(double)RAND_MAX)*1.0;
+double gammas=1.2+((double)cardarand()/(double)CARDAMOM_RAND_MAX)*1.0;
 
 int withinlim=1;
 double xstarnorm2=0;

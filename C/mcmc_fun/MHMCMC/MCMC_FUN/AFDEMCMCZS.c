@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "../../../auxi_fun/cardamom_random.h"
 #include "../../../math_fun/std.c"
 #include "NORMPARS.c"
 #include "STEP_AFDEMCMC.c"
@@ -63,7 +64,7 @@ double par;
 for (nn=0;nn<NC;nn++){
 for (n=0;n<PI.npars;n++){
 if (MCO.randparini==1 && PI.parfix[n]!=1){
-par=nor2par((double)random()/(double)RAND_MAX,PI.parmin[n],PI.parmax[n]);
+par=nor2par((double)cardarand()/(double)CARDAMOM_RAND_MAX,PI.parmin[n],PI.parmax[n]);
 }else{
 par=PI.parini[n+nn*PI.npars];
 if (par>PI.parmax[n] || par<PI.parmin[n]){printf("Warning, prescribed initial parameters are out of range\n");}
@@ -76,7 +77,7 @@ Z[nn*PI.npars+n]=par;
 for (nn=NC;nn<M0;nn++){
 for (n=0;n<PI.npars;n++){
 if (PI.parfix[n]==1){par=PI.parini[n];}
-else{par=nor2par((double)random()/(double)RAND_MAX,PI.parmin[n],PI.parmax[n]);}
+else{par=nor2par((double)cardarand()/(double)CARDAMOM_RAND_MAX,PI.parmin[n],PI.parmax[n]);}
 Z[nn*PI.npars+n]=par;
 }}
 
@@ -163,14 +164,14 @@ gratio=0;
 if (N.ITER<switch_iter){
 withinrange=STEP_AFDEMCMC(PARS,pars_new,PI,nn,activeNC,&gratio);
 }else{
-if ((double)random()/(double)RAND_MAX<psnooker){
+if ((double)cardarand()/(double)CARDAMOM_RAND_MAX<psnooker){
 withinrange=STEP_DEMCMCZ_SNOOKER(&PARS[nn*PI.npars],Z,M,pars_new,PI,&gratio);
 }else{
 withinrange=STEP_DEMCMCZ_PARALLEL(&PARS[nn*PI.npars],Z,M,pars_new,PI);
 }
 }
 
-lr=log((double)random()/(double)RAND_MAX);
+lr=log((double)cardarand()/(double)CARDAMOM_RAND_MAX);
 
 if (withinrange==1){
 wrlocal=wrlocal+1;
