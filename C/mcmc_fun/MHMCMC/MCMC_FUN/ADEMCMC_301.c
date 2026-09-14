@@ -102,7 +102,7 @@ for (n=0;n<PI.npars;n++){
 
 if (MCO.randparini==1 && PI.parfix[n]!=1){
 /*random parameter if PI.parini = -9999*/
-PARS[n+nn*PI.npars]=nor2par((double)cardarand()/(double)CARDAMOM_RAND_MAX,PI.parmin[n],PI.parmax[n]);}
+PARS[n+nn*PI.npars]=nor2par(cardaurand(),PI.parmin[n],PI.parmax[n]);}
 else{par=PI.parini[n+nn*PI.npars];
 PARS[n+nn*PI.npars]=par;
 if (par>PI.parmax[n] | par<PI.parmin[n]){printf("Warning, prescribed initial parameters are out of range");}
@@ -167,7 +167,7 @@ for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
 	}
 
 	
-	lr=log((double)cardarand()/(double)CARDAMOM_RAND_MAX);
+	lr=log(cardaurand());
 	/*p(x) = 0 if parameters outside bounds*/
 	if (withinrange==1 & -P[nn]+gratio>lr){
 wrlocal=wrlocal+1;

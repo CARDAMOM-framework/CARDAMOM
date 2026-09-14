@@ -33,10 +33,10 @@ double gamma_de=1 - (1 - 2.38 / sqrt(2.0 * PI.npars) * 0.1) *
 	(double)(((double)cardarand() / (double)CARDAMOM_RAND_MAX) < 0.9);
 
 double a_gw=1.0+exp(randn());
-double u_z=(double)cardarand()/(double)CARDAMOM_RAND_MAX;
+double u_z=cardaurand();
 double z=pow((u_z*(sqrt(a_gw)-1.0/sqrt(a_gw))+1.0/sqrt(a_gw)),2.0);
 
-int de_first=((double)cardarand()/(double)CARDAMOM_RAND_MAX>0.5);
+int de_first=(cardaurand()>0.5);
 int withinlim=1;
 
 if (de_first){

@@ -41,7 +41,7 @@ X[nn*PI.npars+n]=parini[n+nn*PI.npars];
 for (nn=NC;nn<M0;nn++){
 for (n=0;n<PI.npars;n++){
 if (PI.parfix[n]==1){Z[nn*PI.npars+n]=parini[n];}
-else{Z[nn*PI.npars+n]=nor2par((double)cardarand()/(double)CARDAMOM_RAND_MAX,PI.parmin[n],PI.parmax[n]);}
+else{Z[nn*PI.npars+n]=nor2par(cardaurand(),PI.parmin[n],PI.parmax[n]);}
 }}
 
 for (nn=0;nn<NC;nn++){
@@ -57,13 +57,13 @@ for (iter=0;iter<niter;iter++){
 for (nn=0;nn<NC;nn++){
 
 gratio=0;
-if ((double)cardarand()/(double)CARDAMOM_RAND_MAX<psnooker){
+if (cardaurand()<psnooker){
 withinrange=STEP_DEMCMCZ_SNOOKER(&X[nn*PI.npars],Z,M,pars_new,PI,&gratio);
 }else{
 withinrange=STEP_DEMCMCZ_PARALLEL(&X[nn*PI.npars],Z,M,pars_new,PI);
 }
 
-lr=log((double)cardarand()/(double)CARDAMOM_RAND_MAX);
+lr=log(cardaurand());
 
 if (withinrange==1){
 P_new=MODEL_LIKELIHOOD(DATA,pars_new);

@@ -33,14 +33,14 @@ if (force_dim>=PI.npars){force_dim=PI.npars-1;}
 
 int nupdate=0;
 for (n=0;n<PI.npars;n++){
-if (n==force_dim || (double)cardarand()/(double)CARDAMOM_RAND_MAX<CR){
+if (n==force_dim || cardaurand()<CR){
 update[n]=1;
 nupdate=nupdate+1;
 }}
 
 /*DREAM uses the number of updated dimensions for the DE scale.*/
 double gamma_de=2.38/sqrt(2.0*(double)nupdate);
-if ((double)cardarand()/(double)CARDAMOM_RAND_MAX<0.1){gamma_de=1;}
+if (cardaurand()<0.1){gamma_de=1;}
 
 int withinlim=1;
 for (n=0;n<PI.npars;n++){

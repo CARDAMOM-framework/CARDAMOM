@@ -51,7 +51,7 @@ printf("HYBRID_AIDE_DEMCMC: AIDE phase ends at iteration %d out of %d\n",switch_
 for (nn=0;nn<NC;nn++){
 for (n=0;n<PI.npars;n++){
 if (MCO.randparini==1 && PI.parfix[n]!=1){
-PARS[n+nn*PI.npars]=nor2par((double)cardarand()/(double)CARDAMOM_RAND_MAX,PI.parmin[n],PI.parmax[n]);
+PARS[n+nn*PI.npars]=nor2par(cardaurand(),PI.parmin[n],PI.parmax[n]);
 }else{
 par=PI.parini[n+nn*PI.npars];
 PARS[n+nn*PI.npars]=par;
@@ -87,7 +87,7 @@ withinrange=STEP_DEMCMC(PARS,pars_new,PI,nn,NC);
 gratio=0;
 }
 
-lr=log((double)cardarand()/(double)CARDAMOM_RAND_MAX);
+lr=log(cardaurand());
 if (withinrange==1){
 wrlocal=wrlocal+1;
 P_new=MODEL_LIKELIHOOD(DATA,pars_new);

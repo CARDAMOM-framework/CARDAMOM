@@ -26,6 +26,10 @@ long cardarand(void) {
     return (long)(pcg32_random_r(&pcg32_global) & 0x7FFFFFFFL);
 }
 
+double cardaurand(void) {
+    return (double)cardarand() / (double)CARDAMOM_RAND_MAX;
+}
+
 double cardarand_uniform(void) {
     return (double)pcg32_random_r(&pcg32_global) / (double)0x100000000ULL;
 }

@@ -61,7 +61,7 @@ double par;
 for (nn=0;nn<NC;nn++){
 for (n=0;n<PI.npars;n++){
 if (MCO.randparini==1 && PI.parfix[n]!=1){
-par=nor2par((double)cardarand()/(double)CARDAMOM_RAND_MAX,PI.parmin[n],PI.parmax[n]);
+par=nor2par(cardaurand(),PI.parmin[n],PI.parmax[n]);
 }else{
 par=PI.parini[n+nn*PI.npars];
 if (par>PI.parmax[n] || par<PI.parmin[n]){printf("Warning, prescribed initial parameters are out of range\n");}
@@ -75,7 +75,7 @@ X[nn*PI.npars+n]=par;
 for (nn=NC;nn<M0;nn++){
 for (n=0;n<PI.npars;n++){
 if (PI.parfix[n]==1){par=PI.parini[n];}
-else{par=nor2par((double)cardarand()/(double)CARDAMOM_RAND_MAX,PI.parmin[n],PI.parmax[n]);}
+else{par=nor2par(cardaurand(),PI.parmin[n],PI.parmax[n]);}
 Z[nn*PI.npars+n]=par;
 }}
 
@@ -103,13 +103,13 @@ for (N.ITER=0;N.ITER<MCO.nOUT;N.ITER++){
 for (nn=0;nn<NC;nn++){
 
 gratio=0;
-if ((double)cardarand()/(double)CARDAMOM_RAND_MAX<psnooker){
+if (cardaurand()<psnooker){
 withinrange=STEP_DEMCMCZ_SNOOKER(&X[nn*PI.npars],Z,M,pars_new,PI,&gratio);
 }else{
 withinrange=STEP_DEMCMCZ_PARALLEL(&X[nn*PI.npars],Z,M,pars_new,PI);
 }
 
-lr=log((double)cardarand()/(double)CARDAMOM_RAND_MAX);
+lr=log(cardaurand());
 
 if (withinrange==1){
 wrlocal=wrlocal+1;

@@ -10,6 +10,7 @@ typedef struct {
 
 void cardarand_seed(uint64_t seed);
 long cardarand(void);
+double cardaurand(void);
 double cardarand_uniform(void);
 
 #define CARDAMOM_RAND_MAX 2147483647L
