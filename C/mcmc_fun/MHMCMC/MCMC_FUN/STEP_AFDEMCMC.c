@@ -11,7 +11,7 @@ double STEP_AFDEMCMC(double *PARS, double *pars_new, PARAMETER_INFO PI, int C, i
     /* Step 1. Find random sample (reference chain) other than current chain */
     C1=C;
     while (C1==C){
-        C1 = ceil((double)random() * NC / ((double)RAND_MAX)) - 1;
+        C1 = ceil((double)cardarand() * NC / ((double)CARDAMOM_RAND_MAX)) - 1;
     }
 
     /* Step 2. Allocate memory for normalized parameter vectors */
@@ -28,14 +28,14 @@ double STEP_AFDEMCMC(double *PARS, double *pars_new, PARAMETER_INFO PI, int C, i
 
     /* Step 3. The Affine Invariant Step */
    // double a_gw = 2.0; // The Goodman-Weare tuning parameter
-   // double u = (double)random() / (double)RAND_MAX; // Uniform distribution between 0 and 1
+   // double u = (double)cardarand() / (double)CARDAMOM_RAND_MAX; // Uniform distribution between 0 and 1
  
 // 1. Draw a_gw using a shifted Log-Normal distribution: 1 + exp(N(0,1))
     // (This heavily favors values between 1.1 and 2.5, but occasionally spikes much higher)
     double a_gw = 1.0 + exp(randn()); 
 
     // 2. Draw 'u' for the z transformation
-    double u_z = (double)random() / (double)RAND_MAX; 
+    double u_z = (double)cardarand() / (double)CARDAMOM_RAND_MAX; 
     
     // 3. Transform into the 1/sqrt(z) distribution using our random a_gw
     double z = pow((u_z * (sqrt(a_gw) - 1.0/sqrt(a_gw)) + 1.0/sqrt(a_gw)), 2.0);

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "../../../auxi_fun/cardamom_random.h"
 #include "../../../math_fun/std.c"
 #include "NORMPARS.c"
 #include "STEP_DREAMZS.c"
@@ -55,7 +56,7 @@ double par;
 for (nn=0;nn<NC;nn++){
 for (n=0;n<PI.npars;n++){
 if (MCO.randparini==1 && PI.parfix[n]!=1){
-par=nor2par((double)random()/(double)RAND_MAX,PI.parmin[n],PI.parmax[n]);
+par=nor2par(cardaurand(),PI.parmin[n],PI.parmax[n]);
 }else{
 par=PI.parini[n+nn*PI.npars];
 if (par>PI.parmax[n] || par<PI.parmin[n]){printf("Warning, prescribed initial parameters are out of range\n");}
@@ -68,7 +69,7 @@ X[nn*PI.npars+n]=par;
 for (nn=NC;nn<M0;nn++){
 for (n=0;n<PI.npars;n++){
 if (PI.parfix[n]==1){par=PI.parini[n];}
-else{par=nor2par((double)random()/(double)RAND_MAX,PI.parmin[n],PI.parmax[n]);}
+else{par=nor2par(cardaurand(),PI.parmin[n],PI.parmax[n]);}
 Z[nn*PI.npars+n]=par;
 }}
 
@@ -99,18 +100,18 @@ for ( ;N.ITER<MCO.nOUT;N.ITER++){
 for (nn=0;nn<NC;nn++){
 
 gratio=0;
-if ((double)random()/(double)RAND_MAX<psnooker){
+if (cardaurand()<psnooker){
 withinrange=STEP_DEMCMCZ_SNOOKER(&X[nn*PI.npars],Z,M,pars_new,PI,&gratio);
 nupdate=PI.npars;
 }else{
-int cridx=(int)(((double)random()/((double)RAND_MAX))*nCR);
+int cridx=(int)(((double)cardarand()/((double)CARDAMOM_RAND_MAX))*nCR);
 if (cridx>=nCR){cridx=nCR-1;}
 CR=CRvals[cridx];
 withinrange=STEP_DREAMZS_PARALLEL(&X[nn*PI.npars],Z,M,pars_new,PI,CR,&nupdate);
 }
 totalupdates=totalupdates+nupdate;
 
-lr=log((double)random()/(double)RAND_MAX);
+lr=log(cardaurand());
 
 if (withinrange==1){
 wrlocal=wrlocal+1;

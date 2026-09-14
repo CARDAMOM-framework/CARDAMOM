@@ -11,9 +11,9 @@ int STEP_HYBRID_AIDE(double *PARS, double *pars_new, PARAMETER_INFO PI, int C, i
 int n,j1=C,j2=C,j3=C;
 double rn;
 
-while (j1==C){j1=ceil((double)random()*NC/((double)RAND_MAX))-1;}
-while (j2==C || j2==j1){j2=ceil((double)random()*NC/((double)RAND_MAX))-1;}
-while (j3==C || j3==j1 || j3==j2){j3=ceil((double)random()*NC/((double)RAND_MAX))-1;}
+while (j1==C){j1=ceil((double)cardarand()*NC/((double)CARDAMOM_RAND_MAX))-1;}
+while (j2==C || j2==j1){j2=ceil((double)cardarand()*NC/((double)CARDAMOM_RAND_MAX))-1;}
+while (j3==C || j3==j1 || j3==j2){j3=ceil((double)cardarand()*NC/((double)CARDAMOM_RAND_MAX))-1;}
 
 double *xcur=calloc(PI.npars,sizeof(double));
 double *x1=calloc(PI.npars,sizeof(double));
@@ -30,13 +30,13 @@ x3[n]=par2nor(PARS[j3*PI.npars+n],PI.parmin[n],PI.parmax[n]);
 }
 
 double gamma_de=1 - (1 - 2.38 / sqrt(2.0 * PI.npars) * 0.1) *
-	(double)(((double)random() / (double)RAND_MAX) < 0.9);
+	(double)(((double)cardarand() / (double)CARDAMOM_RAND_MAX) < 0.9);
 
 double a_gw=1.0+exp(randn());
-double u_z=(double)random()/(double)RAND_MAX;
+double u_z=cardaurand();
 double z=pow((u_z*(sqrt(a_gw)-1.0/sqrt(a_gw))+1.0/sqrt(a_gw)),2.0);
 
-int de_first=((double)random()/(double)RAND_MAX>0.5);
+int de_first=(cardaurand()>0.5);
 int withinlim=1;
 
 if (de_first){

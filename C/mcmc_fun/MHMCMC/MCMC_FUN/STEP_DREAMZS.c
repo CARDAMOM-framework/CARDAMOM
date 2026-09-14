@@ -24,23 +24,23 @@ for (n=0;n<PI.npars;n++){npar[n]=par2nor(xi[n],PI.parmin[n],PI.parmax[n]);}
 
 /*picking two distinct rows of the archive*/
 while (r1==r2){
-r1=ceil((double)random()*M/((double)RAND_MAX))-1;
-r2=ceil((double)random()*M/((double)RAND_MAX))-1;}
+r1=ceil((double)cardarand()*M/((double)CARDAMOM_RAND_MAX))-1;
+r2=ceil((double)cardarand()*M/((double)CARDAMOM_RAND_MAX))-1;}
 
 /*Force at least one updated dimension so low CR values cannot produce a null move.*/
-int force_dim=(int)(((double)random()/((double)RAND_MAX))*PI.npars);
+int force_dim=(int)(((double)cardarand()/((double)CARDAMOM_RAND_MAX))*PI.npars);
 if (force_dim>=PI.npars){force_dim=PI.npars-1;}
 
 int nupdate=0;
 for (n=0;n<PI.npars;n++){
-if (n==force_dim || (double)random()/(double)RAND_MAX<CR){
+if (n==force_dim || cardaurand()<CR){
 update[n]=1;
 nupdate=nupdate+1;
 }}
 
 /*DREAM uses the number of updated dimensions for the DE scale.*/
 double gamma_de=2.38/sqrt(2.0*(double)nupdate);
-if ((double)random()/(double)RAND_MAX<0.1){gamma_de=1;}
+if (cardaurand()<0.1){gamma_de=1;}
 
 int withinlim=1;
 for (n=0;n<PI.npars;n++){

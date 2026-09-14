@@ -1,4 +1,5 @@
 #include <assert.h>
+#include "../../auxi_fun/cardamom_random.h"
 #include "../../auxi_fun/oksofar.c"
 #include "../../auxi_fun/okcheck.c"
 #include "../../auxi_fun/seedrandomnumber.c"
