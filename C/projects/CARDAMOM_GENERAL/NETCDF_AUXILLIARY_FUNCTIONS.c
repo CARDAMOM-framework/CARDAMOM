@@ -6,7 +6,6 @@
 #define DEFAULT_DOUBLE_VAL -9999.0
 #define DEFAULT_INT_VAL -9999
 
-
 //NOTE ABOUT THIS MACRO:
 //If set to 1, netCDF methods will continue to run and return with default values if they fail to find the requested variable or attribute
 //if set to 0, they will instantly die on failing to find any variable or attribute
@@ -298,6 +297,65 @@ double ** ncdf_read_double_2D(int ncid, const char * varName, size_t * dimLen ){
 }
 
 
+/*
+ * Function:  ncdf_read_string_array
+ * --------------------
+ * Reads a comma-delimited string attribute from netCDF
+ *
+ *  ncid: netCDF file ID to pull the data from
+ *  attrName: This is the name of the attribute to read
+ *  count: pointer where the number of strings will be written
+ *
+ *  returns: array of string pointers, or NULL if attribute doesn't exist
+ *   Reads a global attribute like "GPP,rh_co2,ets" and splits by commas
+ */
+char **ncdf_read_string_array(int ncid, const char *attrName, int *count) {
+	int retval = 0;
+	size_t attr_len;
+
+	if ((retval = nc_inq_attlen(ncid, NC_GLOBAL, attrName, &attr_len))) {
+		if (retval == NC_ENOTATT && ALLOW_DEFAULTS) {
+			*count = 0;
+			return NULL;
+		}
+		ERR_ATTR_AND_CONTEXT(retval, attrName, "/", NC_GLOBAL);
+	}
+
+	char *attr_value = calloc(attr_len + 1, sizeof(char));
+	if ((retval = nc_get_att_text(ncid, NC_GLOBAL, attrName, attr_value))) {
+		free(attr_value);
+		ERR_ATTR_AND_CONTEXT(retval, attrName, "/", NC_GLOBAL);
+	}
+	attr_value[attr_len] = '\0';
+
+	int num_strings = 1;
+	for (size_t i = 0; i < attr_len; i++) {
+		if (attr_value[i] == ',') num_strings++;
+	}
+
+	char **strings = calloc(num_strings, sizeof(char *));
+	int string_idx = 0;
+	char *token = strtok(attr_value, ",");
+	while (token != NULL && string_idx < num_strings) {
+		while (*token == ' ') token++;
+
+		strings[string_idx] = calloc(100, sizeof(char));
+		strncpy(strings[string_idx], token, 99);
+		strings[string_idx][99] = '\0';
+
+		size_t len = strlen(strings[string_idx]);
+		while (len > 0 && strings[string_idx][len-1] == ' ') {
+			strings[string_idx][--len] = '\0';
+		}
+
+		string_idx++;
+		token = strtok(NULL, ",");
+	}
+
+	free(attr_value);
+	*count = string_idx;
+	return strings;
+}
 
 
 
