@@ -27,12 +27,10 @@ void POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
     DALECmodel->POOLS_META.UNITS= calloc(DALECmodel->nopools, sizeof(char *));
     DALECmodel->POOLS_META.DESCRIPTION= calloc(DALECmodel->nopools, sizeof(char *));
 
-    /*  --NOT YET IMPLEMENTED--
     DALECmodel->EDC_META.NAME= calloc(DALECmodel->noedcs, sizeof(char *));
     DALECmodel->EDC_META.ABBREVIATION= calloc(DALECmodel->noedcs, sizeof(char *));
     DALECmodel->EDC_META.UNITS= calloc(DALECmodel->noedcs, sizeof(char *));
     DALECmodel->EDC_META.DESCRIPTION= calloc(DALECmodel->noedcs, sizeof(char *));
-    */
 
 
     //----------------METADATA DEFINITIONS----------------
@@ -101,6 +99,11 @@ void POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
     DALECmodel->FLUX_META.UNITS[F.wood_prod]="gC/m2/day";
     DALECmodel->FLUX_META.DESCRIPTION[F.wood_prod]="TBD";
 
+    DALECmodel->FLUX_META.NAME[F.ph_fol2lit]="Foliar phenological senescence";
+    DALECmodel->FLUX_META.ABBREVIATION[F.ph_fol2lit]="ph_fol2lit";
+    DALECmodel->FLUX_META.UNITS[F.ph_fol2lit]="gC/m2/day";
+    DALECmodel->FLUX_META.DESCRIPTION[F.ph_fol2lit]="Foliar phenological senescence";
+
     DALECmodel->FLUX_META.NAME[F.fol2lit]="Foliar decomposition";
     DALECmodel->FLUX_META.ABBREVIATION[F.fol2lit]="fol2lit";
     DALECmodel->FLUX_META.UNITS[F.fol2lit]="gC/m2/day";
@@ -115,6 +118,11 @@ void POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
     DALECmodel->FLUX_META.ABBREVIATION[F.roo2lit]="roo2lit";
     DALECmodel->FLUX_META.UNITS[F.roo2lit]="gC/m2/day";
     DALECmodel->FLUX_META.DESCRIPTION[F.roo2lit]="TBD";
+
+    DALECmodel->FLUX_META.NAME[F.lab2lit]="Labile C decomposition";
+    DALECmodel->FLUX_META.ABBREVIATION[F.lab2lit]="lab2lit";
+    DALECmodel->FLUX_META.UNITS[F.lab2lit]="gC/m2/day";
+    DALECmodel->FLUX_META.DESCRIPTION[F.lab2lit]="Labile C decomposition";
 
     DALECmodel->FLUX_META.NAME[F.cwd2som]="CWD decomposition";
     DALECmodel->FLUX_META.ABBREVIATION[F.cwd2som]="cwd2som";
@@ -248,7 +256,7 @@ void POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
 
     DALECmodel->FLUX_META.NAME[F.q_ly3_e]="Q LY3 IE";
     DALECmodel->FLUX_META.ABBREVIATION[F.q_ly3_e]="q_ly3_e";
-    DALECmodel->FLUX_META.UNITS[F.q_ly3_e]="TBDy";
+    DALECmodel->FLUX_META.UNITS[F.q_ly3_e]="TBD";
     DALECmodel->FLUX_META.DESCRIPTION[F.q_ly3_e]="Q LY3 IE: temp = LY3 temp";
 
     DALECmodel->FLUX_META.NAME[F.ly1xly2_e]="LY1 to NDZ IE";
@@ -486,6 +494,76 @@ void POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
     DALECmodel->FLUX_META.UNITS[F.soil_beta_factor]="fraction";
     DALECmodel->FLUX_META.DESCRIPTION[F.soil_beta_factor]="Stress due to soil water availability";
 
+    DALECmodel->FLUX_META.NAME[F.hydraulic_mortality_factor]="Hydraulic mortality factor";
+    DALECmodel->FLUX_META.ABBREVIATION[F.hydraulic_mortality_factor]="hydraulic_mortality_factor";
+    DALECmodel->FLUX_META.UNITS[F.hydraulic_mortality_factor]="TBD";
+    DALECmodel->FLUX_META.DESCRIPTION[F.hydraulic_mortality_factor]="";
+
+    DALECmodel->FLUX_META.NAME[F.nonleaf_mortality_factor]="Nonleaf mortality factor";
+    DALECmodel->FLUX_META.ABBREVIATION[F.nonleaf_mortality_factor]="nonleaf_mortality_factor";
+    DALECmodel->FLUX_META.UNITS[F.nonleaf_mortality_factor]="TBD";
+    DALECmodel->FLUX_META.DESCRIPTION[F.nonleaf_mortality_factor]="";
+
+    DALECmodel->FLUX_META.NAME[F.leaf_mortality_factor]="Leaf mortality factor";
+    DALECmodel->FLUX_META.ABBREVIATION[F.leaf_mortality_factor]="leaf_mortality_factor";
+    DALECmodel->FLUX_META.UNITS[F.leaf_mortality_factor]="TBD";
+    DALECmodel->FLUX_META.DESCRIPTION[F.leaf_mortality_factor]="";
+
+    DALECmodel->FLUX_META.NAME[F.dist_lab]="Labile disturbance";
+    DALECmodel->FLUX_META.ABBREVIATION[F.dist_lab]="dist_lab";
+    DALECmodel->FLUX_META.UNITS[F.dist_lab]="gC/m2/day";
+    DALECmodel->FLUX_META.DESCRIPTION[F.dist_lab]="";
+
+    DALECmodel->FLUX_META.NAME[F.dist_fol]="Foliar disturbance";
+    DALECmodel->FLUX_META.ABBREVIATION[F.dist_fol]="dist_fol";
+    DALECmodel->FLUX_META.UNITS[F.dist_fol]="gC/m2/day";
+    DALECmodel->FLUX_META.DESCRIPTION[F.dist_fol]="";
+
+    DALECmodel->FLUX_META.NAME[F.dist_roo]="Root disturbance";
+    DALECmodel->FLUX_META.ABBREVIATION[F.dist_roo]="dist_roo";
+    DALECmodel->FLUX_META.UNITS[F.dist_roo]="gC/m2/day";
+    DALECmodel->FLUX_META.DESCRIPTION[F.dist_roo]="";
+
+    DALECmodel->FLUX_META.NAME[F.dist_woo]="Wood disturbance";
+    DALECmodel->FLUX_META.ABBREVIATION[F.dist_woo]="dist_woo";
+    DALECmodel->FLUX_META.UNITS[F.dist_woo]="gC/m2/day";
+    DALECmodel->FLUX_META.DESCRIPTION[F.dist_woo]="";
+
+    DALECmodel->FLUX_META.NAME[F.Rd]="Autotrophic maintenance dark respiration";
+    DALECmodel->FLUX_META.ABBREVIATION[F.Rd]="Rd";
+    DALECmodel->FLUX_META.UNITS[F.Rd]="gC/m2/day";
+    DALECmodel->FLUX_META.DESCRIPTION[F.Rd]="";
+
+    DALECmodel->FLUX_META.NAME[F.lambda_tilde_max]="Lambda tilde max";
+    DALECmodel->FLUX_META.ABBREVIATION[F.lambda_tilde_max]="lambda_tilde_max";
+    DALECmodel->FLUX_META.UNITS[F.lambda_tilde_max]="TBD";
+    DALECmodel->FLUX_META.DESCRIPTION[F.lambda_tilde_max]="";
+
+    DALECmodel->FLUX_META.NAME[F.lambda_W]="Lambda W";
+    DALECmodel->FLUX_META.ABBREVIATION[F.lambda_W]="lambda_W";
+    DALECmodel->FLUX_META.UNITS[F.lambda_W]="TBD";
+    DALECmodel->FLUX_META.DESCRIPTION[F.lambda_W]="";
+
+    DALECmodel->FLUX_META.NAME[F.labyield2lit]="Labile yield to litter";
+    DALECmodel->FLUX_META.ABBREVIATION[F.labyield2lit]="labyield2lit";
+    DALECmodel->FLUX_META.UNITS[F.labyield2lit]="gC/m2/day";
+    DALECmodel->FLUX_META.DESCRIPTION[F.labyield2lit]="";
+
+    DALECmodel->FLUX_META.NAME[F.folyield2lit]="Foliar yield to litter";
+    DALECmodel->FLUX_META.ABBREVIATION[F.folyield2lit]="folyield2lit";
+    DALECmodel->FLUX_META.UNITS[F.folyield2lit]="gC/m2/day";
+    DALECmodel->FLUX_META.DESCRIPTION[F.folyield2lit]="";
+
+    DALECmodel->FLUX_META.NAME[F.rooyield2lit]="Root yield to litter";
+    DALECmodel->FLUX_META.ABBREVIATION[F.rooyield2lit]="rooyield2lit";
+    DALECmodel->FLUX_META.UNITS[F.rooyield2lit]="gC/m2/day";
+    DALECmodel->FLUX_META.DESCRIPTION[F.rooyield2lit]="";
+
+    DALECmodel->FLUX_META.NAME[F.wooyield2cwd]="Wood yield to CWD";
+    DALECmodel->FLUX_META.ABBREVIATION[F.wooyield2cwd]="wooyield2cwd";
+    DALECmodel->FLUX_META.UNITS[F.wooyield2cwd]="gC/m2/day";
+    DALECmodel->FLUX_META.DESCRIPTION[F.wooyield2cwd]="";
+
     //Parameter info 
 
     //TODO: Anthony, this entry seems inconsistent with the rest of the code, was it in error?
@@ -609,6 +687,11 @@ void POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
     //DALECmodel->PARS_META.UNITS[P.i_LY1_SM]="";
     DALECmodel->PARS_META.DESCRIPTION[P.i_LY1_SM]="LY1 SM at t0";
 
+    DALECmodel->PARS_META.NAME[P.i_LY2_SM]="LY2 SM at t0";
+    DALECmodel->PARS_META.ABBREVIATION[P.i_LY2_SM]="i_LY2_SM";
+    DALECmodel->PARS_META.UNITS[P.i_LY2_SM]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.i_LY2_SM]="LY2 SM at t0";
+
     DALECmodel->PARS_META.NAME[P.cf_foliar]="Foliar biomass CF";
     DALECmodel->PARS_META.ABBREVIATION[P.cf_foliar]="cf_foliar";
     DALECmodel->PARS_META.UNITS[P.cf_foliar]="%";
@@ -698,6 +781,241 @@ void POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
     DALECmodel->PARS_META.ABBREVIATION[P.Q_excess]="Q_excess";
     //DALECmodel->PARS_META.UNITS[P.Q_excess]="";
     DALECmodel->PARS_META.DESCRIPTION[P.Q_excess]="Runoff excess";
+
+    DALECmodel->PARS_META.NAME[P.Med_g1]="Medlyn g1 parameter";
+    DALECmodel->PARS_META.ABBREVIATION[P.Med_g1]="Med_g1";
+    DALECmodel->PARS_META.UNITS[P.Med_g1]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.Med_g1]="";
+
+    DALECmodel->PARS_META.NAME[P.Vcmax25]="Maximum carboxylation rate at 25C";
+    DALECmodel->PARS_META.ABBREVIATION[P.Vcmax25]="Vcmax25";
+    DALECmodel->PARS_META.UNITS[P.Vcmax25]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.Vcmax25]="";
+
+    DALECmodel->PARS_META.NAME[P.Tminmin]="Minimum temperature lower bound";
+    DALECmodel->PARS_META.ABBREVIATION[P.Tminmin]="Tminmin";
+    DALECmodel->PARS_META.UNITS[P.Tminmin]="K";
+    DALECmodel->PARS_META.DESCRIPTION[P.Tminmin]="";
+
+    DALECmodel->PARS_META.NAME[P.Tminmax]="Minimum temperature upper bound";
+    DALECmodel->PARS_META.ABBREVIATION[P.Tminmax]="Tminmax";
+    DALECmodel->PARS_META.UNITS[P.Tminmax]="K";
+    DALECmodel->PARS_META.DESCRIPTION[P.Tminmax]="";
+
+    DALECmodel->PARS_META.NAME[P.ga]="Aerodynamic conductance";
+    DALECmodel->PARS_META.ABBREVIATION[P.ga]="ga";
+    DALECmodel->PARS_META.UNITS[P.ga]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.ga]="";
+
+    DALECmodel->PARS_META.NAME[P.Tupp]="Temperature up parameter";
+    DALECmodel->PARS_META.ABBREVIATION[P.Tupp]="Tupp";
+    DALECmodel->PARS_META.UNITS[P.Tupp]="K";
+    DALECmodel->PARS_META.DESCRIPTION[P.Tupp]="";
+
+    DALECmodel->PARS_META.NAME[P.Tdown]="Temperature down parameter";
+    DALECmodel->PARS_META.ABBREVIATION[P.Tdown]="Tdown";
+    DALECmodel->PARS_META.UNITS[P.Tdown]="K";
+    DALECmodel->PARS_META.DESCRIPTION[P.Tdown]="";
+
+    DALECmodel->PARS_META.NAME[P.clumping]="Clumping index";
+    DALECmodel->PARS_META.ABBREVIATION[P.clumping]="clumping";
+    DALECmodel->PARS_META.UNITS[P.clumping]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.clumping]="";
+
+    DALECmodel->PARS_META.NAME[P.leaf_refl_par]="Leaf reflectance PAR";
+    DALECmodel->PARS_META.ABBREVIATION[P.leaf_refl_par]="leaf_refl_par";
+    DALECmodel->PARS_META.UNITS[P.leaf_refl_par]="fraction";
+    DALECmodel->PARS_META.DESCRIPTION[P.leaf_refl_par]="";
+
+    DALECmodel->PARS_META.NAME[P.leaf_refl_nir]="Leaf reflectance NIR";
+    DALECmodel->PARS_META.ABBREVIATION[P.leaf_refl_nir]="leaf_refl_nir";
+    DALECmodel->PARS_META.UNITS[P.leaf_refl_nir]="fraction";
+    DALECmodel->PARS_META.DESCRIPTION[P.leaf_refl_nir]="";
+
+    DALECmodel->PARS_META.NAME[P.i_SWE]="Initial Snow Water Equivalent";
+    DALECmodel->PARS_META.ABBREVIATION[P.i_SWE]="i_SWE";
+    DALECmodel->PARS_META.UNITS[P.i_SWE]="kgH2O/m2";
+    DALECmodel->PARS_META.DESCRIPTION[P.i_SWE]="Initial bulk water content of the snow pack layer";
+
+    DALECmodel->PARS_META.NAME[P.min_melt]="Minimum melt rate";
+    DALECmodel->PARS_META.ABBREVIATION[P.min_melt]="min_melt";
+    DALECmodel->PARS_META.UNITS[P.min_melt]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.min_melt]="";
+
+    DALECmodel->PARS_META.NAME[P.melt_slope]="Melt slope";
+    DALECmodel->PARS_META.ABBREVIATION[P.melt_slope]="melt_slope";
+    DALECmodel->PARS_META.UNITS[P.melt_slope]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.melt_slope]="";
+
+    DALECmodel->PARS_META.NAME[P.scf_scalar]="Snow covered fraction scalar";
+    DALECmodel->PARS_META.ABBREVIATION[P.scf_scalar]="scf_scalar";
+    DALECmodel->PARS_META.UNITS[P.scf_scalar]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.scf_scalar]="";
+
+    DALECmodel->PARS_META.NAME[P.S_fv]="S_fv parameter";
+    DALECmodel->PARS_META.ABBREVIATION[P.S_fv]="S_fv";
+    DALECmodel->PARS_META.UNITS[P.S_fv]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.S_fv]="";
+
+    DALECmodel->PARS_META.NAME[P.thetas_opt]="Optimum soil moisture";
+    DALECmodel->PARS_META.ABBREVIATION[P.thetas_opt]="thetas_opt";
+    DALECmodel->PARS_META.UNITS[P.thetas_opt]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.thetas_opt]="";
+
+    DALECmodel->PARS_META.NAME[P.fwc]="FWC parameter";
+    DALECmodel->PARS_META.ABBREVIATION[P.fwc]="fwc";
+    DALECmodel->PARS_META.UNITS[P.fwc]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.fwc]="";
+
+    DALECmodel->PARS_META.NAME[P.r_ch4]="Methane production ratio";
+    DALECmodel->PARS_META.ABBREVIATION[P.r_ch4]="r_ch4";
+    DALECmodel->PARS_META.UNITS[P.r_ch4]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.r_ch4]="";
+
+    DALECmodel->PARS_META.NAME[P.Q10ch4]="Methane Q10 parameter";
+    DALECmodel->PARS_META.ABBREVIATION[P.Q10ch4]="Q10ch4";
+    DALECmodel->PARS_META.UNITS[P.Q10ch4]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.Q10ch4]="";
+
+    DALECmodel->PARS_META.NAME[P.T_phi]="T phi parameter";
+    DALECmodel->PARS_META.ABBREVIATION[P.T_phi]="T_phi";
+    DALECmodel->PARS_META.UNITS[P.T_phi]="K";
+    DALECmodel->PARS_META.DESCRIPTION[P.T_phi]="";
+
+    DALECmodel->PARS_META.NAME[P.T_range]="T range parameter";
+    DALECmodel->PARS_META.ABBREVIATION[P.T_range]="T_range";
+    DALECmodel->PARS_META.UNITS[P.T_range]="K";
+    DALECmodel->PARS_META.DESCRIPTION[P.T_range]="";
+
+    DALECmodel->PARS_META.NAME[P.plgr]="Potential leaf growth rate";
+    DALECmodel->PARS_META.ABBREVIATION[P.plgr]="plgr";
+    DALECmodel->PARS_META.UNITS[P.plgr]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.plgr]="";
+
+    DALECmodel->PARS_META.NAME[P.k_leaf]="Light extinction coefficient";
+    DALECmodel->PARS_META.ABBREVIATION[P.k_leaf]="k_leaf";
+    DALECmodel->PARS_META.UNITS[P.k_leaf]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.k_leaf]="";
+
+    DALECmodel->PARS_META.NAME[P.lambda_max]="Maximum LAI";
+    DALECmodel->PARS_META.ABBREVIATION[P.lambda_max]="lambda_max";
+    DALECmodel->PARS_META.UNITS[P.lambda_max]="m2/m2";
+    DALECmodel->PARS_META.DESCRIPTION[P.lambda_max]="";
+
+    DALECmodel->PARS_META.NAME[P.tau_W]="Tau W parameter";
+    DALECmodel->PARS_META.ABBREVIATION[P.tau_W]="tau_W";
+    DALECmodel->PARS_META.UNITS[P.tau_W]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.tau_W]="";
+
+    DALECmodel->PARS_META.NAME[P.time_c]="Time constant c";
+    DALECmodel->PARS_META.ABBREVIATION[P.time_c]="time_c";
+    DALECmodel->PARS_META.UNITS[P.time_c]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.time_c]="";
+
+    DALECmodel->PARS_META.NAME[P.time_r]="Time constant r";
+    DALECmodel->PARS_META.ABBREVIATION[P.time_r]="time_r";
+    DALECmodel->PARS_META.UNITS[P.time_r]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.time_r]="";
+
+    DALECmodel->PARS_META.NAME[P.init_T_mem]="Initial temperature memory";
+    DALECmodel->PARS_META.ABBREVIATION[P.init_T_mem]="init_T_mem";
+    DALECmodel->PARS_META.UNITS[P.init_T_mem]="K";
+    DALECmodel->PARS_META.DESCRIPTION[P.init_T_mem]="Initial temperature state for LAI memory";
+
+    DALECmodel->PARS_META.NAME[P.init_LAIW_mem]="Initial LAI water memory";
+    DALECmodel->PARS_META.ABBREVIATION[P.init_LAIW_mem]="init_LAIW_mem";
+    DALECmodel->PARS_META.UNITS[P.init_LAIW_mem]="m2/m2";
+    DALECmodel->PARS_META.DESCRIPTION[P.init_LAIW_mem]="Initial LAI state for vegetation memory";
+
+    DALECmodel->PARS_META.NAME[P.t_foliar]="Turnover rate of foliar carbon";
+    DALECmodel->PARS_META.ABBREVIATION[P.t_foliar]="t_foliar";
+    DALECmodel->PARS_META.UNITS[P.t_foliar]="gC/m2/day";
+    DALECmodel->PARS_META.DESCRIPTION[P.t_foliar]="";
+
+    DALECmodel->PARS_META.NAME[P.i_LY1_E]="Initial Layer 1 Energy";
+    DALECmodel->PARS_META.ABBREVIATION[P.i_LY1_E]="i_LY1_E";
+    DALECmodel->PARS_META.UNITS[P.i_LY1_E]="J/m2";
+    DALECmodel->PARS_META.DESCRIPTION[P.i_LY1_E]="Initial energy state of layer 1";
+
+    DALECmodel->PARS_META.NAME[P.i_LY2_E]="Initial Layer 2 Energy";
+    DALECmodel->PARS_META.ABBREVIATION[P.i_LY2_E]="i_LY2_E";
+    DALECmodel->PARS_META.UNITS[P.i_LY2_E]="J/m2";
+    DALECmodel->PARS_META.DESCRIPTION[P.i_LY2_E]="Initial energy state of layer 2";
+
+    DALECmodel->PARS_META.NAME[P.i_LY3_E]="Initial Layer 3 Energy";
+    DALECmodel->PARS_META.ABBREVIATION[P.i_LY3_E]="i_LY3_E";
+    DALECmodel->PARS_META.UNITS[P.i_LY3_E]="J/m2";
+    DALECmodel->PARS_META.DESCRIPTION[P.i_LY3_E]="Initial energy state of layer 3";
+
+    DALECmodel->PARS_META.NAME[P.psi_50]="Psi 50";
+    DALECmodel->PARS_META.ABBREVIATION[P.psi_50]="psi_50";
+    DALECmodel->PARS_META.UNITS[P.psi_50]="MPa";
+    DALECmodel->PARS_META.DESCRIPTION[P.psi_50]="Water potential at 50 percent loss of conductivity";
+
+    DALECmodel->PARS_META.NAME[P.beta_lgr]="Beta leaf growth rate";
+    DALECmodel->PARS_META.ABBREVIATION[P.beta_lgr]="beta_lgr";
+    DALECmodel->PARS_META.UNITS[P.beta_lgr]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.beta_lgr]="";
+
+    DALECmodel->PARS_META.NAME[P.phi_RL]="Phi RL parameter";
+    DALECmodel->PARS_META.ABBREVIATION[P.phi_RL]="phi_RL";
+    DALECmodel->PARS_META.UNITS[P.phi_RL]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.phi_RL]="";
+
+    DALECmodel->PARS_META.NAME[P.phi_WL]="Phi WL parameter";
+    DALECmodel->PARS_META.ABBREVIATION[P.phi_WL]="phi_WL";
+    DALECmodel->PARS_META.UNITS[P.phi_WL]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.phi_WL]="";
+
+    DALECmodel->PARS_META.NAME[P.thermal_cond]="Thermal conductivity";
+    DALECmodel->PARS_META.ABBREVIATION[P.thermal_cond]="thermal_cond";
+    DALECmodel->PARS_META.UNITS[P.thermal_cond]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.thermal_cond]="";
+
+    DALECmodel->PARS_META.NAME[P.thermal_cond_surf]="Surface thermal conductivity";
+    DALECmodel->PARS_META.ABBREVIATION[P.thermal_cond_surf]="thermal_cond_surf";
+    DALECmodel->PARS_META.UNITS[P.thermal_cond_surf]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.thermal_cond_surf]="";
+
+    DALECmodel->PARS_META.NAME[P.q10canopy]="Canopy Q10 parameter";
+    DALECmodel->PARS_META.ABBREVIATION[P.q10canopy]="q10canopy";
+    DALECmodel->PARS_META.UNITS[P.q10canopy]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.q10canopy]="";
+
+    DALECmodel->PARS_META.NAME[P.canopyRdsf]="Canopy dark respiration scalar";
+    DALECmodel->PARS_META.ABBREVIATION[P.canopyRdsf]="canopyRdsf";
+    DALECmodel->PARS_META.UNITS[P.canopyRdsf]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.canopyRdsf]="";
+
+    DALECmodel->PARS_META.NAME[P.sublimation_rate]="Sublimation rate";
+    DALECmodel->PARS_META.ABBREVIATION[P.sublimation_rate]="sublimation_rate";
+    DALECmodel->PARS_META.UNITS[P.sublimation_rate]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.sublimation_rate]="";
+
+    DALECmodel->PARS_META.NAME[P.root_frac]="Root fraction";
+    DALECmodel->PARS_META.ABBREVIATION[P.root_frac]="root_frac";
+    DALECmodel->PARS_META.UNITS[P.root_frac]="fraction";
+    DALECmodel->PARS_META.DESCRIPTION[P.root_frac]="";
+
+    DALECmodel->PARS_META.NAME[P.beta_lgrHMF]="Beta leaf growth rate HMF";
+    DALECmodel->PARS_META.ABBREVIATION[P.beta_lgrHMF]="beta_lgrHMF";
+    DALECmodel->PARS_META.UNITS[P.beta_lgrHMF]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.beta_lgrHMF]="";
+
+    DALECmodel->PARS_META.NAME[P.psi_50HMF]="Psi 50 HMF";
+    DALECmodel->PARS_META.ABBREVIATION[P.psi_50HMF]="psi_50HMF";
+    DALECmodel->PARS_META.UNITS[P.psi_50HMF]="MPa";
+    DALECmodel->PARS_META.DESCRIPTION[P.psi_50HMF]="";
+
+    DALECmodel->PARS_META.NAME[P.t_lab]="Turnover rate of labile carbon";
+    DALECmodel->PARS_META.ABBREVIATION[P.t_lab]="t_lab";
+    DALECmodel->PARS_META.UNITS[P.t_lab]="gC/m2/day";
+    DALECmodel->PARS_META.DESCRIPTION[P.t_lab]="";
+
+    DALECmodel->PARS_META.NAME[P.maxPevap]="Maximum potential evaporation";
+    DALECmodel->PARS_META.ABBREVIATION[P.maxPevap]="maxPevap";
+    DALECmodel->PARS_META.UNITS[P.maxPevap]="TBD";
+    DALECmodel->PARS_META.DESCRIPTION[P.maxPevap]="";
 
     //Pool info {Eren Bilir added this section 9/15/2023}
 
@@ -852,13 +1170,85 @@ void POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
     DALECmodel->POOLS_META.DESCRIPTION[S.M_LAI_TEMP]="Exponentially declining term encoding vegetation \"memory\" of past temperature limitations for LAI, to capture lagged effects of past stress.";
 
 //EDC info
-    /*
-    DALECmodel->EDC_META.NAME[E.twood]="Turnover rate of wood";
-    DALECmodel->EDC_META.ABBREVIATION[E.twood]="twood";
-    DALECmodel->EDC_META.UNITS[E.twood]="gC/m2/day";
-    DALECmodel->EDC_META.DESCRIPTION[E.twood]="Includes maintenance respiration and growth respiration";
+   DALECmodel->EDC_META.NAME[E.vcmax_lcma]="Vcmax to LCMA constraint";
+    DALECmodel->EDC_META.ABBREVIATION[E.vcmax_lcma]="vcmax_lcma";
+    DALECmodel->EDC_META.UNITS[E.vcmax_lcma]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.vcmax_lcma]="";
 
-    /*/
+    DALECmodel->EDC_META.NAME[E.litcwdtor]="Litter to CWD turnover ratio";
+    DALECmodel->EDC_META.ABBREVIATION[E.litcwdtor]="litcwdtor";
+    DALECmodel->EDC_META.UNITS[E.litcwdtor]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.litcwdtor]="";
+
+    DALECmodel->EDC_META.NAME[E.cwdsomtor]="CWD to SOM turnover ratio";
+    DALECmodel->EDC_META.ABBREVIATION[E.cwdsomtor]="cwdsomtor";
+    DALECmodel->EDC_META.UNITS[E.cwdsomtor]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.cwdsomtor]="";
+
+    DALECmodel->EDC_META.NAME[E.mr_rates]="Maintenance respiration rates constraint";
+    DALECmodel->EDC_META.ABBREVIATION[E.mr_rates]="mr_rates";
+    DALECmodel->EDC_META.UNITS[E.mr_rates]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.mr_rates]="";
+
+    DALECmodel->EDC_META.NAME[E.rootwoodtor]="Root to wood turnover ratio";
+    DALECmodel->EDC_META.ABBREVIATION[E.rootwoodtor]="rootwoodtor";
+    DALECmodel->EDC_META.UNITS[E.rootwoodtor]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.rootwoodtor]="";
+
+    DALECmodel->EDC_META.NAME[E.fol2lig_cf]="Foliar to ligneous CF constraint";
+    DALECmodel->EDC_META.ABBREVIATION[E.fol2lig_cf]="fol2lig_cf";
+    DALECmodel->EDC_META.UNITS[E.fol2lig_cf]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.fol2lig_cf]="";
+
+    DALECmodel->EDC_META.NAME[E.relativepsi50]="Relative Psi 50 constraint";
+    DALECmodel->EDC_META.ABBREVIATION[E.relativepsi50]="relativepsi50";
+    DALECmodel->EDC_META.UNITS[E.relativepsi50]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.relativepsi50]="";
+
+    DALECmodel->EDC_META.NAME[E.state_ranges]="State ranges constraint";
+    DALECmodel->EDC_META.ABBREVIATION[E.state_ranges]="state_ranges";
+    DALECmodel->EDC_META.UNITS[E.state_ranges]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.state_ranges]="";
+
+    DALECmodel->EDC_META.NAME[E.state_trajectories]="State trajectories constraint";
+    DALECmodel->EDC_META.ABBREVIATION[E.state_trajectories]="state_trajectories";
+    DALECmodel->EDC_META.UNITS[E.state_trajectories]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.state_trajectories]="";
+
+    DALECmodel->EDC_META.NAME[E.nsc_ratio]="NSC ratio constraint";
+    DALECmodel->EDC_META.ABBREVIATION[E.nsc_ratio]="nsc_ratio";
+    DALECmodel->EDC_META.UNITS[E.nsc_ratio]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.nsc_ratio]="";
+
+    DALECmodel->EDC_META.NAME[E.cfcr_ratio]="CFCR ratio constraint";
+    DALECmodel->EDC_META.ABBREVIATION[E.cfcr_ratio]="cfcr_ratio";
+    DALECmodel->EDC_META.UNITS[E.cfcr_ratio]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.cfcr_ratio]="";
+
+    DALECmodel->EDC_META.NAME[E.fffr_ratio]="FFFR ratio constraint";
+    DALECmodel->EDC_META.ABBREVIATION[E.fffr_ratio]="fffr_ratio";
+    DALECmodel->EDC_META.UNITS[E.fffr_ratio]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.fffr_ratio]="";
+
+    DALECmodel->EDC_META.NAME[E.mean_ly1_temp]="Mean LY1 temperature constraint";
+    DALECmodel->EDC_META.ABBREVIATION[E.mean_ly1_temp]="mean_ly1_temp";
+    DALECmodel->EDC_META.UNITS[E.mean_ly1_temp]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.mean_ly1_temp]="";
+
+    DALECmodel->EDC_META.NAME[E.mean_ly2_temp]="Mean LY2 temperature constraint";
+    DALECmodel->EDC_META.ABBREVIATION[E.mean_ly2_temp]="mean_ly2_temp";
+    DALECmodel->EDC_META.UNITS[E.mean_ly2_temp]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.mean_ly2_temp]="";
+
+    DALECmodel->EDC_META.NAME[E.mean_ly3_temp]="Mean LY3 temperature constraint";
+    DALECmodel->EDC_META.ABBREVIATION[E.mean_ly3_temp]="mean_ly3_temp";
+    DALECmodel->EDC_META.UNITS[E.mean_ly3_temp]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.mean_ly3_temp]="";
+
+    DALECmodel->EDC_META.NAME[E.state_proximity]="State proximity constraint";
+    DALECmodel->EDC_META.ABBREVIATION[E.state_proximity]="state_proximity";
+    DALECmodel->EDC_META.UNITS[E.state_proximity]="TBD";
+    DALECmodel->EDC_META.DESCRIPTION[E.state_proximity]="";
 
 
     
