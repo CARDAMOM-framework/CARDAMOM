@@ -27,10 +27,10 @@ void POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
     DALECmodel->POOLS_META.UNITS= calloc(DALECmodel->nopools, sizeof(char *));
     DALECmodel->POOLS_META.DESCRIPTION= calloc(DALECmodel->nopools, sizeof(char *));
 
-    DALECmodel->EDC_META.NAME= calloc(DALECmodel->noedcs, sizeof(char *));
-    DALECmodel->EDC_META.ABBREVIATION= calloc(DALECmodel->noedcs, sizeof(char *));
-    DALECmodel->EDC_META.UNITS= calloc(DALECmodel->noedcs, sizeof(char *));
-    DALECmodel->EDC_META.DESCRIPTION= calloc(DALECmodel->noedcs, sizeof(char *));
+    // DALECmodel->EDC_META.NAME= calloc(DALECmodel->noedcs, sizeof(char *));
+    // DALECmodel->EDC_META.ABBREVIATION= calloc(DALECmodel->noedcs, sizeof(char *));
+    // DALECmodel->EDC_META.UNITS= calloc(DALECmodel->noedcs, sizeof(char *));
+    // DALECmodel->EDC_META.DESCRIPTION= calloc(DALECmodel->noedcs, sizeof(char *));
 
 
     //----------------METADATA DEFINITIONS----------------
@@ -1169,87 +1169,85 @@ void POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
     DALECmodel->POOLS_META.UNITS[S.M_LAI_TEMP]="K";
     DALECmodel->POOLS_META.DESCRIPTION[S.M_LAI_TEMP]="Exponentially declining term encoding vegetation \"memory\" of past temperature limitations for LAI, to capture lagged effects of past stress.";
 
-//EDC info
-   DALECmodel->EDC_META.NAME[E.vcmax_lcma]="Vcmax to LCMA constraint";
-    DALECmodel->EDC_META.ABBREVIATION[E.vcmax_lcma]="vcmax_lcma";
-    DALECmodel->EDC_META.UNITS[E.vcmax_lcma]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.vcmax_lcma]="";
+// //EDC info
+//    DALECmodel->EDC_META.NAME[E.vcmax_lcma]="Vcmax to LCMA constraint";
+//     DALECmodel->EDC_META.ABBREVIATION[E.vcmax_lcma]="vcmax_lcma";
+//     DALECmodel->EDC_META.UNITS[E.vcmax_lcma]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.vcmax_lcma]="";
 
-    DALECmodel->EDC_META.NAME[E.litcwdtor]="Litter to CWD turnover ratio";
-    DALECmodel->EDC_META.ABBREVIATION[E.litcwdtor]="litcwdtor";
-    DALECmodel->EDC_META.UNITS[E.litcwdtor]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.litcwdtor]="";
+//     DALECmodel->EDC_META.NAME[E.litcwdtor]="Litter to CWD turnover ratio";
+//     DALECmodel->EDC_META.ABBREVIATION[E.litcwdtor]="litcwdtor";
+//     DALECmodel->EDC_META.UNITS[E.litcwdtor]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.litcwdtor]="";
 
-    DALECmodel->EDC_META.NAME[E.cwdsomtor]="CWD to SOM turnover ratio";
-    DALECmodel->EDC_META.ABBREVIATION[E.cwdsomtor]="cwdsomtor";
-    DALECmodel->EDC_META.UNITS[E.cwdsomtor]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.cwdsomtor]="";
+//     DALECmodel->EDC_META.NAME[E.cwdsomtor]="CWD to SOM turnover ratio";
+//     DALECmodel->EDC_META.ABBREVIATION[E.cwdsomtor]="cwdsomtor";
+//     DALECmodel->EDC_META.UNITS[E.cwdsomtor]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.cwdsomtor]="";
 
-    DALECmodel->EDC_META.NAME[E.mr_rates]="Maintenance respiration rates constraint";
-    DALECmodel->EDC_META.ABBREVIATION[E.mr_rates]="mr_rates";
-    DALECmodel->EDC_META.UNITS[E.mr_rates]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.mr_rates]="";
+//     DALECmodel->EDC_META.NAME[E.mr_rates]="Maintenance respiration rates constraint";
+//     DALECmodel->EDC_META.ABBREVIATION[E.mr_rates]="mr_rates";
+//     DALECmodel->EDC_META.UNITS[E.mr_rates]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.mr_rates]="";
 
-    DALECmodel->EDC_META.NAME[E.rootwoodtor]="Root to wood turnover ratio";
-    DALECmodel->EDC_META.ABBREVIATION[E.rootwoodtor]="rootwoodtor";
-    DALECmodel->EDC_META.UNITS[E.rootwoodtor]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.rootwoodtor]="";
+//     DALECmodel->EDC_META.NAME[E.rootwoodtor]="Root to wood turnover ratio";
+//     DALECmodel->EDC_META.ABBREVIATION[E.rootwoodtor]="rootwoodtor";
+//     DALECmodel->EDC_META.UNITS[E.rootwoodtor]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.rootwoodtor]="";
 
-    DALECmodel->EDC_META.NAME[E.fol2lig_cf]="Foliar to ligneous CF constraint";
-    DALECmodel->EDC_META.ABBREVIATION[E.fol2lig_cf]="fol2lig_cf";
-    DALECmodel->EDC_META.UNITS[E.fol2lig_cf]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.fol2lig_cf]="";
+//     DALECmodel->EDC_META.NAME[E.fol2lig_cf]="Foliar to ligneous CF constraint";
+//     DALECmodel->EDC_META.ABBREVIATION[E.fol2lig_cf]="fol2lig_cf";
+//     DALECmodel->EDC_META.UNITS[E.fol2lig_cf]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.fol2lig_cf]="";
 
-    DALECmodel->EDC_META.NAME[E.relativepsi50]="Relative Psi 50 constraint";
-    DALECmodel->EDC_META.ABBREVIATION[E.relativepsi50]="relativepsi50";
-    DALECmodel->EDC_META.UNITS[E.relativepsi50]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.relativepsi50]="";
+//     DALECmodel->EDC_META.NAME[E.relativepsi50]="Relative Psi 50 constraint";
+//     DALECmodel->EDC_META.ABBREVIATION[E.relativepsi50]="relativepsi50";
+//     DALECmodel->EDC_META.UNITS[E.relativepsi50]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.relativepsi50]="";
 
-    DALECmodel->EDC_META.NAME[E.state_ranges]="State ranges constraint";
-    DALECmodel->EDC_META.ABBREVIATION[E.state_ranges]="state_ranges";
-    DALECmodel->EDC_META.UNITS[E.state_ranges]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.state_ranges]="";
+//     DALECmodel->EDC_META.NAME[E.state_ranges]="State ranges constraint";
+//     DALECmodel->EDC_META.ABBREVIATION[E.state_ranges]="state_ranges";
+//     DALECmodel->EDC_META.UNITS[E.state_ranges]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.state_ranges]="";
 
-    DALECmodel->EDC_META.NAME[E.state_trajectories]="State trajectories constraint";
-    DALECmodel->EDC_META.ABBREVIATION[E.state_trajectories]="state_trajectories";
-    DALECmodel->EDC_META.UNITS[E.state_trajectories]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.state_trajectories]="";
+//     DALECmodel->EDC_META.NAME[E.state_trajectories]="State trajectories constraint";
+//     DALECmodel->EDC_META.ABBREVIATION[E.state_trajectories]="state_trajectories";
+//     DALECmodel->EDC_META.UNITS[E.state_trajectories]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.state_trajectories]="";
 
-    DALECmodel->EDC_META.NAME[E.nsc_ratio]="NSC ratio constraint";
-    DALECmodel->EDC_META.ABBREVIATION[E.nsc_ratio]="nsc_ratio";
-    DALECmodel->EDC_META.UNITS[E.nsc_ratio]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.nsc_ratio]="";
+//     DALECmodel->EDC_META.NAME[E.nsc_ratio]="NSC ratio constraint";
+//     DALECmodel->EDC_META.ABBREVIATION[E.nsc_ratio]="nsc_ratio";
+//     DALECmodel->EDC_META.UNITS[E.nsc_ratio]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.nsc_ratio]="";
 
-    DALECmodel->EDC_META.NAME[E.cfcr_ratio]="CFCR ratio constraint";
-    DALECmodel->EDC_META.ABBREVIATION[E.cfcr_ratio]="cfcr_ratio";
-    DALECmodel->EDC_META.UNITS[E.cfcr_ratio]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.cfcr_ratio]="";
+//     DALECmodel->EDC_META.NAME[E.cfcr_ratio]="CFCR ratio constraint";
+//     DALECmodel->EDC_META.ABBREVIATION[E.cfcr_ratio]="cfcr_ratio";
+//     DALECmodel->EDC_META.UNITS[E.cfcr_ratio]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.cfcr_ratio]="";
 
-    DALECmodel->EDC_META.NAME[E.fffr_ratio]="FFFR ratio constraint";
-    DALECmodel->EDC_META.ABBREVIATION[E.fffr_ratio]="fffr_ratio";
-    DALECmodel->EDC_META.UNITS[E.fffr_ratio]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.fffr_ratio]="";
+//     DALECmodel->EDC_META.NAME[E.fffr_ratio]="FFFR ratio constraint";
+//     DALECmodel->EDC_META.ABBREVIATION[E.fffr_ratio]="fffr_ratio";
+//     DALECmodel->EDC_META.UNITS[E.fffr_ratio]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.fffr_ratio]="";
 
-    DALECmodel->EDC_META.NAME[E.mean_ly1_temp]="Mean LY1 temperature constraint";
-    DALECmodel->EDC_META.ABBREVIATION[E.mean_ly1_temp]="mean_ly1_temp";
-    DALECmodel->EDC_META.UNITS[E.mean_ly1_temp]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.mean_ly1_temp]="";
+//     DALECmodel->EDC_META.NAME[E.mean_ly1_temp]="Mean LY1 temperature constraint";
+//     DALECmodel->EDC_META.ABBREVIATION[E.mean_ly1_temp]="mean_ly1_temp";
+//     DALECmodel->EDC_META.UNITS[E.mean_ly1_temp]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.mean_ly1_temp]="";
 
-    DALECmodel->EDC_META.NAME[E.mean_ly2_temp]="Mean LY2 temperature constraint";
-    DALECmodel->EDC_META.ABBREVIATION[E.mean_ly2_temp]="mean_ly2_temp";
-    DALECmodel->EDC_META.UNITS[E.mean_ly2_temp]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.mean_ly2_temp]="";
+//     DALECmodel->EDC_META.NAME[E.mean_ly2_temp]="Mean LY2 temperature constraint";
+//     DALECmodel->EDC_META.ABBREVIATION[E.mean_ly2_temp]="mean_ly2_temp";
+//     DALECmodel->EDC_META.UNITS[E.mean_ly2_temp]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.mean_ly2_temp]="";
 
-    DALECmodel->EDC_META.NAME[E.mean_ly3_temp]="Mean LY3 temperature constraint";
-    DALECmodel->EDC_META.ABBREVIATION[E.mean_ly3_temp]="mean_ly3_temp";
-    DALECmodel->EDC_META.UNITS[E.mean_ly3_temp]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.mean_ly3_temp]="";
+//     DALECmodel->EDC_META.NAME[E.mean_ly3_temp]="Mean LY3 temperature constraint";
+//     DALECmodel->EDC_META.ABBREVIATION[E.mean_ly3_temp]="mean_ly3_temp";
+//     DALECmodel->EDC_META.UNITS[E.mean_ly3_temp]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.mean_ly3_temp]="";
 
-    DALECmodel->EDC_META.NAME[E.state_proximity]="State proximity constraint";
-    DALECmodel->EDC_META.ABBREVIATION[E.state_proximity]="state_proximity";
-    DALECmodel->EDC_META.UNITS[E.state_proximity]="TBD";
-    DALECmodel->EDC_META.DESCRIPTION[E.state_proximity]="";
-
-
+//     DALECmodel->EDC_META.NAME[E.state_proximity]="State proximity constraint";
+//     DALECmodel->EDC_META.ABBREVIATION[E.state_proximity]="state_proximity";
+//     DALECmodel->EDC_META.UNITS[E.state_proximity]="TBD";
+//     DALECmodel->EDC_META.DESCRIPTION[E.state_proximity]="";
     
-}
+// }
