@@ -67,7 +67,7 @@ void POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
 
     // Carbon, Water, Energy Fluxes
     DALECmodel->FLUX_META.NAME[F.gpp]="Gross Primary productivity";
-    DALECmodel->FLUX_META.ABBREVIATION[F.gpp]="GPP";
+    DALECmodel->FLUX_META.ABBREVIATION[F.gpp]="gpp";
     DALECmodel->FLUX_META.UNITS[F.gpp]="gC/m2/day";
     DALECmodel->FLUX_META.DESCRIPTION[F.gpp]="GPP, doesn\"t include maintenance respiration";
 
