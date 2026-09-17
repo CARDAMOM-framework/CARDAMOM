@@ -36,8 +36,7 @@ data_format = "netcdf"
 dataset = "reanalysis-era5-single-levels-monthly-means"
 
 hourly_quantities = []
-monthly_quantities = [
-    "skin_temperature"]
+monthly_quantities = ["skin_temperature"]
 
 all_quantities = hourly_quantities + monthly_quantities
 all_hours = [f"{str(h).zfill(2)}:00" for h in range(24)]
@@ -124,7 +123,7 @@ def DOWNLOAD_AND_SLICE_SINGLE_VAR(q, m, yr):
 
 # --- MAIN EXECUTION ---
 print(f"Calculated Bounding Box: {regional_area}")
-for yr in range(2001, 2025): 
+for yr in range(1980, 2025): 
     for m in range(1, 13):
         for q in all_quantities:
             DOWNLOAD_AND_SLICE_SINGLE_VAR(q, m, yr)
