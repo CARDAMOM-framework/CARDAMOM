@@ -32,8 +32,8 @@ data_format = "netcdf"
 dataset = "reanalysis-era5-single-levels-monthly-means"
 q = "skin_temperature"
 
-# Request 1984 to 2025
-all_years = [str(yr) for yr in range(1984, 2026)]
+# Request 1980 to 2025
+all_years = [str(yr) for yr in range(1980, 2026)]
 all_months = [str(m).zfill(2) for m in range(1, 13)]
 
 # Dynamically calculate the Continental Box
@@ -46,7 +46,7 @@ regional_area = [max_lat, min_lon, min_lat, max_lon]
 out_dir = "DATA/CALLMIP/ECMWF_PHASE1b_DRIVERS"
 os.makedirs(out_dir, exist_ok=True)
 
-bulk_file = f"BULK_{q}_1984_2025.nc"
+bulk_file = f"BULK_{q}_1980_2025.nc"
 client = cdsapi.Client()
 
 # --- 1. DOWNLOAD BULK FILE (ONE REQUEST) ---
@@ -61,7 +61,7 @@ request = {
 }
 
 if not os.path.exists(bulk_file):
-    print(f"Submitting 1 master request for 1984-2025 {q}...")
+    print(f"Submitting 1 master request for 1980-2025 {q}...")
     try:
         client.retrieve(dataset, request).download(bulk_file)
     except Exception as e:
@@ -77,7 +77,7 @@ try:
     
     for site in SITES:
         # Define output file for the continuous timeseries
-        site_file = f"{out_dir}/{site['name']}_ECMWF_CARDAMOM_DRIVER_{q}_1984_2025.nc"
+        site_file = f"{out_dir}/{site['name']}_ECMWF_CARDAMOM_DRIVER_{q}_1980_2025.nc"
         
         if not os.path.exists(site_file):
             # Extract the entire 42-year timeseries for this specific site and save immediately
