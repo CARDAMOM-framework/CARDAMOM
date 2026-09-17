@@ -79,7 +79,7 @@ try:
         # Extract the entire 24-year timeseries for this specific site first
         site_ds_full = ds.sel(latitude=site["lat"], longitude=site["lon"], method="nearest")
         
-        # Loop through locally to save individual month/year files to match your structure
+        # Loop through locally to save individual month/year files
         for yr in range(2001, 2025): 
             for m in range(1, 13):
                 month_str = str(m).zfill(2)
@@ -88,9 +88,9 @@ try:
                 site_file = f"{out_dir}/{site['name']}_ECMWF_CARDAMOM_DRIVER_{q}_{month_str}{yr_str}.nc"
                 
                 if not os.path.exists(site_file):
-                    # Slice the dataset by time locally (instantaneous)
+                    # Slice the dataset using the updated 'valid_time' coordinate
                     time_slice = f"{yr_str}-{month_str}"
-                    site_ds_month = site_ds_full.sel(time=time_slice)
+                    site_ds_month = site_ds_full.sel(valid_time=time_slice)
                     site_ds_month.to_netcdf(site_file)
                     
     ds.close()
