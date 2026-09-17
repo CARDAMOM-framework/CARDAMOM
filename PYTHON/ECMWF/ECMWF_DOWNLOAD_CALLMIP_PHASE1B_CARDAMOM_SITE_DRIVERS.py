@@ -35,17 +35,9 @@ pad = 0.25
 data_format = "netcdf"
 dataset = "reanalysis-era5-single-levels-monthly-means"
 
-hourly_quantities = [
-    "2m_temperature", 
-    "2m_dewpoint_temperature"
-]
+hourly_quantities = []
 monthly_quantities = [
-    "total_precipitation", 
-    "skin_temperature", 
-    "surface_solar_radiation_downwards", 
-    "snowfall",
-    "surface_thermal_radiation_downwards"
-]
+    "skin_temperature"]
 
 all_quantities = hourly_quantities + monthly_quantities
 all_hours = [f"{str(h).zfill(2)}:00" for h in range(24)]
