@@ -1250,4 +1250,4 @@ void POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
 //     DALECmodel->EDC_META.UNITS[E.state_proximity]="TBD";
 //     DALECmodel->EDC_META.DESCRIPTION[E.state_proximity]="";
     
-// }
+}
