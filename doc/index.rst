@@ -131,7 +131,6 @@ DALEC Model:
    markdown_manuals/GETTING_STARTED
    markdown_manuals/GITHUB_BASICS
    markdown_manuals/MATLAB_DEMO
-   markdown_manuals/MCMC_IN_CARDAMOM_OVERVIEW
    markdown_manuals/MODEL_IDs
    markdown_manuals/OUTPUT_DATA_ANALYSIS
    markdown_manuals/PARALLELIZATION
