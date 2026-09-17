@@ -32,8 +32,8 @@ data_format = "netcdf"
 dataset = "reanalysis-era5-single-levels-monthly-means"
 q = "skin_temperature"
 
-# Request all years and months at once
-all_years = [str(yr) for yr in range(2001, 2025)]
+# Request 1984 to 2025
+all_years = [str(yr) for yr in range(1984, 2026)]
 all_months = [str(m).zfill(2) for m in range(1, 13)]
 
 # Dynamically calculate the Continental Box
@@ -46,7 +46,7 @@ regional_area = [max_lat, min_lon, min_lat, max_lon]
 out_dir = "DATA/CALLMIP/ECMWF_PHASE1b_DRIVERS"
 os.makedirs(out_dir, exist_ok=True)
 
-bulk_file = f"BULK_{q}_ALL_YEARS.nc"
+bulk_file = f"BULK_{q}_1984_2025.nc"
 client = cdsapi.Client()
 
 # --- 1. DOWNLOAD BULK FILE (ONE REQUEST) ---
@@ -61,7 +61,7 @@ request = {
 }
 
 if not os.path.exists(bulk_file):
-    print(f"Submitting 1 master request for all 24 years of {q}...")
+    print(f"Submitting 1 master request for 1984-2025 {q}...")
     try:
         client.retrieve(dataset, request).download(bulk_file)
     except Exception as e:
@@ -71,27 +71,18 @@ else:
     print(f"{bulk_file} already exists. Skipping download.")
 
 # --- 2. SLICE AND SAVE LOCAL SITES ---
-print("Slicing data for all sites and months...")
+print("Slicing full timeseries for all sites...")
 try:
     ds = xr.open_dataset(bulk_file)
     
     for site in SITES:
-        # Extract the entire 24-year timeseries for this specific site first
-        site_ds_full = ds.sel(latitude=site["lat"], longitude=site["lon"], method="nearest")
+        # Define output file for the continuous timeseries
+        site_file = f"{out_dir}/{site['name']}_ECMWF_CARDAMOM_DRIVER_{q}_1984_2025.nc"
         
-        # Loop through locally to save individual month/year files
-        for yr in range(2001, 2025): 
-            for m in range(1, 13):
-                month_str = str(m).zfill(2)
-                yr_str = str(yr)
-                
-                site_file = f"{out_dir}/{site['name']}_ECMWF_CARDAMOM_DRIVER_{q}_{month_str}{yr_str}.nc"
-                
-                if not os.path.exists(site_file):
-                    # Slice the dataset using the updated 'valid_time' coordinate
-                    time_slice = f"{yr_str}-{month_str}"
-                    site_ds_month = site_ds_full.sel(valid_time=time_slice)
-                    site_ds_month.to_netcdf(site_file)
+        if not os.path.exists(site_file):
+            # Extract the entire 42-year timeseries for this specific site and save immediately
+            site_ds_full = ds.sel(latitude=site["lat"], longitude=site["lon"], method="nearest")
+            site_ds_full.to_netcdf(site_file)
                     
     ds.close()
     print(f"Successfully sliced all files to {out_dir}")
