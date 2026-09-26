@@ -121,3 +121,28 @@ echo   ${COMPILER} ${CARDAMOM_C_PATH}/projects/CARDAMOM_MDF/CARDAMOM_MDF.c -g -g
 fi
 
 echo "All files compiled sucessfully"
+
+# === GENERATE AI CONTEXT MAP (OPTIONAL) ===
+# This generates a text file showing dependencies for AI assistants like Claude.
+# It requires no additional tools beyond gcc and doesn't affect compilation.
+if command -v ${COMPILER} &> /dev/null; then
+  echo "Generating AI dependency map (LLM_DEPENDENCIES.txt)..."
+  CONTEXT_FILE="${CARDAMOM_C_PATH}/LLM_DEPENDENCIES.txt"
+
+  echo "=== CARDAMOM DEPENDENCY MAP FOR AI ASSISTANTS ===" > "$CONTEXT_FILE"
+  echo "Generated on: $(date)" >> "$CONTEXT_FILE"
+  echo "" >> "$CONTEXT_FILE"
+
+  echo "=== CARDAMOM_RUN_MODEL.c DEPENDENCY TREE ===" >> "$CONTEXT_FILE"
+  ${COMPILER} -H -fsyntax-only ${NETCDF_LIB_FLAGS} ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.c 2>&1 | grep "CARDAMOM" >> "$CONTEXT_FILE" || true
+
+  echo "" >> "$CONTEXT_FILE"
+  echo "=== CARDAMOM_MDF.c DEPENDENCY TREE ===" >> "$CONTEXT_FILE"
+  ${COMPILER} -H -fsyntax-only ${NETCDF_LIB_FLAGS} ${CARDAMOM_C_PATH}/projects/CARDAMOM_MDF/CARDAMOM_MDF.c 2>&1 | grep "CARDAMOM" >> "$CONTEXT_FILE" || true
+
+  echo "" >> "$CONTEXT_FILE"
+  echo "=== FLAT DEPENDENCY LIST (RUN_MODEL) ===" >> "$CONTEXT_FILE"
+  ${COMPILER} -MM ${NETCDF_LIB_FLAGS} ${CARDAMOM_C_PATH}/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.c >> "$CONTEXT_FILE" 2>/dev/null || true
+
+  echo "AI dependency map generated at: ${CONTEXT_FILE}"
+fi
