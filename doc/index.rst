@@ -19,7 +19,7 @@ The CARDAMOM documentation presented here is written specifically for the `JPL, 
 .. toctree::
    :maxdepth: 1
    :caption: Getting Started:
-
+   
    getting_started/index
 
 .. toctree::
