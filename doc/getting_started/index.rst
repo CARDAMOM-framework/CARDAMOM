@@ -4,12 +4,18 @@ Getting Started with CARDAMOM
 "Installing" CARDAMOM
 ---------------------
 
-Get code from Github
+Get code from Github with ssh
 ~~~~~~~~~~~~~~~~~~~~
 
-+ Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework
-+ Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c
++ Go to https://github.com/CARDAMOM-framework/CARDAMOM
 + Click on green "Code" button, and select git clone with ssh
+
+.. image:: ../images/Green_Code_GH_Button.png
+   :width: 200
+
+
+
+
 
 Example
 ^^^^^^^
