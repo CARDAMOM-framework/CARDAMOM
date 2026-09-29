@@ -87,12 +87,3 @@ CARDAMOM Github User Must Read
 
 After you clone the CARDAMOM repository to your local, please take a minute to go through the first section in `CARDAMOM_GIT_MUST_READ.md <https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/CARDAMOM_GIT_MUST_READ.md>`_. We recommend all users to follow the instructions in order to effectively maintain the CARDAMOM github environment.
 
-CARDAMOM Matlab Demo and Setup Test
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-See :doc:`MATLAB DEMO <../markdown_manuals/MATLAB_DEMO>` for details.
-
-CARDAMOM Python Demo and Setup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-See :doc:`PYTHON DEMO <../markdown_manuals/PYTHON_DEMO>` for details.
