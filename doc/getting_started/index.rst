@@ -56,31 +56,6 @@ Section 2. Compiling CARDAMOM
 
 
 
-
-
-
-Tips
-
-^^^^
-
-
-If you are working on a new machine, make sure to re-install required packages like python, homebrew, etc.
-
-
-FAQ
-
-^^^
-
-
-**Q:** "I get 'Error: could not find any nc-config command.' or something like that, what do I do?"
-
-
-**A:** Install netcdf using homebrew::
-
-
-   brew install netcdf
-
-
 Section 3. Possible library installation requirements
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,8 +88,50 @@ If you don't already have these, you may need to follow some of the following st
      + ``pip3 install netcdf4``
 
 
+* Core dependency summary 
 
-CARDAMOM Github User Must Read
+  Core Requirements:
+
+  1. C Compiler (GCC or compatible)
+     - Used to compile the C source files
+     - Default: gcc
+     - Alternatives supported: any C compiler (clang, icc, etc.)
+  2. NetCDF C Library
+     - Critical dependency for reading/writing scientific data files
+     - Requires both the library files and the nc-config utility
+     - The script uses nc-config to get compiler flags and link flags
+  3. Math Library (-lm)
+     - Standard C math library (usually included with compiler)
+     - Required for mathematical operations
+  4. Standard Build Tools
+     - bash (already present on macOS/Linux)
+     - which command (for finding nc-config)
+
+
+Section 4. Tips
+
+^^^^
+
+
+If you are working on a new machine, make sure to re-install required packages like python, homebrew, etc.
+
+
+Section 5. FAQ
+
+^^^
+
+
+**Q:** "I get 'Error: could not find any nc-config command.' or something like that, what do I do?"
+
+
+**A:** Install netcdf using homebrew::
+
+
+   brew install netcdf
+
+
+
+Section 5. CARDAMOM Github User Must Read
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
