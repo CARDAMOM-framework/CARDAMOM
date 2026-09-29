@@ -28,7 +28,6 @@ Section 1. Git clone from Github
 
 
 .. image:: ../images/Green_Code_GH_Button.png
-
    :width: 500
 
 The "ssh" option will provide the "git@github.com:CARDAMOM-framework/CARDAMOM.git" text used in Step 2, but you may choose do download code differently
