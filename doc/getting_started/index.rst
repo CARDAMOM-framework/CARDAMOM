@@ -12,7 +12,7 @@ Get code from Github with ssh
 
 .. image:: ../images/Green_Code_GH_Button.png
    :width: 200
-   :alt: where to click
+
 
 
 
