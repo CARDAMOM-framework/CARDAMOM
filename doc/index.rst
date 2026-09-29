@@ -17,13 +17,13 @@ This technical documentation is under construction. In due course, incremental v
 The CARDAMOM documentation presented here is written specifically for the `JPL, Stanford, UCSB and Caltech CARDAMOM framework <https://github.com/CARDAMOM-framework/CARDAMOM>`_ implementation, publicly available under an `Apache License v2.0 <http://www.apache.org/licenses/>`_. :ref:`copyright-statement` © 2024, California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Getting Started:
 
    getting_started/index
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: CARDAMOM Overview:
 
    cardamom_overview/overview
@@ -31,7 +31,7 @@ The CARDAMOM documentation presented here is written specifically for the `JPL, 
    cardamom_overview/model_data_fusion
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :hidden:
    :caption: DALEC Model:
 

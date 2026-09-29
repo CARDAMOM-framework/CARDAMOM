@@ -4,21 +4,20 @@ Getting Started with CARDAMOM
 "Installing" CARDAMOM
 ---------------------
 
-Get code from Github
+Instructions here are for Mac, and transfer to linux/unix. No windows installation instructions provided at the moment.
+
+Git clone from Github
 ~~~~~~~~~~~~~~~~~~~~
 
-+ Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework
-+ Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c
-+ Click on green "Code" button, and select git clone with ssh
++ **Step 1.** Navigate Type ``cd /path/to/your/environment/`` in your mac terminal, this can be your default home directory or another directory for storing CARDAMOM code.
 
-Example
-^^^^^^^
++ **Step 2.** Type ``git clone git@github.com:CARDAMOM-framework/CARDAMOM.git" in terminal window. If successful, you will have a newly cr/path/to/your/environment/CARDAMOM folder.
 
-**Step 1.** Type ``cd /Users/[yourusername]/`` in your mac terminal, for example (or alternatively go to the preferred directory for storing CARDAMOM code).
++ **Additional resources** For original source, go to https://github.com/CARDAMOM-framework/CARDAMOM, and click on green "Code" button, and select git clone with ssh.
 
-**Step 2.** Type ``git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c`` in mac terminal.
-
-- See Git Clone FAQ below for troubleshooting
+.. image:: ../images/Green_Code_GH_Button.png
+   :width: 500
+The "ssh" option will provide the "git@github.com:CARDAMOM-framework/CARDAMOM.git" text used in Step 2, but you may choose do download code differently
 
 .. warning::
    **Do not use .zip approach** (!) unless you only intend to download code once, and do not anticipate collaborating with team.
@@ -27,7 +26,16 @@ Example
 Compiling CARDAMOM
 ~~~~~~~~~~~~~~~~~~
 
-First step is to compile the CARDAMOM C code.
+
++ **Step 1** Navigate to your CARDAMOM folder "cd /path/to/your/environment/CARDAMOM"
+
++ **Step 2** run "./BASH/CARDAMOM_COMPILE.sh". More likely than not, you will need to install some libraries with brew install.
+
++ **Step 3 (if needed) ** install missing libraries using homebrew, and repeat **Step 2**  until successful. See Tips and FAQ to debug this step
+
+
+
+
 
 Tips
 ^^^^
@@ -57,7 +65,6 @@ Required Installation Steps
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. note::
-   **SOON TO BE REQUIRED:**
 
    * Install homebrew (if you don't already have it: https://brew.sh)
    * Install netcdf library (if you don't already have it)
@@ -80,12 +87,3 @@ CARDAMOM Github User Must Read
 
 After you clone the CARDAMOM repository to your local, please take a minute to go through the first section in `CARDAMOM_GIT_MUST_READ.md <https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/CARDAMOM_GIT_MUST_READ.md>`_. We recommend all users to follow the instructions in order to effectively maintain the CARDAMOM github environment.
 
-CARDAMOM Matlab Demo and Setup Test
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-See :doc:`MATLAB DEMO <../markdown_manuals/MATLAB_DEMO>` for details.
-
-CARDAMOM Python Demo and Setup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-See :doc:`PYTHON DEMO <../markdown_manuals/PYTHON_DEMO>` for details.
