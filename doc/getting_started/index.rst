@@ -11,7 +11,7 @@ Get code from Github with ssh
 + Click on green "Code" button, and select git clone with ssh
 
 .. image:: ../images/Green_Code_GH_Button.png
-   :width: 200
+   :width: 500
 
 
 
