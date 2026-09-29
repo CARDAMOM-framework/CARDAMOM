@@ -1,5 +1,4 @@
  Getting Started with CARDAMOM
-
 ==============================
 
 
