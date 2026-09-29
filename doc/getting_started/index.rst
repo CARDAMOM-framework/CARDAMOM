@@ -4,22 +4,15 @@ Getting Started with CARDAMOM
 "Installing" CARDAMOM
 ---------------------
 
-Get code from Github with ssh
+Git clone from Github
 ~~~~~~~~~~~~~~~~~~~~
 
-+ Go to https://github.com/CARDAMOM-framework/CARDAMOM
-+ Click on green "Code" button, and select git clone with ssh
++ **Step 1** Option 1. Go to https://github.com/CARDAMOM-framework/CARDAMOM, and click on green "Code" button, and select git clone with ssh
 
 .. image:: ../images/Green_Code_GH_Button.png
    :width: 500
 
-+ Copy the command
-
-
-
-
-Example
-^^^^^^^
++ Alternatively, for git clone on your command line, you can justy copy the command ("git@github.com:CARDAMOM-framework/CARDAMOM.git")
 
 **Step 1.** Type ``cd /Users/[yourusername]/`` in your mac terminal, for example (or alternatively go to the preferred directory for storing CARDAMOM code).
 
