@@ -52,7 +52,7 @@ Section 2. Compiling CARDAMOM
 + **Step 2** run "./BASH/CARDAMOM_COMPILE.sh". More likely than not, you will need to install some libraries with brew install.
 
 
-+ **Step 3 (if needed) ** install missing libraries using homebrew, and repeat **Step 2**  until successful. See Tips and FAQ to debug this step
++ **Step 3** (if needed) install missing libraries (see Section 3), and repeat **Step 2**  until successful. See Tips and FAQ to debug this step
 
 
 
@@ -81,9 +81,11 @@ FAQ
    brew install netcdf
 
 
-Required Installation Steps
+Section 3. Possible library installation requirements
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you don't already have these, you may need to follow some of the following steps
 
 
 .. note::
