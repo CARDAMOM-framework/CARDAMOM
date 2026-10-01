@@ -6,8 +6,9 @@ import netCDF4 as nc
 def generate_cbf_nc():
     # Define paths based on script location (CARDAMOM/PYTHON/check_fun/)
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    txt_dir = os.path.normpath(os.path.join(script_dir, '../../DATA/TEXT_FILE_DRIVERS'))
-    output_filename = "../../CARDAMOM_DEMO_INPUT_FILE.cbf.nc"
+    repo_root = os.path.normpath(os.path.join(script_dir, '../..'))
+    txt_dir = os.path.join(repo_root, 'DATA/TEXT_FILE_DRIVERS')
+    output_filename = os.path.join(repo_root, 'CARDAMOM_DEMO_INPUT_FILE.cbf.nc')
     
     if not os.path.exists(txt_dir):
         print(f"🛑 FATAL ERROR: Driver directory not found at {txt_dir}")
