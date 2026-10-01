@@ -5,8 +5,9 @@
 if [ "$3" = "1" ]; then
     CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-    if [ "$CURRENT_BRANCH" = "CARDAMOM" ]; then
-        echo "⚙️ Switched to CARDAMOM branch. Generating cbf.nc file..."
+    # Check if the generator script exists (works on any branch with the files)
+    if [ -f "PYTHON/check_fun/DEMO_CBF_NC_GENERATOR.py" ]; then
+        echo "⚙️ Switched to $CURRENT_BRANCH branch. Generating cbf.nc file..."
         python3 PYTHON/check_fun/DEMO_CBF_NC_GENERATOR.py
     fi
 fi
