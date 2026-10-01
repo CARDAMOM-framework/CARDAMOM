@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Get the current branch name
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Only run if on the CARDAMOM branch
+if [ "$CURRENT_BRANCH" = "CARDAMOM" ]; then
+    echo "⚙️ git pull detected on CARDAMOM branch. Generating cbf.nc file..."
+    # Adjust python path if necessary, assuming execution from repo root
+    python3 PYTHON/check_fun/DEMO_CBF_NC_GENERATOR.py
+fi
