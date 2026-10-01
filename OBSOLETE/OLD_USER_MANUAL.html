@@ -1,0 +1,1576 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CARDAMOM community collaborative manual &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3ce236e8" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started with CARDAMOM</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC Model:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dalec_versions.html">DALEC versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/analyst_checklist.html">Analyst checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/technote.html">Contributing to this technical documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/governance.html">CARDAMOM.c governance structure</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/CARDAMOM_NETCDF_INPUT_FILE.html">CARDAMOM Netcdf input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/COST_FUNCTION.html">CARDAMOM cost function <a name="cardamom-cost-function"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/DEBUGGING_TIPS.html">Debugging tips and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/GITHUB_BASICS.html">Using CARDAMOM’s github repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MCMC_IN_CARDAMOM_OVERVIEW.html">MCMC in CARDAMOM Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/OUTPUT_DATA_ANALYSIS.html">Output Data and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PARALLELIZATION.html">Parallelization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">CARDAMOM community collaborative manual</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/OBSOLETE/OLD_USER_MANUAL.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cardamom-community-collaborative-manual">
+<h1>CARDAMOM community collaborative manual<a class="headerlink" href="#cardamom-community-collaborative-manual" title="Link to this heading"></a></h1>
+<p>###<strong>THIS IS THE CARDAMOM TEAM INTERNAL MANUAL (MANUAL_DEV.md). Use this mannual collaboratively with CARDAMOM team. As &amp; when instructions are ready to be used in public CARDAMOM code, copy/transfer/adapt these manually into MANUAL.md</strong></p>
+<p>Test .md link to other file
+<a class="reference internal" href="#README.md"><span class="xref myst">README file</span></a></p>
+<p>Example relative link for subsection
+<a class="reference internal" href="#MANUAL/GETTING_STARTED.md"><span class="xref myst">GETTING STARTED</span></a></p>
+<p><em><strong>Anthony Bloom, Gregory R Quetin, Victoria Meyer, Paul Levine, Shuang Ma, Renato Braghiere and others</strong></em><br />
+[If you’re making any edits, add your name here!]</p>
+<section id="ad-hoc-material-to-file-away-in-manual-contents">
+<h2>Ad-hoc material to “file” away in manual contents<a class="headerlink" href="#ad-hoc-material-to-file-away-in-manual-contents" title="Link to this heading"></a></h2>
+<section id="fill-value-conventions-nans-and-9999">
+<h3>Fill value conventions: Nans and -9999<a class="headerlink" href="#fill-value-conventions-nans-and-9999" title="Link to this heading"></a></h3>
+</section>
+<section id="dom-all-dead-organic-c-states-som-only-dalec-soil">
+<h3>DOM = all dead organic C states, SOM = only DALEC soil<a class="headerlink" href="#dom-all-dead-organic-c-states-som-only-dalec-soil" title="Link to this heading"></a></h3>
+<p>Sections for partitioned manual
+“Curator” (or cognizant engineer) = you’re in charge of (i) starting a new markdown page and moving content there, and (2) getting other ppl to contribute content where necessary.</p>
+<p>Also: link at end of each section to get to next section (e.g. previous, next, and “back to summary”, definitely include that in all files).</p>
+</section>
+</section>
+<section id="summary-greg-2-getting-started-jessie-probably-need-to-make-new-pages-for-demo-3-running-cardamom-paul-main-section-and-command-line-example-expect-subsections-for-matlab-and-python-4-reading-using-and-analyzing-cardamom-data-greg">
+<h2>(1) Summary (Greg)
+(2) Getting started (Jessie; probably need to make new pages for DEMO)
+(3) Running CARDAMOM (Paul = main section, and command line example; expect subsections for matlab and python)
+(4) Reading, using and analyzing CARDAMOM data? (Greg)<a class="headerlink" href="#summary-greg-2-getting-started-jessie-probably-need-to-make-new-pages-for-demo-3-running-cardamom-paul-main-section-and-command-line-example-expect-subsections-for-matlab-and-python-4-reading-using-and-analyzing-cardamom-data-greg" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Cost function (Anthony; with as much as possible review from others).</p></li>
+<li><p>The “cbf.nc” (Matt)</p></li>
+<li><p>CARDAMOM C developer guide (Shuang)</p></li>
+<li><p>Running CARDAMOM in parallel (Sarah, scope = examples or resources associated to parallel computing option)</p></li>
+<li><p>CARDAMOM-MAPS (point to CARDAMOM-MAPS manual)</p></li>
+<li><p>FAQ etc (Anthony)</p></li>
+</ul>
+</section>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#-getting-started"><span class="xref myst">Getting Started With CARDAMOM</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#-installing--cardamom"><span class="xref myst">“Installing” CARDAMOM</span></a></p></li>
+<li><p><a class="reference internal" href="#get-code-from-github"><span class="xref myst">Get code from Github</span></a></p></li>
+<li><p><a class="reference internal" href="#cardamom-git-must-read"><span class="xref myst">CARDAMOM Github User Must Read</span></a></p></li>
+<li><p><a class="reference internal" href="#cardamom-with-matlab"><span class="xref myst">CARDAMOM Matlab Demo and Setup Test</span></a></p></li>
+<li><p><a class="reference internal" href="#cardamom-with-python"><span class="xref myst">CARDAMOM Python Demo and Setup</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#running-cardamom"><span class="xref myst">Running CARDAMOM</span></a></p>
+<ul>
+<li><p>Step 1: CARDAMOM_MDF</p></li>
+<li><p>Step 2: CARDAMOM_RUN_MODEL</p></li>
+<li><p>Saving output at runtime (Matlab)</p></li>
+</ul>
+</li>
+<li><p>[CARDAMOM state and flux conventions]</p></li>
+<li><p><a class="reference internal" href="#MANUAL/COST_FUNCTION.md"><span class="xref myst">CARDAMOM cost function</span></a>
+*Options</p></li>
+<li><p><a class="reference internal" href="#cardamom-cbffile"><span class="xref myst">The “.cbf.nc” File (CARDAMOM netcdf input files)</span></a></p>
+<ul>
+<li><p>cbf.nc Fields</p></li>
+<li><p><a class="reference internal" href="#cardamom-make-cbffile"><span class="xref myst">Make a new cbf.nc file</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#cardamom-c-developer-guid"><span class="xref myst">CARDAMOM C developer guide</span></a></p>
+<ul>
+<li><p>[Intro tips]</p></li>
+<li><p>[Make a new model]</p></li>
+<li><p>[Add more parameters to the model]</p></li>
+<li><p>[Add more pools to the model]</p></li>
+<li><p>[Define prior range for parameters and why log transformed prior range is used]</p></li>
+<li><p>[Add a new dataset to CARDAMOM DATA structure]</p></li>
+<li><p>[Make a new cost function]</p></li>
+<li><p>[Switches for EDCs]</p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#submission-command-line"><span class="xref myst">Running CARDAMOM in parallel</span></a></p></li>
+<li><p><a class="reference internal" href="#faq"><span class="xref myst">“Frequently asked questions” and “frequently encountered issues &amp; solutions”</span></a></p>
+<ul>
+<li><p>[Frequently asked questions (FAQs)]</p></li>
+<li><p>[Frequently encountered issues &amp; solutions (FEIs…?)]</p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#troubleshoot"><span class="xref myst">Troubleshooting CARDAMOM runs: “my CARDAMOM run doesn’t work”</span></a></p></li>
+<li><p><a class="reference internal" href="#appendix"><span class="xref myst">Appendix</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#cardamom-model-library"><span class="xref myst">CARDAMOM model library</span></a></p></li>
+<li><p><a class="reference internal" href="#cardamom-input-output-parameters"><span class="xref myst">Standard Input, Outputs, Parameters</span></a></p></li>
+<li><p><a class="reference internal" href="#-recommended-settings"><span class="xref myst">Recommended Settings</span></a></p></li>
+<li><p><a class="reference internal" href="#-helper-scripts"><span class="xref myst">Helper Scripts</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#-references"><span class="xref myst">References</span></a></p></li>
+</ul>
+</section>
+<section id="getting-started-with-cardamom">
+<h2>Getting Started with CARDAMOM <a name="-getting-started"/><a class="headerlink" href="#getting-started-with-cardamom" title="Link to this heading"></a></h2>
+<section id="installing-cardamom">
+<h3>“Installing” CARDAMOM <a name="-installing--cardamom"/><a class="headerlink" href="#installing-cardamom" title="Link to this heading"></a></h3>
+<section id="get-code-from-github">
+<h4>Get code from Github<a class="headerlink" href="#get-code-from-github" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Get invite from CARDAMOM team to join https://github.com/CARDAMOM-framework</p></li>
+<li><p>Go to https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c</p></li>
+<li><p>Click on green “Code” button, and select git clone with ssh</p></li>
+</ul>
+<p>Example</p>
+<p>Step 1. type “cd /Users/[yourusername]/”, in your mac terminal, for example (or alternatively go to the preffered directory for storing CARDAMOM code).</p>
+<p>Step 2. type “git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c” mac terminal.</p>
+<ul class="simple">
+<li><p>See Git Clone FAQ below for troubleshooting</p></li>
+</ul>
+<p><strong>Do not use .zip approach</strong> (!) unless you only intend to download code once, and do not anticipate collaborating with team.</p>
+</section>
+</section>
+<section id="git-clone-faq">
+<h3>git clone FAQ<a class="headerlink" href="#git-clone-faq" title="Link to this heading"></a></h3>
+<p>Get fatal error when typing “git clone https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c”, what should I do?</p>
+<p>(NOTE: make link to CARDAMOM GITHUB.md, Shuang’s user guide).</p>
+<p><em>SOON TO BE REQUIRED:</em></p>
+<ul class="simple">
+<li><p><em>Install homebrew (if you don’t already have it) (https://brew.sh/)[DETAILS AS NEEDED]</em></p>
+<ul>
+<li><p><em>Install netcdf library (if you don’t already have it)</em></p></li>
+<li><p>*type “brew install netcdf” in terminal window (Mac), see step (1) for installing brew. *</p></li>
+<li><p><em>Anthony, Alex: setenv(‘CARDAMOM_NC_CONFIG_PATH’,’/usr/local/bin/nc-config’)</em></p></li>
+<li><p><em>For PC: no supported solution yet… (Paul: add potential windows solution)</em></p></li>
+</ul>
+</li>
+<li><p>Demos below will compile CARDAMOM and run short assimilation runs and forward runs for testing. There are options in both Python and Matlab. Check Appendix for additional tools written in Matlab and Python.</p></li>
+</ul>
+</section>
+<section id="cardamom-github-user-must-read">
+<h3>CARDAMOM Github User Must Read <a name="cardamom-git-must-read"><a class="headerlink" href="#cardamom-github-user-must-read" title="Link to this heading"></a></h3>
+<p>After you clone the CARDAMOM repository to your local, please take a minute to go through the first section in  <a class="reference external" href="https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/CARDAMOM_GIT_MUST_READ.md">CARDAMOM_GIT_MUST_READ.md</a>. We recommand all users to follow the instructions in order to effectively maintain the CARDAMOM github environment.</p>
+</section>
+<section id="cardamom-matlab-demo-and-setup-test">
+<h3>CARDAMOM Matlab Demo and Setup Test <a name="cardamom-with-matlab"/><a class="headerlink" href="#cardamom-matlab-demo-and-setup-test" title="Link to this heading"></a></h3>
+<p>Follow these steps <em>once</em>. Once you’ve successfully made it to step 4, you can then start matlab and you’re ready to use all CARDAMOM routines without any further action.
+Note: PC implementation not supported (but do add notes if you’ve managed to do this!).</p>
+<p><em>What happens when you run CARDAMOM_DEMO:</em> <br />
+CARDAMOM_DEMO.m will locally compile the CARDAMOM C code (using “gcc” C compiler). CARDAMOM (called from within matlab) will then show some attempts to find a starting point with probability &gt; 0, and will then start accepting/rejecting parameter samples (note: this is a shorter-than-usual run only for demo purposes). The CARDAMOM_DEMO script will then make a figure with some of the retrieved parameter results. Completion of the CARDAMOM script means all components of CARDAMOM are operational.</p>
+<p>Notes:
++ This works great on macs and (theoretically) on linux. I have no idea what happens on Windows.
++ Please report questions and issues encountered in FAQ &amp; FEI section below
++ Works with Matlab 2017b and later versions. Compatibility with earlier versions is likely straightforward.</p>
+<section id="run-matlab-demo">
+<h4>Run Matlab Demo<a class="headerlink" href="#run-matlab-demo" title="Link to this heading"></a></h4>
+<ol class="arabic simple">
+<li><p>Start matlab</p></li>
+<li><p>Set CARDAMOM environmental variables in matlab</p>
+<ul class="simple">
+<li><p>To do this:</p>
+<ul>
+<li><p>Create or edit existing matlab startup.m file: e.g. type “edit startup.m” in matlab command window to edit new or existing startup file.</p></li>
+<li><p>Copy lines from CARDAMOM_2.1.6c/MATLAB/startup_template.m into startup.m file, and adapt as instructed in startup_template.m comments.</p></li>
+<li><p>Save changes to startup.m</p></li>
+<li><p>Make a directory called “DUMPFILES” by typing “mkdir DUMPFILES” in matlab command window OR type “mkdir DUMFILES” in terminal console (in which case, ensure you are in the desired working directory where startup.m is).</p></li>
+</ul>
+</li>
+<li><p>Tips:</p>
+<ul>
+<li><p>Type “pwd” right after starting matlab to find out current working directory</p></li>
+<li><p>paths in “startup.m” should either be absolute paths, or relative to current working directory</p></li>
+<li><p>to avoid github issues, either:</p>
+<ul>
+<li><p>the current working directory needs to be outside the “CARDAMOM” folder, or equivalent github cloned folder (recommended)</p></li>
+<li><p>(b) make a “.gitignore” file and ensure github ignores all user-made files within the “CARDAMOM_2.1.6c” folder.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Quit &amp; restart matlab</p></li>
+<li><p>Type “which startup” in matlab command window</p>
+<ul class="simple">
+<li><p>check matlab is pointing at correct startup.m file</p></li>
+<li><p>In case you encounter issues, more info here (https://www.mathworks.com/help/matlab/ref/startup.html)</p></li>
+</ul>
+</li>
+<li><p>Run CARDAMOM_DEMO.</p>
+<ul class="simple">
+<li><p>This is a test script to ensure all works well. If you get to the end of the demo script, then you’ve got full CARDAMOM functionality!</p></li>
+<li><p>Type “CARDAMOM_DEMO” in matlab command window</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="cardamom-python-demo-and-setup">
+<h3>CARDAMOM Python Demo and Setup <a name="cardamom-with-python"/><a class="headerlink" href="#cardamom-python-demo-and-setup" title="Link to this heading"></a></h3>
+<section id="compile-code-from-github">
+<h4>Compile code from Github<a class="headerlink" href="#compile-code-from-github" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Use a C compiler to comple the assimilation (CARDAMOM_MDF.exe) and forward run (CARDAMOM_RUN_MODEL.exe) functions. For example:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gcc<span class="w"> </span>-std<span class="o">=</span>c99<span class="w"> </span>CARDAMOM/C/projects/CARDAMOM_MDF/CARDAMOM_MDF.c<span class="w"> </span>-o<span class="w"> </span>CARDAMOM/C/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe<span class="w"> </span>-lm
+gcc<span class="w"> </span>-std<span class="o">=</span>c99<span class="w"> </span>CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.c<span class="w"> </span>-o<span class="w"> </span>CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.exe<span class="w"> </span>-lm
+</pre></div>
+</div>
+</section>
+<section id="tutorials">
+<h4>Tutorials<a class="headerlink" href="#tutorials" title="Link to this heading"></a></h4>
+<p>Summary of tools to interact with CARDAMOM using python. Read and write of binary files. Conversion of outputs (parameters, pools, fluxes) to netcdf. Additional functionality in summarizing point runs into a netcdf map of results.</p>
+<p>See tutorials (PYTHON/tutorials)</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/PYTHON/tutorials/cardamom_tutorial1.ipynb">Tutorial 1</a>:
+Description of input file (.cbf) and how to open/view file. Open and view parameter output from assimilation runs (.cbr). Open and view pools/fluxes from forward run (.bin).</p></li>
+<li><p><a class="reference external" href="https://github.com/CARDAMOM-framework/CARDAMOM_2.1.6c/blob/master/PYTHON/tutorials/cardamom_tutorial2.ipynb">Tutorial 2</a>:
+This tutorial will show the basic set up to run a CARDAMOM assimilation and forward run from the command line. This is set up for mac/linux.\</p>
+<ul>
+<li><p>Basic Steps:</p></li>
+<li><p>Download/git-clone a copy of CARDAMOM</p></li>
+<li><p>Compile the c-code of CARDAMOM (make sure to do this after any changes)</p></li>
+<li><p>Run compiled file for assimilation with a pointer towards the input (.cbf) and parameters (.cbr) locations.</p></li>
+<li><p>With a parameters file, run a compiled file for a forward run to retrieve the outputs of your parameter ensemble. Point required for outputs (.bin).</p></li>
+<li><p>Common practice is to organize input, parameter and output files in: topfolder/cbf/.cbf topfolder/cbr/.cbr topfolder/output/*.bin</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="running-cardamom">
+<h2>Running CARDAMOM <a name="running-cardamom"/><a class="headerlink" href="#running-cardamom" title="Link to this heading"></a></h2>
+<p>This section outlines setting up CARDAMOM runs now that it is downloaded and tested (see above). The first example will be CARDAMOM run from the command line, followed by descriptions of CARDAMOM wrappers - written in both <em>Matlab</em> and <em>Python</em>. Code availability and description across platforms is on a case-by-case basis. We assume (and maybe eventually strive for?) all function names are preserved across matlab/python/other platforms.</p>
+<p>Running CARDAMOM consists of running an assimilation where CARDAMOM is fed drivers (for the model chosen) and observations (to form constraints with the cost function) throught the <em>.cbf file</em> and iterates through the MCMC to produce a set of optimized parameters (the <em>.cbr file</em> output). These inputs and parameters are then combined in a final forward run to produce output files (<em>.bin files</em>) for fluxes, pools, edc states, and probabilities. Depicted in Figure below.</p>
+<p><img alt="cardamom_run" src="../_images/CARDAMOM_RUN.png" />
+<em>Figure: Diagram of the basic CARDAMOM run modes.</em></p>
+<p>To test for convergence between multiple runs started from random sets of parameters (chains), the Gelman-Rubin convergence criterion is often used.</p>
+<p><em>Gelman-Rubin convergence criterion</em>
+Convergence across all parameters is considered adequate for a Gelman-Rubin convergence criterion of &lt;1.2 or &lt;1.1 across all parameter histograms.</p>
+<section id="step-1-cardamom-mdf">
+<h3>Step 1: CARDAMOM_MDF<a class="headerlink" href="#step-1-cardamom-mdf" title="Link to this heading"></a></h3>
+<section id="example-commandline-submission-of-cardamom-assimilation-run">
+<h4>Example commandline submission of CARDAMOM assimilation run<a class="headerlink" href="#example-commandline-submission-of-cardamom-assimilation-run" title="Link to this heading"></a></h4>
+<p>These are the assimilation runs for CARDAMOM where repeated iterations optimize the models parameters through MCMC.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/&lt;cardamomfolder&gt;/CARDAMOM/C/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe<span class="w"> </span>/&lt;outputfolder&gt;/cbf/&lt;cbffilename&gt;.cbf<span class="w"> </span>/&lt;outputfolder&gt;/cbr/&lt;cbrfilename&gt;.cbr<span class="w"> </span><span class="m">100000</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">200</span><span class="w"> </span><span class="m">0</span>.001<span class="w"> </span><span class="m">119</span><span class="w"> </span><span class="m">1000</span>
+</pre></div>
+</div>
+<p><em>for Matlab Users</em></p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">CBR</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">CARDAMOM_RUN_MDF</span><span class="p">(</span><span class="n">CBF</span><span class="p">,</span><span class="n">MCO</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here’s an example matlab code for (a) running multiple chains, and (b) testing convergence between chains.</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">MCO</span><span class="p">.</span><span class="n">niterations</span><span class="p">=</span><span class="mf">1e7</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="n">n</span><span class="p">=</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">;</span><span class="n">CBR</span><span class="p">(</span><span class="n">n</span><span class="p">)=</span><span class="n">CARDAMOM_RUN_MDF</span><span class="p">(</span><span class="n">CBF</span><span class="p">,</span><span class="n">MCO</span><span class="p">);</span><span class="k">end</span><span class="o">\</span>
+<span class="n">CBR</span><span class="p">=</span><span class="n">cardamomfun_combine_parameter_chains</span><span class="p">(</span><span class="n">CBR</span><span class="p">);</span><span class="o">\</span>
+<span class="p">[</span><span class="n">gr</span><span class="p">]=</span><span class="n">cardamomfun_convergence_tests</span><span class="p">(</span><span class="n">CBF</span><span class="p">,</span><span class="n">CBR</span><span class="p">,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span><span class="o">\</span>
+</pre></div>
+</div>
+<p><em>for Python Users</em><br />
+see Tutorial 2 above</p>
+<p><em>Recommended MCMC configurations</em></p>
+<ul class="simple">
+<li><p>Sample 10^5 iterations (MCO.niterations=1e5;) for code testing purposes (e.g. CARDAMOM_DEMO)</p></li>
+<li><p>Sample 10^7 iterations (MCO.niterations=1e7;) for exploratory runs</p></li>
+<li><p>Sample 10^8 iterations (MCO.niterations=1e8;) for final (e.g. publication) runs.</p></li>
+</ul>
+</section>
+</section>
+<section id="step-2-cardamom-run-model">
+<h3>Step 2: CARDAMOM_RUN_MODEL<a class="headerlink" href="#step-2-cardamom-run-model" title="Link to this heading"></a></h3>
+<p>This is the forward run using optimized parameters and saving out the pools and fluxes.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/&lt;cardamomfolder&gt;/CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.exe<span class="w"> </span>/&lt;outputfolder&gt;/cbf/&lt;cbffilename&gt;.cbf<span class="w"> </span>/&lt;outputfolder&gt;/cbr/&lt;cbrfilename&gt;.cbr<span class="w"> </span>/&lt;outputfolder&gt;/output/fluxfile_&lt;filename&gt;.bin<span class="w"> </span>/&lt;outputfolder&gt;/output/poolfile_&lt;filename&gt;.bin<span class="w"> </span>/&lt;outputfolder&gt;/output/edcdfile_&lt;filename&gt;.bin<span class="w"> </span>/&lt;outputfolder&gt;/output/probfile_&lt;filename&gt;.bin
+</pre></div>
+</div>
+</section>
+<section id="saving-output-at-runtime-matlab">
+<h3>Saving output at runtime (Matlab)<a class="headerlink" href="#saving-output-at-runtime-matlab" title="Link to this heading"></a></h3>
+<p>To have CARDAMOM_RUN_MODEL routine save full output at runtime (to avoid having to run model again for post processing):</p>
+<ul class="simple">
+<li><p>Opt. 1 (recommendeds): To save output corresponding to PXI project,</p></li>
+</ul>
+<p>Use CARDAMOM_PROJECT_OUTPUTS_beta.m<br />
+This function stores output by default\</p>
+<ul class="simple">
+<li><p>Opt. 2 (prob not worth it for a handful of cbf files): To save output corresponding to cbf file, use\</p></li>
+</ul>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">CBR</span><span class="p">,</span><span class="n">CBF</span><span class="p">]=</span><span class="n">CARDAMOM_RUN_MODEL</span><span class="p">(</span><span class="n">cbffilename</span><span class="p">,</span><span class="n">PARS</span><span class="p">,</span><span class="n">OPT</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Set OPT.STORE=1 (see “CARDAMOM_RUN_MODEL.m”) for instruction<br />
+Make sure to pass string or cell for cbffilename.\</p>
+</section>
+</section>
+<section id="cardamom-state-and-flux-conventions">
+<h2>CARDAMOM state and flux conventions<a class="headerlink" href="#cardamom-state-and-flux-conventions" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Initial conditions correspond to pools (states) at first timestep t = 0</p></li>
+<li><p>Model Meteorological forcing at timestep t is centered between pools (states) t and t+1</p></li>
+<li><p>Model fluxes at timestep t also centered between states t and t +1</p></li>
+</ul>
+<img width="830" alt="image" src="https://user-images.githubusercontent.com/23563444/117489093-086c5b80-af22-11eb-8006-693c716d142f.png">
+<p><em>In CARDAMOM C code</em>
+See conventions above</p>
+<p><em>For Matlab users</em>
+CARDAMOM_RUN_MODEL.m throws out first one, but only because it’s repeat of initial conditions (which are contained in parameter vector).</p>
+</section>
+<section id="the-cbf-nc-file-cardamom-binary-input-file">
+<h2>The “cbf.nc” file (CARDAMOM binary input file)<a name="cardamom-cbffile"/><a class="headerlink" href="#the-cbf-nc-file-cardamom-binary-input-file" title="Link to this heading"></a></h2>
+<p><em>Note: Binary cbf has been replaced by the netcdf format</em>\</p>
+<p>The CBF file contains information on the model’s driving meterology (see Appendix: Standard Inputs) and the observations for constraining the model. In addition, the CBF file contains additional information on what model ID to run, uncertainties of observations, parameter priors and uncertainties, and which EDCs to have on. The driving meteorology is often taken from site level measurements or global reanalysis. See Appendix: Data used in CARDAMOM for datasets used priviously in CARDAMOM.</p>
+<section id="cbf-nc-fields">
+<h3>.cbf.nc Fields<a class="headerlink" href="#cbf-nc-fields" title="Link to this heading"></a></h3>
+<p>Example file provided in “DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc”</p>
+<p><em>Example Meteorological fields, see Appendix: Standard Inputs for variables and units</em><br />
+Time [Days since Jan 01, 2001]<br />
+min temp [C]<br />
+max temp [C]<br />
+Solar irradiance [MJ/m2/day]<br />
+CO2<br />
+Day of year<br />
+Burned area [m2/m2]<br />
+VPD [hPa]<br />
+Precip. [mm/day]\</p>
+</section>
+<section id="mcmcid-fields">
+<h3>MCMCID fields<a class="headerlink" href="#mcmcid-fields" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>MCMCID is a .cbf.nc dataset (see “DATA/CARDAMOM_DEMO_DRIVERS_prototype.cbf.nc”)</p></li>
+<li><p>The MCMCID value determines the MCMC algorith to be used in CARDAMOM. Currently supported options are:</p></li>
+<li><p>MCMCID = 119: Adaptive Metropolis-Hastings Markov Chain Monte Carlo (Haario et al., 2001)</p></li>
+<li><p>MCMCID = 3: Assymetric Burn-in Differential evolution MCMC (in prep).</p></li>
+<li><p>See below for attributes</p></li>
+<li><p>Default MCMCID value is 119</p></li>
+</ul>
+<section id="niterations-attribute-default-10000">
+<h4>nITERATIONS attribute (default = 10000)<a class="headerlink" href="#niterations-attribute-default-10000" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>This determines the number of MCMC iterations (required by both algorithms).</p></li>
+<li><p>Default value is for testing purposes only. See individual MCMCID recommendations for full simulation configurations.</p></li>
+<li><p>Recommend choosing a value which is a multiple of “nSAMPLES” attribute</p></li>
+</ul>
+</section>
+<section id="nprint-attribute-default-1000">
+<h4>nPRINT attribute (default = 1000)<a class="headerlink" href="#nprint-attribute-default-1000" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>This at determines the MCMC status printout frequency.</p></li>
+<li><p>An integer value N means the MCMC status will be printed every N iterations.</p></li>
+<li><p>A value of “0” will switch off status printouts.</p></li>
+</ul>
+</section>
+<section id="nsamples-attribute-default-2000">
+<h4>nSAMPLES attribute (default = 2000)<a class="headerlink" href="#nsamples-attribute-default-2000" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>This determines number of samples to be output after MCMC completion</p></li>
+<li><p>This number must be greater or equal to nITERATIONS</p></li>
+<li><p>These samples <em>include</em> the MCMC burn-in phase</p></li>
+<li><p>We recommend ensuring nITERATIONS is a multiple of nSAMPLES.</p></li>
+</ul>
+</section>
+</section>
+<section id="make-new-cbf-file">
+<h3>Make new CBF File <a name="cardamom-make-cbffile"/><a class="headerlink" href="#make-new-cbf-file" title="Link to this heading"></a></h3>
+<section id="make-a-new-cbf-file-matlab">
+<h4>Make a new CBF file (Matlab)<a class="headerlink" href="#make-a-new-cbf-file-matlab" title="Link to this heading"></a></h4>
+<ol class="arabic simple">
+<li><p>Copy an existing CBF structure (CBF=CBFtemplate), OR load an existing file e.g. CBF=CARDAMOM_READ_BINARY_FILEFORMAT(‘cbffile.cbf’));</p></li>
+<li><p>clear observations CBF=cardamomfun_clear_cbf_obs(CBF);</p></li>
+<li><p>Replace all CBF.MET with new MET datasets.</p>
+<ul class="simple">
+<li><p>Add zeros if there are no fires.</p></li>
+</ul>
+</li>
+<li><p>Set “CBF.LAT” to equal local latitude (in degrees).</p></li>
+<li><p>Add observations from new locations.
+<em>Use -9999 for any missing observations in CBF.OBS.</em> fields.</p></li>
+</ol>
+<section id="warning-regularly-encountered-issues">
+<h5>Warning! Regularly encountered issues<a class="headerlink" href="#warning-regularly-encountered-issues" title="Link to this heading"></a></h5>
+<ul class="simple">
+<li><p>use cardamom_vvuq_cbf_summary(CBF), and check all observations included in CBF file. Often some get left over from previous runs (oops!). In particular, check “CBF.OTHER_OBS” and CBF.PARPRIORS to make sure nothing “unexpected” is there (this also shows up when using cardamom_vvuq_cbf_summary(CBF).</p></li>
+</ul>
+</section>
+</section>
+<section id="make-a-new-cbf-file-python">
+<h4>Make a new CBF file (Python)<a class="headerlink" href="#make-a-new-cbf-file-python" title="Link to this heading"></a></h4>
+<ol class="arabic simple">
+<li><p>See Tutorial 2 for structure, replace fields in dictionary with new meteorology and observations.</p></li>
+</ol>
+</section>
+</section>
+</section>
+<section id="cardamom-c-developer-guide">
+<h2>CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/><a class="headerlink" href="#cardamom-c-developer-guide" title="Link to this heading"></a></h2>
+<section id="intro-tips">
+<h3>Intro tips.<a class="headerlink" href="#intro-tips" title="Link to this heading"></a></h3>
+<p>Before doing any of the following, either git branch and/or backup your C code (!!!).<br />
+Regularly &amp; frequently compile (e.g. CARDAMOM_COMPILE) when making any changes.\</p>
+</section>
+<section id="make-a-new-model">
+<h3>Make a new model.<a class="headerlink" href="#make-a-new-model" title="Link to this heading"></a></h3>
+<p>Making a new model ID in CARDAMOM (e.g. ID=830), based on original model (e.g. ID=811). To do this:</p>
+<ol class="arabic simple">
+<li><p>Open C/projects/CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c and create new model identification information (e.g. ID = 830).</p></li>
+<li><p>make folder in projects/CARDAMOM_MODELS/DALEC/DALEC_830 (if copied, open all files in folder and rename all instances of e.g. ”811” to “830”).</p></li>
+</ol>
+<p>Tips for step 2.</p>
+<ul class="simple">
+<li><p>copy every instance of DALEC_811 and name them DALEC_830.</p></li>
+<li><p>Compile C code to check if it compiles.</p></li>
+</ul>
+<ul class="simple">
+<li><p>(Matlab) You can use “CARDAMOM_COMPILE” in matlab, to see if the code compiles OK.</p></li>
+</ul>
+<ul class="simple">
+<li><p><em>if the above works without issue, then you should be able to change a CBF.ID value to CBF.ID=830 and the model will run (e.g. with CARDAMOM_RUN_MODEL) without issue!</em></p></li>
+<li><p>Once you’ve successfully replicated CBF.ID=811 to CBF.ID=830, you can then make model structure changes in DALEC_830.c</p></li>
+<li><p>Keep using “CARDAMOM_COMPILE” every so often (in matlab, and equivalent function elsewhere) to see if your new code compiles OK.</p></li>
+</ul>
+<p><em>For matlab users</em></p>
+<ul class="simple">
+<li><p>Open CARDAMOM_RUN_MODEL.m and add the new model ID to the appropriate “if” statement (e.g. if CBF.ID==1000 || CBF.ID==1001;).</p></li>
+</ul>
+</section>
+<section id="add-more-parameters-to-the-model">
+<h3>Add more parameters to the model.<a class="headerlink" href="#add-more-parameters-to-the-model" title="Link to this heading"></a></h3>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="err">upda</span><span class="kc">te</span><span class="w"> </span><span class="kc">t</span><span class="err">his</span><span class="w"> </span><span class="err">sec</span><span class="kc">t</span><span class="err">io</span><span class="kc">n</span><span class="w"> </span><span class="err">wi</span><span class="kc">t</span><span class="err">h</span><span class="w"> </span><span class="err">i</span><span class="kc">nstru</span><span class="err">c</span><span class="kc">t</span><span class="err">io</span><span class="kc">ns</span><span class="w"> </span><span class="kc">f</span><span class="err">or</span><span class="w"> </span><span class="err">parame</span><span class="kc">ter</span><span class="w"> </span><span class="err">i</span><span class="kc">n</span><span class="err">dex</span><span class="w"> </span><span class="err">abs</span><span class="kc">tra</span><span class="err">c</span><span class="kc">t</span><span class="err">io</span><span class="kc">n</span>
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li><p>In the folder titled C/projects/CARDAMOM_MODELS/DALEC/DALEC_<newmodelid>, open MODEL_INFO_<newmodelid>.c, and change “DALECmodel.nopars” (e.g. from “33” to “35”)</p></li>
+<li><p>Open PARS_INFO_<newmodelid>.c and add two extra entries at the bottom of the code (with minimum and maximum values). Note: CARDAMOM only supports positive-definite values, if a -ve to +ve range is required, use “exp()” function for -ve to +ve value ranges, and use “log()” to transform these back within DALEC_<newmodelid>.c model.</p></li>
+<li><p><em>For matlab users</em>. Run this line in the matlab command window after making any changes to the number of parameters or pools in MODEL_INFO_<newmodelid>.c</p></li>
+</ol>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">MD</span><span class="p">=</span><span class="n">CARDAMOM_MODEL_LIBRARY</span><span class="p">(</span><span class="o">&lt;</span><span class="n">newmodelid</span><span class="o">&gt;</span><span class="p">,[],</span><span class="mi">1</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>(where <newmodelid> is the ID for your new model). This will ensure new model parameter/pool info is registered in matlab.</p>
+</section>
+<section id="add-more-pools-to-the-model">
+<h3>Add more pools to the model<a class="headerlink" href="#add-more-pools-to-the-model" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>In the folder titled C/projects/CARDAMOM_MODELS/DALEC/DALEC_<newmodelid>, open MODEL_INFO_<newmodelid>.c, and change “DALECmodel.nopools” (e.g. from “8” to “9”)</p></li>
+<li><p>To optimize the pool initial conditions along with other parameters, add an extra parameter to the model. Follow instructions in “Add more parameters to the model” section to do this.</p></li>
+<li><p><em>FOR MATLAB USERS</em>. Run this line in the matlab command window after making any changes to the number of parameters or pools in MODEL_INFO_<newmodelid>.c:</p></li>
+</ol>
+<p>“MD=CARDAMOM_MODEL_LIBRARY(<newmodelid>,[],1);”</p>
+<p>(where <newmodelid> is the ID for your new model). This will ensure new model parameter/pool info is registered in matlab.</p>
+<ol class="arabic simple" start="4">
+<li><p>Adapt EDC2_<newmodelid>.c to either</p>
+<ul class="simple">
+<li><p>(a) run EDC checks on new pools or</p></li>
+<li><p>(b) limit EDC checks to previously existing pools only (check for instances where “nopools” variable is used in loops). This is (unfortunately) a less-than-elegant approach, and we’re working on a comprehensive solution in the long run.</p></li>
+<li><p>Define prior range for parameters and why log transformed prior range is used</p></li>
+<li><p>Avoid using zero as either the minimum or maximum parameter values, as log transformation is used for creating the new parameter values so that there is equal chance being selected within the same magnitude. Log transformation is essential for parameters spanning several magnitudes, like Soil Organic Carbon turnover rate, while doesn’t make a big difference for parameters like Q10;</p></li>
+</ul>
+</li>
+</ol>
+<section id="two-examples-make-it-easier-to-understand">
+<h4>Two examples make it easier to understand:<a class="headerlink" href="#two-examples-make-it-easier-to-understand" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Soil organic C turnover rate (1e-7 to 1e-3 gC yr-1)</p></li>
+<li><p>Temperature sensitivity (Q10, 1.2 to 1.6)</p></li>
+<li><p>For soil organic c turnover rate, we want equal possibilities for values spanning 1e-7 to 1e-6, 1e-6 to 1e-5,1e-5 to 1e-4, and 1e-4 to 1e-3, instead of equal chances for values spanning 10e-7 to 0.1<em>1e-3, 0.1</em>1e-3 to 0.2<em>1e-3, 0.2</em>1e-3 to 0.3<em>1e-3, … 0.9</em>1e-3 to 1* 1e-3.</p></li>
+</ul>
+<p>Left figures are showing the uniform space distributions; Middle figures are showing the log uniform space distributions, which is used in CARDAMOM MCMC; Right figures are showing the actual uniform space distributions in order to get the middle distribution;</p>
+<p><img alt="image1" src="../_images/image1_manual.png" /></p>
+</section>
+</section>
+<section id="add-a-new-dataset-to-cardamom-data-structure">
+<h3>Add a new dataset to CARDAMOM DATA structure<a class="headerlink" href="#add-a-new-dataset-to-cardamom-data-structure" title="Link to this heading"></a></h3>
+<p>Example: NBE uncertainty, CH4, etc.</p>
+<p>Files that are Modified:</p>
+<ul class="simple">
+<li><p>CARDAMOM read/writer Matlab/ Python (e.g. add to list of obsnames in “CBFOBS=compile_cbf_obs_fields(CBF)”)</p></li>
+<li><p>CARDAMOM_WRITE_BINARY_FILEFORMAT.m; CARDAMOM_READ_BINARY_FILEFORMAT.m</p></li>
+<li><p>CARDAMOM_DATA_STRUCTURE.c</p></li>
+<li><p>CARDAMOM_READ_BINARY_DATA.c</p></li>
+</ul>
+<ol class="arabic simple" start="0">
+<li><p>To add changes, can simply search for term ‘CH4’ to find all the spots you need to add your new term</p></li>
+<li><p>Add observation variable name to CARDAMOM_DATA_STRUCTURE.c (e.g. follow “GPP” entry as example)</p>
+<ul class="simple">
+<li><p>Add number of indices and number of none zero obs (again, follow GPP example throughout code)</p></li>
+</ul>
+</li>
+<li><p>Add to CARDAMOM_READ_BINARY_DATA.c</p>
+<ul class="simple">
+<li><p>Initialize data structure, top of file</p></li>
+<li><p>~L:150; initialize field: e.g. if (DATA-&gt;NEEunc==0){DATA-&gt;NEEunc=calloc(DATA-&gt;nodays,sizeof(double));}</p></li>
+<li><p>~L:210; add line by line reading of observations</p></li>
+<li><p>Located in the binary file by the order of observations</p></li>
+<li><p>~L:266; if (DATA-&gt;noobs&gt;11){c=0;for (n=0;n<DATA->nodays;n++){if (DATA-&gt;NEEunc[n]&gt;-9998){DATA-&gt;neeuncpts[c]=n;c=c+1;}}}</p></li>
+<li><p>Free the point of the structure ~L:350</p></li>
+<li><p>~L:360, free the structure (avoid segmentation fault)</p></li>
+</ul>
+</li>
+<li><p>Add to CARDAMOM_WRITE_BINARY_FILEFORMAT.m</p></li>
+<li><p>Data is available in the data structure for use in Likelihood etc.</p>
+<ul class="simple">
+<li><p>Optional: add new cost function module (e.g. DATA_LIKELIHOOD_CH4.c) to use</p></li>
+<li><p>To do this, add cost function module call in CARDAMOM/C/projects/DALEC_CODE/MODEL_LIKELIHOOD_FUNCTIONS/DALEC_ALL_LIKELIHOOD.c</p></li>
+<li><p>If observation field can only be used by subset of models (e.g. DATA.CH4 can only be used by DATA.ID==1010), then add “IF” statement to only run “DATA_LIKELIHOOD_CH4.c” if DATA.ID==1010.</p></li>
+</ul>
+</li>
+<li><p>Refer to section ‘Make a new cost function’ to add your new stream to cost function</p></li>
+</ol>
+</section>
+<section id="make-a-new-cost-function-soon-to-be-obsolete">
+<h3>Make a new cost function (soon to be obsolete)<a class="headerlink" href="#make-a-new-cost-function-soon-to-be-obsolete" title="Link to this heading"></a></h3>
+<p>1: Create or copy existing DALEC like function (e.g. copy GPP_LIKELIHOOD.c)
+* E.g. cp DALEC_LIKELIHOOD_GPP.c DALEC_LIKELIHOOD_NEE.c</p>
+<p>2: Add ~L:10 include new cost function module in the overhead of the master file (DALEC_ALL_LIKELIHOOD.c). A call new module in code
+* E.g. #include “DALEC_LIKELIHOOD_NEE.c”
+* P=P+DALEC_LIKELIHOOD_NEE(D);</p>
+<p>3: Write new cost function (e.g. in DALEC_LIKELIHOOD_NEE.c)
+* Switches for EDCs
+* Switches CBF.OTHERPRIORS (Anthony provide more detail)</p>
+</section>
+</section>
+<section id="running-cardamom-in-parallel">
+<h2>Running CARDAMOM in parallel <a name="submission-command-line"/><a class="headerlink" href="#running-cardamom-in-parallel" title="Link to this heading"></a></h2>
+<p>CARDAMOM runs across the whole globe are usually run on servers. CARDAMOM does not currently include any spatial interconnection, so to run a ‘map’ of CARDAMOM each point is run separately in parallel.</p>
+<p>Here are examples from some servers that CARDAMOM has been run on.</p>
+<section id="generally">
+<h3>Generally<a class="headerlink" href="#generally" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Create .cbf files from the meteorology and observations at each point of a map.</p>
+<ul class="simple">
+<li><p>(Python users) Helpful scripts: PYTHON/cardamom_utilities/makecbfspecific/makecbf.py</p></li>
+</ul>
+</li>
+<li><p><em>NOTE</em>: Make sure to compile code after any changes made to CARDAMOM and before runs.</p></li>
+<li><p>Create a series of scripts to ‘submit’ all points to a server to run in parallel.</p></li>
+</ol>
+</section>
+<section id="stanford-server-sherlock">
+<h3>Stanford server Sherlock<a class="headerlink" href="#stanford-server-sherlock" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Create a text file where every line is a assimilation line (this file is automated for Sherlock with yyyy.py, not publicly available):</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/&lt;cardamomfolder&gt;/CARDAMOM/C/projects/CARDAMOM_MDF/CARDAMOM_MDF.exe<span class="w"> </span>/&lt;outputfolder&gt;/cbf/&lt;cbffilename&gt;.cbf<span class="w"> </span>/&lt;outputfolder&gt;/cbr/&lt;cbrfilename&gt;.cbr<span class="w"> </span><span class="m">100000</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">200</span><span class="w"> </span><span class="m">0</span>.001<span class="w"> </span><span class="m">119</span><span class="w"> </span><span class="m">1000</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Create a bash file that submits that text file (e.g. ‘submitlist_<filename>.txt’) in parallel (Sherlock runs Slurm).</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#SBATCH --ntasks=1</span>
+<span class="c1">#SBATCH --cpus-per-task=1</span>
+<span class="c1">#SBATCH --array=0-80</span>
+<span class="c1">#SBATCH -p &lt;nodes&gt;</span>
+<span class="c1">#SBATCH -t 48:00:00</span>
+<span class="c1">#SBATCH --mail-type=END,FAIL</span>
+<span class="c1">#SBATCH --mail-user=gquetin@stanford.edu</span>
+
+<span class="c1"># define the location of the command list file</span>
+<span class="nv">CMD_LIST</span><span class="o">=</span>/&lt;home&gt;/cbf/submitlist_&lt;filename&gt;.txt
+
+<span class="c1"># get the command list index from Slurm</span>
+<span class="nv">CMD_INDEX</span><span class="o">=</span><span class="nv">$SLURM_ARRAY_TASK_ID</span>
+
+<span class="c1"># execute the command</span>
+<span class="k">$(</span>sed<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">CMD_INDEX</span><span class="si">}</span><span class="s2">q;d"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$CMD_LIST</span><span class="s2">"</span><span class="k">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>After assimilations complete and the parameters sets have been checked, write a text file with the forward run submissions instructions for each point (this file is automated for Sherlock with yyyy.py, not publicly available):</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/&lt;cardamomfolder&gt;/CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.exe<span class="w"> </span>/&lt;outputfolder&gt;/cbf/&lt;cbffilename&gt;.cbf<span class="w"> </span>/&lt;outputfolder&gt;/cbr/&lt;cbrfilename&gt;.cbr<span class="w"> </span>/&lt;outputfolder&gt;/output/fluxfile_&lt;filename&gt;.bin<span class="w"> </span>/&lt;outputfolder&gt;/output/poolfile_&lt;filename&gt;.bin<span class="w"> </span>/&lt;outputfolder&gt;/output/edcdfile_&lt;filename&gt;.bin<span class="w"> </span>/&lt;outputfolder&gt;/output/probfile_&lt;filename&gt;.bin
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Create a bash file that submits that text file (e.g. ‘forwardlist_<filename>.txt’) in parallel (Sherlock runs Slurm). Note that for timing, forward runs are much shorter than assimilation runs.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#SBATCH --ntasks=1</span>
+<span class="c1">#SBATCH --cpus-per-task=1</span>
+<span class="c1">#SBATCH --array=0-5</span>
+<span class="c1">#SBATCH -p &lt;nodes&gt;</span>
+<span class="c1">#SBATCH -t 00:05:00</span>
+<span class="c1">#SBATCH --mail-type=END,FAIL</span>
+<span class="c1">#SBATCH --mail-user=gquetin@stanford.edu</span>
+
+<span class="c1"># define the location of the command list file</span>
+<span class="nv">CMD_LIST</span><span class="o">=</span>/&lt;home&gt;/cbf/forwardlist_&lt;filename&gt;.txt
+
+<span class="c1"># get the command list index from Slurm</span>
+<span class="nv">CMD_INDEX</span><span class="o">=</span><span class="nv">$SLURM_ARRAY_TASK_ID</span>
+
+<span class="c1"># execute the command</span>
+<span class="k">$(</span>sed<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">CMD_INDEX</span><span class="si">}</span><span class="s2">q;d"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$CMD_LIST</span><span class="s2">"</span><span class="k">)</span>
+</pre></div>
+</div>
+<p>For large amounts of short runs, submiting a set of each point is beneficial. Note added loop, and the chunking in SBATCH –array=0:870:20:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#SBATCH --ntasks=20</span>
+<span class="c1">#SBATCH --cpus-per-task=1</span>
+<span class="c1">#SBATCH --array=0-870:20</span>
+<span class="c1">#SBATCH -p &lt;nodes&gt;</span>
+<span class="c1">#SBATCH -t 00:15:00</span>
+<span class="c1">#SBATCH --mail-type=END,FAIL</span>
+<span class="c1">#SBATCH --mail-user=gquetin@stanford.edu</span>
+
+<span class="c1"># define the location of the command list file</span>
+<span class="nv">CMD_LIST</span><span class="o">=</span>/&lt;home&gt;/cbf/forwardlist_&lt;filename&gt;.txt
+
+<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">{</span><span class="m">0</span>..44<span class="o">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+
+<span class="c1"># get the command list index from Slurm</span>
+<span class="nv">CMD_INDEX</span><span class="o">=</span><span class="k">$((</span><span class="nv">SLURM_ARRAY_TASK_ID</span><span class="o">+</span><span class="nv">i</span><span class="k">))</span>
+
+<span class="c1"># execute the command</span>
+srun<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="k">$(</span>sed<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">CMD_INDEX</span><span class="si">}</span><span class="s2">q;d"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$CMD_LIST</span><span class="s2">"</span><span class="k">)</span><span class="w"> </span><span class="p">&amp;</span>
+
+<span class="k">done</span>
+
+<span class="nb">wait</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>The results of these runs will be separate files of parameters, fluxes, pools, probabilities, and edc states for each point. These points can then be analysized point by point or aggregated into global maps. See Appendix: Helper Scripts for some examples.</p></li>
+</ol>
+</section>
+</section>
+<section id="frequently-asked-questions-and-frequently-encountered-issues-solutions">
+<h2>“Frequently asked questions” and “frequently encountered issues &amp; solutions” <a name="faq"/><a class="headerlink" href="#frequently-asked-questions-and-frequently-encountered-issues-solutions" title="Link to this heading"></a></h2>
+<section id="frequently-asked-questions-faqs">
+<h3>Frequently asked questions (FAQs)<a class="headerlink" href="#frequently-asked-questions-faqs" title="Link to this heading"></a></h3>
+<section id="whats-the-difference-between-log-uniform-and-uniform-distributions">
+<h4>What’s the difference between log-uniform and uniform distributions?<a class="headerlink" href="#whats-the-difference-between-log-uniform-and-uniform-distributions" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>See here https://en.wikipedia.org/wiki/Reciprocal_distribution, and example for 0.01-100 below:</p></li>
+</ul>
+<p>Sampling 0.01-100 range with uniform distribution</p>
+<ul class="simple">
+<li><p>~25% probability for a value between 0-25</p></li>
+<li><p>~25% probability for a value between 25-50</p></li>
+<li><p>~25% probability for a value between 50-75</p></li>
+<li><p>~25% probability for a value between 75-100</p></li>
+</ul>
+<p>Sampling 0.01-100 range with log-uniform distribution</p>
+<ul class="simple">
+<li><p>25% probability for a value between 0.01 – 0.1</p></li>
+<li><p>25% probability for a value between 0.1-1</p></li>
+<li><p>25% probability for a value between 1-10</p></li>
+<li><p>25% probability for a value between 10-100</p></li>
+</ul>
+</section>
+</section>
+<section id="frequently-encountered-issues-solutions-feis">
+<h3>Frequently encountered issues &amp; solutions (FEIs…?)<a class="headerlink" href="#frequently-encountered-issues-solutions-feis" title="Link to this heading"></a></h3>
+<p>CARDAMOM_RUN_MODEL.c<br />
+Error type:\</p>
+<p>CARDAMOM chain gets stuck on “inf” values or “nan” values<br />
+Check for zero values in observations with log-normal cost functions [ADD DETAILS HERE]\</p>
+<p>If CARDAMOM_RUN_MODEL gives you\</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">ERROR</span>!<span class="w"> </span><span class="n">Execution</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">CARDAMOM_RUN_MODEL</span><span class="p">.</span><span class="n">exe</span><span class="w"> </span><span class="n">failed</span><span class="p">,</span><span class="w"> </span><span class="n">entering</span><span class="w"> </span><span class="nb">keyboard</span><span class="w"> </span><span class="nb">mode</span>
+</pre></div>
+</div>
+<p>Then it is possible that the cbf and/or cbr file names have too many characters (current limit is 1000 character maximum, submit issue on github if you need it longer for some reason)</p>
+</section>
+</section>
+<section id="troubleshooting-cardamom-runs-my-cardamom-run-doesn-t-work">
+<h2>Troubleshooting CARDAMOM runs: “my CARDAMOM run doesn’t work” <a name="troubleshoot"/><a class="headerlink" href="#troubleshooting-cardamom-runs-my-cardamom-run-doesn-t-work" title="Link to this heading"></a></h2>
+<p>This could include one of the following commonly encountered issues:</p>
+<ul class="simple">
+<li><p>Nan or inf state, pool or cost function values</p></li>
+<li><p>A solution that is “stuck” (i.e. no change in parameter samples from first to last).</p></li>
+<li><p>CBR.PROB is -inf. Solutions include:</p></li>
+</ul>
+<ul class="simple">
+<li><p>check CBF.OTHER_OBS.Mfire for non -9999 data. If that’s the case, is burned area zero at all timesteps? This would cause issue (zero fire in model, and non-zero fire in data).</p></li>
+</ul>
+<p>Some common questions &amp; solutions:</p>
+<p>###Does .cbf file have negative values for positive-only quantities?
+Example: Check GPP, ET, LAI and biomass observations (which are physically only represented as positive quantities), and either:</p>
+<ul class="simple">
+<li><p>remove -ve values</p></li>
+<li><p>Assign a “threshold value” (if variable cost function supports this)</p></li>
+<li><p>Opt for cost function coniguration which tolerates negative values (not recommended unless necessary).</p></li>
+</ul>
+</section>
+<section id="appendix">
+<h2>Appendix <a name="appendix"/><a class="headerlink" href="#appendix" title="Link to this heading"></a></h2>
+<section id="cardamom-model-library">
+<h3>CARDAMOM model library <a name="cardamom-model-library"/><a class="headerlink" href="#cardamom-model-library" title="Link to this heading"></a></h3>
+<p>List and brief description of currently supported models\</p>
+<p>Can use the COMPLEX effort to document all the models here, including some examples of the figures.\</p>
+<section id="table-a1-cardamom-model-ids">
+<h4>TABLE A1. CARDAMOM model IDs.<a class="headerlink" href="#table-a1-cardamom-model-ids" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Group</p></th>
+<th class="head"><p>Model ID</p></th>
+<th class="head"><p>Parent ID(s) if relevant</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Details (POC)</p></th>
+<th class="head"><p>Status</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Low complexity</p></td>
+<td><p>101</p></td>
+<td><p></p></td>
+<td><p>3-pool DALEC</p></td>
+<td><p></p></td>
+<td><p>Published (Famiglietti et al., 2021)</p></td>
+</tr>
+<tr class="row-odd"><td><p>DALEC C only</p></td>
+<td><p>400</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>Bloom et al., 2016</p></td>
+<td><p>Published</p></td>
+</tr>
+<tr class="row-even"><td><p>DALEC C + plant-available water.</p></td>
+<td><p>803</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>804</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>805</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>806</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>807</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>808</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>809</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>Published (Yin et al., 2021)</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>810</p></td>
+<td><p></p></td>
+<td><p>Non-binary EDCs</p></td>
+<td><p></p></td>
+<td><p>Exploratory</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>811</p></td>
+<td><p>809</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>Published (Quetin et al., 2020)</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>812</p></td>
+<td><p>813</p></td>
+<td><p>813 with uWUE</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>813</p></td>
+<td><p>811</p></td>
+<td><p>811 with Shuang Ma’s temp fix</p></td>
+<td><p></p></td>
+<td><p>Published (Bloom et al., 2020)</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>820</p></td>
+<td><p>811</p></td>
+<td><p>Climate-sensitive mortality</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>821</p></td>
+<td><p></p></td>
+<td><p>Ball-berry scheme</p></td>
+<td><p></p></td>
+<td><p>In prep.</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>830</p></td>
+<td><p>809</p></td>
+<td><p>Stephanie Stettz old weather GPP test</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>831</p></td>
+<td><p>809</p></td>
+<td><p>Stettz et al. cold weather GPP</p></td>
+<td><p></p></td>
+<td><p>Stettz et al., 2021, in prep.</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>840</p></td>
+<td><p>No idea</p></td>
+<td><p>No idea</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>DALEC + PAW + PUW</p></td>
+<td><p>1000</p></td>
+<td><p>811</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>Published (Famiglietti et al., 2021)</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>1001</p></td>
+<td><p>1000</p></td>
+<td><p>1000 with max infiltration</p></td>
+<td><p>Paul Levine</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>1002</p></td>
+<td><p>1000</p></td>
+<td><p>1000 with uWUE</p></td>
+<td><p>Paul Levine</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>1003</p></td>
+<td><p>1000</p></td>
+<td><p>1000 with surface runoff proportional to P</p></td>
+<td><p>Paul Levine</p></td>
+<td><p>Published (Famiglietti et al., 2021)</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>1004</p></td>
+<td><p>1000</p></td>
+<td><p>Testing new modular parameter definitions</p></td>
+<td><p>Anthony Bloom</p></td>
+<td><p>In prep.</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>1005</p></td>
+<td><p>1000</p></td>
+<td><p>Boese et al, 2017 (uWUE + rad)</p></td>
+<td><p>Paul Levine, Yan Yang</p></td>
+<td><p>Yang et al., in prep.</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>1006</p></td>
+<td><p>1005</p></td>
+<td><p>1005 with continuous EDCs</p></td>
+<td><p>Paul Levine</p></td>
+<td><p>Exploratory</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>1007</p></td>
+<td><p>1005</p></td>
+<td><p>1005 with max infiltration</p></td>
+<td><p>Paul Levine</p></td>
+<td><p>Exploratory</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>1008</p></td>
+<td><p>1002</p></td>
+<td><p>1002 with surface runoff proportional to P</p></td>
+<td><p>Paul Levine</p></td>
+<td><p>Exploratory</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>1009</p></td>
+<td><p>1005</p></td>
+<td><p>1005 with surface runoff proportional to P</p></td>
+<td><p>Paul Levine</p></td>
+<td><p>Exploratory</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>1010-1014</p></td>
+<td><p></p></td>
+<td><p>CH4 module</p></td>
+<td><p>Ma</p></td>
+<td><p>In prep.</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>1015-1019</p></td>
+<td><p></p></td>
+<td><p>snow module</p></td>
+<td><p>Ma</p></td>
+<td><p>In prep.</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>1020</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>Norton</p></td>
+<td><p>In prep.</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>1021</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>Norton</p></td>
+<td><p>In prep.</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>1030–1039</p></td>
+<td><p>1000</p></td>
+<td><p>VPD-GPP sensitivity</p></td>
+<td><p>Paul Levine</p></td>
+<td><p>In prep.</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>1040</p></td>
+<td><p>1005</p></td>
+<td><p>Nutrient model</p></td>
+<td><p>Anthony Bloom</p></td>
+<td><p>In prep.</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>1050</p></td>
+<td><p>1000</p></td>
+<td><p>Nitrogen model</p></td>
+<td><p>Renato Braghiere</p></td>
+<td><p>In prep.</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>1060–1069</p></td>
+<td><p>1000</p></td>
+<td><p>Hydrology from Massoud et al, 2021</p></td>
+<td><p>Paul Levine</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>Flagship testing</p></td>
+<td><p>1090–1099</p></td>
+<td><p>101x,105x,106x,110x</p></td>
+<td><p>Testing of flagship model</p></td>
+<td><p></p></td>
+<td><p>For testing only</p></td>
+</tr>
+<tr class="row-odd"><td><p>Flagship</p></td>
+<td><p>1100–1110</p></td>
+<td><p>101x,105x,106x</p></td>
+<td><p>“Kitchen sink” model</p></td>
+<td><p></p></td>
+<td><p>Exploratory</p></td>
+</tr>
+<tr class="row-even"><td><p>DALEC + FF</p></td>
+<td><p>1200</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>Exploratory</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="standard-input-outputs-parameters">
+<h3>Standard Input, Outputs, Parameters <a name="cardamom-input-output-parameters"/><a class="headerlink" href="#standard-input-outputs-parameters" title="Link to this heading"></a></h3>
+<section id="list-of-drivers">
+<h4>List of Drivers <a name="list-of-drivers"/><a class="headerlink" href="#list-of-drivers" title="Link to this heading"></a></h4>
+<section id="inputs-model-id-811-821">
+<h5>Inputs (Model ID: 811, 821)<a class="headerlink" href="#inputs-model-id-811-821" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>CARDAMOM Inputs</p></th>
+<th class="head text-left"><p>Units</p></th>
+<th class="head text-left"><p>Longname</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>‘Time</p></td>
+<td class="text-left"><p>[Days since Jan 01, 2001]’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘min temp</p></td>
+<td class="text-left"><p>[C]’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘max temp</p></td>
+<td class="text-left"><p>[C]’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘Solar irradiance</p></td>
+<td class="text-left"><p>[MJ/m2/day]’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘CO2</p></td>
+<td class="text-left"><p>[ppm]’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘Day of year’</p></td>
+<td class="text-left"><p>day</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘Burned area</p></td>
+<td class="text-left"><p>[m2/m2]’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘VPD</p></td>
+<td class="text-left"><p>[hPa]’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘Precip.</p></td>
+<td class="text-left"><p>[mm/day]’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="list-of-ouputs-model-id-811-821">
+<h4>List of Ouputs (Model ID: 811, 821)<a class="headerlink" href="#list-of-ouputs-model-id-811-821" title="Link to this heading"></a></h4>
+<section id="pools-gc-m2-kgh2o-m2-instantaneous">
+<h5>Pools (gC/m2, kgH2O/m2, instantaneous)<a class="headerlink" href="#pools-gc-m2-kgh2o-m2-instantaneous" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>CARDAMOM Pools</p></th>
+<th class="head text-left"><p>Longname</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>‘c_labile’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘c_foliar’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘c_root’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘c_wood’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘c_finelitter’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘c_som’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘h2o_forplant’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="fluxes-gc-m2-day-kgh2o-m2-day-mean">
+<h5>Fluxes (gC/m2/day, kgH2O/m2/day, mean)<a class="headerlink" href="#fluxes-gc-m2-day-kgh2o-m2-day-mean" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>CARDAMOM Fluxes</p></th>
+<th class="head text-left"><p>Longname</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>‘gppflux’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘decf_tempr’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘gpp_to_autoresp’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘gpp_to_leaf’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘gpp_to_labile’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘gpp_to_root’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘gpp_to_wood’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘labile_to_foliar’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘leaf_fall’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘leaf_to_litter’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘wood_to_soilc’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘root_to_litter’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘hetresp_litter’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘hetresp_som’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘litter_to_som’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘leaf_onset’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘fire_em_total’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘fire_em_labile’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘fire_em_foliar’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘fire_em_root’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘fire_em_wood’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘fire_em_litter’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘fire_em_som’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘fire1_to_littersom’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘fire2_to_littersom’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘fire3_to_littersom’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘fire4_to_littersom’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘fire5_to_littersom’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>‘et’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>‘runoff’</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="example-list-of-parameters-optimized-in-cardamom">
+<h5>Example List of Parameters Optimized in CARDAMOM<a class="headerlink" href="#example-list-of-parameters-optimized-in-cardamom" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Shortname</p></th>
+<th class="head"><p>Codename</p></th>
+<th class="head"><p>Units</p></th>
+<th class="head"><p>Range</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p></p></td>
+<td><p>Decomposition rate</p></td>
+<td><p></p></td>
+<td><p>0.00001 - 0.01</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Fraction of GPP respired</p></td>
+<td><p></p></td>
+<td><p>0.2 - 0.8</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Fraction of (1-fgpp) to foliage</p></td>
+<td><p></p></td>
+<td><p>0.01 - 0.5</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Fraction of (1-fgpp) to roots</p></td>
+<td><p></p></td>
+<td><p>0.01 - 1.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Leaf Lifespan</p></td>
+<td><p></p></td>
+<td><p>1.001 - 8.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>TOR wood* - 1% loss per year value</p></td>
+<td><p></p></td>
+<td><p>0.000025 - 0.001</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>TOR roots</p></td>
+<td><p></p></td>
+<td><p>0.0001 - 0.01</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>TOR litter</p></td>
+<td><p></p></td>
+<td><p>0.0001 - 0.01</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>TOR SOM</p></td>
+<td><p></p></td>
+<td><p>0.0000001 - 0.001</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Temp factor* = Q10 = 1.2-1.6</p></td>
+<td><p></p></td>
+<td><p>0.018 - 0.08</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Canopy Efficiency</p></td>
+<td><p></p></td>
+<td><p>5.0 - 50.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Bday</p></td>
+<td><p>day of year</p></td>
+<td><p>365.25 - 4x365.25</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Fraction to Clab</p></td>
+<td><p></p></td>
+<td><p>0.01 - 0.5</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Clab Release period</p></td>
+<td><p>days</p></td>
+<td><p>365.25/12 - 100</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Fday</p></td>
+<td><p>day of year</p></td>
+<td><p>365.25 - 4x365.25</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Leaf fall period</p></td>
+<td><p>days</p></td>
+<td><p>365.25/12 - 150</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>LMCA</p></td>
+<td><p>g C/m2</p></td>
+<td><p>5.0 - 200.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>C labile</p></td>
+<td><p>g C/m2</p></td>
+<td><p>1.0 - 2000.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>C foliar</p></td>
+<td><p>g C/m2</p></td>
+<td><p>1.0 - 2000.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>C roots</p></td>
+<td><p>g C/m2</p></td>
+<td><p>1.0 - 2000.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>C_wood</p></td>
+<td><p>g C/m2</p></td>
+<td><p>1.0 - 100000.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>C litter</p></td>
+<td><p>g C/m2</p></td>
+<td><p>1.0 - 2000.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>C_som</p></td>
+<td><p>g C/m2</p></td>
+<td><p>1.0 - 200000.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>IWUE: GPPxVPD/ET: gC/kgH2o -hPa</p></td>
+<td><p>hPa gC/kgH2O</p></td>
+<td><p>10.0 - 50.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Runoff focal point (~maximum soil storage capacity x 4)</p></td>
+<td><p></p></td>
+<td><p>1.0 - 100000.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>“Wilting point”</p></td>
+<td><p>kgH2O/m2</p></td>
+<td><p>1.0 - 10000.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>“Bucket at t0”</p></td>
+<td><p>kgH2O/m2</p></td>
+<td><p>1.0 - 10000.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Foliar biomass CF</p></td>
+<td><p></p></td>
+<td><p>0.01 - 1.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>“Ligneous” biomass CF”.</p></td>
+<td><p></p></td>
+<td><p>0.01 - 1.0</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>DOM CF”.</p></td>
+<td><p></p></td>
+<td><p>0.01 - 1</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Resilience factor (since transfer to litter is represented as (1-pars[30])) “.</p></td>
+<td><p></p></td>
+<td><p>0.01 - 1</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Lab pool lifespan</p></td>
+<td><p></p></td>
+<td><p>1.001 - 8.0</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Moisture factor</p></td>
+<td><p></p></td>
+<td><p>0.01 - 1.0</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+<section id="recommended-settings">
+<h3>Recommended Settings <a name="-recommended-settings"/><a class="headerlink" href="#recommended-settings" title="Link to this heading"></a></h3>
+<p>These are some of the recommended “standard” settings.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">number_iterations</span> <span class="o">=</span> <span class="s2">"100000"</span> <span class="c1"># Small numbers for test, 100000000 standard run, will take a long time.</span>
+<span class="n">printrate</span> <span class="o">=</span> <span class="s2">"0"</span> <span class="c1">#</span>
+<span class="n">samplerate</span> <span class="o">=</span> <span class="s2">"200"</span> <span class="c1"># Number of output parameters = number_iterations/samplerate, generally use between 500 and 1000 output parameters</span>
+<span class="n">minimum_step_size</span> <span class="o">=</span> <span class="s2">".001"</span> <span class="c1"># Relates to MCMC, standard is currently .001</span>
+<span class="n">mcmcid</span> <span class="o">=</span> <span class="s2">"119"</span> <span class="c1"># Current default MCMC method is 119</span>
+<span class="n">nadapt</span> <span class="o">=</span> <span class="s2">"1000"</span> <span class="c1"># MCMC setting, standard is 1000</span>
+</pre></div>
+</div>
+</section>
+<section id="helper-scripts">
+<h3>Helper Scripts <a name="-helper-scripts"/><a class="headerlink" href="#helper-scripts" title="Link to this heading"></a></h3>
+<p>Helper scripts (running and analysing CARDAMOM) are primarily written in Matlab and Python.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Filepath</p></th>
+<th class="head text-left"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>script1</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>script1</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>script1</p></td>
+<td class="text-left"><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="aggregation-and-uncertainty-propagatation">
+<h2>Aggregation and uncertainty propagatation<a class="headerlink" href="#aggregation-and-uncertainty-propagatation" title="Link to this heading"></a></h2>
+<p>Description: general rules and guidelines for estimating and propagating uncertainty</p>
+<p>“rule no 1.” (some funny movie reference)
+“Rule no 2.”: perform operation on data before calculating uncertainty (on states and fluxes?)</p>
+<ul class="simple">
+<li><p>example: detrending state and flux data.</p>
+<ul>
+<li><p>Step 1. Detrend every CARDAMOM sample</p></li>
+<li><p>Step 2. Calculate percentile/statistics based on detrended dataset.</p></li>
+</ul>
+</li>
+</ul>
+<p>Other examples:</p>
+<ul class="simple">
+<li><p>annually average time series (action = average annually for each samples first, then</p></li>
+<li><p>monthly anomalies</p></li>
+<li><p>normalizing data (GRACE</p></li>
+<li><p>For comparison against observation, perform “observation operator” first, then aggregate.</p></li>
+</ul>
+<p>Exception (sort of) to rule = “statistics on statistics”.</p>
+<p>For example: what is the range of IAV (e.g. as sigma value) among CARDAMOM samples?
+Step 1. Calculate IAV per sample.
+Step 2. Summarize mean, median, standard deviation, percentiles of IAV among samples.</p>
+<p>Two contrasting examples:
+“ensemble mean” = mean of N CARDAMOM samples.</p>
+<p>(1) What is the IAV of ensemble mean GPP?
+Answer: (1) calculate ensemble mean GPP, and (2) calculate its IAV. Effectively no uncertainty estimate here, possible never need to do this for a single pixel (however: this order may be required for multi pixel uncertainty propagation).</p>
+<p>(2) What is the IAV of all GPP ensemble members?
+Answer: (1) calculate IAV for each sample, and (2) calculate any useful/relevant statistics on IAV differences among samples (e.g. medians, percentiles).</p>
+<p>Note on above examples: mean GPP IAV is <strong>not</strong> equal to mean of GPP IAV values corresponding to individual ensemble members (e.g. if distribution is skewed). iav(mean(GPP)) =/= mean(iav(GPP)).</p>
+<img width="1113" alt="image" src="https://user-images.githubusercontent.com/23563444/110368127-74534600-7ffd-11eb-9d81-479a39618fe0.png">
+<p><em><strong>How to aggregate statistics between pixels</strong></em>
+General issue: no information on correlation between samples between pixels. However, some uncertainty estimation generally required</p>
+<p>Dilemma. Two pixels, one with mean GPP = 0.2 gC/m2/d (desert), and another with GPP = 10 gC/m2/d (rainforest). How to you aggregate IAVs (if at all)?</p>
+<p><em><strong>end of actual “rules”</strong></em></p>
+<p>“</p>
+</section>
+<section id="references">
+<h2>References <a name="-references"/><a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p>Williams, M., Schwarz, P. A., Law, B. E., Irvine, J., &amp; Kurpius, M. R. (2005). An improved analysis of forest carbon dynamics using data assimilation. Global Change Biology, 11(1), 89–105.</p>
+<p>Bloom, A., &amp; Williams, M. (2015). Constraining ecosystem carbon dynamics in a data-limited world: integrating ecological” common sense” in a model-data fusion framework. Biogeosciences, 12(5), 1299.</p>
+<p>Bloom, A. A., Exbrayat, J.-F., van der Velde, I. R., Feng, L., &amp; Williams, M. (2016). The decadal state of the terrestrial carbon cycle: Global retrievals of terrestrial carbon allocation, pools, and residence times. Proceedings of the National Academy of Sciences, 113(5), 1285–1290. https://doi.org/10.1073/pnas.1515160113</p>
+<p>Quetin, G. R., Bloom, A. A., Bowman, K. W., &amp; Konings, A. G. (2020). Carbon Flux Variability from a Relatively Simple Ecosystem Model with Assimilated Data is Consistent with Terrestrial Biosphere Model Estimates. Journal of Advances in Modeling Earth Systems. https://doi.org/10.1029/2019MS001889</p>
+<p>Famiglietti, C.A., Smallman, T.L., Levine, P.A., Flack-Prain, S., Quetin, G.R., Meyer, V., Parazoo, N.C., Stettz, S.G., Yang, Y., Bonal, D. and Bloom, A.A., 2021. Optimal model complexity for terrestrial carbon cycle prediction. Biogeosciences, 18(8), pp.2727-2754.</p>
+<p>Bloom, A. A., Bowman, K. W., Liu, J., Konings, A. G., Worden, J. R., Parazoo, N. C., et al. (2020). Lagged effects dominate the inter-annual variability of the 2010-2015 tropical carbon balance (preprint). Biogeochemistry: Land. https://doi.org/10.5194/bg-2019-459</p>
+<p>Yin, Y., Bloom, A.A., Worden, J., Saatchi, S., Yang, Y., Williams, M., Liu, J., Jiang, Z., Worden, H., Bowman, K. and Frankenberg, C., 2020. Fire decline in dry tropical ecosystems enhances decadal land carbon sink. Nature communications, 11(1), pp.1-7.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
