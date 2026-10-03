@@ -8,6 +8,8 @@
 *.out
 *.out.*
 *.log*
+*.cbf.nc*
+*.cbr.nc*
 DUMPFILES
 MATLAB/startup.m
 MATLAB/CARDAMOM_DISK/*
