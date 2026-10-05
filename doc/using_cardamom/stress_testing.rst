@@ -24,6 +24,7 @@ Example::
 
     python3 PYTHON/check_fun/CARDAMOM_CBF_NC_FILE_STRESS_TEST.py CARDAMOM_DEMO_INPUT_FILE.cbf.nc
 
+
 What the Script Tests
 ---------------------
 
@@ -31,18 +32,19 @@ What the Script Tests
 
 Before running CARDAMOM executables, the script checks:
 
-* **Time-varying length consistency**: All time-varying variables must have the same length along the time dimension
+* **Time-varying length consistency**: All time-varying variables (drivers and observational constraints) must have the same length along the time dimension
 * **Field validation**: All required fields for the specified DALEC model are present and within valid ranges (as specified in ``DALEC_MODEL_FIELD_REQUIREMENTS.txt``)
 
 **TEST 1: Minimal run without observations (EDC=0)**
 
-* **Purpose**: Verify CARDAMOM can run with minimal computational requirements
+* **Purpose**: Verify CARDAMOM_MDF.exe can run (and find a solution) with minimal computational requirements
 * **Configuration**:
-    * Removes non-required observation variables from the input file
-    * Sets EDC (Ecological/Demographic Constraints) to 0
-    * Sets MCMC to minimal settings (nITERATIONS=1, nSAMPLES=1, nPRINT=1)
-* **Expected outcome**: Completes successfully within 1-2 seconds
-* **Output files**: ``TEST1.cbf.nc``, ``TEST1.cbr.nc``
+    * Removes non-required variables from the input.nc file
+    * Sets EDC (Ecological & Dynamical Constraints) to 0
+    * Sets MCMC sampler to minimal settings (nITERATIONS=1, nSAMPLES=1, nPRINT=1)
+* **Expected outcome**: Completes successfully within ~1-2 seconds
+(Is given 120 seconds to run).
+***Output files**: ``TEST1.cbf.nc``, ``TEST1.cbr.nc``
 
 **Unit Verification (after TEST 1)**
 
