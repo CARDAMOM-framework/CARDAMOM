@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# $3 is a flag Git passes to post-checkout. 1 = branch checkout, 0 = file checkout.
+# We only want to run this when checking out branches, not individual files.
+if [ "$3" = "1" ]; then
+    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+    # Check if the generator script exists (works on any branch with the files)
+    if [ -f "PYTHON/check_fun/DEMO_CBF_NC_GENERATOR.py" ]; then
+        echo "⚙️ Switched to $CURRENT_BRANCH branch. Generating cbf.nc file..."
+        python3 PYTHON/check_fun/DEMO_CBF_NC_GENERATOR.py
+    fi
+fi
