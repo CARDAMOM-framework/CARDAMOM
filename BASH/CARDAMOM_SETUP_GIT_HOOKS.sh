@@ -13,6 +13,7 @@ cd "$REPO_ROOT"
 echo "Setting executable permissions on hooks..."
 chmod +x .githooks/post-merge
 chmod +x .githooks/post-checkout
+chmod +x .githooks/cardamom-autocompile
 
 # Configure Git hooks
 echo "Configuring Git to use .githooks directory..."
@@ -23,8 +24,11 @@ echo ""
 echo "🎉 Setup complete!"
 echo ""
 echo "The following hooks are now active:"
-echo "  • post-merge: Regenerates cbf.nc file after git pull on CARDAMOM branch"
-echo "  • post-checkout: Regenerates cbf.nc file when switching to CARDAMOM branch"
+echo "  • post-merge: Regenerates cbf.nc file and recompiles the C code after git pull"
+echo "  • post-checkout: Regenerates cbf.nc file and recompiles the C code on branch switch"
+echo ""
+echo "Compilation is shared by both hooks via .githooks/cardamom-autocompile."
+echo "To skip it, set CARDAMOM_SKIP_AUTOCOMPILE=1 before the git command."
 echo ""
 echo "Note: Other developers will need to run this script once after cloning:"
 echo "  bash BASH/CARDAMOM_SETUP_GIT_HOOKS.sh"

@@ -119,6 +119,7 @@ DALEC Model:
 
    using_cardamom/file_io
    using_cardamom/compilation
+   using_cardamom/git_hooks
    using_cardamom/stress_testing
    using_cardamom/analyst_checklist
    using_cardamom/technote

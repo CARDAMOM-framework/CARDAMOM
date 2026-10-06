@@ -1,0 +1,33 @@
+#!/bin/bash
+# cardamom-autocompile - shared helper for the post-checkout and post-merge hooks.
+#
+# Rebuilds the CARDAMOM C executables so the binaries match the source that is
+# currently checked out. The .exe files are gitignored, so without this a branch
+# switch or a pull leaves you running whatever was last compiled - which has
+# already caused confusing results in the past.
+#
+# Called by both hooks, but the logic lives here only, so each git event
+# triggers at most one compile. Set CARDAMOM_SKIP_AUTOCOMPILE=1 to skip.
+
+CONTEXT="$1"   # short description of the triggering event, used in messages
+LOGFILE="/tmp/CARDAMOM_COMPILE.log"
+
+if [ -n "$CARDAMOM_SKIP_AUTOCOMPILE" ]; then
+    echo "⏭️  Skipping CARDAMOM compilation (CARDAMOM_SKIP_AUTOCOMPILE is set)"
+    exit 0
+fi
+
+if [ ! -f "BASH/CARDAMOM_COMPILE.sh" ]; then
+    # Branch does not carry the compile script - nothing to do.
+    exit 0
+fi
+
+echo "⚙️ Compiling CARDAMOM C code${CONTEXT:+ ($CONTEXT)}..."
+if bash BASH/CARDAMOM_COMPILE.sh > "$LOGFILE" 2>&1; then
+    echo "✅ Compiled CARDAMOM_MDF.exe and CARDAMOM_RUN_MODEL.exe"
+else
+    echo "❌ CARDAMOM compilation FAILED - see $LOGFILE"
+fi
+
+# Never block the git operation on a compilation failure.
+exit 0

@@ -10,4 +10,7 @@ if [ "$3" = "1" ]; then
         echo "⚙️ Switched to $CURRENT_BRANCH branch. Generating cbf.nc file..."
         python3 PYTHON/check_fun/DEMO_CBF_NC_GENERATOR.py
     fi
+
+    # Rebuild the C executables to match the branch just checked out.
+    bash .githooks/cardamom-autocompile "switched to $CURRENT_BRANCH"
 fi

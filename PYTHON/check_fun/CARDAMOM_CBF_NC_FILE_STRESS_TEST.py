@@ -56,6 +56,22 @@ def is_field_required_by_model(model_id, req_string):
     required_ids = [x.strip() for x in required_ids]
     return str(model_id) in required_ids
 
+def get_vars_to_exclude(ds_in, requirements, model_id):
+    """List the variables to strip from a test file for a given model ID.
+
+    The candidate set is read straight from DALEC_MODEL_FIELD_REQUIREMENTS.txt:
+    any field that file lists as not required by this model ID (observations,
+    optional constraints, optional metadata) is dropped. Fields absent from the
+    requirements file are non-consequential and are left in place.
+    """
+    vars_to_exclude = []
+    for var_name, rules in requirements.items():
+        if var_name not in ds_in.variables:
+            continue
+        if not is_field_required_by_model(model_id, rules['req_it']):
+            vars_to_exclude.append(var_name)
+    return vars_to_exclude
+
 def create_minimal_test_file(input_nc_path, output_nc_path, requirements, model_id):
     """Create a test file with non-required OBSERVATION variables removed entirely and EDC=0."""
     # Read input file
@@ -66,17 +82,8 @@ def create_minimal_test_file(input_nc_path, output_nc_path, requirements, model_
 
     print(f"  Creating minimal test configuration for model ID {model_id}...")
 
-    # List of observation variables (not coordinates or drivers)
-    observation_vars = ['LAI', 'ABGB', 'SCF', 'NBE', 'H', 'LE', 'GPP', 'ET', 'DOM', 'CH4',
-                       'SWE', 'EWT', 'SIF', 'ROFF', 'FIR', 'PEQ_iniSOM', 'PEQ_CUE', 'YIELD']
-
-    # Determine which observation variables to exclude
-    vars_to_exclude = []
-    for var_name in observation_vars:
-        if var_name in requirements and var_name in ds_in.variables:
-            req_string = requirements[var_name]['req_it']
-            if not is_field_required_by_model(model_id, req_string):
-                vars_to_exclude.append(var_name)
+    # Determine which variables to exclude
+    vars_to_exclude = get_vars_to_exclude(ds_in, requirements, model_id)
 
     # Copy dimensions
     for name, dimension in ds_in.dimensions.items():
@@ -159,17 +166,8 @@ def create_shortened_test_file(input_nc_path, output_nc_path, requirements, mode
 
     print(f"  Creating shortened test file (timesteps: {original_length} → {new_length})...")
 
-    # List of observation variables to exclude
-    observation_vars = ['LAI', 'ABGB', 'SCF', 'NBE', 'H', 'LE', 'GPP', 'ET', 'DOM', 'CH4',
-                       'SWE', 'EWT', 'SIF', 'ROFF', 'FIR', 'PEQ_iniSOM', 'PEQ_CUE', 'YIELD']
-
-    # Determine which observation variables to exclude
-    vars_to_exclude = []
-    for var_name in observation_vars:
-        if var_name in requirements and var_name in ds_in.variables:
-            req_string = requirements[var_name]['req_it']
-            if not is_field_required_by_model(model_id, req_string):
-                vars_to_exclude.append(var_name)
+    # Determine which variables to exclude
+    vars_to_exclude = get_vars_to_exclude(ds_in, requirements, model_id)
 
     # Create new file
     ds_out = nc.Dataset(output_nc_path, 'w', format='NETCDF4')
@@ -214,11 +212,13 @@ def create_shortened_test_file(input_nc_path, output_nc_path, requirements, mode
         ds_out.variables['EDC'][:] = 1.0
         print(f"    Set EDC to 1.0")
 
+    # TEST 3b is an EDC-search initiation check rather than a short MDF run, so it
+    # uses production-scale MCMC settings instead of the minimal ones used elsewhere.
     if 'MCMCID' in ds_out.variables:
-        ds_out.variables['MCMCID'].nITERATIONS = 1
-        ds_out.variables['MCMCID'].nSAMPLES = 1
-        ds_out.variables['MCMCID'].nPRINT = 1
-        print(f"    Set MCMCID: nITERATIONS=1, nSAMPLES=1, nPRINT=1")
+        ds_out.variables['MCMCID'].nITERATIONS = 100000
+        ds_out.variables['MCMCID'].nSAMPLES = 20
+        ds_out.variables['MCMCID'].nPRINT = 1000
+        print(f"    Set MCMCID: nITERATIONS=100000, nSAMPLES=20, nPRINT=1000")
 
     ds_out.close()
     print(f"  Test file created: {output_nc_path}")
@@ -374,6 +374,14 @@ def check_nc_file(nc_path, requirements):
         else:
             print(f"✅ {field} complies with CARDAMOM DALEC model requirements")
 
+    # Flag any field in the file that the requirements list does not know about.
+    # These are not range-checked, and are not stripped out of the no-observation
+    # test configurations, so an unlisted observation will silently constrain
+    # TEST 1 / TEST 3 runs.
+    for field in nc_variables:
+        if field not in requirements:
+            print(f"⚠️ WARNING: {field} is not listed in DALEC_MODEL_FIELD_REQUIREMENTS.txt, it will be treated as a non-consequential field")
+
     ds.close()
 
 if __name__ == "__main__":
@@ -386,6 +394,12 @@ if __name__ == "__main__":
     # Assume the requirements file is in the same directory as the script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     req_file_path = os.path.join(script_dir, "DALEC_MODEL_FIELD_REQUIREMENTS.txt")
+
+    # Locate the executables relative to the repository root (PYTHON/check_fun/ -> repo root),
+    # so the stress test works for any checkout rather than one hardcoded home directory.
+    repo_root = os.path.abspath(os.path.join(script_dir, "..", ".."))
+    cardamom_exe = os.path.join(repo_root, "C", "projects", "CARDAMOM_MDF", "CARDAMOM_MDF.exe")
+    cardamom_run_model_exe = os.path.join(repo_root, "C", "projects", "CARDAMOM_GENERAL", "CARDAMOM_RUN_MODEL.exe")
 
     if not os.path.exists(req_file_path):
         print(f"🛑 FATAL ERROR: Requirements file missing at {req_file_path}")
@@ -427,7 +441,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # Find CARDAMOM executable
-    cardamom_exe = "/Users/abloom/CARDAMOM/C/projects/CARDAMOM_MDF/CARDAMOM_RUN_MDF_pcg32.exe"
     if not os.path.exists(cardamom_exe):
         print(f"🛑 FATAL ERROR: CARDAMOM executable not found at {cardamom_exe}")
         sys.exit(1)
@@ -470,7 +483,6 @@ if __name__ == "__main__":
         print("UNIT VERIFICATION: Forward model run with no observations")
         print("-"*70)
 
-        cardamom_run_model_exe = "/Users/abloom/CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.exe"
         if not os.path.exists(cardamom_run_model_exe):
             print(f"⚠️  Skipping verification: CARDAMOM_RUN_MODEL.exe not found")
         else:
@@ -552,7 +564,6 @@ if __name__ == "__main__":
         print("TEST 2a: Forward model with TEST2b input + TEST1 parameters")
         print("="*70)
 
-        cardamom_run_model_exe = "/Users/abloom/CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.exe"
         if not os.path.exists(cardamom_run_model_exe):
             print(f"⚠️  Skipping: CARDAMOM_RUN_MODEL.exe not found")
         else:
