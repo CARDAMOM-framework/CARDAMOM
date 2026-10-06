@@ -60,7 +60,7 @@ Before running CARDAMOM executables, the script checks:
 * **Analysis**: Reports finite value counts for each of the 31 likelihood types and identifies any with zero finite values
 * **Output files**: ``TEST2b.cbf.nc``, ``TEST2a.output.nc``
 
-**Likelihood Types Analyzed** (from ``DALEC_ALL_LIKELIHOOD.c``):
+**Likelihood Types Analyzed** (from ``DALEC_ALL_LIKELIHOOD.c``): The list currently includes
 
 Time-series observations:
     * ABGB, CH4, DOM, ET, LE, H, EWT, GPP, SIF, LAI, NBE, ROFF, SCF, FIR, SWE
@@ -70,6 +70,9 @@ Mean observations:
 
 Parameter/emergent quantity constraints (PEQ):
     * PEQ_Cefficiency, PEQ_CUE, PEQ_NBEmrg, PEQ_iniSnow, PEQ_iniSOM, PEQ_C3frac, PEQ_Vcmax25, PEQ_LCMA, PEQ_clumping, PEQ_r_ch4, PEQ_S_fv, PEQ_rhch4_rhco2
+
+
+Future versions of CARDAMOM_CBF_NC_FILE_STRESS_TEST.py, th
 
 **TEST 2b: Short run with observations (EDC=0)**
 
