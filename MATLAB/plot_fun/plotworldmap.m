@@ -26,11 +26,11 @@ case 2
     %
     case 1
         %plotting only continental outlines
-        load('CARDAMOM/DATA/MAPS/worldmap.mat');
+        load('../CARDAMOM/DATA/MAPS/worldmap.mat');
         plot(lonlat(:,1),lonlat(:,2),'Color',col)
     case 3 
         %omit antarctica;
-                load('/CARDAMOM/DATA/MAPS/worldmap.mat')
+                load('../CARDAMOM/DATA/MAPS/worldmap.mat')
  
         lonlata=lonlat;
         plot(lonlat(:,1),lonlat(:,2),'Color',col)

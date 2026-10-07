@@ -1,11 +1,12 @@
 
 #pragma once
-#include <stdlib.h>  // rand(), srand()
+#include <stdlib.h>
 #include <math.h>
-#include <time.h> //for time
+#include <time.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdint.h>  // For explicit integer types
+#include <stdint.h>
+#include "cardamom_random.h"
 /*triple-seeding in simple C code*/
 
 
@@ -59,13 +60,14 @@ int charseed_filename(const char *charinput){
 int seedrandomnumber(const char *charinput){
 
     long seed1=(long)charseed(charinput);
-    
+
     // unsigned int seed1 = (unsigned int)charseed(charinput);
     // unsigned int seed2 = (unsigned int)time(NULL);
     // unsigned int seed3 = (unsigned int)(uintptr_t)&charinput;
 
     // srand(seed1 + seed2 + seed3);
+    // srandom(seed1);
 
-    srandom(seed1);
+    cardarand_seed((uint64_t)seed1);
 
 return 0;}

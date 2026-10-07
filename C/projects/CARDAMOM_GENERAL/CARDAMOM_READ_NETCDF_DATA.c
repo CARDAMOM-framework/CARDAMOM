@@ -405,6 +405,7 @@ MCMCID_STRUCT MCMCID;
 MCMCID.value = ncdf_read_single_double_var(ncid, "MCMCID");
 MCMCID.nITERATIONS = ncdf_read_int_attr(ncid, "MCMCID","nITERATIONS");
 MCMCID.nPRINT = ncdf_read_int_attr(ncid, "MCMCID","nPRINT");
+MCMCID.nWRITE = ncdf_read_int_attr(ncid, "MCMCID","nWRITE");
 MCMCID.nSAMPLES= ncdf_read_int_attr(ncid, "MCMCID","nSAMPLES");
 MCMCID.nSAMPLES_EDC_SEARCH= ncdf_read_int_attr(ncid, "MCMCID","nSAMPLES_EDC_SEARCH");
 MCMCID.nADAPT= ncdf_read_int_attr(ncid, "MCMCID","nADAPT");

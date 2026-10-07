@@ -7,6 +7,10 @@
 *.swp.*
 *.out
 *.out.*
+*.log*
+*cbr.nc*
+*cbf.nc*
+*output.nc*
 DUMPFILES
 MATLAB/startup.m
 MATLAB/CARDAMOM_DISK/*
@@ -23,3 +27,9 @@ C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.dSYM/Contents/Info.plist
 
 #Sphinx documentation
 _build/
+
+#AI context map (can be regenerated)
+C/LLM_DEPENDENCIES.txt
+
+#Compiler dependency files
+*.d

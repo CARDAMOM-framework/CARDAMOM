@@ -122,7 +122,7 @@ def create_cardamom_structure():
         'EDC': {'dims': (), 'data': 1.0, 'attrs': {}},
         'MCMCID': {
             'dims': (), 'data': 3.0,
-            'attrs': {'nITERATIONS': 500000.0, 'nSAMPLES': 10.0, 'nPRINT': 1000.0, 'seed_number': 0.0}
+            'attrs': {'nITERATIONS': 500000.0, 'nSAMPLES': 10.0, 'nPRINT': 1000.0, 'nWRITE': -9999.0, 'seed_number': 0.0}
         },
         'GPPunc': {'dims': ('time_dim',), 'data': np.full(240, np.nan), 'attrs': {'_FillValue': fill_value}},
     }
