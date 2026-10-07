@@ -333,7 +333,6 @@ TIMESERIES_OBS_STRUCT TOBS=D->ncdf_data.FIR;
 
 if (TOBS.validobs){
     int n;
-    D->M_FIR[n]=0;
     for (n=0;n<N;n++){
         D->M_FIR[n]=D->M_FLUXES[D->nofluxes*n+O->FIR_flux];
         }
