@@ -25,6 +25,72 @@ OBS_VARS = {
 }
 
 
+# Readable versions of the raw unit strings found in CARDAMOM files.
+# Add new entries here as you meet them; unknown units are shown unchanged.
+UNIT_LABELS = {
+    "deg C": "°C", "degC": "°C", "C": "°C",
+    "MJ m**-2 day**-1": "MJ/m²/day",
+    "CO2 [ppm]": "ppm",
+    "VPD [hPa]": "hPa",
+    "gC/m2/day": "gC/m²/day", "gC m-2 day-1": "gC/m²/day",
+    "gC/m2": "gC/m²", "m2/m2": "m²/m²", "m2 m-2": "m²/m²",
+}
+
+
+def clean_units(units):
+    """Return a readable unit label, e.g. 'MJ m**-2 day**-1' -> 'MJ/m²/day'."""
+    return UNIT_LABELS.get(str(units).strip(), str(units))
+
+
+def shorten_middle(text, max_len=40):
+    """Shorten long text by cutting out the middle: 'abcdef...uvwxyz'."""
+    if len(text) <= max_len:
+        return text
+    keep = (max_len - 1) // 2
+    return text[:keep] + "…" + text[-keep:]
+
+
+def wrap_lines(lines, width=45):
+    """Wrap each text line to a maximum width, indenting continuation lines."""
+    import textwrap
+    wrapped = []
+    for line in lines:
+        wrapped.extend(textwrap.wrap(line, width=width, subsequent_indent="  ") or [""])
+    return wrapped
+
+
+def fmt_number(value):
+    """Show whole numbers as integers with thousands separators (1000000.0 -> 1,000,000)."""
+    try:
+        f = float(value)
+    except (TypeError, ValueError):
+        return str(value)
+    return f"{int(f):,}" if f.is_integer() else f"{f:g}"
+
+
+def half_timestep(times):
+    """Half the typical spacing between timesteps, used to widen gap shading."""
+    if len(times) > 1:
+        return np.median(np.diff(times)) / 2
+    return np.timedelta64(15, "D") if np.issubdtype(times.dtype, np.datetime64) else 0.5
+
+
+def shade_gaps(ax, times, gaps):
+    """Shade each missing-data run in light red, padded by half a timestep each side
+    so that even a single missing timestep is visible."""
+    pad = half_timestep(times)
+    for start_t, end_t in gaps:
+        ax.axvspan(start_t - pad, end_t + pad, color="#ffcccc", alpha=0.7, lw=0, zorder=0)
+
+
+def set_time_axis(ax, times):
+    """Year-based x-axis ticks without repeated labels."""
+    if np.issubdtype(times.dtype, np.datetime64):
+        locator = mdates.AutoDateLocator(minticks=3, maxticks=7)
+        ax.xaxis.set_major_locator(locator)
+        ax.xaxis.set_major_formatter(mdates.ConciseDateFormatter(locator))
+
+
 def load_file(path):
     """Open a NetCDF file with xarray with error handling."""
     if not os.path.exists(path):
@@ -111,7 +177,7 @@ def file_overview(ds):
     """Extract metadata: filename, coordinates, model ID, timesteps, and temporal resolution."""
     lines = []
     fname = os.path.basename(ds.encoding.get("source", "Unknown file"))
-    lines.append(f"File: {fname}")
+    lines.append(f"File: {shorten_middle(fname, 40)}")
     
     # Lat/Lon
     lat = float(ds["LAT"].values) if "LAT" in ds else np.nan
@@ -154,8 +220,8 @@ def climate_snapshot(ds):
         tmin[tmin == -9999] = np.nan
         tmax[tmax == -9999] = np.nan
         t_mean = np.nanmean((tmin + tmax) / 2.0)
-        units = ds["T2M_MAX"].attrs.get("units", "°C")
-        lines.append(f"Mean Temp: {t_mean:.2f} {units}")
+        units = clean_units(ds["T2M_MAX"].attrs.get("units", "°C"))
+        lines.append(f"Mean Temp (avg of min & max): {t_mean:.1f} {clean_units(units)}")
     else:
         lines.append("Mean Temp: N/A")
         
@@ -192,7 +258,7 @@ def climate_snapshot(ds):
         co2_valid = co2[(~np.isnan(co2)) & (co2 != -9999)]
         if co2_valid.size > 0:
             units = ds["CO2"].attrs.get("units", "ppm")
-            lines.append(f"CO2: {co2_valid[0]:.1f} → {co2_valid[-1]:.1f} {units}")
+            lines.append(f"CO2: {co2_valid[0]:.1f} → {co2_valid[-1]:.1f} {clean_units(units)}")
         else:
             lines.append("CO2: No valid values")
     else:
@@ -210,7 +276,8 @@ def run_settings(ds):
         lines.append(f"MCMC ID: {mcmc_val}")
         attrs = ds["MCMCID"].attrs
         for key in ["nITERATIONS", "nSAMPLES", "seed_number", "fADAPT"]:
-            lines.append(f"  {key}: {attrs.get(key, 'Not Set')}")
+            val = attrs.get(key, None)
+            lines.append(f"  {key}: {fmt_number(val) if val is not None else 'Not set'}")
     else:
         lines.append("MCMCID: Not found")
         
@@ -275,6 +342,8 @@ def build_warnings(ds, groups, requirements):
     for v in groups["all_zeros"]:
         warnings.append(f"Variable '{v}' is all zeros")
     for v in groups["constant"]:
+        if v.endswith("unc"):
+            continue  # a constant uncertainty (e.g. NBEunc = 1 everywhere) is normal
         warnings.append(f"Variable '{v}' is constant non-zero")
         
     # 4. Variables with > 10% missing
@@ -293,25 +362,24 @@ def build_warnings(ds, groups, requirements):
     return warnings
 
 
-def plot_text_panel(ax, title, lines, highlight=False):
-    """Draw a titled panel of text with hidden axes; draws in red if highlight is True."""
-    ax.axis("off")
+def plot_text_panel(ax, title, lines, highlight=False, ncols=1, wrap=45):
+    """Draw a titled box of text lines that fills the axis.
+    highlight=True draws it in red; ncols splits long lists into columns."""
+    ax.set_xticks([]); ax.set_yticks([])
     color = "#b30000" if highlight else "#222222"
     edgecolor = "#b30000" if highlight else "#cccccc"
-    facecolor = "#fff2f2" if highlight else "#f9f9f9"
-    
-    # Outer box
-    bbox = dict(boxstyle="square,pad=0.6", facecolor=facecolor, edgecolor=edgecolor, lw=1.2)
-    full_text = "\n".join(lines)
-    ax.text(
-        0.05, 0.90, full_text,
-        transform=ax.transAxes,
-        fontsize=8.5,
-        verticalalignment="top",
-        fontfamily="monospace",
-        color=color,
-        bbox=bbox
-    )
+    ax.set_facecolor("#fff2f2" if highlight else "#f7f7f7")
+    for spine in ax.spines.values():
+        spine.set_edgecolor(edgecolor)
+        spine.set_linewidth(1.2)
+
+    lines = wrap_lines(lines, width=wrap)
+    per_col = math.ceil(len(lines) / ncols)
+    for c in range(ncols):
+        chunk = lines[c * per_col:(c + 1) * per_col]
+        ax.text(0.02 + c / ncols, 0.93, "\n".join(chunk),
+                transform=ax.transAxes, fontsize=8, va="top",
+                fontfamily="monospace", color=color, linespacing=1.4)
     ax.set_title(title, fontsize=10, fontweight="bold", color=color, loc="left", pad=4)
 
 
@@ -348,10 +416,13 @@ def plot_coverage(ax, ds, variables):
         ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
 
     ax.set_yticks(np.arange(n_vars) + 0.5)
-    ax.set_yticklabels(variables, fontsize=7.5)
+    ax.set_yticklabels(variables, fontsize=8)
+    # thin white lines between rows so each variable reads as its own strip
+    for i in range(1, n_vars):
+        ax.axhline(i, color="white", lw=0.8)
     ax.set_ylim(n_vars, 0)
     ax.grid(False)
-    ax.set_title("Data Coverage Strip (Green = Available, Red = Missing)", fontsize=9, fontweight="bold", pad=4)
+    ax.set_title("Data coverage (green = data, red = missing)", fontsize=10, fontweight="bold", loc="left", pad=4)
 
 
 def plot_timeseries(ax, ds, var):
@@ -365,23 +436,18 @@ def plot_timeseries(ax, ds, var):
     else:
         times = np.arange(len(vals))
         
-    units = da.attrs.get("units", "")
-    ax.plot(times, vals, marker=".", markersize=2.5, linewidth=0.6, color="#1f77b4")
-    
-    # Shade missing runs
+    units = clean_units(da.attrs.get("units", ""))
+    ax.plot(times, vals, marker=".", markersize=3, linewidth=0.6, color="#1f77b4")
+
+    # Shade missing runs (padded so single missing steps show)
     _, gaps = find_gaps(da)
-    for start_t, end_t in gaps:
-        ax.axvspan(start_t, end_t, color="#ffcccc", alpha=0.6, lw=0)
-        
+    shade_gaps(ax, times, gaps)
+
     ax.set_title(var, fontsize=8.5, fontweight="bold", pad=2)
     ax.set_ylabel(units, fontsize=7.5)
     ax.tick_params(axis="both", labelsize=7)
     
-    if np.issubdtype(times.dtype, np.datetime64):
-        # AutoDateLocator picks a sensible tick spacing; ConciseDateFormatter avoids repeated labels
-        locator = mdates.AutoDateLocator(minticks=3, maxticks=7)
-        ax.xaxis.set_major_locator(locator)
-        ax.xaxis.set_major_formatter(mdates.ConciseDateFormatter(locator))
+    set_time_axis(ax, times)
 
 
 def plot_temperature(ax, ds):
@@ -396,44 +462,44 @@ def plot_temperature(ax, ds):
     else:
         times = np.arange(len(tmin))
         
-    units = ds["T2M_MAX"].attrs.get("units", "°C")
+    units = clean_units(ds["T2M_MAX"].attrs.get("units", "°C"))
     ax.plot(times, tmax, marker=".", markersize=2, linewidth=0.5, color="#d95f02", label="T2M_MAX")
     ax.plot(times, tmin, marker=".", markersize=2, linewidth=0.5, color="#2b83ba", label="T2M_MIN")
     
     # Shading missing runs
     _, gaps_min = find_gaps(ds["T2M_MIN"])
-    for start_t, end_t in gaps_min:
-        ax.axvspan(start_t, end_t, color="#ffcccc", alpha=0.5, lw=0)
-        
+    shade_gaps(ax, times, gaps_min)
+
     ax.set_title("Temperature (T2M_MAX & T2M_MIN)", fontsize=8.5, fontweight="bold", pad=2)
     ax.set_ylabel(units, fontsize=7.5)
     ax.legend(loc="upper right", fontsize=6.5)
     ax.tick_params(axis="both", labelsize=7)
-    
-    if np.issubdtype(times.dtype, np.datetime64):
-        # AutoDateLocator picks a sensible tick spacing; ConciseDateFormatter avoids repeated labels
-        locator = mdates.AutoDateLocator(minticks=3, maxticks=7)
-        ax.xaxis.set_major_locator(locator)
-        ax.xaxis.set_major_formatter(mdates.ConciseDateFormatter(locator))
+    set_time_axis(ax, times)
 
 
-def plot_seasonal_cycle(ax, ds, var):
-    """Plot calendar month seasonal cycle (Jan-Dec) using groupby('time.month')."""
-    da = ds[var]
-    da_clean = da.where(da != -9999)
-    
-    if "time" in da_clean.coords and np.issubdtype(da_clean["time"].dtype, np.datetime64):
-        monthly = da_clean.groupby("time.month").mean(skipna=True)
-        months = monthly["month"].values
-        means = monthly.values
-        ax.plot(months, means, marker="o", markersize=3.5, linewidth=1.2, color="#2ca02c")
-        ax.set_xticks(range(1, 13))
-        ax.set_xticklabels(["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"], fontsize=7)
-    else:
-        ax.text(0.5, 0.5, "No Datetime Index", transform=ax.transAxes, ha="center", fontsize=8)
-        
-    ax.set_title(f"Seasonal: {var}", fontsize=8.5, fontweight="bold", pad=2)
-    ax.set_ylabel(da.attrs.get("units", ""), fontsize=7.5)
+def plot_seasonal_cycle(ax, ds, variables, title=None):
+    """Plot the mean for each calendar month (Jan-Dec) for one variable or a list of
+    variables, using groupby('time.month'). Several variables share one panel."""
+    if isinstance(variables, str):
+        variables = [variables]
+    colors = ["#d95f02", "#2b83ba", "#2ca02c", "#7570b3"]
+    units = ""
+    for i, var in enumerate(variables):
+        da = ds[var].where(ds[var] != -9999)
+        if "time" not in da.coords or not np.issubdtype(da["time"].dtype, np.datetime64):
+            ax.text(0.5, 0.5, "No dates in file", transform=ax.transAxes, ha="center", fontsize=8)
+            return
+        monthly = da.groupby("time.month").mean(skipna=True)
+        ax.plot(monthly["month"].values, monthly.values, marker="o", markersize=3.5,
+                linewidth=1.2, color=colors[i % len(colors)], label=var)
+        units = clean_units(da.attrs.get("units", ""))
+
+    ax.set_xticks(range(1, 13))
+    ax.set_xticklabels(["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"], fontsize=7)
+    if len(variables) > 1:
+        ax.legend(fontsize=6.5)
+    ax.set_title(title or f"Typical year: {variables[0]}", fontsize=8.5, fontweight="bold", pad=2)
+    ax.set_ylabel(units, fontsize=7.5)
     ax.tick_params(axis="both", labelsize=7)
     ax.grid(True, linestyle=":", alpha=0.5)
 
@@ -477,99 +543,74 @@ def main():
     print("=" * 60)
     
     # -------------------------------------------------------------
-    # Figure Layout Setup
+    # Figure layout: every row is sized in inches to fit its content
+    #   row 0: overview (2 cols), climate, run settings
+    #   row 1: warnings, full width (2 columns of text if long)
+    #   row 2: data coverage strip, ~0.25 in per variable
+    #   rows : time-series grid, 4 per row
+    #   last : typical-year (seasonal) panels
     # -------------------------------------------------------------
-    # Grid breakdown:
-    # Row 0: 4 text panels
-    # Row 1: 1 coverage panel across all columns
-    # Rows 2 to 2 + ts_rows - 1: Time series panels
-    # Last row: 4 seasonal panels
-    
-    ts_vars = [v for v in groups["has_data"] if v not in ("T2M_MIN", "T2M_MAX")]
-    total_ts = 1 + len(ts_vars)  # 1 slot for combined temperature
     cols = 4
-    ts_rows = math.ceil(total_ts / cols)
-    total_rows = 2 + ts_rows + 1
-    
-    # Calculate adaptive figure height
-    fig_height = max(11.0, 2.5 + 2.0 + (ts_rows * 1.8) + 2.2)
-    fig = plt.figure(figsize=(14, fig_height))
-    
-    # Height ratios: text row, coverage strip, time series rows, seasonal row
-    height_ratios = [1.8, 1.8] + [1.5] * ts_rows + [1.6]
-    gs = fig.add_gridspec(total_rows, cols, height_ratios=height_ratios, hspace=0.45, wspace=0.3)
-    
-    # 1. Text Panels
-    ax_txt0 = fig.add_subplot(gs[0, 0])
-    plot_text_panel(ax_txt0, "File Overview", txt_overview)
-    
-    ax_txt1 = fig.add_subplot(gs[0, 1])
-    plot_text_panel(ax_txt1, "Climate Snapshot", txt_climate)
-    
-    ax_txt2 = fig.add_subplot(gs[0, 2])
-    plot_text_panel(ax_txt2, "Run Settings", txt_settings)
-    
-    ax_txt3 = fig.add_subplot(gs[0, 3])
+    is_unc = lambda v: v.endswith("unc")  # uncertainty variables aren't plotted separately
+
+    ts_vars = [v for v in groups["has_data"]
+               if v not in ("T2M_MIN", "T2M_MAX") and not is_unc(v)]
+    has_temp = "T2M_MIN" in ds and "T2M_MAX" in ds
+    n_ts = len(ts_vars) + (1 if has_temp else 0)
+    ts_rows = max(1, math.ceil(n_ts / cols))
+
+    cov_vars = sorted(v for v in ds.data_vars
+                      if TIME_DIM in ds[v].dims and v != "DOY" and not is_unc(v))
+
+    warn_cols = 2 if len(txt_warnings) > 8 else 1
+    warn_lines = math.ceil(len(wrap_lines(txt_warnings, 70)) / warn_cols)
+
+    heights = [1.9,                               # text panels
+               0.45 + 0.17 * warn_lines,          # warnings
+               0.5 + 0.25 * len(cov_vars)]        # coverage strip
+    heights += [2.0] * ts_rows + [2.0]            # time series + seasonal
+
+    fig = plt.figure(figsize=(16, sum(heights) + 0.45 * len(heights)))
+    gs = fig.add_gridspec(len(heights), cols, height_ratios=heights,
+                          hspace=0.55, wspace=0.28)
+
+    # 1. Text panels
+    plot_text_panel(fig.add_subplot(gs[0, 0:2]), "File overview", txt_overview, wrap=70)
+    plot_text_panel(fig.add_subplot(gs[0, 2]), "Climate snapshot", txt_climate, wrap=38)
+    plot_text_panel(fig.add_subplot(gs[0, 3]), "Run settings", txt_settings, wrap=38)
+
     is_alert = any("Missing" in w or "has 0" in w or "all missing" in w for w in txt_warnings)
-    plot_text_panel(ax_txt3, "Warnings & Anomalies", txt_warnings, highlight=is_alert)
-    
-    # 2. Coverage Strip
-    ax_cov = fig.add_subplot(gs[1, :])
-    all_time_vars = sorted([v for v in ds.data_vars if TIME_DIM in ds[v].dims and v != "DOY"])
-    plot_coverage(ax_cov, ds, all_time_vars)
-    
-    # 3. Time Series Panels
-    curr_idx = 0
-    # Combined temperature panel
-    row_idx = 2 + (curr_idx // cols)
-    col_idx = curr_idx % cols
-    ax_temp = fig.add_subplot(gs[row_idx, col_idx])
-    plot_temperature(ax_temp, ds)
-    curr_idx += 1
-    
-    # Remaining time series
+    plot_text_panel(fig.add_subplot(gs[1, :]), "Warnings", txt_warnings,
+                    highlight=is_alert, ncols=warn_cols, wrap=70)
+
+    # 2. Coverage strip
+    plot_coverage(fig.add_subplot(gs[2, :]), ds, cov_vars)
+
+    # 3. Time-series grid: temperature first, then everything else with data
+    slot = 0
+    def next_ax():
+        nonlocal slot
+        ax = fig.add_subplot(gs[3 + slot // cols, slot % cols])
+        slot += 1
+        return ax
+
+    if has_temp:
+        plot_temperature(next_ax(), ds)
     for var in ts_vars:
-        row_idx = 2 + (curr_idx // cols)
-        col_idx = curr_idx % cols
-        ax_ts = fig.add_subplot(gs[row_idx, col_idx])
-        plot_timeseries(ax_ts, ds, var)
-        curr_idx += 1
-        
-    # Blank out any empty slots in time-series grid
-    while curr_idx < ts_rows * cols:
-        row_idx = 2 + (curr_idx // cols)
-        col_idx = curr_idx % cols
-        ax_blank = fig.add_subplot(gs[row_idx, col_idx])
-        ax_blank.axis("off")
-        curr_idx += 1
-        
-    # 4. Seasonal Cycle Panels: Temp, Precip, first 2 valid observations
-    seasonal_row = total_rows - 1
-    
-    # Temperature Seasonal
-    ax_s0 = fig.add_subplot(gs[seasonal_row, 0])
-    temp_var = "T2M_MAX" if "T2M_MAX" in ds else ("T2M_MIN" if "T2M_MIN" in ds else None)
-    if temp_var:
-        plot_seasonal_cycle(ax_s0, ds, temp_var)
-    else:
-        ax_s0.axis("off")
-        
-    # Precip Seasonal
-    ax_s1 = fig.add_subplot(gs[seasonal_row, 1])
-    if "TOTAL_PREC" in ds:
-        plot_seasonal_cycle(ax_s1, ds, "TOTAL_PREC")
-    else:
-        ax_s1.axis("off")
-        
-    # First 2 valid observations
-    valid_obs = [v for v in groups["has_data"] if v in OBS_VARS]
-    for i in range(2):
-        ax_obs = fig.add_subplot(gs[seasonal_row, 2 + i])
-        if i < len(valid_obs):
-            plot_seasonal_cycle(ax_obs, ds, valid_obs[i])
-        else:
-            ax_obs.axis("off")
-            
+        plot_timeseries(next_ax(), ds, var)
+
+    # 4. Typical-year panels: temperature (min & max), precipitation, first 2 observations
+    srow = len(heights) - 1
+    seasonal = []
+    if has_temp:
+        seasonal.append((["T2M_MAX", "T2M_MIN"], "Typical year: temperature"))
+    if "TOTAL_PREC" in groups["has_data"]:
+        seasonal.append(("TOTAL_PREC", None))
+    for v in [v for v in groups["has_data"] if v in OBS_VARS][:4 - len(seasonal)]:
+        seasonal.append((v, None))
+    for i, (vars_, title) in enumerate(seasonal[:cols]):
+        plot_seasonal_cycle(fig.add_subplot(gs[srow, i]), ds, vars_, title)
+
     # Save output
     base_name = os.path.splitext(os.path.basename(args.path))[0]
     if base_name.endswith(".cbf"):
