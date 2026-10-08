@@ -34,10 +34,6 @@ double DALEC_EDC_STATE_PROXIMITY(DATA * DATA, void * EDCstruct){
     // Derive deltat from TIME_INDEX (assuming continuous daily or monthly steps)
     double deltat_double = TIME_INDEX[1] - TIME_INDEX[0];
     
-    // mean_annual_pool.c expects an integer deltat (e.g., 1 for daily data)
-    int deltat = (int)round(deltat_double); 
-    if (deltat < 1) deltat = 1; // Failsafe 
-    
     // Calculate total number of complete years to evaluate
     int num_years = (int)floor((N_timesteps * deltat_double) / 365.25);
     
@@ -52,7 +48,7 @@ double DALEC_EDC_STATE_PROXIMITY(DATA * DATA, void * EDCstruct){
         // Check each pool for this specific year (using -> operator for pointer access)
         for (s = 0; s < E->no_pools_to_check; s++) {
             p = E->pool_indices[s];
-            double mean_pool_yr = mean_annual_pool(POOLS, yr, p, nopools, deltat);
+            double mean_pool_yr = mean_annual_pool(POOLS, yr, p, nopools, deltat_double);
             
             // Track the maximum and minimum annual means across the layers
             if (mean_pool_yr > max_mean) max_mean = mean_pool_yr;
