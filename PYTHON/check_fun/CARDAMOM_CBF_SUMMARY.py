@@ -28,13 +28,30 @@ OBS_VARS = {
 # Readable versions of the raw unit strings found in CARDAMOM files.
 # Add new entries here as you meet them; unknown units are shown unchanged.
 UNIT_LABELS = {
-    "deg C": "°C", "degC": "°C", "C": "°C",
-    "MJ m**-2 day**-1": "MJ/m²/day",
+    "deg C": "°C", "degC": "°C", "C": "°C", "degrees Celsius": "°C",
+    "MJ m**-2 day**-1": "MJ/m²/day", "MJ m-2 day-1": "MJ/m²/day",
+    "mm day-1": "mm/day", "g C m-2 day-1": "gC/m²/day", "g C m-2": "gC/m²",
+    "m2 m-2 pixel land area": "m²/m²", "g C m-2 month-1": "gC/m²/month",
     "CO2 [ppm]": "ppm",
     "VPD [hPa]": "hPa",
     "gC/m2/day": "gC/m²/day", "gC m-2 day-1": "gC/m²/day",
     "gC/m2": "gC/m²", "m2/m2": "m²/m²", "m2 m-2": "m²/m²",
 }
+
+
+# Attribute names CARDAMOM reads as observation uncertainty
+# (see READ_NETCDF_TIMESERIES_OBS_FIELDS in CARDAMOM_LIKELIHOOD_FUNCTION.c).
+UNC_ATTRS = ("single_unc", "single_monthly_unc", "single_annual_unc",
+             "single_decadal_unc", "single_mean_unc", "structural_unc")
+
+# Single-value constraints (not time series) start with these prefixes.
+CONSTRAINT_PREFIXES = ("Mean_", "PEQ_")
+
+
+def has_uncertainty(ds, var):
+    """True if an observation has an uncertainty CARDAMOM can use:
+    a '<VAR>unc' variable or any of the UNC_ATTRS attributes."""
+    return f"{var}unc" in ds or any(a in ds[var].attrs for a in UNC_ATTRS)
 
 
 def clean_units(units):
@@ -81,6 +98,11 @@ def shade_gaps(ax, times, gaps):
     pad = half_timestep(times)
     for start_t, end_t in gaps:
         ax.axvspan(start_t - pad, end_t + pad, color="#ffcccc", alpha=0.7, lw=0, zorder=0)
+
+
+def marker_size(n_points):
+    """Smaller dots for long records so they don't merge into a thick band."""
+    return 3 if n_points <= 60 else (2 if n_points <= 150 else 1.2)
 
 
 def set_time_axis(ax, times):
@@ -311,7 +333,35 @@ def _parse_dalec_requirements(req_path, model_id):
     return required_fields
 
 
-def build_warnings(ds, groups, requirements):
+def _all_listed_fields(req_path):
+    """Every field named in DALEC_MODEL_FIELD_REQUIREMENTS.txt (required or not).
+    Returns an empty set if the file isn't found."""
+    fields = set()
+    if os.path.exists(req_path):
+        with open(req_path) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("//") and ":" in line:
+                    fields.add(line.split(":")[0].strip())
+    return fields
+
+
+def find_additional_vars(ds, listed_fields):
+    """Variables CARDAMOM doesn't use: not in the requirements file, not a known
+    observation, not an uncertainty or single-value constraint.
+    Returns a list of (name, description) for an 'Additional data' list."""
+    known = set(listed_fields) | OBS_VARS | {"time", "DOY", "ID", "LAT", "LON", "EDC", "MCMCID"}
+    extra = []
+    for name in sorted(ds.data_vars):
+        if (name in known or name.endswith("unc")
+                or name.startswith(CONSTRAINT_PREFIXES)):
+            continue
+        desc = ds[name].attrs.get("description", "")
+        extra.append((name, desc))
+    return extra
+
+
+def build_warnings(ds, groups, requirements, additional=()):
     """Generate warnings for missing requirements, missing observations, or gaps."""
     warnings = []
     
@@ -332,16 +382,17 @@ def build_warnings(ds, groups, requirements):
             if valid_pts == 0:
                 warnings.append(f"Observation '{var}' has 0 valid data points")
             else:
-                has_unc = (f"{var}unc" in ds) or ("single_unc" in ds[var].attrs)
-                if not has_unc:
+                if not has_uncertainty(ds, var):
                     warnings.append(f"Observation '{var}' has no uncertainty")
                     
-    # 3. Classified variable warnings (all zeros, constant, all missing)
-    for v in groups["all_missing"]:
+    # 3. Classified variable warnings (all zeros, constant, all missing).
+    #    Additional (unused) variables are listed separately, not warned about.
+    skip = {name for name, _ in additional}
+    for v in [v for v in groups["all_missing"] if v not in skip]:
         warnings.append(f"Variable '{v}' is all missing (NaNs)")
-    for v in groups["all_zeros"]:
+    for v in [v for v in groups["all_zeros"] if v not in skip]:
         warnings.append(f"Variable '{v}' is all zeros")
-    for v in groups["constant"]:
+    for v in [v for v in groups["constant"] if v not in skip]:
         if v.endswith("unc"):
             continue  # a constant uncertainty (e.g. NBEunc = 1 everywhere) is normal
         warnings.append(f"Variable '{v}' is constant non-zero")
@@ -349,7 +400,7 @@ def build_warnings(ds, groups, requirements):
     # 4. Variables with > 10% missing
     n_times = ds.sizes.get(TIME_DIM, 0)
     if n_times > 0:
-        for v in groups["has_data"]:
+        for v in [v for v in groups["has_data"] if v not in skip]:
             da = ds[v]
             missing_count, _ = find_gaps(da)
             frac_missing = missing_count / float(n_times)
@@ -437,7 +488,7 @@ def plot_timeseries(ax, ds, var):
         times = np.arange(len(vals))
         
     units = clean_units(da.attrs.get("units", ""))
-    ax.plot(times, vals, marker=".", markersize=3, linewidth=0.6, color="#1f77b4")
+    ax.plot(times, vals, marker=".", markersize=marker_size(len(vals)), linewidth=0.6, color="#1f77b4")
 
     # Shade missing runs (padded so single missing steps show)
     _, gaps = find_gaps(da)
@@ -463,8 +514,9 @@ def plot_temperature(ax, ds):
         times = np.arange(len(tmin))
         
     units = clean_units(ds["T2M_MAX"].attrs.get("units", "°C"))
-    ax.plot(times, tmax, marker=".", markersize=2, linewidth=0.5, color="#d95f02", label="T2M_MAX")
-    ax.plot(times, tmin, marker=".", markersize=2, linewidth=0.5, color="#2b83ba", label="T2M_MIN")
+    ms = marker_size(len(tmax))
+    ax.plot(times, tmax, marker=".", markersize=ms, linewidth=0.5, color="#d95f02", label="T2M_MAX")
+    ax.plot(times, tmin, marker=".", markersize=ms, linewidth=0.5, color="#2b83ba", label="T2M_MIN")
     
     # Shading missing runs
     _, gaps_min = find_gaps(ds["T2M_MIN"])
@@ -472,7 +524,8 @@ def plot_temperature(ax, ds):
 
     ax.set_title("Temperature (T2M_MAX & T2M_MIN)", fontsize=8.5, fontweight="bold", pad=2)
     ax.set_ylabel(units, fontsize=7.5)
-    ax.legend(loc="upper right", fontsize=6.5)
+    # Legend sits above the plot area so it never hides data
+    ax.legend(loc="lower right", bbox_to_anchor=(1.0, 1.0), ncol=2, fontsize=6.5, frameon=False)
     ax.tick_params(axis="both", labelsize=7)
     set_time_axis(ax, times)
 
@@ -520,12 +573,15 @@ def main():
     # DALEC Requirements
     req_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "DALEC_MODEL_FIELD_REQUIREMENTS.txt")
     requirements = _parse_dalec_requirements(req_file, model_id)
+    additional = find_additional_vars(ds, _all_listed_fields(req_file))
+    additional_names = {name for name, _ in additional}
     
     # Build text sections
     txt_overview = file_overview(ds)
     txt_climate = climate_snapshot(ds)
     txt_settings = run_settings(ds)
-    txt_warnings = build_warnings(ds, groups, requirements)
+    txt_warnings = build_warnings(ds, groups, requirements, additional)
+    txt_additional = [f"{n}: {d}" if d else n for n, d in additional] or ["None"]
     
     # Print panels to terminal
     print("=" * 60)
@@ -540,91 +596,129 @@ def main():
     print("-" * 60)
     print("DIAGNOSTICS & WARNINGS:")
     print("\n".join(txt_warnings))
+    print("-" * 60)
+    print("ADDITIONAL DATA (in file, not used by CARDAMOM):")
+    print("\n".join(txt_additional))
     print("=" * 60)
     
     # -------------------------------------------------------------
-    # Figure layout: every row is sized in inches to fit its content
-    #   row 0: overview (2 cols), climate, run settings
-    #   row 1: warnings, full width (2 columns of text if long)
-    #   row 2: data coverage strip, ~0.25 in per variable
-    #   rows : time-series grid, 4 per row
-    #   last : typical-year (seasonal) panels
+    # LAYOUT: landscape pages
+    #   Page 1  "At a glance": text panels, warnings, coverage strip,
+    #                          typical-year cycles  -> answers "should I use this file?"
+    #   Page 2+ "Time series": 6 wide panels per page (2 columns x 3 rows)
+    # Saved as one PNG per page plus a single multi-page PDF.
     # -------------------------------------------------------------
-    cols = 4
     is_unc = lambda v: v.endswith("unc")  # uncertainty variables aren't plotted separately
 
     ts_vars = [v for v in groups["has_data"]
-               if v not in ("T2M_MIN", "T2M_MAX") and not is_unc(v)]
+               if v not in ("T2M_MIN", "T2M_MAX") and not is_unc(v)
+               and v not in additional_names]
     has_temp = "T2M_MIN" in ds and "T2M_MAX" in ds
-    n_ts = len(ts_vars) + (1 if has_temp else 0)
-    ts_rows = max(1, math.ceil(n_ts / cols))
-
     cov_vars = sorted(v for v in ds.data_vars
-                      if TIME_DIM in ds[v].dims and v != "DOY" and not is_unc(v))
+                      if TIME_DIM in ds[v].dims and v != "DOY" and not is_unc(v)
+                      and v not in additional_names)
 
-    warn_cols = 2 if len(txt_warnings) > 8 else 1
-    warn_lines = math.ceil(len(wrap_lines(txt_warnings, 70)) / warn_cols)
-
-    heights = [1.9,                               # text panels
-               0.45 + 0.17 * warn_lines,          # warnings
-               0.5 + 0.25 * len(cov_vars)]        # coverage strip
-    heights += [2.0] * ts_rows + [2.0]            # time series + seasonal
-
-    fig = plt.figure(figsize=(16, sum(heights) + 0.45 * len(heights)))
-    gs = fig.add_gridspec(len(heights), cols, height_ratios=heights,
-                          hspace=0.55, wspace=0.28)
-
-    # 1. Text panels
-    plot_text_panel(fig.add_subplot(gs[0, 0:2]), "File overview", txt_overview, wrap=70)
-    plot_text_panel(fig.add_subplot(gs[0, 2]), "Climate snapshot", txt_climate, wrap=38)
-    plot_text_panel(fig.add_subplot(gs[0, 3]), "Run settings", txt_settings, wrap=38)
-
-    is_alert = any("Missing" in w or "has 0" in w or "all missing" in w for w in txt_warnings)
-    plot_text_panel(fig.add_subplot(gs[1, :]), "Warnings", txt_warnings,
-                    highlight=is_alert, ncols=warn_cols, wrap=70)
-
-    # 2. Coverage strip
-    plot_coverage(fig.add_subplot(gs[2, :]), ds, cov_vars)
-
-    # 3. Time-series grid: temperature first, then everything else with data
-    slot = 0
-    def next_ax():
-        nonlocal slot
-        ax = fig.add_subplot(gs[3 + slot // cols, slot % cols])
-        slot += 1
-        return ax
-
-    if has_temp:
-        plot_temperature(next_ax(), ds)
-    for var in ts_vars:
-        plot_timeseries(next_ax(), ds, var)
-
-    # 4. Typical-year panels: temperature (min & max), precipitation, first 2 observations
-    srow = len(heights) - 1
-    seasonal = []
-    if has_temp:
-        seasonal.append((["T2M_MAX", "T2M_MIN"], "Typical year: temperature"))
-    if "TOTAL_PREC" in groups["has_data"]:
-        seasonal.append(("TOTAL_PREC", None))
-    for v in [v for v in groups["has_data"] if v in OBS_VARS][:4 - len(seasonal)]:
-        seasonal.append((v, None))
-    for i, (vars_, title) in enumerate(seasonal[:cols]):
-        plot_seasonal_cycle(fig.add_subplot(gs[srow, i]), ds, vars_, title)
-
-    # Save output
     base_name = os.path.splitext(os.path.basename(args.path))[0]
     if base_name.endswith(".cbf"):
         base_name = os.path.splitext(base_name)[0]
-    out_filename = f"{base_name}_summary.png"
-    out_path = os.path.join(args.output, out_filename)
-    
-    os.makedirs(args.output, exist_ok=True)
-    plt.savefig(out_path, dpi=200, bbox_inches="tight")
-    print(f"Summary visual saved to: {out_path}")
-    
+
+    figures = [build_overview_page(ds, groups, base_name, txt_overview, txt_climate,
+                                   txt_settings, txt_warnings, txt_additional, cov_vars)]
+    figures += build_timeseries_pages(ds, base_name, ts_vars, has_temp)
+
+    save_pages(figures, base_name, args.output)
+
     if not args.no_show:
         plt.show()
-    plt.close()
+    plt.close("all")
+
+
+def build_overview_page(ds, groups, base_name, txt_overview, txt_climate,
+                        txt_settings, txt_warnings, txt_additional, cov_vars):
+    """Page 1, 'At a glance' (landscape):
+         row 0 : overview (2 cols) | climate | run settings | warnings + additional (right column)
+         row 1 : coverage strip (4 cols)                     | (warnings continue)
+         row 2 : typical-year panels (up to 5 across)
+    """
+    cov_height = max(3.0, 0.6 + 0.22 * len(cov_vars))   # grows with number of variables
+    heights = [1.8, cov_height, 2.3]
+    fig = plt.figure(figsize=(18, sum(heights) + 1.6))
+    fig.suptitle(f"CARDAMOM input summary: {base_name}  |  page 1: at a glance",
+                 fontsize=13, fontweight="bold", x=0.01, ha="left")
+    gs = fig.add_gridspec(3, 5, height_ratios=heights, width_ratios=[1, 1, 1, 1, 1.35],
+                          hspace=0.45, wspace=0.3, top=0.93)
+
+    # Text panels
+    plot_text_panel(fig.add_subplot(gs[0, 0:2]), "File overview", txt_overview, wrap=70)
+    plot_text_panel(fig.add_subplot(gs[0, 2]), "Climate snapshot", txt_climate, wrap=29)
+    plot_text_panel(fig.add_subplot(gs[0, 3]), "Run settings", txt_settings, wrap=29)
+
+    # Right column: warnings on top, additional (unused) data below
+    w_lines = len(wrap_lines(txt_warnings, 42))
+    a_lines = len(wrap_lines(txt_additional, 42))
+    right = gs[0:2, 4].subgridspec(2, 1, height_ratios=[w_lines + 2, a_lines + 2], hspace=0.35)
+    is_alert = any("Missing" in w or "has 0" in w or "all missing" in w for w in txt_warnings)
+    plot_text_panel(fig.add_subplot(right[0]), "Warnings", txt_warnings,
+                    highlight=is_alert, wrap=42)
+    plot_text_panel(fig.add_subplot(right[1]), "Additional data (not used by CARDAMOM)",
+                    txt_additional, wrap=42)
+
+    # Coverage strip
+    plot_coverage(fig.add_subplot(gs[1, 0:4]), ds, cov_vars)
+
+    # Typical-year panels: temperature, precipitation, then observations with a seasonal cycle
+    seasonal = []
+    if "T2M_MIN" in ds and "T2M_MAX" in ds:
+        seasonal.append((["T2M_MAX", "T2M_MIN"], "Typical year: temperature"))
+    if "TOTAL_PREC" in groups["has_data"]:
+        seasonal.append(("TOTAL_PREC", None))
+    preferred = ["GPP", "LAI", "NBE", "ET", "SIF", "SCF", "LE", "H"]
+    obs_with_data = [v for v in groups["has_data"] if v in OBS_VARS]
+    obs_with_data.sort(key=lambda v: preferred.index(v) if v in preferred else len(preferred))
+    for v in obs_with_data[:5 - len(seasonal)]:
+        seasonal.append((v, None))
+    for i, (vars_, title) in enumerate(seasonal[:5]):
+        plot_seasonal_cycle(fig.add_subplot(gs[2, i]), ds, vars_, title)
+
+    return fig
+
+
+def build_timeseries_pages(ds, base_name, ts_vars, has_temp, per_page=6):
+    """Pages 2+: wide time-series panels, 2 columns x 3 rows per landscape page."""
+    panels = (["__TEMPERATURE__"] if has_temp else []) + list(ts_vars)
+    n_pages = max(1, math.ceil(len(panels) / per_page))
+    figures = []
+    for p in range(n_pages):
+        chunk = panels[p * per_page:(p + 1) * per_page]
+        if not chunk:
+            break
+        fig = plt.figure(figsize=(18, 10))
+        fig.suptitle(f"CARDAMOM input summary: {base_name}  |  page {p + 2}: "
+                     f"time series ({p + 1} of {n_pages})",
+                     fontsize=13, fontweight="bold", x=0.01, ha="left")
+        gs = fig.add_gridspec(3, 2, hspace=0.45, wspace=0.18, top=0.92)
+        for i, var in enumerate(chunk):
+            ax = fig.add_subplot(gs[i // 2, i % 2])
+            if var == "__TEMPERATURE__":
+                plot_temperature(ax, ds)
+            else:
+                plot_timeseries(ax, ds, var)
+        figures.append(fig)
+    return figures
+
+
+def save_pages(figures, base_name, out_dir):
+    """Save each page as its own PNG, plus one multi-page PDF of all pages."""
+    from matplotlib.backends.backend_pdf import PdfPages
+    os.makedirs(out_dir, exist_ok=True)
+    pdf_path = os.path.join(out_dir, f"{base_name}_summary.pdf")
+    with PdfPages(pdf_path) as pdf:
+        for i, fig in enumerate(figures, start=1):
+            png_path = os.path.join(out_dir, f"{base_name}_summary_p{i}.png")
+            fig.savefig(png_path, dpi=150, bbox_inches="tight")
+            pdf.savefig(fig, bbox_inches="tight")
+            print(f"Saved page {i}: {png_path}")
+    print(f"Saved all pages as PDF: {pdf_path}")
 
 
 if __name__ == "__main__":
