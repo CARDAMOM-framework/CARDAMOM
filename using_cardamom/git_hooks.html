@@ -1,0 +1,245 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Git hooks &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3ce236e8" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="Stress Testing your CARDAMOM input (.nc) file" href="stress_testing.html" />
+    <link rel="prev" title="Compilation" href="compilation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started with CARDAMOM</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC Model:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dalec_versions.html">DALEC versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compilation.html">Compilation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Git hooks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-git-hooks-are">What git hooks are</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hooks-used-by-cardamom">Hooks used by CARDAMOM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-the-compilation-hook-matters">Why the compilation hook matters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-the-hooks">Installing the hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#skipping-the-rebuild">Skipping the rebuild</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="stress_testing.html">Stress Testing your CARDAMOM input (.nc) file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyst_checklist.html">Analyst checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="technote.html">Contributing to this technical documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="governance.html">CARDAMOM.c governance structure</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/CARDAMOM_NETCDF_INPUT_FILE.html">CARDAMOM Netcdf input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/COST_FUNCTION.html">CARDAMOM cost function <a name="cardamom-cost-function"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/DEBUGGING_TIPS.html">Debugging tips and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/GITHUB_BASICS.html">Using CARDAMOM’s github repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MCMC_IN_CARDAMOM_OVERVIEW.html">MCMC in CARDAMOM Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/OUTPUT_DATA_ANALYSIS.html">Output Data and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PARALLELIZATION.html">Parallelization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Git hooks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/using_cardamom/git_hooks.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="git-hooks">
+<span id="id1"></span><h1>Git hooks<a class="headerlink" href="#git-hooks" title="Link to this heading"></a></h1>
+<section id="what-git-hooks-are">
+<h2>What git hooks are<a class="headerlink" href="#what-git-hooks-are" title="Link to this heading"></a></h2>
+<p>Git hooks are scripts that git runs automatically when a particular event happens
+in a repository — after a commit, after a pull, after switching branch, and so on.
+They are ordinary executable scripts named after the event they respond to, and
+they run locally on your own machine. Nothing in a hook is pushed to or enforced
+by the remote: hooks are a convenience for keeping your working copy consistent,
+not a substitute for CI.</p>
+<p>By default git looks for hooks in <code class="docutils literal notranslate"><span class="pre">.git/hooks</span></code>, which is not version controlled.
+CARDAMOM instead keeps its hooks in a tracked <code class="docutils literal notranslate"><span class="pre">.githooks</span></code> directory and points
+git at it with <code class="docutils literal notranslate"><span class="pre">core.hooksPath</span></code>, so every developer gets the same hooks.</p>
+</section>
+<section id="hooks-used-by-cardamom">
+<h2>Hooks used by CARDAMOM<a class="headerlink" href="#hooks-used-by-cardamom" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 20.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Hook</p></th>
+<th class="head"><p>Runs when</p></th>
+<th class="head"><p>What it does</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.githooks/post-checkout</span></code></p></td>
+<td><p>You switch branch</p></td>
+<td><p>Regenerates the demo cbf.nc file, then recompiles the C code.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.githooks/post-merge</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span></code> / merge</p></td>
+<td><p>Regenerates the demo cbf.nc file, then recompiles the C code.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.githooks/cardamom-autocompile</span></code></p></td>
+<td><p>Called by the two hooks above</p></td>
+<td><p>Runs <code class="docutils literal notranslate"><span class="pre">BASH/CARDAMOM_COMPILE.sh</span></code>. Not a hook itself — a shared helper.</p></td>
+</tr>
+</tbody>
+</table>
+<p>The demo file is regenerated by <code class="docutils literal notranslate"><span class="pre">PYTHON/check_fun/DEMO_CBF_NC_GENERATOR.py</span></code>.</p>
+</section>
+<section id="why-the-compilation-hook-matters">
+<h2>Why the compilation hook matters<a class="headerlink" href="#why-the-compilation-hook-matters" title="Link to this heading"></a></h2>
+<p>The compiled executables (<code class="docutils literal notranslate"><span class="pre">*.exe</span></code>) are gitignored, so they are never part of a
+checkout. Without a hook, switching branch or pulling new C source leaves the old
+binaries in place, and you silently keep running code that no longer matches the
+source you are reading. Keeping the rebuild in a hook means
+<code class="docutils literal notranslate"><span class="pre">CARDAMOM_MDF.exe</span></code> and <code class="docutils literal notranslate"><span class="pre">CARDAMOM_RUN_MODEL.exe</span></code> always correspond to the
+checked-out source.</p>
+<p>Compilation is defined in <code class="docutils literal notranslate"><span class="pre">cardamom-autocompile</span></code> only, so a given git event
+triggers at most one rebuild. Scripts that <em>use</em> the executables — such as
+<code class="docutils literal notranslate"><span class="pre">CARDAMOM_CBF_NC_FILE_STRESS_TEST.py</span></code> — assume compilation has already happened
+and never invoke the compiler themselves.</p>
+<p>A failed compilation never blocks the git operation; the hook reports the failure
+and leaves the full compiler output in <code class="docutils literal notranslate"><span class="pre">/tmp/CARDAMOM_COMPILE.log</span></code>.</p>
+</section>
+<section id="installing-the-hooks">
+<h2>Installing the hooks<a class="headerlink" href="#installing-the-hooks" title="Link to this heading"></a></h2>
+<p>Once per clone:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>BASH/CARDAMOM_SETUP_GIT_HOOKS.sh
+</pre></div>
+</div>
+<p>This makes the hooks executable and sets <code class="docutils literal notranslate"><span class="pre">core.hooksPath</span></code> to <code class="docutils literal notranslate"><span class="pre">.githooks</span></code>.
+To confirm it worked:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>config<span class="w"> </span>core.hooksPath<span class="w">     </span><span class="c1"># should print .githooks</span>
+</pre></div>
+</div>
+</section>
+<section id="skipping-the-rebuild">
+<h2>Skipping the rebuild<a class="headerlink" href="#skipping-the-rebuild" title="Link to this heading"></a></h2>
+<p>To run a git command without recompiling — useful for a quick branch switch, or
+when you are deliberately keeping an older binary:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CARDAMOM_SKIP_AUTOCOMPILE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>my-branch
+</pre></div>
+</div>
+<p>To compile by hand at any time, see <a class="reference internal" href="compilation.html"><span class="doc">Compilation</span></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="compilation.html" class="btn btn-neutral float-left" title="Compilation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="stress_testing.html" class="btn btn-neutral float-right" title="Stress Testing your CARDAMOM input (.nc) file" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

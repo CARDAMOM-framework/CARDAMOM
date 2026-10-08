@@ -1,0 +1,456 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CARDAMOM C Code: Robustness and Diagnostic Audit Strategy &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3ce236e8" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/index.html">Getting Started with CARDAMOM</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC Model:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dalec_versions.html">DALEC versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="using_cardamom/file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_cardamom/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_cardamom/git_hooks.html">Git hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_cardamom/stress_testing.html">Stress Testing your CARDAMOM input (.nc) file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_cardamom/analyst_checklist.html">Analyst checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_cardamom/technote.html">Contributing to this technical documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_cardamom/governance.html">CARDAMOM.c governance structure</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="markdown_manuals/ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="markdown_manuals/C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="markdown_manuals/CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="markdown_manuals/CARDAMOM_NETCDF_INPUT_FILE.html">CARDAMOM Netcdf input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="markdown_manuals/COST_FUNCTION.html">CARDAMOM cost function <a name="cardamom-cost-function"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="markdown_manuals/DEBUGGING_TIPS.html">Debugging tips and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="markdown_manuals/GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="markdown_manuals/GITHUB_BASICS.html">Using CARDAMOM’s github repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="markdown_manuals/MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="markdown_manuals/MCMC_IN_CARDAMOM_OVERVIEW.html">MCMC in CARDAMOM Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="markdown_manuals/MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="markdown_manuals/OUTPUT_DATA_ANALYSIS.html">Output Data and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="markdown_manuals/PARALLELIZATION.html">Parallelization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="markdown_manuals/PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="markdown_manuals/PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">CARDAMOM C Code: Robustness and Diagnostic Audit Strategy</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cardamom_c_code_audit_strategy.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cardamom-c-code-robustness-and-diagnostic-audit-strategy">
+<h1>CARDAMOM C Code: Robustness and Diagnostic Audit Strategy<a class="headerlink" href="#cardamom-c-code-robustness-and-diagnostic-audit-strategy" title="Link to this heading"></a></h1>
+<p><strong>Objective:</strong> To systematically audit the CARDAMOM C codebase to ensure cross-platform stability, identify hidden memory leaks or undefined behaviors, and optimize runtime performance.</p>
+<p>This strategy is broken into three escalating tiers, moving from static text analysis to active runtime profiling, utilizing CARDAMOM’s existing test files and compilation scripts.</p>
+<p><strong>⚠️ IMPORTANT: Follow the tiers IN ORDER.</strong> Tier 1 static analysis catches bugs (like uninitialized variables) that runtime sanitizers CANNOT detect. Jumping to Tier 2/3 will miss critical issues.</p>
+<section id="tier-1-static-analysis-code-review-text-based">
+<h2>Tier 1: Static Analysis &amp; Code Review (Text-Based)<a class="headerlink" href="#tier-1-static-analysis-code-review-text-based" title="Link to this heading"></a></h2>
+<p><em>The goal here is to analyze the source code without executing it, looking for structural issues, logical flaws, and platform-dependent risks. Because CARDAMOM relies heavily on interdependent files and user-defined structs, we will evaluate the codebase holistically.</em></p>
+<section id="ai-assisted-whole-codebase-review">
+<h3>1. AI-Assisted Whole-Codebase Review<a class="headerlink" href="#ai-assisted-whole-codebase-review" title="Link to this heading"></a></h3>
+<p>Rather than reviewing isolated functions, we will leverage large-context AI models (like Claude) to map the entire project architecture.</p>
+<ul class="simple">
+<li><p><strong>Preparation:</strong></p>
+<ul>
+<li><p>Provide the AI with <code class="docutils literal notranslate"><span class="pre">C/LLM_DEPENDENCIES.txt</span></code>. This compile-time printout acts as a critical roadmap, allowing Claude to easily navigate the complex interdependencies of the <code class="docutils literal notranslate"><span class="pre">.c</span></code> files.</p></li>
+<li><p>Next, supply the actual code. Ensure header files (which contain the crucial <code class="docutils literal notranslate"><span class="pre">struct</span></code> definitions) are processed first so the AI learns the data architecture before analyzing the execution logic in the <code class="docutils literal notranslate"><span class="pre">.c</span></code> files.</p></li>
+</ul>
+</li>
+<li><p><strong>Prompting Strategy:</strong></p>
+<ul>
+<li><p><em>“Here is <code class="docutils literal notranslate"><span class="pre">C/LLM_DEPENDENCIES.txt</span></code> to map the codebase, followed by the complete C codebase for CARDAMOM. First, review the header files to understand the core structs and data models. Then, audit the entire codebase for cross-file variable definition ambiguities, shadowing, and potential <code class="docutils literal notranslate"><span class="pre">malloc</span></code>/<code class="docutils literal notranslate"><span class="pre">free</span></code> mismatches across different modules.”</em></p></li>
+<li><p><em>“Analyze the global inter-dependencies based on the dependency tree provided. Are there any variables whose sizes might change across platforms (e.g., implicitly sizing an array using a standard <code class="docutils literal notranslate"><span class="pre">int</span></code> instead of <code class="docutils literal notranslate"><span class="pre">size_t</span></code> or <code class="docutils literal notranslate"><span class="pre">int32_t</span></code>)?”</em></p></li>
+<li><p><em>“Identify any circular dependencies or risky tight coupling between these <code class="docutils literal notranslate"><span class="pre">.c</span></code> files that could lead to undefined behavior.”</em></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="automated-static-analysis-tools">
+<h3>2. Automated Static Analysis Tools<a class="headerlink" href="#automated-static-analysis-tools" title="Link to this heading"></a></h3>
+<p><strong>⚠️ CRITICAL: These tools catch bugs that runtime sanitizers CANNOT detect (e.g., uninitialized variables).</strong></p>
+<ul>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">cppcheck</span></code>:</strong> A tool designed specifically for C/C++ to catch out-of-bounds errors and uninitialized variables across multiple files without compiling.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run cppcheck on the entire C codebase</span>
+cppcheck<span class="w"> </span>--enable<span class="o">=</span>all<span class="w"> </span>--inconclusive<span class="w"> </span>--force<span class="w"> </span>--suppress<span class="o">=</span>missingIncludeSystem<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I/opt/homebrew/Cellar/netcdf/4.9.3_2/include<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>C/projects/<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>/tmp/cppcheck_report.txt
+</pre></div>
+</div>
+</li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">clang-tidy</span></code>:</strong> A linter that helps catch modern C antipatterns.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run clang-tidy on specific files</span>
+clang-tidy<span class="w"> </span>C/projects/CARDAMOM_MODELS/DALEC/DALEC_OBSERVATION_OPERATORS/*.c<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-checks<span class="o">=</span><span class="s1">'clang-analyzer-*,bugprone-*'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--<span class="w"> </span>-I/opt/homebrew/Cellar/netcdf/4.9.3_2/include
+</pre></div>
+</div>
+</li>
+<li><p><strong>Clang Static Analyzer:</strong> Deep semantic analysis</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run clang static analyzer</span>
+clang<span class="w"> </span>--analyze<span class="w"> </span>-Xanalyzer<span class="w"> </span>-analyzer-output<span class="o">=</span>text<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>C/projects/CARDAMOM_MODELS/DALEC/DALEC_OBSERVATION_OPERATORS/DALEC_OBSERVATION_OPERATORS.c<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I/opt/homebrew/Cellar/netcdf/4.9.3_2/include<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>/tmp/clang_analyzer.txt
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+<section id="tier-2-compilation-diagnostics-sanitizers">
+<h2>Tier 2: Compilation Diagnostics &amp; Sanitizers<a class="headerlink" href="#tier-2-compilation-diagnostics-sanitizers" title="Link to this heading"></a></h2>
+<p><em>The goal here is to leverage modern compilers to catch dangerous behavior during the build process and immediately upon running.</em></p>
+<section id="strict-compiler-flags-via-existing-build-script">
+<h3>1. Strict Compiler Flags via Existing Build Script<a class="headerlink" href="#strict-compiler-flags-via-existing-build-script" title="Link to this heading"></a></h3>
+<p>We will update the project’s compilation script, <code class="docutils literal notranslate"><span class="pre">BASH/CARDAMOM_COMPILE.sh</span></code>, to include aggressive warning flags. This forces the compiler to complain about anything remotely ambiguous.</p>
+<ul class="simple">
+<li><p><strong>Flags to add to <code class="docutils literal notranslate"><span class="pre">BASH/CARDAMOM_COMPILE.sh</span></code>:</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">-Wall</span> <span class="pre">-Wextra</span></code>: Turns on all standard warnings.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-pedantic</span></code>: Warns if the code violates the strict ISO C standard (crucial for cross-platform compatibility).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-Wconversion</span></code>: Warns about implicit type conversions that might lose data.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="implementation-of-compilers-sanitizers">
+<h3>2. Implementation of Compilers Sanitizers<a class="headerlink" href="#implementation-of-compilers-sanitizers" title="Link to this heading"></a></h3>
+<p>We will compile a special “Diagnostic Build” of CARDAMOM by further modifying <code class="docutils literal notranslate"><span class="pre">BASH/CARDAMOM_COMPILE.sh</span></code> to include LLVM/GCC sanitizers:</p>
+<ul class="simple">
+<li><p><strong>AddressSanitizer (ASan) &amp; LeakSanitizer (LSan):</strong> Add <code class="docutils literal notranslate"><span class="pre">-fsanitize=address</span></code>. If the code accesses memory out of bounds or leaks memory, the program will instantly crash and print the exact file and line number.</p></li>
+<li><p><strong>UndefinedBehaviorSanitizer (UBSan):</strong> Add <code class="docutils literal notranslate"><span class="pre">-fsanitize=undefined</span></code>. This catches floating-point division by zero, integer overflows, and unaligned pointers.</p></li>
+</ul>
+</section>
+</section>
+<section id="tier-3-dynamic-runtime-auditing-performance-profiling">
+<h2>Tier 3: Dynamic Runtime Auditing &amp; Performance Profiling<a class="headerlink" href="#tier-3-dynamic-runtime-auditing-performance-profiling" title="Link to this heading"></a></h2>
+<p><em>The goal here is to run CARDAMOM with dedicated, representative scientific datasets to uncover deep-seated runtime bugs and performance bottlenecks that only appear under heavy load.</em></p>
+<section id="automated-stress-testing">
+<h3>1. Automated Stress Testing<a class="headerlink" href="#automated-stress-testing" title="Link to this heading"></a></h3>
+<p>Utilize the project’s built-in testing resources to push the model to its limits across different environments:</p>
+<ul class="simple">
+<li><p><strong>Execution:</strong> Use the python script <code class="docutils literal notranslate"><span class="pre">PYTHON/check_fun/CARDAMOM_CBF_NC_FILE_STRESS_TEST.py</span></code>.</p></li>
+<li><p><strong>Input Data:</strong> Configure the stress test script to run using <code class="docutils literal notranslate"><span class="pre">CARDAMOM_DEMO_INPUT_FILE.cbf.nc</span></code> as the default driver file. This ensures the audits are performed on a representative, standardized scientific dataset.</p></li>
+</ul>
+</section>
+<section id="memory-profiling-valgrind">
+<h3>2. Memory Profiling (Valgrind)<a class="headerlink" href="#memory-profiling-valgrind" title="Link to this heading"></a></h3>
+<p>Run the stress test suite (compiled <em>without</em> sanitizers) through Valgrind for deep memory auditing: <code class="docutils literal notranslate"><span class="pre">valgrind</span> <span class="pre">--leak-check=full</span> <span class="pre">./cardamom</span> <span class="pre">[arguments]</span></code> to confirm absolutely zero memory leaks over a long-running science simulation.</p>
+</section>
+<section id="performance-profiling">
+<h3>3. Performance Profiling<a class="headerlink" href="#performance-profiling" title="Link to this heading"></a></h3>
+<p>Since it’s scientific code, execution speed matters. Ensure that updates to fix bugs don’t accidentally slow down the math.</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">gprof</span></code> or <code class="docutils literal notranslate"><span class="pre">perf</span></code>:</strong> Compile <code class="docutils literal notranslate"><span class="pre">BASH/CARDAMOM_COMPILE.sh</span></code> with the <code class="docutils literal notranslate"><span class="pre">-pg</span></code> flag to generate a call graph. This will show exactly which functions within the stress test run are taking up the most CPU time.</p></li>
+<li><p><strong>Floating-Point Auditing:</strong> Track “NaN” (Not a Number) or “Inf” (Infinity) cascades during the <code class="docutils literal notranslate"><span class="pre">CARDAMOM_DEMO_INPUT_FILE.cbf.nc</span></code> stress test, which often happen in complex models across different OS architectures.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="appendix-a-lessons-learned-from-october-2026-audit">
+<h2>Appendix A: Lessons Learned from October 2026 Audit<a class="headerlink" href="#appendix-a-lessons-learned-from-october-2026-audit" title="Link to this heading"></a></h2>
+<section id="case-study-branch-comparison-eren-hf-df-28jun23-stagemerge-vs-main">
+<h3>Case Study: Branch Comparison (Eren_HF_DF_28Jun23_STAGEMERGE vs main)<a class="headerlink" href="#case-study-branch-comparison-eren-hf-df-28jun23-stagemerge-vs-main" title="Link to this heading"></a></h3>
+<p><strong>Audit Goal:</strong> Compare memory safety between stage branch and main branch.</p>
+<p><strong>What Was Done:</strong></p>
+<ol class="arabic simple">
+<li><p>✅ AddressSanitizer (ASan) + UndefinedBehaviorSanitizer (UBSan) testing</p></li>
+<li><p>✅ Stress test execution (CARDAMOM_CBF_NC_FILE_STRESS_TEST.py)</p></li>
+<li><p>✅ Manual code inspection after user hint about M_FIR</p></li>
+<li><p>✅ Git diff analysis between branches</p></li>
+</ol>
+<p><strong>What Was Missed Initially:</strong></p>
+<ol class="arabic simple">
+<li><p>❌ Tier 1 static analysis (cppcheck, clang-tidy)</p></li>
+<li><p>❌ AI-assisted whole codebase review</p></li>
+<li><p>❌ Systematic uninitialized variable checking</p></li>
+</ol>
+<p><strong>Critical Bug Found (Only After User Hint):</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Location: C/projects/CARDAMOM_MODELS/DALEC/DALEC_OBSERVATION_OPERATORS/DALEC_OBSERVATION_OPERATORS.c:331</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w">              </span><span class="c1">// Declared</span>
+<span class="n">D</span><span class="o">-&gt;</span><span class="n">M_FIR</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w">      </span><span class="c1">// ❌ BUG: n is uninitialized! Random array index write</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">n</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span><span class="n">n</span><span class="o">++</span><span class="p">){</span><span class="w">  </span><span class="c1">// n initialized here</span>
+<span class="w">    </span><span class="n">D</span><span class="o">-&gt;</span><span class="n">M_FIR</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">=</span><span class="n">D</span><span class="o">-&gt;</span><span class="n">M_FLUXES</span><span class="p">[</span><span class="n">D</span><span class="o">-&gt;</span><span class="n">nofluxes</span><span class="o">*</span><span class="n">n</span><span class="o">+</span><span class="n">O</span><span class="o">-&gt;</span><span class="n">FIR_flux</span><span class="p">];</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Why Runtime Sanitizers Missed It:</strong></p>
+<ul class="simple">
+<li><p>AddressSanitizer: Detects out-of-bounds access, BUT only if the random value of <code class="docutils literal notranslate"><span class="pre">n</span></code> happens to be out of bounds. If <code class="docutils literal notranslate"><span class="pre">n</span></code> randomly contains a valid index (e.g., 0-5), no error is triggered even though the code is wrong.</p></li>
+<li><p>UndefinedBehaviorSanitizer: Does NOT detect uninitialized reads (would need MemorySanitizer)</p></li>
+<li><p>LeakSanitizer: Not relevant for this bug type</p></li>
+</ul>
+<p><strong>How Static Analysis Would Have Caught It:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cppcheck</span> <span class="pre">--enable=all</span></code> flags: <code class="docutils literal notranslate"><span class="pre">uninitvar</span></code> (uninitialized variable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">clang-tidy</span> <span class="pre">-checks=clang-analyzer-core.uninitialized.Assign</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">clang</span> <span class="pre">--analyze</span></code> with uninitialized variable checker</p></li>
+</ul>
+<p><strong>Key Lesson:</strong></p>
+<blockquote>
+<div><p><strong>Runtime sanitizers are NOT sufficient.</strong> They only catch issues that manifest during execution. Uninitialized variables may “work” 99% of the time if they randomly contain valid values, then cause catastrophic failure in production.</p>
+</div></blockquote>
+<blockquote>
+<div><p><strong>ALWAYS run Tier 1 static analysis FIRST.</strong></p>
+</div></blockquote>
+</section>
+</section>
+<hr class="docutils" />
+<section id="appendix-b-branch-comparison-workflow">
+<h2>Appendix B: Branch Comparison Workflow<a class="headerlink" href="#appendix-b-branch-comparison-workflow" title="Link to this heading"></a></h2>
+<p><strong>For comparing two git branches for memory safety:</strong></p>
+<section id="phase-1-pre-execution-static-analysis-required">
+<h3>Phase 1: Pre-Execution Static Analysis (REQUIRED)<a class="headerlink" href="#phase-1-pre-execution-static-analysis-required" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Check out both branches and run static analyzers</span>
+<span class="k">for</span><span class="w"> </span>branch<span class="w"> </span><span class="k">in</span><span class="w"> </span>main<span class="w"> </span>feature_branch<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span>git<span class="w"> </span>checkout<span class="w"> </span><span class="nv">$branch</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1"># Run cppcheck</span>
+<span class="w">    </span>cppcheck<span class="w"> </span>--enable<span class="o">=</span>all<span class="w"> </span>--inconclusive<span class="w"> </span>C/projects/<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>tee<span class="w"> </span>/tmp/cppcheck_<span class="si">${</span><span class="nv">branch</span><span class="si">}</span>.txt
+<span class="w">    </span>
+<span class="w">    </span><span class="c1"># Count issues</span>
+<span class="w">    </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">"(error|warning|style)"</span><span class="w"> </span>/tmp/cppcheck_<span class="si">${</span><span class="nv">branch</span><span class="si">}</span>.txt<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>wc<span class="w"> </span>-l<span class="w"> </span>&gt;<span class="w"> </span>/tmp/cppcheck_<span class="si">${</span><span class="nv">branch</span><span class="si">}</span>_count.txt
+<span class="k">done</span>
+
+<span class="c1"># 2. Compare static analysis results</span>
+diff<span class="w"> </span>/tmp/cppcheck_main.txt<span class="w"> </span>/tmp/cppcheck_feature_branch.txt
+</pre></div>
+</div>
+</section>
+<section id="phase-2-compilation-with-sanitizers">
+<h3>Phase 2: Compilation with Sanitizers<a class="headerlink" href="#phase-2-compilation-with-sanitizers" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compile with all sanitizers</span>
+gcc<span class="w"> </span>-g<span class="w"> </span>-O1<span class="w"> </span>-fsanitize<span class="o">=</span>address,undefined<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-fstack-protector-all<span class="w"> </span>-D_FORTIFY_SOURCE<span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-Wall<span class="w"> </span>-Wextra<span class="w"> </span>-Wuninitialized<span class="w"> </span>-Wconversion<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>C/projects/CARDAMOM_GENERAL/CARDAMOM_RUN_MODEL.c<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-o<span class="w"> </span>CARDAMOM_RUN_MODEL_ASAN.exe<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-lm<span class="w"> </span>-lnetcdf<span class="w"> </span>-I/path/to/netcdf/include
+</pre></div>
+</div>
+</section>
+<section id="phase-3-runtime-testing">
+<h3>Phase 3: Runtime Testing<a class="headerlink" href="#phase-3-runtime-testing" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set aggressive ASAN options</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ASAN_OPTIONS</span><span class="o">=</span><span class="s2">"detect_leaks=1:detect_stack_use_after_return=1:check_initialization_order=1"</span>
+
+<span class="c1"># Run stress test</span>
+python3<span class="w"> </span>PYTHON/check_fun/CARDAMOM_CBF_NC_FILE_STRESS_TEST.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>CARDAMOM_DEMO_INPUT_FILE.cbf.nc<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>/tmp/stress_test.log
+</pre></div>
+</div>
+</section>
+<section id="phase-4-comparison-report">
+<h3>Phase 4: Comparison Report<a class="headerlink" href="#phase-4-comparison-report" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare sanitizer outputs</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"=== MAIN BRANCH ISSUES ==="</span>
+grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">"(ERROR:|warning:|leak)"</span><span class="w"> </span>/tmp/asan_main.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span>-u
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"=== FEATURE BRANCH ISSUES ==="</span><span class="w">  </span>
+grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">"(ERROR:|warning:|leak)"</span><span class="w"> </span>/tmp/asan_feature.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span>-u
+
+<span class="c1"># Diff the results</span>
+diff<span class="w"> </span>&lt;<span class="o">(</span>grep<span class="w"> </span><span class="s2">"ERROR:"</span><span class="w"> </span>/tmp/asan_main.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="o">)</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>&lt;<span class="o">(</span>grep<span class="w"> </span><span class="s2">"ERROR:"</span><span class="w"> </span>/tmp/asan_feature.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="o">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="appendix-c-tool-availability-by-platform">
+<h2>Appendix C: Tool Availability by Platform<a class="headerlink" href="#appendix-c-tool-availability-by-platform" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tool</p></th>
+<th class="head"><p>macOS ARM64</p></th>
+<th class="head"><p>macOS x86</p></th>
+<th class="head"><p>Linux</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>AddressSanitizer</p></td>
+<td><p>✅ Full</p></td>
+<td><p>✅ Full</p></td>
+<td><p>✅ Full</p></td>
+</tr>
+<tr class="row-odd"><td><p>LeakSanitizer</p></td>
+<td><p>⚠️ Limited</p></td>
+<td><p>✅ Full</p></td>
+<td><p>✅ Full</p></td>
+</tr>
+<tr class="row-even"><td><p>UndefinedBehaviorSanitizer</p></td>
+<td><p>✅ Full</p></td>
+<td><p>✅ Full</p></td>
+<td><p>✅ Full</p></td>
+</tr>
+<tr class="row-odd"><td><p>MemorySanitizer</p></td>
+<td><p>❌ No</p></td>
+<td><p>❌ No</p></td>
+<td><p>✅ Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Valgrind</p></td>
+<td><p>❌ No</p></td>
+<td><p>⚠️ Partial</p></td>
+<td><p>✅ Full</p></td>
+</tr>
+<tr class="row-odd"><td><p>cppcheck</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>✅ Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>clang-tidy</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>✅ Yes</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommendation for macOS users:</strong> Run Tier 1 static analysis locally, then use a Linux VM or CI for MemorySanitizer and Valgrind.</p>
+</section>
+<hr class="docutils" />
+<section id="appendix-d-ai-model-recommendations">
+<h2>Appendix D: AI Model Recommendations<a class="headerlink" href="#appendix-d-ai-model-recommendations" title="Link to this heading"></a></h2>
+<p>Based on October 2026 audit experience:</p>
+<p><strong>For initial audit response (user request):</strong></p>
+<ul class="simple">
+<li><p><strong>Sonnet 4.5 / 5</strong>: Fast, good for standard sanitizer runs and git diffs</p></li>
+<li><p><strong>BUT</strong>: May skip Tier 1 if not explicitly prompted</p></li>
+</ul>
+<p><strong>For deep code review (after running this strategy):</strong></p>
+<ul class="simple">
+<li><p><strong>Opus 5</strong>: Better at systematic code review</p></li>
+<li><p>Provide C/LLM_DEPENDENCIES.txt upfront</p></li>
+<li><p>Ask it to review headers before implementation files</p></li>
+<li><p>Prompt: “Review this C code for uninitialized variables, memory leaks, and undefined behavior. Follow the three-tier audit strategy in doc/cardamom_c_code_audit_strategy.md”</p></li>
+</ul>
+<p><strong>For finding subtle bugs:</strong></p>
+<ul class="simple">
+<li><p>Static analyzers &gt; AI models</p></li>
+<li><p>AI is good for: interpreting tool output, suggesting fixes, understanding intent</p></li>
+<li><p>AI is NOT a substitute for: cppcheck, clang-tidy, valgrind</p></li>
+</ul>
+<p><strong>Recommended Prompt for Future Audits:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">I</span> <span class="n">need</span> <span class="n">to</span> <span class="n">audit</span> <span class="n">C</span> <span class="n">code</span> <span class="n">changes</span> <span class="n">between</span> <span class="n">two</span> <span class="n">git</span> <span class="n">branches</span> <span class="k">for</span> <span class="n">memory</span> <span class="n">safety</span><span class="o">.</span> 
+<span class="n">Please</span> <span class="n">follow</span> <span class="n">the</span> <span class="n">strategy</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">/</span><span class="n">cardamom_c_code_audit_strategy</span><span class="o">.</span><span class="n">md</span><span class="o">.</span>
+
+<span class="n">IMPORTANT</span><span class="p">:</span> <span class="n">Start</span> <span class="k">with</span> <span class="n">Tier</span> <span class="mi">1</span> <span class="n">static</span> <span class="n">analysis</span> <span class="n">using</span> <span class="n">cppcheck</span> <span class="ow">and</span> <span class="n">clang</span><span class="o">-</span><span class="n">tidy</span> 
+<span class="n">BEFORE</span> <span class="n">running</span> <span class="nb">any</span> <span class="n">runtime</span> <span class="n">sanitizers</span><span class="o">.</span> <span class="n">This</span> <span class="n">catches</span> <span class="n">uninitialized</span> <span class="n">variables</span> 
+<span class="n">that</span> <span class="n">AddressSanitizer</span> <span class="n">cannot</span> <span class="n">detect</span><span class="o">.</span>
+
+<span class="n">After</span> <span class="n">static</span> <span class="n">analysis</span><span class="p">,</span> <span class="n">proceed</span> <span class="n">to</span> <span class="n">Tier</span> <span class="mi">2</span> <span class="p">(</span><span class="n">sanitizers</span><span class="p">)</span> <span class="ow">and</span> <span class="n">Tier</span> <span class="mi">3</span> <span class="p">(</span><span class="n">stress</span> <span class="n">testing</span><span class="p">)</span><span class="o">.</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
