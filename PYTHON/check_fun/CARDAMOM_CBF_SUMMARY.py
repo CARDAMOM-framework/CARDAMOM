@@ -561,6 +561,9 @@ def main():
     parser = argparse.ArgumentParser(description="Generate diagnostic summary for CARDAMOM CBF NetCDF file.")
     parser.add_argument("path", help="Path to input .cbf.nc NetCDF file")
     parser.add_argument("--no-show", action="store_true", help="Save plot without opening display window")
+    parser.add_argument("--pages", action="store_true",
+                        help="Landscape pages (page 1 = at a glance, then time-series pages) "
+                             "saved as PNGs plus one PDF, instead of a single tall image")
     parser.add_argument("--output", default=".", help="Directory to save the generated PNG summary")
     args = parser.parse_args()
 
@@ -622,15 +625,117 @@ def main():
     if base_name.endswith(".cbf"):
         base_name = os.path.splitext(base_name)[0]
 
-    figures = [build_overview_page(ds, groups, base_name, txt_overview, txt_climate,
-                                   txt_settings, txt_warnings, txt_additional, cov_vars)]
-    figures += build_timeseries_pages(ds, base_name, ts_vars, has_temp)
-
-    save_pages(figures, base_name, args.output)
+    os.makedirs(args.output, exist_ok=True)
+    if args.pages:
+        # Landscape pages + PDF
+        figures = [build_overview_page(ds, groups, base_name, txt_overview, txt_climate,
+                                       txt_settings, txt_warnings, txt_additional, cov_vars)]
+        figures += build_timeseries_pages(ds, base_name, ts_vars, has_temp)
+        save_pages(figures, base_name, args.output)
+    else:
+        # Default: one tall image
+        fig = build_single_page(ds, groups, txt_overview, txt_climate, txt_settings,
+                                txt_warnings, txt_additional, additional_names)
+        out_path = os.path.join(args.output, f"{base_name}_summary.png")
+        fig.savefig(out_path, dpi=200, bbox_inches="tight")
+        print(f"Summary visual saved to: {out_path}")
 
     if not args.no_show:
         plt.show()
     plt.close("all")
+
+
+def build_single_page(ds, groups, txt_overview, txt_climate, txt_settings,
+                      txt_warnings, txt_additional, additional_names):
+    """Everything on ONE tall image (default layout).
+    Long records (> 10 years) automatically get wider time-series panels."""
+    # -------------------------------------------------------------
+    # Figure layout: every row is sized in inches to fit its content
+    #   row 0: overview (2 cols), climate, run settings
+    #   row 1: warnings, full width (2 columns of text if long)
+    #   row 2: data coverage strip, ~0.25 in per variable
+    #   rows : time-series grid, 4 per row
+    #   last : typical-year (seasonal) panels
+    # -------------------------------------------------------------
+    cols = 4
+    is_unc = lambda v: v.endswith("unc")  # uncertainty variables aren't plotted separately
+
+    ts_vars = [v for v in groups["has_data"]
+               if v not in ("T2M_MIN", "T2M_MAX") and not is_unc(v)
+               and v not in additional_names]
+    has_temp = "T2M_MIN" in ds and "T2M_MAX" in ds
+    n_ts = len(ts_vars) + (1 if has_temp else 0)
+    # Long records (> 10 years of monthly data) get wider panels: 2 per row
+    n_times = ds.sizes.get(TIME_DIM, 0)
+    span = 2 if n_times > 120 else 1
+    per_row = cols // span
+    ts_rows = max(1, math.ceil(n_ts / per_row))
+
+    cov_vars = sorted(v for v in ds.data_vars
+                      if TIME_DIM in ds[v].dims and v != "DOY" and not is_unc(v)
+                      and v not in additional_names)
+
+    warn_cols = 2 if len(txt_warnings) > 8 else 1
+    warn_lines = math.ceil(len(wrap_lines(txt_warnings, 70)) / warn_cols)
+
+    add_lines = math.ceil(len(wrap_lines(txt_additional, 70)) / 2)
+    heights = [1.9,                               # text panels
+               0.45 + 0.17 * warn_lines,          # warnings
+               0.45 + 0.17 * add_lines,           # additional (unused) data
+               0.5 + 0.25 * len(cov_vars)]        # coverage strip
+    heights += [2.0] * ts_rows + [2.0]            # time series + seasonal
+
+    fig = plt.figure(figsize=(16, sum(heights) + 0.45 * len(heights)))
+    gs = fig.add_gridspec(len(heights), cols, height_ratios=heights,
+                          hspace=0.55, wspace=0.28)
+
+    # 1. Text panels
+    plot_text_panel(fig.add_subplot(gs[0, 0:2]), "File overview", txt_overview, wrap=70)
+    plot_text_panel(fig.add_subplot(gs[0, 2]), "Climate snapshot", txt_climate, wrap=38)
+    plot_text_panel(fig.add_subplot(gs[0, 3]), "Run settings", txt_settings, wrap=38)
+
+    is_alert = any("Missing" in w or "has 0" in w or "all missing" in w for w in txt_warnings)
+    plot_text_panel(fig.add_subplot(gs[1, :]), "Warnings", txt_warnings,
+                    highlight=is_alert, ncols=warn_cols, wrap=70)
+
+    # Additional (unused) data, listed so nothing in the file goes unmentioned
+    plot_text_panel(fig.add_subplot(gs[2, :]), "Additional data (in file, not used by CARDAMOM)",
+                    txt_additional, ncols=2, wrap=70)
+
+    # 2. Coverage strip
+    plot_coverage(fig.add_subplot(gs[3, :]), ds, cov_vars)
+
+    # 3. Time-series grid: temperature first, then everything else with data
+    slot = 0
+    def next_ax():
+        nonlocal slot
+        r, c = 4 + slot // per_row, (slot % per_row) * span
+        ax = fig.add_subplot(gs[r, c:c + span])
+        slot += 1
+        return ax
+
+    if has_temp:
+        plot_temperature(next_ax(), ds)
+    for var in ts_vars:
+        plot_timeseries(next_ax(), ds, var)
+
+    # 4. Typical-year panels: temperature (min & max), precipitation, first 2 observations
+    srow = len(heights) - 1
+    seasonal = []
+    if has_temp:
+        seasonal.append((["T2M_MAX", "T2M_MIN"], "Typical year: temperature"))
+    if "TOTAL_PREC" in groups["has_data"]:
+        seasonal.append(("TOTAL_PREC", None))
+    # Prefer observations with a real seasonal cycle (ABGB is often yearly, so last)
+    preferred = ["GPP", "LAI", "NBE", "ET", "SIF", "SCF", "LE", "H"]
+    obs_with_data = [v for v in groups["has_data"] if v in OBS_VARS]
+    obs_with_data.sort(key=lambda v: preferred.index(v) if v in preferred else len(preferred))
+    for v in obs_with_data[:4 - len(seasonal)]:
+        seasonal.append((v, None))
+    for i, (vars_, title) in enumerate(seasonal[:cols]):
+        plot_seasonal_cycle(fig.add_subplot(gs[srow, i]), ds, vars_, title)
+
+    return fig
 
 
 def build_overview_page(ds, groups, base_name, txt_overview, txt_climate,
