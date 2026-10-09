@@ -52,7 +52,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.backends.backend_pdf import PdfPages
 
-VERSION = "v4d (2026-10-09)"
+VERSION = "v5f (2026-10-09)"
 
 # =============================================================================
 # CONSTANTS
@@ -313,9 +313,12 @@ def check_time_axis(ds):
 
     if len(lengths) == 1:
         step_line = f"Step: {lengths[0]:g} d, constant ({res})"
+        mean_step = lengths[0]
     else:
         parts = ", ".join(f"{L:g} d ×{c}" for L, c in zip(lengths[:3], counts[:3]))
-        step_line = f"Step ({res}): {parts}"
+        # Average step = total span / number of steps (30.4375 d for 365.25/12)
+        mean_step = float(np.sum(step_lengths_days(times))) / len(steps)
+        step_line = f"Step ({res}): mean {mean_step:.4f} d; {parts}"
         where = ""
         if is_dates(times):
             # Are all the odd-length steps at the Dec -> Jan boundary?
@@ -624,23 +627,34 @@ def check_attributes(ds, obs_lanes, forcing_lanes):
     return warnings
 
 
-def obs_attr_cells(ds, var, is_obs):
-    """The uncertainty-table cells for one lane, as {column: (text, colour)}.
-    Observations: missing uncertainty is red, min_threshold = 0 is red.
+def attr_columns(ds, lanes):
+    """Which attribute columns the summary table shows, named exactly as in the file.
+    Uncertainty attributes only appear if at least one variable in this file uses
+    them (keeps the table narrow); the four opt_/min_ settings are always shown."""
+    cols = [a for a in UNC_ATTRS if any(a in ds[v].attrs for v in lanes)]
+    if any(f"{v}unc" in ds for v in lanes):
+        cols.append("<VAR>unc variable")
+    return cols + list(OBS_OPT_ATTRS)
+
+
+def obs_attr_cells(ds, var, is_obs, columns):
+    """The attribute-table cells for one lane, as {column: (text, colour)}.
+    Observations: no uncertainty at all -> 'none' in red; min_threshold = 0 in red.
     Forcings: normally blank; anything set is amber (CARDAMOM ignores it)."""
     attrs = ds[var].attrs
     base = "#222222" if is_obs else C_IGNORED
-    unc = [f"{short}{fmt_stat(attrs[a])}" for a, short in UNC_ATTRS.items() if a in attrs]
-    if f"{var}unc" in ds:
-        unc.append(f"{var}unc")
-    cells = {"unc": (" ".join(unc), base) if unc else (("none", C_ALERT) if is_obs else ("", base))}
-    for attr, col in OBS_OPT_ATTRS.items():
-        if attr in attrs:
-            val = float(attrs[attr])
-            colour = C_ALERT if (attr == "min_threshold" and val == 0) else base
+    cells = {}
+    for col in columns:
+        if col == "<VAR>unc variable":
+            cells[col] = ("yes", base) if f"{var}unc" in ds else ("", base)
+        elif col in attrs:
+            val = float(attrs[col])
+            colour = C_ALERT if (col == "min_threshold" and val == 0) else base
             cells[col] = (fmt_stat(val), colour)
         else:
             cells[col] = ("", base)
+    if is_obs and not has_uncertainty(ds, var) and columns:
+        cells[columns[0]] = ("none", C_ALERT)
     return cells
 
 
@@ -677,16 +691,27 @@ def plot_text_panel(ax, title, lines, highlight=False, ncols=1, wrap=45, fontsiz
 
 
 def add_location_map(fig, spec, lat, lon):
-    """Small world map with the site marked. Uses cartopy coastlines if cartopy
-    is installed AND its coastline data is available; otherwise a plain
-    lat/lon grid. Never fails because of the map."""
+    """Small globe centred on the site, with land, coastlines and a red dot.
+    Needs cartopy plus its Natural Earth coastline data, which cartopy downloads
+    automatically the first time (internet needed once, then it's cached).
+    If either is missing, falls back to a plain lat/lon grid. Never fails because of the map."""
+    ok = np.isfinite(lat) and np.isfinite(lon)
     try:
         import cartopy.crs as ccrs
+        import cartopy.feature as cfeature
         import cartopy.io.shapereader as shpreader
-        shpreader.natural_earth(resolution="110m", category="physical", name="coastline")  # raises if unavailable
-        ax = fig.add_subplot(spec, projection=ccrs.PlateCarree())
+        for name in ("coastline", "land"):     # raises here (not at draw time) if unavailable
+            shpreader.natural_earth(resolution="110m", category="physical", name=name)
+        proj = ccrs.Orthographic(central_longitude=lon if ok else 0, central_latitude=lat if ok else 0)
+        ax = fig.add_subplot(spec, projection=proj)
         ax.set_global()
-        ax.coastlines(linewidth=0.4, color="#888888")
+        ax.set_facecolor("#e8f1f8")                          # ocean
+        ax.add_feature(cfeature.LAND, facecolor="#e6e2d6", zorder=1)
+        ax.coastlines(resolution="110m", linewidth=0.5, color="#777777", zorder=2)
+        ax.gridlines(linewidth=0.3, color="#bbbbbb", linestyle=":")
+        if ok:
+            ax.plot(lon, lat, "o", color=C_ALERT, ms=7, mec="white", mew=1,
+                    transform=ccrs.PlateCarree(), zorder=5)
     except Exception:
         ax = fig.add_subplot(spec)
         ax.set_xlim(-180, 180); ax.set_ylim(-90, 90)
@@ -696,15 +721,95 @@ def add_location_map(fig, spec, lat, lon):
         ax.grid(True, linestyle=":", color="#bbbbbb", lw=0.6)
         ax.axhline(0, color="#999999", lw=0.6)
         ax.set_aspect("equal")
-    if np.isfinite(lat) and np.isfinite(lon):
-        ax.plot(lon, lat, "o", color=C_ALERT, ms=6, mec="white", mew=0.8, zorder=5)
+        ax.text(0.5, -0.08, "install cartopy for coastlines", transform=ax.transAxes,
+                ha="center", va="top", fontsize=7, color=C_MUTED)
+        if ok:
+            ax.plot(lon, lat, "o", color=C_ALERT, ms=6, mec="white", mew=0.8, zorder=5)
+    if ok:
         ns, ew = ("N" if lat >= 0 else "S"), ("E" if lon >= 0 else "W")
         ax.set_title(f"Location: {abs(lat):.2f}{ns}, {abs(lon):.2f}{ew}",
-                     fontsize=9.5, fontweight="bold", loc="left", pad=3)
+                     fontsize=FS + 1, fontweight="bold", loc="left", pad=3)
     else:
-        ax.set_title("Location: LAT/LON missing", fontsize=9.5, fontweight="bold",
+        ax.set_title("Location: LAT/LON missing", fontsize=FS + 1, fontweight="bold",
                      loc="left", pad=3, color=C_ALERT)
     return ax
+
+
+# Esri World Imagery: free satellite basemap (attribution required, shown under the image)
+SAT_URL = ("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/"
+           "MapServer/tile/{z}/{y}/{x}.jpg")
+
+
+def grid_cell_size(path):
+    """Grid-cell size (dlat, dlon) in degrees, read from file names like
+    '..._1x1v1_...', '..._0.5x0.5_...' or '..._4x5_...' (4° lat x 5° lon).
+    Returns ((dlat, dlon), True), or ((1, 1), False) if the name doesn't say."""
+    import re
+    m = re.search(r"(?<![\d.])(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)(?!\d|\.\d)", os.path.basename(path))
+    return ((float(m.group(1)), float(m.group(2))), True) if m else ((1.0, 1.0), False)
+
+
+def add_satellite_view(fig, rect, lat, lon, cell=(1.0, 1.0), cell_known=True):
+    """Close-up satellite image of the grid cell (outlined in red), to see what the
+    land actually is: forest, tundra, desert, water, ice...
+    Needs cartopy and internet (tiles are cached after the first run).
+    Without them, shows a one-line note instead. Never fails because of the image."""
+    if not (np.isfinite(lat) and np.isfinite(lon)):
+        return
+    note = lambda msg: fig.text(rect[0], rect[1] + rect[3] / 2, msg, fontsize=FS - 1.5,
+                                color=C_MUTED, va="center")
+    try:
+        import urllib.request
+        import cartopy.crs as ccrs
+        import cartopy.io.img_tiles as cimgt
+
+        class EsriImagery(cimgt.GoogleWTS):
+            def _image_url(self, tile):
+                x, y, z = tile
+                return SAT_URL.format(z=z, y=y, x=x)
+
+        # Area shown: the cell plus a margin, roughly square on the ground
+        # (a degree of longitude shrinks by cos(latitude) towards the poles).
+        dlat, dlon = cell
+        lat_half = max(dlat, dlon) * 1.1
+        lon_half = min(lat_half / max(np.cos(np.radians(lat)), 0.2), 60)
+        zoom = int(np.clip(round(np.log2(360 / (2 * lon_half))) + 2, 3, 13))
+
+        # Fetch one tile first, so being offline gives a clean note, not a blank box
+        n = 2 ** zoom
+        tx = int((lon + 180) / 360 * n) % n
+        ty = int((1 - np.arcsinh(np.tan(np.radians(lat))) / np.pi) / 2 * n)
+        req = urllib.request.Request(SAT_URL.format(z=zoom, y=ty, x=tx),
+                                     headers={"User-Agent": "CARDAMOM_CBF_SUMMARY"})
+        urllib.request.urlopen(req, timeout=6).close()
+
+        try:
+            tiler = EsriImagery(cache=True)            # cache tiles on disk between runs
+        except TypeError:
+            tiler = EsriImagery()                      # older cartopy: no cache option
+        ax = fig.add_axes(rect, projection=tiler.crs)
+        # The image keeps its true shape, so it won't fill its slot exactly:
+        # centre it in the slot.
+        ax.set_anchor("C")
+        ax.set_extent([lon - lon_half, lon + lon_half, lat - lat_half, lat + lat_half],
+                      crs=ccrs.PlateCarree())
+        ax.add_image(tiler, zoom)
+        hy, hx = dlat / 2, dlon / 2
+        ax.plot([lon - hx, lon + hx, lon + hx, lon - hx, lon - hx],
+                [lat - hy, lat - hy, lat + hy, lat + hy, lat - hy],
+                color="#ff3030", lw=1.4, transform=ccrs.PlateCarree(), zorder=5)
+        size = (f"{dlat:g}°" if dlat == dlon else f"{dlat:g}°×{dlon:g}°") + " grid cell" \
+            + ("" if cell_known else " (assumed)")
+        ax.set_title(f"Satellite: {size} (red)", fontsize=FS, fontweight="bold",
+                     loc="center", pad=3)
+        ax.text(0.5, -0.02, "Imagery © Esri, Maxar, Earthstar Geographics", transform=ax.transAxes,
+                fontsize=FS - 3, color=C_MUTED, ha="center", va="top")
+    except Exception:
+        note("Satellite view unavailable\n(needs cartopy + internet)")
+
+
+# White box behind in-lane labels ("all zeros" etc.) so the data line doesn't cross them
+LABEL_BOX = dict(boxstyle="round,pad=0.15", facecolor="white", edgecolor="none", alpha=0.9)
 
 
 def draw_lane(ax, ds, var, color):
@@ -721,7 +826,8 @@ def draw_lane(ax, ds, var, color):
     if valid.size == 0:
         ax.set_facecolor(C_MISSING)
         ax.text(0.01, 0.5, "all missing", transform=ax.transAxes, fontsize=6.5,
-                va="center", color=C_ALERT, style="italic")
+                va="center", color=C_ALERT, style="italic",
+                bbox=LABEL_BOX, zorder=10)
         return
 
     _, gaps = find_gaps(ds[var])
@@ -735,10 +841,12 @@ def draw_lane(ax, ds, var, color):
     ax.set_ylim(lo - pad, hi + pad)
     if np.all(valid == 0):
         ax.text(0.01, 0.5, "all zeros", transform=ax.transAxes, fontsize=6.5,
-                va="center", color=C_ALERT, style="italic")
+                va="center", color=C_ALERT, style="italic",
+                bbox=LABEL_BOX, zorder=10)
     elif hi == lo:
         ax.text(0.01, 0.5, f"constant {fmt_stat(hi)}", transform=ax.transAxes,
-                fontsize=6.5, va="center", color=C_ALERT, style="italic")
+                fontsize=6.5, va="center", color=C_ALERT, style="italic",
+                bbox=LABEL_BOX, zorder=10)
 
 
 def plot_timeseries(ax, ds, var, color="#1f77b4"):
@@ -807,11 +915,10 @@ FS = 9            # base font size (points) for the summary page
 # Change these numbers to move or resize columns.
 LANE_LEFT, LANE_RIGHT = 0.103, 0.47
 COLS = {"pct": 0.477, "units": 0.507, "mean": 0.575, "min": 0.617, "max": 0.659,
-        "cycle": (0.70, 0.055),                       # (left, width) of the mini cycle
-        "unc": 0.765, "type": 0.878, "filt": 0.905, "norm": 0.932, "thr": 0.959}
+        "cycle": (0.70, 0.07)}                        # (left, width) of the mini cycle
 COL_TITLES = {"pct": "data", "units": "units", "mean": "mean", "min": "min", "max": "max",
-              "cycle": "typical yr", "unc": "uncertainty", "type": "type", "filt": "filt",
-              "norm": "norm", "thr": "thr"}
+              "cycle": "typical year"}
+ATTR_LEFT, ATTR_RIGHT = 0.78, 0.985   # the attribute columns share this space
 
 
 def build_summary_figure(ds, info):
@@ -823,11 +930,13 @@ def build_summary_figure(ds, info):
     forcings, obs = info["forcings"], info["obs"]
     n_lanes = max(1, len(forcings) + len(obs))
 
-    top_pad, header_h, cols_h, group_h, bottom_pad = 0.35, 1.75, 0.42, 0.24, 0.55
-    fixed = top_pad + header_h + cols_h + 2 * group_h + bottom_pad
+    # The Observations title row is taller: the angled attribute names sit in it,
+    # directly above the observation lanes (forcings don't have these attributes).
+    top_pad, header_h, cols_h, group_h, obs_group_h, bottom_pad = 0.35, 1.9, 0.42, 0.24, 0.85, 0.6
+    fixed = top_pad + header_h + cols_h + group_h + obs_group_h + bottom_pad
     lane_h = max(0.17, (SCREEN_H - fixed) / n_lanes)          # inches per lane
     H = fixed + n_lanes * lane_h
-    body_h = n_lanes * lane_h + 2 * group_h
+    body_h = n_lanes * lane_h + group_h + obs_group_h
     fig = plt.figure(figsize=(SCREEN_W, H))
     y = lambda inches_from_top: 1 - inches_from_top / H       # inches -> figure fraction
     lane_fs = FS if lane_h >= 0.2 else FS - 1
@@ -859,7 +968,7 @@ def build_summary_figure(ds, info):
     # ---- Lanes ---------------------------------------------------------------
     body_top = top_pad + header_h + cols_h
     rows = ["__F__"] + forcings + ["__O__"] + obs
-    ratios = [group_h if r.startswith("__") else lane_h for r in rows]
+    ratios = [group_h if r == "__F__" else obs_group_h if r == "__O__" else lane_h for r in rows]
     gs = fig.add_gridspec(len(rows), 1, height_ratios=ratios, hspace=0.15,
                           left=LANE_LEFT, right=LANE_RIGHT,
                           top=y(body_top), bottom=y(body_top + body_h))
@@ -871,19 +980,27 @@ def build_summary_figure(ds, info):
     for key, title in COL_TITLES.items():
         x = COLS[key][0] if isinstance(COLS[key], tuple) else COLS[key]
         fig.text(x, ytitle, title, fontsize=FS, fontweight="bold", va="bottom")
-    fig.text(COLS["unc"], ytitle + 0.17 / H, "observation settings (CARDAMOM attributes)",
-             fontsize=FS - 1.5, color=C_MUTED, va="bottom")
+    # Attribute columns (their names are drawn in the Observations title row below)
+    attr_cols = attr_columns(ds, forcings + obs)
+    # the last column starts one step before ATTR_RIGHT so its angled name fits
+    step = (ATTR_RIGHT - ATTR_LEFT) / max(1, len(attr_cols) + 0.4)
+    attr_x = {c: ATTR_LEFT + i * step for i, c in enumerate(attr_cols)}
 
     times = get_times(ds)
     n_times = max(1, len(times))
-    first_ax, last_ax = None, None
+    first_ax, last_ax, last_cax = None, None, None
+    forcing_axes = []
     for r, var in enumerate(rows):
         if var.startswith("__"):
             label, color = ("Forcings", C_FORCING) if var == "__F__" else ("Observations", C_OBS)
-            # Place the group title in the middle of its spacer row
+            # Group title at the bottom of its spacer row, just above its first lane
             pos = gs[r, 0].get_position(fig)
-            fig.text(0.01, (pos.y0 + pos.y1) / 2, label, fontsize=FS + 1, fontweight="bold",
-                     color=color, va="center")
+            fig.text(0.01, pos.y0, label, fontsize=FS + 1, fontweight="bold", color=color, va="bottom")
+            if var == "__O__":
+                # Attribute names, angled, directly above the observation lanes
+                for c, x in attr_x.items():
+                    fig.text(x, pos.y0, c, fontsize=FS - 1.5, rotation=40, rotation_mode="anchor",
+                             ha="left", va="bottom", color="#222222")
             continue
 
         is_obs = var in OBS_VARS
@@ -892,6 +1009,8 @@ def build_summary_figure(ds, info):
         first_ax = first_ax or ax
         last_ax = ax
         draw_lane(ax, ds, var, color)
+        if not is_obs:
+            forcing_axes.append(ax)
         ax.tick_params(axis="x", labelbottom=False, length=0)
         ax.grid(True, axis="x", which="major", color="white", lw=0.8)
 
@@ -919,6 +1038,10 @@ def build_summary_figure(ds, info):
         cx, cw = COLS["cycle"]
         cax = fig.add_axes([cx, pos.y0, cw, pos.height])
         cax.set_xticks([]); cax.set_yticks([])
+        cax.set_xlim(0.5, 12.5)
+        for m in (4, 7, 10):     # faint guides at Apr, Jul, Oct
+            cax.axvline(m, color="#c8c8c8", lw=0.6, zorder=0)
+        last_cax = cax
         for s in cax.spines.values():
             s.set_edgecolor("#dddddd"); s.set_linewidth(0.5)
         if means is not None and np.any(np.isfinite(means)):
@@ -927,8 +1050,24 @@ def build_summary_figure(ds, info):
             cax.set_xlim(0.5, 12.5)
 
         # Observation settings table
-        for col, (text, colour) in obs_attr_cells(ds, var, is_obs).items():
-            txt(COLS[col], text, colour)
+        for col, (text, colour) in obs_attr_cells(ds, var, is_obs, attr_cols).items():
+            txt(attr_x[col], text, colour)
+
+    # Satellite view in the free space beside the forcings (they have no attribute columns)
+    # Its slot: from the right of the typical-year column to the page edge, and from
+    # the top of the forcings down to just above the angled attribute names.
+    if len(forcing_axes) >= 4:
+        top = forcing_axes[0].get_position().y1 + 0.38 / H        # reaches up into the header row
+        bottom = forcing_axes[-1].get_position().y0 + 0.1 / H     # credit line fits below
+        left = COLS["cycle"][0] + COLS["cycle"][1] + 0.01
+        add_satellite_view(fig, [left, bottom, 0.995 - left, top - bottom],
+                           info["lat"], info["lon"], *info["cell"])
+
+    # Month letters under the bottom mini cycle
+    if last_cax is not None:
+        last_cax.set_xticks(range(1, 13))
+        last_cax.set_xticklabels(list("JFMAMJJASOND"), fontsize=FS - 2)
+        last_cax.tick_params(axis="x", length=0, pad=2)
 
     # Year labels under the last lane only (all lanes share the x-axis)
     if last_ax is not None:
@@ -946,7 +1085,7 @@ def build_summary_figure(ds, info):
     # ---- Footer --------------------------------------------------------------
     fig.text(0.01, y(H - 0.1),
              "Red text = problem (see Warnings).  Amber = attribute on a forcing (ignored by CARDAMOM).  "
-             "unc: plain = single_unc; mo/yr/dec/mean/str = single_monthly/annual/decadal/mean/structural_unc.  "
+             "Attribute columns show the values stored in the file; blank = not set.  "
              f"Full detail: {info['base']}_log.pdf",
              fontsize=FS - 1.5, color=C_MUTED, va="bottom")
     return fig
@@ -1078,7 +1217,7 @@ def analyse(path):
             base = base[: -len(ext)]
 
     info = {
-        "base": base, "forcings": forcings, "obs": obs, "flagged": flagged,
+        "base": base, "forcings": forcings, "cell": grid_cell_size(path), "obs": obs, "flagged": flagged,
         "warnings": warnings, "additional": sorted(additional_names),
         "overview": file_overview(ds, step_line), "climate": climate_snapshot(ds),
         "lat": float(ds["LAT"].values) if "LAT" in ds else np.nan,
