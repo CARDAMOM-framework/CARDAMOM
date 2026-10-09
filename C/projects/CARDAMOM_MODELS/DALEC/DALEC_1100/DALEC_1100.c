@@ -282,6 +282,10 @@ double pi=DGCM_PI;
 
 double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.values[0];
 double one_over_deltat=1/deltat;
+
+fprintf(stderr, "DEBUG: deltat = %f\n", deltat);
+fflush(stderr);
+fflush(stdout);
  
 int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 
@@ -1497,6 +1501,11 @@ EDC_prox.no_pools_to_check = 3;
 EDC_prox.pool_indices[0] = S.D_TEMP_LY1;
 EDC_prox.pool_indices[1] = S.D_TEMP_LY2;
 EDC_prox.pool_indices[2] = S.D_TEMP_LY3;
+
+printf("DEBUG: DALEC_1100.c Assigned pools are %d, %d, %d\n", 
+       EDC_prox.pool_indices[0], 
+       EDC_prox.pool_indices[1], 
+       EDC_prox.pool_indices[2]);
 
 // Set your penalty thresholds
 EDC_prox.max_allowed_diff = 2.0; // Max allowed difference in degrees K (or C)

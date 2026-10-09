@@ -34,6 +34,10 @@ double DALEC_EDC_STATE_PROXIMITY(DATA * DATA, void * EDCstruct){
     // Derive deltat from TIME_INDEX (assuming continuous daily or monthly steps)
     double deltat_double = TIME_INDEX[1] - TIME_INDEX[0];
     
+    fprintf(stderr, "DEBUG2: deltat = %f\n", deltat_double);
+    fflush(stderr);
+    fflush(stdout);
+
     // Calculate total number of complete years to evaluate
     int num_years = (int)floor((N_timesteps * deltat_double) / 365.25);
     
