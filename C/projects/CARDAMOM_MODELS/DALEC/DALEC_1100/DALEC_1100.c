@@ -282,10 +282,6 @@ double pi=DGCM_PI;
 
 double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.values[0];
 double one_over_deltat=1/deltat;
-
-fprintf(stderr, "DEBUG: deltat = %f\n", deltat);
-fflush(stderr);
-fflush(stdout);
  
 int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
 
