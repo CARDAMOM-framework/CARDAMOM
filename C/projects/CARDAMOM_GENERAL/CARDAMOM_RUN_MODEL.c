@@ -129,7 +129,7 @@ DATA CARDADATA;
 
 /*if (&CARDADATA==0){printf("CARDADATA not assigned, expect error!\n");}
 *//*Initialize data structure*/
-int OK;
+int OK=1;
 printf("About to read data structure...");
 //OK=INITIALIZE_DATA_STRUCT(&CARDADATA);
 okcheck(OK,"CHECK: DATA structure successfully initialized");
