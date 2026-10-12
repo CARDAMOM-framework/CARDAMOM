@@ -1,0 +1,20 @@
+Scope:
+
+Tier 3 test can be used to demonstrate that code compiles and function as expected after introducing a code change
+
+Two scenarios & corresponding tests:
+
+1. Refactoring: no change of model behavior intended
+
+- Generate benchmark output.nc from previous branch and ensure outputs are identical
+
+2.Change in algorith: change of model 
+
+
+
+
+
+
+For both:
+- Address sanitizer
+
