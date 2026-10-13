@@ -52,7 +52,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.backends.backend_pdf import PdfPages
 
-VERSION = "v5f (2026-10-09)"
+VERSION = "v6e (2026-10-13)"
 
 # =============================================================================
 # CONSTANTS
@@ -130,8 +130,25 @@ C_MUTED = "#777777"
 # =============================================================================
 
 def clean_units(units):
-    """Return a readable unit label, e.g. 'MJ m**-2 day**-1' -> 'MJ/m²/day'."""
-    return UNIT_LABELS.get(str(units).strip(), str(units).strip())
+    """Return a readable unit label, e.g. 'MJ m**-2 day**-1' -> 'MJ/m²/day'.
+      1. known strings come from UNIT_LABELS
+      2. 'Name [unit]' (e.g. 'Burned area [m2/m2]') -> the part in brackets, cleaned
+      3. otherwise: write powers of metres as m² / m³, and use the result"""
+    import re
+    u = str(units).strip()
+    if u in UNIT_LABELS:
+        return UNIT_LABELS[u]
+    m = re.fullmatch(r".*?\[(.+)\]", u)
+    if m and m.group(1).strip() != u:
+        return clean_units(m.group(1))
+    if u in ("-", "1", "dimensionless"):       # dimensionless quantities
+        return "unitless"
+    sup = str.maketrans("-0123456789", "⁻⁰¹²³⁴⁵⁶⁷⁸⁹")
+    # negative powers of any unit: s-1, day**-1, m-2 -> s⁻¹, day⁻¹, m⁻²
+    u = re.sub(r"\b([A-Za-z]+)(?:\*\*)?(-\d)\b", lambda k: k.group(1) + k.group(2).translate(sup), u)
+    # positive powers of metres only (so CO2 stays CO2): m2, m**3 -> m², m³
+    u = re.sub(r"\bm(?:\*\*)?([23])\b", lambda k: "m" + k.group(1).translate(sup), u)
+    return u
 
 
 def shorten_middle(text, max_len=40):
@@ -242,7 +259,9 @@ def load_file(path):
         print(f"Error: File not found: {path}", file=sys.stderr)
         sys.exit(1)
     try:
-        ds = xr.open_dataset(path)
+        # .load() reads everything into memory (these files are small), so the
+        # click-through windows can still read the data after the file is closed.
+        ds = xr.open_dataset(path).load()
     except Exception as e:
         print(f"Error opening NetCDF file '{path}': {e}", file=sys.stderr)
         sys.exit(1)
@@ -676,6 +695,7 @@ def monthly_means(ds, var):
 def plot_text_panel(ax, title, lines, highlight=False, ncols=1, wrap=45, fontsize=8):
     """Titled box of text. highlight=True draws it in red; ncols splits long lists."""
     ax.set_xticks([]); ax.set_yticks([])
+    ax.set_navigate(False)    # it's text, not a graph: no (x, y) readout, no zoom/pan
     color = C_ALERT if highlight else "#222222"
     ax.set_facecolor("#fff2f2" if highlight else "#f7f7f7")
     for spine in ax.spines.values():
@@ -921,7 +941,7 @@ COL_TITLES = {"pct": "data", "units": "units", "mean": "mean", "min": "min", "ma
 ATTR_LEFT, ATTR_RIGHT = 0.78, 0.985   # the attribute columns share this space
 
 
-def build_summary_figure(ds, info):
+def build_summary_figure(ds, info, fig=None):
     """The one-page executive summary, sized to fit a laptop screen.
     Layout (top to bottom): title, header row (overview | climate | warnings | map),
     column titles, forcing lanes, observation lanes, footer.
@@ -937,7 +957,7 @@ def build_summary_figure(ds, info):
     lane_h = max(0.17, (SCREEN_H - fixed) / n_lanes)          # inches per lane
     H = fixed + n_lanes * lane_h
     body_h = n_lanes * lane_h + group_h + obs_group_h
-    fig = plt.figure(figsize=(SCREEN_W, H))
+    fig = fig or plt.figure(figsize=(SCREEN_W, H))   # or redraw into an existing window
     y = lambda inches_from_top: 1 - inches_from_top / H       # inches -> figure fraction
     lane_fs = FS if lane_h >= 0.2 else FS - 1
 
@@ -989,6 +1009,7 @@ def build_summary_figure(ds, info):
     times = get_times(ds)
     n_times = max(1, len(times))
     first_ax, last_ax, last_cax = None, None, None
+    fig.cbf_clickable = {}                     # axes/text -> variable name, used by enable_click_through
     forcing_axes = []
     for r, var in enumerate(rows):
         if var.startswith("__"):
@@ -1007,6 +1028,7 @@ def build_summary_figure(ds, info):
         color = C_OBS if is_obs else C_FORCING
         ax = fig.add_subplot(gs[r, 0], sharex=first_ax)
         first_ax = first_ax or ax
+        fig.cbf_clickable[ax] = var            # clicking this lane opens the variable
         last_ax = ax
         draw_lane(ax, ds, var, color)
         if not is_obs:
@@ -1018,7 +1040,8 @@ def build_summary_figure(ds, info):
         pos = ax.get_position()
         yc = (pos.y0 + pos.y1) / 2
         txt = lambda x, s, c="#222222", **kw: fig.text(x, yc, s, fontsize=lane_fs, color=c, va="center", **kw)
-        txt(LANE_LEFT - 0.004, var, color, ha="right", fontweight="bold")
+        name = txt(LANE_LEFT - 0.004, var, color, ha="right", fontweight="bold")
+        fig.cbf_clickable[name] = var          # ... and so does its name
 
         vals = values_of(ds[var])
         valid = vals[~np.isnan(vals)]
@@ -1026,7 +1049,9 @@ def build_summary_figure(ds, info):
         txt(COLS["pct"], f"{pct:.0f}%", C_ALERT if (pct < 100 and not is_obs) else "#222222")
         units = clean_units(ds[var].attrs.get("units", ""))
         flag = var in info["flagged"]
-        txt(COLS["units"], units or "none", C_ALERT if (flag or not units) else "#222222")
+        # Cut very long unit strings so they can't run into the mean column
+        units_shown = units if len(units) <= 12 else units[:11] + "…"
+        txt(COLS["units"], units_shown or "none", C_ALERT if (flag or not units) else "#222222")
         stat_c = C_ALERT if flag else "#222222"
         if valid.size:
             txt(COLS["mean"], fmt_stat(valid.mean()), stat_c)
@@ -1037,6 +1062,7 @@ def build_summary_figure(ds, info):
         means = monthly_means(ds, var)
         cx, cw = COLS["cycle"]
         cax = fig.add_axes([cx, pos.y0, cw, pos.height])
+        fig.cbf_clickable[cax] = var           # ... and its typical-year panel
         cax.set_xticks([]); cax.set_yticks([])
         cax.set_xlim(0.5, 12.5)
         for m in (4, 7, 10):     # faint guides at Apr, Jul, Oct
@@ -1086,7 +1112,8 @@ def build_summary_figure(ds, info):
     fig.text(0.01, y(H - 0.1),
              "Red text = problem (see Warnings).  Amber = attribute on a forcing (ignored by CARDAMOM).  "
              "Attribute columns show the values stored in the file; blank = not set.  "
-             f"Full detail: {info['base']}_log.pdf",
+             + ("Click a lane to see it full size (Esc to come back).  " if info.get("interactive") else "")
+             + f"Full detail: {info['base']}_log.pdf",
              fontsize=FS - 1.5, color=C_MUTED, va="bottom")
     return fig
 
@@ -1095,58 +1122,229 @@ def build_summary_figure(ds, info):
 # FIGURE 2: ALL TIME SERIES ON ONE PAGE
 # =============================================================================
 
-def build_timeseries_figure(ds, info, cols=5):
+def build_timeseries_figure(ds, info, cols=5, fig=None):
     """Every lane variable as a small full time-series plot, on one screen-sized page."""
     panels = list(info["forcings"]) + list(info["obs"])
     has_temp = "T2M_MIN" in panels and "T2M_MAX" in panels
     if has_temp:
         panels = ["__TEMP__"] + [p for p in panels if p not in ("T2M_MIN", "T2M_MAX")]
     rows = max(1, math.ceil(len(panels) / cols))
-    fig = plt.figure(figsize=(SCREEN_W, max(SCREEN_H, 1.55 * rows + 0.6)))
+    fig = fig or plt.figure(figsize=(SCREEN_W, max(SCREEN_H, 1.55 * rows + 0.6)))
     fig.suptitle(f"All time series: {info['base']}", fontsize=FS + 5, fontweight="bold", x=0.01, ha="left")
     gs = fig.add_gridspec(rows, cols, hspace=0.55, wspace=0.36, top=0.92, bottom=0.04, left=0.045, right=0.99)
+    fig.cbf_clickable = {}
     for i, var in enumerate(panels):
         ax = fig.add_subplot(gs[i // cols, i % cols])
         if var == "__TEMP__":
             plot_temperature(ax, ds)
+            fig.cbf_clickable[ax] = "T2M_MAX"
         else:
             plot_timeseries(ax, ds, var, color=C_OBS if var in OBS_VARS else C_FORCING)
+            fig.cbf_clickable[ax] = var
     return fig
+
+
+# =============================================================================
+# CLICK-THROUGH: click a lane (or panel) to open that variable full-size
+# =============================================================================
+
+def enable_click_through(fig, ds, draw_home, home_name="summary"):
+    """Click a lane -> this SAME window switches to that variable's full page.
+    "◀ Back" button or the Esc key -> switches back to the home view.
+
+    Why not open a new window? On macOS, creating a window from inside a click and
+    then closing it can crash Python (a matplotlib Mac backend problem). Switching
+    what one window shows never creates or destroys a window.
+
+    Why "Back" is fast: rebuilding the summary (44 small plots, globe, satellite
+    tiles) takes a couple of seconds. So the first time the home view is drawn,
+    we keep a snapshot of its pixels plus the on-screen box of every clickable
+    lane. "Back" then shows the snapshot as one image (a fraction of a second),
+    and clicks are matched against the saved boxes, so lanes still work.
+    If the window is resized, the snapshot no longer lines up, so the home view
+    is rebuilt properly once.
+
+    draw_home(fig) redraws the home view into fig; the builders store
+    {artist: variable} in fig.cbf_clickable while drawing."""
+    state = {"view": "home",      # "home" or the variable being shown
+             "snapshot": None,    # home view pixels (RGBA array), once drawn
+             "snap_size": None,   # canvas size the snapshot was taken at
+             "home_boxes": [],    # [(bbox, variable)] for the home view
+             "boxes": [],         # [(bbox, target)] for whatever is on screen now
+             "showing_snapshot": False}
+
+    def zoom_or_pan_active():
+        toolbar = getattr(fig.canvas, "toolbar", None)
+        return bool(toolbar is not None and getattr(toolbar, "mode", ""))
+
+    def clickable_boxes():
+        """On-screen box (pixels) of every clickable artist in the live figure."""
+        renderer = fig.canvas.get_renderer()
+        return [(artist.get_window_extent(renderer), target)
+                for artist, target in getattr(fig, "cbf_clickable", {}).items()]
+
+    def on_draw(event):
+        # After each real draw, record where the clickable things are. If this was
+        # the live home view, also keep a snapshot of it for a fast "Back".
+        if state["showing_snapshot"]:
+            return
+        try:
+            state["boxes"] = clickable_boxes()
+            if state["view"] == "home":
+                state["home_boxes"] = list(state["boxes"])
+                state["snapshot"] = np.asarray(fig.canvas.buffer_rgba()).copy()
+                state["snap_size"] = fig.canvas.get_width_height()
+        except Exception:
+            state["snapshot"] = None          # no snapshot support: Back just rebuilds
+
+    def show_detail(var):
+        state["showing_snapshot"] = False
+        fig.clear()
+        build_variable_page(ds, var, fig=fig)
+        back = fig.text(0.99, 0.975, f"◀ Back to {home_name}  (or press Esc)", ha="right", va="top",
+                        fontsize=11, fontweight="bold", color="white",
+                        bbox=dict(boxstyle="round,pad=0.4", facecolor="#555555", edgecolor="none"))
+        fig.cbf_clickable = {back: "__BACK__"}
+        state["view"] = var
+        fig.canvas.draw_idle()
+
+    def show_home():
+        fig.clear()
+        state["view"] = "home"
+        if state["snapshot"] is not None and state["snap_size"] == fig.canvas.get_width_height():
+            # Fast path: the saved picture of the summary, filling the window
+            ax = fig.add_axes([0, 0, 1, 1])
+            ax.imshow(state["snapshot"], aspect="auto", interpolation="none")
+            ax.set_axis_off()
+            ax.set_navigate(False)        # a picture: no (x, y) readout, no zoom/pan
+            fig.cbf_clickable = {}
+            state["boxes"] = list(state["home_boxes"])
+            state["showing_snapshot"] = True
+        else:
+            # Slow path (first time, or after a resize): rebuild it properly
+            state["showing_snapshot"] = False
+            draw_home(fig)
+        fig.canvas.draw_idle()
+
+    def target_at(event):
+        for box, target in state["boxes"]:
+            if box.contains(event.x, event.y):
+                return target
+        return None
+
+    def on_click(event):
+        if event.button != 1 or zoom_or_pan_active():
+            return
+        target = target_at(event)
+        if target == "__BACK__":
+            show_home()
+        elif target is not None and state["view"] == "home":
+            show_detail(target)
+
+    def on_key(event):
+        if event.key == "escape" and state["view"] != "home":
+            show_home()
+
+    def on_resize(event):
+        # The snapshot no longer lines up with a resized window: rebuild once
+        if state["showing_snapshot"]:
+            state["snapshot"] = None
+            show_home()
+
+    def on_move(event):                       # hand cursor over anything clickable
+        if zoom_or_pan_active():
+            return
+        try:
+            from matplotlib.backend_tools import Cursors
+            fig.canvas.set_cursor(Cursors.HAND if target_at(event) is not None else Cursors.POINTER)
+        except Exception:
+            pass
+
+    fig.canvas.mpl_connect("draw_event", on_draw)
+    fig.canvas.mpl_connect("button_press_event", on_click)
+    fig.canvas.mpl_connect("key_press_event", on_key)
+    fig.canvas.mpl_connect("resize_event", on_resize)
+    fig.canvas.mpl_connect("motion_notify_event", on_move)
 
 
 # =============================================================================
 # LOG PDF: one page per variable + constraints + unused variables
 # =============================================================================
 
-def build_variable_page(ds, var, note=""):
-    """Full page for one variable: time series, typical year, attributes, stats, gaps."""
+def fit_lines(lines, ax, fontsize, wrap):
+    """Wrap text lines, then keep only as many as fit in the axes' height.
+    If some are cut, the last line says how many more there were."""
+    lines = wrap_lines(lines, width=wrap)
+    fig = ax.figure
+    height_in = ax.get_position().height * fig.get_figheight()
+    max_lines = max(3, int(height_in * 72 / (fontsize * 1.35)) - 1)
+    if len(lines) > max_lines:
+        lines = lines[: max_lines - 1] + [f"... and {len(lines) - max_lines + 1} more lines"]
+    return lines
+
+
+def compact_gaps(gaps):
+    """Missing runs written compactly: '2000-01→2002-03', '2002-06→07', '2003-06'.
+    (The end drops the year when it's the same year as the start.)"""
+    out = []
+    for a, b in gaps:
+        if is_dates(np.asarray([a])):
+            a_s, b_s = np.datetime_as_string(a, unit="M"), np.datetime_as_string(b, unit="M")
+            if a_s == b_s:
+                out.append(a_s)
+            else:
+                out.append(f"{a_s}→{b_s[5:] if a_s[:4] == b_s[:4] else b_s}")
+        else:
+            out.append(str(a) if a == b else f"{a}→{b}")
+    return out
+
+
+def build_variable_page(ds, var, note="", fig=None):
+    """Full page for one variable:
+         top            : full time series
+         bottom, left   : typical year
+         bottom, middle : stats and attributes
+         bottom, right  : missing data (compact list)
+    Makes a new A4-landscape figure (log PDF), or draws into `fig` (click-through view).
+    The text panels never overflow: long text is wrapped and cut to fit."""
     color = C_OBS if var in OBS_VARS else C_FORCING
-    fig = plt.figure(figsize=(11.7, 8.3))   # A4 landscape
+    fig = fig or plt.figure(figsize=(11.7, 8.3))   # A4 landscape
     fig.suptitle(f"{var}{note}", fontsize=14, fontweight="bold", x=0.02, ha="left", color=color)
-    gs = fig.add_gridspec(2, 2, height_ratios=[1.3, 1], width_ratios=[1, 1.2],
+    gs = fig.add_gridspec(2, 3, height_ratios=[1.3, 1], width_ratios=[1, 1.15, 0.85],
                           hspace=0.3, wspace=0.15, top=0.92, bottom=0.05, left=0.07, right=0.98)
-    plot_timeseries(fig.add_subplot(gs[0, :]), ds, var, color=color)
+    ts_ax = fig.add_subplot(gs[0, :])
+    plot_timeseries(ts_ax, ds, var, color=color)
+    ts_ax.set_title("")                             # the page title already names the variable
     plot_seasonal_cycle(fig.add_subplot(gs[1, 0]), ds, var, color=color)
 
+    # Stats and attributes
     vals = values_of(ds[var])
     valid = vals[~np.isnan(vals)]
     n_missing, gaps = find_gaps(ds[var])
-    lines = [f"Dims: {ds[var].dims}   shape {ds[var].shape}"]
+    lines = []
     if valid.size:
         lines.append(f"mean {fmt_stat(valid.mean())}  min {fmt_stat(valid.min())}  "
                      f"max {fmt_stat(valid.max())}  std {fmt_stat(valid.std())}")
     lines.append(f"Present: {valid.size}/{vals.size}   missing: {n_missing}")
     lines.append("")
     lines.append("Attributes:")
-    lines += [f"  {k}: {v}" for k, v in ds[var].attrs.items()] or ["  (none)"]
-    lines.append("")
-    lines.append(f"Missing runs ({len(gaps)}):")
-    fmt_t = lambda t: np.datetime_as_string(t, unit="M") if is_dates(np.asarray([t])) else str(t)
-    for a, b in gaps[:15]:
-        lines.append(f"  {fmt_t(a)}" + (f" to {fmt_t(b)}" if b != a else ""))
-    if len(gaps) > 15:
-        lines.append(f"  ... and {len(gaps) - 15} more")
-    plot_text_panel(fig.add_subplot(gs[1, 1]), "Details", lines, wrap=70, fontsize=7)
+    for k, v in ds[var].attrs.items():
+        # long attributes (e.g. data sources) are cut to about two lines
+        lines.append(f"  {k}: {shorten_middle(str(v), 110) if len(str(v)) > 110 else v}")
+    if not ds[var].attrs:
+        lines.append("  (none)")
+    fs = 7
+    ax = fig.add_subplot(gs[1, 1])
+    plot_text_panel(ax, "Details", fit_lines(lines, ax, fs, 58), wrap=200, fontsize=fs)
+
+    # Missing data, several runs per line
+    if gaps:
+        runs = ", ".join(compact_gaps(gaps))
+        gap_lines = [f"{len(gaps)} runs, {n_missing} steps missing", ""] + [runs]
+    else:
+        gap_lines = ["None: data present at every step"]
+    ax = fig.add_subplot(gs[1, 2])
+    plot_text_panel(ax, "Missing data", fit_lines(gap_lines, ax, fs, 40), wrap=200, fontsize=fs)
     return fig
 
 
@@ -1269,6 +1467,7 @@ def main():
     for path in paths:
         print(f"\n### {path}")
         ds, info = analyse(path)
+        info["interactive"] = show
         print_summary(info)
 
         # The window created LAST opens on top, so build the time-series page
@@ -1279,6 +1478,9 @@ def main():
             # Name the windows instead of "Figure 1" / "Figure 2"
             ts_fig.canvas.manager.set_window_title(f"2. All time series: {info['base']}")
             summary_fig.canvas.manager.set_window_title(f"1. Summary: {info['base']}")
+            enable_click_through(summary_fig, ds, lambda f: build_summary_figure(ds, info, fig=f))
+            enable_click_through(ts_fig, ds, lambda f: build_timeseries_figure(ds, info, fig=f),
+                                 home_name="all time series")
         if args.save:
             out = os.path.join(args.output, f"{info['base']}_summary.pdf")
             summary_fig.savefig(out)
