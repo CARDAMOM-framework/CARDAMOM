@@ -16,13 +16,32 @@ The stress test script is located at::
 Usage
 -----
 
-Run the stress test from the CARDAMOM root directory::
+Run the stress test from the CARDAMOM root directory.
+
+**Single-file mode**::
 
     python3 PYTHON/check_fun/CARDAMOM_CBF_NC_FILE_STRESS_TEST.py <input_file.cbf.nc>
 
 Example::
 
     python3 PYTHON/check_fun/CARDAMOM_CBF_NC_FILE_STRESS_TEST.py CARDAMOM_DEMO_INPUT_FILE.cbf.nc
+
+In single-file mode, you will be prompted to run TEST 3a and 3b (optional, time-consuming tests).
+
+**Multi-file mode**::
+
+    python3 PYTHON/check_fun/CARDAMOM_CBF_NC_FILE_STRESS_TEST.py <pattern*.cbf.nc>
+    python3 PYTHON/check_fun/CARDAMOM_CBF_NC_FILE_STRESS_TEST.py file1.cbf.nc file2.cbf.nc file3.cbf.nc
+
+Example::
+
+    python3 PYTHON/check_fun/CARDAMOM_CBF_NC_FILE_STRESS_TEST.py ../test_cbf_dir/*cbf.nc
+
+In multi-file mode:
+
+* TEST 3a and 3b are automatically skipped (too time-consuming for batch processing)
+* All test-generated files are automatically cleaned up after completion
+* A summary report shows pass/fail status for each file
 
 
 What the Script Tests
@@ -116,6 +135,8 @@ Why These Tests Matter
 File Naming Convention
 -----------------------
 
+**Single-file mode:**
+
 All test output files use simple sequential naming:
 
 * ``TEST1.cbf.nc``, ``TEST1.cbr.nc``, ``TEST1.output.nc``
@@ -124,19 +145,36 @@ All test output files use simple sequential naming:
 * ``TEST3a.cbf.nc`` (if run)
 * ``TEST3b.cbf.nc`` (if run)
 
+**Multi-file mode:**
+
+Each file's tests use unique prefixes to avoid conflicts:
+
+* ``file1_TEST1.cbf.nc``, ``file1_TEST1.cbr.nc``, etc.
+* ``file2_TEST1.cbf.nc``, ``file2_TEST1.cbr.nc``, etc.
+
+All test files are automatically cleaned up after the summary report.
+
 Interpreting Results
 ---------------------
 
-**Success indicators:**
+**Single-file mode:**
 
 * All tests complete without errors
 * Unit verification shows likelihood = 0
 * TEST2a shows reasonable finite value counts for likelihood types (warnings for 0 finite values indicate missing observations)
 * Temporary files (``*.ncSTART``) are automatically cleaned up
 
+**Multi-file mode:**
+
+The summary report shows:
+
+* ``✅ filename.cbf.nc passed all tests`` - All tests successful
+* ``❌ filename.cbf.nc did not pass all tests`` - One or more tests failed
+* ``(⚠️  check individual file reports above for warning messages)`` - Warnings were detected (e.g., missing observations, nSAMPLES_EDC_SEARCH adjustments)
+
 **Failure indicators:**
 
-* Timeouts (process hangs)
+* Timeouts (process hangs beyond 120 seconds)
 * Crashes with error messages
 * Inconsistent time-varying lengths
 * Missing required fields
