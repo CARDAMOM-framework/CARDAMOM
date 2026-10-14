@@ -5,6 +5,8 @@ import netCDF4 as nc
 import subprocess
 import time
 import shutil
+import glob
+from CARDAMOM_CBF_TEST_ROUTINES import run_test1, run_test2a, run_test2b
 
 def parse_requirements(filepath):
     """Parses the requirements text file into a dictionary."""
@@ -89,10 +91,13 @@ def create_minimal_test_file(input_nc_path, output_nc_path, requirements, model_
     for name, dimension in ds_in.dimensions.items():
         ds_out.createDimension(name, len(dimension) if not dimension.isunlimited() else None)
 
+    # Track removed variables for compact reporting
+    removed_vars = []
+
     # Copy variables, excluding observation variables
     for name, variable in ds_in.variables.items():
         if name in vars_to_exclude:
-            print(f"    Removed {name} (not required by model {model_id})")
+            removed_vars.append(name)
             continue
 
         # Create variable
@@ -103,6 +108,12 @@ def create_minimal_test_file(input_nc_path, output_nc_path, requirements, model_
 
         # Copy data
         outVar[:] = variable[:]
+
+    # Print removed variables in compact format
+    if removed_vars:
+        vars_str = ', '.join(removed_vars)
+        print(f"    Removed {len(removed_vars)} variables not required by model {model_id}:")
+        print(f"    {vars_str}")
 
     # Set EDC to 0
     if 'EDC' in ds_out.variables:
@@ -326,6 +337,95 @@ def check_time_varying_lengths(nc_path):
             print(f"   Length {length}: {', '.join(var_list)}")
         return False
 
+def run_stress_tests_on_file(nc_file_path, requirements, cardamom_exe, cardamom_run_model_exe,
+                             model_id, original_edc, file_prefix="", skip_test3=False):
+    """
+    Orchestrator function to run stress tests (TEST 1, TEST 2a, TEST 2b) on a single file.
+
+    Parameters:
+    -----------
+    nc_file_path : str
+        Path to the input .cbf.nc file to test
+    requirements : dict
+        Parsed requirements from DALEC_MODEL_FIELD_REQUIREMENTS.txt
+    cardamom_exe : str
+        Path to CARDAMOM_MDF.exe
+    cardamom_run_model_exe : str
+        Path to CARDAMOM_RUN_MODEL.exe
+    model_id : int
+        Model ID from the input file
+    original_edc : float
+        Original EDC value from the input file
+    file_prefix : str, optional
+        Prefix for output files (default: "")
+    skip_test3 : bool, optional
+        Whether to skip TEST 3 (time-consuming EDC search tests) (default: False)
+
+    Returns:
+    --------
+    dict
+        {'passed': bool, 'has_warnings': bool}
+    """
+    overall_success = True
+    has_warnings = False
+
+    # Generate test file names with optional prefix
+    if file_prefix:
+        test1_cbf = f"{file_prefix}_TEST1.cbf.nc"
+        test1_cbr = f"{file_prefix}_TEST1.cbr.nc"
+        test2b_cbf = f"{file_prefix}_TEST2b.cbf.nc"
+        test2b_cbr = f"{file_prefix}_TEST2b.cbr.nc"
+    else:
+        test1_cbf = "TEST1.cbf.nc"
+        test1_cbr = "TEST1.cbr.nc"
+        test2b_cbf = "TEST2b.cbf.nc"
+        test2b_cbr = "TEST2b.cbr.nc"
+
+    # Create TEST1 input file (no observations, EDC=0, minimal MCMC)
+    print("Creating TEST1 input file (no observations, EDC=0)...")
+    create_minimal_test_file(nc_file_path, test1_cbf, requirements, model_id)
+    print(f"  Created: {test1_cbf}")
+
+    # Run TEST 1
+    test1_success, test1_warnings = run_test1(
+        nc_file_path, test1_cbf, test1_cbr, cardamom_exe, cardamom_run_model_exe, file_prefix
+    )
+    overall_success = overall_success and test1_success
+    has_warnings = has_warnings or test1_warnings
+
+    # Create TEST2b input file (with observations, EDC=0, minimal MCMC)
+    print("Creating TEST2b input file (with observations, EDC=0)...")
+    create_obs_test_file(nc_file_path, test2b_cbf, edc_value=0.0)
+    print(f"  Created: {test2b_cbf}")
+
+    # Run TEST 2a (forward model with TEST2b input + TEST1 parameters)
+    if test1_success:
+        test2a_success, test2a_warnings = run_test2a(
+            test2b_cbf, test1_cbr, cardamom_run_model_exe, file_prefix
+        )
+        overall_success = overall_success and test2a_success
+        has_warnings = has_warnings or test2a_warnings
+
+    # Run TEST 2b (MCMC with observations)
+    test2b_success, test2b_warnings = run_test2b(test2b_cbf, test2b_cbr, cardamom_exe)
+    overall_success = overall_success and test2b_success
+    has_warnings = has_warnings or test2b_warnings
+
+    # TEST 3 prompting (only in single-file mode)
+    if not skip_test3:
+        print("TEST 3a and 3b are time-consuming (10 seconds each for EDC search initiation).")
+        run_test3 = input("Do you want to perform TEST 3a and 3b? (y/n): ").strip().lower()
+
+        if run_test3 == 'y':
+            print("ℹ️  Note: TEST 3 implementation coming soon")
+            # TODO: Implement TEST 3a and 3b
+            # These tests involve EDC search initiation checks
+        else:
+            print("Skipping TEST 3a and 3b")
+
+    return {'passed': overall_success, 'has_warnings': has_warnings}
+
+
 def check_nc_file(nc_path, requirements):
     nc_filename = os.path.basename(nc_path)
 
@@ -387,9 +487,41 @@ def check_nc_file(nc_path, requirements):
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python3 CARDAMOM_CBF_NC_FILE_STRESS_TEST.py <your_cbf_nc_file.cbf.nc>")
+        print("       python3 CARDAMOM_CBF_NC_FILE_STRESS_TEST.py <pattern*.cbf.nc>")
+        print("       python3 CARDAMOM_CBF_NC_FILE_STRESS_TEST.py file1.cbf.nc file2.cbf.nc ...")
         sys.exit(1)
 
-    nc_file_path = sys.argv[1]
+    # Collect all file paths from command line arguments
+    # The shell may expand globs before passing to Python, so we need to handle both:
+    # 1. Multiple files passed directly (shell expanded glob)
+    # 2. A single glob pattern that needs expansion
+    nc_file_paths = []
+
+    for arg in sys.argv[1:]:
+        # Try to expand as glob pattern
+        expanded = glob.glob(arg)
+        if expanded:
+            nc_file_paths.extend(expanded)
+        else:
+            # Not a glob pattern, treat as literal path
+            nc_file_paths.append(arg)
+
+    # Filter out test-generated files (TEST1, TEST2a, TEST2b, TEST3a, TEST3b, file*_TEST*)
+    test_file_patterns = ['TEST1', 'TEST2a', 'TEST2b', 'TEST3a', 'TEST3b', 'file1_', 'file2_', 'file3_', 'file4_', 'file5_', 'file6_', 'file7_', 'file8_', 'file9_']
+    nc_file_paths = [
+        path for path in nc_file_paths
+        if not any(pattern in os.path.basename(path) for pattern in test_file_patterns)
+    ]
+
+    if not nc_file_paths:
+        print("No valid input files found (test-generated files are excluded)")
+        sys.exit(1)
+
+    # Remove duplicates while preserving order
+    seen = set()
+    nc_file_paths = [x for x in nc_file_paths if not (x in seen or seen.add(x))]
+
+    multi_file_mode = len(nc_file_paths) > 1
 
     # Assume the requirements file is in the same directory as the script
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -405,408 +537,159 @@ if __name__ == "__main__":
         print(f"🛑 FATAL ERROR: Requirements file missing at {req_file_path}")
         sys.exit(1)
 
-    requirements = parse_requirements(req_file_path)
-
-    # Check time-varying lengths consistency
-    print("\n" + "="*70)
-    print("TIME-VARYING QUANTITIES LENGTH CHECK")
-    print("="*70)
-    time_check_passed = check_time_varying_lengths(nc_file_path)
-    if not time_check_passed:
-        print("\n⚠️  WARNING: Inconsistent time-varying lengths may cause CARDAMOM execution issues")
-
-    # Original validation check
-    print("\n" + "="*70)
-    print("ORIGINAL FILE VALIDATION")
-    print("="*70)
-    check_nc_file(nc_file_path, requirements)
-
-    # TEST 1: No observations, EDC=0, minimal MCMC settings
-    print("\n" + "="*70)
-    print("TEST 1: Short run with no obs and EDC=0")
-    print("="*70)
-    print("Expectation: Successful run and output within 1-2 minutes")
-    print()
-
-    # Read model ID and original EDC value from input file
-    try:
-        ds = nc.Dataset(nc_file_path, 'r')
-        model_id = int(ds.variables['ID'][:])
-        original_edc = float(ds.variables['EDC'][:]) if 'EDC' in ds.variables else 1.0
-        ds.close()
-        print(f"Model ID: {model_id}")
-        print(f"Original EDC value: {original_edc}")
-    except Exception as e:
-        print(f"🛑 FATAL ERROR: Cannot read model ID from {nc_file_path}. Details: {e}")
-        sys.exit(1)
-
-    # Find CARDAMOM executable
     if not os.path.exists(cardamom_exe):
         print(f"🛑 FATAL ERROR: CARDAMOM executable not found at {cardamom_exe}")
         sys.exit(1)
 
-    # Create test files in current working directory
-    test_cbf = "TEST1.cbf.nc"
-    test_cbr = "TEST1.cbr.nc"
+    requirements = parse_requirements(req_file_path)
 
-    create_minimal_test_file(nc_file_path, test_cbf, requirements, model_id)
+    # Track results for multi-file summary
+    file_results = {}  # {filename: result_dict from run_stress_tests_on_file}
 
-    # Run the test
-    print()
-    success, elapsed, stdout, stderr = run_cardamom_test(test_cbf, test_cbr, cardamom_exe, timeout=120)
-
-    print()
-    if success:
-        print(f"✅ TEST 1 SUCCESSFUL: short run with no OBS and EDC=0 completed in {elapsed:.1f} seconds")
-        if os.path.exists(test_cbr):
-            print(f"   Output file created: {test_cbr}")
-    else:
-        print(f"❌ TEST 1 FAILED after {elapsed:.1f} seconds")
-        if "TIMEOUT" in stderr:
-            print(f"   Error: Run did not complete within 120 seconds")
-        else:
-            print(f"   Error details:")
-            if stderr:
-                print(f"   STDERR: {stderr[:500]}")
-            if stdout:
-                print(f"   STDOUT: {stdout[:500]}")
-
-    # Clean up temporary cbrSTART file
-    cbr_start_file = test_cbr + "START"
-    if os.path.exists(cbr_start_file):
-        os.remove(cbr_start_file)
-        print(f"   Cleaned up temporary file: {cbr_start_file}")
-
-    # Unit verification test: Run model forward and check likelihood
-    if success:
-        print("\n" + "-"*70)
-        print("UNIT VERIFICATION: Forward model run with no observations")
-        print("-"*70)
-
-        if not os.path.exists(cardamom_run_model_exe):
-            print(f"⚠️  Skipping verification: CARDAMOM_RUN_MODEL.exe not found")
-        else:
-            test1_output_nc = "TEST1.output.nc"
-
-            # Run forward model
-            try:
-                cmd = [cardamom_run_model_exe, test_cbf, test_cbr, test1_output_nc]
-                result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-
-                if result.returncode == 0 and os.path.exists(test1_output_nc):
-                    print(f"✅ SUCCESS: executed CARDAMOM_RUN_MODEL.exe and obtained output file")
-
-                    # Read and check likelihood from output file
-                    try:
-                        ds_out = nc.Dataset(test1_output_nc, 'r')
-                        # The likelihood is stored in the output file
-                        likelihood_found = False
-                        likelihood_val = None
-
-                        if 'LIKELIHOODS' in ds_out.variables:
-                            # LIKELIHOODS is typically (Sample, Likelihood Index)
-                            # Sum all likelihood components to get total likelihood
-                            likelihoods = ds_out.variables['LIKELIHOODS'][:]
-                            # Get first sample's total likelihood (sum across likelihood indices)
-                            if likelihoods.ndim >= 2:
-                                likelihood_val = float(np.sum(likelihoods[0, :]))
-                            else:
-                                likelihood_val = float(np.sum(likelihoods[:]))
-                            likelihood_found = True
-                        elif 'PROB' in ds_out.variables:
-                            # PROB might contain total probability
-                            prob = ds_out.variables['PROB'][:]
-                            if prob.ndim >= 2:
-                                likelihood_val = float(prob[0, 0])
-                            else:
-                                likelihood_val = float(prob[0])
-                            likelihood_found = True
-                        elif 'P' in ds_out.variables:
-                            likelihood_val = float(ds_out.variables['P'][:])
-                            likelihood_found = True
-
-                        ds_out.close()
-
-                        if likelihood_found:
-                            if likelihood_val == 0.0:
-                                print(f"✅ SUCCESS: likelihood = 0 for no-data run")
-                            else:
-                                print(f"⚠️  WARNING: likelihood = {likelihood_val} (expected 0)")
-                        else:
-                            # If no likelihood in output, calculate it manually
-                            # For TEST 1 with no observations, likelihood should be 0
-                            print(f"ℹ️  Note: No likelihood variable found in output file")
-                            print(f"   Expected likelihood = 0 for no-observation run")
-                    except Exception as e:
-                        print(f"⚠️  Could not read likelihood from output: {e}")
-                else:
-                    print(f"⚠️  Forward model run failed or no output file created")
-                    if result.stderr:
-                        print(f"   Error: {result.stderr[:200]}")
-            except subprocess.TimeoutExpired:
-                print(f"⚠️  Forward model run timed out after 30 seconds")
-            except Exception as e:
-                print(f"⚠️  Forward model run error: {e}")
-
-    print("\n" + "="*70)
-
-    # Create TEST2b input file (with observations) for use in TEST2a and TEST2b
-    test2b_cbf = "TEST2b.cbf.nc"
-    test2b_cbr = "TEST2b.cbr.nc"
-
-    print("\nCreating TEST2b input file (with observations)...")
-    create_obs_test_file(nc_file_path, test2b_cbf)
-    print(f"  Created: {test2b_cbf}")
-
-    # TEST 2a: Forward model run with TEST2b input + TEST1 parameters
-    if success:
+    # Determine skip_test3 based on mode
+    # In multi-file mode, skip TEST 3 automatically; in single-file mode, prompt user
+    if multi_file_mode:
+        skip_test3 = True
         print("\n" + "="*70)
-        print("TEST 2a: Forward model with TEST2b input + TEST1 parameters")
+        print(f"MULTI-FILE MODE: Processing {len(nc_file_paths)} files")
+        print("TEST 3a and 3b will be skipped automatically in multi-file mode")
+        print("="*70)
+    else:
+        skip_test3 = False
+
+    # Loop through each file
+    for file_idx, nc_file_path in enumerate(nc_file_paths):
+        nc_filename = os.path.basename(nc_file_path)
+
+        # Generate unique prefix for this file's test files
+        file_prefix = f"file{file_idx + 1}_" if multi_file_mode else ""
+
+        # Always print header showing which file we're testing
+        print("\n" + "="*70)
+        if multi_file_mode:
+            print(f"Testing [{nc_filename}] (File {file_idx + 1}/{len(nc_file_paths)})")
+        else:
+            print(f"Testing [{nc_filename}]")
         print("="*70)
 
-        if not os.path.exists(cardamom_run_model_exe):
-            print(f"⚠️  Skipping: CARDAMOM_RUN_MODEL.exe not found")
-        else:
-            test2a_output = "TEST2a.output.nc"
+        # Check time-varying lengths consistency
+        print("="*70)
+        print("TIME-VARYING QUANTITIES LENGTH CHECK")
+        print("="*70)
+        time_check_passed = check_time_varying_lengths(nc_file_path)
+        if not time_check_passed:
+            print("⚠️  WARNING: Inconsistent time-varying lengths may cause CARDAMOM execution issues")
 
-            # Run forward model: TEST2b.cbf.nc + TEST1.cbr.nc -> TEST2a.output.nc
-            try:
-                cmd = [cardamom_run_model_exe, test2b_cbf, test_cbr, test2a_output]
-                print(f"  Running: {' '.join(cmd)}")
-                result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        # Original validation check
+        print("="*70)
+        print("ORIGINAL FILE VALIDATION")
+        print("="*70)
+        check_nc_file(nc_file_path, requirements)
 
-                if result.returncode == 0 and os.path.exists(test2a_output):
-                    print(f"✅ TEST 2a SUCCESSFUL: Forward model run completed")
-                    print(f"   Output file created: {test2a_output}")
+        # Read model ID and original EDC from the file
+        try:
+            ds = nc.Dataset(nc_file_path, 'r')
+            model_id = int(ds.variables['ID'][:])
+            original_edc = float(ds.variables['EDC'][:]) if 'EDC' in ds.variables else 1.0
 
-                    # Analyze LIKELIHOODS: count finite values per likelihood type
-                    try:
-                        ds_test2a = nc.Dataset(test2a_output, 'r')
+            # Check and handle nSAMPLES_EDC_SEARCH
+            nsamples_edc_search_exists = False
+            nsamples_edc_search = None
+            if 'MCMCID' in ds.variables and hasattr(ds.variables['MCMCID'], 'nSAMPLES_EDC_SEARCH'):
+                nsamples_edc_search = ds.variables['MCMCID'].nSAMPLES_EDC_SEARCH
+                nsamples_edc_search_exists = True
 
-                        if 'LIKELIHOODS' in ds_test2a.variables:
-                            likelihoods = ds_test2a.variables['LIKELIHOODS'][:]
+            ds.close()
 
-                            # Likelihood names from DALEC_ALL_LIKELIHOOD.c (lines 22-52)
-                            # Order corresponds to LIKELIHOOD_INDICES struct (indices 0-30)
-                            likelihood_names = [
-                                "ABGB",             # 0
-                                "CH4",              # 1
-                                "DOM",              # 2
-                                "ET",               # 3
-                                "LE",               # 4
-                                "H",                # 5
-                                "EWT",              # 6
-                                "GPP",              # 7
-                                "SIF",              # 8
-                                "LAI",              # 9
-                                "NBE",              # 10
-                                "ROFF",             # 11
-                                "SCF",              # 12
-                                "FIR",              # 13
-                                "SWE",              # 14
-                                "Mean_ABGB",        # 15
-                                "Mean_FIR",         # 16
-                                "Mean_GPP",         # 17
-                                "Mean_LAI",         # 18
-                                "PEQ_Cefficiency",  # 19
-                                "PEQ_CUE",          # 20
-                                "PEQ_NBEmrg",       # 21
-                                "PEQ_iniSnow",      # 22
-                                "PEQ_iniSOM",       # 23
-                                "PEQ_C3frac",       # 24
-                                "PEQ_Vcmax25",      # 25
-                                "PEQ_LCMA",         # 26
-                                "PEQ_clumping",     # 27
-                                "PEQ_r_ch4",        # 28
-                                "PEQ_S_fv",         # 29
-                                "PEQ_rhch4_rhco2"   # 30
-                            ]
+            print(f"Model ID: {model_id}")
+            print(f"Original EDC value: {original_edc}")
 
-                            # Count finite values per likelihood type (column)
-                            # likelihoods shape is typically (nSamples, nLikelihoodTypes)
-                            if likelihoods.ndim >= 2:
-                                n_types = likelihoods.shape[1]
-                                print(f"\n   LIKELIHOODS Analysis ({likelihoods.shape[0]} samples, {n_types} types):")
+            # Handle nSAMPLES_EDC_SEARCH warnings and caps
+            has_edc_warning = False
+            if not nsamples_edc_search_exists:
+                print(f"ℹ️  Info: nSAMPLES_EDC_SEARCH not explicitly set, setting to nSAMPLES_EDC_SEARCH = 1000 for the following tests.")
+                print(f"   You may want to explicitly set nSAMPLES_EDC_SEARCH if EDC search is unnecessarily long")
+                nsamples_edc_search = 1000
+                has_edc_warning = True
 
-                                finite_counts = []
-                                for i in range(n_types):
-                                    count = np.sum(np.isfinite(likelihoods[:, i]))
-                                    finite_counts.append(count)
+                # Set the default value in the input file
+                ds = nc.Dataset(nc_file_path, 'r+')
+                if 'MCMCID' in ds.variables:
+                    ds.variables['MCMCID'].nSAMPLES_EDC_SEARCH = nsamples_edc_search
+                ds.close()
+                print(f"   Set nSAMPLES_EDC_SEARCH = {nsamples_edc_search} for all subsequent tests")
 
-                                # Print counts with labels
-                                for i, count in enumerate(finite_counts):
-                                    label = likelihood_names[i] if i < len(likelihood_names) else f"Type_{i+1}"
-                                    status = "⚠️" if count == 0 else " "
-                                    print(f"   {status} [{i+1:2d}] {label:30s}: {count:4d} finite values")
+            elif nsamples_edc_search > 1000:
+                print(f"⚠️  WARNING: nSAMPLES_EDC_SEARCH > 1000, setting nSAMPLES_EDC_SEARCH = 1000 for testing purposes,")
+                print(f"   consider setting nSAMPLES_EDC_SEARCH = 1000 in your cbf.nc file unless your algorithm setup requires otherwise")
+                nsamples_edc_search = 1000
+                has_edc_warning = True
 
-                                # Summary of zero-finite types
-                                zero_finite = []
-                                zero_finite_names = []
-                                for i, count in enumerate(finite_counts):
-                                    if count == 0:
-                                        zero_finite.append(i+1)
-                                        name = likelihood_names[i] if i < len(likelihood_names) else f"Type_{i+1}"
-                                        zero_finite_names.append(name)
+                # Update the input file with capped value
+                ds = nc.Dataset(nc_file_path, 'r+')
+                ds.variables['MCMCID'].nSAMPLES_EDC_SEARCH = nsamples_edc_search
+                ds.close()
+                print(f"   Set nSAMPLES_EDC_SEARCH = {nsamples_edc_search} for all subsequent tests")
 
-                                if zero_finite:
-                                    print(f"\n   ⚠️  WARNING: {len(zero_finite)} likelihood type(s) have 0 finite values:")
-                                    for idx, name in zip(zero_finite, zero_finite_names):
-                                        print(f"      [{idx}] {name}")
-                            else:
-                                print(f"\n   LIKELIHOODS has unexpected shape: {likelihoods.shape}")
-                        else:
-                            print(f"\n   ℹ️  Note: LIKELIHOODS variable not found in output file")
+        except Exception as e:
+            print(f"🛑 ERROR reading metadata from {nc_filename}: {e}")
+            file_results[nc_filename] = {
+                'passed': False,
+                'has_warnings': False,
+                'error': str(e)
+            }
+            # Continue to next file in multi-file mode
+            if multi_file_mode:
+                continue
+            else:
+                sys.exit(1)
 
-                        ds_test2a.close()
-                    except Exception as e:
-                        print(f"\n   ⚠️  Could not analyze LIKELIHOODS: {e}")
-                else:
-                    print(f"❌ TEST 2a FAILED")
-                    if result.stderr:
-                        print(f"   STDERR: {result.stderr[:200]}")
-            except subprocess.TimeoutExpired:
-                print(f"❌ TEST 2a FAILED: Timeout after 30 seconds")
-            except Exception as e:
-                print(f"❌ TEST 2a FAILED: {e}")
+        # Run stress tests on this file
+        try:
+            result = run_stress_tests_on_file(
+                nc_file_path=nc_file_path,
+                requirements=requirements,
+                cardamom_exe=cardamom_exe,
+                cardamom_run_model_exe=cardamom_run_model_exe,
+                model_id=model_id,
+                original_edc=original_edc,
+                skip_test3=skip_test3,
+                file_prefix=file_prefix
+            )
+            # Merge EDC warning into result
+            if has_edc_warning:
+                result['has_warnings'] = True
+            file_results[nc_filename] = result
+        except Exception as e:
+            print(f"🛑 ERROR processing {nc_filename}: {e}")
+            file_results[nc_filename] = {
+                'passed': False,
+                'has_warnings': False,
+                'error': str(e)
+            }
+            # Continue to next file in multi-file mode
+            if multi_file_mode:
+                continue
+            else:
+                sys.exit(1)
 
-    # TEST 2b: MCMC with observations, EDC=0, minimal MCMC settings
-    print("\n" + "="*70)
-    print("TEST 2b: Short run with OBS and EDC=0")
-    print("="*70)
-    print("Expectation: Successful run and output within 1-2 minutes")
-    print()
-
-    # Run the test
-    print()
-    success2b, elapsed2b, stdout2b, stderr2b = run_cardamom_test(test2b_cbf, test2b_cbr, cardamom_exe, timeout=120)
-
-    print()
-    if success2b:
-        print(f"✅ TEST 2b SUCCESSFUL: short run with OBS and EDC=0 completed in {elapsed2b:.1f} seconds")
-        if os.path.exists(test2b_cbr):
-            print(f"   Output file created: {test2b_cbr}")
-    else:
-        print(f"❌ TEST 2b FAILED after {elapsed2b:.1f} seconds")
-        if "TIMEOUT" in stderr2b:
-            print(f"   Error: Run did not complete within 120 seconds")
-        else:
-            print(f"   Error details:")
-            if stderr2b:
-                print(f"   STDERR: {stderr2b[:500]}")
-            if stdout2b:
-                print(f"   STDOUT: {stdout2b[:500]}")
-
-    # Clean up temporary cbrSTART file
-    cbr_start_file2b = test2b_cbr + "START"
-    if os.path.exists(cbr_start_file2b):
-        os.remove(cbr_start_file2b)
-        print(f"   Cleaned up temporary file: {cbr_start_file2b}")
-
-    print("\n" + "="*70)
-
-    # Ask user if they want to run TEST3 (time-consuming)
-    print("\nTEST 3a and 3b are time-consuming (10 seconds each for EDC search initiation).")
-    run_test3 = input("Do you want to perform TEST 3a and 3b? (y/n): ").strip().lower()
-
-    if run_test3 != 'y':
-        print("Skipping TEST 3a and 3b")
+    # Print multi-file summary if needed
+    if multi_file_mode:
+        from CARDAMOM_CBF_SUMMARY import print_multi_file_summary
         print("\n" + "="*70)
-        sys.exit(0)
+        print("MULTI-FILE SUMMARY")
+        print("="*70)
+        print_multi_file_summary(file_results)
 
-    # TEST 3a: No observations, EDC=1, check initiation only (skip if original EDC=0)
-    print("\nTEST 3a: EDC search initiation check with no OBS and EDC=1")
-    print("="*70)
-
-    if original_edc == 0.0:
-        print("ℹ️  Info: Test 3a was omitted, since input file EDC value was set to zero")
-        print("\n" + "="*70)
-    else:
-        print("Expectation: EDC search initiates successfully (10 second check)")
-        print()
-
-        # Create test files
-        test3_cbf = "TEST3a.cbf.nc"
-        test3_cbr = "TEST3a.cbr.nc"
-
-        # Create minimal test file (no observations) but with EDC=1
-        create_minimal_test_file(nc_file_path, test3_cbf, requirements, model_id)
-        # Now set EDC to 1 (create_minimal_test_file sets it to 0)
-        ds = nc.Dataset(test3_cbf, 'r+')
-        ds.variables['EDC'][:] = 1.0
-        ds.close()
-        print(f"    Updated EDC to 1.0 for TEST 3a")
-
-        # Run the test with 10 second timeout, check initiation only
-        print()
-        success3, elapsed3, stdout3, stderr3 = run_cardamom_test(test3_cbf, test3_cbr, cardamom_exe, timeout=10, check_initiation_only=True)
-
-        print()
-        if success3:
-            print(f"✅ TEST 3a SUCCESSFUL: EDC search with no OBS successfully initiated (ran for {elapsed3:.1f} seconds without crash)")
-        else:
-            print(f"❌ TEST 3a FAILED after {elapsed3:.1f} seconds")
-            print(f"   Error: Code crashed during EDC search initiation with no OBS")
-            if stderr3 and "TIMEOUT" not in stderr3:
-                print(f"   Error details:")
-                print(f"   STDERR: {stderr3[:500]}")
-            if stdout3:
-                print(f"   STDOUT: {stdout3[:500]}")
-
-        # Clean up temporary cbrSTART file
-        cbr_start_file3 = test3_cbr + "START"
-        if os.path.exists(cbr_start_file3):
-            os.remove(cbr_start_file3)
-            print(f"   Cleaned up temporary file: {cbr_start_file3}")
-
-        # Clean up incomplete cbr file since we terminated early
-        if os.path.exists(test3_cbr):
-            os.remove(test3_cbr)
-            print(f"   Cleaned up incomplete output file: {test3_cbr}")
-
-        print("\n" + "="*70)
-
-    # TEST 3b: Shortened time series (24 timesteps), no observations, EDC=1, check initiation
-    print("\nTEST 3b: EDC search with shortened time series and no OBS (24 timesteps)")
-    print("="*70)
-    print("Expectation: EDC search initiates successfully (10 second check)")
-    print()
-
-    # Create shortened test file
-    test3b_cbf = "TEST3b.cbf.nc"
-    test3b_cbr = "TEST3b.cbr.nc"
-
-    try:
-        create_shortened_test_file(nc_file_path, test3b_cbf, requirements, model_id, max_timesteps=24)
-
-        # Run the test with 10 second timeout, check initiation only
-        print()
-        success3b, elapsed3b, stdout3b, stderr3b = run_cardamom_test(test3b_cbf, test3b_cbr, cardamom_exe, timeout=10, check_initiation_only=True)
-
-        print()
-        if success3b:
-            print(f"✅ TEST 3b SUCCESSFUL: EDC search with shortened time series and no OBS initiated (ran for {elapsed3b:.1f} seconds without crash)")
-        else:
-            print(f"❌ TEST 3b FAILED after {elapsed3b:.1f} seconds")
-            print(f"   Error: Code crashed during EDC search with shortened time series and no OBS")
-            if stderr3b and "TIMEOUT" not in stderr3b:
-                print(f"   Error details:")
-                print(f"   STDERR: {stderr3b[:500]}")
-            if stdout3b:
-                print(f"   STDOUT: {stdout3b[:500]}")
-
-        # Clean up temporary cbrSTART file
-        cbr_start_file3b = test3b_cbr + "START"
-        if os.path.exists(cbr_start_file3b):
-            os.remove(cbr_start_file3b)
-            print(f"   Cleaned up temporary file: {cbr_start_file3b}")
-
-        # Clean up incomplete cbr file since we terminated early
-        if os.path.exists(test3b_cbr):
-            os.remove(test3b_cbr)
-            print(f"   Cleaned up incomplete output file: {test3b_cbr}")
-
-    except Exception as e:
-        print(f"❌ TEST 3b FAILED: Could not create shortened test file")
-        print(f"   Error: {e}")
-
-    print("\n" + "="*70)
+        # Clean up test files in multi-file mode
+        print("\nCleaning up test files...")
+        test_patterns = ['TEST1.*', 'TEST2a.*', 'TEST2b.*', 'TEST3a.*', 'TEST3b.*', 'file*_TEST*']
+        files_removed = 0
+        for pattern in test_patterns:
+            for test_file in glob.glob(pattern):
+                try:
+                    os.remove(test_file)
+                    files_removed += 1
+                except Exception as e:
+                    print(f"  Warning: Could not remove {test_file}: {e}")
+        print(f"  Removed {files_removed} test file(s)")
