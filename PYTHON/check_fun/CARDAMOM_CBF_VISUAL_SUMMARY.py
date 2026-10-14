@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-CARDAMOM_CBF_SUMMARY.py  (v4)
+CARDAMOM_CBF_VISUAL_SUMMARY.py  (v6e)
 
 Quick visual sanity check of CARDAMOM driver/input files (.cbf.nc).
 Run it BEFORE submitting a run, or on a file someone says "doesn't work".
@@ -20,9 +20,9 @@ What you get
 
 Usage
 -----
-    python3 CARDAMOM_CBF_SUMMARY.py FILE.cbf.nc               # windows + log PDF
-    python3 CARDAMOM_CBF_SUMMARY.py FILE.cbf.nc --save        # summary PDF, no windows
-    python3 CARDAMOM_CBF_SUMMARY.py DIR_OR_FILES... --save    # batch: one summary per file
+    python3 CARDAMOM_CBF_VISUAL_SUMMARY.py FILE.cbf.nc               # windows + log PDF
+    python3 CARDAMOM_CBF_VISUAL_SUMMARY.py FILE.cbf.nc --save        # summary PDF, no windows
+    python3 CARDAMOM_CBF_VISUAL_SUMMARY.py DIR_OR_FILES... --save    # batch: one summary per file
     options: --no-log   skip the log PDF
              --no-show  don't open windows
              --output D folder for saved files (default: current folder)
@@ -800,7 +800,7 @@ def add_satellite_view(fig, rect, lat, lon, cell=(1.0, 1.0), cell_known=True):
         tx = int((lon + 180) / 360 * n) % n
         ty = int((1 - np.arcsinh(np.tan(np.radians(lat))) / np.pi) / 2 * n)
         req = urllib.request.Request(SAT_URL.format(z=zoom, y=ty, x=tx),
-                                     headers={"User-Agent": "CARDAMOM_CBF_SUMMARY"})
+                                     headers={"User-Agent": "CARDAMOM_CBF_VISUAL_SUMMARY"})
         urllib.request.urlopen(req, timeout=6).close()
 
         try:
