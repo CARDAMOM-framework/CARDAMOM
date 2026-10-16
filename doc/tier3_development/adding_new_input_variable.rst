@@ -141,17 +141,6 @@ Important notes
 
 .. [2] Once the variable has been fully incorporated into DALEC/CARDAMOM model code and its role is established, update the field requirements from ``NONE:NONE:NONE`` to appropriate model-specific settings as needed. This is also beyond the scope of the initial integration.
 
-Coding conventions
-------------------
-
-When modifying C code, follow these CARDAMOM conventions:
-
-- Follow existing patterns and style throughout the codebase
-- Avoid macros or library dependencies unless absolutely necessary
-- Ensure modifications do not alter portability across platforms
-- Do not introduce new compiler dependencies
-- Keep code modifications brief and easy to interpret
-- Use clear, descriptive variable names matching existing conventions
 
 See also
 --------
