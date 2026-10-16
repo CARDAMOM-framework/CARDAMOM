@@ -228,6 +228,17 @@ clock_t    start = clock();//Start timer
     DATA.edcsearch=1;
 READ_PARI_DATA(&PI, &DATA, &MCOUT, &MCOPT,CLA);
 printf("CARDAMOM_MDF.c: READ_PARI_DATA successfully executed\n");
+
+printf("CARDAMOM_MDF.c: LCMA_F successfully read, length = %zu\n", DATA.ncdf_data.LCMA_F.length);
+if (DATA.ncdf_data.LCMA_F.length > 0) {
+    printf("CARDAMOM_MDF.c: LCMA_F values (first 10): ");
+    int n;
+    for (n = 0; n < 10 && n < DATA.ncdf_data.LCMA_F.length; n++) {
+        printf("%.2f ", DATA.ncdf_data.LCMA_F.values[n]);
+    }
+    printf("\n");
+}
+
 // Check whether this is a restart, and if so, set APPEND to 1
 if (MCOPT.nSTART>0){MCOPT.APPEND=1;}
 

@@ -296,7 +296,11 @@ printf("Done reading all other edc ");
 	DATA->SSRD.values=ncdf_read_double_var(ncid, "SSRD", &(DATA->SSRD.length));
 		DATA->SSRD.reference_mean=ncdf_read_double_attr(ncid, "SSRD","reference_mean");
                 DEFAULT_REFERENCE_MEAN(&DATA->SSRD);
-                
+
+	DATA->LCMA_F.values=ncdf_read_double_var(ncid, "LCMA_F", &(DATA->LCMA_F.length));
+		DATA->LCMA_F.reference_mean=ncdf_read_double_attr(ncid, "LCMA_F","reference_mean");
+                DEFAULT_REFERENCE_MEAN(&DATA->LCMA_F);
+
                 	DATA->STRD.values=ncdf_read_double_var(ncid, "STRD", &(DATA->STRD.length));
 		DATA->STRD.reference_mean=ncdf_read_double_attr(ncid, "STRD","reference_mean");
                 DEFAULT_REFERENCE_MEAN(&DATA->STRD);

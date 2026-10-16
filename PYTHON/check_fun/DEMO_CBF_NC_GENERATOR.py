@@ -27,6 +27,7 @@ def generate_cbf_nc():
         'T2M_MIN': (('time_dim',), -9999., {'units': 'deg C', 'variable_info': 'ERA5 0.5 degree dataset: monthly average daily minimum temperature', 'coordinates': 'LAT LON'}),
         'SNOWFALL': (('time_dim',), -9999., {'units': 'mm/day', 'variable_info': 'ERA5 0.5 degree dataset: monthly total snow fall', 'coordinates': 'LAT LON'}),
         'SSRD': (('time_dim',), -9999., {'units': 'MJ m**-2 day**-1', 'variable_info': 'ERA5 0.5 degree dataset: monthly average shortwave  downward radiation', 'coordinates': 'LAT LON'}),
+        'LCMA_F': (('time_dim',), -9999., {'units': 'gC/m2/d', 'variable_info': 'N/A', 'coordinates': 'LAT LON'}),
         'STRD': (('time_dim',), -9999., {'units': 'MJ m**-2 day**-1', 'variable_info': 'ERA5 0.5 degree dataset: monthly average thermal downward radiation', 'coordinates': 'LAT LON'}),
         'SKT': (('time_dim',), -9999., {'units': 'C', 'variable_info': 'ERA5 0.5 degree dataset: monthly average surface skin temp', 'coordinates': 'LAT LON'}),
         'VPD': (('time_dim',), -9999., {'units': 'VPD [hPa]', 'variable_info': 'ERA5 0.5 degree dataset: monthly average shortwave solar downward radiation', 'coordinates': 'LAT LON'}),
