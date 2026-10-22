@@ -1173,7 +1173,7 @@ DALEC_1100_FLUX_SOURCES_SINKS(DALECmodel);
 
 //Define PARS_INFO here (ranges, and eventually names, etc)
 PARS_INFO_1100(DALECmodel);
-POPULATE_INFO_STRUCTS(DALECmodel);
+DALEC_1100_POPULATE_INFO_STRUCTS(DALECmodel);
 
 //EDC operator
 //Make sure has same number as number of EDCs

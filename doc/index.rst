@@ -128,9 +128,11 @@ DALEC Model:
 
 .. toctree::
    :maxdepth: 2
-   :caption: Tier 3 development:
 
+   :caption: Tier 3 development:
+   development/creating_new_dalec_model_id
    tier3_development/adding_new_input_variable
+
 
 
 .. toctree::
