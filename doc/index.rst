@@ -128,10 +128,11 @@ DALEC Model:
 
 .. toctree::
    :maxdepth: 2
-   :caption: TIER 3 DEVELOPMENT:
 
-   markdown_manuals/ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES
+   :caption: Tier 3 development:
    development/creating_new_dalec_model_id
+   tier3_development/adding_new_input_variable
+
 
 
 .. toctree::
