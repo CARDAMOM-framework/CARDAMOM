@@ -1,0 +1,317 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adding new input variable type &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3ce236e8" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="Adding new netcdf variables and attributes" href="../markdown_manuals/ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html" />
+    <link rel="prev" title="Creating a New DALEC Model ID" href="../development/creating_new_dalec_model_id.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started with CARDAMOM</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC Model:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dalec_versions.html">DALEC versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/git_hooks.html">Git hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/stress_testing.html">Stress Testing your CARDAMOM input (.nc) file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/analyst_checklist.html">Analyst checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/technote.html">Contributing to this technical documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/governance.html">CARDAMOM.c governance structure</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../development/creating_new_dalec_model_id.html">Creating a New DALEC Model ID</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Adding new input variable type</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-by-step-procedure">Step-by-step procedure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-sample-data-file">1. Create sample data file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#update-data-structure">2. Update data structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#add-netcdf-reading-functionality">3. Add NetCDF reading functionality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#update-demo-file-generator">4. Update demo file generator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#update-field-requirements">5. Update field requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-new-demo-file">6. Generate new demo file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#verify-integration">7. Verify integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#testing">8. Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#validation-checklist">Validation checklist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#important-notes">Important notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#see-also">See also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/CARDAMOM_NETCDF_INPUT_FILE.html">CARDAMOM Netcdf input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/COST_FUNCTION.html">CARDAMOM cost function <a name="cardamom-cost-function"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/DEBUGGING_TIPS.html">Debugging tips and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/GITHUB_BASICS.html">Using CARDAMOM’s github repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MCMC_IN_CARDAMOM_OVERVIEW.html">MCMC in CARDAMOM Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/OUTPUT_DATA_ANALYSIS.html">Output Data and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PARALLELIZATION.html">Parallelization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Adding new input variable type</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tier3_development/adding_new_input_variable.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="adding-new-input-variable-type">
+<span id="adding-new-input-variable"></span><h1>Adding new input variable type<a class="headerlink" href="#adding-new-input-variable-type" title="Link to this heading"></a></h1>
+<p>This guide provides step-by-step instructions for adding a new input variable type to CARDAMOM. This is a Tier 3 development task that involves modifying the data structure, input/output mechanisms, and model field requirements.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Adding a new input variable to CARDAMOM requires modifications across several components:</p>
+<ol class="arabic simple">
+<li><p>Data structure definitions (C)</p></li>
+<li><p>NetCDF reading functionality (C)</p></li>
+<li><p>Demo input file generator (Python)</p></li>
+<li><p>Model field requirements specification</p></li>
+<li><p>Sample data files</p></li>
+</ol>
+</section>
+<section id="step-by-step-procedure">
+<h2>Step-by-step procedure<a class="headerlink" href="#step-by-step-procedure" title="Link to this heading"></a></h2>
+<section id="create-sample-data-file">
+<h3>1. Create sample data file<a class="headerlink" href="#create-sample-data-file" title="Link to this heading"></a></h3>
+<p>Create a text file in <code class="docutils literal notranslate"><span class="pre">CARDAMOM/DATA/TEXT_FILE_DRIVERS/</span></code> with your variable name (e.g., <code class="docutils literal notranslate"><span class="pre">YOUR_VARIABLE.txt</span></code>). This file should contain one value per line, matching the time dimension of other driver files (typically 216 timesteps for the demo file).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Create YOUR_VARIABLE.txt with 216 values</span>
+<span class="nb">cd</span><span class="w"> </span>CARDAMOM/DATA/TEXT_FILE_DRIVERS/
+<span class="c1"># Populate with appropriate values for your variable</span>
+</pre></div>
+</div>
+</section>
+<section id="update-data-structure">
+<h3>2. Update data structure<a class="headerlink" href="#update-data-structure" title="Link to this heading"></a></h3>
+<p>Add the new variable to the NETCDF_DATA structure in <code class="docutils literal notranslate"><span class="pre">CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_NETCDF_DATA_STRUCTURE.c</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// In the NETCDF_DATA structure, add:</span>
+<span class="n">TIMESERIES_DRIVER_STRUCT</span><span class="w"> </span><span class="n">YOUR_VARIABLE</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Place it alphabetically or logically with similar driver variables.</p>
+</section>
+<section id="add-netcdf-reading-functionality">
+<h3>3. Add NetCDF reading functionality<a class="headerlink" href="#add-netcdf-reading-functionality" title="Link to this heading"></a></h3>
+<p>Update <code class="docutils literal notranslate"><span class="pre">CARDAMOM/C/projects/CARDAMOM_GENERAL/CARDAMOM_READ_NETCDF_DATA.c</span></code> to read the new variable from NetCDF files:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">DATA</span><span class="o">-&gt;</span><span class="n">YOUR_VARIABLE</span><span class="p">.</span><span class="n">values</span><span class="o">=</span><span class="n">ncdf_read_double_var</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span><span class="w"> </span><span class="s">"YOUR_VARIABLE"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="n">DATA</span><span class="o">-&gt;</span><span class="n">YOUR_VARIABLE</span><span class="p">.</span><span class="n">length</span><span class="p">));</span>
+<span class="n">DATA</span><span class="o">-&gt;</span><span class="n">YOUR_VARIABLE</span><span class="p">.</span><span class="n">reference_mean</span><span class="o">=</span><span class="n">ncdf_read_double_attr</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span><span class="w"> </span><span class="s">"YOUR_VARIABLE"</span><span class="p">,</span><span class="s">"reference_mean"</span><span class="p">);</span>
+<span class="n">DEFAULT_REFERENCE_MEAN</span><span class="p">(</span><span class="o">&amp;</span><span class="n">DATA</span><span class="o">-&gt;</span><span class="n">YOUR_VARIABLE</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="update-demo-file-generator">
+<h3>4. Update demo file generator<a class="headerlink" href="#update-demo-file-generator" title="Link to this heading"></a></h3>
+<p>Modify <code class="docutils literal notranslate"><span class="pre">CARDAMOM/PYTHON/check_fun/DEMO_CBF_NC_GENERATOR.py</span></code> to include the new variable in generated NetCDF files. Add an entry to the <code class="docutils literal notranslate"><span class="pre">nc_structure</span></code> dictionary:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nc_structure</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># ... existing variables ...</span>
+    <span class="s1">'YOUR_VARIABLE'</span><span class="p">:</span> <span class="p">((</span><span class="s1">'time_dim'</span><span class="p">,),</span> <span class="o">-</span><span class="mf">9999.</span><span class="p">,</span> <span class="p">{</span>
+        <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'your_units_here'</span><span class="p">,</span>
+        <span class="s1">'variable_info'</span><span class="p">:</span> <span class="s1">'Description of data source'</span><span class="p">,</span>
+        <span class="s1">'coordinates'</span><span class="p">:</span> <span class="s1">'LAT LON'</span>
+    <span class="p">}),</span>
+    <span class="c1"># ... more variables ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="update-field-requirements">
+<h3>5. Update field requirements<a class="headerlink" href="#update-field-requirements" title="Link to this heading"></a></h3>
+<p>Add the variable to <code class="docutils literal notranslate"><span class="pre">CARDAMOM/PYTHON/check_fun/DALEC_MODEL_FIELD_REQUIREMENTS.txt</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>YOUR_VARIABLE:[min_value,max_value]:NONE:NONE:NONE
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Where:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[min_value,max_value]</span></code> specifies the valid physical range</p></li>
+<li><p>The three <code class="docutils literal notranslate"><span class="pre">NONE</span></code> fields specify: models requiring it, models requiring finite values, and models responding to minute changes <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="generate-new-demo-file">
+<h3>6. Generate new demo file<a class="headerlink" href="#generate-new-demo-file" title="Link to this heading"></a></h3>
+<p>Run the demo file generator to create a new <code class="docutils literal notranslate"><span class="pre">CARDAMOM_DEMO_INPUT_FILE.cbf.nc</span></code> with your variable:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>CARDAMOM/PYTHON/check_fun/
+python3<span class="w"> </span>DEMO_CBF_NC_GENERATOR.py
+</pre></div>
+</div>
+</section>
+<section id="verify-integration">
+<h3>7. Verify integration<a class="headerlink" href="#verify-integration" title="Link to this heading"></a></h3>
+<p>Compile and run CARDAMOM with the new demo file to verify the variable is read correctly. You can temporarily add print statements in the C code to verify the values are loaded:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">printf</span><span class="p">(</span><span class="s">"YOUR_VARIABLE successfully read, length = %zu</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">DATA</span><span class="p">.</span><span class="n">ncdf_data</span><span class="p">.</span><span class="n">YOUR_VARIABLE</span><span class="p">.</span><span class="n">length</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">DATA</span><span class="p">.</span><span class="n">ncdf_data</span><span class="p">.</span><span class="n">YOUR_VARIABLE</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"YOUR_VARIABLE values (first 10): "</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">DATA</span><span class="p">.</span><span class="n">ncdf_data</span><span class="p">.</span><span class="n">YOUR_VARIABLE</span><span class="p">.</span><span class="n">length</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">"%.2f "</span><span class="p">,</span><span class="w"> </span><span class="n">DATA</span><span class="p">.</span><span class="n">ncdf_data</span><span class="p">.</span><span class="n">YOUR_VARIABLE</span><span class="p">.</span><span class="n">values</span><span class="p">[</span><span class="n">n</span><span class="p">]);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="testing">
+<h3>8. Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h3>
+<p>Run the stress test to ensure the model compiles and executes correctly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>CARDAMOM/PYTHON/check_fun/
+python3<span class="w"> </span>CARDAMOM_CBF_NC_STRESS_TEST.py
+</pre></div>
+</div>
+</section>
+</section>
+<section id="validation-checklist">
+<h2>Validation checklist<a class="headerlink" href="#validation-checklist" title="Link to this heading"></a></h2>
+<p>Before considering the integration complete, verify:</p>
+<ul class="simple">
+<li><p>[ ] Text data file exists with correct dimensions</p></li>
+<li><p>[ ] Data structure includes new variable</p></li>
+<li><p>[ ] NetCDF reader correctly loads the variable</p></li>
+<li><p>[ ] Demo file generator includes the variable</p></li>
+<li><p>[ ] Field requirements properly specify valid ranges</p></li>
+<li><p>[ ] Generated NetCDF file contains the variable with expected values</p></li>
+<li><p>[ ] Model compiles without errors</p></li>
+<li><p>[ ] Model runs and reads the variable successfully</p></li>
+<li><p>[ ] Stress tests pass</p></li>
+</ul>
+</section>
+<section id="important-notes">
+<h2>Important notes<a class="headerlink" href="#important-notes" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Individual DALEC models may treat this variable as either an observation or forcing variable. Incorporating the variable into specific model physics is beyond the scope of this input variable integration task.</p>
+</aside>
+<aside class="footnote brackets" id="id3" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<p>Once the variable has been fully incorporated into DALEC/CARDAMOM model code and its role is established, update the field requirements from <code class="docutils literal notranslate"><span class="pre">NONE:NONE:NONE</span></code> to appropriate model-specific settings as needed. This is also beyond the scope of the initial integration.</p>
+</aside>
+</aside>
+</section>
+<section id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><span class="xref std std-ref">File formats documentation</span></p></li>
+<li><p><span class="xref std std-ref">Compilation guide</span></p></li>
+<li><p>Model field requirements specification</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../development/creating_new_dalec_model_id.html" class="btn btn-neutral float-left" title="Creating a New DALEC Model ID" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../markdown_manuals/ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html" class="btn btn-neutral float-right" title="Adding new netcdf variables and attributes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
