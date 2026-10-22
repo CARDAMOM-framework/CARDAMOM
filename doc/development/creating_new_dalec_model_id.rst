@@ -73,36 +73,7 @@ Replace all internal references from the old model ID to the new one:
 
 **Important:** On Linux systems, use ``sed -i`` instead of ``sed -i ''``.
 
-Step 4: Make Function Names Unique
------------------------------------
-
-To avoid compilation conflicts when multiple models are compiled together, certain function names must be model-specific.
-
-Edit the following files to make ``POPULATE_INFO_STRUCTS`` unique:
-
-**For DALEC_1100_NC_INFO.c:**
-
-.. code-block:: c
-
-   // Change from:
-   void POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
-
-   // To:
-   void DALEC_1100_POPULATE_INFO_STRUCTS(DALEC * DALECmodel){
-
-**For DALEC_1100.c (around line 1176):**
-
-.. code-block:: c
-
-   // Change from:
-   POPULATE_INFO_STRUCTS(DALECmodel);
-
-   // To:
-   DALEC_1100_POPULATE_INFO_STRUCTS(DALECmodel);
-
-Repeat this process for both DALEC_1140 and DALEC_1141, using their respective model IDs.
-
-Step 5: Register Models in CARDAMOM_MODEL_LIBRARY.c
+Step 4: Register Models in CARDAMOM_MODEL_LIBRARY.c
 ----------------------------------------------------
 
 Add the new models to the CARDAMOM model library:
@@ -125,7 +96,7 @@ Add the new models to the CARDAMOM model library:
    else if (ID==1140  ){MODEL_INFO_1140(DATA);}
    else if (ID==1141  ){MODEL_INFO_1141(DATA);}
 
-Step 6: Update DALEC_MODEL_FIELD_REQUIREMENTS.txt
+Step 5: Update DALEC_MODEL_FIELD_REQUIREMENTS.txt
 --------------------------------------------------
 
 Update the model field requirements file to include the new model IDs:
@@ -150,23 +121,7 @@ To:
 
 This ensures the stress testing framework recognizes the new models.
 
-Step 7: Clean Up Test Files (Optional)
----------------------------------------
-
-Remove development test files that shouldn't be in production:
-
-.. code-block:: bash
-
-   cd C/projects/CARDAMOM_MODELS/DALEC/DALEC_1100
-   rm -rf TEST_* test_* run_lldb.txt
-
-   cd ../DALEC_1140
-   rm -rf TEST_* test_* run_lldb.txt
-
-   cd ../DALEC_1141
-   rm -rf TEST_* test_* run_lldb.txt
-
-Step 8: Compile CARDAMOM
+Step 6: Compile CARDAMOM
 -------------------------
 
 Compile the entire CARDAMOM framework:
@@ -185,11 +140,10 @@ Check for compilation errors. If successful, you should see:
 
 **Common Issues:**
 
-- **Duplicate function definitions:** Ensure all ``POPULATE_INFO_STRUCTS`` functions are model-specific
 - **Missing includes:** Verify all files are properly included in ``CARDAMOM_MODEL_LIBRARY.c``
 - **Syntax errors:** Check that sed replacements didn't break code structure
 
-Step 9: Create Test Input Files
+Step 7: Create Test Input Files
 --------------------------------
 
 Create demo CBF NetCDF files with the correct model IDs:
@@ -200,7 +154,7 @@ Create demo CBF NetCDF files with the correct model IDs:
    cp CARDAMOM_DEMO_INPUT_FILE.cbf.nc CARDAMOM_DEMO_INPUT_FILE_1140.cbf.nc
    cp CARDAMOM_DEMO_INPUT_FILE.cbf.nc CARDAMOM_DEMO_INPUT_FILE_1141.cbf.nc
 
-Update the ID values using Python. Set the ``ID`` **variable only**. CARDAMOM reads the model ID from the variable, never from a global attribute.
+Update the ID values using Python:
 
 .. code-block:: python
 
@@ -209,7 +163,7 @@ Update the ID values using Python. Set the ``ID`` **variable only**. CARDAMOM re
    for model_id in (1140, 1141):
        with Dataset(f'CARDAMOM_DEMO_INPUT_FILE_{model_id}.cbf.nc', 'r+') as nc:
            nc.variables['ID'][:] = model_id
-           print(f"{model_id}: ID variable = {float(nc.variables['ID'][:])}, global attrs = {nc.ncattrs()}")
+           print(f"{model_id}: ID = {float(nc.variables['ID'][:])}")
 
 Verify the changes:
 
@@ -218,13 +172,7 @@ Verify the changes:
    ncdump -v ID CARDAMOM_DEMO_INPUT_FILE_1140.cbf.nc | tail -3
    # Should show: ID = 1140 ;
 
-   ncdump -h CARDAMOM_DEMO_INPUT_FILE_1140.cbf.nc | grep -c "global attributes"
-   # Should show: 0  (no global attributes)
-
-.. warning::
-   Do **not** add a global ``ID`` attribute (for example ``nc.ID = 1140``). It is not read by CARDAMOM and can disagree with the variable.
-
-Step 10: Run Stress Tests
+Step 8: Run Stress Tests
 --------------------------
 
 Test the new models using the CARDAMOM stress test:
@@ -257,7 +205,6 @@ Before considering the new model complete, verify:
 
 - ☐ All files renamed correctly (no references to old model ID in filenames)
 - ☐ All code references updated (grep for old ID returns only comments/documentation)
-- ☐ Function names are unique (no ``POPULATE_INFO_STRUCTS`` conflicts)
 - ☐ Model registered in ``CARDAMOM_MODEL_LIBRARY.c``
 - ☐ Field requirements updated in ``DALEC_MODEL_FIELD_REQUIREMENTS.txt``
 - ☐ CARDAMOM compiles without errors or warnings
@@ -270,10 +217,6 @@ Troubleshooting
 
 Compilation Errors
 ~~~~~~~~~~~~~~~~~~
-
-**Error:** "redefinition of 'POPULATE_INFO_STRUCTS'"
-
-**Solution:** Ensure all ``POPULATE_INFO_STRUCTS`` functions are renamed to be model-specific (e.g., ``DALEC_1140_POPULATE_INFO_STRUCTS``).
 
 **Error:** "MODEL_INFO_1140 not defined"
 
@@ -304,7 +247,6 @@ Model Doesn't Run
 1. Recompile CARDAMOM
 2. Verify the model ID check is added to ``CARDAMOM_MODEL_LIBRARY.c``
 3. Check that ``nc.variables['ID'][:]`` equals the new model ID in the CBF file (``ncdump -v ID FILE``)
-4. Check that the file has no global ``ID`` attribute (``ncdump -h FILE | grep -c "global attributes"`` should print 0)
 
 For AI Assistants
 -----------------
@@ -328,11 +270,8 @@ The key files that must be modified:
 
 Common pitfalls:
 
-- Forgetting to make ``POPULATE_INFO_STRUCTS`` unique
 - Not updating ``DALEC_MODEL_FIELD_REQUIREMENTS.txt``
 - Incomplete sed replacements (always use ``find ... -exec sed``)
-- Adding a global ``ID`` attribute to CBF files (set the ``ID`` variable only)
-- Not cleaning up old test files
 
 Summary
 -------
@@ -341,8 +280,7 @@ Creating a new DALEC model ID involves systematic copying, renaming, and registr
 
 1. Work from a tested template
 2. Update all references (files, code, configuration)
-3. Make function names unique
-4. Compile and test thoroughly
+3. Compile and test thoroughly
 5. Document any model-specific changes
 
 Following this guide ensures new models integrate seamlessly into the CARDAMOM framework and maintain code quality and portability standards.
