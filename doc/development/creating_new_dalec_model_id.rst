@@ -200,30 +200,29 @@ Create demo CBF NetCDF files with the correct model IDs:
    cp CARDAMOM_DEMO_INPUT_FILE.cbf.nc CARDAMOM_DEMO_INPUT_FILE_1140.cbf.nc
    cp CARDAMOM_DEMO_INPUT_FILE.cbf.nc CARDAMOM_DEMO_INPUT_FILE_1141.cbf.nc
 
-Update the ID values using Python:
+Update the ID values using Python. Set the ``ID`` **variable only**. CARDAMOM reads the model ID from the variable, never from a global attribute.
 
 .. code-block:: python
 
    from netCDF4 import Dataset
 
-   # Update file 1140
-   with Dataset('CARDAMOM_DEMO_INPUT_FILE_1140.cbf.nc', 'r+') as nc:
-       nc.ID = 1140  # Global attribute
-       nc.variables['ID'][:] = 1140  # Variable
-       print(f"Updated 1140 file: ID = {nc.ID}")
-
-   # Update file 1141
-   with Dataset('CARDAMOM_DEMO_INPUT_FILE_1141.cbf.nc', 'r+') as nc:
-       nc.ID = 1141  # Global attribute
-       nc.variables['ID'][:] = 1141  # Variable
-       print(f"Updated 1141 file: ID = {nc.ID}")
+   for model_id in (1140, 1141):
+       with Dataset(f'CARDAMOM_DEMO_INPUT_FILE_{model_id}.cbf.nc', 'r+') as nc:
+           nc.variables['ID'][:] = model_id
+           print(f"{model_id}: ID variable = {float(nc.variables['ID'][:])}, global attrs = {nc.ncattrs()}")
 
 Verify the changes:
 
 .. code-block:: bash
 
-   ncdump CARDAMOM_DEMO_INPUT_FILE_1140.cbf.nc | grep "ID ="
-   # Should show: :ID = 1140LL ; and ID = 1140 ;
+   ncdump -v ID CARDAMOM_DEMO_INPUT_FILE_1140.cbf.nc | tail -3
+   # Should show: ID = 1140 ;
+
+   ncdump -h CARDAMOM_DEMO_INPUT_FILE_1140.cbf.nc | grep -c "global attributes"
+   # Should show: 0  (no global attributes)
+
+.. warning::
+   Do **not** add a global ``ID`` attribute (for example ``nc.ID = 1140``). It is not read by CARDAMOM and can disagree with the variable.
 
 Step 10: Run Stress Tests
 --------------------------
@@ -304,7 +303,8 @@ Model Doesn't Run
 
 1. Recompile CARDAMOM
 2. Verify the model ID check is added to ``CARDAMOM_MODEL_LIBRARY.c``
-3. Check that ``nc.ID`` and ``nc.variables['ID'][:]`` are both set correctly in the CBF file
+3. Check that ``nc.variables['ID'][:]`` equals the new model ID in the CBF file (``ncdump -v ID FILE``)
+4. Check that the file has no global ``ID`` attribute (``ncdump -h FILE | grep -c "global attributes"`` should print 0)
 
 For AI Assistants
 -----------------
@@ -331,7 +331,7 @@ Common pitfalls:
 - Forgetting to make ``POPULATE_INFO_STRUCTS`` unique
 - Not updating ``DALEC_MODEL_FIELD_REQUIREMENTS.txt``
 - Incomplete sed replacements (always use ``find ... -exec sed``)
-- Corrupting CBF files (update both global attribute and variable)
+- Adding a global ``ID`` attribute to CBF files (set the ``ID`` variable only)
 - Not cleaning up old test files
 
 Summary
