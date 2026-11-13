@@ -55,7 +55,7 @@ PARS_INFO_1106(DATA->parmin, DATA->parmax);
 //oksofar("about to declare EDCD");
 //printf("DALECmodel.EDCD = %p\n",DALECmodel.EDCD); //DALECmodel.EDCD Needs to be initilized!
 /*Initialize the EDCD structure*/
-EDCSETUP(*DATA,&DALECmodel.EDCD);
+EDCSETUP(DATA,&DALECmodel.EDCD);
 
 
 

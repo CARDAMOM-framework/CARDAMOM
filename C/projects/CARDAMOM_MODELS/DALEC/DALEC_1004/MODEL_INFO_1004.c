@@ -46,7 +46,7 @@ DATA->parmax=calloc(DATA->nopars,sizeof(double));
 */
 
 /*Mount EDC checks here*/
-EDCSETUP(*DATA,&DALECmodel.EDCD);
+EDCSETUP(DATA,&DALECmodel.EDCD);
 
 
 

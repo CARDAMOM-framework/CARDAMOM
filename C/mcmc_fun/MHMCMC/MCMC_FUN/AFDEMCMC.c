@@ -15,8 +15,8 @@
 /*N chains (N>=3)*/
 
 double *AFDEMCMC(
-double (MODEL_LIKELIHOOD)(DATA, double *),
-DATA DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCO, MCMC_OUTPUT *MCOUT){
+double (MODEL_LIKELIHOOD)(DATA *, double *),
+DATA *DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCO, MCMC_OUTPUT *MCOUT){
 printf("DEBUG: Successfully entered AFDEMCMC!\n"); fflush(stdout);
 /* ***********INPUTS************
  *

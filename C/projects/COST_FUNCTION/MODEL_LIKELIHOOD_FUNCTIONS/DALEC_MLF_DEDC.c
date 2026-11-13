@@ -6,14 +6,14 @@
 
 
 
-double DALEC_MLF_DEDC(DATA DATA,double *PARS){
+double DALEC_MLF_DEDC(DATA *DATA,double *PARS){
 
-    memcpy(DATA.M_PARS, PARS, DATA.nopars*sizeof(double));
+    memcpy(DATA->M_PARS, PARS, DATA->nopars*sizeof(double));
 
  
 
 /*Copy model pointer for brevity*/
-DALEC *MODEL=(DALEC *)DATA.MODEL;
+DALEC *MODEL=(DALEC *)DATA->MODEL;
 
 struct EDCDIAGNOSTIC EDCD;
 /*Copy default structure*/
@@ -26,7 +26,7 @@ EDCD.pEDC=0;
 
 
 
-if (DATA.ncdf_data.EDC==1){
+if (DATA->ncdf_data.EDC==1){
 MODEL->edc1(PARS,DATA, &EDCD);
 P=P+EDCD.pEDC;}
 
@@ -43,7 +43,7 @@ MODEL->dalec(DATA, PARS);
 
 
 /*EDC2 check*/
-if (DATA.ncdf_data.EDC==1){
+if (DATA->ncdf_data.EDC==1){
 
     MODEL->edc2(PARS, DATA, &EDCD);
 P=P+EDCD.pEDC;
@@ -59,7 +59,7 @@ P=P+LIKELIHOOD(DATA);
 
 
 /*saving likelihood P*/
-DATA.M_P[0]=P;
+DATA->M_P[0]=P;
 
 
 

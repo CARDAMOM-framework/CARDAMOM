@@ -47,7 +47,7 @@ PARS_INFO_1045(DATA);
 
 
 /*Initialize the EDCD structure*/
-EDCSETUP(*DATA,&DALECmodel.EDCD);
+EDCSETUP(DATA,&DALECmodel.EDCD);
 
 
 

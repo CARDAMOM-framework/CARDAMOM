@@ -1,5 +1,5 @@
 #pragma once
-int EDC1_410(double const *pars, DATA DATA,struct EDCDIAGNOSTIC *EDCD)
+int EDC1_410(double const *pars, DATA *DATA,struct EDCDIAGNOSTIC *EDCD)
 {
 
 /*This function was created on 7 Jan 2014*/
@@ -7,8 +7,8 @@ int EDC1_410(double const *pars, DATA DATA,struct EDCDIAGNOSTIC *EDCD)
 /*EDC1 contains all checks that do not require a full DALEC_CDEA (DALEC2) model run*/
 
 
-double meantemp=DATA.meantemp;
-double meanrad=DATA.meanrad;
+double meantemp=DATA->meantemp;
+double meanrad=DATA->meanrad;
 
 
 /*ALL EDCs set as 1 initially*/

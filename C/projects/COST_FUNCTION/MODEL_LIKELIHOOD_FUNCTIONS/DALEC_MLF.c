@@ -13,15 +13,15 @@
         
         
 
-double DALEC_MLF(DATA DATA,double *PARS){
+double DALEC_MLF(DATA *DATA,double *PARS){
 //copy pars to M_PARS for export
-int n; for (n=0;n<DATA.nopars;n++){DATA.M_PARS[n]=PARS[n];}
+int n; for (n=0;n<DATA->nopars;n++){DATA->M_PARS[n]=PARS[n];}
 //printf("DATA.nopars = %i\n",DATA.nopars);
 //printf("PARS[16] = %2.2f\n",PARS[16]);
 //printf("DATA.M_PARS[16] = %2.2f\n",DATA.M_PARS[16]);
 
 /*Copy model pointer for brevity*/
-DALEC *MODEL=(DALEC *)DATA.MODEL;
+DALEC *MODEL=(DALEC *)DATA->MODEL;
 
 struct EDCDIAGNOSTIC EDCD;
 /*Copy default structure*/
@@ -33,7 +33,7 @@ int n; for (n=0;n<EDCD->nedc;n++){EDCD->PASSFAIL[n]=1;}
 int EDC;
 double P=0;//P_p;
 
-EDC=ipow(MODEL->edc1(PARS,DATA, &EDCD),DATA.ncdf_data.EDC);
+EDC=ipow(MODEL->edc1(PARS,DATA, &EDCD),DATA->ncdf_data.EDC);
 P=P+log((double)EDC);
 
 
@@ -50,7 +50,7 @@ MODEL->dalec(DATA, PARS);
 
 /*EDC2 check*/
 EDC=MODEL->edc2(PARS, DATA, &EDCD);
-EDC=ipow(EDC,DATA.ncdf_data.EDC);
+EDC=ipow(EDC,DATA->ncdf_data.EDC);
 
 /*LIKELIHOOD*/
 P=P+log((double)EDC);
@@ -62,11 +62,11 @@ if (EDC==1){P=P+LIKELIHOOD(DATA);}}
 
 
 /*saving EDCD if EDCDIAG==1*/
-if (DATA.ncdf_data.EDCDIAG==1){for (n=0;n<100;n++){DATA.M_EDCD[n]=EDCD.PASSFAIL[n];}}
+if (DATA->ncdf_data.EDCDIAG==1){for (n=0;n<100;n++){DATA->M_EDCD[n]=EDCD.PASSFAIL[n];}}
 
 
 /*saving likelihood P*/
-DATA.M_P[0]=P;
+DATA->M_P[0]=P;
 
 /*Returning the log likelihood P*/
 return P;
@@ -98,10 +98,10 @@ int DALEC_MLF_MODCONFIG(MLF* MLF){
 
 
 
-double EDC_DALEC_MLF_STEPWISE(DATA DATA, double *PARS){
+double EDC_DALEC_MLF_STEPWISE(DATA *DATA, double *PARS){
 
 /*Copy model pointer for brevity*/
-DALEC *MODEL=(DALEC *)DATA.MODEL;
+DALEC *MODEL=(DALEC *)DATA->MODEL;
 
 /*Independend EDCD structure: stores detailed EDC info, and provides DATA with result summary*/
 struct EDCDIAGNOSTIC EDCD;
@@ -131,12 +131,12 @@ for (n=0;n<EDCD.nedc;n++){
 tot_exp+=1-ipow(EDCD.PASSFAIL[n],EDCD.SWITCH[n]);}
 
 
-P=-0.5*((double)tot_exp*10)*(double)DATA.ncdf_data.EDC;
+P=-0.5*((double)tot_exp*10)*(double)DATA->ncdf_data.EDC;
 
 
 /*overriding if model likelihood is zero or erroneous*/
 
-double ML=DATA.MLF(DATA,PARS);
+double ML=DATA->MLF(DATA,PARS);
 if (( isinf(ML)==-1 || isinf(ML)==1 || isnan(ML) )){
 P=P-0.5*10;}
 
@@ -153,11 +153,11 @@ return P;
 
 
 
-double EDC_DALEC_MLF_BINARY(DATA DATA, double *PARS){
+double EDC_DALEC_MLF_BINARY(DATA *DATA, double *PARS){
 
 
 /*Copy model pointer for brevity*/
-DALEC *MODEL=(DALEC *)DATA.MODEL;
+DALEC *MODEL=(DALEC *)DATA->MODEL;
 
 /*Independend EDCD structure: stores detailed EDC info, and provides DATA with result summary*/
 struct EDCDIAGNOSTIC EDCD;
@@ -190,7 +190,7 @@ P=0;
 
 /*overriding if model likelihood is zero or erroneous*/
 
-double ML=DATA.MLF(DATA,PARS);
+double ML=DATA->MLF(DATA,PARS);
 if (( isinf(ML)==-1 || isinf(ML)==1 || isnan(ML) )){
 P=log(0);}
 else 

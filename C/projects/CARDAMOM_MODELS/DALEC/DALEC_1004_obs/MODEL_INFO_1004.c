@@ -50,7 +50,7 @@ printf("DALECmodel.nopars = %i\n",DALECmodel.nopars);
 oksofar("about to declare EDCD");
 printf("DALECmodel.EDCD = %p\n",DALECmodel.EDCD);
 /*Initialize the EDCD structure*/
-EDCSETUP(*DATA,&DALECmodel.EDCD);
+EDCSETUP(DATA,&DALECmodel.EDCD);
 oksofar("done with declaration");
 
 

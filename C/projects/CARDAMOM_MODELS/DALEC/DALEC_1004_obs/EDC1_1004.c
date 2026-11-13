@@ -1,5 +1,5 @@
 #pragma once
-double EDC1_1004(double const *pars, DATA DATA)
+double EDC1_1004(double const *pars, DATA *DATA)
 {
 
 
@@ -26,8 +26,8 @@ double EDC1_1004(double const *pars, DATA DATA)
 
 
 
-double meantemp=DATA.meantemp;
-double meanrad=DATA.meanrad;
+double meantemp=DATA->meantemp;
+double meanrad=DATA->meanrad;
 
 
 /*This function was created on 7 Jan 2014*/

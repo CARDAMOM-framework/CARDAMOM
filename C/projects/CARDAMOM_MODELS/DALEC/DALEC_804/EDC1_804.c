@@ -1,12 +1,12 @@
 #pragma once
-int EDC1_804(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC1_804(double const *pars, DATA *DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
 /*EDCD=EDCD2;*/
 
 
-double meantemp=DATA.meantemp;
-double meanrad=DATA.meanrad;
+double meantemp=DATA->meantemp;
+double meanrad=DATA->meanrad;
 
 /*This function was created on 7 Jan 2014*/
 /*Rules here are specified as in Bloom et al., 2014 paper*/

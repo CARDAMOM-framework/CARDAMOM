@@ -199,7 +199,7 @@ return 0;}
 
 
 
-int DALEC_1090(DATA DATA, double const *pars)
+int DALEC_1090(DATA *DATA, double const *pars)
 {
 
 
@@ -217,17 +217,17 @@ int n=0,nn=0;
 double pi=3.1415927;
 
 
-double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.values[0];
-int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
+double deltat=DATA->ncdf_data.TIME_INDEX.values[1] - DATA->ncdf_data.TIME_INDEX.values[0];
+int N_timesteps=DATA->ncdf_data.TIME_INDEX.length;
 
 
  double constants[10]={pars[P.canopy_eff],0.0156935,4.22273,208.868,0.0453194,0.37836,7.19298, 0.011136,2.1001,0.789798};
 
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
-double *FLUXES=DATA.M_FLUXES;
-double *POOLS=DATA.M_POOLS;
-double *LAI=DATA.M_LAI;
-// double *NEE=DATA.M_NEE;
+double *FLUXES=DATA->M_FLUXES;
+double *POOLS=DATA->M_POOLS;
+double *LAI=DATA->M_LAI;
+// double *NEE=DATA->M_NEE;
 
   /*assigning values to pools*/
   /*L,F,R,W,Lit,SOM*/
@@ -241,19 +241,19 @@ double *LAI=DATA.M_LAI;
   POOLS[S.H2O_PAW]=pars[P.i_PAW];
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
 
-double *SSRD=DATA.ncdf_data.SSRD.values;
-double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
-double *T2M_MAX=DATA.ncdf_data.T2M_MAX.values;
-double *CO2=DATA.ncdf_data.CO2.values;
-double *DOY=DATA.ncdf_data.DOY.values;
-double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
-double *VPD=DATA.ncdf_data.VPD.values;
-double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
-double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
+double *SSRD=DATA->ncdf_data.SSRD.values;
+double *T2M_MIN=DATA->ncdf_data.T2M_MIN.values;
+double *T2M_MAX=DATA->ncdf_data.T2M_MAX.values;
+double *CO2=DATA->ncdf_data.CO2.values;
+double *DOY=DATA->ncdf_data.DOY.values;
+double *PREC=DATA->ncdf_data.TOTAL_PREC.values;
+double *VPD=DATA->ncdf_data.VPD.values;
+double *BURNED_AREA=DATA->ncdf_data.BURNED_AREA.values;
+double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
 
-double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
-double meanrad = DATA.ncdf_data.SSRD.reference_mean;
-double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
+double meantemp = (DATA->ncdf_data.T2M_MAX.reference_mean + DATA->ncdf_data.T2M_MIN.reference_mean)/2;
+double meanrad = DATA->ncdf_data.SSRD.reference_mean;
+double meanprec = DATA->ncdf_data.TOTAL_PREC.reference_mean;
 
 
 
@@ -294,13 +294,13 @@ CF[S.C_som]=pars[P.cf_DOM];
 
 
 /*number of MET drivers*/
-// int nomet=((DALEC *)DATA.MODEL)->nomet;
+// int nomet=((DALEC *)DATA->MODEL)->nomet;
 
 /*number of DALEC pools*/
-int nopools=((DALEC *)DATA.MODEL)->nopools;
+int nopools=((DALEC *)DATA->MODEL)->nopools;
 
 /*number of DALEC fluxes to store*/
-int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
+int nofluxes=((DALEC *)DATA->MODEL)->nofluxes;
 
 
 /*repeating loop for each timestep*/
@@ -327,7 +327,7 @@ double DA = 23.45*sin((284+DOY[n])*2*pi/365); //Deviation angle
 double LST = (int) (DOY[n]*24*60) % (24*60);
 double AST = LST+ET1;
 double h = (AST-12*60)/4; //hour angle
-double alpha = asin((sin(pi/180*DATA.ncdf_data.LAT)*sin(pi/180*DA)+cos(pi/180*DATA.ncdf_data.LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
+double alpha = asin((sin(pi/180DATA->ncdf_data.LAT)*sin(pi/180*DA)+cos(pi/180DATA->ncdf_data.LAT)*cos(pi/180.*DA)*cos(pi/180*h)))*180/pi; //solar altitude
 double zenith_angle = 90-alpha;
 double LAD = 1.0; //leaf angle distribution
 double VegK = sqrt(pow(LAD,2)+ pow(tan(zenith_angle/180*pi),2))/(LAD+1.774*pow((1+1.182),-0.733)); //Campbell and Norman 1998

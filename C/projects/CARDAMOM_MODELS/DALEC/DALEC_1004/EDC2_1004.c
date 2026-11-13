@@ -8,19 +8,19 @@
 #include "stdio.h"
 
 
-int EDC2_1004(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC2_1004(double const *pars, DATA *DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
 /*Extract DALEC model here*/
 /*Copy model pointer for brevity*/
-DALEC *MODEL=(DALEC *)DATA.MODEL;
+DALEC *MODEL=(DALEC *)DATA->MODEL;
 
-double *MET=DATA.MET;
-double *POOLS=DATA.M_POOLS;
-double *FLUXES=DATA.M_FLUXES;
-int nodays=DATA.nodays;
-double *parmax=DATA.parmax;
-double meantemp=DATA.meantemp;
+double *MET=DATA->MET;
+double *POOLS=DATA->M_POOLS;
+double *FLUXES=DATA->M_FLUXES;
+int nodays=DATA->nodays;
+double *parmax=DATA->parmax;
+double meantemp=DATA->meantemp;
 
 /*EDCD=EDCD2;*/
 
@@ -74,7 +74,7 @@ MPOOLSjan[n]=MPOOLSjan[n]+POOLS[nopools*(m*dint)+n]/(nodays/dint+1);}}
 /*EDC no 6*/
 /*0.2*Cf < Cr < 5*Cf*/
 /*Cfoliar : Croot = 5:1 or 1:5*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[6-1]==1)) & (MPOOLS[1]>MPOOLS[2]*5 | MPOOLS[1]*5<MPOOLS[2])){EDC=ipow(0,EDCD->SWITCH[6-1]);DATA.M_EDCD[6-1]=0; }
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[6-1]==1)) & (MPOOLS[1]>MPOOLS[2]*5 | MPOOLS[1]*5<MPOOLS[2])){EDC=ipow(0,EDCD->SWITCH[6-1]);DATA->M_EDCD[6-1]=0; }
 
 
 /*equilibrium factor (in comparison to C_initial)*/
@@ -149,7 +149,7 @@ Rs=Rm*MPOOLSjan[n]/Pstart;
 
 if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[7-1+n]==1))
 & ((fabs(log(Rs))>log(EQF)) || (fabs(Rs-Rm)>etol)))
-{EDC=ipow(0,EDCD->SWITCH[7-1+n]);DATA.M_EDCD[7-1+n]=0;}
+{EDC=ipow(0,EDCD->SWITCH[7-1+n]);DATA->M_EDCD[7-1+n]=0;}
 
 
 /*storing EDCPROB: i.e. the log probability of each EDC based on a gaussian representation*/
@@ -168,12 +168,12 @@ printf("Rm = %f\n",Rm);
 printf("Rs = %f\n",Rs);
 printf("log(EQF) = %f\n",log(EQF));
 printf("etol = %f\n",etol);
-printf("DATA.M_EDCD[7-1+n] = %i\n",DATA.M_EDCD[7-1+n]);
+printf("DATA.M_EDCD[7-1+n] = %i\n",DATA->M_EDCD[7-1+n]);
 printf("****\n");}}
 
 
 /*Ensuring that wilting point is at or below the mean H2O pool EDC14*/
-if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[15-1]==1)) & (pars[25]>MPOOLS[6])){EDC=ipow(0,EDCD->SWITCH[15-1]);DATA.M_EDCD[15-1]=0;}
+if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[15-1]==1)) & (pars[25]>MPOOLS[6])){EDC=ipow(0,EDCD->SWITCH[15-1]);DATA->M_EDCD[15-1]=0;}
 
 /***********************EDCs done here****************************/
 
@@ -184,7 +184,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[15-1]==1)
 /*PRIOR RANGES - ALL POOLS MUST CONFORM*/
 int pidx[]={17,18,19,20,21,22,26,35};
 
-for (n=0;n<nopools-1;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;DATA.M_EDCD[35-1]=0;}}
+for (n=0;n<nopools-1;n++){if ((EDC==1 || DIAG==1) & ((MPOOLS[n])>parmax[pidx[n]])){EDC=0;DATA->M_EDCD[35-1]=0;}}
 
 
 int PEDC;
@@ -194,7 +194,7 @@ if (EDC==1 || DIAG==1)
 while ((n<nopools) & (EDC==1 || DIAG==1))
 {nn=0;PEDC=1;while ((nn<nodays+1) & (PEDC==1))
 {if ((POOLS[n+nn*nopools]<0) || isnan(POOLS[n+nn*nopools])==1)
-{EDC=0;PEDC=0;DATA.M_EDCD[35+n]=0;}nn=nn+1;};
+{EDC=0;PEDC=0;DATA->M_EDCD[35+n]=0;}nn=nn+1;};
 n=n+1;
 }
 }
@@ -220,7 +220,7 @@ free(MPOOLSjan);
 
 /*final check confirming EDC = 1 or 0*/
 int Num_EDC=100;
-if (DIAG==1){for (n=0;n<Num_EDC;n++){if (DATA.M_EDCD[n]==0){EDC=0;}}}
+if (DIAG==1){for (n=0;n<Num_EDC;n++){if (DATA->M_EDCD[n]==0){EDC=0;}}}
 
 
 

@@ -8,7 +8,7 @@
 #include "stdio.h"
 
 
-int EDC2_1005(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC2_1005(double const *pars, DATA *DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
 struct DALEC_1005_PARAMETERS P=DALEC_1005_PARAMETERS;
@@ -17,15 +17,15 @@ struct DALEC_1005_POOLS S=DALEC_1005_POOLS;
 
 /*Extract DALEC model here*/
 /*Copy model pointer for brevity*/
-DALEC *MODEL=(DALEC *)DATA.MODEL;
+DALEC *MODEL=(DALEC *)DATA->MODEL;
 
-double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
-double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
-double *POOLS=DATA.M_POOLS;
-double *FLUXES=DATA.M_FLUXES;
-int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
-double *parmax=DATA.parmax;
-double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
+double *PREC=DATA->ncdf_data.TOTAL_PREC.values;
+double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
+double *POOLS=DATA->M_POOLS;
+double *FLUXES=DATA->M_FLUXES;
+int N_timesteps=DATA->ncdf_data.TIME_INDEX.length;
+double *parmax=DATA->parmax;
+double meantemp = (DATA->ncdf_data.T2M_MAX.reference_mean + DATA->ncdf_data.T2M_MIN.reference_mean)/2;
 /*EDCD=EDCD2;*/
 
 /* EDC2_SUMMARY
@@ -82,7 +82,7 @@ if (((EDC==1 & DIAG==0) || DIAG==1 || (EDC==1 & DIAG==2 & EDCD->SWITCH[6-1]==1))
 
 
 /*equilibrium factor (in comparison to C_initial)*/
-double EQF=DATA.ncdf_data.EDC_EQF;
+double EQF=DATA->ncdf_data.EDC_EQF;
 
 /*Total fluxes*/
 double *FT;

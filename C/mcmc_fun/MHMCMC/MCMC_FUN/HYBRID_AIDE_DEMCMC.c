@@ -16,8 +16,8 @@
  *an initial HYBRID_AIDE phase followed by standard CARDAMOM DEMCMC proposals.
  *No archive is used; both phases draw proposal information from live chains.*/
 double *HYBRID_AIDE_DEMCMC(
-double (MODEL_LIKELIHOOD)(DATA, double *),
-DATA DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCO, MCMC_OUTPUT *MCOUT){
+double (MODEL_LIKELIHOOD)(DATA *, double *),
+DATA *DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCO, MCMC_OUTPUT *MCOUT){
 
 printf("CARDAMOM: Successfully entered HYBRID_AIDE_DEMCMC!\n"); fflush(stdout);
 

@@ -191,38 +191,38 @@ return 0;
 
 
 
-int FREE_DATA_STRUCT(DATA DATA){
+int FREE_DATA_STRUCT(DATA *DATA){
 
 
 //Cost function observations
-free(DATA.M_ABGB);
-free(DATA.M_CH4);
-free(DATA.M_DOM);
-free(DATA.M_ET);
-free(DATA.M_LE);
-free(DATA.M_H);
-free(DATA.M_ROFF);
-free(DATA.M_EWT);
-free(DATA.M_GPP);
-free(DATA.M_SIF);
-free(DATA.M_LAI);
-free(DATA.M_FIR);
-free(DATA.M_NBE);
+free(DATA->M_ABGB);
+free(DATA->M_CH4);
+free(DATA->M_DOM);
+free(DATA->M_ET);
+free(DATA->M_LE);
+free(DATA->M_H);
+free(DATA->M_ROFF);
+free(DATA->M_EWT);
+free(DATA->M_GPP);
+free(DATA->M_SIF);
+free(DATA->M_LAI);
+free(DATA->M_FIR);
+free(DATA->M_NBE);
 
 
 
 
 
 
-free(DATA.M_PARS);
-free(DATA.M_FLUXES);
-free(DATA.M_POOLS);
-free(DATA.M_P);
-free(DATA.M_EDCD);
+free(DATA->M_PARS);
+free(DATA->M_FLUXES);
+free(DATA->M_POOLS);
+free(DATA->M_P);
+free(DATA->M_EDCD);
 
-free(DATA.parmin);
-free(DATA.parmax);
-free(DATA.parname);
+free(DATA->parmin);
+free(DATA->parmax);
+free(DATA->parname);
 
 return 0;
 

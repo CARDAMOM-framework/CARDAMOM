@@ -295,7 +295,7 @@ return 0;}
 
 
 
-int DALEC_1101(DATA DATA, double const *pars){
+int DALEC_1101(DATA *DATA, double const *pars){
     
 
 
@@ -312,15 +312,15 @@ int n=0,nn=0;
 double pi=3.1415927;
 
 
-double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.values[0];
-int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
+double deltat=DATA->ncdf_data.TIME_INDEX.values[1] - DATA->ncdf_data.TIME_INDEX.values[0];
+int N_timesteps=DATA->ncdf_data.TIME_INDEX.length;
 
 
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
-double *FLUXES=DATA.M_FLUXES;
-double *POOLS=DATA.M_POOLS;
-double *LAI=DATA.M_LAI;
-// double *NEE=DATA.M_NEE;
+double *FLUXES=DATA->M_FLUXES;
+double *POOLS=DATA->M_POOLS;
+double *LAI=DATA->M_LAI;
+// double *NEE=DATA->M_NEE;
 
   /*assigning values to pools*/
 
@@ -337,20 +337,20 @@ double *LAI=DATA.M_LAI;
   POOLS[S.H2O_PUW]=pars[P.i_PUW];
   POOLS[S.H2O_SWE]=pars[P.i_SWE];
 
-double *SSRD=DATA.ncdf_data.SSRD.values;
-double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
-double *T2M_MAX=DATA.ncdf_data.T2M_MAX.values;
-double *CO2=DATA.ncdf_data.CO2.values;
-double *DOY=DATA.ncdf_data.DOY.values;
-double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
-double *VPD=DATA.ncdf_data.VPD.values;
-double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
-double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
-double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
+double *SSRD=DATA->ncdf_data.SSRD.values;
+double *T2M_MIN=DATA->ncdf_data.T2M_MIN.values;
+double *T2M_MAX=DATA->ncdf_data.T2M_MAX.values;
+double *CO2=DATA->ncdf_data.CO2.values;
+double *DOY=DATA->ncdf_data.DOY.values;
+double *PREC=DATA->ncdf_data.TOTAL_PREC.values;
+double *VPD=DATA->ncdf_data.VPD.values;
+double *BURNED_AREA=DATA->ncdf_data.BURNED_AREA.values;
+double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
+double *SNOWFALL=DATA->ncdf_data.SNOWFALL.values;
 
-double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
-double meanrad = DATA.ncdf_data.SSRD.reference_mean;
-double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
+double meantemp = (DATA->ncdf_data.T2M_MAX.reference_mean + DATA->ncdf_data.T2M_MIN.reference_mean)/2;
+double meanrad = DATA->ncdf_data.SSRD.reference_mean;
+double meanprec = DATA->ncdf_data.TOTAL_PREC.reference_mean;
 
 /* jc prep input for methane module*/
 double ch4pars[7]={pars[P.S_fv],pars[P.thetas_opt],pars[P.fwc],pars[P.r_ch4],pars[P.Q10ch4],pars[P.Q10rhco2],meantemp};
@@ -394,13 +394,13 @@ CF[S.C_som]=pars[P.cf_DOM];
 
 
 /*number of MET drivers*/
-// int nomet=((DALEC *)DATA.MODEL)->nomet;
+// int nomet=((DALEC *)DATA->MODEL)->nomet;
 
 /*number of DALEC pools*/
-int nopools=((DALEC *)DATA.MODEL)->nopools;
+int nopools=((DALEC *)DATA->MODEL)->nopools;
 
 /*number of DALEC fluxes to store*/
-int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
+int nofluxes=((DALEC *)DATA->MODEL)->nofluxes;
 
 
 /*repeating loop for each timestep*/
@@ -420,7 +420,7 @@ f=nofluxes*n;
 LAI[n]=POOLS[p+S.C_fol]/pars[P.LCMA]; 
 
 
-double zenith_angle=DATA.ncdf_data.SZA[n];
+double zenith_angle=DATA->ncdf_data.SZA[n];
 double LAD = 0.5; //leaf angle distribution
 double VegK = LAD/cos(zenith_angle/180*pi);
 
@@ -577,7 +577,7 @@ FLUXES[f+F.fCH4] = jcr_o[3];
 /* PAW/PAW_fs thetas*/
 FLUXES[f+F.soil_moist] = thetas;
 /* CH4 production=TEMP*RH*WEXT*Q10 */
-/*FLUXES[f+32] = ch4pars[0]*(FLUXES[f+12]+FLUXES[f+13])*pow(ch4pars[1],(0.5*(DATA.MET[m+2]+DATA.MET[m+1])-15)/10)*ch4pars[2];*/
+/*FLUXES[f+32] = ch4pars[0]*(FLUXES[f+12]+FLUXES[f+13])*pow(ch4pars[1],(0.5*(DATA->MET[m+2]+DATA->MET[m+1])-15)/10)*ch4pars[2];*/
 /*----------------------  end of JCR  --------------------------------------------*/
 
 /*CWD to SOM*/

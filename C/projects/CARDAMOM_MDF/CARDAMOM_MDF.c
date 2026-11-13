@@ -23,7 +23,7 @@
 #include <time.h>
      
 /*MCMC OPTIONS*/
-int READ_MCOPT(MCMC_OPTIONS *MCOPT, DATA DATA, char *outfile){
+int READ_MCOPT(MCMC_OPTIONS *MCOPT, DATA *DATA, char *outfile){
 /*number of command line imputs*/
 
 /*defining MCMC_OPTIONS structure*/
@@ -32,16 +32,16 @@ MCOPT->APPEND=0;
 MCOPT->fADAPT=0.5;
 
 
-MCOPT->nOUT=DATA.ncdf_data.MCMCID.nITERATIONS;
+MCOPT->nOUT=DATA->ncdf_data.MCMCID.nITERATIONS;
 MCOPT->nSTART=0;
-MCOPT->nPRINT=DATA.ncdf_data.MCMCID.nPRINT;
-MCOPT->nWRITE=DATA.ncdf_data.MCMCID.nWRITE;
-MCOPT->minstepsize=DATA.ncdf_data.MCMCID.minstepsize;
-MCOPT->mcmcid=DATA.ncdf_data.MCMCID.value;
-MCOPT->nADAPT=DATA.ncdf_data.MCMCID.nADAPT;
-MCOPT->fADAPT=DATA.ncdf_data.MCMCID.fADAPT;
+MCOPT->nPRINT=DATA->ncdf_data.MCMCID.nPRINT;
+MCOPT->nWRITE=DATA->ncdf_data.MCMCID.nWRITE;
+MCOPT->minstepsize=DATA->ncdf_data.MCMCID.minstepsize;
+MCOPT->mcmcid=DATA->ncdf_data.MCMCID.value;
+MCOPT->nADAPT=DATA->ncdf_data.MCMCID.nADAPT;
+MCOPT->fADAPT=DATA->ncdf_data.MCMCID.fADAPT;
     
-if (DATA.ncdf_data.MCMCID.nSAMPLES==DEFAULT_INT_VAL){DATA.ncdf_data.MCMCID.nSAMPLES=2000;}
+if (DATA->ncdf_data.MCMCID.nSAMPLES==DEFAULT_INT_VAL){DATA->ncdf_data.MCMCID.nSAMPLES=2000;}
 if (MCOPT->nOUT==DEFAULT_INT_VAL){MCOPT->nOUT=10000;}
 if (MCOPT->nPRINT==DEFAULT_INT_VAL){MCOPT->nPRINT=1000;}
 if (MCOPT->minstepsize==DEFAULT_DOUBLE_VAL){MCOPT->minstepsize=1e-5;}
@@ -50,7 +50,7 @@ if (MCOPT->nADAPT==DEFAULT_INT_VAL){MCOPT->nADAPT=100;}
 if (MCOPT->fADAPT==DEFAULT_DOUBLE_VAL){MCOPT->fADAPT=0.05;}
 
 //Default nWRITE is derived from fields unless the MCMCID nWRITE attribute is set.
-if (MCOPT->nWRITE==DEFAULT_INT_VAL){MCOPT->nWRITE=MCOPT->nOUT/DATA.ncdf_data.MCMCID.nSAMPLES;}
+if (MCOPT->nWRITE==DEFAULT_INT_VAL){MCOPT->nWRITE=MCOPT->nOUT/DATA->ncdf_data.MCMCID.nSAMPLES;}
 
 
 printf("**********MCMCOPT SUMMARY*******\n");
@@ -59,7 +59,7 @@ printf("Starting iteration = %i\n",MCOPT->nSTART);
 printf("Number of iterations = %i\n",MCOPT->nOUT);
 printf("Print status every %i iterations \n",MCOPT->nPRINT);
 printf("Write parameters every %i iterations \n",MCOPT->nWRITE);
-printf("Number of samples requested (including burn-in) = %i\n",DATA.ncdf_data.MCMCID.nSAMPLES);
+printf("Number of samples requested (including burn-in) = %i\n",DATA->ncdf_data.MCMCID.nSAMPLES);
 printf("Burn in fraction = %2.2f\n",MCOPT->fADAPT);
 printf("MCMC ID= %i\n",MCOPT->mcmcid);
 
@@ -142,7 +142,7 @@ MCMC_OPTIONS MCOPT;
 /*ID=2 DE-MCMC*/
 /*Hard-coding number of chains for now (for DEMCMC)*/
 
-READ_MCOPT(&MCOPT,DATA, CBRfile);
+READ_MCOPT(&MCOPT,&DATA, CBRfile);
 
 if (MCOPT.mcmcid==119){MCOPT.nchains=1;}
 if (MCOPT.mcmcid==3){MCOPT.nchains=400;}
@@ -247,54 +247,54 @@ switch (MCOPT.mcmcid){
 
 case 119:
 printf("CARDAMOM_MDF.c: about to start MHMCMC (id = 119)\n");
-MHMCMC_119(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+MHMCMC_119(DATA.MLF,&DATA,PI,MCOPT,&MCOUT);
 printf("CARDAMOM_MDF.c: completed MHMCMC 119\n");
 break;
 case 2:
 printf("CARDAMOM_MDF.c: about to start DEMCMC\n");
-DEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+DEMCMC(DATA.MLF,&DATA,PI,MCOPT,&MCOUT);
 break;
 case 3:
 //MCOPT.fADAPT=0.05;
     //MCOPT.fADAPT=1;
 printf(" CARDAMOM_MDF.c: about to start ADEMCMC\n");
-ADEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+ADEMCMC(DATA.MLF,&DATA,PI,MCOPT,&MCOUT);
 break;
 case 4:
 //MCOPT.fADAPT=0.05;
     //MCOPT.fADAPT=1;
 printf("DEBUG: About to call AFDEMCMC...\n"); fflush(stdout);
-AFDEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+AFDEMCMC(DATA.MLF,&DATA,PI,MCOPT,&MCOUT);
 printf("DEBUG: Successfully returned from AFDEMCMC!\n"); fflush(stdout);
 break;
 case 5:
 printf("CARDAMOM_MDF.c: about to start DEMCMCZS\n");
-DEMCMCZS(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+DEMCMCZS(DATA.MLF,&DATA,PI,MCOPT,&MCOUT);
 printf("CARDAMOM_MDF.c: completed DEMCMCZS\n");
 break;
 case 6:
 printf("CARDAMOM_MDF.c: about to start AFDEMCMC (mode 6 hybrid production)\n");
-AFDEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+AFDEMCMC(DATA.MLF,&DATA,PI,MCOPT,&MCOUT);
 printf("CARDAMOM_MDF.c: completed AFDEMCMC (mode 6)\n");
 break;
 case 7:
 printf("CARDAMOM_MDF.c: about to start AFDEMCMCZS (mode 7 affine -> DEMCMCZS production)\n");
-AFDEMCMCZS(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+AFDEMCMCZS(DATA.MLF,&DATA,PI,MCOPT,&MCOUT);
 printf("CARDAMOM_MDF.c: completed AFDEMCMCZS (mode 7)\n");
 break;
 case 8:
 printf("CARDAMOM_MDF.c: about to start DREAMZS (mode 8)\n");
-DREAMZS(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+DREAMZS(DATA.MLF,&DATA,PI,MCOPT,&MCOUT);
 printf("CARDAMOM_MDF.c: completed DREAMZS (mode 8)\n");
 break;
 case 9:
 printf("CARDAMOM_MDF.c: about to start HYBRID_AIDE (mode 9)\n");
-HYBRID_AIDE(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+HYBRID_AIDE(DATA.MLF,&DATA,PI,MCOPT,&MCOUT);
 printf("CARDAMOM_MDF.c: completed HYBRID_AIDE (mode 9)\n");
 break;
 case 10:
 printf("CARDAMOM_MDF.c: about to start HYBRID_AIDE_DEMCMC (mode 10 AIDE -> DEMCMC)\n");
-HYBRID_AIDE_DEMCMC(DATA.MLF,DATA,PI,MCOPT,&MCOUT);
+HYBRID_AIDE_DEMCMC(DATA.MLF,&DATA,PI,MCOPT,&MCOUT);
 printf("CARDAMOM_MDF.c: completed HYBRID_AIDE_DEMCMC (mode 10)\n");
 break;
 
@@ -338,7 +338,7 @@ printf("***********************\n");
 
 /*???????*/
 /*User Defined function needed to clean up memory*/
-MEMORY_CLEANUP(DATA,PI,MCOPT,MCOUT);
+MEMORY_CLEANUP(&DATA,PI,MCOPT,MCOUT);
 
 
 return 0;

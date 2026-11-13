@@ -7,7 +7,7 @@
 See also Bloom & Williams 2015,  Fox et al., 2009; Williams et al., 1997*/
 
 
-int DALEC_101(DATA DATA, double const *pars)
+int DALEC_101(DATA *DATA, double const *pars)
 {
 
 double gpppars[11],pi;
@@ -19,20 +19,20 @@ pi=3.1415927;
 
 /*constant gpppars terms*/
 gpppars[3]=1;
-gpppars[6]=DATA.LAT;
+gpppars[6]=DATA->LAT;
 gpppars[8]=-2.0;
 gpppars[9]=1.0;
 gpppars[10]=pi;
 
-double deltat=DATA.deltat;
+double deltat=DATA->deltat;
 
  double constants[10]={pars[4],0.0156935,4.22273,208.868,0.0453194,0.37836,7.19298, 0.011136,2.1001,0.789798};
 
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
-double *FLUXES=DATA.M_FLUXES;
-double *POOLS=DATA.M_POOLS;
-double *LAI=DATA.M_LAI;
-double *NEE=DATA.M_NEE;
+double *FLUXES=DATA->M_FLUXES;
+double *POOLS=DATA->M_POOLS;
+double *LAI=DATA->M_LAI;
+double *NEE=DATA->M_NEE;
 
 
 
@@ -108,15 +108,15 @@ double CF[6]={0.1,0.9,0.1};
 double rfac=0.5;
 
 /*number of MET drivers*/
-int nomet=((DALEC *)DATA.MODEL)->nomet;
+int nomet=((DALEC *)DATA->MODEL)->nomet;
 
 /*number of DALEC pools*/
-int nopools=((DALEC *)DATA.MODEL)->nopools;
+int nopools=((DALEC *)DATA->MODEL)->nopools;
 
 /*number of DALEC fluxes to store*/
-int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
+int nofluxes=((DALEC *)DATA->MODEL)->nofluxes;
 
-int nr=DATA.nodays;
+int nr=DATA->nodays;
 
 
 /*repeating loop for each timestep*/
@@ -136,16 +136,16 @@ f=nofluxes*n;
 LAI[n]=POOLS[p+1]/pars[10]; 
 /*GPP*/
 gpppars[0]=LAI[n];
-gpppars[1]=DATA.MET[m+2];
-gpppars[2]=DATA.MET[m+1];
-gpppars[4]=DATA.MET[m+4];
-gpppars[5]=DATA.MET[m+5];
-gpppars[7]=DATA.MET[m+3];
+gpppars[1]=DATA->MET[m+2];
+gpppars[2]=DATA->MET[m+1];
+gpppars[4]=DATA->MET[m+4];
+gpppars[5]=DATA->MET[m+5];
+gpppars[7]=DATA->MET[m+3];
 
 
 FLUXES[f+0]=ACM(gpppars,constants);
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
-FLUXES[f+1]=exp(pars[3]*0.5*(DATA.MET[m+2]+DATA.MET[m+1]));
+FLUXES[f+1]=exp(pars[3]*0.5*(DATA->MET[m+2]+DATA->MET[m+1]));
 /*respiration auto*/
 FLUXES[f+2]=pars[1]*FLUXES[f+0];
 /*leaf production*/
@@ -157,9 +157,9 @@ FLUXES[f+5] = 0; /*(FLUXES[f+0]-FLUXES[f+2]-FLUXES[f+3]-FLUXES[f+4])*0*/;
 /*wood AND root production*/       
 FLUXES[f+6] = FLUXES[f+0]-FLUXES[f+2]-FLUXES[f+5]-FLUXES[f+4]; 
 /*leaf fall factor*/
-FLUXES[f+8] = (2/sqrt(pi))*(ff/wf)*exp(-pow(sin((DATA.MET[m+0]-pars[8]+osf)/sf)*sf/wf,2));
+FLUXES[f+8] = (2/sqrt(pi))*(ff/wf)*exp(-pow(sin((DATA->MET[m+0]-pars[8]+osf)/sf)*sf/wf,2));
 /*Labrelease factor*/
-FLUXES[f+15]=(2/sqrt(pi))*(fl/wl)*exp(-pow(sin((DATA.MET[m+0]-pars[5]+osl)/sf)*sf/wl,2));
+FLUXES[f+15]=(2/sqrt(pi))*(fl/wl)*exp(-pow(sin((DATA->MET[m+0]-pars[5]+osl)/sf)*sf/wl,2));
 /*labile release - re-arrange order in next versions*/
 FLUXES[f+7] = POOLS[p+0]*(1-pow(1-FLUXES[f+15],deltat))/deltat;
 /*leaf litter production*/       

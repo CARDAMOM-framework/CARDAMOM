@@ -1,5 +1,5 @@
 #pragma once
-int EDC1_1030(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC1_1030(double const *pars, DATA *DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
 /*EDCD=EDCD2;*/
@@ -15,8 +15,8 @@ int EDC1_1030(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 
 
 
-double meantemp=DATA.meantemp;
-double meanrad=DATA.meanrad;
+double meantemp=DATA->meantemp;
+double meanrad=DATA->meanrad;
 
 
 /*This function was created on 7 Jan 2014*/

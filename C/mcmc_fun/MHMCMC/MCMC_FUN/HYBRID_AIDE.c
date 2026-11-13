@@ -15,8 +15,8 @@
  *translation moves and affine stretch moves inside each proposal. No archive is
  *used; the proposal source is the live ensemble, like modes 3 and 4.*/
 double *HYBRID_AIDE(
-double (MODEL_LIKELIHOOD)(DATA, double *),
-DATA DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCO, MCMC_OUTPUT *MCOUT){
+double (MODEL_LIKELIHOOD)(DATA *, double *),
+DATA *DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCO, MCMC_OUTPUT *MCOUT){
 
 printf("CARDAMOM: Successfully entered HYBRID_AIDE!\n"); fflush(stdout);
 

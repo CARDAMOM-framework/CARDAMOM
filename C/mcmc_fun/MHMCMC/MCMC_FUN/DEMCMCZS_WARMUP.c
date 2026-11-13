@@ -12,8 +12,8 @@
  *restart support - this is only ever an intermediate step feeding into a
  *subsequent sampler, not a saved result in its own right.*/
 void RUN_DEMCMCZS_WARMUP(
-double (MODEL_LIKELIHOOD)(DATA, double *),
-DATA DATA, PARAMETER_INFO PI, int NC, int niter, double *parini){
+double (MODEL_LIKELIHOOD)(DATA *, double *),
+DATA *DATA, PARAMETER_INFO PI, int NC, int niter, double *parini){
 
 int M0=10*PI.npars;
 if (M0<NC){M0=NC;}

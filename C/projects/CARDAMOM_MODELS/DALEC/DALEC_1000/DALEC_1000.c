@@ -69,7 +69,7 @@ return 0;}
 
 
 
-int DALEC_1000(DATA DATA, double const *pars)
+int DALEC_1000(DATA *DATA, double const *pars)
 {
 
 double gpppars[11],pi;
@@ -81,25 +81,25 @@ pi=3.1415927;
 
 /*constant gpppars terms*/
 gpppars[3]=1;
-gpppars[6]=DATA.ncdf_data.LAT;
+gpppars[6]=DATA->ncdf_data.LAT;
 gpppars[8]=-2.0;
 gpppars[9]=1.0;
 gpppars[10]=pi;
 
-double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.values[0];
-int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
+double deltat=DATA->ncdf_data.TIME_INDEX.values[1] - DATA->ncdf_data.TIME_INDEX.values[0];
+int N_timesteps=DATA->ncdf_data.TIME_INDEX.length;
 
 
  double constants[10]={pars[10],0.0156935,4.22273,208.868,0.0453194,0.37836,7.19298, 0.011136,2.1001,0.789798};
 
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
-double *FLUXES=DATA.M_FLUXES;
-double *POOLS=DATA.M_POOLS;
-double *LAI=DATA.M_LAI;
+double *FLUXES=DATA->M_FLUXES;
+double *POOLS=DATA->M_POOLS;
+double *LAI=DATA->M_LAI;
 
 
-//double *LAI=DATA.M_LAI;
-//double *NEE=DATA.M_NEE;
+//double *LAI=DATA->M_LAI;
+//double *NEE=DATA->M_NEE;
 
   /*assigning values to pools*/
   /*L,F,R,W,Lit,DOM*/
@@ -116,19 +116,19 @@ POOLS[7]=pars[35];
 
 
 
-double *SSRD=DATA.ncdf_data.SSRD.values;
-double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
-double *T2M_MAX=DATA.ncdf_data.T2M_MAX.values;
-double *CO2=DATA.ncdf_data.CO2.values;
-double *DOY=DATA.ncdf_data.DOY.values;
-double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
-double *VPD=DATA.ncdf_data.VPD.values;
-double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
-double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
+double *SSRD=DATA->ncdf_data.SSRD.values;
+double *T2M_MIN=DATA->ncdf_data.T2M_MIN.values;
+double *T2M_MAX=DATA->ncdf_data.T2M_MAX.values;
+double *CO2=DATA->ncdf_data.CO2.values;
+double *DOY=DATA->ncdf_data.DOY.values;
+double *PREC=DATA->ncdf_data.TOTAL_PREC.values;
+double *VPD=DATA->ncdf_data.VPD.values;
+double *BURNED_AREA=DATA->ncdf_data.BURNED_AREA.values;
+double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
 
-double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
-double meanrad = DATA.ncdf_data.SSRD.reference_mean;
-double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
+double meantemp = (DATA->ncdf_data.T2M_MAX.reference_mean + DATA->ncdf_data.T2M_MIN.reference_mean)/2;
+double meanrad = DATA->ncdf_data.SSRD.reference_mean;
+double meanprec = DATA->ncdf_data.TOTAL_PREC.reference_mean;
 
 /* NOTES FOR POOLS AND FLUXES
 
@@ -204,13 +204,13 @@ CF[5]=pars[29];
 
 
 /*number of MET drivers*/
-//int nomet=((DALEC *)DATA.MODEL)->nomet;
+//int nomet=((DALEC *)DATA->MODEL)->nomet;
 
 /*number of DALEC pools*/
-int nopools=((DALEC *)DATA.MODEL)->nopools;
+int nopools=((DALEC *)DATA->MODEL)->nopools;
 
 /*number of DALEC fluxes to store*/
-int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
+int nofluxes=((DALEC *)DATA->MODEL)->nofluxes;
 
 
 /*repeating loop for each timestep*/
@@ -241,7 +241,7 @@ gpppars[7]=SSRD[n];
 
 /*GPP*/
 FLUXES[f+0]=ACM(gpppars,constants)*fmin(POOLS[p+6]/pars[25],1);
-/*Evapotranspiration (VPD = DATA.MET[m+7])*/
+/*Evapotranspiration (VPD = DATA->MET[m+7])*/
 FLUXES[f+28]=FLUXES[f+0]*VPD[n]/pars[23];
 /*temprate - now comparable to Q10 - factor at 0C is 1*/
 /* x (1 + a* P/P0)/(1+a)*/
@@ -332,7 +332,7 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 	
 	/*Net ecosystem exchange + Fires*/
 	//Inline observation operators
-	//DATA.M_NBE[n]=-FLUXES[f+0]+FLUXES[f+2]+FLUXES[f+12]+FLUXES[f+13]+FLUXES[f+16];
+	//DATA->M_NBE[n]=-FLUXES[f+0]+FLUXES[f+2]+FLUXES[f+12]+FLUXES[f+13]+FLUXES[f+16];
 
 
 }

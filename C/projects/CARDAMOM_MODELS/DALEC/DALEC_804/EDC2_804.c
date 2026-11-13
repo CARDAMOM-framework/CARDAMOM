@@ -8,15 +8,15 @@
 #include "stdio.h"
 
 
-int EDC2_804(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC2_804(double const *pars, DATA *DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
-double *MET=DATA.MET;
-double *POOLS=DATA.M_POOLS;
-double *FLUXES=DATA.M_FLUXES;
-int nodays=DATA.nodays;
-double *parmax=DATA.parmax;
-double meantemp=DATA.meantemp;
+double *MET=DATA->MET;
+double *POOLS=DATA->M_POOLS;
+double *FLUXES=DATA->M_FLUXES;
+int nodays=DATA->nodays;
+double *parmax=DATA->parmax;
+double meantemp=DATA->meantemp;
 
 /*EDCD=EDCD2;*/
 

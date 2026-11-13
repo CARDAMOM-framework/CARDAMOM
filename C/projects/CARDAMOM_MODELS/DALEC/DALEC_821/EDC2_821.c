@@ -8,20 +8,20 @@
 #include "stdio.h"
 
 
-int EDC2_821(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC2_821(double const *pars, DATA *DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
 /*Extract DALEC model here*/
 /*Copy model pointer for brevity*/
-DALEC *MODEL=(DALEC *)DATA.MODEL;
+DALEC *MODEL=(DALEC *)DATA->MODEL;
 
-double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
-double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
-double *POOLS=DATA.M_POOLS;
-double *FLUXES=DATA.M_FLUXES;
-int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
-double *parmax=DATA.parmax;
-double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
+double *PREC=DATA->ncdf_data.TOTAL_PREC.values;
+double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
+double *POOLS=DATA->M_POOLS;
+double *FLUXES=DATA->M_FLUXES;
+int N_timesteps=DATA->ncdf_data.TIME_INDEX.length;
+double *parmax=DATA->parmax;
+double meantemp = (DATA->ncdf_data.T2M_MAX.reference_mean + DATA->ncdf_data.T2M_MIN.reference_mean)/2;
 
 /*EDCD=EDCD2;*/
 
@@ -216,7 +216,7 @@ if (EDC==1 || DIAG==1){
 		PEDC=1;
 		while ((nn<N_timesteps+1) & (PEDC==1)){
 			/*printf("GPP = %2.2f\n",DATA.M_GPP[nn]);*//*Don't do this too many print outs*/
-			if ((DATA.M_GPP[nn]<minflux) || isnan(DATA.M_GPP[nn])==1){
+			if ((DATA->M_GPP[nn]<minflux) || isnan(DATA->M_GPP[nn])==1){
 				EDC=0;PEDC=0;EDCD->PASSFAIL[36+n]=0;}
 			nn=nn+1;
 		};	

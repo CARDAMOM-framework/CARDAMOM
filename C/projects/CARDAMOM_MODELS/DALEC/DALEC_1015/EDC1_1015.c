@@ -1,5 +1,5 @@
 #pragma once
-int EDC1_1015(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC1_1015(double const *pars, DATA *DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
 /*EDCD=EDCD2;*/
@@ -15,8 +15,8 @@ int EDC1_1015(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
 
 struct DALEC_1015_PARAMETERS P=DALEC_1015_PARAMETERS;
 
-double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
-double meanrad = DATA.ncdf_data.SSRD.reference_mean;
+double meantemp = (DATA->ncdf_data.T2M_MAX.reference_mean + DATA->ncdf_data.T2M_MIN.reference_mean)/2;
+double meanrad = DATA->ncdf_data.SSRD.reference_mean;
 
 
 /*This function was created on 7 Jan 2014*/

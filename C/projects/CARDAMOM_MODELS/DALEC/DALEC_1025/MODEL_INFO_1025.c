@@ -47,7 +47,7 @@ INITIALIZE_PARAMETER_FIELDS(DATA);
 PARS_INFO_1025(DATA->parmin, DATA->parmax);
 
 /*Initialize the EDCD structure*/
-EDCSETUP(*DATA,&DALECmodel.EDCD);
+EDCSETUP(DATA,&DALECmodel.EDCD);
 
 
 

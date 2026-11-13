@@ -8,7 +8,7 @@
 #include "stdio.h"
 
 
-int EDC2_1012(double const *pars, DATA DATA, struct EDCDIAGNOSTIC *EDCD)
+int EDC2_1012(double const *pars, DATA *DATA, struct EDCDIAGNOSTIC *EDCD)
 {
 
 struct DALEC_1012_PARAMETERS P=DALEC_1012_PARAMETERS;
@@ -17,17 +17,17 @@ struct DALEC_1012_POOLS S=DALEC_1012_POOLS;
 
 /*Extract DALEC model here*/
 /*Copy model pointer for brevity*/
-DALEC *MODEL=(DALEC *)DATA.MODEL;
+DALEC *MODEL=(DALEC *)DATA->MODEL;
 
-double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
-double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
-double *POOLS=DATA.M_POOLS;
-double *FLUXES=DATA.M_FLUXES;
-int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
-double *parmax=DATA.parmax;
+double *PREC=DATA->ncdf_data.TOTAL_PREC.values;
+double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
+double *POOLS=DATA->M_POOLS;
+double *FLUXES=DATA->M_FLUXES;
+int N_timesteps=DATA->ncdf_data.TIME_INDEX.length;
+double *parmax=DATA->parmax;
 
-double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
-double meanrad = DATA.ncdf_data.SSRD.reference_mean;
+double meantemp = (DATA->ncdf_data.T2M_MAX.reference_mean + DATA->ncdf_data.T2M_MIN.reference_mean)/2;
+double meanrad = DATA->ncdf_data.SSRD.reference_mean;
 /*EDCD=EDCD2;*/
 
 /* EDC2_SUMMARY
@@ -88,7 +88,7 @@ MPOOLSjan[n]=MPOOLSjan[n]+POOLS[nopools*(m*dint)+n]/(N_timesteps/dint+1);}}
 EDCD->pEDC=EDCD->pEDC-0.5*pow(log(MPOOLS[S.C_fol]/MPOOLS[S.C_roo])/log(2),2);
 
 /*equilibrium factor (in comparison to C_initial)*/
-double EQF=DATA.ncdf_data.EDC_EQF;
+double EQF=DATA->ncdf_data.EDC_EQF;
 
 /*Total fluxes*/
 double *FT;

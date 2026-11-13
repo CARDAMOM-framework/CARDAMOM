@@ -366,7 +366,7 @@ CARDADATA.ncdf_data.EDCDIAG=1;
 
 clock_t    start = clock();//Start timer
 
-CARDADATA.MLF(CARDADATA,pars);
+CARDADATA.MLF(&CARDADATA,pars);
 clock_t    end = clock();//End timer
 
  cpu_time_used += ((double) (end - start)) / CLOCKS_PER_SEC;
@@ -455,7 +455,7 @@ FAILONERROR(nc_close(ncid));
 /*Step 6: Free memory*/
 /*exhaustive list of all malloc/calloc used fields*/
 free(pars);
-FREE_DATA_STRUCT(CARDADATA);
+FREE_DATA_STRUCT(&CARDADATA);
 
 printf("**********\n");
     printf("Average time used per forward model run = %6.4f milliseconds\n", 1000*cpu_time_used/(double)N);

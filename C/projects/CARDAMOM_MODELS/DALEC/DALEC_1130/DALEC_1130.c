@@ -247,7 +247,7 @@ return 0;
 
 
 
-int DALEC_1130(DATA DATA, double const *pars){
+int DALEC_1130(DATA *DATA, double const *pars){
 
     
 
@@ -259,19 +259,19 @@ struct DALEC_1130_POOLS S=DALEC_1130_POOLS;
 
 
     
-double *SSRD=DATA.ncdf_data.SSRD.values;
-double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
-double *T2M_MAX=DATA.ncdf_data.T2M_MAX.values;
-double *CO2=DATA.ncdf_data.CO2.values;
-double *DOY=DATA.ncdf_data.DOY.values;
-double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
-double *VPD=DATA.ncdf_data.VPD.values;
-double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
-double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
-double *SNOWFALL=DATA.ncdf_data.SNOWFALL.values;
-double *SKT=DATA.ncdf_data.SKT.values;
-double *STRD=DATA.ncdf_data.STRD.values;
-double *DIST=DATA.ncdf_data.DISTURBANCE_FLUX.values;
+double *SSRD=DATA->ncdf_data.SSRD.values;
+double *T2M_MIN=DATA->ncdf_data.T2M_MIN.values;
+double *T2M_MAX=DATA->ncdf_data.T2M_MAX.values;
+double *CO2=DATA->ncdf_data.CO2.values;
+double *DOY=DATA->ncdf_data.DOY.values;
+double *PREC=DATA->ncdf_data.TOTAL_PREC.values;
+double *VPD=DATA->ncdf_data.VPD.values;
+double *BURNED_AREA=DATA->ncdf_data.BURNED_AREA.values;
+double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
+double *SNOWFALL=DATA->ncdf_data.SNOWFALL.values;
+double *SKT=DATA->ncdf_data.SKT.values;
+double *STRD=DATA->ncdf_data.STRD.values;
+double *DIST=DATA->ncdf_data.DISTURBANCE_FLUX.values;
 
 /*C-pools, fluxes, meteorology indices*/
 int p=0,f,m,nxp, i;
@@ -284,15 +284,15 @@ double pi=DGCM_PI;
     double PREDERIVED_GEO_FLUX=0.105*3600*24;
 
 
-double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.values[0];
+double deltat=DATA->ncdf_data.TIME_INDEX.values[1] - DATA->ncdf_data.TIME_INDEX.values[0];
 double one_over_deltat=1/deltat;
  
-int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
+int N_timesteps=DATA->ncdf_data.TIME_INDEX.length;
 
 
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
-double *FLUXES=DATA.M_FLUXES;
-double *POOLS=DATA.M_POOLS;
+double *FLUXES=DATA->M_FLUXES;
+double *POOLS=DATA->M_POOLS;
 
  
 
@@ -412,7 +412,7 @@ double *POOLS=DATA.M_POOLS;
 //define time-invariant parameters
          KNORR.IN.deltat=deltat;
          KNORR.IN.n=0;
-         KNORR.IN.latitude=DATA.ncdf_data.LAT;
+         KNORR.IN.latitude=DATA->ncdf_data.LAT;
          KNORR.IN.T_phi=pars[P.T_phi];
          KNORR.IN.T_r=pars[P.T_range];
          KNORR.IN.plgr=pars[P.plgr];
@@ -503,10 +503,10 @@ double Fcfolavailable;
 // int nomet=((DALEC *)DATA.MODEL)->nomet;
 
 /*number of DALEC pools*/
-int nopools=((DALEC *)DATA.MODEL)->nopools;
+int nopools=((DALEC *)DATA->MODEL)->nopools;
 
 /*number of DALEC fluxes to store*/
-int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
+int nofluxes=((DALEC *)DATA->MODEL)->nofluxes;
 
 
 
@@ -556,7 +556,7 @@ double LAI=POOLS[p+S.D_LAI];
 // double VegK0 = LAD/cos(zenith_angle/180*pi);
 //     
 
-  DALEC * DALECmodel=(DALEC *)DATA.MODEL;
+  DALEC * DALECmodel=(DALEC *)DATA->MODEL;
 
 DALEC_1130_DATA_STRUCT * DALEC_1130_DATA=(DALEC_1130_DATA_STRUCT *)DALECmodel->MODEL_DATA;
     

@@ -127,7 +127,7 @@ if (ncRetVal != NC_NOERR) {
 }
 
 if (failedStartfile){
-    FIND_EDC_INITIAL_VALUES(*DATA,PI,MCOPT);
+    FIND_EDC_INITIAL_VALUES(DATA,PI,MCOPT);
 }
 
 
@@ -196,7 +196,7 @@ return 0;
 
 
 /*Enter all fields originally defined with MALLOC*/
-int MEMORY_CLEANUP(DATA DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCOPT, MCMC_OUTPUT MCOUT){
+int MEMORY_CLEANUP(DATA *DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCOPT, MCMC_OUTPUT MCOUT){
 
 free(PI.parmin);
 free(PI.parmax);

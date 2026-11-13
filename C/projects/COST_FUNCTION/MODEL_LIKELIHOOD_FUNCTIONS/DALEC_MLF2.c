@@ -9,14 +9,14 @@
 
 
 
-double DALEC_MLF2(DATA DATA,double *PARS){
+double DALEC_MLF2(DATA *DATA,double *PARS){
 
     //Copy "DATA.M_PARS" for convenience
-    memcpy(DATA.M_PARS, PARS, DATA.nopars*sizeof(double));
+    memcpy(DATA->M_PARS, PARS, DATA->nopars*sizeof(double));
 
 
 /*Copy model pointer for brevity*/
-DALEC *MODEL=(DALEC *)DATA.MODEL;
+DALEC *MODEL=(DALEC *)DATA->MODEL;
 
 EDCs *EDCs=MODEL->EDCs;
 
@@ -26,12 +26,12 @@ double P=0;
 
 
 
-if (DATA.ncdf_data.EDC==1){
+if (DATA->ncdf_data.EDC==1){
     
 
     
     //Call EDC function for prerun=1 models
-    double Pedc1 = RUN_DALEC_EDCs(&DATA, EDCs, true);
+    double Pedc1 = RUN_DALEC_EDCs(DATA, EDCs, true);
 P=P+Pedc1;
 }
 
@@ -52,10 +52,10 @@ P=P+Pedc1;
 
 
 //Post-run EDCs
-if (DATA.ncdf_data.EDC==1 & P>-INFINITY){
+if (DATA->ncdf_data.EDC==1 & P>-INFINITY){
   
     //Call EDC function for prerun=0 edcs
-    double Pedc2 = RUN_DALEC_EDCs(&DATA, EDCs, false);
+    double Pedc2 = RUN_DALEC_EDCs(DATA, EDCs, false);
 
 P=P+Pedc2;}
 // printf("EDC postrun P = %2.2f\n",P);
@@ -72,7 +72,7 @@ P=P+Pedc2;}
 
 
 /*saving likelihood P*/
-DATA.M_P[0]=P;
+DATA->M_P[0]=P;
 
 
 
@@ -85,15 +85,15 @@ return P;
 
 
 
-double EDC_DALEC_MLF2_BINARY(DATA DATA, double *PARS){
+double EDC_DALEC_MLF2_BINARY(DATA *DATA, double *PARS){
 
 /*Copy model pointer for brevity*/
-DALEC *MODEL=(DALEC *)DATA.MODEL;
+DALEC *MODEL=(DALEC *)DATA->MODEL;
 
 
 double P=0;
 
-double ML=DATA.MLF(DATA,PARS);
+double ML=DATA->MLF(DATA,PARS);
 
 /*overriding if model likelihood is zero or erroneous*/
 if (( isinf(ML)==-1 || isinf(ML)==1 || isnan(ML) )){P=-INFINITY;}

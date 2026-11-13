@@ -108,7 +108,7 @@ int D_LAI;//leaf area index
 } DALEC_1032_POOLS={0,1,2,3,4,5,6,7,8};
 
 
-int DALEC_1032(DATA DATA, double const *pars)
+int DALEC_1032(DATA *DATA, double const *pars)
 {
 
 struct DALEC_1032_PARAMETERS P=DALEC_1032_PARAMETERS;
@@ -124,20 +124,20 @@ pi=3.1415927;
 
 /*constant gpppars terms*/
 gpppars[3]=1;
-gpppars[6]=DATA.ncdf_data.LAT;
+gpppars[6]=DATA->ncdf_data.LAT;
 gpppars[8]=-2.0;
 gpppars[9]=1.0;
 gpppars[10]=pi;
 
-double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.values[0];
-int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
+double deltat=DATA->ncdf_data.TIME_INDEX.values[1] - DATA->ncdf_data.TIME_INDEX.values[0];
+int N_timesteps=DATA->ncdf_data.TIME_INDEX.length;
 
 
  double constants[10]={pars[P.canopy_eff],0.0156935,4.22273,208.868,0.0453194,0.37836,7.19298, 0.011136,2.1001,0.789798};
 
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
-double *FLUXES=DATA.M_FLUXES;
-double *POOLS=DATA.M_POOLS;
+double *FLUXES=DATA->M_FLUXES;
+double *POOLS=DATA->M_POOLS;
 
   /*assigning values to pools*/
   /*L,F,R,W,Lit,SOM*/
@@ -153,19 +153,19 @@ double *POOLS=DATA.M_POOLS;
   //Diagnostic states
   POOLS[S.D_LAI]=POOLS[S.C_fol]/pars[P.LCMA]; 
 
-double *SSRD=DATA.ncdf_data.SSRD.values;
-double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
-double *T2M_MAX=DATA.ncdf_data.T2M_MAX.values;
-double *CO2=DATA.ncdf_data.CO2.values;
-double *DOY=DATA.ncdf_data.DOY.values;
-double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
-double *VPD=DATA.ncdf_data.VPD.values;
-double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
-double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
+double *SSRD=DATA->ncdf_data.SSRD.values;
+double *T2M_MIN=DATA->ncdf_data.T2M_MIN.values;
+double *T2M_MAX=DATA->ncdf_data.T2M_MAX.values;
+double *CO2=DATA->ncdf_data.CO2.values;
+double *DOY=DATA->ncdf_data.DOY.values;
+double *PREC=DATA->ncdf_data.TOTAL_PREC.values;
+double *VPD=DATA->ncdf_data.VPD.values;
+double *BURNED_AREA=DATA->ncdf_data.BURNED_AREA.values;
+double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
 
-double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
-double meanrad = DATA.ncdf_data.SSRD.reference_mean;
-double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
+double meantemp = (DATA->ncdf_data.T2M_MAX.reference_mean + DATA->ncdf_data.T2M_MIN.reference_mean)/2;
+double meanrad = DATA->ncdf_data.SSRD.reference_mean;
+double meanprec = DATA->ncdf_data.TOTAL_PREC.reference_mean;
 
 
 
@@ -206,10 +206,10 @@ CF[S.C_som]=pars[P.cf_DOM];
 
 
 /*number of DALEC pools*/
-int nopools=((DALEC *)DATA.MODEL)->nopools;
+int nopools=((DALEC *)DATA->MODEL)->nopools;
 
 /*number of DALEC fluxes to store*/
-int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
+int nofluxes=((DALEC *)DATA->MODEL)->nofluxes;
 
 
 /*repeating loop for each timestep*/

@@ -61,10 +61,10 @@ struct EDC_META_STRUCT {
    char ** DESCRIPTION;} EDC_META;
    */
 
-int (*dalec)(DATA,const double *);
+int (*dalec)(DATA *,const double *);
 //To become obsolete, once EDCs refactored
-int (*edc1)(const double *, DATA, struct EDCDIAGNOSTIC * EDCD);
-int (*edc2)(const double *, DATA, struct EDCDIAGNOSTIC * EDCD);
+int (*edc1)(const double *, DATA *, struct EDCDIAGNOSTIC * EDCD);
+int (*edc2)(const double *, DATA *, struct EDCDIAGNOSTIC * EDCD);
 /*contains all the EDCD relevant info*/
 struct EDCDIAGNOSTIC * EDCD;
 

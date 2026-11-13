@@ -20,8 +20,8 @@
  * first-pass DREAM(ZS) experiment.
  */
 double *DREAMZS(
-double (MODEL_LIKELIHOOD)(DATA, double *),
-DATA DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCO, MCMC_OUTPUT *MCOUT){
+double (MODEL_LIKELIHOOD)(DATA *, double *),
+DATA *DATA, PARAMETER_INFO PI, MCMC_OPTIONS MCO, MCMC_OUTPUT *MCOUT){
 
 printf("CARDAMOM: Successfully entered DREAMZS!\n"); fflush(stdout);
 

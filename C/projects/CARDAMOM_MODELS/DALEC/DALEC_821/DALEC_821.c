@@ -74,7 +74,7 @@ return 0;}
 
 
 
-int DALEC_821(DATA DATA, double const *pars)
+int DALEC_821(DATA *DATA, double const *pars)
 {
 
 double met_list[6],var_list[10],pi;
@@ -84,18 +84,18 @@ int n=0,nn=0;
 pi=3.1415927;
 
 
-double deltat=DATA.ncdf_data.TIME_INDEX.values[1] - DATA.ncdf_data.TIME_INDEX.values[0];
-int N_timesteps=DATA.ncdf_data.TIME_INDEX.length;
+double deltat=DATA->ncdf_data.TIME_INDEX.values[1] - DATA->ncdf_data.TIME_INDEX.values[0];
+int N_timesteps=DATA->ncdf_data.TIME_INDEX.length;
 
 
 /*Pointer transfer - all data stored in fluxes and pools will be passed to DATA*/
-double *FLUXES=DATA.M_FLUXES;
-double *POOLS=DATA.M_POOLS;
-double *LAI=DATA.M_LAI;
+double *FLUXES=DATA->M_FLUXES;
+double *POOLS=DATA->M_POOLS;
+double *LAI=DATA->M_LAI;
 
 
-//double *LAI=DATA.M_LAI;
-//double *NEE=DATA.M_NEE;
+//double *LAI=DATA->M_LAI;
+//double *NEE=DATA->M_NEE;
 
 /*assigning values to pools*/
 /*L,F,R,W,Lit,SOM*/
@@ -110,19 +110,19 @@ POOLS[5]=pars[21];
 POOLS[6]=pars[24];
 
 
-double *SSRD=DATA.ncdf_data.SSRD.values;
-double *T2M_MIN=DATA.ncdf_data.T2M_MIN.values;
-double *T2M_MAX=DATA.ncdf_data.T2M_MAX.values;
-double *CO2=DATA.ncdf_data.CO2.values;
-double *DOY=DATA.ncdf_data.DOY.values;
-double *PREC=DATA.ncdf_data.TOTAL_PREC.values;
-double *VPD=DATA.ncdf_data.VPD.values;
-double *BURNED_AREA=DATA.ncdf_data.BURNED_AREA.values;
-double *TIME_INDEX=DATA.ncdf_data.TIME_INDEX.values;
+double *SSRD=DATA->ncdf_data.SSRD.values;
+double *T2M_MIN=DATA->ncdf_data.T2M_MIN.values;
+double *T2M_MAX=DATA->ncdf_data.T2M_MAX.values;
+double *CO2=DATA->ncdf_data.CO2.values;
+double *DOY=DATA->ncdf_data.DOY.values;
+double *PREC=DATA->ncdf_data.TOTAL_PREC.values;
+double *VPD=DATA->ncdf_data.VPD.values;
+double *BURNED_AREA=DATA->ncdf_data.BURNED_AREA.values;
+double *TIME_INDEX=DATA->ncdf_data.TIME_INDEX.values;
 
-double meantemp = (DATA.ncdf_data.T2M_MAX.reference_mean + DATA.ncdf_data.T2M_MIN.reference_mean)/2;
-double meanrad = DATA.ncdf_data.SSRD.reference_mean;
-double meanprec = DATA.ncdf_data.TOTAL_PREC.reference_mean;
+double meantemp = (DATA->ncdf_data.T2M_MAX.reference_mean + DATA->ncdf_data.T2M_MIN.reference_mean)/2;
+double meanrad = DATA->ncdf_data.SSRD.reference_mean;
+double meanprec = DATA->ncdf_data.TOTAL_PREC.reference_mean;
 
 
 
@@ -166,7 +166,7 @@ var_list[3]=pars[34]; /*Jmax*/
 var_list[4]=pars[35]; /*Vmax*/
 var_list[7]=7.19298; /*c1*/
 var_list[8]=2.1001; /*c2*/
-var_list[9]=DATA.ncdf_data.LAT; /*LAT*/
+var_list[9]=DATA->ncdf_data.LAT; /*LAT*/
 
 /*constants for exponents of leaffall and labrelease factors*/
 /*width*/
@@ -204,13 +204,13 @@ CF[5]=pars[27];
 
 
 /*number of MET drivers*/
-//int nomet=((DALEC *)DATA.MODEL)->nomet;
+//int nomet=((DALEC *)DATA->MODEL)->nomet;
 
 /*number of DALEC pools*/
-int nopools=((DALEC *)DATA.MODEL)->nopools;
+int nopools=((DALEC *)DATA->MODEL)->nopools;
 
 /*number of DALEC fluxes to store*/
-int nofluxes=((DALEC *)DATA.MODEL)->nofluxes;
+int nofluxes=((DALEC *)DATA->MODEL)->nofluxes;
 
 
 /*repeating loop for each timestep*/
@@ -247,7 +247,7 @@ double *BALDOCCHI_ANALYTICAL_OUTPUT = BALDOCCHI_ANALYTICAL(met_list,var_list);
 /*GPP*/
 /* GPP * soil water limitation */
 FLUXES[f+0]=BALDOCCHI_ANALYTICAL_OUTPUT[0]*fmin(POOLS[p+6]/pars[23],1);
-/*Evapotranspiration (VPD = DATA.MET[m+7])*/
+/*Evapotranspiration (VPD = DATA->MET[m+7])*/
 /* ET * soil water limitation */
 FLUXES[f+28]=BALDOCCHI_ANALYTICAL_OUTPUT[1]*fmin(POOLS[p+6]/pars[23],1);
 
@@ -332,7 +332,7 @@ FLUXES[f+14] = POOLS[p+4]*(1-pow(1-pars[1-1]*FLUXES[f+1],deltat))/deltat;
 
 	/*Net ecosystem exchange + Fires*/
 	//Inline observation operators
-	//DATA.M_NBE[n]=-FLUXES[f+0]+FLUXES[f+2]+FLUXES[f+12]+FLUXES[f+13]+FLUXES[f+16];
+	//DATA->M_NBE[n]=-FLUXES[f+0]+FLUXES[f+2]+FLUXES[f+12]+FLUXES[f+13]+FLUXES[f+16];
 
 }
 

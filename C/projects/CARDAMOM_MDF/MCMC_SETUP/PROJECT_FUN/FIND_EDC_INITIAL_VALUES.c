@@ -7,7 +7,7 @@
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/ADEMCMC.c"
 #include "../../../../mcmc_fun/MHMCMC/MCMC_FUN/DEMCMCZS_WARMUP.c"
 
-int FIND_EDC_INITIAL_VALUES(DATA CARDADATA,PARAMETER_INFO *PI, MCMC_OPTIONS *MCOPT_CARDAMOM){
+int FIND_EDC_INITIAL_VALUES(DATA *CARDADATA,PARAMETER_INFO *PI, MCMC_OPTIONS *MCOPT_CARDAMOM){
 
     printf("*********made it to here FIND_EDC_INITIAL_VALUES********\n");
 
@@ -49,8 +49,8 @@ MCOPT.minstepsize=1e-2;
  *only happens after the shared search completes.*/
 if (multichain_edc_search){
 MCOPT.mcmcid=3;
-default_int_value(&CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ,200000);
-MCOPT.nOUT=CARDADATA.ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ;
+default_int_value(&CARDADATA->ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ,200000);
+MCOPT.nOUT=CARDADATA->ncdf_data.MCMCID.nSAMPLES_EDC_SEARCH ;
 MCOPT.nPRINT=2000;
 MCOPT.minstepsize=1e-5;
 MCOPT.nchains=400;
@@ -90,17 +90,17 @@ while (PEDC!=0){
 
 	oksofar("Running short MCMC to find x_{EDC} = 1");
     
-	if (MCOPT.mcmcid==119){MHMCMC_119(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
-        if (MCOPT.mcmcid==2){DEMCMC(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
-        if (multichain_edc_search){ADEMCMC(CARDADATA.EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
+	if (MCOPT.mcmcid==119){MHMCMC_119(CARDADATA->EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
+        if (MCOPT.mcmcid==2){DEMCMC(CARDADATA->EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
+        if (multichain_edc_search){ADEMCMC(CARDADATA->EMLF,CARDADATA,*PI,MCOPT,&MCOUT);};
 
 	oksofar("Short MCMC complete");
 	for (n=0;n<PI->npars*MCOPT.nchains;n++){PI->parini[n]=MCOUT.best_pars[n];}
 
 	PEDCC=0;
 	for (nn=0;nn<MCOPT.nchains;nn++){
-	PEDC=CARDADATA.EMLF(CARDADATA, PI->parini + nn*PI->npars);double P;
-	P=CARDADATA.MLF(CARDADATA, PI->parini + nn*PI->npars);
+	PEDC=CARDADATA->EMLF(CARDADATA, PI->parini + nn*PI->npars);double P;
+	P=CARDADATA->MLF(CARDADATA, PI->parini + nn*PI->npars);
 	printf("PEDC for chain %i = %2.1f (%2.1f)\n",nn,PEDC,P);
 	if (PEDC==0){PEDCC=PEDCC+1;}}
 
@@ -109,9 +109,9 @@ while (PEDC!=0){
 	printf("*******\n");
 	printf("%i out of %i chains pass EDCs\n",PEDCC,MCOPT.nchains);
     printf("EDC stats\n");
-    for (nnn=0;nnn<CARDADATA.noedcs;nnn++){
-        double prcnt=100*(double)CARDADATA.EDC_PASS_COUNTER[nnn]/(double)CARDADATA.EDC_INSTANCE_COUNTER[nnn];
-printf("EDC no %i; attempts = %i; passes = %i (%2.2f%%);\n",nnn,CARDADATA.EDC_INSTANCE_COUNTER[nnn],CARDADATA.EDC_PASS_COUNTER[nnn],prcnt );
+    for (nnn=0;nnn<CARDADATA->noedcs;nnn++){
+        double prcnt=100*(double)CARDADATA->EDC_PASS_COUNTER[nnn]/(double)CARDADATA->EDC_INSTANCE_COUNTER[nnn];
+printf("EDC no %i; attempts = %i; passes = %i (%2.2f%%);\n",nnn,CARDADATA->EDC_INSTANCE_COUNTER[nnn],CARDADATA->EDC_PASS_COUNTER[nnn],prcnt );
     }
 	printf("*******\n");
 	printf("*******\n");
@@ -125,7 +125,7 @@ printf("EDC no %i; attempts = %i; passes = %i (%2.2f%%);\n",nnn,CARDADATA.EDC_IN
 	
 	/*For single-chain MH search, periodically restart from priors if no
 	 *EDC-passing point has been found.*/
-	if (MCOPT.mcmcid==119 && PEDC!=0 && count%3==0){for (n=0;n<PI->npars;n++){PI->parini[n]=CARDADATA.parpriors[n];}}
+	if (MCOPT.mcmcid==119 && PEDC!=0 && count%3==0){for (n=0;n<PI->npars;n++){PI->parini[n]=CARDADATA->parpriors[n];}}
 
 }
 
@@ -138,8 +138,8 @@ int nprod=MCOPT_CARDAMOM->nchains;
 double *chainP=calloc(MCOPT.nchains,sizeof(double));
 int nn2;
 for (nn2=0;nn2<MCOPT.nchains;nn2++){
-double edc_p=CARDADATA.EMLF(CARDADATA, PI->parini + nn2*PI->npars);
-if (edc_p==0){chainP[nn2]=CARDADATA.MLF(CARDADATA, PI->parini + nn2*PI->npars);}
+double edc_p=CARDADATA->EMLF(CARDADATA, PI->parini + nn2*PI->npars);
+if (edc_p==0){chainP[nn2]=CARDADATA->MLF(CARDADATA, PI->parini + nn2*PI->npars);}
 else{chainP[nn2]=log(0);}
 }
 
@@ -184,8 +184,8 @@ int WARMUP_ITERS=0; /*0 disables the intermediate DEMCMCZS warmup.*/
 double *chainP=calloc(MCOPT.nchains,sizeof(double));
 int nn2;
 for (nn2=0;nn2<MCOPT.nchains;nn2++){
-double edc_p=CARDADATA.EMLF(CARDADATA, PI->parini + nn2*PI->npars);
-if (edc_p==0){chainP[nn2]=CARDADATA.MLF(CARDADATA, PI->parini + nn2*PI->npars);}
+double edc_p=CARDADATA->EMLF(CARDADATA, PI->parini + nn2*PI->npars);
+if (edc_p==0){chainP[nn2]=CARDADATA->MLF(CARDADATA, PI->parini + nn2*PI->npars);}
 else{chainP[nn2]=log(0);}
 }
 
@@ -205,7 +205,7 @@ for (k=0;k<nwarm;k++){
 for (n=0;n<PI->npars;n++){parini_warm[k*PI->npars+n]=PI->parini[warm_idx[k]*PI->npars+n];}}
 
 oksofar("mode 6: running intermediate DEMCMCZS warmup phase on the best 10 EDC-search chains");
-RUN_DEMCMCZS_WARMUP(CARDADATA.MLF,CARDADATA,*PI,nwarm,WARMUP_ITERS,parini_warm);
+RUN_DEMCMCZS_WARMUP(CARDADATA->MLF,CARDADATA,*PI,nwarm,WARMUP_ITERS,parini_warm);
 oksofar("mode 6: DEMCMCZS warmup phase complete, merging back into the 400-chain ensemble");
 
 for (k=0;k<nwarm;k++){
