@@ -228,6 +228,26 @@ clock_t    start = clock();//Start timer
     DATA.edcsearch=1;
 READ_PARI_DATA(&PI, &DATA, &MCOUT, &MCOPT,CLA);
 printf("CARDAMOM_MDF.c: READ_PARI_DATA successfully executed\n");
+
+printf("\n**************************************************\n");
+printf("CARDAMOM_MDF.c: LCMA_F VERIFICATION\n");
+printf("**************************************************\n");
+printf("LCMA_F successfully read into CARDAMOM!\n");
+printf("LCMA_F length = %zu (expected 216)\n", DATA.ncdf_data.LCMA_F.length);
+printf("LCMA_F reference_mean = %.4f\n", DATA.ncdf_data.LCMA_F.reference_mean);
+if (DATA.ncdf_data.LCMA_F.length > 0 && DATA.ncdf_data.LCMA_F.values != NULL) {
+    printf("LCMA_F pointer address: %p\n", (void*)DATA.ncdf_data.LCMA_F.values);
+    printf("\nAll %zu LCMA_F values:\n", DATA.ncdf_data.LCMA_F.length);
+    int n;
+    for (n = 0; n < DATA.ncdf_data.LCMA_F.length; n++) {
+        printf("LCMA_F[%d] = %.4f\n", n, DATA.ncdf_data.LCMA_F.values[n]);
+    }
+    printf("\nLCMA_F verification complete!\n");
+} else {
+    printf("WARNING: LCMA_F values pointer is NULL or length is 0!\n");
+}
+printf("**************************************************\n\n");
+
 // Check whether this is a restart, and if so, set APPEND to 1
 if (MCOPT.nSTART>0){MCOPT.APPEND=1;}
 
