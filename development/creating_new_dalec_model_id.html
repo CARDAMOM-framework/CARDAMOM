@@ -1,0 +1,441 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creating a New DALEC Model ID &mdash; CARDAMOM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3ce236e8" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="Adding new input variable type" href="../tier3_development/adding_new_input_variable.html" />
+    <link rel="prev" title="CARDAMOM.c governance structure" href="../using_cardamom/governance.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CARDAMOM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started with CARDAMOM</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CARDAMOM Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/overview.html">CARDAMOM overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/forward_model.html">Forward model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cardamom_overview/model_data_fusion.html">Model-data fusion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DALEC Model:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dalec_versions.html">DALEC versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model-data fusion framework:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/cost_function.html">Cost function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/observation_operators.html">Observation operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/mcmc.html">MCMC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using CARDAMOM:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/file_io.html">File formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/git_hooks.html">Git hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/stress_testing.html">Stress Testing your CARDAMOM input (.nc) file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/analyst_checklist.html">Analyst checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/technote.html">Contributing to this technical documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_cardamom/governance.html">CARDAMOM.c governance structure</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Creating a New DALEC Model ID</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-copy-the-template-model-directory">Step 1: Copy the Template Model Directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-rename-files-in-new-directories">Step 2: Rename Files in New Directories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-3-update-internal-code-references">Step 3: Update Internal Code References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-4-register-models-in-cardamom-model-library-c">Step 4: Register Models in CARDAMOM_MODEL_LIBRARY.c</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-5-update-dalec-model-field-requirements-txt">Step 5: Update DALEC_MODEL_FIELD_REQUIREMENTS.txt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-6-compile-cardamom">Step 6: Compile CARDAMOM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-7-create-test-input-files">Step 7: Create Test Input Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-8-run-stress-tests">Step 8: Run Stress Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#verification-checklist">Verification Checklist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#compilation-errors">Compilation Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-failures">Test Failures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-doesn-t-run">Model Doesn’t Run</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#for-ai-assistants">For AI Assistants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-resources">Additional Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tier3_development/adding_new_input_variable.html">Adding new input variable type</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Markdown Manual:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/ADDING_NEW_NETCF_VARIABLES_AND_ATTRIBUTES.html">Adding new netcdf variables and attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/C_MEMORY_LEAKS.html">Diagnose and resolve memory leaks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/CARDAMOM_C_developer_guide.html">CARDAMOM C developer guide <a name="cardamom-c-developer-guid"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/CARDAMOM_NETCDF_INPUT_FILE.html">CARDAMOM Netcdf input file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/COST_FUNCTION.html">CARDAMOM cost function <a name="cardamom-cost-function"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/DEBUGGING_TIPS.html">Debugging tips and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/GETTING_STARTED.html">Getting Started with CARDAMOM <a name="-getting-started"/></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/GITHUB_BASICS.html">Using CARDAMOM’s github repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MATLAB_DEMO.html">MATLAB demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MCMC_IN_CARDAMOM_OVERVIEW.html">MCMC in CARDAMOM Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/MODEL_IDs.html">DALEC model IDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/OUTPUT_DATA_ANALYSIS.html">Output Data and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PARALLELIZATION.html">Parallelization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PERTURBATION_EXPERIMENTS.html">Perturbation experiments using CARDAMOM outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../markdown_manuals/PYTHON_DEMO.html">Python demo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright.html">Copyright</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CARDAMOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Creating a New DALEC Model ID</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/development/creating_new_dalec_model_id.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="creating-a-new-dalec-model-id">
+<h1>Creating a New DALEC Model ID<a class="headerlink" href="#creating-a-new-dalec-model-id" title="Link to this heading"></a></h1>
+<p>This guide describes the step-by-step process for creating a new DALEC model ID based on an existing model as a template. This process is useful when you want to create a variant of an existing model (e.g., to test modifications or create a new model configuration).</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Creating a new DALEC model involves:</p>
+<ol class="arabic simple">
+<li><p>Copying and renaming model files</p></li>
+<li><p>Updating internal references throughout the code</p></li>
+<li><p>Registering the model in the CARDAMOM framework</p></li>
+<li><p>Updating model field requirements</p></li>
+<li><p>Compiling and testing</p></li>
+</ol>
+<p>This guide uses the example of creating DALEC_1140 and DALEC_1141 from DALEC_1100 as a template.</p>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>Before starting, ensure you have:</p>
+<ul class="simple">
+<li><p>A working CARDAMOM installation with successful compilation</p></li>
+<li><p>Access to the source model directory (e.g., <code class="docutils literal notranslate"><span class="pre">C/projects/CARDAMOM_MODELS/DALEC/DALEC_1100/</span></code>)</p></li>
+<li><p>Python 3 with netCDF4 library installed</p></li>
+<li><p>Basic familiarity with C programming and shell commands</p></li>
+</ul>
+</section>
+<section id="step-1-copy-the-template-model-directory">
+<h2>Step 1: Copy the Template Model Directory<a class="headerlink" href="#step-1-copy-the-template-model-directory" title="Link to this heading"></a></h2>
+<p>Navigate to the DALEC models directory and copy the template model:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/path/to/CARDAMOM/C/projects/CARDAMOM_MODELS/DALEC
+cp<span class="w"> </span>-r<span class="w"> </span>DALEC_1100<span class="w"> </span>DALEC_1140
+cp<span class="w"> </span>-r<span class="w"> </span>DALEC_1100<span class="w"> </span>DALEC_1141
+</pre></div>
+</div>
+<p>This creates new directories with all necessary files.</p>
+</section>
+<section id="step-2-rename-files-in-new-directories">
+<h2>Step 2: Rename Files in New Directories<a class="headerlink" href="#step-2-rename-files-in-new-directories" title="Link to this heading"></a></h2>
+<p>Rename all files containing the old model ID to use the new ID:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>DALEC_1140
+<span class="k">for</span><span class="w"> </span>file<span class="w"> </span><span class="k">in</span><span class="w"> </span>*1100*<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span>mv<span class="w"> </span><span class="s2">"</span><span class="nv">$file</span><span class="s2">"</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">file</span><span class="p">//1100/1140</span><span class="si">}</span><span class="s2">"</span>
+<span class="k">done</span>
+
+<span class="nb">cd</span><span class="w"> </span>../DALEC_1141
+<span class="k">for</span><span class="w"> </span>file<span class="w"> </span><span class="k">in</span><span class="w"> </span>*1100*<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span>mv<span class="w"> </span><span class="s2">"</span><span class="nv">$file</span><span class="s2">"</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">file</span><span class="p">//1100/1141</span><span class="si">}</span><span class="s2">"</span>
+<span class="k">done</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-update-internal-code-references">
+<h2>Step 3: Update Internal Code References<a class="headerlink" href="#step-3-update-internal-code-references" title="Link to this heading"></a></h2>
+<p>Replace all internal references from the old model ID to the new one:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For DALEC_1140</span>
+<span class="nb">cd</span><span class="w"> </span>DALEC_1140
+find<span class="w"> </span>.<span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-name<span class="w"> </span><span class="s2">"*.c"</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s2">"*.h"</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span>-exec<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">''</span><span class="w"> </span><span class="s1">'s/1100/1140/g'</span><span class="w"> </span><span class="o">{}</span><span class="w"> </span><span class="se">\;</span>
+
+<span class="c1"># For DALEC_1141</span>
+<span class="nb">cd</span><span class="w"> </span>../DALEC_1141
+find<span class="w"> </span>.<span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-name<span class="w"> </span><span class="s2">"*.c"</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s2">"*.h"</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span>-exec<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">''</span><span class="w"> </span><span class="s1">'s/1100/1141/g'</span><span class="w"> </span><span class="o">{}</span><span class="w"> </span><span class="se">\;</span>
+</pre></div>
+</div>
+<p><strong>Important:</strong> On Linux systems, use <code class="docutils literal notranslate"><span class="pre">sed</span> <span class="pre">-i</span></code> instead of <code class="docutils literal notranslate"><span class="pre">sed</span> <span class="pre">-i</span> <span class="pre">''</span></code>.</p>
+</section>
+<section id="step-4-register-models-in-cardamom-model-library-c">
+<h2>Step 4: Register Models in CARDAMOM_MODEL_LIBRARY.c<a class="headerlink" href="#step-4-register-models-in-cardamom-model-library-c" title="Link to this heading"></a></h2>
+<p>Add the new models to the CARDAMOM model library:</p>
+<ol class="arabic simple">
+<li><p>Open <code class="docutils literal notranslate"><span class="pre">C/projects/CARDAMOM_GENERAL/CARDAMOM_MODEL_LIBRARY.c</span></code></p></li>
+<li><p>Add include statements (around line 62-65):</p></li>
+</ol>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"../CARDAMOM_MODELS/DALEC/DALEC_1100/MODEL_INFO_1100.c"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"../CARDAMOM_MODELS/DALEC/DALEC_1140/MODEL_INFO_1140.c"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"../CARDAMOM_MODELS/DALEC/DALEC_1141/MODEL_INFO_1141.c"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Add model ID checks (around line 140-145):</p></li>
+</ol>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ID</span><span class="o">==</span><span class="mi">1100</span><span class="w">  </span><span class="p">){</span><span class="n">MODEL_INFO_1100</span><span class="p">(</span><span class="n">DATA</span><span class="p">);}</span>
+<span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ID</span><span class="o">==</span><span class="mi">1140</span><span class="w">  </span><span class="p">){</span><span class="n">MODEL_INFO_1140</span><span class="p">(</span><span class="n">DATA</span><span class="p">);}</span>
+<span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ID</span><span class="o">==</span><span class="mi">1141</span><span class="w">  </span><span class="p">){</span><span class="n">MODEL_INFO_1141</span><span class="p">(</span><span class="n">DATA</span><span class="p">);}</span>
+</pre></div>
+</div>
+</section>
+<section id="step-5-update-dalec-model-field-requirements-txt">
+<h2>Step 5: Update DALEC_MODEL_FIELD_REQUIREMENTS.txt<a class="headerlink" href="#step-5-update-dalec-model-field-requirements-txt" title="Link to this heading"></a></h2>
+<p>Update the model field requirements file to include the new model IDs:</p>
+<ol class="arabic simple">
+<li><p>Open <code class="docutils literal notranslate"><span class="pre">PYTHON/check_fun/DALEC_MODEL_FIELD_REQUIREMENTS.txt</span></code></p></li>
+<li><p>Find lines with model-specific requirements (e.g., DISTURBANCE_FLUX, YIELD)</p></li>
+<li><p>Update from:</p></li>
+</ol>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>DISTURBANCE_FLUX:[0,INF]:1100:1100:ALL
+YIELD:[0,INF]:1100:1100:ALL
+</pre></div>
+</div>
+<p>To:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>DISTURBANCE_FLUX:[0,INF]:[1100,1140,1141]:[1100,1140,1141]:ALL
+YIELD:[0,INF]:[1100,1140,1141]:[1100,1140,1141]:ALL
+</pre></div>
+</div>
+<p>This ensures the stress testing framework recognizes the new models.</p>
+</section>
+<section id="step-6-compile-cardamom">
+<h2>Step 6: Compile CARDAMOM<a class="headerlink" href="#step-6-compile-cardamom" title="Link to this heading"></a></h2>
+<p>Compile the entire CARDAMOM framework:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/path/to/CARDAMOM
+./BASH/CARDAMOM_COMPILE.sh
+</pre></div>
+</div>
+<p>Check for compilation errors. If successful, you should see:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>COMPILER=gcc
+compile: CARDAMOM_C compiled successfully
+</pre></div>
+</div>
+<p><strong>Common Issues:</strong></p>
+<ul class="simple">
+<li><p><strong>Missing includes:</strong> Verify all files are properly included in <code class="docutils literal notranslate"><span class="pre">CARDAMOM_MODEL_LIBRARY.c</span></code></p></li>
+<li><p><strong>Syntax errors:</strong> Check that sed replacements didn’t break code structure</p></li>
+</ul>
+</section>
+<section id="step-7-create-test-input-files">
+<h2>Step 7: Create Test Input Files<a class="headerlink" href="#step-7-create-test-input-files" title="Link to this heading"></a></h2>
+<p>Create demo CBF NetCDF files with the correct model IDs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Copy the base demo file</span>
+cp<span class="w"> </span>CARDAMOM_DEMO_INPUT_FILE.cbf.nc<span class="w"> </span>CARDAMOM_DEMO_INPUT_FILE_1140.cbf.nc
+cp<span class="w"> </span>CARDAMOM_DEMO_INPUT_FILE.cbf.nc<span class="w"> </span>CARDAMOM_DEMO_INPUT_FILE_1141.cbf.nc
+</pre></div>
+</div>
+<p>Update the ID values using Python:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">netCDF4</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span>
+
+<span class="k">for</span> <span class="n">model_id</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1140</span><span class="p">,</span> <span class="mi">1141</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">Dataset</span><span class="p">(</span><span class="sa">f</span><span class="s1">'CARDAMOM_DEMO_INPUT_FILE_</span><span class="si">{</span><span class="n">model_id</span><span class="si">}</span><span class="s1">.cbf.nc'</span><span class="p">,</span> <span class="s1">'r+'</span><span class="p">)</span> <span class="k">as</span> <span class="n">nc</span><span class="p">:</span>
+        <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">'ID'</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">model_id</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">model_id</span><span class="si">}</span><span class="s2">: ID = </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">'ID'</span><span class="p">][:])</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Verify the changes:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ncdump<span class="w"> </span>-v<span class="w"> </span>ID<span class="w"> </span>CARDAMOM_DEMO_INPUT_FILE_1140.cbf.nc<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-3
+<span class="c1"># Should show: ID = 1140 ;</span>
+</pre></div>
+</div>
+</section>
+<section id="step-8-run-stress-tests">
+<h2>Step 8: Run Stress Tests<a class="headerlink" href="#step-8-run-stress-tests" title="Link to this heading"></a></h2>
+<p>Test the new models using the CARDAMOM stress test:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test DALEC_1140</span>
+python3<span class="w"> </span>PYTHON/check_fun/CARDAMOM_CBF_NC_FILE_STRESS_TEST.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>CARDAMOM_DEMO_INPUT_FILE_1140.cbf.nc
+
+<span class="c1"># Test DALEC_1141</span>
+python3<span class="w"> </span>PYTHON/check_fun/CARDAMOM_CBF_NC_FILE_STRESS_TEST.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>CARDAMOM_DEMO_INPUT_FILE_1141.cbf.nc
+</pre></div>
+</div>
+<p><strong>Expected Output:</strong></p>
+<p>Both tests should pass with results similar to:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>✅ TEST 1 SUCCESSFUL: short run with no OBS and EDC=0 completed in 1.4 seconds
+✅ TEST 2b SUCCESSFUL: short run with OBS and EDC=0 completed in 3.0 seconds
+</pre></div>
+</div>
+<p>If TEST 1 or TEST 2b fails, review the previous steps carefully.</p>
+</section>
+<section id="verification-checklist">
+<h2>Verification Checklist<a class="headerlink" href="#verification-checklist" title="Link to this heading"></a></h2>
+<p>Before considering the new model complete, verify:</p>
+<ul class="simple">
+<li><p>☐ All files renamed correctly (no references to old model ID in filenames)</p></li>
+<li><p>☐ All code references updated (grep for old ID returns only comments/documentation)</p></li>
+<li><p>☐ Model registered in <code class="docutils literal notranslate"><span class="pre">CARDAMOM_MODEL_LIBRARY.c</span></code></p></li>
+<li><p>☐ Field requirements updated in <code class="docutils literal notranslate"><span class="pre">DALEC_MODEL_FIELD_REQUIREMENTS.txt</span></code></p></li>
+<li><p>☐ CARDAMOM compiles without errors or warnings</p></li>
+<li><p>☐ Demo CBF files created with correct IDs</p></li>
+<li><p>☐ Stress tests pass (TEST 1 and TEST 2b)</p></li>
+<li><p>☐ Template model (e.g., 1100) still works correctly</p></li>
+</ul>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="compilation-errors">
+<h3>Compilation Errors<a class="headerlink" href="#compilation-errors" title="Link to this heading"></a></h3>
+<p><strong>Error:</strong> “MODEL_INFO_1140 not defined”</p>
+<p><strong>Solution:</strong> Check that the include statement is added to <code class="docutils literal notranslate"><span class="pre">CARDAMOM_MODEL_LIBRARY.c</span></code> and the path is correct.</p>
+</section>
+<section id="test-failures">
+<h3>Test Failures<a class="headerlink" href="#test-failures" title="Link to this heading"></a></h3>
+<p><strong>Error:</strong> TEST 1 fails with segmentation fault</p>
+<p><strong>Solution:</strong></p>
+<ol class="arabic simple">
+<li><p>Verify <code class="docutils literal notranslate"><span class="pre">DALEC_MODEL_FIELD_REQUIREMENTS.txt</span></code> includes the new model IDs</p></li>
+<li><p>Check that all required fields (DISTURBANCE_FLUX, YIELD) list the new models</p></li>
+<li><p>Ensure the template model passes tests before creating new models</p></li>
+</ol>
+<p><strong>Error:</strong> “NetCDF: Unknown file format” when running ncdump</p>
+<p><strong>Solution:</strong> The CBF file may be corrupted. Recreate it by copying the original demo file and updating IDs again.</p>
+</section>
+<section id="model-doesn-t-run">
+<h3>Model Doesn’t Run<a class="headerlink" href="#model-doesn-t-run" title="Link to this heading"></a></h3>
+<p><strong>Error:</strong> Model ID not recognized by CARDAMOM_MDF</p>
+<p><strong>Solution:</strong></p>
+<ol class="arabic simple">
+<li><p>Recompile CARDAMOM</p></li>
+<li><p>Verify the model ID check is added to <code class="docutils literal notranslate"><span class="pre">CARDAMOM_MODEL_LIBRARY.c</span></code></p></li>
+<li><p>Check that <code class="docutils literal notranslate"><span class="pre">nc.variables['ID'][:]</span></code> equals the new model ID in the CBF file (<code class="docutils literal notranslate"><span class="pre">ncdump</span> <span class="pre">-v</span> <span class="pre">ID</span> <span class="pre">FILE</span></code>)</p></li>
+</ol>
+</section>
+</section>
+<section id="for-ai-assistants">
+<h2>For AI Assistants<a class="headerlink" href="#for-ai-assistants" title="Link to this heading"></a></h2>
+<p>When helping users create new DALEC models:</p>
+<ol class="arabic simple">
+<li><p><strong>Always verify template model works first</strong> - Run stress tests on the template model before creating copies</p></li>
+<li><p><strong>Check all file paths</strong> - Use <code class="docutils literal notranslate"><span class="pre">find</span></code> and <code class="docutils literal notranslate"><span class="pre">grep</span></code> to verify files exist and references are correct</p></li>
+<li><p><strong>Compile frequently</strong> - Compile after each major step to catch errors early</p></li>
+<li><p><strong>Update both code and configuration</strong> - Models need registration in both C code and Python configuration files</p></li>
+<li><p><strong>Test thoroughly</strong> - Both TEST 1 (no observations) and TEST 2b (with observations) must pass</p></li>
+<li><p><strong>Preserve portability</strong> - No platform-specific code or library dependencies</p></li>
+<li><p><strong>Follow CARDAMOM coding conventions</strong> - Brief code, no macros unless necessary</p></li>
+</ol>
+<p>The key files that must be modified:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CARDAMOM_MODEL_LIBRARY.c</span></code> (include and ID check)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DALEC_MODEL_FIELD_REQUIREMENTS.txt</span></code> (field requirements)</p></li>
+<li><p>All model-specific C files (function names and references)</p></li>
+<li><p>Demo CBF files (for testing)</p></li>
+</ul>
+<p>Common pitfalls:</p>
+<ul class="simple">
+<li><p>Not updating <code class="docutils literal notranslate"><span class="pre">DALEC_MODEL_FIELD_REQUIREMENTS.txt</span></code></p></li>
+<li><p>Incomplete sed replacements (always use <code class="docutils literal notranslate"><span class="pre">find</span> <span class="pre">...</span> <span class="pre">-exec</span> <span class="pre">sed</span></code>)</p></li>
+</ul>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>Creating a new DALEC model ID involves systematic copying, renaming, and registration steps. The process is straightforward but requires attention to detail. Always:</p>
+<ol class="arabic simple">
+<li><p>Work from a tested template</p></li>
+<li><p>Update all references (files, code, configuration)</p></li>
+</ol>
+<p>3. Compile and test thoroughly
+5. Document any model-specific changes</p>
+<p>Following this guide ensures new models integrate seamlessly into the CARDAMOM framework and maintain code quality and portability standards.</p>
+</section>
+<section id="additional-resources">
+<h2>Additional Resources<a class="headerlink" href="#additional-resources" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><span class="xref std std-doc">stress_testing</span> - Detailed information on CARDAMOM stress testing</p></li>
+<li><p><span class="xref std std-doc">compilation</span> - CARDAMOM compilation guide</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">markdown_manuals/MODEL_IDs</span></code> - Legacy documentation on model IDs</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">markdown_manuals/CARDAMOM_C_developer_guide</span></code> - General C development guide</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This process creates an exact copy of the template model with a new ID. To modify model behavior, additional changes to the model equations, parameters, or EDC constraints will be required after following this guide.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../using_cardamom/governance.html" class="btn btn-neutral float-left" title="CARDAMOM.c governance structure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../tier3_development/adding_new_input_variable.html" class="btn btn-neutral float-right" title="Adding new input variable type" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../copyright.html">Copyright</a> (c) 2024 California Institute of Technology (“Caltech”) and University of Washington. U.S. Government sponsorship acknowledged..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
